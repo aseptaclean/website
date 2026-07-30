@@ -48,8 +48,8 @@ const fullProductionRequired = [
   "PUBLIC_FORM_ENDPOINT",
   "PUBLIC_PRIVACY_CONTACT",
   "PUBLIC_TURNSTILE_SITE_KEY",
-  "PUBLIC_TERMLY_PRIVACY_URL",
-  "PUBLIC_TERMLY_TERMS_URL",
+  "PUBLIC_TERMLY_WEBSITE_UUID",
+  "PUBLIC_TERMLY_CONSENT_ENABLED",
   "PUBLIC_SERVICE_AREA",
   "PUBLIC_RESPONSE_TIME",
   "PUBLIC_BUSINESS_HOURS",
@@ -154,13 +154,71 @@ for (const key of ["EMAIL_FROM_ADDRESS", "OWNER_ALERT_EMAIL"]) {
   }
 }
 
-for (const key of ["PUBLIC_TERMLY_PRIVACY_URL", "PUBLIC_TERMLY_TERMS_URL"]) {
+for (const key of [
+  "PUBLIC_TERMLY_PRIVACY_URL",
+  "PUBLIC_TERMLY_TERMS_URL",
+  "PUBLIC_TERMLY_COOKIE_POLICY_URL"
+]) {
   if (!values[key]) continue;
   try {
     const url = new URL(values[key]);
     if (url.protocol !== "https:") errors.push(`${key} must use HTTPS.`);
+    if (
+      url.hostname !== "termly.io" &&
+      !url.hostname.endsWith(".termly.io")
+    ) {
+      errors.push(`${key} must use a Termly-controlled hostname.`);
+    }
   } catch {
     errors.push(`${key} must be a valid absolute URL.`);
+  }
+}
+
+if (
+  values.PUBLIC_TERMLY_CONSENT_ENABLED &&
+  !["true", "false"].includes(values.PUBLIC_TERMLY_CONSENT_ENABLED)
+) {
+  errors.push("PUBLIC_TERMLY_CONSENT_ENABLED must be true or false.");
+}
+
+const uuidPattern =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+for (const key of [
+  "PUBLIC_TERMLY_WEBSITE_UUID",
+  "PUBLIC_TERMLY_PRIVACY_POLICY_ID",
+  "PUBLIC_TERMLY_TERMS_POLICY_ID",
+  "PUBLIC_TERMLY_COOKIE_POLICY_ID"
+]) {
+  if (values[key] && !uuidPattern.test(values[key])) {
+    errors.push(`${key} must be a valid UUID copied from Termly.`);
+  }
+}
+
+if (!privatePreview) {
+  const termlyPolicies = [
+    [
+      "Privacy Policy",
+      "PUBLIC_TERMLY_PRIVACY_POLICY_ID",
+      "PUBLIC_TERMLY_PRIVACY_URL"
+    ],
+    [
+      "Terms and Conditions",
+      "PUBLIC_TERMLY_TERMS_POLICY_ID",
+      "PUBLIC_TERMLY_TERMS_URL"
+    ],
+    [
+      "Cookie Policy",
+      "PUBLIC_TERMLY_COOKIE_POLICY_ID",
+      "PUBLIC_TERMLY_COOKIE_POLICY_URL"
+    ]
+  ];
+  for (const [label, idKey, urlKey] of termlyPolicies) {
+    if (!values[idKey] && !values[urlKey]) {
+      errors.push(`${label} requires either ${idKey} or ${urlKey}.`);
+    }
+  }
+  if (values.PUBLIC_TERMLY_CONSENT_ENABLED !== "true") {
+    errors.push("Public production requires PUBLIC_TERMLY_CONSENT_ENABLED=true.");
   }
 }
 

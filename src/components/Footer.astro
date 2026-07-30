@@ -5,6 +5,7 @@ const year = new Date().getFullYear();
 const phoneHref = site.business.phone
   ? `tel:${site.business.phone.replace(/[^\d+]/g, "")}`
   : "";
+const termlyConsentEnabled = site.integrations.termly.consentEnabled;
 ---
 
 <footer class="site-footer">
@@ -24,6 +25,11 @@ const phoneHref = site.business.phone
       <a href={site.urls.privacyPolicy}>Privacy</a>
       <a href={site.urls.terms}>Terms</a>
       {site.urls.cookiePolicy && <a href={site.urls.cookiePolicy}>Cookie Policy</a>}
+      {termlyConsentEnabled && (
+        <button type="button" class="site-footer__link termly-display-preferences">
+          Cookie Preferences
+        </button>
+      )}
     </nav>
 
     <address>
@@ -37,6 +43,15 @@ const phoneHref = site.business.phone
     <p>{legal.scopeDisclaimer}</p>
     <p>© {year} {site.business.legalName}. All rights reserved.</p>
   </div>
+  {termlyConsentEnabled && (
+    <noscript>
+      <p class="site-footer__noscript container">
+        Cookie Preferences requires JavaScript. The Cookie Policy remains
+        available above, or email {site.business.privacyContact || site.business.email}
+        for help.
+      </p>
+    </noscript>
+  )}
 </footer>
 
 <style>
@@ -86,12 +101,36 @@ const phoneHref = site.business.phone
     color: var(--color-warm-white);
   }
 
+  .site-footer__link {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: var(--color-warm-white);
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+
+  .site-footer__link:hover {
+    text-decoration-thickness: 0.12em;
+  }
+
   .site-footer__legal {
     display: grid;
     gap: var(--space-4);
     border-top: 1px solid rgb(168 184 200 / 0.35);
     margin-top: var(--space-6);
     padding-top: var(--space-5);
+    color: var(--color-steel-300);
+    font-size: var(--step--1);
+  }
+
+  .site-footer__noscript {
+    margin-top: var(--space-4);
     color: var(--color-steel-300);
     font-size: var(--step--1);
   }

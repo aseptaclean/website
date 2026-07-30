@@ -3,6 +3,17 @@ const env = import.meta.env;
 const value = (key: keyof ImportMetaEnv, fallback = "") =>
   env[key]?.trim() || fallback;
 
+const termlyWebsiteUuid = value("PUBLIC_TERMLY_WEBSITE_UUID");
+const termlyPrivacyPolicyId = value("PUBLIC_TERMLY_PRIVACY_POLICY_ID");
+const termlyTermsPolicyId = value("PUBLIC_TERMLY_TERMS_POLICY_ID");
+const termlyCookiePolicyId = value("PUBLIC_TERMLY_COOKIE_POLICY_ID");
+const termlyPrivacyUrl = value("PUBLIC_TERMLY_PRIVACY_URL");
+const termlyTermsUrl = value("PUBLIC_TERMLY_TERMS_URL");
+const termlyCookiePolicyUrl = value("PUBLIC_TERMLY_COOKIE_POLICY_URL");
+const termlyConsentEnabled =
+  value("PUBLIC_TERMLY_CONSENT_ENABLED") === "true" &&
+  Boolean(termlyWebsiteUuid);
+
 export const site = {
   business: {
     name: value("PUBLIC_BUSINESS_NAME", "Aseptaclean"),
@@ -53,14 +64,36 @@ export const site = {
   urls: {
     site: value("PUBLIC_SITE_URL", "https://aseptaclean.com"),
     formEndpoint: value("PUBLIC_FORM_ENDPOINT"),
-    privacyPolicy: value("PUBLIC_TERMLY_PRIVACY_URL", "/privacy/"),
-    terms: value("PUBLIC_TERMLY_TERMS_URL", "/terms/"),
-    cookiePolicy: value("PUBLIC_TERMLY_COOKIE_POLICY_URL")
+    privacyPolicy: "/privacy/",
+    terms: "/terms/",
+    cookiePolicy:
+      termlyCookiePolicyId || termlyCookiePolicyUrl ? "/cookie-policy/" : ""
   },
   integrations: {
     formEnabled: value("PUBLIC_FORM_ENABLED") === "true",
     turnstileSiteKey: value("PUBLIC_TURNSTILE_SITE_KEY"),
-    termlyConsentScript: value("PUBLIC_TERMLY_CONSENT_SCRIPT")
+    termly: {
+      websiteUuid: termlyWebsiteUuid,
+      consentEnabled: termlyConsentEnabled,
+      consentScriptUrl: termlyConsentEnabled
+        ? `https://app.termly.io/resource-blocker/${encodeURIComponent(termlyWebsiteUuid)}?autoBlock=on`
+        : "",
+      policyScriptUrl: "https://app.termly.io/embed-policy.min.js",
+      policies: {
+        privacy: {
+          id: termlyPrivacyPolicyId,
+          hostedUrl: termlyPrivacyUrl
+        },
+        terms: {
+          id: termlyTermsPolicyId,
+          hostedUrl: termlyTermsUrl
+        },
+        cookie: {
+          id: termlyCookiePolicyId,
+          hostedUrl: termlyCookiePolicyUrl
+        }
+      }
+    }
   },
   deployment: {
     environment: value("PUBLIC_DEPLOYMENT_ENV", "local"),

@@ -3,19 +3,19 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import LegalPolicy from "@components/LegalPolicy.astro";
 import { site } from "@data/site";
 
-const policy = site.integrations.termly.policies.terms;
+const policy = site.integrations.termly.policies.cookie;
 ---
 
 <BaseLayout
-  title="Terms and Conditions | Aseptaclean"
-  description="Read Aseptaclean’s Termly-managed Terms and Conditions or access the provider fallback."
-  canonicalPath="/terms/"
+  title="Cookie Policy | Aseptaclean"
+  description="Read Aseptaclean’s Termly-managed Cookie Policy or access the provider fallback."
+  canonicalPath="/cookie-policy/"
   showMobileCta={false}
 >
   <div class="container">
     <LegalPolicy
-      title="Terms and Conditions"
-      label="Terms and Conditions"
+      title="Cookie Policy"
+      label="Cookie Policy"
       policyId={policy.id}
       hostedUrl={policy.hostedUrl}
     />

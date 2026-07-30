@@ -13,6 +13,7 @@
     "qa:phase3:pass1": "node scripts/phase3-pass1-browser-check.mjs",
     "qa:phase3:pass2": "node scripts/phase3-pass2-browser-check.mjs",
     "qa:phase3:endpoint": "esbuild functions/api/lead.ts --bundle --platform=node --format=esm --outfile=/tmp/aseptaclean-lead-test.mjs && node scripts/phase3-endpoint-check.mjs",
+    "qa:phase4": "node scripts/phase4-browser-check.mjs",
     "preview": "astro preview",
     "check": "astro check"
   },

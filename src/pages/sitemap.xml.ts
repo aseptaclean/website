@@ -3,6 +3,7 @@ import type { APIRoute } from "astro";
 import { site } from "@data/site";
 
 const routes = ["/", "/request-assessment/", "/privacy/", "/terms/"];
+if (site.urls.cookiePolicy) routes.push(site.urls.cookiePolicy);
 
 export const GET: APIRoute = () => {
   const urls = routes

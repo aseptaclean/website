@@ -1,14 +1,23 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
+import LegalPolicy from "@components/LegalPolicy.astro";
+import { site } from "@data/site";
+
+const policy = site.integrations.termly.policies.privacy;
 ---
 
 <BaseLayout
-  title="Privacy | Aseptaclean"
-  description="Aseptaclean privacy information."
+  title="Privacy Policy | Aseptaclean"
+  description="Read Aseptaclean’s Termly-managed Privacy Policy or access the provider fallback."
   canonicalPath="/privacy/"
   showMobileCta={false}
 >
-  <div class="container route-shell">
-    <h1>Privacy</h1>
+  <div class="container">
+    <LegalPolicy
+      title="Privacy Policy"
+      label="Privacy Policy"
+      policyId={policy.id}
+      hostedUrl={policy.hostedUrl}
+    />
   </div>
 </BaseLayout>

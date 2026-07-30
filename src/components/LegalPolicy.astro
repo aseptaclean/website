@@ -1,0 +1,199 @@
+---
+import { site } from "@data/site";
+
+interface Props {
+  title: string;
+  label: string;
+  policyId: string;
+  hostedUrl: string;
+}
+
+const { title, label, policyId, hostedUrl } = Astro.props;
+const contactEmail = site.business.privacyContact || site.business.email;
+const hasProviderPolicy = Boolean(policyId || hostedUrl);
+---
+
+<article class="legal-policy">
+  <header class="legal-policy__header">
+    <p>Legal record · Managed by Termly</p>
+    <h1>{title}</h1>
+    <p>
+      This page is an integration surface for Aseptaclean’s
+      provider-controlled {label.toLowerCase()}. Aseptaclean does not replace
+      the provider’s published policy with locally drafted legal text.
+    </p>
+  </header>
+
+  {policyId ? (
+    <section class="legal-policy__document" aria-label={`${label} document`}>
+      <div
+        {...{ name: "termly-embed" }}
+        data-id={policyId}
+        data-type="iframe"
+      ></div>
+      <script is:inline src={site.integrations.termly.policyScriptUrl} async></script>
+    </section>
+  ) : (
+    <section class="legal-policy__unavailable" aria-labelledby="policy-status">
+      <p class="legal-policy__status">Provider status</p>
+      <h2 id="policy-status">
+        {hostedUrl ? "Use the provider-hosted policy" : "Policy not published in this preview"}
+      </h2>
+      <p>
+        {hostedUrl
+          ? "The approved Termly policy is available on Termly’s secure hosted page."
+          : "Final Termly policy configuration has not been added. No substitute legal language is shown."}
+      </p>
+    </section>
+  )}
+
+  <aside class="legal-policy__fallback" aria-labelledby="provider-fallback">
+    <p class="legal-policy__status">Provider fallback</p>
+    <h2 id="provider-fallback">If the policy does not load</h2>
+    <p>
+      Provider content can be unavailable when JavaScript is disabled, a
+      content blocker intervenes, or Termly is temporarily unreachable.
+    </p>
+    <div class="legal-policy__actions">
+      {hostedUrl && (
+        <a class="button" href={hostedUrl} rel="external">
+          Open {label} on Termly
+        </a>
+      )}
+      <a href={`mailto:${contactEmail}`}>Contact Aseptaclean about privacy or legal access</a>
+    </div>
+    {policyId && (
+      <noscript>
+        <p>
+          JavaScript is disabled, so the embedded Termly policy cannot load.
+          {hostedUrl
+            ? " Use the provider-hosted policy link above."
+            : ` Email ${contactEmail} to request access.`}
+        </p>
+      </noscript>
+    )}
+  </aside>
+
+  {!hasProviderPolicy && (
+    <p class="legal-policy__preview-note">
+      This disabled state is intentional for the private preview.
+    </p>
+  )}
+</article>
+
+<style>
+  .legal-policy {
+    display: grid;
+    gap: var(--space-7);
+    min-height: 55vh;
+    padding-block: var(--space-7) var(--space-8);
+  }
+
+  .legal-policy__header {
+    max-width: 48rem;
+    border-top: 3px solid var(--color-navy-900);
+    padding-top: var(--space-5);
+  }
+
+  .legal-policy__header > p:first-child,
+  .legal-policy__status {
+    margin: 0;
+    color: var(--color-blue-500);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .legal-policy__header h1 {
+    margin: var(--space-3) 0 0;
+  }
+
+  .legal-policy__header > p:last-child {
+    margin: var(--space-4) 0 0;
+    font-size: var(--step-1);
+  }
+
+  .legal-policy__document {
+    min-width: 0;
+    border-top: 1px solid var(--color-rule);
+    padding-top: var(--space-5);
+  }
+
+  .legal-policy__document :global(iframe) {
+    width: 100%;
+    min-height: 65rem;
+    border: 0;
+  }
+
+  .legal-policy__unavailable,
+  .legal-policy__fallback {
+    max-width: 48rem;
+    border: 1px solid var(--color-steel-300);
+    padding: var(--space-5);
+    background: var(--color-paper);
+  }
+
+  .legal-policy__unavailable h2,
+  .legal-policy__fallback h2 {
+    margin: var(--space-3) 0 0;
+    font-size: var(--step-2);
+  }
+
+  .legal-policy__unavailable p:last-child,
+  .legal-policy__fallback > p {
+    margin: var(--space-3) 0 0;
+  }
+
+  .legal-policy__actions {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+  }
+
+  .legal-policy__actions > a:not(.button) {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+  }
+
+  .legal-policy__fallback noscript p {
+    display: block;
+    margin: var(--space-5) 0 0;
+    border-left: 3px solid var(--color-blue-500);
+    padding-left: var(--space-4);
+  }
+
+  .legal-policy__preview-note {
+    margin: 0;
+    color: var(--color-ink-500);
+    font-size: var(--step--1);
+  }
+
+  @media (min-width: 60rem) {
+    .legal-policy {
+      grid-template-columns: minmax(0, 7fr) minmax(16rem, 3fr);
+      column-gap: clamp(3rem, 7vw, 7rem);
+    }
+
+    .legal-policy__header,
+    .legal-policy__document,
+    .legal-policy__unavailable {
+      grid-column: 1;
+    }
+
+    .legal-policy__fallback {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+      align-self: start;
+      margin-top: var(--space-7);
+    }
+
+    .legal-policy__preview-note {
+      grid-column: 1;
+    }
+  }
+</style>

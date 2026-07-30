@@ -28,7 +28,11 @@ interface ImportMetaEnv {
   readonly PUBLIC_TERMLY_PRIVACY_URL?: string;
   readonly PUBLIC_TERMLY_TERMS_URL?: string;
   readonly PUBLIC_TERMLY_COOKIE_POLICY_URL?: string;
-  readonly PUBLIC_TERMLY_CONSENT_SCRIPT?: string;
+  readonly PUBLIC_TERMLY_WEBSITE_UUID?: string;
+  readonly PUBLIC_TERMLY_PRIVACY_POLICY_ID?: string;
+  readonly PUBLIC_TERMLY_TERMS_POLICY_ID?: string;
+  readonly PUBLIC_TERMLY_COOKIE_POLICY_ID?: string;
+  readonly PUBLIC_TERMLY_CONSENT_ENABLED?: string;
 }
 
 interface ImportMeta {
