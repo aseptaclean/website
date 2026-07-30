@@ -1,0 +1,74 @@
+---
+import { site } from "@data/site";
+
+const gaId = site.integrations.analytics.gaId;
+const gtmId = site.integrations.analytics.gtmId;
+const consentEnabled = site.integrations.termly.consentEnabled;
+---
+
+{consentEnabled && gaId && !gtmId && (
+  <>
+    <script
+      is:inline
+      type="text/plain"
+      data-type="analytics"
+      src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}`}
+      async
+    ></script>
+    <script is:inline type="text/plain" data-type="analytics">
+      {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config",${JSON.stringify(gaId)},{anonymize_ip:true});`}
+    </script>
+  </>
+)}
+
+{consentEnabled && gtmId && (
+  <script is:inline type="text/plain" data-type="analytics">
+    {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f)})(window,document,"script","dataLayer",${JSON.stringify(gtmId)});`}
+  </script>
+)}
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  const offer =
+    new URLSearchParams(window.location.search).get("offer") ===
+    "private-residence-reset"
+      ? "private_residence_reset"
+      : window.location.pathname === "/private-residence-reset/"
+        ? "private_residence_reset"
+        : "handoff_reset";
+  const record = (event: string, detail: Record<string, string> = {}) => {
+    window.dataLayer?.push({ event, offer_type: offer, ...detail });
+  };
+
+  if (window.location.pathname === "/private-residence-reset/") {
+    record("private_residence_page_view");
+  }
+  document.addEventListener("click", (event) => {
+    const link = (event.target as HTMLElement).closest<HTMLAnchorElement>("a");
+    if (!link) return;
+    if (link.href.startsWith("tel:")) record("phone_click");
+    if (link.href.includes("/request-assessment/")) {
+      record(
+        offer === "private_residence_reset"
+          ? "private_residence_assessment_click"
+          : "handoff_plan_click"
+      );
+    }
+  });
+  const assessment = document.querySelector<HTMLFormElement>(
+    "[data-assessment-form]"
+  );
+  if (assessment) {
+    let started = false;
+    assessment.addEventListener("input", () => {
+      if (started) return;
+      started = true;
+      record("assessment_start");
+    });
+    assessment.addEventListener("submit", () => record("assessment_submit"));
+  }
+</script>
+
+<script is:inline>
+  window.dataLayer = window.dataLayer || [];
+</script>

@@ -69,26 +69,14 @@ export interface ValidationResult {
   errors: Record<string, string>;
 }
 
-const requiredFields = [
+const commonRequiredFields = [
   "property_city",
   "property_type",
   "vacant_status",
   "property_situation",
   "desired_completion_date",
   "approximate_square_footage",
-  "contents_removal",
-  "heavy_cleaning",
-  "garage_storage",
-  "appliance_interiors",
-  "cabinet_interiors",
-  "animal_waste",
-  "human_biological_material",
-  "needles_sharps",
-  "sewage",
-  "mold",
-  "pest_activity",
-  "must_remain",
-  "must_remove",
+  "offer_type",
   "full_name",
   "phone",
   "email",
@@ -102,13 +90,45 @@ const requiredFields = [
   "idempotency_key"
 ] as const;
 
+const handoffRequiredFields = [
+  "contents_removal",
+  "heavy_cleaning",
+  "garage_storage",
+  "appliance_interiors",
+  "cabinet_interiors",
+  "animal_waste",
+  "human_biological_material",
+  "needles_sharps",
+  "sewage",
+  "mold",
+  "pest_activity",
+  "must_remain",
+  "must_remove"
+] as const;
+
+const residenceRequiredFields = [
+  "property_zip",
+  "number_of_levels",
+  "occupancy_status",
+  "priority_rooms",
+  "detail_priorities",
+  "safety_routing"
+] as const;
+
 const allowedScalarFields = new Set([
-  ...requiredFields,
+  ...commonRequiredFields,
+  ...handoffRequiredFields,
+  ...residenceRequiredFields,
   "form_version",
   "submitted_from",
+  "entry_route",
   "access_notes",
   "best_contact_time",
   "additional_notes",
+  "important_finishes",
+  "pets",
+  "someone_present",
+  "investment_range",
   "utm_source",
   "utm_medium",
   "utm_campaign",
@@ -161,6 +181,10 @@ const allowedValues: Record<string, Set<string>> = {
     "Accumulated contents",
     "Overwhelmed property",
     "Already empty but requires detailed cleaning",
+    "Move-in whole-home reset",
+    "Seasonal or pre-event whole-home reset",
+    "Second-home reopening",
+    "Establishing a whole-home cleaning baseline",
     "Other"
   ]),
   approximate_square_footage: new Set([
@@ -185,6 +209,12 @@ const allowedValues: Record<string, Set<string>> = {
   authority_to_approve: new Set(["yes", "no"]),
   privacy_consent: new Set(["yes"]),
   scope_acknowledgment: new Set(["yes"]),
+  offer_type: new Set(["handoff_reset", "private_residence_reset"]),
+  safety_routing: new Set([
+    "no_known_condition",
+    "possible_condition",
+    "known_condition"
+  ]),
   vacant_status: yesNoUnsure,
   contents_removal: yesNoUnsure,
   heavy_cleaning: yesNoUnsure,
@@ -235,6 +265,11 @@ export function validateLead(formData: FormData): ValidationResult {
     .map((value) => clean(value, 120))
     .filter(Boolean);
 
+  const offerType = data.offer_type;
+  const requiredFields =
+    offerType === "private_residence_reset"
+      ? [...commonRequiredFields, ...residenceRequiredFields]
+      : [...commonRequiredFields, ...handoffRequiredFields];
   for (const field of requiredFields) {
     if (!data[field] || (Array.isArray(data[field]) && !data[field].length)) {
       errors[field] = "This field is required.";
@@ -246,12 +281,14 @@ export function validateLead(formData: FormData): ValidationResult {
       errors[field] = "Select a valid option.";
     }
   }
-  if (!(data["areas_involved[]"] as string[]).length) {
-    errors["areas_involved[]"] = "Select at least one area.";
-  } else if (
-    (data["areas_involved[]"] as string[]).some((area) => !allowedAreas.has(area))
-  ) {
-    errors["areas_involved[]"] = "Select valid property areas.";
+  if (offerType !== "private_residence_reset") {
+    if (!(data["areas_involved[]"] as string[]).length) {
+      errors["areas_involved[]"] = "Select at least one area.";
+    } else if (
+      (data["areas_involved[]"] as string[]).some((area) => !allowedAreas.has(area))
+    ) {
+      errors["areas_involved[]"] = "Select valid property areas.";
+    }
   }
   if (
     typeof data.email === "string" &&
@@ -264,6 +301,13 @@ export function validateLead(formData: FormData): ValidationResult {
     data.phone.replace(/\D/g, "").length < 10
   ) {
     errors.phone = "Enter a valid phone number.";
+  }
+  if (
+    typeof data.property_zip === "string" &&
+    data.property_zip &&
+    !/^\d{5}(?:-\d{4})?$/.test(data.property_zip)
+  ) {
+    errors.property_zip = "Enter a valid ZIP code.";
   }
   if (data.privacy_consent !== "yes") {
     errors.privacy_consent = "Consent is required.";

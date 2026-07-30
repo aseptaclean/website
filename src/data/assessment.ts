@@ -1,5 +1,5 @@
 export const assessment = {
-  version: "2026-07-30",
+  version: "2026-07-30.2",
   steps: [
     {
       number: "01",
@@ -37,6 +37,10 @@ export const assessment = {
     "Accumulated contents",
     "Overwhelmed property",
     "Already empty but requires detailed cleaning",
+    "Move-in whole-home reset",
+    "Seasonal or pre-event whole-home reset",
+    "Second-home reopening",
+    "Establishing a whole-home cleaning baseline",
     "Other"
   ],
   squareFootageRanges: [

@@ -1,0 +1,669 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import ResidenceBaselineRecord from "@components/ResidenceBaselineRecord.astro";
+import { legal, site } from "@data/site";
+
+const currency = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 0
+});
+const stages = [
+  ["Assess", "Review the residence, desired outcome, priority rooms, finishes, access, and timing."],
+  ["Define", "Write the room-by-room baseline, including what is included, restricted, or separately scoped."],
+  ["Reset", "Complete the approved detail-intensive work in the agreed sequence."],
+  ["Verify", "Review completion room by room and record changes, exceptions, and remaining decisions."],
+  ["Maintain", "After the baseline is established, select residences may be invited to quarterly care."]
+] as const;
+const included = [
+  "Whole-home deep-cleaning scope built around the residence",
+  "Kitchen and bathroom detail work",
+  "Floors, baseboards, doors, trim, and accessible surfaces",
+  "Cabinet, appliance, closet, or high-dusting priorities when listed",
+  "Finish, restricted-area, access, parking, and pet instructions",
+  "Room-by-room completion review and documented exceptions"
+] as const;
+const separate = [
+  "Organizing, laundry, or extensive dishes",
+  "Upholstery or carpet extraction",
+  "Exterior windows",
+  "Heavy contents movement",
+  "Animal-waste or severe-contamination conditions",
+  "Post-construction residue",
+  "Hauling or disposal",
+  "Hazardous, regulated, structural, or other work outside Aseptaclean’s current lawful and insured scope"
+] as const;
+const schema = [
+  {
+    "@type": "Service",
+    "@id": new URL("/private-residence-reset/#service", site.urls.site).href,
+    name: site.residenceOffer.name,
+    serviceType: "Structured whole-home deep cleaning",
+    description:
+      "A structured whole-home deep reset with a written room-by-room scope, controlled changes, and final completion review.",
+    provider: { "@id": new URL("/#organization", site.urls.site).href },
+    areaServed: site.location.serviceArea,
+    url: new URL("/private-residence-reset/", site.urls.site).href,
+    offers: {
+      "@type": "Offer",
+      priceCurrency: "USD",
+      price: site.residenceOffer.startingPrice,
+      description: "Initial Residence Reset projects generally begin at this amount; final pricing depends on the approved scope."
+    }
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: site.urls.site
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: site.residenceOffer.name,
+        item: new URL("/private-residence-reset/", site.urls.site).href
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="Private Residence Reset in San Jose & South Bay | Aseptaclean"
+  description="A structured whole-home deep reset with a written room-by-room scope, controlled changes, and final completion review. Serving San Jose and the South Bay."
+  canonicalPath="/private-residence-reset/"
+  schema={schema}
+  showMobileCta={false}
+>
+  <section class="residence-hero" aria-labelledby="residence-title">
+    <div class="container residence-hero__layout">
+      <div>
+        <p class="residence-label">Private Residence Reset</p>
+        <h1 id="residence-title">Bring the entire residence back to a <em>defined standard.</em></h1>
+        <p class="residence-hero__lead">
+          A structured, detail-intensive whole-home reset for homeowners who
+          need more than routine maintenance cleaning—and want the property,
+          priorities, sequencing, and completion handled under one written scope.
+        </p>
+        <a class="button" href={site.residenceOffer.assessmentUrl}>
+          {site.residenceOffer.primaryCta}
+        </a>
+        <p class="residence-hero__micro">
+          Send property details and photographs. Aseptaclean will review the
+          home, desired outcome, priority areas, and whether an on-site
+          walkthrough is required.
+        </p>
+      </div>
+      <aside aria-label="Starting investment">
+        <span>Initial reset</span>
+        <strong>{currency.format(site.residenceOffer.startingPrice)}</strong>
+        <p>Projects generally begin here. Final pricing follows the defined scope.</p>
+      </aside>
+    </div>
+    <div class="container residence-trust" aria-label="Residence project controls">
+      <span>Written room-by-room scope</span>
+      <span>Documented changes</span>
+      <span>Finish and access notes</span>
+      <span>Completion review</span>
+    </div>
+  </section>
+
+  <section class="residence-intro" aria-labelledby="not-housekeeping">
+    <div class="container residence-intro__layout">
+      <p class="residence-index">01 / The distinction</p>
+      <div>
+        <h2 id="not-housekeeping">This is not routine housekeeping.</h2>
+        <p>
+          Maintenance cleaning keeps a known baseline in place. A Private
+          Residence Reset is for the moment when deeper detail work, multiple
+          priority rooms, finish instructions, access, and a real completion
+          standard need to be defined together.
+        </p>
+        <p>
+          The engagement begins with the residence and the desired outcome—not
+          a generic checklist or an open-ended promise to clean everything.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="residence-outcome" aria-labelledby="residence-outcome-title">
+    <div class="container">
+      <p class="residence-index">02 / The restored baseline</p>
+      <h2 id="residence-outcome-title">Walk back into a residence that feels <em>settled again.</em></h2>
+      <div class="residence-outcome__copy">
+        <p>
+          The deeper details no longer accumulate in the background. Priority
+          rooms feel finished rather than merely surface-clean, and the work is
+          no longer an open task list you have to manage room by room.
+        </p>
+        <p>
+          Important finishes, restricted areas, access, and pet instructions
+          are already documented. Completion is reviewed against the baseline
+          you approved.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="residence-method" aria-labelledby="residence-method-title">
+    <div class="container">
+      <header>
+        <p class="residence-index">03 / Aseptaclean Residence Baseline</p>
+        <h2 id="residence-method-title">A defined path through the whole residence.</h2>
+      </header>
+      <ol>
+        {stages.map(([name, detail], index) => (
+          <li>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <h3>{name}</h3>
+            <p>{detail}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="residence-record" aria-labelledby="record-section-title">
+    <div class="container residence-record__layout">
+      <header>
+        <p class="residence-index">04 / The operating record</p>
+        <h2 id="record-section-title">The details live in the baseline—not in assumptions.</h2>
+        <p>
+          Each priority room, included surface, finish note, restricted area,
+          access instruction, approved change, and completion status has a
+          visible place.
+        </p>
+      </header>
+      <ResidenceBaselineRecord />
+    </div>
+  </section>
+
+  <section class="residence-scope" aria-labelledby="residence-scope-title">
+    <div class="container">
+      <header>
+        <p class="residence-index">05 / Scope boundary</p>
+        <h2 id="residence-scope-title">The residence is considered as a whole. The scope is still exact.</h2>
+      </header>
+      <div class="residence-scope__columns">
+        <section aria-labelledby="may-include">
+          <h3 id="may-include">Work that may be included</h3>
+          <ul>{included.map((item) => <li>{item}</li>)}</ul>
+        </section>
+        <section aria-labelledby="separate-scope">
+          <h3 id="separate-scope">Separately scoped or outside the offer</h3>
+          <ul>{separate.map((item) => <li>{item}</li>)}</ul>
+        </section>
+      </div>
+      <p class="residence-scope__disclaimer">{legal.scopeDisclaimer}</p>
+    </div>
+  </section>
+
+  <section class="residence-confidence" aria-labelledby="residence-confidence-title">
+    <div class="container residence-confidence__layout">
+      <header>
+        <p class="residence-index">06 / Property instructions</p>
+        <h2 id="residence-confidence-title">The home’s instructions stay attached to the work.</h2>
+      </header>
+      <dl>
+        <div>
+          <dt>Scope and change control</dt>
+          <dd>Added work, materials, access, or timing changes are documented before they proceed.</dd>
+        </div>
+        <div>
+          <dt>Finishes and restricted areas</dt>
+          <dd>Known surface requirements and no-entry areas are recorded room by room.</dd>
+        </div>
+        <div>
+          <dt>Access, pets, and privacy</dt>
+          <dd>Entry windows, presence, parking, alarms, pet instructions, and property media are handled as project information—not marketing proof.</dd>
+        </div>
+        <div>
+          <dt>Completion review</dt>
+          <dd>The approved baseline, authorized changes, and known exceptions define what completion means.</dd>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  <section class="residence-fit" aria-labelledby="residence-fit-title">
+    <div class="container residence-fit__layout">
+      <div>
+        <p class="residence-index">07 / Starting context and fit</p>
+        <h2 id="residence-fit-title">A whole-home baseline begins with a whole-home view.</h2>
+        <p>
+          Initial Residence Reset projects generally begin at
+          <strong>{currency.format(site.residenceOffer.startingPrice)}</strong>.
+          Final pricing depends on residence size, current condition, priority
+          rooms, included detail areas, finishes, access, labor, and timing.
+        </p>
+      </div>
+      <aside>
+        <span>Private retention</span>
+        <h3>Quarterly Residence Reset Care</h3>
+        <p>
+          Select residences may qualify after the initial baseline is
+          established. The invitation is based on fit, continuity, and
+          available service windows; it is not a public recurring-housekeeping
+          calendar.
+        </p>
+      </aside>
+    </div>
+  </section>
+
+  <section class="residence-decision" aria-labelledby="residence-decision-title">
+    <div class="container residence-decision__layout">
+      <div>
+        <p class="residence-index">08 / Request an assessment</p>
+        <h2 id="residence-decision-title">Start with the rooms and details that matter most.</h2>
+        <p>
+          Share the residence, priority areas, important finishes, access, and
+          desired completion date. Aseptaclean will review whether the project
+          fits and what should happen next {site.offer.responseTime}.
+        </p>
+      </div>
+      <a class="button" href={site.residenceOffer.assessmentUrl}>
+        {site.residenceOffer.primaryCta}
+      </a>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .residence-label,
+  .residence-index,
+  .residence-hero aside > span,
+  .residence-fit aside > span {
+    margin: 0;
+    color: var(--color-navy-800);
+    font-family: var(--font-sans);
+    font-size: var(--text-xs);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .residence-hero {
+    overflow: hidden;
+    background:
+      linear-gradient(90deg, transparent 0 72%, rgb(168 184 200 / 0.12) 72%),
+      var(--color-warm-white);
+  }
+
+  .residence-hero__layout {
+    display: grid;
+    gap: var(--space-7);
+    padding-block: clamp(4rem, 10vw, 8rem) var(--space-7);
+  }
+
+  h1 {
+    max-width: 15ch;
+    margin: var(--space-4) 0 0;
+    font-size: var(--text-h1);
+  }
+
+  h1 em,
+  .residence-outcome h2 em {
+    color: var(--color-navy-800);
+    font-weight: 430;
+  }
+
+  .residence-hero__lead {
+    max-width: var(--content-lead);
+    margin: var(--space-5) 0 0;
+    font-size: var(--text-lead);
+  }
+
+  .residence-hero .button {
+    margin-top: var(--space-6);
+  }
+
+  .residence-hero__micro {
+    max-width: 45rem;
+    margin: var(--space-3) 0 0;
+    color: var(--color-ink-500);
+    font-size: var(--text-sm);
+  }
+
+  .residence-hero aside {
+    align-self: end;
+    border-top: 2px solid var(--color-navy-900);
+    padding-top: var(--space-5);
+  }
+
+  .residence-hero aside strong {
+    display: block;
+    margin-top: var(--space-3);
+    color: var(--color-navy-900);
+    font-family: var(--font-display);
+    font-size: clamp(3.25rem, 8vw, 5.5rem);
+    font-weight: 500;
+    letter-spacing: -0.05em;
+    line-height: 0.95;
+  }
+
+  .residence-hero aside p {
+    margin: var(--space-3) 0 0;
+    color: var(--color-ink-500);
+  }
+
+  .residence-trust {
+    display: grid;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .residence-trust span {
+    min-height: 3rem;
+    border-bottom: 1px solid var(--color-rule);
+    padding-block: var(--space-3);
+    color: var(--color-navy-900);
+    font-size: var(--text-sm);
+    font-weight: 650;
+  }
+
+  .residence-intro,
+  .residence-method,
+  .residence-record,
+  .residence-scope,
+  .residence-confidence,
+  .residence-fit {
+    padding-block: clamp(4.5rem, 9vw, 8rem);
+  }
+
+  .residence-intro {
+    background: var(--color-paper);
+  }
+
+  .residence-intro__layout {
+    display: grid;
+    gap: var(--space-5);
+  }
+
+  .residence-intro h2,
+  .residence-method h2,
+  .residence-record h2,
+  .residence-scope h2,
+  .residence-confidence h2,
+  .residence-fit h2,
+  .residence-decision h2 {
+    max-width: 18ch;
+    margin: 0;
+  }
+
+  .residence-intro h2 + p,
+  .residence-record h2 + p,
+  .residence-fit h2 + p,
+  .residence-decision h2 + p {
+    margin-top: var(--space-5);
+  }
+
+  .residence-outcome {
+    padding-block: clamp(5rem, 13vw, 11rem);
+    background: var(--color-warm-white);
+  }
+
+  .residence-outcome h2 {
+    max-width: 16ch;
+    margin: var(--space-5) 0 0;
+    font-size: clamp(2.75rem, 7vw, 5.5rem);
+  }
+
+  .residence-outcome__copy {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-7);
+  }
+
+  .residence-outcome__copy p {
+    margin: 0;
+  }
+
+  .residence-method {
+    background: var(--color-navy-900);
+    color: var(--color-warm-white);
+  }
+
+  .residence-method .residence-index,
+  .residence-decision .residence-index {
+    color: var(--color-steel-300);
+  }
+
+  .residence-method h2 {
+    margin-top: var(--space-4);
+    color: var(--color-paper);
+  }
+
+  .residence-method ol {
+    margin: var(--space-7) 0 0;
+    border-top: 1px solid rgb(168 184 200 / 0.45);
+    padding: 0;
+    list-style: none;
+  }
+
+  .residence-method li {
+    display: grid;
+    max-width: none;
+    grid-template-columns: 2rem 1fr;
+    gap: var(--space-3);
+    border-bottom: 1px solid rgb(168 184 200 / 0.35);
+    padding-block: var(--space-5);
+  }
+
+  .residence-method li > span {
+    color: var(--color-steel-300);
+    font-size: var(--text-xs);
+    font-weight: 700;
+  }
+
+  .residence-method h3,
+  .residence-method li p {
+    margin: 0;
+    color: var(--color-paper);
+  }
+
+  .residence-method li p {
+    grid-column: 2;
+    color: var(--color-steel-300);
+  }
+
+  .residence-record {
+    background: var(--color-paper);
+  }
+
+  .residence-record__layout {
+    display: grid;
+    gap: var(--space-8);
+  }
+
+  .residence-record header > p:last-child {
+    max-width: 34rem;
+  }
+
+  .residence-scope {
+    background: var(--color-warm-white);
+  }
+
+  .residence-scope h2,
+  .residence-scope__columns {
+    margin-top: var(--space-4);
+  }
+
+  .residence-scope__columns {
+    display: grid;
+    gap: var(--space-7);
+  }
+
+  .residence-scope__columns section {
+    border-top: 2px solid var(--color-navy-900);
+    padding-top: var(--space-4);
+  }
+
+  .residence-scope__columns section + section {
+    border-color: var(--color-error);
+  }
+
+  .residence-scope h3 {
+    margin: 0;
+    font-size: var(--text-lead);
+  }
+
+  .residence-scope ul {
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .residence-scope li {
+    border-top: 1px solid var(--color-rule);
+    padding: var(--space-3) 0;
+  }
+
+  .residence-scope__disclaimer {
+    margin: var(--space-7) 0 0;
+    border-left: 3px solid var(--color-blue-500);
+    padding-left: var(--space-4);
+    color: var(--color-ink-500);
+    font-size: var(--text-sm);
+  }
+
+  .residence-confidence {
+    background: var(--color-paper);
+  }
+
+  .residence-confidence__layout {
+    display: grid;
+    gap: var(--space-7);
+  }
+
+  .residence-confidence dl {
+    margin: 0;
+    border-top: 2px solid var(--color-navy-900);
+  }
+
+  .residence-confidence dl > div {
+    border-bottom: 1px solid var(--color-rule);
+    padding-block: var(--space-5);
+  }
+
+  .residence-confidence dt {
+    color: var(--color-navy-900);
+    font-weight: 700;
+  }
+
+  .residence-confidence dd {
+    max-width: 52ch;
+    margin: var(--space-2) 0 0;
+    color: var(--color-ink-500);
+  }
+
+  .residence-fit {
+    background: var(--color-warm-white);
+  }
+
+  .residence-fit__layout {
+    display: grid;
+    gap: var(--space-7);
+  }
+
+  .residence-fit aside {
+    border-top: 3px solid var(--color-navy-900);
+    padding-top: var(--space-5);
+  }
+
+  .residence-fit aside h3 {
+    margin: var(--space-3) 0 0;
+  }
+
+  .residence-fit aside p {
+    margin: var(--space-3) 0 0;
+  }
+
+  .residence-decision {
+    padding-block: clamp(4.5rem, 9vw, 8rem);
+    background: var(--color-navy-900);
+    color: var(--color-warm-white);
+  }
+
+  .residence-decision__layout {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .residence-decision h2 {
+    margin-top: var(--space-4);
+    color: var(--color-paper);
+  }
+
+  .residence-decision .button {
+    align-self: center;
+    border-color: var(--color-paper);
+    background: var(--color-paper);
+    color: var(--color-navy-900);
+  }
+
+  @media (min-width: 48rem) {
+    .residence-trust {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .residence-trust span {
+      border-bottom: 0;
+    }
+
+    .residence-trust span + span {
+      border-left: 1px solid var(--color-rule);
+      padding-left: var(--space-4);
+    }
+
+    .residence-outcome__copy,
+    .residence-scope__columns {
+      grid-template-columns: 1fr 1fr;
+      gap: clamp(3rem, 8vw, 8rem);
+    }
+
+    .residence-method li {
+      grid-template-columns: 2rem minmax(8rem, 0.75fr) minmax(20rem, 2fr);
+      align-items: baseline;
+    }
+
+    .residence-method li p {
+      grid-column: 3;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .residence-hero__layout {
+      min-height: 45rem;
+      grid-template-columns: minmax(0, 7fr) minmax(17rem, 3fr);
+      align-items: end;
+      gap: clamp(4rem, 10vw, 10rem);
+    }
+
+    .residence-intro__layout,
+    .residence-record__layout,
+    .residence-confidence__layout,
+    .residence-fit__layout,
+    .residence-decision__layout {
+      grid-template-columns: minmax(16rem, 4fr) minmax(0, 7fr);
+      gap: clamp(4rem, 10vw, 10rem);
+    }
+
+    .residence-record__layout header {
+      position: sticky;
+      top: 7rem;
+      align-self: start;
+    }
+
+    .residence-fit__layout aside {
+      max-width: 32rem;
+      justify-self: end;
+    }
+
+    .residence-decision__layout {
+      grid-template-columns: minmax(0, 7fr) max-content;
+    }
+  }
+</style>

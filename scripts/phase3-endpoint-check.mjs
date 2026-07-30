@@ -34,6 +34,8 @@ globalThis.fetch = async (url) => {
 const makeForm = () => {
   const data = new FormData();
   const values = {
+    offer_type: "handoff_reset",
+    entry_route: "/",
     property_city: "San Jose",
     property_type: "Single-family home",
     vacant_status: "yes",
@@ -76,6 +78,43 @@ const makeForm = () => {
       type: "image/jpeg"
     })
   );
+  return data;
+};
+
+const makeResidenceForm = () => {
+  const data = makeForm();
+  data.set("offer_type", "private_residence_reset");
+  data.set("entry_route", "/private-residence-reset/");
+  data.set("idempotency_key", "phase4-residence-submission-0001");
+  data.set("property_situation", "Establishing a whole-home cleaning baseline");
+  data.set("property_zip", "95113");
+  data.set("number_of_levels", "2");
+  data.set("occupancy_status", "Occupied");
+  data.set("priority_rooms", "Kitchen, primary suite, and living areas");
+  data.set("detail_priorities", "Cabinet faces, high dusting, trim, and interior windows");
+  data.set("important_finishes", "Natural stone and oiled wood");
+  data.set("pets", "Interior cat");
+  data.set("someone_present", "Part of the time");
+  data.set("investment_range", "$3,500–$5,999");
+  data.set("safety_routing", "no_known_condition");
+  for (const field of [
+    "contents_removal",
+    "heavy_cleaning",
+    "garage_storage",
+    "appliance_interiors",
+    "cabinet_interiors",
+    "animal_waste",
+    "human_biological_material",
+    "needles_sharps",
+    "sewage",
+    "mold",
+    "pest_activity",
+    "must_remain",
+    "must_remove",
+    "areas_involved[]"
+  ]) {
+    data.delete(field);
+  }
   return data;
 };
 
@@ -155,12 +194,83 @@ try {
     throw new Error("Server file-type validation failed.");
   }
 
+  const residenceResponse = await onRequestPost({
+    request: requestFor(makeResidenceForm()),
+    env,
+    waitUntil() {}
+  });
+  const residencePayload = await residenceResponse.json();
+  if (residenceResponse.status !== 201 || residencePayload.ok !== true) {
+    throw new Error(
+      `Residence variant expected 201 success, received ${residenceResponse.status}.`
+    );
+  }
+  const residenceStored = await bucket.get(
+    `leads/${residencePayload.submissionId}/submission.json`
+  );
+  const residenceLead = await residenceStored?.json();
+  if (
+    residenceLead?.data.offer_type !== "private_residence_reset" ||
+    residenceLead?.data.priority_rooms !==
+      "Kitchen, primary suite, and living areas"
+  ) {
+    throw new Error("Residence offer mapping was not stored correctly.");
+  }
+
+  globalThis.fetch = async (url) => {
+    const target = String(url);
+    if (target.includes("turnstile")) {
+      return Response.json({ success: true });
+    }
+    if (target.includes("api.resend.com")) {
+      return Response.json({ id: "email-test-id" });
+    }
+    if (target.includes("api.twilio.com")) {
+      return new Response("simulated SMS provider failure", { status: 502 });
+    }
+    throw new Error(`Unexpected provider call: ${url}`);
+  };
+  const providerFailureForm = makeForm();
+  providerFailureForm.set(
+    "idempotency_key",
+    "phase4-provider-failure-submission-0001"
+  );
+  const providerFailureResponse = await onRequestPost({
+    request: requestFor(providerFailureForm),
+    env: {
+      ...env,
+      RESEND_API_KEY: "test-resend-key",
+      EMAIL_FROM_ADDRESS: "test@example.test",
+      OWNER_ALERT_EMAIL: "owner@example.test",
+      TWILIO_ACCOUNT_SID: "test-account",
+      TWILIO_AUTH_TOKEN: "test-token",
+      TWILIO_FROM_NUMBER: "+14085550101",
+      LEAD_ALERT_PHONE: "+14085550102"
+    },
+    waitUntil() {}
+  });
+  const providerFailurePayload = await providerFailureResponse.json();
+  const providerFailureStored = await bucket.get(
+    `leads/${providerFailurePayload.submissionId}/submission.json`
+  );
+  const providerFailureLead = await providerFailureStored?.json();
+  if (
+    providerFailureResponse.status !== 201 ||
+    providerFailureLead?.delivery.customerEmail.state !== "succeeded" ||
+    providerFailureLead?.delivery.ownerSms.state !== "failed" ||
+    providerFailureLead?.delivery.ownerFallbackEmail.state !== "succeeded"
+  ) {
+    throw new Error("SMS failure did not preserve success and trigger fallback email.");
+  }
+
   console.log(`PASS staging adapter submission: ${payload.submissionId}`);
   console.log("PASS recoverable R2 core record before provider delivery");
   console.log("PASS private upload storage and delivery status ledger");
   console.log("PASS duplicate submission response");
   console.log("PASS required-field server validation");
   console.log("PASS server file-type validation");
+  console.log("PASS Private Residence Reset schema and offer mapping");
+  console.log("PASS simulated SMS provider failure and owner fallback email");
 } finally {
   globalThis.fetch = originalFetch;
 }

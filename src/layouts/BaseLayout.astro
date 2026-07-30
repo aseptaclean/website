@@ -1,9 +1,11 @@
 ---
 import Footer from "@components/Footer.astro";
+import Analytics from "@components/Analytics.astro";
 import Header from "@components/Header.astro";
 import MobileCTA from "@components/MobileCTA.astro";
 import SeoHead from "@components/SeoHead.astro";
 import { site } from "@data/site";
+import "@styles/fonts.css";
 import "@styles/global.css";
 
 interface Props {
@@ -12,6 +14,7 @@ interface Props {
   canonicalPath: string;
   noindex?: boolean;
   showMobileCta?: boolean;
+  schema?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
 const {
@@ -19,7 +22,8 @@ const {
   description,
   canonicalPath,
   noindex = false,
-  showMobileCta = true
+  showMobileCta = true,
+  schema
 } = Astro.props;
 
 const termlyConsent = site.integrations.termly;
@@ -43,6 +47,7 @@ const termlyConsent = site.integrations.termly;
       description={description}
       canonicalPath={canonicalPath}
       noindex={noindex}
+      schema={schema}
     />
     {termlyConsent.consentEnabled && (
       <script
@@ -61,5 +66,6 @@ const termlyConsent = site.integrations.termly;
     </main>
     <Footer />
     {showMobileCta && <MobileCTA />}
+    <Analytics />
   </body>
 </html>

@@ -17,9 +17,9 @@ const yesNoUnsure = [
 <section class="assessment" aria-labelledby="assessment-title">
   <div class="assessment__masthead container">
     <div class="assessment__intro">
-      <p class="assessment__eyebrow">{site.offer.leadOffer}</p>
-      <h1 id="assessment-title">Start with the property. We’ll review the path to handoff.</h1>
-      <p class="assessment__lead">
+      <p class="assessment__eyebrow" data-offer-eyebrow>{site.offer.leadOffer}</p>
+      <h1 id="assessment-title" data-offer-title>Start with the property. We’ll review the path to handoff.</h1>
+      <p class="assessment__lead" data-offer-lead>
         Share the property, scope, and approval details Aseptaclean needs to
         make a fit decision and identify a clear next step.
       </p>
@@ -44,7 +44,7 @@ const yesNoUnsure = [
   <div class="assessment__body container">
     <aside class="assessment__rail" aria-label="Assessment progress and guidance">
       <div class="assessment__rail-inner">
-        <p class="assessment__record-label">Handoff plan intake record</p>
+        <p class="assessment__record-label" data-offer-record>Handoff plan intake record</p>
         <p class="assessment__draft">Draft · Not an approved scope</p>
 
         <ol class="assessment__steps">
@@ -104,6 +104,8 @@ const yesNoUnsure = [
         data-assessment-form
       >
         <input type="hidden" name="form_version" value={assessment.version} />
+        <input type="hidden" name="offer_type" value="handoff_reset" />
+        <input type="hidden" name="entry_route" value="/request-assessment/" />
         <input
           type="hidden"
           name="submitted_from"
@@ -263,6 +265,7 @@ const yesNoUnsure = [
             class="form-group form-group--areas"
             data-required-checkbox-group
             data-group-label="Areas involved"
+            data-handoff-only
           >
             <legend>Areas involved <span aria-hidden="true">*</span></legend>
             <p class="form-field__hint">Select every area that may be part of the request.</p>
@@ -276,7 +279,7 @@ const yesNoUnsure = [
             </div>
           </fieldset>
 
-          <div class="question-sheet" aria-labelledby="scope-questions-title">
+          <div class="question-sheet" aria-labelledby="scope-questions-title" data-handoff-only>
             <h2 id="scope-questions-title">Work to consider</h2>
             {assessment.scopeQuestions.map((question) => (
               <fieldset class="question-row">
@@ -298,7 +301,7 @@ const yesNoUnsure = [
             ))}
           </div>
 
-          <div class="condition-review" aria-labelledby="condition-review-title">
+          <div class="condition-review" aria-labelledby="condition-review-title" data-handoff-only>
             <div class="condition-review__heading">
               <p class="condition-review__label">Condition review</p>
               <h2 id="condition-review-title">Known conditions at the property</h2>
@@ -345,6 +348,84 @@ const yesNoUnsure = [
               referral. Do not disturb material for the purpose of this
               assessment.
             </p>
+          </div>
+
+          <div class="residence-questions" data-residence-only hidden>
+            <div class="residence-questions__heading">
+              <p class="condition-review__label">Residence baseline</p>
+              <h2>Rooms, finishes, access, and priorities</h2>
+              <p>
+                Describe the baseline you want established. These answers shape
+                the room-by-room assessment; they do not authorize work.
+              </p>
+            </div>
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="number-levels">Number of levels <span aria-hidden="true">*</span></label>
+                <select id="number-levels" name="number_of_levels" data-residence-required disabled>
+                  <option value="">Select a level count</option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3+</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="occupancy">Residence status <span aria-hidden="true">*</span></label>
+                <select id="occupancy" name="occupancy_status" data-residence-required disabled>
+                  <option value="">Select a status</option>
+                  <option>Occupied</option>
+                  <option>Temporarily vacant</option>
+                  <option>Move-in pending</option>
+                  <option>Second home</option>
+                </select>
+              </div>
+              <div class="form-field form-field--wide">
+                <label for="priority-rooms">Priority rooms or areas <span aria-hidden="true">*</span></label>
+                <textarea id="priority-rooms" name="priority_rooms" rows="4" data-residence-required disabled placeholder="List the rooms that matter most and what should feel different at completion."></textarea>
+              </div>
+              <div class="form-field form-field--wide">
+                <label for="detail-priorities">Detail priorities <span aria-hidden="true">*</span></label>
+                <textarea id="detail-priorities" name="detail_priorities" rows="4" data-residence-required disabled placeholder="Appliance or cabinet interiors, closets, interior windows, high dusting, trim, or other detail areas."></textarea>
+              </div>
+              <div class="form-field form-field--wide">
+                <label for="important-finishes">Important surfaces or finishes</label>
+                <textarea id="important-finishes" name="important_finishes" rows="4" disabled placeholder="Natural stone, oiled wood, specialty fixtures, delicate surfaces, restricted products, or areas not to disturb."></textarea>
+              </div>
+              <div class="form-field">
+                <label for="pets">Pets or animal instructions</label>
+                <input id="pets" name="pets" type="text" disabled />
+              </div>
+              <div class="form-field">
+                <label for="presence">Will someone be present?</label>
+                <select id="presence" name="someone_present" disabled>
+                  <option value="">Select an answer</option>
+                  <option>Yes</option>
+                  <option>No</option>
+                  <option>Part of the time</option>
+                  <option>Not sure</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="investment-range">Desired investment range</label>
+                <select id="investment-range" name="investment_range" disabled>
+                  <option value="">Select a range</option>
+                  <option>$2,000–$3,499</option>
+                  <option>$3,500–$5,999</option>
+                  <option>$6,000+</option>
+                  <option>Need scope guidance</option>
+                </select>
+              </div>
+              <div class="form-field">
+                <label for="safety-routing">Known condition requiring specialist review? <span aria-hidden="true">*</span></label>
+                <select id="safety-routing" name="safety_routing" data-residence-required disabled>
+                  <option value="">Select an answer</option>
+                  <option value="no_known_condition">No known condition</option>
+                  <option value="possible_condition">Possibly / not sure</option>
+                  <option value="known_condition">Yes</option>
+                </select>
+                <p class="form-field__hint">This does not imply service availability. Hazardous, regulated, severe-contamination, or specialist conditions are outside this campaign offer.</p>
+              </div>
+            </div>
           </div>
 
           <div class="upload-field">
@@ -408,7 +489,7 @@ const yesNoUnsure = [
               ></textarea>
             </div>
 
-            <div class="form-field">
+            <div class="form-field" data-handoff-only>
               <label for="must-remain">
                 What must remain? <span aria-hidden="true">*</span>
               </label>
@@ -421,7 +502,7 @@ const yesNoUnsure = [
               ></textarea>
             </div>
 
-            <div class="form-field">
+            <div class="form-field" data-handoff-only>
               <label for="must-remove">
                 What must be removed? <span aria-hidden="true">*</span>
               </label>
@@ -559,6 +640,18 @@ const yesNoUnsure = [
               </p>
             </div>
 
+            <div class="form-field">
+              <label for="property-zip">Property ZIP <span data-residence-only hidden aria-hidden="true">*</span></label>
+              <input
+                id="property-zip"
+                name="property_zip"
+                type="text"
+                inputmode="numeric"
+                autocomplete="postal-code"
+                pattern="[0-9]{5}(?:-[0-9]{4})?"
+              />
+            </div>
+
             <fieldset class="form-group">
               <legend>Preferred contact method <span aria-hidden="true">*</span></legend>
               <div class="choice-row choice-row--wrap">
@@ -673,7 +766,7 @@ const yesNoUnsure = [
               disabled={!endpointAvailable}
               data-submit-button
             >
-              <span data-submit-label>Submit My Handoff Plan Request</span>
+              <span data-submit-label data-offer-submit>Submit My Handoff Plan Request</span>
             </button>
             <p
               class="intake-form__submit-status"
@@ -727,6 +820,75 @@ const yesNoUnsure = [
   const form = document.querySelector<HTMLFormElement>("[data-assessment-form]");
 
   if (form) {
+    const isResidenceOffer =
+      new URLSearchParams(window.location.search).get("offer") ===
+      "private-residence-reset";
+    if (isResidenceOffer) {
+      form.dataset.offer = "private_residence_reset";
+      const offerInput =
+        form.querySelector<HTMLInputElement>('input[name="offer_type"]');
+      const entryRouteInput =
+        form.querySelector<HTMLInputElement>('input[name="entry_route"]');
+      if (offerInput) offerInput.value = "private_residence_reset";
+      if (entryRouteInput) entryRouteInput.value = "/private-residence-reset/";
+
+      const copy = new Map<string, string>([
+        ["[data-offer-eyebrow]", "Private Residence Reset assessment"],
+        [
+          "[data-offer-title]",
+          "Start with the residence. We’ll define the baseline from there."
+        ],
+        [
+          "[data-offer-lead]",
+          "Share the residence, priority rooms, finish instructions, access, and completion details Aseptaclean needs to make a fit decision."
+        ],
+        ["[data-offer-record]", "Residence baseline intake record"],
+        ["[data-offer-submit]", "Submit My Residence Assessment Request"]
+      ]);
+      copy.forEach((content, selector) => {
+        const element = document.querySelector<HTMLElement>(selector);
+        if (element) element.textContent = content;
+      });
+
+      form.querySelectorAll<HTMLElement>("[data-handoff-only]").forEach(
+        (block) => {
+          block.hidden = true;
+          block.removeAttribute("data-required-checkbox-group");
+          block
+            .querySelectorAll<
+              HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+            >("input, select, textarea")
+            .forEach((control) => {
+              control.disabled = true;
+              control.required = false;
+            });
+        }
+      );
+      form.querySelectorAll<HTMLElement>("[data-residence-only]").forEach(
+        (block) => {
+          block.hidden = false;
+          block
+            .querySelectorAll<
+              HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+            >("input, select, textarea")
+            .forEach((control) => {
+              control.disabled = false;
+            });
+        }
+      );
+      form
+        .querySelectorAll<
+          HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+        >("[data-residence-required]")
+        .forEach((control) => {
+          control.disabled = false;
+          control.required = true;
+        });
+      const propertyZip =
+        form.querySelector<HTMLInputElement>('input[name="property_zip"]');
+      if (propertyZip) propertyZip.required = true;
+    }
+
     const steps = Array.from(
       form.querySelectorAll<HTMLFieldSetElement>(":scope > [data-step]")
     );
@@ -759,9 +921,10 @@ const yesNoUnsure = [
     const reducedMotion = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     );
-    const localDraftKey = "aseptaclean-assessment-draft-v1";
-    const sessionDraftKey = "aseptaclean-assessment-session-v1";
-    const attributionKey = "aseptaclean-assessment-attribution-v1";
+    const draftSuffix = isResidenceOffer ? "residence-v1" : "handoff-v1";
+    const localDraftKey = `aseptaclean-assessment-draft-${draftSuffix}`;
+    const sessionDraftKey = `aseptaclean-assessment-session-${draftSuffix}`;
+    const attributionKey = `aseptaclean-assessment-attribution-${draftSuffix}`;
     const draftLifetime = 24 * 60 * 60 * 1000;
     const attemptedSteps = new Set<number>();
     let currentStep = 0;
@@ -1575,6 +1738,7 @@ const yesNoUnsure = [
             email:
               payload.confirmationEmailSent === true ? "sent" : "attention"
           });
+          if (isResidenceOffer) parameters.set("offer", "private-residence-reset");
           if (submissionId) parameters.set("submission", submissionId);
           window.location.assign(`/thank-you/?${parameters.toString()}`);
           return;
@@ -1619,7 +1783,7 @@ const yesNoUnsure = [
   .assessment__next-label,
   .condition-review__label {
     margin: 0 0 var(--space-3);
-    color: var(--color-blue-500);
+    color: var(--color-navy-800);
     font-family: var(--font-heading);
     font-size: var(--step--1);
     font-weight: 700;
@@ -1701,7 +1865,7 @@ const yesNoUnsure = [
   }
 
   .assessment__step-number {
-    color: var(--color-blue-500);
+    color: var(--color-navy-800);
     font-family: var(--font-heading);
     font-size: var(--step--1);
     font-weight: 700;
@@ -1835,7 +1999,7 @@ const yesNoUnsure = [
   }
 
   .intake-step__number {
-    color: var(--color-blue-500);
+    color: var(--color-navy-800);
     font-size: var(--step--1);
     font-weight: 700;
     letter-spacing: 0.06em;
@@ -2082,6 +2246,25 @@ const yesNoUnsure = [
     background: #f8ecea;
     color: #6f211e;
     font-size: var(--step--1);
+  }
+
+  .residence-questions {
+    margin-top: var(--space-7);
+    border-left: 3px solid var(--color-blue-500);
+    padding-left: var(--space-4);
+  }
+
+  .residence-questions__heading h2 {
+    margin-block: 0 var(--space-3);
+    font-size: var(--text-h3);
+  }
+
+  .residence-questions__heading > p:last-child {
+    margin: 0;
+  }
+
+  .residence-questions .condition-review__label {
+    color: var(--color-navy-800);
   }
 
   .upload-field {

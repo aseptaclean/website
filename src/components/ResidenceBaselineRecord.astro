@@ -1,0 +1,259 @@
+---
+const rooms = [
+  {
+    room: "Kitchen",
+    priority: "High",
+    scope: "Cabinet faces · appliance exteriors · detail cleaning",
+    note: "Natural-stone cleaner only",
+    status: "Review complete"
+  },
+  {
+    room: "Primary suite",
+    priority: "High",
+    scope: "Accessible surfaces · closet shelves · baseboards",
+    note: "Do not move wardrobe contents",
+    status: "Review complete"
+  },
+  {
+    room: "Living areas",
+    priority: "Standard",
+    scope: "High dusting · trim · doors · floors",
+    note: "Protect oiled-wood finish",
+    status: "Review complete"
+  },
+  {
+    room: "Guest room",
+    priority: "Restricted",
+    scope: "No entry",
+    note: "Owner-restricted area",
+    status: "Exception noted"
+  }
+] as const;
+---
+
+<figure class="baseline-record" aria-labelledby="baseline-record-title">
+  <div class="baseline-record__paper">
+    <header>
+      <div>
+        <p>SAMPLE / OPERATING DOCUMENT</p>
+        <h2 id="baseline-record-title">Residence Baseline Record</h2>
+      </div>
+      <span aria-label="Sample document">SAMPLE</span>
+    </header>
+
+    <dl class="baseline-record__meta">
+      <div><dt>Residence</dt><dd>Example South Bay home</dd></div>
+      <div><dt>Reset type</dt><dd>Initial whole-home baseline</dd></div>
+      <div><dt>Access</dt><dd>Owner-authorized window</dd></div>
+      <div><dt>Pet note</dt><dd>Interior cat · confirm secure room</dd></div>
+    </dl>
+
+    <div class="baseline-record__rooms" role="list" aria-label="Sample room records">
+      {rooms.map((room, index) => (
+        <article role="listitem">
+          <div class="baseline-record__room-heading">
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <h3>{room.room}</h3>
+            <strong>{room.priority}</strong>
+          </div>
+          <dl>
+            <div><dt>Included</dt><dd>{room.scope}</dd></div>
+            <div><dt>Finish / access note</dt><dd>{room.note}</dd></div>
+            <div><dt>Completion review</dt><dd>{room.status}</dd></div>
+          </dl>
+        </article>
+      ))}
+    </div>
+
+    <footer>
+      <div>
+        <span>Authorized change</span>
+        <strong>None recorded</strong>
+      </div>
+      <div>
+        <span>Exceptions</span>
+        <strong>1 restricted room</strong>
+      </div>
+      <div>
+        <span>Final review</span>
+        <strong>Room-by-room</strong>
+      </div>
+    </footer>
+  </div>
+  <figcaption>
+    Sample only. The actual record reflects the approved residence, finishes,
+    access instructions, scope, changes, and exceptions.
+  </figcaption>
+</figure>
+
+<style>
+  .baseline-record {
+    width: 100%;
+    margin: 0;
+  }
+
+  .baseline-record__paper {
+    border: 1px solid var(--color-steel-300);
+    border-top: 5px solid var(--color-navy-900);
+    background: var(--color-paper);
+    box-shadow: 0 1.25rem 3rem rgb(18 40 64 / 0.1);
+  }
+
+  .baseline-record header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    padding: var(--space-5);
+  }
+
+  .baseline-record header p,
+  .baseline-record header h2,
+  .baseline-record h3,
+  .baseline-record dl,
+  .baseline-record dd {
+    margin: 0;
+  }
+
+  .baseline-record header p,
+  .baseline-record dt,
+  .baseline-record footer span {
+    color: var(--color-ink-500);
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 650;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .baseline-record header h2 {
+    margin-top: var(--space-2);
+    font-family: var(--font-sans);
+    font-size: var(--text-h3);
+    font-weight: 680;
+    letter-spacing: -0.02em;
+    line-height: 1.12;
+  }
+
+  .baseline-record header > span {
+    border: 1px solid var(--color-error);
+    padding: 0.3rem 0.45rem;
+    color: var(--color-error);
+    font-size: 0.68rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+  }
+
+  .baseline-record__meta {
+    display: grid;
+    border-block: 1px solid var(--color-rule);
+    background: var(--color-warm-white);
+  }
+
+  .baseline-record__meta > div {
+    padding: var(--space-3) var(--space-5);
+  }
+
+  .baseline-record__meta dd,
+  .baseline-record__rooms dd {
+    margin-top: 0.15rem;
+    color: var(--color-navy-900);
+    font-size: var(--text-sm);
+  }
+
+  .baseline-record__rooms article {
+    padding: var(--space-4) var(--space-5);
+  }
+
+  .baseline-record__rooms article + article {
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .baseline-record__room-heading {
+    display: grid;
+    grid-template-columns: 1.75rem 1fr auto;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+
+  .baseline-record__room-heading > span {
+    color: var(--color-navy-800);
+    font-size: 0.72rem;
+    font-weight: 700;
+  }
+
+  .baseline-record h3 {
+    font-size: 1rem;
+  }
+
+  .baseline-record__room-heading strong {
+    color: var(--color-navy-800);
+    font-size: 0.75rem;
+  }
+
+  .baseline-record__rooms dl {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+    padding-left: 1.75rem;
+  }
+
+  .baseline-record footer {
+    display: grid;
+    border-top: 2px solid var(--color-navy-900);
+    background: var(--color-navy-900);
+    color: var(--color-paper);
+  }
+
+  .baseline-record footer div {
+    padding: var(--space-3) var(--space-5);
+  }
+
+  .baseline-record footer div + div {
+    border-top: 1px solid rgb(255 255 255 / 0.18);
+  }
+
+  .baseline-record footer span,
+  .baseline-record footer strong {
+    display: block;
+  }
+
+  .baseline-record footer span {
+    color: var(--color-steel-300);
+  }
+
+  .baseline-record footer strong {
+    margin-top: 0.15rem;
+    font-size: var(--text-sm);
+  }
+
+  .baseline-record figcaption {
+    max-width: 54ch;
+    margin-top: var(--space-3);
+    color: var(--color-ink-500);
+    font-size: var(--text-xs);
+  }
+
+  @media (min-width: 42rem) {
+    .baseline-record__meta {
+      grid-template-columns: 1fr 1fr;
+    }
+
+    .baseline-record__meta > div:nth-child(even) {
+      border-left: 1px solid var(--color-rule);
+    }
+
+    .baseline-record__rooms dl {
+      grid-template-columns: 1.5fr 1.15fr 0.8fr;
+    }
+
+    .baseline-record footer {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .baseline-record footer div + div {
+      border-top: 0;
+      border-left: 1px solid rgb(255 255 255 / 0.18);
+    }
+  }
+</style>

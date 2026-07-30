@@ -15,6 +15,7 @@ interface ImportMetaEnv {
   readonly PUBLIC_RESPONSE_TIME?: string;
   readonly PUBLIC_ASSESSMENT_FEE?: string;
   readonly PUBLIC_STARTING_PRICE?: string;
+  readonly PUBLIC_RESIDENCE_STARTING_PRICE?: string;
   readonly PUBLIC_FOUNDER_NAME?: string;
   readonly PUBLIC_INSURANCE_STATUS?: string;
   readonly PUBLIC_BUSINESS_HOURS?: string;
@@ -35,6 +36,10 @@ interface ImportMetaEnv {
   readonly PUBLIC_TERMLY_TERMS_POLICY_ID?: string;
   readonly PUBLIC_TERMLY_COOKIE_POLICY_ID?: string;
   readonly PUBLIC_TERMLY_CONSENT_ENABLED?: string;
+}
+
+interface Window {
+  dataLayer?: Array<Record<string, unknown>>;
 }
 
 interface ImportMeta {

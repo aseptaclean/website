@@ -21,15 +21,59 @@ Before doing any work:
 
 Do not read or import older Aseptaclean website systems unless the owner explicitly asks. The current one-page Astro brief supersedes older WordPress and multi-page build directions for this launch.
 
-## Authority and precedence
-1. Verified legal, claim, accessibility, and safety restrictions.
-2. `docs/00-MASTER-BRIEF.md` for offer, copy, architecture, scope, SEO, forms, analytics, and technical requirements.
-3. `docs/06-APPROVED-HOMEPAGE-COPY.md` for the approved homepage wording and emotional sequence.
-4. `docs/01-QUALITY-GUARDRAILS.md` for visual authorship, anti-AI standards, interaction craft, and release quality.
-5. `docs/02-OWNER-INPUTS.md` for current facts and unresolved production values.
-6. `docs/05-DECISIONS-LOG.md` for later owner-approved decisions.
+## Document authority
+
+This repository contains multiple overlapping specification documents written at different
+times. When they conflict, resolve upward through this chain. Do not silently merge
+contradictory instructions.
+
+1. Current law, active insurance, verified business facts, explicit owner decisions
+2. `docs/01-QUALITY-GUARDRAILS.md`
+3. `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` — the Phase 4 canonical master specification
+4. `docs/06-APPROVED-HOMEPAGE-COPY.md` — controls all homepage wording
+5. `docs/07-ONE-PAGE-DIRECTIVE.md` — controls scope, routes, and offer architecture
+6. `docs/11-COMPOSITION-AND-TYPE.md` — controls type scale, measure, rhythm, composition
+7. `docs/02-OWNER-INPUTS.md` — confirmed business facts and values
+8. `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` — Phase 2 only, not part of the launch build
+
+Superseded for scope, kept for reference: `docs/00-MASTER-BRIEF.md`, `docs/03-BUILD-PLAN.md`.
+Archived: `docs/archive/` — never read from here.
+
+Record every material conflict in `docs/05-DECISIONS-LOG.md`.
 
 Report conflicts before coding. Never silently choose between contradictory instructions.
+
+## Scope
+
+The launch build is a one-page site. Routes:
+
+    /  ·  /request-assessment/  ·  /thank-you/  ·  legal pages  ·  /api/lead
+
+Do not create service pages, location pages, audience pages, or a `/private-residence-reset/`
+route during the launch build. If a task appears to require a new route, stop and ask.
+
+## Standing rules
+
+- **Verify before creating.** This repo already has a decisions log, an asset manifest, and a
+  release checklist. Append to them. Never create a parallel file with a similar name.
+- **One endpoint.** `src/pages/api/lead.ts`. Do not maintain a competing implementation in
+  `functions/`.
+- **One token file.** `--ac-` prefix. No component declares a font-size on a heading tag.
+- **Never invent proof.** No reviews, project counts, years in business, certifications, partner
+  logos, ratings, or before-and-after imagery presented as client work. Where proof is missing,
+  emit a visible placeholder and report it. Placeholders must be zero on production builds.
+- **Never hardcode business facts.** Phone, email, hours, service area, prices, and insurance
+  wording come from the config module only.
+- **Astro version is frozen** at the installed major for the launch build. Do not upgrade.
+- **Do not report work as complete because the build compiles.** Completion requires rendered
+  evidence: screenshots at 390 and 1440, and the named audit for that session.
+
+## Prohibited claims
+
+Never state or imply that Aseptaclean is a licensed contractor, performs remediation, biohazard,
+mold, sewage, asbestos, lead, or pest work, determines habitability or safety, appraises
+property, or holds a credential that is not currently active and verifiable. `docs/01-QUALITY-
+GUARDRAILS.md` governs and is run against every sentence before any page ships.
 
 ## Working method
 - Plan before coding.

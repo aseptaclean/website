@@ -7,6 +7,7 @@ interface Props {
   canonicalPath: string;
   noindex?: boolean;
   image?: string;
+  schema?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
 const {
@@ -14,10 +15,57 @@ const {
   description,
   canonicalPath,
   noindex = false,
-  image
+  image,
+  schema
 } = Astro.props;
 const canonical = new URL(canonicalPath, site.urls.site);
 const shouldNoindex = noindex || !site.deployment.isPublicProduction;
+const organizationId = new URL("/#organization", site.urls.site).href;
+const websiteId = new URL("/#website", site.urls.site).href;
+const pageId = `${canonical.href}#webpage`;
+const graph: Array<Record<string, unknown>> = [
+  {
+    "@type": "Organization",
+    "@id": organizationId,
+    name: site.business.name,
+    legalName: site.business.legalName,
+    url: site.urls.site,
+    email: site.business.email,
+    ...(site.business.phone ? { telephone: site.business.phone } : {}),
+    logo: new URL(site.business.logoUrl, site.urls.site).href,
+    founder: {
+      "@type": "Person",
+      "@id": new URL("/#founder", site.urls.site).href,
+      name: site.founder.name,
+      jobTitle: site.founder.title
+    },
+    areaServed: site.location.cities.map((name) => ({
+      "@type": "City",
+      name
+    }))
+  },
+  {
+    "@type": "WebSite",
+    "@id": websiteId,
+    url: site.urls.site,
+    name: site.business.name,
+    publisher: { "@id": organizationId }
+  },
+  {
+    "@type": "WebPage",
+    "@id": pageId,
+    url: canonical.href,
+    name: title,
+    description,
+    isPartOf: { "@id": websiteId },
+    about: { "@id": organizationId }
+  },
+  ...(schema ? (Array.isArray(schema) ? schema : [schema]) : [])
+];
+const jsonLd = JSON.stringify({
+  "@context": "https://schema.org",
+  "@graph": graph
+}).replace(/</g, "\\u003c");
 ---
 
 <title>{title}</title>
@@ -34,3 +82,4 @@ const shouldNoindex = noindex || !site.deployment.isPublicProduction;
 <meta property="og:url" content={canonical} />
 {image && <meta property="og:image" content={new URL(image, site.urls.site)} />}
 <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
+<script is:inline type="application/ld+json" set:html={jsonLd}></script>

@@ -16,13 +16,14 @@ import { homepage } from "@data/site";
     <div class="faq__list">
       {
         homepage.faq.map((item, index) => (
-          <article>
-            <span>{String(index + 1).padStart(2, "0")}</span>
-            <div>
+          <details open={index === 0}>
+            <summary>
+              <span>{String(index + 1).padStart(2, "0")}</span>
               <h3>{item.question}</h3>
-              <p>{item.answer}</p>
-            </div>
-          </article>
+              <span class="faq__toggle" aria-hidden="true"></span>
+            </summary>
+            <p>{item.answer}</p>
+          </details>
         ))
       }
     </div>
@@ -42,7 +43,7 @@ import { homepage } from "@data/site";
 
   .faq__index {
     margin: 0;
-    color: var(--color-blue-500);
+    color: var(--color-navy-800);
     font-family: var(--font-heading);
     font-size: 0.75rem;
     font-weight: 700;
@@ -65,23 +66,34 @@ import { homepage } from "@data/site";
     border-top: 2px solid var(--color-navy-900);
   }
 
-  article {
-    display: grid;
-    grid-template-columns: 2.5rem 1fr;
-    gap: var(--space-3);
+  details {
     border-bottom: 1px solid var(--color-rule);
-    padding-block: var(--space-5);
   }
 
-  article > span {
-    color: var(--color-blue-500);
+  summary {
+    display: grid;
+    min-height: 4rem;
+    cursor: pointer;
+    grid-template-columns: 2.5rem 1fr 1.5rem;
+    align-items: center;
+    gap: var(--space-3);
+    padding-block: var(--space-4);
+    list-style: none;
+  }
+
+  summary::-webkit-details-marker {
+    display: none;
+  }
+
+  summary > span:first-child {
+    color: var(--color-navy-800);
     font-family: var(--font-heading);
     font-size: 0.75rem;
     font-weight: 700;
   }
 
   h3,
-  article p {
+  details p {
     margin: 0;
   }
 
@@ -89,10 +101,41 @@ import { homepage } from "@data/site";
     font-size: var(--step-1);
   }
 
-  article p {
+  details p {
     max-width: 50rem;
-    margin-top: var(--space-3);
+    margin: 0 2rem var(--space-5) 2.5rem;
     color: var(--color-ink-500);
+  }
+
+  .faq__toggle {
+    position: relative;
+    width: 1rem;
+    height: 1rem;
+    justify-self: end;
+  }
+
+  .faq__toggle::before,
+  .faq__toggle::after {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: var(--color-navy-800);
+    content: "";
+    transition: transform var(--transition-fast);
+  }
+
+  .faq__toggle::after {
+    transform: rotate(90deg);
+  }
+
+  details[open] .faq__toggle::after {
+    transform: rotate(0);
+  }
+
+  summary:hover h3 {
+    color: var(--color-navy-800);
   }
 
   @media (min-width: 58rem) {
@@ -107,7 +150,7 @@ import { homepage } from "@data/site";
       top: 7rem;
     }
 
-    article:nth-child(even) {
+    details:nth-child(even) {
       margin-left: clamp(1.5rem, 4vw, 4rem);
     }
   }

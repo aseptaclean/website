@@ -59,6 +59,16 @@ export const site = {
     primaryCta: "Get My 24-Hour Handoff Plan",
     compactCta: "Get My Handoff Plan"
   },
+  residenceOffer: {
+    name: "Private Residence Reset",
+    category: "Structured whole-home deep reset",
+    startingPrice: Number(
+      value("PUBLIC_RESIDENCE_STARTING_PRICE", "2000")
+    ),
+    primaryCta: "Request a Private Residence Assessment",
+    assessmentUrl:
+      "/request-assessment/?offer=private-residence-reset"
+  },
   location: {
     serviceArea: value(
       "PUBLIC_SERVICE_AREA",
@@ -77,12 +87,15 @@ export const site = {
     formEndpoint: value("PUBLIC_FORM_ENDPOINT"),
     privacyPolicy: "/privacy/",
     terms: "/terms/",
-    cookiePolicy:
-      termlyCookiePolicyId || termlyCookiePolicyUrl ? "/cookie-policy/" : ""
+    cookiePolicy: "/cookie-policy/"
   },
   integrations: {
     formEnabled: value("PUBLIC_FORM_ENABLED") === "true",
     turnstileSiteKey: value("PUBLIC_TURNSTILE_SITE_KEY"),
+    analytics: {
+      gaId: value("PUBLIC_GA_ID"),
+      gtmId: value("PUBLIC_GTM_ID")
+    },
     termly: {
       websiteUuid: termlyWebsiteUuid,
       consentEnabled: termlyConsentEnabled,

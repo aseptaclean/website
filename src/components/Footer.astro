@@ -28,6 +28,9 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
       <a href="/request-assessment/">{site.offer.primaryCta}</a>
       <a href="/#standards">Handoff Standard</a>
       <a href="/#faq">Frequently Asked Questions</a>
+      <a class="site-footer__campaign-link" href="/private-residence-reset/">
+        Private Residence Reset
+      </a>
       <a href={site.urls.privacyPolicy}>Privacy</a>
       <a href={site.urls.terms}>Terms</a>
       {site.urls.cookiePolicy && <a href={site.urls.cookiePolicy}>Cookie Policy</a>}
@@ -118,6 +121,11 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
     text-decoration: underline;
     text-decoration-thickness: 0.08em;
     text-underline-offset: 0.18em;
+  }
+
+  .site-footer__campaign-link {
+    color: var(--color-steel-300) !important;
+    font-size: var(--text-sm);
   }
 
   .site-footer__link:hover {

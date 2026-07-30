@@ -19,8 +19,10 @@ await copyFile(
 );
 for (const path of [
   "_astro",
+  "assets",
   "cookie-policy",
   "privacy",
+  "private-residence-reset",
   "request-assessment",
   "terms",
   "thank-you",

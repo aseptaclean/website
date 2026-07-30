@@ -14,14 +14,20 @@
     "qa:phase3:pass2": "node scripts/phase3-pass2-browser-check.mjs",
     "qa:phase3:endpoint": "esbuild functions/api/lead.ts --bundle --platform=node --format=esm --outfile=/tmp/aseptaclean-lead-test.mjs && node scripts/phase3-endpoint-check.mjs",
     "qa:phase4": "node scripts/phase4-browser-check.mjs",
+    "qa:phase4:deep": "node scripts/phase4-deep-check.mjs",
+    "qa:phase4:static": "node scripts/phase4-static-audit.mjs",
     "preview": "astro preview",
     "check": "astro check"
   },
   "dependencies": {
+    "@fontsource-variable/instrument-sans": "^5.3.0",
+    "@fontsource-variable/newsreader": "^5.3.0",
     "astro": "^7.1.6"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.4",
+    "@axe-core/playwright": "^4.12.1",
+    "lighthouse": "^13.4.1",
     "playwright-core": "^1.62.0",
     "typescript": "^5.9.2"
   },
