@@ -28,7 +28,18 @@ export const site = {
     ),
     insuranceStatus: value("PUBLIC_INSURANCE_STATUS"),
     googleBusinessProfileUrl: value("PUBLIC_GBP_URL"),
-    logoUrl: value("PUBLIC_LOGO_URL")
+    logoUrl: value(
+      "PUBLIC_LOGO_URL",
+      "/assets/brand/aseptaclean-wordmark.png"
+    ),
+    logoReversedUrl: value(
+      "PUBLIC_LOGO_REVERSED_URL",
+      "/assets/brand/aseptaclean-wordmark-reversed.png"
+    ),
+    siteIconUrl: value(
+      "PUBLIC_SITE_ICON_URL",
+      "/assets/brand/aseptaclean-site-icon-512.png"
+    )
   },
   founder: {
     name: value("PUBLIC_FOUNDER_NAME", "Matthew Ruiz"),

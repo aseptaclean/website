@@ -11,7 +11,13 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
 <footer class="site-footer">
   <div class="site-footer__main container">
     <div class="site-footer__identity">
-      <p class="site-footer__name">{site.business.name}</p>
+      <img
+        class="site-footer__wordmark"
+        src={site.business.logoReversedUrl}
+        width="900"
+        height="215"
+        alt={site.business.name}
+      />
       <p>{site.offer.category} for {site.location.serviceArea}.</p>
       <p class="site-footer__cities">
         Serving {site.location.cities.join(", ")}, and surrounding South Bay communities.
@@ -67,11 +73,10 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
     gap: var(--space-6);
   }
 
-  .site-footer__name {
-    margin: 0 0 var(--space-2);
-    font-family: var(--font-heading);
-    font-size: var(--step-2);
-    font-weight: 700;
+  .site-footer__wordmark {
+    width: min(13rem, 72%);
+    height: auto;
+    margin-bottom: var(--space-3);
   }
 
   .site-footer p {

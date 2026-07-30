@@ -20,6 +20,8 @@ interface ImportMetaEnv {
   readonly PUBLIC_BUSINESS_HOURS?: string;
   readonly PUBLIC_GBP_URL?: string;
   readonly PUBLIC_LOGO_URL?: string;
+  readonly PUBLIC_LOGO_REVERSED_URL?: string;
+  readonly PUBLIC_SITE_ICON_URL?: string;
   readonly PUBLIC_TSWMP_STATUS?: string;
   readonly PUBLIC_DEPLOYMENT_ENV?: string;
   readonly PUBLIC_LAUNCH_MODE?: string;

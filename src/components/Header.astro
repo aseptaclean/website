@@ -5,8 +5,12 @@ import { navigation, site } from "@data/site";
 <header class="site-header">
   <div class="site-header__inner container">
     <a class="site-header__brand" href="/" aria-label={`${site.business.name} home`}>
-      <span aria-hidden="true">A</span>
-      <strong>{site.business.name}</strong>
+      <img
+        src={site.business.logoUrl}
+        width="900"
+        height="215"
+        alt=""
+      />
     </a>
 
     <nav class="desktop-nav" aria-label="Primary navigation">
@@ -75,19 +79,12 @@ import { navigation, site } from "@data/site";
     display: inline-flex;
     min-height: 3rem;
     align-items: center;
-    gap: var(--space-3);
-    color: var(--color-navy-900);
-    font-family: var(--font-heading);
     text-decoration: none;
   }
 
-  .site-header__brand > span {
-    display: grid;
-    width: 2rem;
-    height: 2rem;
-    place-items: center;
-    border: 1px solid var(--color-navy-800);
-    font-weight: 700;
+  .site-header__brand img {
+    width: clamp(8.75rem, 40vw, 10.5rem);
+    height: auto;
   }
 
   .desktop-nav {
@@ -166,6 +163,10 @@ import { navigation, site } from "@data/site";
   }
 
   @media (min-width: 64rem) {
+    .site-header__brand img {
+      width: clamp(9.5rem, 14vw, 11rem);
+    }
+
     .mobile-nav {
       display: none;
     }

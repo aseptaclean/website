@@ -110,13 +110,17 @@ try {
   );
   if (!menuClosed) failures.push("Escape did not close the mobile navigation");
 
-  await keyboardPage.locator("footer").scrollIntoViewIfNeeded();
+  await keyboardPage.locator(".site-footer").scrollIntoViewIfNeeded();
+  await keyboardPage.waitForFunction(
+    () => document.querySelector(".mobile-cta")?.hasAttribute("hidden") ?? true
+  );
   const overlap = await keyboardPage.evaluate(() => {
     const cta = document.querySelector(".mobile-cta")?.getBoundingClientRect();
     const lastFooterLink = [...document.querySelectorAll(".site-footer a")]
       .at(-1)
       ?.getBoundingClientRect();
     if (!cta || !lastFooterLink) return false;
+    if (cta.width === 0 || cta.height === 0) return false;
     return lastFooterLink.bottom > cta.top;
   });
   if (overlap) failures.push("Mobile CTA overlaps the final footer link");

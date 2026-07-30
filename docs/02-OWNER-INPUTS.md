@@ -21,6 +21,7 @@ This file separates approved business facts from unresolved production values. C
 - Primary CTA: `Get My 24-Hour Handoff Plan`
 - TSWMP public status: pending/unverified; do not publish active status
 - Launch proof state: no assumed reviews, case studies, completed projects, or authentic before/after portfolio
+- Approved brand assets: owner-supplied Aseptaclean horizontal wordmarks and 512px site icon, received 2026-07-30
 
 ## Founder facts approved for careful framing
 
@@ -42,7 +43,6 @@ Do not imply that this background grants contractor, remediation, medical, envir
 - production form endpoint
 - CRM submission mapping
 - SMS/email lead notification path
-- approved logo asset
 - Google Business Profile URL
 - active social URLs; omit inactive accounts
 - analytics IDs and consent configuration

@@ -13,9 +13,9 @@ Record only decisions explicitly approved by the owner. Do not use this file for
 | 2026-07-29 | Owner calls successful form submissions within 5 minutes during published business hours. Outside hours, contact occurs in the next business window. | Prevent false 24/7 promise while protecting speed-to-lead. | Form success copy, email copy, operations |
 | 2026-07-29 | Google Business Profile URL, analytics IDs, and public mailing address are deferred. Logo asset may be supplied later; use a restrained text wordmark during development. | Not required to begin the build. | Owner inputs, build gates, visual QA |
 | 2026-07-30 | Homepage copy must make the client feel the transition from an unresolved property to a property they can open, enter, and move forward with. Operational proof must support the emotion. | Owner explicitly approved the emotional-outcome direction and requested the website copy be updated. | Master brief Section 6.5 and Section 8; approved copy extract; homepage composition |
+| 2026-07-30 | Use the owner-supplied Aseptaclean horizontal wordmarks and 512px site icon as the production brand assets. | Replaces the temporary development wordmark with authentic owner-provided artwork. | Header, footer, metadata, owner inputs, asset manifest |
 
 ## Insurance publication decision
 - Owner confirmed the UPCM policy is active.
 - Approved public wording: `Insured. Certificate of Insurance available upon request.`
 - Carrier, policy limits, and detailed coverage descriptions remain unpublished unless a current COI/declarations page is reviewed and explicitly approved.
-
