@@ -1,0 +1,197 @@
+---
+import { navigation, site } from "@data/site";
+---
+
+<header class="site-header">
+  <div class="site-header__inner container">
+    <a class="site-header__brand" href="/" aria-label={`${site.business.name} home`}>
+      <span aria-hidden="true">A</span>
+      <strong>{site.business.name}</strong>
+    </a>
+
+    <nav class="desktop-nav" aria-label="Primary navigation">
+      <ul>
+        {navigation.map((item) => (
+          <li><a href={item.href}>{item.label}</a></li>
+        ))}
+      </ul>
+      <a class="button" href="/request-assessment/">{site.offer.compactCta}</a>
+    </nav>
+
+    <details class="mobile-nav">
+      <summary aria-label="Open navigation">
+        <span>Menu</span>
+        <span class="mobile-nav__mark" aria-hidden="true"></span>
+      </summary>
+      <nav aria-label="Mobile navigation">
+        <ul>
+          {navigation.map((item) => (
+            <li><a href={item.href}>{item.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+    </details>
+  </div>
+</header>
+
+<script>
+  const mobileNavigation = document.querySelector<HTMLDetailsElement>(".mobile-nav");
+  const mobileNavigationSummary =
+    mobileNavigation?.querySelector<HTMLElement>("summary");
+
+  document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" && mobileNavigation?.open) {
+      mobileNavigation.open = false;
+      mobileNavigationSummary?.focus();
+    }
+  });
+
+  mobileNavigation?.querySelectorAll("a").forEach((link) => {
+    link.addEventListener("click", () => {
+      mobileNavigation.open = false;
+    });
+  });
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    z-index: 20;
+    top: 0;
+    border-bottom: 1px solid var(--color-rule);
+    background: color-mix(in srgb, var(--color-warm-white) 96%, transparent);
+    backdrop-filter: blur(12px);
+  }
+
+  .site-header__inner {
+    display: flex;
+    min-height: 4.5rem;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+
+  .site-header__brand {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--color-navy-900);
+    font-family: var(--font-heading);
+    text-decoration: none;
+  }
+
+  .site-header__brand > span {
+    display: grid;
+    width: 2rem;
+    height: 2rem;
+    place-items: center;
+    border: 1px solid var(--color-navy-800);
+    font-weight: 700;
+  }
+
+  .desktop-nav {
+    display: none;
+  }
+
+  .mobile-nav {
+    position: relative;
+  }
+
+  .mobile-nav summary {
+    display: flex;
+    min-width: 4.75rem;
+    min-height: 3rem;
+    cursor: pointer;
+    list-style: none;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-2);
+    color: var(--color-navy-900);
+    font-family: var(--font-heading);
+    font-size: var(--step--1);
+    font-weight: 700;
+  }
+
+  .mobile-nav summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .mobile-nav__mark,
+  .mobile-nav__mark::before {
+    display: block;
+    width: 1.15rem;
+    height: 2px;
+    background: currentColor;
+    content: "";
+    transition: transform var(--transition-fast);
+  }
+
+  .mobile-nav__mark::before {
+    transform: translateY(0.35rem);
+  }
+
+  .mobile-nav[open] .mobile-nav__mark {
+    transform: rotate(45deg);
+  }
+
+  .mobile-nav[open] .mobile-nav__mark::before {
+    transform: rotate(90deg);
+  }
+
+  .mobile-nav nav {
+    position: fixed;
+    inset: 4.5rem 0 auto;
+    border-bottom: 1px solid var(--color-rule);
+    padding: var(--space-3) var(--gutter) var(--space-5);
+    background: var(--color-warm-white);
+    box-shadow: 0 1rem 2rem rgb(18 40 64 / 0.08);
+  }
+
+  .mobile-nav ul,
+  .desktop-nav ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mobile-nav a {
+    display: flex;
+    min-height: 3rem;
+    align-items: center;
+    border-bottom: 1px solid var(--color-rule);
+    font-family: var(--font-heading);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  @media (min-width: 64rem) {
+    .mobile-nav {
+      display: none;
+    }
+
+    .desktop-nav {
+      display: flex;
+      align-items: center;
+      gap: var(--space-5);
+    }
+
+    .desktop-nav ul {
+      display: flex;
+      align-items: center;
+      gap: clamp(0.8rem, 1.4vw, 1.35rem);
+    }
+
+    .desktop-nav li {
+      font-size: 0.79rem;
+    }
+
+    .desktop-nav a:not(.button) {
+      display: flex;
+      min-height: 3rem;
+      align-items: center;
+      font-weight: 600;
+      text-decoration: none;
+    }
+  }
+</style>

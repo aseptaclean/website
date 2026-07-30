@@ -1,0 +1,34 @@
+/// <reference types="astro/client" />
+
+interface ImportMetaEnv {
+  readonly PUBLIC_SITE_URL?: string;
+  readonly PUBLIC_BUSINESS_NAME?: string;
+  readonly PUBLIC_LEGAL_NAME?: string;
+  readonly PUBLIC_PHONE?: string;
+  readonly PUBLIC_SMS_NUMBER?: string;
+  readonly PUBLIC_EMAIL?: string;
+  readonly PUBLIC_FORM_ENDPOINT?: string;
+  readonly PUBLIC_PRIVACY_CONTACT?: string;
+  readonly PUBLIC_GA_ID?: string;
+  readonly PUBLIC_GTM_ID?: string;
+  readonly PUBLIC_SERVICE_AREA?: string;
+  readonly PUBLIC_RESPONSE_TIME?: string;
+  readonly PUBLIC_ASSESSMENT_FEE?: string;
+  readonly PUBLIC_STARTING_PRICE?: string;
+  readonly PUBLIC_FOUNDER_NAME?: string;
+  readonly PUBLIC_INSURANCE_STATUS?: string;
+  readonly PUBLIC_BUSINESS_HOURS?: string;
+  readonly PUBLIC_GBP_URL?: string;
+  readonly PUBLIC_LOGO_URL?: string;
+  readonly PUBLIC_TSWMP_STATUS?: string;
+  readonly PUBLIC_DEPLOYMENT_ENV?: string;
+  readonly PUBLIC_TURNSTILE_SITE_KEY?: string;
+  readonly PUBLIC_TERMLY_PRIVACY_URL?: string;
+  readonly PUBLIC_TERMLY_TERMS_URL?: string;
+  readonly PUBLIC_TERMLY_COOKIE_POLICY_URL?: string;
+  readonly PUBLIC_TERMLY_CONSENT_SCRIPT?: string;
+}
+
+interface ImportMeta {
+  readonly env: ImportMetaEnv;
+}

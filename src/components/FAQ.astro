@@ -1,0 +1,114 @@
+---
+import { homepage } from "@data/site";
+---
+
+<section class="faq" id="faq" aria-labelledby="faq-title">
+  <div class="container faq__layout">
+    <header>
+      <p class="faq__index">10 / Before you request a plan</p>
+      <h2 id="faq-title">Questions that affect scope, authority, and timing</h2>
+      <p>
+        These answers describe the assessment process. The signed scope controls
+        the actual project.
+      </p>
+    </header>
+
+    <div class="faq__list">
+      {
+        homepage.faq.map((item, index) => (
+          <article>
+            <span>{String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <h3>{item.question}</h3>
+              <p>{item.answer}</p>
+            </div>
+          </article>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .faq {
+    padding-block: clamp(5rem, 10vw, 9rem);
+    background: var(--color-paper);
+  }
+
+  .faq__layout {
+    display: grid;
+    gap: var(--space-8);
+  }
+
+  .faq__index {
+    margin: 0;
+    color: var(--color-blue-500);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    max-width: 20ch;
+    margin: var(--space-4) 0 0;
+    letter-spacing: -0.025em;
+  }
+
+  header > p:last-child {
+    max-width: 34rem;
+    margin: var(--space-5) 0 0;
+  }
+
+  .faq__list {
+    border-top: 2px solid var(--color-navy-900);
+  }
+
+  article {
+    display: grid;
+    grid-template-columns: 2.5rem 1fr;
+    gap: var(--space-3);
+    border-bottom: 1px solid var(--color-rule);
+    padding-block: var(--space-5);
+  }
+
+  article > span {
+    color: var(--color-blue-500);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  h3,
+  article p {
+    margin: 0;
+  }
+
+  h3 {
+    font-size: var(--step-1);
+  }
+
+  article p {
+    max-width: 50rem;
+    margin-top: var(--space-3);
+    color: var(--color-ink-500);
+  }
+
+  @media (min-width: 58rem) {
+    .faq__layout {
+      grid-template-columns: minmax(18rem, 4fr) minmax(0, 7fr);
+      align-items: start;
+      gap: clamp(4rem, 10vw, 9rem);
+    }
+
+    .faq header {
+      position: sticky;
+      top: 7rem;
+    }
+
+    article:nth-child(even) {
+      margin-left: clamp(1.5rem, 4vw, 4rem);
+    }
+  }
+</style>

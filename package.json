@@ -1,0 +1,30 @@
+{
+  "name": "aseptaclean-astro",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "validate:env": "node scripts/validate-env.mjs",
+    "build": "npm run validate:env -- --mode production && astro build --mode production",
+    "build:staging": "astro build --mode staging",
+    "qa:phase1": "node scripts/phase1-browser-check.mjs",
+    "qa:phase3:pass1": "node scripts/phase3-pass1-browser-check.mjs",
+    "qa:phase3:pass2": "node scripts/phase3-pass2-browser-check.mjs",
+    "qa:phase3:endpoint": "esbuild functions/api/lead.ts --bundle --platform=node --format=esm --outfile=/tmp/aseptaclean-lead-test.mjs && node scripts/phase3-endpoint-check.mjs",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "dependencies": {
+    "astro": "^7.1.6"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "playwright-core": "^1.62.0",
+    "typescript": "^5.9.2"
+  },
+  "engines": {
+    "node": ">=20.11.0"
+  }
+}

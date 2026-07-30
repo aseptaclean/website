@@ -1,0 +1,97 @@
+---
+import { site } from "@data/site";
+
+const phoneHref = site.business.phone
+  ? `tel:${site.business.phone.replace(/[^\d+]/g, "")}`
+  : "";
+---
+
+<section class="final-cta" aria-labelledby="final-cta-title">
+  <div class="container final-cta__layout">
+    <p class="final-cta__index">11 / Request the handoff plan</p>
+    <div>
+      <h2 id="final-cta-title">
+        Start with what you know. We will help define the rest.
+      </h2>
+      <p>
+        Tell us what must stay, what likely needs to leave, what condition the
+        property is in, and when the handoff needs to happen. Photos are
+        strongly recommended.
+      </p>
+    </div>
+    <div class="final-cta__actions">
+      <a class="button" href="/request-assessment/">{site.offer.primaryCta}</a>
+      {
+        phoneHref && (
+          <a class="final-cta__phone" href={phoneHref}>
+            Call {site.business.phone} for an urgent or complex property
+          </a>
+        )
+      }
+      <small>Submitting an assessment does not authorize work or create a service agreement.</small>
+    </div>
+  </div>
+</section>
+
+<style>
+  .final-cta {
+    border-top: 1px solid var(--color-steel-300);
+    padding-block: clamp(4.5rem, 9vw, 8rem);
+    background: var(--color-warm-white);
+  }
+
+  .final-cta__layout {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .final-cta__index {
+    margin: 0;
+    color: var(--color-blue-500);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  h2 {
+    max-width: 25ch;
+    margin: 0;
+    font-size: clamp(2rem, 5vw, 4.75rem);
+    letter-spacing: -0.04em;
+    line-height: 1.04;
+  }
+
+  .final-cta__layout > div > p {
+    max-width: 40rem;
+    margin: var(--space-5) 0 0;
+  }
+
+  .final-cta__actions {
+    display: grid;
+    align-content: start;
+    gap: var(--space-4);
+  }
+
+  .final-cta__phone {
+    min-height: 3rem;
+    align-items: center;
+    font-family: var(--font-heading);
+    font-size: var(--step--1);
+    font-weight: 700;
+  }
+
+  .final-cta__actions small {
+    color: var(--color-ink-500);
+    line-height: 1.5;
+  }
+
+  @media (min-width: 70rem) {
+    .final-cta__layout {
+      grid-template-columns: minmax(10rem, 2fr) minmax(28rem, 6fr) minmax(16rem, 3fr);
+      align-items: start;
+      gap: clamp(2rem, 5vw, 5rem);
+    }
+  }
+</style>

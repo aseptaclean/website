@@ -1,0 +1,287 @@
+---
+import { site } from "@data/site";
+
+const trustItems = [
+  site.business.insuranceStatus,
+  "Written scope",
+  "Nothing removed without approval",
+  "No unapproved charges",
+  "Documented closeout"
+].filter(Boolean);
+
+const phoneHref = site.business.phone
+  ? `tel:${site.business.phone.replace(/[^\d+]/g, "")}`
+  : "";
+---
+
+<section class="hero" id="overview" aria-labelledby="hero-title">
+  <div class="container hero__layout">
+    <div class="hero__main">
+      <p class="hero__eyebrow">
+        Property Cleanout &amp; Deep Cleaning <span aria-hidden="true">/</span>
+        {site.location.serviceArea}
+      </p>
+      <h1 id="hero-title">Walk Back Into a Property That <span>Finally Feels Ready.</span></h1>
+      <p class="hero__lead">
+        When a home is still full of belongings, unfinished cleaning, and
+        decisions nobody has made, it follows you everywhere.
+      </p>
+      <p class="hero__lead">
+        Aseptaclean gives you one accountable path through it. You decide what
+        stays. We clear what you approve, complete the defined deep-cleaning
+        scope, and document the result so the property can move to its next
+        owner, tenant, listing, inspection, or family decision.
+      </p>
+      <div class="hero__action">
+        <a class="button" href="/request-assessment/">{site.offer.primaryCta}</a>
+        <p>
+          Send photos and basic property details. We will tell you whether the
+          project fits, what the likely path looks like, and what should happen
+          next {site.offer.responseTime}.
+        </p>
+      </div>
+      {
+        phoneHref && (
+          <p class="hero__urgent">
+            Looking at a complex or time-sensitive property?
+            {" "}
+            <a href={phoneHref}>Call {site.business.phone}</a> and tell us what you are seeing.
+          </p>
+        )
+      }
+    </div>
+
+    <aside class="hero__criteria" aria-label="The handoff outcome">
+      <p class="hero__criteria-label">The handoff outcome</p>
+      <ol>
+        <li>
+          <span>01</span>
+          <strong>Clear</strong>
+          <small>Approved unwanted contents</small>
+        </li>
+        <li>
+          <span>02</span>
+          <strong>Reset</strong>
+          <small>The approved cleaning scope</small>
+        </li>
+        <li>
+          <span>03</span>
+          <strong>Verify</strong>
+          <small>Photographs, exceptions, closeout</small>
+        </li>
+      </ol>
+      <p class="hero__criteria-note">
+        One approved scope.<br />One accountable company.
+      </p>
+    </aside>
+  </div>
+
+  <div class="container hero__trust" aria-label="Project controls">
+    {
+      trustItems.map((item) => (
+        <span>{item}</span>
+      ))
+    }
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    overflow: hidden;
+    border-bottom: 1px solid var(--color-rule);
+    background: var(--color-warm-white);
+  }
+
+  .hero::after {
+    position: absolute;
+    z-index: 0;
+    top: 0;
+    right: max(var(--gutter), calc((100vw - var(--content-wide)) / 2));
+    width: 1px;
+    height: 100%;
+    background: var(--color-rule);
+    content: "";
+  }
+
+  .hero__layout,
+  .hero__trust {
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero__layout {
+    display: grid;
+    padding-block: clamp(3.5rem, 9vw, 7.5rem) var(--space-7);
+  }
+
+  .hero__main {
+    max-width: 49rem;
+  }
+
+  .hero__eyebrow,
+  .hero__criteria-label {
+    margin: 0;
+    color: var(--color-ink-500);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    line-height: 1.45;
+    text-transform: uppercase;
+  }
+
+  .hero__eyebrow span {
+    padding-inline: 0.25rem;
+    color: var(--color-blue-500);
+  }
+
+  h1 {
+    max-width: 17ch;
+    margin: var(--space-5) 0 0;
+    font-size: clamp(2.45rem, 6.1vw, 5.5rem);
+    letter-spacing: -0.045em;
+    line-height: 0.98;
+    text-wrap: pretty;
+  }
+
+  h1 span {
+    color: var(--color-navy-800);
+  }
+
+  .hero__lead {
+    max-width: 41rem;
+    margin: var(--space-6) 0 0;
+    font-size: var(--step-1);
+    line-height: 1.55;
+  }
+
+  .hero__action {
+    display: grid;
+    max-width: 43rem;
+    gap: var(--space-3);
+    margin-top: var(--space-6);
+  }
+
+  .hero__action .button {
+    width: 100%;
+  }
+
+  .hero__action p,
+  .hero__urgent {
+    margin: 0;
+    color: var(--color-ink-500);
+    font-size: var(--step--1);
+    line-height: 1.55;
+  }
+
+  .hero__urgent {
+    margin-top: var(--space-4);
+  }
+
+  .hero__criteria {
+    position: relative;
+    margin-top: var(--space-7);
+    border-top: 1px solid var(--color-navy-800);
+    padding-top: var(--space-4);
+  }
+
+  .hero__criteria ol {
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hero__criteria li {
+    display: grid;
+    max-width: none;
+    grid-template-columns: 2.25rem minmax(4.5rem, 0.7fr) 1.5fr;
+    align-items: baseline;
+    gap: var(--space-3);
+    border-top: 1px solid var(--color-rule);
+    padding-block: var(--space-3);
+  }
+
+  .hero__criteria li > span,
+  .hero__criteria small {
+    color: var(--color-ink-500);
+    font-size: var(--step--1);
+  }
+
+  .hero__criteria strong {
+    color: var(--color-navy-900);
+    font-family: var(--font-heading);
+  }
+
+  .hero__criteria-note {
+    margin: var(--space-5) 0 0;
+    color: var(--color-navy-900);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .hero__trust {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    border-top: 1px solid var(--color-rule);
+    padding-block: var(--space-4);
+  }
+
+  .hero__trust span {
+    color: var(--color-navy-900);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+  }
+
+  .hero__trust span:not(:last-child)::after {
+    margin-inline: 0.65rem;
+    color: var(--color-blue-500);
+    content: "/";
+  }
+
+  @media (min-width: 40rem) {
+    .hero__action {
+      grid-template-columns: max-content minmax(14rem, 1fr);
+      align-items: center;
+      gap: var(--space-5);
+    }
+
+    .hero__action .button {
+      width: auto;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .hero__layout {
+      min-height: 43rem;
+      grid-template-columns: minmax(0, 7fr) minmax(18rem, 4fr);
+      align-items: end;
+      gap: clamp(3rem, 8vw, 8rem);
+    }
+
+    .hero__criteria {
+      align-self: stretch;
+      margin-top: 0;
+      border-top: 0;
+      border-left: 1px solid var(--color-rule);
+      padding: var(--space-4) 0 var(--space-3) clamp(2rem, 4vw, 4rem);
+    }
+
+    .hero__criteria ol {
+      margin-top: clamp(5rem, 10vh, 8rem);
+    }
+
+    .hero__criteria li {
+      grid-template-columns: 2rem 5rem 1fr;
+    }
+
+    .hero__criteria-note {
+      position: absolute;
+      bottom: var(--space-3);
+    }
+  }
+</style>

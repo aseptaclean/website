@@ -1,0 +1,235 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { site } from "@data/site";
+
+const phoneHref = site.business.phone
+  ? `tel:${site.business.phone.replace(/[^\d+]/g, "")}`
+  : "";
+---
+
+<BaseLayout
+  title="Thank You | Aseptaclean"
+  description="Aseptaclean assessment request confirmation."
+  canonicalPath="/thank-you/"
+  noindex={true}
+  showMobileCta={false}
+>
+  <div class="confirmation">
+    <div class="container confirmation__layout">
+      <section
+        class="confirmation__record"
+        data-confirmation
+      >
+        <p class="confirmation__eyebrow">Handoff plan intake</p>
+        <div data-confirmed hidden>
+          <p class="confirmation__status">Received</p>
+          <h1>Your request is in the review queue.</h1>
+          <p class="confirmation__lead" data-confirmation-email>
+            A confirmation email is on its way. Aseptaclean will review the
+            property details and send your Handoff Plan—fit decision,
+            preliminary scope direction, and clear next step—within one business
+            day.
+          </p>
+          <p class="confirmation__callback" data-callback-message></p>
+          <p class="confirmation__reference" data-submission-reference hidden></p>
+        </div>
+
+        <div data-unconfirmed>
+          <p class="confirmation__status confirmation__status--neutral">No submission confirmed</p>
+          <h1>This page does not confirm that a request was received.</h1>
+          <p class="confirmation__lead">
+            If you arrived here without submitting the assessment, start the
+            request below. If you just submitted and expected a confirmation,
+            check your email or contact Aseptaclean before submitting again.
+          </p>
+          <a class="button" href="/request-assessment/">Start the assessment</a>
+        </div>
+
+        <aside class="confirmation__boundary">
+          <strong>What this submission does—and does not do</strong>
+          <p>
+            It begins a property fit review. It does not authorize work, create
+            a service agreement, reserve a project date, or guarantee that the
+            property is within Aseptaclean’s scope.
+          </p>
+        </aside>
+      </section>
+
+      <aside class="confirmation__next" aria-labelledby="next-title">
+        <p>Next record</p>
+        <h2 id="next-title">What happens now</h2>
+        <ol>
+          <li><span>01</span> Request details and media are reviewed.</li>
+          <li><span>02</span> Aseptaclean confirms fit and the likely path.</li>
+          <li><span>03</span> An on-site assessment is arranged if needed.</li>
+        </ol>
+        {
+          phoneHref && (
+            <a href={phoneHref}>
+              Urgent or complex property? Call {site.business.phone}
+            </a>
+          )
+        }
+        <small>{site.business.hours}</small>
+      </aside>
+    </div>
+  </div>
+</BaseLayout>
+
+<script>
+  const parameters = new URLSearchParams(window.location.search);
+  const valid = parameters.get("received") === "1";
+  const confirmed = document.querySelector<HTMLElement>("[data-confirmed]");
+  const unconfirmed = document.querySelector<HTMLElement>("[data-unconfirmed]");
+  const callback = document.querySelector<HTMLElement>(
+    "[data-callback-message]"
+  );
+  const reference = document.querySelector<HTMLElement>(
+    "[data-submission-reference]"
+  );
+  const confirmationEmail = document.querySelector<HTMLElement>(
+    "[data-confirmation-email]"
+  );
+
+  if (valid && confirmed && unconfirmed) {
+    confirmed.hidden = false;
+    unconfirmed.hidden = true;
+    const callbackWindow = parameters.get("callback");
+    if (callback) {
+      callback.textContent =
+        callbackWindow === "business-hours"
+          ? "Because this request arrived during published business hours, Aseptaclean’s operating standard is to call within 5 minutes."
+          : "Because this request arrived outside published business hours, Aseptaclean will call during the next business window.";
+    }
+    if (confirmationEmail && parameters.get("email") !== "sent") {
+      confirmationEmail.textContent =
+        "Your request was received, but confirmation-email delivery could not be verified. Save the request reference below. Aseptaclean will still review the property details and provide the Handoff Plan within one business day.";
+    }
+    const submission = parameters.get("submission");
+    if (reference && submission && /^[a-zA-Z0-9-]{8,80}$/.test(submission)) {
+      reference.hidden = false;
+      reference.textContent = `Request reference: ${submission}`;
+    }
+    window.history.replaceState({}, "", "/thank-you/");
+  }
+</script>
+
+<style>
+  .confirmation {
+    padding-block: clamp(3.5rem, 8vw, 7rem);
+    background: var(--color-warm-white);
+  }
+
+  .confirmation__layout {
+    display: grid;
+    gap: var(--space-7);
+  }
+
+  .confirmation__record {
+    border-top: 3px solid var(--color-navy-900);
+    padding-top: var(--space-5);
+  }
+
+  .confirmation__eyebrow,
+  .confirmation__next > p,
+  .confirmation__status {
+    margin: 0;
+    color: var(--color-blue-500);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .confirmation__status {
+    width: fit-content;
+    margin-top: var(--space-6);
+    border: 1px solid var(--color-success);
+    padding: 0.35rem 0.55rem;
+    color: var(--color-success);
+  }
+
+  .confirmation__status--neutral {
+    border-color: var(--color-ink-500);
+    color: var(--color-ink-500);
+  }
+
+  h1 {
+    max-width: 18ch;
+    margin: var(--space-4) 0 0;
+  }
+
+  .confirmation__lead {
+    max-width: 43rem;
+    margin: var(--space-5) 0 0;
+    font-size: var(--step-1);
+  }
+
+  .confirmation__callback,
+  .confirmation__reference {
+    max-width: 43rem;
+    margin: var(--space-5) 0 0;
+    border-left: 3px solid var(--color-blue-500);
+    padding-left: var(--space-4);
+    color: var(--color-navy-900);
+    font-weight: 700;
+  }
+
+  .confirmation__boundary {
+    max-width: 43rem;
+    margin-top: var(--space-7);
+    border-top: 1px solid var(--color-rule);
+    padding-top: var(--space-4);
+  }
+
+  .confirmation__boundary p {
+    margin: var(--space-2) 0 0;
+  }
+
+  .confirmation__next {
+    align-self: start;
+    border: 1px solid var(--color-steel-300);
+    padding: var(--space-5);
+    background: var(--color-paper);
+  }
+
+  .confirmation__next h2 {
+    margin: var(--space-3) 0 0;
+    font-size: var(--step-2);
+  }
+
+  .confirmation__next ol {
+    margin: var(--space-5) 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .confirmation__next li {
+    display: grid;
+    grid-template-columns: 2rem 1fr;
+    gap: var(--space-3);
+    border-top: 1px solid var(--color-rule);
+    padding-block: var(--space-3);
+  }
+
+  .confirmation__next li span {
+    color: var(--color-blue-500);
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .confirmation__next a,
+  .confirmation__next small {
+    display: block;
+    margin-top: var(--space-4);
+  }
+
+  @media (min-width: 60rem) {
+    .confirmation__layout {
+      grid-template-columns: minmax(0, 7fr) minmax(18rem, 4fr);
+      gap: clamp(3rem, 8vw, 8rem);
+    }
+  }
+</style>

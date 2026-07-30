@@ -1,0 +1,36 @@
+---
+import { site } from "@data/site";
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  noindex?: boolean;
+  image?: string;
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  noindex = false,
+  image
+} = Astro.props;
+const canonical = new URL(canonicalPath, site.urls.site);
+const shouldNoindex = noindex || !site.deployment.isPublicProduction;
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonical} />
+<meta
+  name="robots"
+  content={shouldNoindex ? "noindex, nofollow" : "index, follow"}
+/>
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={site.business.name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonical} />
+{image && <meta property="og:image" content={new URL(image, site.urls.site)} />}
+<meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />

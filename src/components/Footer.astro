@@ -1,0 +1,108 @@
+---
+import { legal, site } from "@data/site";
+
+const year = new Date().getFullYear();
+const phoneHref = site.business.phone
+  ? `tel:${site.business.phone.replace(/[^\d+]/g, "")}`
+  : "";
+---
+
+<footer class="site-footer">
+  <div class="site-footer__main container">
+    <div class="site-footer__identity">
+      <p class="site-footer__name">{site.business.name}</p>
+      <p>{site.offer.category} for {site.location.serviceArea}.</p>
+      <p class="site-footer__cities">
+        Serving {site.location.cities.join(", ")}, and surrounding South Bay communities.
+      </p>
+    </div>
+
+    <nav aria-label="Footer navigation">
+      <a href="/request-assessment/">{site.offer.primaryCta}</a>
+      <a href="/#standards">Handoff Standard</a>
+      <a href="/#faq">Frequently Asked Questions</a>
+      <a href={site.urls.privacyPolicy}>Privacy</a>
+      <a href={site.urls.terms}>Terms</a>
+      {site.urls.cookiePolicy && <a href={site.urls.cookiePolicy}>Cookie Policy</a>}
+    </nav>
+
+    <address>
+      <a href={`mailto:${site.business.email}`}>{site.business.email}</a>
+      {phoneHref && <a href={phoneHref}>{site.business.phone}</a>}
+      <p>Assessment responses {site.offer.responseTime}.</p>
+    </address>
+  </div>
+
+  <div class="site-footer__legal container">
+    <p>{legal.scopeDisclaimer}</p>
+    <p>© {year} {site.business.legalName}. All rights reserved.</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--color-steel-300);
+    padding-block: var(--space-7) var(--space-6);
+    background: var(--color-navy-900);
+    color: var(--color-warm-white);
+  }
+
+  .site-footer__main {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .site-footer__name {
+    margin: 0 0 var(--space-2);
+    font-family: var(--font-heading);
+    font-size: var(--step-2);
+    font-weight: 700;
+  }
+
+  .site-footer p {
+    margin-block: 0;
+  }
+
+  .site-footer__cities,
+  .site-footer address p {
+    margin-top: var(--space-3) !important;
+    color: var(--color-steel-300);
+    font-size: var(--step--1);
+  }
+
+  .site-footer nav,
+  .site-footer address {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-style: normal;
+  }
+
+  .site-footer a {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+    color: var(--color-warm-white);
+  }
+
+  .site-footer__legal {
+    display: grid;
+    gap: var(--space-4);
+    border-top: 1px solid rgb(168 184 200 / 0.35);
+    margin-top: var(--space-6);
+    padding-top: var(--space-5);
+    color: var(--color-steel-300);
+    font-size: var(--step--1);
+  }
+
+  @media (min-width: 48rem) {
+    .site-footer__main {
+      grid-template-columns: minmax(0, 2fr) minmax(10rem, 1fr) minmax(12rem, 1fr);
+    }
+
+    .site-footer__legal {
+      grid-template-columns: minmax(0, 2fr) minmax(12rem, 1fr);
+    }
+  }
+</style>

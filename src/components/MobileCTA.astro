@@ -1,0 +1,92 @@
+---
+import { site } from "@data/site";
+---
+
+<aside class="mobile-cta" aria-label="Request an assessment" hidden>
+  <a class="button" href="/request-assessment/">{site.offer.compactCta}</a>
+</aside>
+
+<script>
+  const stickyCta = document.querySelector<HTMLElement>(".mobile-cta");
+  const heroAction = document.querySelector<HTMLElement>(".hero__action");
+  const finalCta = document.querySelector<HTMLElement>(".final-cta");
+  const footer = document.querySelector<HTMLElement>(".site-footer");
+  let heroActionVisible = Boolean(heroAction);
+  let finalCtaVisible = false;
+  let footerVisible = false;
+
+  const updateStickyCta = () => {
+    if (!stickyCta) return;
+    stickyCta.hidden = heroActionVisible || finalCtaVisible || footerVisible;
+  };
+
+  if (stickyCta) {
+    if (heroAction) {
+      const heroObserver = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry) return;
+          heroActionVisible = entry.isIntersecting;
+          updateStickyCta();
+        },
+        { threshold: 0.15 }
+      );
+      heroObserver.observe(heroAction);
+    }
+
+    if (footer) {
+      const footerObserver = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry) return;
+          footerVisible = entry.isIntersecting;
+          updateStickyCta();
+        },
+        { threshold: 0.01 }
+      );
+      footerObserver.observe(footer);
+    }
+
+    if (finalCta) {
+      const finalCtaObserver = new IntersectionObserver(
+        ([entry]) => {
+          if (!entry) return;
+          finalCtaVisible = entry.isIntersecting;
+          updateStickyCta();
+        },
+        { threshold: 0.01 }
+      );
+      finalCtaObserver.observe(finalCta);
+    }
+
+    updateStickyCta();
+  }
+</script>
+
+<style>
+  .mobile-cta {
+    position: fixed;
+    z-index: 18;
+    inset: auto 0 0;
+    display: grid;
+    min-height: var(--sticky-cta-height);
+    place-items: center;
+    border-top: 1px solid var(--color-rule);
+    padding: var(--space-3) var(--gutter);
+    padding-bottom: max(var(--space-3), env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--color-paper) 97%, transparent);
+  }
+
+  .mobile-cta .button {
+    width: 100%;
+    max-width: 30rem;
+  }
+
+  .mobile-cta[hidden] {
+    display: none;
+  }
+
+  @media (min-width: 64rem) {
+    .mobile-cta {
+      display: none;
+    }
+  }
+</style>

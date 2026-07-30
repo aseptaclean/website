@@ -1,0 +1,246 @@
+---
+import { homepage, legal } from "@data/site";
+---
+
+<figure class="record">
+  <div class="record__masthead">
+    <div>
+      <p class="record__sample">Sample / Not a client record</p>
+      <h3>Property Handoff Record</h3>
+    </div>
+    <p class="record__mark" aria-hidden="true">A</p>
+  </div>
+
+  <dl class="record__meta">
+    <div>
+      <dt>Property</dt>
+      <dd>Example residence</dd>
+    </div>
+    <div>
+      <dt>Scope version</dt>
+      <dd>Approved / 01</dd>
+    </div>
+    <div>
+      <dt>Closeout</dt>
+      <dd>Remote review</dd>
+    </div>
+  </dl>
+
+  <div class="record__rooms" role="table" aria-label="Sample room-by-room closeout record">
+    <div class="record__row record__row--head" role="row">
+      <span role="columnheader">Area</span>
+      <span role="columnheader">Clear</span>
+      <span role="columnheader">Reset</span>
+      <span role="columnheader">Verify</span>
+    </div>
+    {
+      homepage.sampleRecord.map((row) => (
+        <div class="record__row" role="row">
+          <strong role="rowheader">{row.area}</strong>
+          <span role="cell" data-label="Clear">{row.clear}</span>
+          <span role="cell" data-label="Reset">{row.reset}</span>
+          <span role="cell" data-label="Verify">{row.verify}</span>
+        </div>
+      ))
+    }
+  </div>
+
+  <div class="record__closeout">
+    <div>
+      <p>Exception log</p>
+      <strong>Primary closet held for owner review</strong>
+    </div>
+    <div>
+      <p>Change control</p>
+      <strong>No work added without written approval</strong>
+    </div>
+  </div>
+
+  <figcaption>{legal.documentationDisclaimer}</figcaption>
+</figure>
+
+<style>
+  .record {
+    position: relative;
+    margin: 0;
+    border: 1px solid var(--color-steel-300);
+    padding: clamp(1rem, 3vw, 2rem);
+    background:
+      linear-gradient(to bottom, transparent 1.95rem, rgb(216 224 231 / 0.32) 2rem)
+      var(--color-paper);
+    background-size: 100% 2rem;
+    box-shadow: 0 1rem 2.5rem rgb(18 40 64 / 0.12);
+    color: var(--color-ink-700);
+  }
+
+  .record::before {
+    position: absolute;
+    inset: 0.5rem;
+    border: 1px solid rgb(168 184 200 / 0.45);
+    content: "";
+    pointer-events: none;
+  }
+
+  .record__masthead,
+  .record__meta,
+  .record__rooms,
+  .record__closeout,
+  figcaption {
+    position: relative;
+    z-index: 1;
+  }
+
+  .record__masthead {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    border-bottom: 2px solid var(--color-navy-900);
+    padding-bottom: var(--space-5);
+  }
+
+  .record__sample,
+  .record__meta dt,
+  .record__row--head,
+  .record__closeout p {
+    margin: 0;
+    color: var(--color-ink-500);
+    font-family: var(--font-heading);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .record__sample {
+    color: var(--color-error);
+  }
+
+  h3 {
+    margin: var(--space-2) 0 0;
+    font-size: var(--step-2);
+    letter-spacing: -0.02em;
+  }
+
+  .record__mark {
+    display: grid;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: 0 0 auto;
+    place-items: center;
+    border: 1px solid var(--color-navy-900);
+    margin: 0;
+    color: var(--color-navy-900);
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+
+  .record__meta {
+    display: grid;
+    gap: var(--space-3);
+    margin: 0;
+    border-bottom: 1px solid var(--color-rule);
+    padding-block: var(--space-4);
+  }
+
+  .record__meta div {
+    min-width: 0;
+  }
+
+  .record__meta dd {
+    margin: var(--space-1) 0 0;
+    font-size: var(--step--1);
+    font-weight: 700;
+  }
+
+  .record__rooms {
+    border-top: 1px solid var(--color-navy-900);
+    margin-top: var(--space-5);
+  }
+
+  .record__row {
+    display: grid;
+    gap: var(--space-2);
+    border-bottom: 1px solid var(--color-rule);
+    padding-block: var(--space-4);
+  }
+
+  .record__row--head {
+    display: none;
+  }
+
+  .record__row strong {
+    color: var(--color-navy-900);
+    font-family: var(--font-heading);
+    font-size: var(--step--1);
+  }
+
+  .record__row span {
+    display: grid;
+    grid-template-columns: 4.25rem 1fr;
+    gap: var(--space-2);
+    font-size: var(--step--1);
+  }
+
+  .record__row span::before {
+    color: var(--color-ink-500);
+    content: attr(data-label);
+    font-family: var(--font-heading);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .record__closeout {
+    display: grid;
+    gap: var(--space-4);
+    margin-top: var(--space-5);
+    border-left: 3px solid var(--color-blue-500);
+    padding: var(--space-4);
+    background: var(--color-warm-white);
+  }
+
+  .record__closeout strong {
+    display: block;
+    margin-top: var(--space-1);
+    color: var(--color-navy-900);
+    font-size: var(--step--1);
+  }
+
+  figcaption {
+    margin-top: var(--space-5);
+    color: var(--color-ink-500);
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
+
+  @media (min-width: 34rem) {
+    .record__meta {
+      grid-template-columns: repeat(3, 1fr);
+    }
+
+    .record__row {
+      grid-template-columns: minmax(7rem, 1.25fr) repeat(3, minmax(0, 1fr));
+      align-items: center;
+      gap: var(--space-3);
+      padding-block: var(--space-3);
+    }
+
+    .record__row--head {
+      display: grid;
+    }
+
+    .record__row span {
+      display: block;
+    }
+
+    .record__row span::before {
+      display: none;
+    }
+
+    .record__closeout {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

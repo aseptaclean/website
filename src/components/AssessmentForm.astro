@@ -1,0 +1,2516 @@
+---
+import { assessment } from "@data/assessment";
+import { site } from "@data/site";
+
+const endpointAvailable = Boolean(
+  site.urls.formEndpoint && site.integrations.turnstileSiteKey
+);
+const yesNoUnsure = [
+  { value: "yes", label: "Yes" },
+  { value: "no", label: "No" },
+  { value: "not_sure", label: "Not sure" }
+] as const;
+---
+
+<section class="assessment" aria-labelledby="assessment-title">
+  <div class="assessment__masthead container">
+    <div class="assessment__intro">
+      <p class="assessment__eyebrow">{site.offer.leadOffer}</p>
+      <h1 id="assessment-title">Start with the property. We’ll review the path to handoff.</h1>
+      <p class="assessment__lead">
+        Share the property, scope, and approval details Aseptaclean needs to
+        make a fit decision and identify a clear next step.
+      </p>
+    </div>
+
+    <dl class="assessment__facts" aria-label="Assessment details">
+      <div>
+        <dt>Time to complete</dt>
+        <dd>Approximately 3–5 minutes</dd>
+      </div>
+      <div>
+        <dt>Helpful evidence</dt>
+        <dd>Property photos or video</dd>
+      </div>
+      <div>
+        <dt>Response</dt>
+        <dd>{site.offer.responseTime}</dd>
+      </div>
+    </dl>
+  </div>
+
+  <div class="assessment__body container">
+    <aside class="assessment__rail" aria-label="Assessment progress and guidance">
+      <div class="assessment__rail-inner">
+        <p class="assessment__record-label">Handoff plan intake record</p>
+        <p class="assessment__draft">Draft · Not an approved scope</p>
+
+        <ol class="assessment__steps">
+          {assessment.steps.map((step, index) => (
+            <li data-step-indicator={index}>
+              <span class="assessment__step-number" aria-hidden="true">{step.number}</span>
+              <span>
+                <strong>
+                  <span class="assessment__step-label-full">{step.label}</span>
+                  <span class="assessment__step-label-short">{step.shortLabel}</span>
+                </strong>
+                <small>{step.description}</small>
+              </span>
+            </li>
+          ))}
+        </ol>
+
+        <div class="assessment__next">
+          <p class="assessment__next-label">What happens next</p>
+          <p>
+            Aseptaclean reviews the property details, condition flags, access,
+            deadline, and decision authority before confirming whether the
+            request is within scope.
+          </p>
+        </div>
+      </div>
+    </aside>
+
+    <div class="assessment__form-column">
+      <div class="assessment__privacy-note">
+        <p>
+          Photos recommended · Information and media are used only to evaluate
+          this request.
+        </p>
+        <button
+          class="assessment__clear-draft"
+          type="button"
+          data-clear-draft
+          hidden
+        >
+          Forget saved progress
+        </button>
+        <p
+          class="assessment__draft-status"
+          data-draft-status
+          role="status"
+          aria-live="polite"
+          hidden
+        ></p>
+      </div>
+
+      <form
+        class="intake-form"
+        action={endpointAvailable ? site.urls.formEndpoint : undefined}
+        method="post"
+        enctype="multipart/form-data"
+        data-assessment-form
+      >
+        <input type="hidden" name="form_version" value={assessment.version} />
+        <input
+          type="hidden"
+          name="submitted_from"
+          value="/request-assessment/"
+        />
+        <input type="hidden" name="utm_source" value="" />
+        <input type="hidden" name="utm_medium" value="" />
+        <input type="hidden" name="utm_campaign" value="" />
+        <input type="hidden" name="utm_term" value="" />
+        <input type="hidden" name="utm_content" value="" />
+        <input type="hidden" name="gclid" value="" />
+        <input type="hidden" name="landing_page" value="" />
+        <input type="hidden" name="referrer" value="" />
+        <input type="hidden" name="submission_timestamp" value="" />
+        <input type="hidden" name="idempotency_key" value="" />
+        <input
+          class="intake-form__honeypot"
+          type="text"
+          name="company_website"
+          tabindex="-1"
+          autocomplete="off"
+          aria-hidden="true"
+        />
+
+        <div
+          class="intake-form__errors"
+          tabindex="-1"
+          aria-labelledby="assessment-error-title"
+          hidden
+        >
+          <h2 id="assessment-error-title">Review the highlighted fields</h2>
+          <ul></ul>
+        </div>
+
+        <fieldset class="intake-step" id="property-fit" data-step="0">
+          <legend>
+            <span class="intake-step__number">Step 1 of 3</span>
+            <span class="intake-step__title" data-step-heading tabindex="-1">
+              Property fit
+            </span>
+          </legend>
+          <p class="intake-step__intro">
+            Begin with the property’s location, transition, approximate size,
+            and required timing.
+          </p>
+          <p class="intake-form__required-note">
+            Fields marked <span aria-hidden="true">*</span><span class="visually-hidden">required</span> are required.
+          </p>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="property-city">Property city <span aria-hidden="true">*</span></label>
+              <input
+                id="property-city"
+                name="property_city"
+                type="text"
+                autocomplete="address-level2"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="property-type">Property type <span aria-hidden="true">*</span></label>
+              <select id="property-type" name="property_type" required>
+                <option value="">Select a property type</option>
+                {assessment.propertyTypes.map((option) => (
+                  <option value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+
+            <fieldset class="form-group">
+              <legend>Is the property vacant? <span aria-hidden="true">*</span></legend>
+              <div class="choice-row">
+                {yesNoUnsure.map((option) => (
+                  <label class="choice-control">
+                    <input
+                      type="radio"
+                      name="vacant_status"
+                      value={option.value}
+                      required
+                    />
+                    <span>{option.label}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <div class="form-field">
+              <label for="property-situation">
+                What is happening with the property? <span aria-hidden="true">*</span>
+              </label>
+              <select
+                id="property-situation"
+                name="property_situation"
+                required
+              >
+                <option value="">Select the closest situation</option>
+                {assessment.propertySituations.map((option) => (
+                  <option value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="completion-date">
+                Desired completion date <span aria-hidden="true">*</span>
+              </label>
+              <input
+                id="completion-date"
+                name="desired_completion_date"
+                type="date"
+                required
+              />
+              <p class="form-field__hint">
+                Share the actual target even if timing is urgent or uncertain.
+              </p>
+            </div>
+
+            <div class="form-field">
+              <label for="square-footage">
+                Approximate square footage <span aria-hidden="true">*</span>
+              </label>
+              <select
+                id="square-footage"
+                name="approximate_square_footage"
+                required
+              >
+                <option value="">Select a range</option>
+                {assessment.squareFootageRanges.map((option) => (
+                  <option value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <div class="intake-form__step-actions" hidden data-enhanced-actions>
+            <button class="button" type="button" data-next-step>
+              Continue to scope and condition
+            </button>
+          </div>
+        </fieldset>
+
+        <fieldset class="intake-step" id="scope-condition" data-step="1">
+          <legend>
+            <span class="intake-step__number">Step 2 of 3</span>
+            <span class="intake-step__title" data-step-heading tabindex="-1">
+              Scope and condition
+            </span>
+          </legend>
+          <p class="intake-step__intro">
+            Identify the areas involved, likely work, and any conditions that
+            may require a stop, specialist review, or referral.
+          </p>
+
+          <fieldset
+            class="form-group form-group--areas"
+            data-required-checkbox-group
+            data-group-label="Areas involved"
+          >
+            <legend>Areas involved <span aria-hidden="true">*</span></legend>
+            <p class="form-field__hint">Select every area that may be part of the request.</p>
+            <div class="choice-grid">
+              {assessment.areas.map((area) => (
+                <label class="choice-control">
+                  <input type="checkbox" name="areas_involved[]" value={area} />
+                  <span>{area}</span>
+                </label>
+              ))}
+            </div>
+          </fieldset>
+
+          <div class="question-sheet" aria-labelledby="scope-questions-title">
+            <h2 id="scope-questions-title">Work to consider</h2>
+            {assessment.scopeQuestions.map((question) => (
+              <fieldset class="question-row">
+                <legend>{question.label} <span aria-hidden="true">*</span></legend>
+                <div class="choice-row">
+                  {yesNoUnsure.map((option) => (
+                    <label class="choice-control choice-control--compact">
+                      <input
+                        type="radio"
+                        name={question.name}
+                        value={option.value}
+                        required
+                      />
+                      <span>{option.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </fieldset>
+            ))}
+          </div>
+
+          <div class="condition-review" aria-labelledby="condition-review-title">
+            <div class="condition-review__heading">
+              <p class="condition-review__label">Condition review</p>
+              <h2 id="condition-review-title">Known conditions at the property</h2>
+              <p>
+                Answering “Yes” does not mean Aseptaclean provides treatment or
+                regulated handling. These answers help identify work that may be
+                outside the current scope.
+              </p>
+            </div>
+
+            <div class="question-sheet question-sheet--conditions">
+              {assessment.conditionQuestions.map((question) => (
+                <fieldset
+                  class:list={[
+                    "question-row",
+                    {
+                      "question-row--stop":
+                        "stopFlag" in question && question.stopFlag
+                    }
+                  ]}
+                >
+                  <legend>{question.label} <span aria-hidden="true">*</span></legend>
+                  <div class="choice-row">
+                    {yesNoUnsure.map((option) => (
+                      <label class="choice-control choice-control--compact">
+                        <input
+                          type="radio"
+                          name={question.name}
+                          value={option.value}
+                          required
+                        />
+                        <span>{option.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                </fieldset>
+              ))}
+            </div>
+
+            <p class="condition-review__notice">
+              Human biological material, needles or sharps, sewage, active mold,
+              and other prohibited or hazardous conditions may require work in
+              the affected area to stop and may require specialist review or
+              referral. Do not disturb material for the purpose of this
+              assessment.
+            </p>
+          </div>
+
+          <div class="upload-field">
+            <label for="property-media">
+              Property photos or video <span class="form-field__optional">(strongly recommended)</span>
+            </label>
+            <p id="property-media-help">
+              Include wide room views and details that affect access or scope.
+              Do not upload identification, financial records, or other
+              documents unless directly necessary to show the property condition.
+            </p>
+            <div class="upload-field__control">
+              <input
+                id="property-media"
+                name="property_media[]"
+                type="file"
+                accept={assessment.upload.acceptedTypes}
+                aria-describedby="property-media-help property-media-limits"
+                multiple
+                data-upload-input
+                data-max-files={assessment.upload.maxFiles}
+                data-max-image-bytes={assessment.upload.maxImageBytes}
+                data-max-video-bytes={assessment.upload.maxVideoBytes}
+                data-max-total-bytes={assessment.upload.maxTotalBytes}
+                data-allowed-extensions={assessment.upload.allowedExtensions.join(",")}
+                data-image-extensions={assessment.upload.imageExtensions.join(",")}
+              />
+              <p id="property-media-limits">{assessment.upload.visibleLimits}</p>
+              <p class="upload-field__empty" data-upload-empty>
+                No files selected.
+              </p>
+              <ul
+                class="upload-field__files"
+                data-upload-list
+                aria-label="Selected property files"
+                hidden
+              ></ul>
+              <p
+                class="upload-field__error form-error"
+                data-upload-error
+                role="alert"
+                hidden
+              ></p>
+              <p
+                class="visually-hidden"
+                data-upload-status
+                role="status"
+                aria-live="polite"
+              ></p>
+            </div>
+          </div>
+
+          <div class="form-grid form-grid--text">
+            <div class="form-field">
+              <label for="access-notes">Access notes</label>
+              <textarea
+                id="access-notes"
+                name="access_notes"
+                rows="4"
+                placeholder="Stairs, elevators, gates, parking, keys, occupants, or access restrictions"
+              ></textarea>
+            </div>
+
+            <div class="form-field">
+              <label for="must-remain">
+                What must remain? <span aria-hidden="true">*</span>
+              </label>
+              <textarea
+                id="must-remain"
+                name="must_remain"
+                rows="5"
+                required
+                placeholder="Describe keep areas, items, documents, or anything requiring review. Enter “Nothing identified” if none."
+              ></textarea>
+            </div>
+
+            <div class="form-field">
+              <label for="must-remove">
+                What must be removed? <span aria-hidden="true">*</span>
+              </label>
+              <textarea
+                id="must-remove"
+                name="must_remove"
+                rows="5"
+                required
+                placeholder="Describe unwanted contents, rooms, or categories. Enter “Not sure” if the scope is still being decided."
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="intake-form__step-actions" hidden data-enhanced-actions>
+            <button
+              class="button button--secondary"
+              type="button"
+              data-previous-step
+            >
+              Back to property fit
+            </button>
+            <button class="button" type="button" data-next-step>
+              Continue to authority and contact
+            </button>
+          </div>
+        </fieldset>
+
+        <fieldset class="intake-step" id="authority-contact" data-step="2">
+          <legend>
+            <span class="intake-step__number">Step 3 of 3</span>
+            <span class="intake-step__title" data-step-heading tabindex="-1">
+              Authority and contact
+            </span>
+          </legend>
+          <p class="intake-step__intro">
+            A clear decision-maker is required before Aseptaclean can define or
+            approve a project scope.
+          </p>
+
+          <div class="form-grid">
+            <div class="form-field">
+              <label for="full-name">Full name <span aria-hidden="true">*</span></label>
+              <input
+                id="full-name"
+                name="full_name"
+                type="text"
+                autocomplete="name"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="phone">Phone <span aria-hidden="true">*</span></label>
+              <input
+                id="phone"
+                name="phone"
+                type="tel"
+                autocomplete="tel"
+                inputmode="tel"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="email">Email <span aria-hidden="true">*</span></label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                autocomplete="email"
+                inputmode="email"
+                required
+              />
+            </div>
+
+            <div class="form-field">
+              <label for="relationship">
+                Relationship to the property <span aria-hidden="true">*</span>
+              </label>
+              <select
+                id="relationship"
+                name="relationship_to_property"
+                required
+              >
+                <option value="">Select your relationship</option>
+                {assessment.relationships.map((option) => (
+                  <option value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+
+            <fieldset class="form-group">
+              <legend>
+                Are you authorized to approve the work? <span aria-hidden="true">*</span>
+              </legend>
+              <div class="choice-row">
+                <label class="choice-control">
+                  <input
+                    type="radio"
+                    name="authority_to_approve"
+                    value="yes"
+                    required
+                  />
+                  <span>Yes</span>
+                </label>
+                <label class="choice-control">
+                  <input
+                    type="radio"
+                    name="authority_to_approve"
+                    value="no"
+                    required
+                  />
+                  <span>No</span>
+                </label>
+              </div>
+              <p class="form-field__hint">
+                If not, explain who controls approval in the additional notes.
+              </p>
+            </fieldset>
+
+            <div class="form-field form-field--wide">
+              <label for="property-address">
+                Property address <span aria-hidden="true">*</span>
+              </label>
+              <textarea
+                id="property-address"
+                name="property_address"
+                rows="3"
+                autocomplete="street-address"
+                required
+              ></textarea>
+              <p class="form-field__hint">
+                This is used to evaluate service area, access, and logistics. It
+                is not published.
+              </p>
+            </div>
+
+            <fieldset class="form-group">
+              <legend>Preferred contact method <span aria-hidden="true">*</span></legend>
+              <div class="choice-row choice-row--wrap">
+                {assessment.contactMethods.map((method) => (
+                  <label class="choice-control">
+                    <input
+                      type="radio"
+                      name="preferred_contact_method"
+                      value={method}
+                      required
+                    />
+                    <span>{method}</span>
+                  </label>
+                ))}
+              </div>
+            </fieldset>
+
+            <div class="form-field">
+              <label for="best-contact-time">Best contact time</label>
+              <select id="best-contact-time" name="best_contact_time">
+                <option value="">Select a time window</option>
+                {assessment.contactTimes.map((option) => (
+                  <option value={option}>{option}</option>
+                ))}
+              </select>
+            </div>
+
+            <div class="form-field form-field--wide">
+              <label for="additional-notes">Additional notes</label>
+              <textarea
+                id="additional-notes"
+                name="additional_notes"
+                rows="5"
+                placeholder="Share decision-maker details, timing constraints, or other context that would help with the fit review."
+              ></textarea>
+            </div>
+          </div>
+
+          <div class="intake-form__consent">
+            <label class="consent-control">
+              <input type="checkbox" name="privacy_consent" value="yes" required />
+              <span>
+                I authorize Aseptaclean to contact me about this request and
+                understand that my information and property media will be used
+                to evaluate the requested project. I have read the
+                <a href={site.urls.privacyPolicy}>Privacy Policy</a> and
+                <a href={site.urls.terms}>Terms and Conditions</a>.
+                <span aria-hidden="true">*</span>
+              </span>
+            </label>
+            <label class="consent-control">
+              <input
+                type="checkbox"
+                name="scope_acknowledgment"
+                value="yes"
+                required
+              />
+              <span>
+                I understand that this request begins a fit review and does not
+                authorize work, create a service agreement, or reserve a project
+                date. <span aria-hidden="true">*</span>
+              </span>
+            </label>
+            <p>
+              Submitting this form authorizes Aseptaclean to contact you. It
+              does not authorize work or create a service agreement.
+            </p>
+          </div>
+
+          {
+            site.integrations.turnstileSiteKey && (
+              <div class="intake-form__turnstile">
+                <div
+                  class="cf-turnstile"
+                  data-sitekey={site.integrations.turnstileSiteKey}
+                  data-theme="light"
+                  data-size="flexible"
+                />
+                <p>Security verification is required before submission.</p>
+              </div>
+            )
+          }
+          <noscript>
+            <p class="intake-form__no-script">
+              All assessment questions remain available without JavaScript, but
+              online security verification requires it. Save your answers
+              separately and call Aseptaclean if you cannot enable JavaScript.
+            </p>
+          </noscript>
+
+          {!endpointAvailable && (
+            <div class="intake-form__availability" role="status">
+              <p>
+                Online submission is not fully configured in this preview.
+                Your answers will not be sent.
+              </p>
+            </div>
+          )}
+
+          <div class="intake-form__actions">
+            <button
+              class="button button--secondary"
+              type="button"
+              data-previous-step
+              hidden
+            >
+              Back to scope and condition
+            </button>
+            <button
+              class="button"
+              type="submit"
+              disabled={!endpointAvailable}
+              data-submit-button
+            >
+              <span data-submit-label>Submit My Handoff Plan Request</span>
+            </button>
+            <p
+              class="intake-form__submit-status"
+              data-submit-status
+              role="status"
+              aria-live="polite"
+              hidden
+            ></p>
+            <p>
+              A fit review is not a quote, booking confirmation, or service
+              agreement.
+            </p>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+</section>
+
+{
+  site.integrations.turnstileSiteKey && (
+    <script
+      is:inline
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+    />
+  )
+}
+
+<script>
+  type FormControl =
+    | HTMLInputElement
+    | HTMLSelectElement
+    | HTMLTextAreaElement;
+
+  interface StoredDraft {
+    expiresAt: number;
+    step?: number;
+    values: Record<string, string | string[]>;
+  }
+
+  interface ValidationIssue {
+    control: FormControl;
+    container: HTMLElement;
+    message: string;
+    key: string;
+    existingError?: HTMLElement;
+  }
+
+  const form = document.querySelector<HTMLFormElement>("[data-assessment-form]");
+
+  if (form) {
+    const steps = Array.from(
+      form.querySelectorAll<HTMLFieldSetElement>(":scope > [data-step]")
+    );
+    const indicators = Array.from(
+      document.querySelectorAll<HTMLElement>("[data-step-indicator]")
+    );
+    const errorSummary =
+      form.querySelector<HTMLElement>(".intake-form__errors");
+    const errorSummaryList = errorSummary?.querySelector("ul");
+    const draftStatus =
+      document.querySelector<HTMLElement>("[data-draft-status]");
+    const clearDraftButton =
+      document.querySelector<HTMLButtonElement>("[data-clear-draft]");
+    const uploadInput =
+      form.querySelector<HTMLInputElement>("[data-upload-input]");
+    const uploadList =
+      form.querySelector<HTMLUListElement>("[data-upload-list]");
+    const uploadEmpty =
+      form.querySelector<HTMLElement>("[data-upload-empty]");
+    const uploadError =
+      form.querySelector<HTMLElement>("[data-upload-error]");
+    const uploadStatus =
+      form.querySelector<HTMLElement>("[data-upload-status]");
+    const submitButton =
+      form.querySelector<HTMLButtonElement>("[data-submit-button]");
+    const submitLabel =
+      form.querySelector<HTMLElement>("[data-submit-label]");
+    const submitStatus =
+      form.querySelector<HTMLElement>("[data-submit-status]");
+    const reducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    );
+    const localDraftKey = "aseptaclean-assessment-draft-v1";
+    const sessionDraftKey = "aseptaclean-assessment-session-v1";
+    const attributionKey = "aseptaclean-assessment-attribution-v1";
+    const draftLifetime = 24 * 60 * 60 * 1000;
+    const attemptedSteps = new Set<number>();
+    let currentStep = 0;
+    let saveTimer = 0;
+
+    const localFieldNames = new Set([
+      "property_type",
+      "property_situation",
+      "approximate_square_footage",
+      "vacant_status",
+      "areas_involved[]",
+      "contents_removal",
+      "heavy_cleaning",
+      "garage_storage",
+      "appliance_interiors",
+      "cabinet_interiors",
+      "animal_waste",
+      "human_biological_material",
+      "needles_sharps",
+      "sewage",
+      "mold",
+      "pest_activity",
+      "relationship_to_property",
+      "authority_to_approve",
+      "preferred_contact_method",
+      "best_contact_time"
+    ]);
+
+    const persistentControls = Array.from(
+      form.querySelectorAll<FormControl>("input, select, textarea")
+    ).filter(
+      (control) =>
+        Boolean(control.name) &&
+        !["hidden", "file", "submit", "button"].includes(control.type) &&
+        control.name !== "privacy_consent"
+    );
+
+    const safeStorage = {
+      read(storage: Storage, key: string): StoredDraft | null {
+        try {
+          const raw = storage.getItem(key);
+          if (!raw) return null;
+          const parsed = JSON.parse(raw) as StoredDraft;
+          if (!parsed.expiresAt || parsed.expiresAt < Date.now()) {
+            storage.removeItem(key);
+            return null;
+          }
+          return parsed;
+        } catch {
+          return null;
+        }
+      },
+      write(storage: Storage, key: string, value: StoredDraft) {
+        try {
+          storage.setItem(key, JSON.stringify(value));
+        } catch {
+          // Storage can be unavailable in private or restricted browsing modes.
+        }
+      },
+      remove(storage: Storage, key: string) {
+        try {
+          storage.removeItem(key);
+        } catch {
+          // Nothing else is required when storage is unavailable.
+        }
+      }
+    };
+
+    const getFieldValue = (
+      controls: FormControl[]
+    ): string | string[] | null => {
+      const first = controls[0];
+      if (!first) return null;
+
+      if (first instanceof HTMLInputElement && first.type === "radio") {
+        return (
+          controls.find(
+            (control) =>
+              control instanceof HTMLInputElement && control.checked
+          )?.value ?? ""
+        );
+      }
+
+      if (first instanceof HTMLInputElement && first.type === "checkbox") {
+        return controls
+          .filter(
+            (control) =>
+              control instanceof HTMLInputElement && control.checked
+          )
+          .map((control) => control.value);
+      }
+
+      return first.value;
+    };
+
+    const collectStoredValues = (
+      useLocalStorage: boolean
+    ): Record<string, string | string[]> => {
+      const values: Record<string, string | string[]> = {};
+      const names = new Set(
+        persistentControls
+          .map((control) => control.name)
+          .filter((name) => localFieldNames.has(name) === useLocalStorage)
+      );
+
+      for (const name of names) {
+        const controls = persistentControls.filter(
+          (control) => control.name === name
+        );
+        const value = getFieldValue(controls);
+        if (
+          value !== null &&
+          (Array.isArray(value) ? value.length > 0 : value !== "")
+        ) {
+          values[name] = value;
+        }
+      }
+      return values;
+    };
+
+    const saveDraft = () => {
+      const expiresAt = Date.now() + draftLifetime;
+      safeStorage.write(window.localStorage, localDraftKey, {
+        expiresAt,
+        step: currentStep,
+        values: collectStoredValues(true)
+      });
+      safeStorage.write(window.sessionStorage, sessionDraftKey, {
+        expiresAt,
+        values: collectStoredValues(false)
+      });
+    };
+
+    const scheduleDraftSave = () => {
+      window.clearTimeout(saveTimer);
+      saveTimer = window.setTimeout(saveDraft, 250);
+    };
+
+    const restoreValues = (values: Record<string, string | string[]>) => {
+      let restored = false;
+
+      for (const [name, storedValue] of Object.entries(values)) {
+        const controls = persistentControls.filter(
+          (control) => control.name === name
+        );
+        if (!controls.length) continue;
+
+        for (const control of controls) {
+          if (
+            control instanceof HTMLInputElement &&
+            ["radio", "checkbox"].includes(control.type)
+          ) {
+            const selectedValues = Array.isArray(storedValue)
+              ? storedValue
+              : [storedValue];
+            control.checked = selectedValues.includes(control.value);
+          } else if (typeof storedValue === "string") {
+            control.value = storedValue;
+          }
+        }
+        restored = true;
+      }
+
+      return restored;
+    };
+
+    const localDraft = safeStorage.read(window.localStorage, localDraftKey);
+    const sessionDraft = safeStorage.read(
+      window.sessionStorage,
+      sessionDraftKey
+    );
+    const restoredLocal = restoreValues(localDraft?.values ?? {});
+    const restoredSession = restoreValues(sessionDraft?.values ?? {});
+    const restored = restoredLocal || restoredSession;
+
+    if (
+      localDraft?.step !== undefined &&
+      localDraft.step >= 0 &&
+      localDraft.step < steps.length
+    ) {
+      currentStep = localDraft.step;
+    }
+
+    if (draftStatus && restored) {
+      draftStatus.hidden = false;
+      draftStatus.textContent =
+        "Saved answers restored. For privacy, file selections are never saved.";
+    }
+
+    if (clearDraftButton) {
+      clearDraftButton.hidden = false;
+      clearDraftButton.addEventListener("click", () => {
+        safeStorage.remove(window.localStorage, localDraftKey);
+        safeStorage.remove(window.sessionStorage, sessionDraftKey);
+        if (draftStatus) {
+          draftStatus.hidden = false;
+          draftStatus.textContent =
+            "Saved progress was forgotten. Answers currently on this page remain until you leave or change them.";
+        }
+      });
+    }
+
+    const sanitizeReferrer = (referrer: string) => {
+      if (!referrer) return "";
+      try {
+        const url = new URL(referrer);
+        return `${url.origin}${url.pathname}`;
+      } catch {
+        return "";
+      }
+    };
+
+    const populateAttribution = () => {
+      const allowed = [
+        "utm_source",
+        "utm_medium",
+        "utm_campaign",
+        "utm_term",
+        "utm_content",
+        "gclid"
+      ];
+      const parameters = new URLSearchParams(window.location.search);
+      let attribution: Record<string, string> = {};
+
+      try {
+        attribution = JSON.parse(
+          window.sessionStorage.getItem(attributionKey) ?? "{}"
+        ) as Record<string, string>;
+      } catch {
+        attribution = {};
+      }
+
+      for (const name of allowed) {
+        const value = parameters.get(name);
+        if (value) attribution[name] = value.slice(0, 250);
+      }
+      attribution.landing_page ||= window.location.pathname;
+      attribution.referrer ||= sanitizeReferrer(document.referrer);
+
+      try {
+        window.sessionStorage.setItem(
+          attributionKey,
+          JSON.stringify(attribution)
+        );
+      } catch {
+        // The hidden values still work for this page view.
+      }
+
+      for (const [name, value] of Object.entries(attribution)) {
+        const input = form.elements.namedItem(name);
+        if (input instanceof HTMLInputElement) input.value = value;
+      }
+    };
+
+    populateAttribution();
+
+    const timestampInput = form.elements.namedItem("submission_timestamp");
+    if (timestampInput instanceof HTMLInputElement) {
+      timestampInput.value = new Date().toISOString();
+    }
+    const idempotencyInput = form.elements.namedItem("idempotency_key");
+    if (idempotencyInput instanceof HTMLInputElement) {
+      idempotencyInput.value =
+        window.crypto?.randomUUID?.() ??
+        `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    }
+
+    const formatBytes = (bytes: number) => {
+      if (bytes < 1024 * 1024) {
+        return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+      }
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    };
+
+    const fileExtension = (file: File) =>
+      file.name.split(".").pop()?.toLowerCase() ?? "";
+
+    const renderUpload = () => {
+      if (
+        !uploadInput ||
+        !uploadList ||
+        !uploadEmpty ||
+        !uploadError ||
+        !uploadStatus
+      ) {
+        return [];
+      }
+
+      const files = Array.from(uploadInput.files ?? []);
+      const maxFiles = Number(uploadInput.dataset.maxFiles);
+      const maxImageBytes = Number(uploadInput.dataset.maxImageBytes);
+      const maxVideoBytes = Number(uploadInput.dataset.maxVideoBytes);
+      const maxTotalBytes = Number(uploadInput.dataset.maxTotalBytes);
+      const allowedExtensions = new Set(
+        uploadInput.dataset.allowedExtensions?.split(",") ?? []
+      );
+      const imageExtensions = new Set(
+        uploadInput.dataset.imageExtensions?.split(",") ?? []
+      );
+      const errorsByIndex = new Map<number, string[]>();
+      const overallErrors: string[] = [];
+      const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+
+      if (files.length > maxFiles) {
+        overallErrors.push(
+          `Select no more than ${maxFiles} property files.`
+        );
+      }
+      if (totalBytes > maxTotalBytes) {
+        overallErrors.push(
+          `The combined selection is ${formatBytes(totalBytes)}; the limit is ${formatBytes(maxTotalBytes)}.`
+        );
+      }
+
+      files.forEach((file, index) => {
+        const extension = fileExtension(file);
+        const fileErrors: string[] = [];
+        if (!allowedExtensions.has(extension)) {
+          fileErrors.push("Unsupported file type");
+        } else {
+          const limit = imageExtensions.has(extension)
+            ? maxImageBytes
+            : maxVideoBytes;
+          if (file.size > limit) {
+            fileErrors.push(`Exceeds the ${formatBytes(limit)} file limit`);
+          }
+        }
+        if (fileErrors.length) errorsByIndex.set(index, fileErrors);
+      });
+
+      uploadList.replaceChildren();
+      files.forEach((file, index) => {
+        const item = document.createElement("li");
+        const details = document.createElement("span");
+        const name = document.createElement("strong");
+        const metadata = document.createElement("small");
+        const remove = document.createElement("button");
+        const fileErrors = errorsByIndex.get(index) ?? [];
+
+        item.dataset.state = fileErrors.length ? "error" : "selected";
+        name.textContent = file.name;
+        metadata.textContent = `${formatBytes(file.size)}${
+          fileErrors.length ? ` · ${fileErrors.join(" · ")}` : ""
+        }`;
+        details.append(name, metadata);
+
+        remove.type = "button";
+        remove.className = "upload-field__remove";
+        remove.textContent = "Remove";
+        remove.setAttribute("aria-label", `Remove ${file.name}`);
+        remove.addEventListener("click", () => {
+          try {
+            const transfer = new DataTransfer();
+            files.forEach((candidate, candidateIndex) => {
+              if (candidateIndex !== index) transfer.items.add(candidate);
+            });
+            uploadInput.files = transfer.files;
+            renderUpload();
+            uploadStatus.textContent = `${file.name} removed.`;
+          } catch {
+            uploadInput.value = "";
+            renderUpload();
+            uploadStatus.textContent =
+              "The file selection was cleared because this browser does not support individual removal.";
+          }
+        });
+
+        item.append(details, remove);
+        uploadList.append(item);
+      });
+
+      const allErrors = [
+        ...overallErrors,
+        ...Array.from(errorsByIndex.values()).flat()
+      ];
+      uploadInput.setCustomValidity(allErrors[0] ?? "");
+      uploadInput.setAttribute(
+        "aria-invalid",
+        allErrors.length ? "true" : "false"
+      );
+      uploadEmpty.hidden = files.length > 0;
+      uploadList.hidden = files.length === 0;
+      uploadError.hidden = allErrors.length === 0;
+      uploadError.textContent = allErrors.length
+        ? `${overallErrors.join(" ")} ${
+            errorsByIndex.size
+              ? "Remove files marked with an error before continuing."
+              : ""
+          }`.trim()
+        : "";
+      uploadError.id = "property-media-error";
+
+      const describedBy = new Set(
+        (uploadInput.getAttribute("aria-describedby") ?? "")
+          .split(/\s+/)
+          .filter(Boolean)
+      );
+      if (allErrors.length) describedBy.add(uploadError.id);
+      else describedBy.delete(uploadError.id);
+      uploadInput.setAttribute(
+        "aria-describedby",
+        Array.from(describedBy).join(" ")
+      );
+      uploadStatus.textContent = files.length
+        ? `${files.length} file${files.length === 1 ? "" : "s"} selected.`
+        : "No property files selected.";
+
+      return allErrors;
+    };
+
+    uploadInput?.addEventListener("change", () => {
+      renderUpload();
+      if (attemptedSteps.has(currentStep)) validateCurrentStep(false);
+    });
+    renderUpload();
+
+    const labelForControl = (control: FormControl) => {
+      if (control.id) {
+        const label = form.querySelector<HTMLLabelElement>(
+          `label[for="${CSS.escape(control.id)}"]`
+        );
+        if (label) return label.textContent?.replace("*", "").trim() ?? "Field";
+      }
+      const fieldset = control.closest("fieldset");
+      const legend = fieldset?.querySelector<HTMLElement>(":scope > legend");
+      return legend?.textContent?.replace("*", "").trim() ?? "Field";
+    };
+
+    const validationMessage = (control: FormControl) => {
+      const label = labelForControl(control);
+      if (control.validity.valueMissing) return `${label} is required.`;
+      if (control.validity.typeMismatch) {
+        return `Enter a valid ${label.toLowerCase()}.`;
+      }
+      return `Review ${label.toLowerCase()}.`;
+    };
+
+    const issueContainer = (control: FormControl) =>
+      (control.closest(
+        ".form-field, .form-group, .upload-field, .question-row"
+      ) ?? control.parentElement) as HTMLElement;
+
+    const collectIssues = (step: HTMLFieldSetElement) => {
+      const issues: ValidationIssue[] = [];
+      const seen = new Set<string>();
+      const controls = Array.from(
+        step.querySelectorAll<FormControl>("input, select, textarea")
+      ).filter(
+        (control) =>
+          !["hidden", "button", "submit"].includes(control.type) &&
+          !control.disabled
+      );
+
+      const requiredCheckboxGroup = step.querySelector<HTMLElement>(
+        "[data-required-checkbox-group]"
+      );
+      if (requiredCheckboxGroup) {
+        const checkboxes = Array.from(
+          requiredCheckboxGroup.querySelectorAll<HTMLInputElement>(
+            'input[type="checkbox"]'
+          )
+        );
+        if (!checkboxes.some((checkbox) => checkbox.checked)) {
+          const first = checkboxes[0];
+          if (first) {
+            issues.push({
+              control: first,
+              container: requiredCheckboxGroup,
+              message: "Select at least one area involved.",
+              key: "areas_involved"
+            });
+            seen.add("areas_involved[]");
+          }
+        }
+      }
+
+      for (const control of controls) {
+        if (control === uploadInput) {
+          if (!control.validity.valid && uploadError) {
+            issues.push({
+              control,
+              container: issueContainer(control),
+              message:
+                uploadError.textContent?.trim() ||
+                "Review the selected property files.",
+              key: "property_media",
+              existingError: uploadError
+            });
+          }
+          continue;
+        }
+
+        const key =
+          control instanceof HTMLInputElement &&
+          ["radio", "checkbox"].includes(control.type)
+            ? control.name
+            : control.id || control.name;
+        if (!key || seen.has(key) || control.validity.valid) continue;
+        seen.add(key);
+        issues.push({
+          control,
+          container: issueContainer(control),
+          message: validationMessage(control),
+          key
+        });
+      }
+      return issues;
+    };
+
+    const clearValidation = (scope: ParentNode) => {
+      scope
+        .querySelectorAll<HTMLElement>("[data-generated-error]")
+        .forEach((error) => error.remove());
+      scope
+        .querySelectorAll<FormControl>('[aria-invalid="true"]')
+        .forEach((control) => {
+          if (control !== uploadInput) control.removeAttribute("aria-invalid");
+          const errorIds = (
+            control.getAttribute("aria-describedby") ?? ""
+          )
+            .split(/\s+/)
+            .filter((id) => id && !id.startsWith("assessment-error-"));
+          if (errorIds.length) {
+            control.setAttribute("aria-describedby", errorIds.join(" "));
+          } else {
+            control.removeAttribute("aria-describedby");
+          }
+        });
+    };
+
+    const prepareIssueControl = (issue: ValidationIssue, index: number) => {
+      if (!issue.control.id) {
+        issue.control.id = `assessment-field-${issue.key.replace(
+          /[^a-z0-9]+/gi,
+          "-"
+        )}-${index}`;
+      }
+      const groupControls =
+        issue.control instanceof HTMLInputElement &&
+        ["radio", "checkbox"].includes(issue.control.type)
+          ? Array.from(
+              form.querySelectorAll<FormControl>(
+                `[name="${CSS.escape(issue.control.name)}"]`
+              )
+            )
+          : [issue.control];
+      const errorId =
+        issue.existingError?.id || `assessment-error-${issue.control.id}`;
+
+      groupControls.forEach((control) => {
+        control.setAttribute("aria-invalid", "true");
+        const describedBy = new Set(
+          (control.getAttribute("aria-describedby") ?? "")
+            .split(/\s+/)
+            .filter(Boolean)
+        );
+        describedBy.add(errorId);
+        control.setAttribute(
+          "aria-describedby",
+          Array.from(describedBy).join(" ")
+        );
+      });
+
+      if (!issue.existingError) {
+        const inlineError = document.createElement("p");
+        inlineError.className = "form-error";
+        inlineError.id = errorId;
+        inlineError.dataset.generatedError = "";
+        inlineError.textContent = issue.message;
+        issue.container.append(inlineError);
+      }
+    };
+
+    const renderIssues = (
+      issues: ValidationIssue[],
+      focusSummary: boolean
+    ) => {
+      if (!errorSummary || !errorSummaryList) return;
+      errorSummaryList.replaceChildren();
+
+      if (!issues.length) {
+        errorSummary.hidden = true;
+        errorSummary.removeAttribute("role");
+        return;
+      }
+
+      issues.forEach((issue, index) => {
+        prepareIssueControl(issue, index);
+        const item = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = `#${issue.control.id}`;
+        link.textContent = issue.message;
+        link.addEventListener("click", () => {
+          issue.control.focus();
+        });
+        item.append(link);
+        errorSummaryList.append(item);
+      });
+
+      errorSummary.hidden = false;
+      errorSummary.setAttribute("role", "alert");
+      if (focusSummary) {
+        errorSummary.focus({ preventScroll: true });
+        errorSummary.scrollIntoView({
+          behavior: reducedMotion.matches ? "auto" : "smooth",
+          block: "start"
+        });
+      }
+    };
+
+    const validateCurrentStep = (focusSummary = true) => {
+      const step = steps[currentStep];
+      if (!step) return true;
+      clearValidation(step);
+      renderUpload();
+      const issues = collectIssues(step);
+      renderIssues(issues, focusSummary);
+      return issues.length === 0;
+    };
+
+    const showStep = (index: number, focusHeading = true) => {
+      currentStep = Math.max(0, Math.min(index, steps.length - 1));
+      steps.forEach((step, stepIndex) => {
+        step.hidden = stepIndex !== currentStep;
+      });
+      indicators.forEach((indicator, indicatorIndex) => {
+        const state =
+          indicatorIndex === currentStep
+            ? "current"
+            : indicatorIndex < currentStep
+              ? "complete"
+              : "upcoming";
+        indicator.dataset.state = state;
+        if (state === "current") indicator.setAttribute("aria-current", "step");
+        else indicator.removeAttribute("aria-current");
+      });
+      errorSummary?.setAttribute("hidden", "");
+      saveDraft();
+
+      if (focusHeading) {
+        const heading =
+          steps[currentStep]?.querySelector<HTMLElement>("[data-step-heading]");
+        heading?.focus({ preventScroll: true });
+        heading?.scrollIntoView({
+          behavior: reducedMotion.matches ? "auto" : "smooth",
+          block: "start"
+        });
+      }
+    };
+
+    form.noValidate = true;
+    form.dataset.enhanced = "true";
+    form
+      .querySelectorAll<HTMLElement>("[data-enhanced-actions]")
+      .forEach((actions) => {
+        actions.hidden = false;
+      });
+    form
+      .querySelectorAll<HTMLButtonElement>(
+        "#authority-contact [data-previous-step]"
+      )
+      .forEach((button) => {
+        button.hidden = false;
+      });
+
+    form.querySelectorAll<HTMLButtonElement>("[data-next-step]").forEach(
+      (button) => {
+        button.addEventListener("click", () => {
+          attemptedSteps.add(currentStep);
+          if (validateCurrentStep(true)) showStep(currentStep + 1);
+        });
+      }
+    );
+
+    form
+      .querySelectorAll<HTMLButtonElement>("[data-previous-step]")
+      .forEach((button) => {
+        button.addEventListener("click", () => showStep(currentStep - 1));
+      });
+
+    form.addEventListener("input", scheduleDraftSave);
+    form.addEventListener("change", (event) => {
+      scheduleDraftSave();
+      if (
+        attemptedSteps.has(currentStep) &&
+        event.target instanceof HTMLElement &&
+        event.target !== uploadInput
+      ) {
+        validateCurrentStep(false);
+      }
+    });
+
+    const resetTurnstile = () => {
+      const turnstile = (
+        window as Window & {
+          turnstile?: { reset: (widget?: string | HTMLElement) => void };
+        }
+      ).turnstile;
+      const widget = form.querySelector<HTMLElement>(".cf-turnstile");
+      if (turnstile && widget) turnstile.reset(widget);
+    };
+
+    const setSubmitting = (submitting: boolean, message = "") => {
+      if (submitButton) submitButton.disabled = submitting;
+      form.setAttribute("aria-busy", String(submitting));
+      if (submitLabel) {
+        submitLabel.textContent = submitting
+          ? "Sending request…"
+          : "Submit My Handoff Plan Request";
+      }
+      if (submitStatus) {
+        submitStatus.hidden = !message;
+        submitStatus.textContent = message;
+      }
+    };
+
+    const submitWithProgress = () =>
+      new Promise<{ status: number; payload: Record<string, unknown> }>(
+        (resolve, reject) => {
+          const request = new XMLHttpRequest();
+          request.open("POST", form.action);
+          request.setRequestHeader("Accept", "application/json");
+          request.timeout = 90_000;
+          request.upload.addEventListener("progress", (progressEvent) => {
+            if (!submitStatus || !progressEvent.lengthComputable) return;
+            const percentage = Math.round(
+              (progressEvent.loaded / progressEvent.total) * 100
+            );
+            submitStatus.hidden = false;
+            submitStatus.textContent =
+              percentage < 100
+                ? `Uploading property details and media: ${percentage}%`
+                : "Upload complete. Confirming delivery…";
+          });
+          request.addEventListener("load", () => {
+            let payload: Record<string, unknown> = {};
+            try {
+              payload = JSON.parse(request.responseText) as Record<
+                string,
+                unknown
+              >;
+            } catch {
+              payload = {};
+            }
+            resolve({ status: request.status, payload });
+          });
+          request.addEventListener("error", () =>
+            reject(new Error("network"))
+          );
+          request.addEventListener("timeout", () =>
+            reject(new Error("timeout"))
+          );
+          request.send(new FormData(form));
+        }
+      );
+
+    form.addEventListener("submit", async (event) => {
+      steps.forEach((step) => clearValidation(step));
+      renderUpload();
+      const issues = steps.flatMap((step) => collectIssues(step));
+      if (issues.length) {
+        event.preventDefault();
+        const issueStep = steps.findIndex((step) =>
+          step.contains(issues[0]?.control ?? null)
+        );
+        showStep(Math.max(0, issueStep), false);
+        renderIssues(issues, true);
+        return;
+      }
+      if (!form.action) {
+        event.preventDefault();
+        return;
+      }
+
+      event.preventDefault();
+      const turnstileToken = form.elements.namedItem("cf-turnstile-response");
+      if (
+        !(turnstileToken instanceof HTMLInputElement) ||
+        !turnstileToken.value
+      ) {
+        if (submitStatus) {
+          submitStatus.hidden = false;
+          submitStatus.textContent =
+            "Complete the security verification, then submit again.";
+          submitStatus.focus();
+        }
+        return;
+      }
+
+      if (timestampInput instanceof HTMLInputElement) {
+        timestampInput.value = new Date().toISOString();
+      }
+      setSubmitting(true, "Preparing your request…");
+
+      try {
+        const { status, payload } = await submitWithProgress();
+        if (status >= 200 && status < 300 && payload.ok === true) {
+          safeStorage.remove(window.localStorage, localDraftKey);
+          safeStorage.remove(window.sessionStorage, sessionDraftKey);
+          const submissionId =
+            typeof payload.submissionId === "string"
+              ? payload.submissionId
+              : "";
+          const callbackWindow =
+            typeof payload.callbackWindow === "string"
+              ? payload.callbackWindow
+              : "next-business-window";
+          const parameters = new URLSearchParams({
+            received: "1",
+            callback: callbackWindow,
+            email:
+              payload.confirmationEmailSent === true ? "sent" : "attention"
+          });
+          if (submissionId) parameters.set("submission", submissionId);
+          window.location.assign(`/thank-you/?${parameters.toString()}`);
+          return;
+        }
+
+        const message =
+          typeof payload.message === "string"
+            ? payload.message
+            : "We could not send the request. Your answers remain here. Please try again or call Aseptaclean.";
+        setSubmitting(false, message);
+        resetTurnstile();
+      } catch {
+        setSubmitting(
+          false,
+          "The request could not be sent. Your answers remain here. Check your connection and try again, or call Aseptaclean."
+        );
+        resetTurnstile();
+      }
+    });
+
+    showStep(currentStep, false);
+  }
+</script>
+
+<style>
+  .assessment {
+    background: var(--color-warm-white);
+  }
+
+  .assessment__masthead {
+    display: grid;
+    gap: var(--space-6);
+    padding-block: var(--space-7) var(--space-6);
+  }
+
+  .assessment__intro {
+    max-width: 49rem;
+  }
+
+  .assessment__eyebrow,
+  .assessment__record-label,
+  .assessment__next-label,
+  .condition-review__label {
+    margin: 0 0 var(--space-3);
+    color: var(--color-blue-500);
+    font-family: var(--font-heading);
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .assessment h1 {
+    max-width: 16ch;
+    margin-block: 0 var(--space-4);
+  }
+
+  .assessment__lead {
+    max-width: 44rem;
+    margin: 0;
+    font-size: var(--step-1);
+  }
+
+  .assessment__facts {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    border-block: 1px solid var(--color-rule);
+    padding-block: var(--space-4);
+  }
+
+  .assessment__facts div {
+    display: grid;
+    grid-template-columns: minmax(7.5rem, 0.7fr) minmax(0, 1.3fr);
+    gap: var(--space-3);
+  }
+
+  .assessment__facts dt {
+    color: var(--color-ink-500);
+    font-size: var(--step--1);
+  }
+
+  .assessment__facts dd {
+    margin: 0;
+    color: var(--color-navy-900);
+    font-weight: 700;
+  }
+
+  .assessment__body {
+    display: grid;
+    border-top: 1px solid var(--color-rule);
+  }
+
+  .assessment__rail {
+    border-bottom: 1px solid var(--color-rule);
+    padding-block: var(--space-5);
+  }
+
+  .assessment__record-label {
+    margin-bottom: var(--space-1);
+    color: var(--color-navy-800);
+  }
+
+  .assessment__draft {
+    margin: 0;
+    color: var(--color-ink-500);
+    font-size: var(--step--1);
+  }
+
+  .assessment__steps {
+    display: grid;
+    gap: var(--space-3);
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .assessment__steps li {
+    display: grid;
+    grid-template-columns: 2.25rem minmax(0, 1fr);
+    gap: var(--space-3);
+    border-top: 1px solid var(--color-rule);
+    padding-top: var(--space-3);
+  }
+
+  .assessment__step-number {
+    color: var(--color-blue-500);
+    font-family: var(--font-heading);
+    font-size: var(--step--1);
+    font-weight: 700;
+  }
+
+  .assessment__steps strong,
+  .assessment__steps small {
+    display: block;
+  }
+
+  .assessment__step-label-short {
+    display: none;
+  }
+
+  .assessment__steps strong {
+    color: var(--color-navy-900);
+    font-family: var(--font-heading);
+  }
+
+  .assessment__steps small {
+    margin-top: var(--space-1);
+    color: var(--color-ink-500);
+    line-height: 1.45;
+  }
+
+  .assessment__next {
+    margin-top: var(--space-6);
+    border-left: 2px solid var(--color-blue-500);
+    padding-left: var(--space-4);
+  }
+
+  .assessment__next-label {
+    margin-bottom: var(--space-2);
+    color: var(--color-navy-800);
+  }
+
+  .assessment__next p:last-child {
+    margin: 0;
+    font-size: var(--step--1);
+  }
+
+  .assessment__form-column {
+    min-width: 0;
+    padding-block: var(--space-5) var(--space-8);
+  }
+
+  .assessment__privacy-note {
+    border-block: 1px solid var(--color-rule);
+    padding-block: var(--space-3);
+    color: var(--color-ink-500);
+    font-size: var(--step--1);
+  }
+
+  .assessment__privacy-note p {
+    margin: 0;
+  }
+
+  .assessment__clear-draft {
+    min-height: 3rem;
+    border: 0;
+    margin-top: var(--space-2);
+    padding: 0;
+    background: transparent;
+    color: var(--color-navy-800);
+    cursor: pointer;
+    font-weight: 700;
+    text-decoration: underline;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+
+  .assessment__clear-draft:hover {
+    color: var(--color-navy-900);
+    text-decoration-thickness: 0.12em;
+  }
+
+  .assessment__draft-status {
+    margin-top: var(--space-2) !important;
+    color: var(--color-success);
+    font-weight: 700;
+  }
+
+  .intake-form {
+    margin-top: var(--space-5);
+  }
+
+  .intake-form__errors {
+    scroll-margin-top: 6rem;
+    border: 2px solid var(--color-error);
+    padding: var(--space-4);
+    background: #f8ecea;
+    color: #6f211e;
+  }
+
+  .intake-form__errors h2 {
+    margin: 0;
+    color: #6f211e;
+    font-size: var(--step-1);
+  }
+
+  .intake-form__errors ul {
+    display: grid;
+    gap: var(--space-2);
+    margin-block: var(--space-3) 0;
+    padding-left: 1.25rem;
+  }
+
+  .intake-form__errors a {
+    color: #6f211e;
+    font-weight: 700;
+  }
+
+  .intake-step {
+    min-width: 0;
+    border: 0;
+    margin: 0;
+    padding: var(--space-7) 0;
+  }
+
+  .intake-step + .intake-step {
+    border-top: 2px solid var(--color-navy-800);
+  }
+
+  .intake-step > legend {
+    display: grid;
+    width: 100%;
+    gap: var(--space-1);
+    padding: 0;
+    color: var(--color-navy-900);
+    font-family: var(--font-heading);
+  }
+
+  .intake-step__number {
+    color: var(--color-blue-500);
+    font-size: var(--step--1);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .intake-step__title {
+    scroll-margin-top: 6rem;
+    font-size: var(--step-3);
+    font-weight: 700;
+    line-height: 1.15;
+  }
+
+  .intake-step__title:focus {
+    outline: none;
+  }
+
+  .intake-step__title:focus-visible {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 5px;
+  }
+
+  .intake-step__intro {
+    max-width: 44rem;
+    margin: var(--space-3) 0 0;
+    color: var(--color-ink-500);
+  }
+
+  .intake-form__required-note {
+    margin-block: var(--space-4) 0;
+    color: var(--color-ink-500);
+    font-size: var(--step--1);
+  }
+
+  .form-grid {
+    display: grid;
+    gap: var(--space-5);
+    margin-top: var(--space-6);
+  }
+
+  .form-field,
+  .form-group {
+    min-width: 0;
+  }
+
+  .form-field label,
+  .form-group > legend,
+  .upload-field > label,
+  .question-row > legend {
+    display: block;
+    color: var(--color-navy-900);
+    font-family: var(--font-heading);
+    font-size: var(--step--1);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .form-field input,
+  .form-field select,
+  .form-field textarea,
+  .upload-field input[type="file"] {
+    width: 100%;
+    min-height: 3rem;
+    border: 1px solid var(--color-steel-300);
+    border-radius: var(--radius-control);
+    margin-top: var(--space-2);
+    padding: 0.75rem;
+    background: var(--color-paper);
+    color: var(--color-ink-700);
+  }
+
+  .form-field textarea {
+    min-height: 8rem;
+    resize: vertical;
+  }
+
+  .form-field input:hover,
+  .form-field select:hover,
+  .form-field textarea:hover,
+  .upload-field input[type="file"]:hover {
+    border-color: var(--color-navy-800);
+  }
+
+  .form-field input:focus-visible,
+  .form-field select:focus-visible,
+  .form-field textarea:focus-visible,
+  .upload-field input[type="file"]:focus-visible {
+    border-color: var(--color-focus);
+  }
+
+  .form-field [aria-invalid="true"],
+  .upload-field [aria-invalid="true"] {
+    border-color: var(--color-error);
+  }
+
+  .form-field__hint,
+  .upload-field p,
+  .intake-form__actions p,
+  .intake-form__consent > p {
+    margin: var(--space-2) 0 0;
+    color: var(--color-ink-500);
+    font-size: var(--step--1);
+  }
+
+  .form-field__optional {
+    color: var(--color-ink-500);
+    font-family: var(--font-body);
+    font-weight: 400;
+  }
+
+  .form-group {
+    border: 0;
+    margin: 0;
+    padding: 0;
+  }
+
+  .choice-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+
+  .choice-control {
+    position: relative;
+    display: inline-grid;
+    min-height: 3rem;
+    cursor: pointer;
+    grid-template-columns: 1.25rem minmax(0, 1fr);
+    align-items: center;
+    gap: var(--space-2);
+    border: 1px solid var(--color-rule);
+    border-radius: var(--radius-control);
+    padding: 0.65rem 0.8rem;
+    background: var(--color-paper);
+    color: var(--color-ink-700);
+    line-height: 1.35;
+  }
+
+  .choice-control:hover {
+    border-color: var(--color-blue-500);
+  }
+
+  .choice-control:has(input:checked) {
+    border-color: var(--color-navy-800);
+    background: rgb(106 155 195 / 0.12);
+    color: var(--color-navy-900);
+  }
+
+  .choice-control:has(input:focus-visible) {
+    outline: 3px solid var(--color-focus);
+    outline-offset: 3px;
+  }
+
+  .choice-control:has(input[aria-invalid="true"]) {
+    border-color: var(--color-error);
+  }
+
+  .choice-control input {
+    width: 1.15rem;
+    height: 1.15rem;
+    margin: 0;
+    accent-color: var(--color-navy-800);
+  }
+
+  .choice-control input:focus-visible {
+    outline: none;
+  }
+
+  .form-group--areas {
+    margin-top: var(--space-6);
+  }
+
+  .choice-grid {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-3);
+  }
+
+  .question-sheet {
+    margin-top: var(--space-7);
+    border-top: 2px solid var(--color-navy-800);
+  }
+
+  .question-sheet > h2 {
+    margin: 0;
+    border-bottom: 1px solid var(--color-rule);
+    padding-block: var(--space-4);
+    font-size: var(--step-2);
+  }
+
+  .question-row {
+    display: grid;
+    min-width: 0;
+    gap: var(--space-3);
+    border: 0;
+    border-bottom: 1px solid var(--color-rule);
+    margin: 0;
+    padding-block: var(--space-4);
+  }
+
+  .question-row .choice-row {
+    margin-top: 0;
+  }
+
+  .choice-control--compact {
+    min-height: 2.75rem;
+    padding-block: 0.5rem;
+    font-size: var(--step--1);
+  }
+
+  .condition-review {
+    margin-top: var(--space-7);
+    border-left: 3px solid var(--color-error);
+    padding-left: var(--space-4);
+  }
+
+  .condition-review__heading h2 {
+    margin-block: 0 var(--space-3);
+    font-size: var(--step-2);
+  }
+
+  .condition-review__heading > p:last-child {
+    margin: 0;
+  }
+
+  .condition-review__label {
+    color: var(--color-error);
+  }
+
+  .question-sheet--conditions {
+    margin-top: var(--space-5);
+    border-top-width: 1px;
+  }
+
+  .question-row--stop > legend::before {
+    color: var(--color-error);
+    content: "Review flag · ";
+  }
+
+  .condition-review__notice {
+    margin: var(--space-5) 0 0;
+    padding: var(--space-4);
+    background: #f8ecea;
+    color: #6f211e;
+    font-size: var(--step--1);
+  }
+
+  .upload-field {
+    margin-top: var(--space-7);
+    border-block: 1px solid var(--color-rule);
+    padding-block: var(--space-5);
+  }
+
+  .upload-field__control {
+    margin-top: var(--space-4);
+    padding: var(--space-4);
+    background:
+      repeating-linear-gradient(
+        0deg,
+        transparent,
+        transparent 2rem,
+        rgb(216 224 231 / 0.45) 2rem,
+        rgb(216 224 231 / 0.45) calc(2rem + 1px)
+      ),
+      var(--color-paper);
+  }
+
+  .upload-field input[type="file"] {
+    background: var(--color-warm-white);
+  }
+
+  .upload-field__empty {
+    border-top: 1px solid var(--color-rule);
+    padding-top: var(--space-3);
+  }
+
+  .upload-field__files {
+    display: grid;
+    gap: var(--space-2);
+    margin: var(--space-3) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .upload-field__files li {
+    display: grid;
+    min-width: 0;
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-3);
+    border-top: 1px solid var(--color-rule);
+    padding-top: var(--space-2);
+  }
+
+  .upload-field__files span,
+  .upload-field__files strong,
+  .upload-field__files small {
+    display: block;
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .upload-field__files strong {
+    color: var(--color-navy-900);
+  }
+
+  .upload-field__files small {
+    color: var(--color-ink-500);
+  }
+
+  .upload-field__files li[data-state="error"] small {
+    color: var(--color-error);
+    font-weight: 700;
+  }
+
+  .upload-field__remove {
+    min-height: 3rem;
+    border: 1px solid var(--color-navy-800);
+    border-radius: var(--radius-control);
+    padding-inline: var(--space-3);
+    background: var(--color-paper);
+    color: var(--color-navy-800);
+    cursor: pointer;
+    font-weight: 700;
+  }
+
+  .upload-field__remove:hover {
+    background: var(--color-navy-900);
+    color: var(--color-paper);
+  }
+
+  .form-error {
+    margin: var(--space-2) 0 0;
+    color: var(--color-error);
+    font-size: var(--step--1);
+    font-weight: 700;
+  }
+
+  .form-grid--text .form-field {
+    grid-column: 1 / -1;
+  }
+
+  .intake-form__consent {
+    margin-top: var(--space-7);
+    border-block: 1px solid var(--color-rule);
+    padding-block: var(--space-5);
+  }
+
+  .consent-control {
+    display: grid;
+    cursor: pointer;
+    grid-template-columns: 1.4rem minmax(0, 1fr);
+    gap: var(--space-3);
+    color: var(--color-navy-900);
+    font-weight: 600;
+  }
+
+  .consent-control input {
+    width: 1.25rem;
+    height: 1.25rem;
+    margin: 0.2rem 0 0;
+    accent-color: var(--color-navy-800);
+  }
+
+  .consent-control + .consent-control {
+    margin-top: var(--space-4);
+  }
+
+  .intake-form__availability {
+    margin-top: var(--space-5);
+    border-left: 3px solid var(--color-error);
+    padding: var(--space-3) var(--space-4);
+    background: #f8ecea;
+    color: #6f211e;
+  }
+
+  .intake-form__honeypot {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+  }
+
+  .intake-form__turnstile {
+    display: grid;
+    gap: var(--space-2);
+    margin-top: var(--space-5);
+  }
+
+  .intake-form__turnstile p,
+  .intake-form__submit-status {
+    margin: 0;
+    color: var(--color-ink-500);
+    font-size: var(--step--1);
+  }
+
+  .intake-form__no-script {
+    margin-top: var(--space-5);
+    border-left: 3px solid var(--color-blue-500);
+    padding: var(--space-3);
+    background: var(--color-paper);
+  }
+
+  .intake-form__submit-status {
+    border-left: 3px solid var(--color-blue-500);
+    padding: var(--space-3);
+    background: var(--color-paper);
+  }
+
+  .intake-form__availability p {
+    margin: 0;
+  }
+
+  .intake-form__actions {
+    display: grid;
+    gap: var(--space-3);
+    margin-top: var(--space-5);
+  }
+
+  .intake-form__step-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    border-top: 1px solid var(--color-rule);
+    margin-top: var(--space-7);
+    padding-top: var(--space-5);
+  }
+
+  .button--secondary {
+    border-color: var(--color-navy-800);
+    background: var(--color-paper);
+    color: var(--color-navy-800);
+  }
+
+  .button--secondary:hover {
+    background: var(--color-navy-900);
+    color: var(--color-paper);
+  }
+
+  .intake-form__actions .button {
+    width: 100%;
+  }
+
+  .assessment__steps li[data-state="current"] {
+    border-top-color: var(--color-navy-800);
+  }
+
+  .assessment__steps li[data-state="current"] .assessment__step-number,
+  .assessment__steps li[data-state="current"] strong {
+    color: var(--color-navy-900);
+  }
+
+  .assessment__steps li[data-state="complete"] .assessment__step-number::after {
+    content: " ✓";
+  }
+
+  @media (min-width: 40rem) {
+    .assessment {
+      background:
+        linear-gradient(
+          90deg,
+          transparent 0,
+          transparent calc(50% - 1px),
+          rgb(216 224 231 / 0.25) 50%,
+          transparent calc(50% + 1px)
+        ),
+        var(--color-warm-white);
+    }
+
+    .assessment__facts {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .assessment__facts div {
+      display: block;
+      border-left: 1px solid var(--color-rule);
+      padding-left: var(--space-3);
+    }
+
+    .assessment__facts dd {
+      margin-top: var(--space-1);
+    }
+
+    .form-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .form-group,
+    .form-field--wide {
+      grid-column: 1 / -1;
+    }
+
+    .choice-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .question-row {
+      grid-template-columns: minmax(12rem, 1fr) auto;
+      align-items: center;
+    }
+
+    .intake-form__actions {
+      grid-template-columns: repeat(2, minmax(0, max-content));
+      align-items: center;
+    }
+
+    .intake-form__actions p {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .assessment__masthead {
+      grid-template-columns: minmax(0, 1.55fr) minmax(19rem, 0.75fr);
+      align-items: end;
+      padding-block: var(--space-8) var(--space-7);
+    }
+
+    .assessment__facts {
+      grid-template-columns: 1fr;
+      align-self: stretch;
+    }
+
+    .assessment__facts div {
+      display: grid;
+    }
+
+    .assessment__facts dd {
+      margin-top: 0;
+    }
+
+    .assessment__body {
+      grid-template-columns: minmax(16rem, 0.7fr) minmax(0, 1.65fr);
+      column-gap: clamp(3rem, 7vw, 7rem);
+    }
+
+    .assessment__rail {
+      border-right: 1px solid var(--color-rule);
+      border-bottom: 0;
+      padding-block: var(--space-7);
+      padding-right: clamp(2rem, 4vw, 4rem);
+    }
+
+    .assessment__rail-inner {
+      position: sticky;
+      top: 6.5rem;
+    }
+
+    .assessment__form-column {
+      padding-block: var(--space-7) var(--space-8);
+    }
+
+    .intake-step {
+      padding-block: var(--space-8);
+    }
+  }
+
+  @media (max-width: 39.99rem) {
+    .assessment__masthead {
+      gap: var(--space-4);
+      padding-block: var(--space-6) var(--space-5);
+    }
+
+    .assessment__eyebrow {
+      margin-bottom: var(--space-2);
+    }
+
+    .assessment h1 {
+      margin-bottom: var(--space-3);
+    }
+
+    .assessment__lead {
+      font-size: var(--step-0);
+      line-height: 1.55;
+    }
+
+    .assessment__facts {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-3);
+      padding-block: var(--space-3);
+    }
+
+    .assessment__facts div {
+      display: block;
+    }
+
+    .assessment__facts div:nth-child(2) {
+      display: none;
+    }
+
+    .assessment__facts dd {
+      margin-top: var(--space-1);
+      font-size: var(--step--1);
+      line-height: 1.4;
+    }
+
+    .assessment__rail {
+      padding-block: var(--space-4);
+    }
+
+    .assessment__steps {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: var(--space-2);
+      margin-top: var(--space-4);
+    }
+
+    .assessment__steps li {
+      display: block;
+      border-top-color: var(--color-steel-300);
+      padding-top: var(--space-2);
+    }
+
+    .assessment__steps small,
+    .assessment__next,
+    .assessment__record-label,
+    .assessment__draft {
+      display: none;
+    }
+
+    .assessment__steps strong {
+      margin-top: var(--space-1);
+      font-size: 0.76rem;
+      line-height: 1.25;
+    }
+
+    .assessment__step-label-full {
+      display: none;
+    }
+
+    .assessment__step-label-short {
+      display: block;
+    }
+
+    .assessment__form-column {
+      padding-block: var(--space-4) var(--space-7);
+    }
+
+    .intake-form {
+      margin-top: var(--space-4);
+    }
+
+    .intake-step {
+      padding-block: var(--space-6);
+    }
+
+    .intake-step:first-of-type {
+      padding-top: var(--space-4);
+    }
+
+    .intake-step:first-of-type .intake-step__intro {
+      display: none;
+    }
+
+    .intake-form__step-actions,
+    .intake-form__actions {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .intake-form__step-actions .button {
+      width: 100%;
+    }
+
+  }
+
+  @media (max-width: 24rem) {
+    .choice-row {
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+
+    .choice-control {
+      width: 100%;
+    }
+
+  }
+</style>

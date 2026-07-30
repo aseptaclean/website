@@ -1,0 +1,58 @@
+---
+import Footer from "@components/Footer.astro";
+import Header from "@components/Header.astro";
+import MobileCTA from "@components/MobileCTA.astro";
+import SeoHead from "@components/SeoHead.astro";
+import { site } from "@data/site";
+import "@styles/global.css";
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  noindex?: boolean;
+  showMobileCta?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  noindex = false,
+  showMobileCta = true
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#122840" />
+    <SeoHead
+      title={title}
+      description={description}
+      canonicalPath={canonicalPath}
+      noindex={noindex}
+    />
+    {
+      site.integrations.termlyConsentScript && (
+        <script
+          is:inline
+          src={site.integrations.termlyConsentScript}
+          data-name="termly-embed-banner"
+          async
+        />
+      )
+    }
+  </head>
+  <body class:list={{ "has-mobile-cta": showMobileCta }}>
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <Header />
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+    {showMobileCta && <MobileCTA />}
+  </body>
+</html>
