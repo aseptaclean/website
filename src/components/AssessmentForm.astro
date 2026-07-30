@@ -3,7 +3,9 @@ import { assessment } from "@data/assessment";
 import { site } from "@data/site";
 
 const endpointAvailable = Boolean(
-  site.urls.formEndpoint && site.integrations.turnstileSiteKey
+  site.integrations.formEnabled &&
+    site.urls.formEndpoint &&
+    site.integrations.turnstileSiteKey
 );
 const yesNoUnsure = [
   { value: "yes", label: "Yes" },

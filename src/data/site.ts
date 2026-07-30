@@ -58,6 +58,7 @@ export const site = {
     cookiePolicy: value("PUBLIC_TERMLY_COOKIE_POLICY_URL")
   },
   integrations: {
+    formEnabled: value("PUBLIC_FORM_ENABLED") === "true",
     turnstileSiteKey: value("PUBLIC_TURNSTILE_SITE_KEY"),
     termlyConsentScript: value("PUBLIC_TERMLY_CONSENT_SCRIPT")
   },

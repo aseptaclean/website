@@ -22,6 +22,8 @@ interface ImportMetaEnv {
   readonly PUBLIC_LOGO_URL?: string;
   readonly PUBLIC_TSWMP_STATUS?: string;
   readonly PUBLIC_DEPLOYMENT_ENV?: string;
+  readonly PUBLIC_LAUNCH_MODE?: string;
+  readonly PUBLIC_FORM_ENABLED?: string;
   readonly PUBLIC_TURNSTILE_SITE_KEY?: string;
   readonly PUBLIC_TERMLY_PRIVACY_URL?: string;
   readonly PUBLIC_TERMLY_TERMS_URL?: string;

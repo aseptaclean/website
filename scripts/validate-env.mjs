@@ -38,7 +38,7 @@ if (mode !== "production" && !args.has("--production")) {
   process.exit(0);
 }
 
-const required = [
+const fullProductionRequired = [
   "PUBLIC_SITE_URL",
   "PUBLIC_BUSINESS_NAME",
   "PUBLIC_LEGAL_NAME",
@@ -58,6 +58,7 @@ const required = [
   "PUBLIC_FOUNDER_NAME",
   "PUBLIC_TSWMP_STATUS",
   "PUBLIC_DEPLOYMENT_ENV",
+  "PUBLIC_FORM_ENABLED",
   "TURNSTILE_SECRET_KEY",
   "HUBSPOT_ACCESS_TOKEN",
   "HUBSPOT_PIPELINE_ID",
@@ -70,6 +71,28 @@ const required = [
   "TWILIO_FROM_NUMBER",
   "LEAD_ALERT_PHONE"
 ];
+const privatePreviewRequired = [
+  "PUBLIC_SITE_URL",
+  "PUBLIC_BUSINESS_NAME",
+  "PUBLIC_LEGAL_NAME",
+  "PUBLIC_PHONE",
+  "PUBLIC_SMS_NUMBER",
+  "PUBLIC_EMAIL",
+  "PUBLIC_SERVICE_AREA",
+  "PUBLIC_RESPONSE_TIME",
+  "PUBLIC_BUSINESS_HOURS",
+  "PUBLIC_ASSESSMENT_FEE",
+  "PUBLIC_STARTING_PRICE",
+  "PUBLIC_FOUNDER_NAME",
+  "PUBLIC_TSWMP_STATUS",
+  "PUBLIC_DEPLOYMENT_ENV",
+  "PUBLIC_LAUNCH_MODE",
+  "PUBLIC_FORM_ENABLED"
+];
+const privatePreview = values.PUBLIC_LAUNCH_MODE === "preview";
+const required = privatePreview
+  ? privatePreviewRequired
+  : fullProductionRequired;
 
 const placeholderPattern =
   /(?:owner (?:input|verification) required|replace[-_ ]?me|example\.com|\{\{.+\}\})/i;
@@ -145,12 +168,22 @@ if (values.PUBLIC_TSWMP_STATUS && values.PUBLIC_TSWMP_STATUS !== "pending") {
   errors.push("PUBLIC_TSWMP_STATUS must remain \"pending\" until written approval is recorded.");
 }
 
+if (privatePreview && values.PUBLIC_FORM_ENABLED !== "false") {
+  errors.push("Private preview builds require PUBLIC_FORM_ENABLED=false.");
+}
+if (!privatePreview && values.PUBLIC_FORM_ENABLED !== "true") {
+  errors.push("Public production builds require PUBLIC_FORM_ENABLED=true.");
+}
+
 if (
   values.PUBLIC_DEPLOYMENT_ENV &&
-  values.PUBLIC_DEPLOYMENT_ENV !== "production"
+  !(
+    values.PUBLIC_DEPLOYMENT_ENV === "production" ||
+    (privatePreview && values.PUBLIC_DEPLOYMENT_ENV === "staging")
+  )
 ) {
   errors.push(
-    "PUBLIC_DEPLOYMENT_ENV must equal \"production\" for a production build."
+    "PUBLIC_DEPLOYMENT_ENV must be production, or staging for an explicit private preview."
   );
 }
 
