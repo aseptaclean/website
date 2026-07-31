@@ -9,9 +9,7 @@ const trustItems = [
   "Documented closeout"
 ].filter(Boolean);
 
-const phoneHref = site.business.phone
-  ? `tel:${site.business.phone.replace(/[^\d+]/g, "")}`
-  : "";
+const phoneHref = site.business.phoneUri;
 ---
 
 <section class="hero" id="overview" aria-labelledby="hero-title">

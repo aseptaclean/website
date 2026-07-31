@@ -1,5 +1,9 @@
 # Codex Build Plan — One-Page Astro Launch
 
+> **Superseded scope.** `07-ONE-PAGE-DIRECTIVE.md` controls route architecture and scope as of
+> Phase 4. The multi-page phase sequence below is cancelled. Kept for reference only — do not
+> use it to justify building any route or page not listed in `07` §2.
+
 Work through these phases in order. Stop at each approval gate.
 
 ## Phase 0 — Audit and implementation plan

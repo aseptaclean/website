@@ -39,9 +39,7 @@ const currency = new Intl.NumberFormat("en-US", {
     <aside class="pricing__assessment">
       <p>When remote scoping is not reliable</p>
       <strong>{currency.format(site.offer.assessmentFee)} on-site assessment</strong>
-      <span>
-        Credited toward an approved project booked within seven days.
-      </span>
+      <span>{site.offer.assessmentFeeTerms}</span>
     </aside>
   </div>
 </section>

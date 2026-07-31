@@ -1,0 +1,22 @@
+# docs/07-ONE-PAGE-DIRECTIVE.md §2: every route outside the four-route collapse is retired and
+# 301s to /. Query strings are preserved automatically by the redirect syntax below; every rule
+# is a single hop straight to /, never chained through another redirect first.
+#
+# None of the named paths below were ever built in this repository (confirmed against git
+# history and docs/00-MASTER-BRIEF.md §10.5 "Future SEO pages" / §12.8 "Optional in first
+# build") — they are retired-by-plan, not retired-by-deletion. Listed explicitly for a clear
+# audit trail; the wildcard rule below is the actual guarantee against a 404 on any other
+# previously-live or previously-planned path.
+/about/                                 /  301
+/project-standards/                     /  301
+/service-area/                          /  301
+/estate-cleanout-san-jose/              /  301
+/property-cleanout-san-jose/            /  301
+/vacant-home-cleaning-san-jose/         /  301
+/hoarding-cleanup-san-jose/             /  301
+/landlord-turnover-cleaning-san-jose/   /  301
+/projects/*                             /  301
+
+# Safety net. Real files (every route kept per §2, including /private-residence-reset/) resolve
+# before this is ever consulted, so this only catches paths with no matching page.
+/*                                       /  301

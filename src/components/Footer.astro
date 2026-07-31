@@ -2,9 +2,7 @@
 import { legal, site } from "@data/site";
 
 const year = new Date().getFullYear();
-const phoneHref = site.business.phone
-  ? `tel:${site.business.phone.replace(/[^\d+]/g, "")}`
-  : "";
+const phoneHref = site.business.phoneUri;
 const termlyConsentEnabled = site.integrations.termly.consentEnabled;
 ---
 

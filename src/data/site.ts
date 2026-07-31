@@ -3,6 +3,25 @@ const env = import.meta.env;
 const value = (key: keyof ImportMetaEnv, fallback = "") =>
   env[key]?.trim() || fallback;
 
+const isProductionBuild = value("PUBLIC_DEPLOYMENT_ENV") === "production";
+
+// docs/07-ONE-PAGE-DIRECTIVE.md §10 marks the flagship starting price OWNER DECISION REQUIRED
+// (see §5 — the $1,500 problem). This placeholder must never resolve in a production build.
+const OWNER_DECISION_REQUIRED =
+  "[OWNER DECISION REQUIRED — see docs/07-ONE-PAGE-DIRECTIVE.md §5]";
+const rawStartingPrice = value("PUBLIC_STARTING_PRICE", OWNER_DECISION_REQUIRED);
+if (isProductionBuild && rawStartingPrice === OWNER_DECISION_REQUIRED) {
+  throw new Error(
+    "PUBLIC_STARTING_PRICE is unresolved. docs/07-ONE-PAGE-DIRECTIVE.md §5 requires an owner " +
+      "decision (raise the floor, publish a band, or label $1,500 as a Handoff Finish entry " +
+      "point) before this value may reach a production build."
+  );
+}
+
+const rawPhone = value("PUBLIC_PHONE");
+const phoneUri = rawPhone ? `tel:${rawPhone.replace(/[^\d+]/g, "")}` : "";
+const smsUri = rawPhone ? `sms:${rawPhone.replace(/[^\d+]/g, "")}` : "";
+
 const termlyWebsiteUuid = value("PUBLIC_TERMLY_WEBSITE_UUID");
 const termlyPrivacyPolicyId = value("PUBLIC_TERMLY_PRIVACY_POLICY_ID");
 const termlyTermsPolicyId = value("PUBLIC_TERMLY_TERMS_POLICY_ID");
@@ -19,14 +38,20 @@ export const site = {
     name: value("PUBLIC_BUSINESS_NAME", "Aseptaclean"),
     legalName: value("PUBLIC_LEGAL_NAME", "Aseptaclean, LLC"),
     email: value("PUBLIC_EMAIL", "info@aseptaclean.com"),
-    phone: value("PUBLIC_PHONE"),
+    phone: rawPhone,
+    phoneUri,
     smsNumber: value("PUBLIC_SMS_NUMBER"),
+    smsUri,
     privacyContact: value("PUBLIC_PRIVACY_CONTACT"),
     hours: value(
       "PUBLIC_BUSINESS_HOURS",
       "Monday–Saturday, 7:00 AM–7:00 PM Pacific Time; closed Sunday"
     ),
-    insuranceStatus: value("PUBLIC_INSURANCE_STATUS"),
+    insuranceStatus: value(
+      "PUBLIC_INSURANCE_STATUS",
+      "Insured. Certificate of Insurance available upon request."
+    ),
+    addressPolicy: "service-area business — no published street address",
     googleBusinessProfileUrl: value("PUBLIC_GBP_URL"),
     logoUrl: value(
       "PUBLIC_LOGO_URL",
@@ -55,7 +80,8 @@ export const site = {
       "within one business day"
     ),
     assessmentFee: Number(value("PUBLIC_ASSESSMENT_FEE", "195")),
-    startingPrice: Number(value("PUBLIC_STARTING_PRICE", "1500")),
+    assessmentFeeTerms: "Credited toward an approved project booked within 7 days.",
+    startingPrice: Number(rawStartingPrice),
     primaryCta: "Get My 24-Hour Handoff Plan",
     compactCta: "Get My Handoff Plan"
   },

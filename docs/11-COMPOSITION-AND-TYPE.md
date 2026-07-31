@@ -199,3 +199,72 @@ Screenshot `/` at 390px and 1440px, then answer each in writing:
 
 Record the result in `05-DECISIONS-LOG.md`. Do not report the design as fixed because the build
 compiles.
+
+---
+
+## 10. Migrated from `09-PREMIUM-VISUAL-AND-TYPOGRAPHY-SPEC.md` (archived Session 2)
+
+`09-PREMIUM-VISUAL-AND-TYPOGRAPHY-SPEC.md` is archived to `docs/archive/` per `07` §12 — its
+typography (old clamp scale) and homepage-composition sections (§3, §5, §6 of that file) are
+fully superseded by §1–§7 above and by `08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` §6, and were not
+carried forward. The sections below were still true and outside this file's original scope, so
+they move here rather than disappearing with the archived file.
+
+### 10.1 Color and material system
+
+- Navy `#1C355E`
+- Deep Navy `#122840`
+- Slate Blue `#6A9BC3`
+- Steel `#A8B8C8`
+- Warm White `#F7F8FA`
+- Text `#334155`
+
+White paper surfaces, fine rules, restrained shadows, muted image treatment, and occasional
+signal/caution colors only for functional meaning. No new decorative color.
+
+### 10.2 Document artifact system
+
+Applies to the Property Handoff Record and any other primary artifact (Room-by-room Scope
+Document, Residence Baseline Record, Change Authorization, Completion Record):
+
+- accurate operational content
+- labeled `SAMPLE` when not from a client
+- paper is the brightest surface
+- no fake dashboard chrome
+- no decorative tilt, curled paper, coffee stains, or faux case-file theme
+- monospace only for field labels and status metadata
+- no animation on the core artifact
+
+### 10.3 Imagery
+
+Allowed: original founder portrait; original hands/clipboard/threshold photographs; original
+South Bay residential exteriors; licensed architectural interior details used as atmosphere,
+never as proof; clean material/detail crops; empty or presentation-ready rooms not represented as
+Aseptaclean work. Image license and source recorded in `06-ASSET-MANIFEST.md`.
+
+Prohibited: fake before/after; AI-generated people; smiling cleaning crews; staged maids; branded
+fleet not owned; sensational hoarding imagery; hazmat/PPE theater; images implying regulated
+services; generic moving-box motif.
+
+### 10.4 Interaction
+
+- motion duration usually 120–220ms
+- no scroll reveal required beyond the §7/§8 artifact reveal
+- no fade-up on every section
+- hover changes must be subtle and functional
+- visible focus is non-negotiable
+- controls preferred at 44–48px minimum height
+- sticky mobile CTA must not cover fields, Termly controls, or footer links
+- respect reduced motion
+
+### 10.5 Responsive art direction
+
+Mobile is not desktop stacked.
+
+At 320–430px: hero copy appears before artifact/media; one CTA remains dominant; H1 is
+intentionally broken; document artifacts become readable excerpts, not miniaturized desktop
+documents; comparison sections become sequential statements, not narrow columns; forms use one
+column; sticky actions never cover validation or consent controls.
+
+At 768–1024px: avoid awkward half-desktop layouts; use deliberate tablet compositions; review
+header and document-artifact scale independently.

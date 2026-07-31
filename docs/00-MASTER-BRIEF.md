@@ -1,5 +1,9 @@
 # Aseptaclean Astro One-Page Website Master Brief
 
+> **Superseded scope.** `10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` is the Phase 4 canonical master
+> specification; `07-ONE-PAGE-DIRECTIVE.md` controls scope and route architecture. This document
+> is their parent and is superseded wherever they differ. Kept for reference only.
+
 ## Active status and authority
 
 **Status:** Active launch authority for the current Astro build.

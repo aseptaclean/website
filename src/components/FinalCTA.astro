@@ -1,9 +1,7 @@
 ---
 import { site } from "@data/site";
 
-const phoneHref = site.business.phone
-  ? `tel:${site.business.phone.replace(/[^\d+]/g, "")}`
-  : "";
+const phoneHref = site.business.phoneUri;
 ---
 
 <section class="final-cta" aria-labelledby="final-cta-title">
