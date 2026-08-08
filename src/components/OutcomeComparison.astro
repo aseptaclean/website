@@ -1,164 +1,44 @@
 ---
-import { homepage } from "@data/site";
 ---
 
 <section class="outcome" id="how-it-works" aria-labelledby="outcome-title">
-  <div class="container outcome__layout">
-    <header>
-      <p class="outcome__index">02 / The felt outcome</p>
-      <h2 id="outcome-title">What finished feels like</h2>
-      <p>
-        You unlock the door without bracing for what is still undone. The
-        approved unwanted contents are gone. The areas included in the scope
-        have been cleaned. Important belongings are separated. Known exceptions
-        are documented.
-      </p>
-      <p>
-        You can send the realtor, property manager, family member, or next
-        occupant inside without first giving them a list of unfinished work.
-        You can see the completed condition even when you could not be there
-        yourself.
-      </p>
-    </header>
-
-    <div class="outcome__comparison" aria-label="Condition before and after the Handoff Reset">
-      <section aria-labelledby="before-title">
-        <p class="outcome__state" id="before-title">Before the scope</p>
-        <ul>
-          {homepage.outcome.before.map((item) => <li>{item}</li>)}
-        </ul>
-      </section>
-      <section class="outcome__resolved" aria-labelledby="after-title">
-        <p class="outcome__state" id="after-title">At documented closeout</p>
-        <ul>
-          {homepage.outcome.after.map((item) => <li>{item}</li>)}
-        </ul>
-      </section>
-    </div>
-    <p class="outcome__release">
-      The property is no longer following you around. It can move forward.
+  <div class="ac-measure-intimate outcome__layout">
+    <h2 id="outcome-title" class="ac-type-display">What <span class="ac-mark">finished</span> feels like</h2>
+    <p class="outcome__body ac-type-body">
+      You unlock the door without bracing for what is still undone. The
+      approved unwanted contents are gone. The areas included in the scope
+      have been cleaned. Important belongings are separated. Known exceptions
+      are documented. You can send the realtor, property manager, family
+      member, or next occupant inside without first giving them a list of
+      unfinished work. You can see the completed condition even when you could
+      not be there yourself.
+      {" "}
+      <strong>The property is no longer following you around. It can move
+      forward.</strong>
     </p>
   </div>
 </section>
 
 <style>
   .outcome {
-    border-bottom: 1px solid var(--color-rule);
-    padding-block: clamp(4.5rem, 8vw, 7rem);
-    background: var(--color-warm-white);
+    background: var(--ac-color-paper);
+    padding-top: var(--ac-rhythm-vast);
+    padding-bottom: 0;
+    text-align: center;
   }
 
   .outcome__layout {
     display: grid;
-    gap: var(--space-7);
+    justify-items: center;
+    gap: var(--ac-space-5);
   }
 
-  .outcome__index,
-  .outcome__state {
+  .outcome__body {
     margin: 0;
-    color: var(--color-navy-800);
-    font-family: var(--font-sans);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
+    color: var(--ac-color-ink-500);
   }
 
-  h2 {
-    max-width: 19ch;
-    margin: var(--space-4) 0 0;
-    letter-spacing: -0.025em;
-  }
-
-  .outcome__nowrap {
-    white-space: nowrap;
-  }
-
-  header > p:last-child {
-    max-width: 36rem;
-    margin: var(--space-5) 0 0;
-  }
-
-  .outcome__comparison {
-    border-top: 2px solid var(--color-navy-900);
-  }
-
-  .outcome__release {
-    max-width: 38rem;
-    margin: 0 0 0 auto;
-    border-left: 3px solid var(--color-blue-500);
-    padding-left: var(--space-4);
-    color: var(--color-navy-900);
-    font-family: var(--font-display);
-    font-size: var(--step-2);
-    font-weight: 520;
-  }
-
-  .outcome__comparison section {
-    padding-block: var(--space-5);
-  }
-
-  .outcome__comparison section + section {
-    border-top: 1px solid var(--color-rule);
-  }
-
-  .outcome__comparison ul {
-    display: grid;
-    gap: 0;
-    margin: var(--space-4) 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .outcome__comparison li {
-    position: relative;
-    max-width: none;
-    border-top: 1px solid var(--color-rule);
-    padding: var(--space-3) 0 var(--space-3) 1.75rem;
-  }
-
-  .outcome__comparison li::before {
-    position: absolute;
-    left: 0;
-    color: var(--color-ink-500);
-    content: "—";
-  }
-
-  .outcome__resolved {
-    padding-inline: var(--space-4);
-    background: var(--color-paper);
-  }
-
-  .outcome__resolved li::before {
-    color: var(--color-success);
-    content: "✓";
-    font-weight: 700;
-  }
-
-  @media (min-width: 55rem) {
-    .outcome__layout {
-      grid-template-columns: minmax(18rem, 4fr) minmax(0, 7fr);
-      align-items: end;
-      gap: clamp(4rem, 9vw, 8rem);
-    }
-
-    .outcome__comparison {
-      display: grid;
-      grid-template-columns: 5fr 6fr;
-    }
-
-    .outcome__comparison section {
-      padding: var(--space-6) var(--space-5) 0 0;
-    }
-
-    .outcome__comparison section + section {
-      border-top: 0;
-      border-left: 1px solid var(--color-rule);
-    }
-
-    .outcome__resolved {
-      margin-top: calc(var(--space-5) * -1);
-      padding: var(--space-6) var(--space-5) var(--space-5) !important;
-    }
+  .outcome__body strong {
+    color: var(--ac-color-navy-900);
   }
 </style>

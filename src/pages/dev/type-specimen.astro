@@ -1,0 +1,250 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+
+const typeRoles = [
+  { token: "--ac-text-display", class: "ac-type-display", label: "Display", range: "~64 → 96px" },
+  { token: "--ac-text-h1", class: "ac-type-h1", label: "H1", range: "44 → 76px" },
+  { token: "--ac-text-h2", class: "ac-type-h2", label: "H2", range: "32 → 56px" },
+  { token: "--ac-text-h3", class: "ac-type-h3", label: "H3", range: "22 → 30px" },
+  { token: "--ac-text-lead", class: "ac-type-lead", label: "Lead", range: "19 → 23px" },
+  { token: "--ac-text-body", class: "ac-type-body", label: "Body", range: "17 → 18px" },
+  { token: "--ac-text-sm", class: "ac-type-sm", label: "Small", range: "15 → 16px" },
+  { token: "--ac-text-xs", class: "ac-type-xs", label: "XS / eyebrow", range: "13 → 14px" }
+];
+
+const surfaces = [
+  { token: "--ac-color-paper", label: "Paper", dark: false },
+  { token: "--ac-color-warm-white", label: "Warm white", dark: false },
+  { token: "--ac-color-steel-100", label: "Steel 100 (canvas)", dark: false },
+  { token: "--ac-color-steel-200", label: "Steel 200 (hairlines, numerals)", dark: false },
+  { token: "--ac-color-steel-300", label: "Steel 300 (eyebrows)", dark: false },
+  { token: "--ac-color-navy-800", label: "Navy 800", dark: true },
+  { token: "--ac-color-navy-900", label: "Navy 900", dark: true }
+];
+
+const measures = [
+  { class: "ac-measure-intimate", token: "--ac-measure-intimate", label: "Intimate", detail: "45ch" },
+  { class: "ac-measure-read", token: "--ac-measure-read", label: "Read", detail: "62ch" },
+  { class: "ac-measure-wide", token: "--ac-measure-wide", label: "Wide", detail: "1180px" },
+  { class: "ac-measure-bleed", token: "--ac-measure-bleed", label: "Bleed", detail: "100vw" }
+];
+
+const rhythms = [
+  { token: "--ac-rhythm-tight", label: "Tight", value: "clamp(2.5rem, 4vw, 3.5rem)" },
+  { token: "--ac-rhythm-standard", label: "Standard", value: "clamp(4rem, 6vw, 6rem)" },
+  { token: "--ac-rhythm-open", label: "Open", value: "clamp(6rem, 9vw, 9rem)" },
+  { token: "--ac-rhythm-vast", label: "Vast", value: "clamp(9rem, 14vw, 14rem)" },
+  { token: "--ac-rhythm-band", label: "Band", value: "clamp(5rem, 7vw, 7rem)" }
+];
+---
+
+<BaseLayout
+  title="Type specimen (dev)"
+  description="Internal type, measure, and rhythm specimen. Not part of the public site."
+  canonicalPath="/dev/type-specimen/"
+  noindex={true}
+  showMobileCta={false}
+>
+  <div class="specimen ac-measure-wide">
+    <header class="specimen__intro">
+      <p class="ac-eyebrow">Internal / not indexed</p>
+      <h1 class="ac-type-h1">Type, measure, and rhythm specimen</h1>
+      <p class="ac-type-body">
+        Full §2 type scale, every surface color, every container width, and
+        every rhythm value from <code>docs/11-COMPOSITION-AND-TYPE.md</code>.
+        Rendered for visual audit at 320, 390, 768, 1024, 1280, 1440 and at
+        200% zoom.
+      </p>
+    </header>
+
+    <section class="specimen__section" aria-labelledby="scale-title">
+      <h2 id="scale-title" class="ac-type-h2">Type scale</h2>
+      <div class="specimen__scale">
+        {
+          typeRoles.map((role) => (
+            <div class="specimen__scale-row">
+              <p class={`specimen__scale-sample ${role.class}`}>
+                {role.label} — Aa 0123
+              </p>
+              <p class="specimen__scale-meta ac-type-xs">
+                <code>{role.token}</code> · {role.range}
+              </p>
+            </div>
+          ))
+        }
+      </div>
+      <p class="specimen__mark-demo ac-type-h2">
+        The Mark sits behind <span class="ac-mark">one word.</span>
+      </p>
+    </section>
+
+    <section class="specimen__section" aria-labelledby="surfaces-title">
+      <h2 id="surfaces-title" class="ac-type-h2">Surfaces</h2>
+      <div class="specimen__surfaces">
+        {
+          surfaces.map((surface) => (
+            <div
+              class="specimen__surface"
+              class:list={{ "specimen__surface--dark": surface.dark }}
+              style={`background:var(${surface.token});`}
+            >
+              <p class="ac-type-sm">{surface.label}</p>
+              <code class="ac-type-xs">{surface.token}</code>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="specimen__section" aria-labelledby="measure-title">
+      <h2 id="measure-title" class="ac-type-h2">Measure</h2>
+      <div class="specimen__measures">
+        {
+          measures.map((measure) => (
+            <div class="specimen__measure-row">
+              <p class="ac-type-xs">
+                <code>{measure.token}</code> — {measure.label} ({measure.detail})
+              </p>
+              <div class={`specimen__measure-track ${measure.class}`}>
+                <div class="specimen__measure-fill" />
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="specimen__section" aria-labelledby="rhythm-title">
+      <h2 id="rhythm-title" class="ac-type-h2">Rhythm</h2>
+      <div class="specimen__rhythms">
+        {
+          rhythms.map((rhythm) => (
+            <div class="specimen__rhythm-row">
+              <p class="ac-type-xs">
+                <code>{rhythm.token}</code> — {rhythm.label}: {rhythm.value}
+              </p>
+              <div class="specimen__rhythm-block" style={`height:var(${rhythm.token});`} />
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="specimen__section" aria-labelledby="stack-title">
+      <h2 id="stack-title" class="ac-type-h2">Three-in-a-row check</h2>
+      <p class="ac-type-xs">
+        No three consecutive elements may sit within 15% of each other on
+        size, weight, and color simultaneously (§2). The stack below varies at
+        least two axes between every pair.
+      </p>
+      <div class="specimen__stack">
+        <h3 class="ac-type-h3">A sub-head at H3</h3>
+        <p class="ac-type-lead">A lead paragraph, larger and lighter-weight than the H3 above it.</p>
+        <p class="ac-type-body">A body paragraph, smaller than the lead and set in the muted ink color.</p>
+      </div>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .specimen {
+    display: grid;
+    gap: var(--ac-rhythm-tight);
+    padding-block: var(--ac-space-8);
+  }
+
+  .specimen__intro {
+    display: grid;
+    gap: var(--ac-space-4);
+    max-width: 60ch;
+  }
+
+  .specimen__section {
+    border-top: 1px solid var(--ac-color-rule);
+    padding-top: var(--ac-space-7);
+  }
+
+  .specimen__section h2 {
+    margin-bottom: var(--ac-space-6);
+  }
+
+  .specimen__scale {
+    display: grid;
+    gap: var(--ac-space-5);
+  }
+
+  .specimen__scale-row {
+    border-bottom: 1px solid var(--ac-color-rule);
+    padding-bottom: var(--ac-space-4);
+  }
+
+  .specimen__scale-sample {
+    margin: 0;
+    color: var(--ac-color-navy-900);
+  }
+
+  .specimen__scale-meta {
+    margin: var(--ac-space-2) 0 0;
+    color: var(--ac-color-ink-500);
+  }
+
+  .specimen__mark-demo {
+    margin-top: var(--ac-space-6);
+  }
+
+  .specimen__surfaces {
+    display: grid;
+    gap: var(--ac-space-4);
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+  }
+
+  .specimen__surface {
+    display: grid;
+    gap: var(--ac-space-2);
+    border: 1px solid var(--ac-color-rule);
+    padding: var(--ac-space-4);
+    color: var(--ac-color-navy-900);
+  }
+
+  .specimen__surface--dark {
+    border-color: transparent;
+    color: var(--ac-color-warm-white);
+  }
+
+  .specimen__measures,
+  .specimen__rhythms {
+    display: grid;
+    gap: var(--ac-space-5);
+  }
+
+  .specimen__measure-track {
+    border: 1px dashed var(--ac-color-steel-300);
+    padding: var(--ac-space-2);
+  }
+
+  .specimen__measure-fill {
+    height: 1.5rem;
+    background: var(--ac-color-blue-500);
+  }
+
+  .specimen__rhythm-block {
+    background: var(--ac-color-warm-white);
+    border: 1px solid var(--ac-color-rule);
+    border-left: 3px solid var(--ac-color-navy-800);
+  }
+
+  .specimen__stack {
+    display: grid;
+    gap: var(--ac-space-3);
+    max-width: var(--ac-measure-read);
+  }
+
+  .specimen__stack p {
+    margin: 0;
+    color: var(--ac-color-ink-500);
+  }
+
+  code {
+    font-family: monospace;
+  }
+</style>

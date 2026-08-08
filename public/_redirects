@@ -5,8 +5,12 @@
 # None of the named paths below were ever built in this repository (confirmed against git
 # history and docs/00-MASTER-BRIEF.md §10.5 "Future SEO pages" / §12.8 "Optional in first
 # build") — they are retired-by-plan, not retired-by-deletion. Listed explicitly for a clear
-# audit trail; the wildcard rule below is the actual guarantee against a 404 on any other
-# previously-live or previously-planned path.
+# audit trail.
+#
+# No wildcard catch-all here: Cloudflare Pages applies _redirects rules unconditionally, before
+# checking whether a real asset exists at that path (confirmed via `wrangler pages dev`), so a
+# `/* / 301` rule matches every request including `/` itself and would 301-loop the entire site,
+# homepage included. Unmatched paths fall through to Cloudflare Pages' standard 404 instead.
 /about/                                 /  301
 /project-standards/                     /  301
 /service-area/                          /  301
@@ -16,7 +20,3 @@
 /hoarding-cleanup-san-jose/             /  301
 /landlord-turnover-cleaning-san-jose/   /  301
 /projects/*                             /  301
-
-# Safety net. Real files (every route kept per §2, including /private-residence-reset/) resolve
-# before this is ever consulted, so this only catches paths with no matching page.
-/*                                       /  301

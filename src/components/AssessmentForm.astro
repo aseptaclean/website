@@ -15,10 +15,10 @@ const yesNoUnsure = [
 ---
 
 <section class="assessment" aria-labelledby="assessment-title">
-  <div class="assessment__masthead container">
+  <div class="assessment__masthead ac-measure-wide">
     <div class="assessment__intro">
       <p class="assessment__eyebrow" data-offer-eyebrow>{site.offer.leadOffer}</p>
-      <h1 id="assessment-title" data-offer-title>Start with the property. We’ll review the path to handoff.</h1>
+      <h1 id="assessment-title" class="ac-type-h1" data-offer-title>Start with the property. We’ll review the path to handoff.</h1>
       <p class="assessment__lead" data-offer-lead>
         Share the property, scope, and approval details Aseptaclean needs to
         make a fit decision and identify a clear next step.
@@ -41,7 +41,7 @@ const yesNoUnsure = [
     </dl>
   </div>
 
-  <div class="assessment__body container">
+  <div class="assessment__body ac-measure-wide">
     <aside class="assessment__rail" aria-label="Assessment progress and guidance">
       <div class="assessment__rail-inner">
         <p class="assessment__record-label" data-offer-record>Handoff plan intake record</p>
@@ -136,7 +136,7 @@ const yesNoUnsure = [
           aria-labelledby="assessment-error-title"
           hidden
         >
-          <h2 id="assessment-error-title">Review the highlighted fields</h2>
+          <h2 id="assessment-error-title" class="ac-type-lead">Review the highlighted fields</h2>
           <ul></ul>
         </div>
 
@@ -280,7 +280,7 @@ const yesNoUnsure = [
           </fieldset>
 
           <div class="question-sheet" aria-labelledby="scope-questions-title" data-handoff-only>
-            <h2 id="scope-questions-title">Work to consider</h2>
+            <h2 id="scope-questions-title" class="ac-type-h3">Work to consider</h2>
             {assessment.scopeQuestions.map((question) => (
               <fieldset class="question-row">
                 <legend>{question.label} <span aria-hidden="true">*</span></legend>
@@ -304,7 +304,7 @@ const yesNoUnsure = [
           <div class="condition-review" aria-labelledby="condition-review-title" data-handoff-only>
             <div class="condition-review__heading">
               <p class="condition-review__label">Condition review</p>
-              <h2 id="condition-review-title">Known conditions at the property</h2>
+              <h2 id="condition-review-title" class="ac-type-h3">Known conditions at the property</h2>
               <p>
                 Answering “Yes” does not mean Aseptaclean provides treatment or
                 regulated handling. These answers help identify work that may be
@@ -353,7 +353,7 @@ const yesNoUnsure = [
           <div class="residence-questions" data-residence-only hidden>
             <div class="residence-questions__heading">
               <p class="condition-review__label">Residence baseline</p>
-              <h2>Rooms, finishes, access, and priorities</h2>
+              <h2 class="ac-type-h3">Rooms, finishes, access, and priorities</h2>
               <p>
                 Describe the baseline you want established. These answers shape
                 the room-by-room assessment; they do not authorize work.
@@ -564,6 +564,9 @@ const yesNoUnsure = [
                 inputmode="tel"
                 required
               />
+              <p class="form-field__hint">
+                We call this number back — usually same business day.
+              </p>
             </div>
 
             <div class="form-field">
@@ -1765,13 +1768,13 @@ const yesNoUnsure = [
 
 <style>
   .assessment {
-    background: var(--color-warm-white);
+    background: var(--ac-color-warm-white);
   }
 
   .assessment__masthead {
     display: grid;
-    gap: var(--space-6);
-    padding-block: var(--space-7) var(--space-6);
+    gap: var(--ac-space-6);
+    padding-block: var(--ac-space-7) var(--ac-space-6);
   }
 
   .assessment__intro {
@@ -1782,10 +1785,10 @@ const yesNoUnsure = [
   .assessment__record-label,
   .assessment__next-label,
   .condition-review__label {
-    margin: 0 0 var(--space-3);
-    color: var(--color-navy-800);
-    font-family: var(--font-heading);
-    font-size: var(--step--1);
+    margin: 0 0 var(--ac-space-3);
+    color: var(--ac-color-navy-800);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-sm);
     font-weight: 700;
     letter-spacing: 0.08em;
     text-transform: uppercase;
@@ -1793,65 +1796,65 @@ const yesNoUnsure = [
 
   .assessment h1 {
     max-width: 16ch;
-    margin-block: 0 var(--space-4);
+    margin-block: 0 var(--ac-space-4);
   }
 
   .assessment__lead {
     max-width: 44rem;
     margin: 0;
-    font-size: var(--step-1);
+    font-size: var(--ac-text-lead);
   }
 
   .assessment__facts {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--ac-space-4);
     margin: 0;
-    border-block: 1px solid var(--color-rule);
-    padding-block: var(--space-4);
+    border-block: 1px solid var(--ac-color-rule);
+    padding-block: var(--ac-space-4);
   }
 
   .assessment__facts div {
     display: grid;
     grid-template-columns: minmax(7.5rem, 0.7fr) minmax(0, 1.3fr);
-    gap: var(--space-3);
+    gap: var(--ac-space-3);
   }
 
   .assessment__facts dt {
-    color: var(--color-ink-500);
-    font-size: var(--step--1);
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-sm);
   }
 
   .assessment__facts dd {
     margin: 0;
-    color: var(--color-navy-900);
+    color: var(--ac-color-navy-900);
     font-weight: 700;
   }
 
   .assessment__body {
     display: grid;
-    border-top: 1px solid var(--color-rule);
+    border-top: 1px solid var(--ac-color-rule);
   }
 
   .assessment__rail {
-    border-bottom: 1px solid var(--color-rule);
-    padding-block: var(--space-5);
+    border-bottom: 1px solid var(--ac-color-rule);
+    padding-block: var(--ac-space-5);
   }
 
   .assessment__record-label {
-    margin-bottom: var(--space-1);
-    color: var(--color-navy-800);
+    margin-bottom: var(--ac-space-1);
+    color: var(--ac-color-navy-800);
   }
 
   .assessment__draft {
     margin: 0;
-    color: var(--color-ink-500);
-    font-size: var(--step--1);
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-sm);
   }
 
   .assessment__steps {
     display: grid;
-    gap: var(--space-3);
-    margin: var(--space-5) 0 0;
+    gap: var(--ac-space-3);
+    margin: var(--ac-space-5) 0 0;
     padding: 0;
     list-style: none;
   }
@@ -1859,15 +1862,15 @@ const yesNoUnsure = [
   .assessment__steps li {
     display: grid;
     grid-template-columns: 2.25rem minmax(0, 1fr);
-    gap: var(--space-3);
-    border-top: 1px solid var(--color-rule);
-    padding-top: var(--space-3);
+    gap: var(--ac-space-3);
+    border-top: 1px solid var(--ac-color-rule);
+    padding-top: var(--ac-space-3);
   }
 
   .assessment__step-number {
-    color: var(--color-navy-800);
-    font-family: var(--font-heading);
-    font-size: var(--step--1);
+    color: var(--ac-color-navy-800);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-sm);
     font-weight: 700;
   }
 
@@ -1881,42 +1884,42 @@ const yesNoUnsure = [
   }
 
   .assessment__steps strong {
-    color: var(--color-navy-900);
-    font-family: var(--font-heading);
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-sans);
   }
 
   .assessment__steps small {
-    margin-top: var(--space-1);
-    color: var(--color-ink-500);
+    margin-top: var(--ac-space-1);
+    color: var(--ac-color-ink-500);
     line-height: 1.45;
   }
 
   .assessment__next {
-    margin-top: var(--space-6);
-    border-left: 2px solid var(--color-blue-500);
-    padding-left: var(--space-4);
+    margin-top: var(--ac-space-6);
+    border-left: 2px solid var(--ac-color-blue-500);
+    padding-left: var(--ac-space-4);
   }
 
   .assessment__next-label {
-    margin-bottom: var(--space-2);
-    color: var(--color-navy-800);
+    margin-bottom: var(--ac-space-2);
+    color: var(--ac-color-navy-800);
   }
 
   .assessment__next p:last-child {
     margin: 0;
-    font-size: var(--step--1);
+    font-size: var(--ac-text-sm);
   }
 
   .assessment__form-column {
     min-width: 0;
-    padding-block: var(--space-5) var(--space-8);
+    padding-block: var(--ac-space-5) var(--ac-space-8);
   }
 
   .assessment__privacy-note {
-    border-block: 1px solid var(--color-rule);
-    padding-block: var(--space-3);
-    color: var(--color-ink-500);
-    font-size: var(--step--1);
+    border-block: 1px solid var(--ac-color-rule);
+    padding-block: var(--ac-space-3);
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-sm);
   }
 
   .assessment__privacy-note p {
@@ -1926,10 +1929,10 @@ const yesNoUnsure = [
   .assessment__clear-draft {
     min-height: 3rem;
     border: 0;
-    margin-top: var(--space-2);
+    margin-top: var(--ac-space-2);
     padding: 0;
     background: transparent;
-    color: var(--color-navy-800);
+    color: var(--ac-color-navy-800);
     cursor: pointer;
     font-weight: 700;
     text-decoration: underline;
@@ -1938,24 +1941,24 @@ const yesNoUnsure = [
   }
 
   .assessment__clear-draft:hover {
-    color: var(--color-navy-900);
+    color: var(--ac-color-navy-900);
     text-decoration-thickness: 0.12em;
   }
 
   .assessment__draft-status {
-    margin-top: var(--space-2) !important;
-    color: var(--color-success);
+    margin-top: var(--ac-space-2) !important;
+    color: var(--ac-color-success);
     font-weight: 700;
   }
 
   .intake-form {
-    margin-top: var(--space-5);
+    margin-top: var(--ac-space-5);
   }
 
   .intake-form__errors {
     scroll-margin-top: 6rem;
-    border: 2px solid var(--color-error);
-    padding: var(--space-4);
+    border: 2px solid var(--ac-color-error);
+    padding: var(--ac-space-4);
     background: #f8ecea;
     color: #6f211e;
   }
@@ -1963,13 +1966,12 @@ const yesNoUnsure = [
   .intake-form__errors h2 {
     margin: 0;
     color: #6f211e;
-    font-size: var(--step-1);
   }
 
   .intake-form__errors ul {
     display: grid;
-    gap: var(--space-2);
-    margin-block: var(--space-3) 0;
+    gap: var(--ac-space-2);
+    margin-block: var(--ac-space-3) 0;
     padding-left: 1.25rem;
   }
 
@@ -1982,25 +1984,25 @@ const yesNoUnsure = [
     min-width: 0;
     border: 0;
     margin: 0;
-    padding: var(--space-7) 0;
+    padding: var(--ac-space-7) 0;
   }
 
   .intake-step + .intake-step {
-    border-top: 2px solid var(--color-navy-800);
+    border-top: 2px solid var(--ac-color-navy-800);
   }
 
   .intake-step > legend {
     display: grid;
     width: 100%;
-    gap: var(--space-1);
+    gap: var(--ac-space-1);
     padding: 0;
-    color: var(--color-navy-900);
-    font-family: var(--font-heading);
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-sans);
   }
 
   .intake-step__number {
-    color: var(--color-navy-800);
-    font-size: var(--step--1);
+    color: var(--ac-color-navy-800);
+    font-size: var(--ac-text-sm);
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -2008,7 +2010,7 @@ const yesNoUnsure = [
 
   .intake-step__title {
     scroll-margin-top: 6rem;
-    font-size: var(--step-3);
+    font-size: var(--ac-text-h2);
     font-weight: 700;
     line-height: 1.15;
   }
@@ -2018,26 +2020,26 @@ const yesNoUnsure = [
   }
 
   .intake-step__title:focus-visible {
-    outline: 3px solid var(--color-focus);
+    outline: 3px solid var(--ac-color-focus);
     outline-offset: 5px;
   }
 
   .intake-step__intro {
     max-width: 44rem;
-    margin: var(--space-3) 0 0;
-    color: var(--color-ink-500);
+    margin: var(--ac-space-3) 0 0;
+    color: var(--ac-color-ink-500);
   }
 
   .intake-form__required-note {
-    margin-block: var(--space-4) 0;
-    color: var(--color-ink-500);
-    font-size: var(--step--1);
+    margin-block: var(--ac-space-4) 0;
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-sm);
   }
 
   .form-grid {
     display: grid;
-    gap: var(--space-5);
-    margin-top: var(--space-6);
+    gap: var(--ac-space-5);
+    margin-top: var(--ac-space-6);
   }
 
   .form-field,
@@ -2050,9 +2052,9 @@ const yesNoUnsure = [
   .upload-field > label,
   .question-row > legend {
     display: block;
-    color: var(--color-navy-900);
-    font-family: var(--font-heading);
-    font-size: var(--step--1);
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-sm);
     font-weight: 700;
     line-height: 1.4;
   }
@@ -2063,12 +2065,12 @@ const yesNoUnsure = [
   .upload-field input[type="file"] {
     width: 100%;
     min-height: 3rem;
-    border: 1px solid var(--color-steel-300);
-    border-radius: var(--radius-control);
-    margin-top: var(--space-2);
+    border: 1px solid var(--ac-color-steel-300);
+    border-radius: var(--ac-radius-control);
+    margin-top: var(--ac-space-2);
     padding: 0.75rem;
-    background: var(--color-paper);
-    color: var(--color-ink-700);
+    background: var(--ac-color-paper);
+    color: var(--ac-color-ink-700);
   }
 
   .form-field textarea {
@@ -2080,33 +2082,33 @@ const yesNoUnsure = [
   .form-field select:hover,
   .form-field textarea:hover,
   .upload-field input[type="file"]:hover {
-    border-color: var(--color-navy-800);
+    border-color: var(--ac-color-navy-800);
   }
 
   .form-field input:focus-visible,
   .form-field select:focus-visible,
   .form-field textarea:focus-visible,
   .upload-field input[type="file"]:focus-visible {
-    border-color: var(--color-focus);
+    border-color: var(--ac-color-focus);
   }
 
   .form-field [aria-invalid="true"],
   .upload-field [aria-invalid="true"] {
-    border-color: var(--color-error);
+    border-color: var(--ac-color-error);
   }
 
   .form-field__hint,
   .upload-field p,
   .intake-form__actions p,
   .intake-form__consent > p {
-    margin: var(--space-2) 0 0;
-    color: var(--color-ink-500);
-    font-size: var(--step--1);
+    margin: var(--ac-space-2) 0 0;
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-sm);
   }
 
   .form-field__optional {
-    color: var(--color-ink-500);
-    font-family: var(--font-body);
+    color: var(--ac-color-ink-500);
+    font-family: var(--ac-font-sans);
     font-weight: 400;
   }
 
@@ -2119,8 +2121,8 @@ const yesNoUnsure = [
   .choice-row {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-2);
-    margin-top: var(--space-3);
+    gap: var(--ac-space-2);
+    margin-top: var(--ac-space-3);
   }
 
   .choice-control {
@@ -2130,39 +2132,39 @@ const yesNoUnsure = [
     cursor: pointer;
     grid-template-columns: 1.25rem minmax(0, 1fr);
     align-items: center;
-    gap: var(--space-2);
-    border: 1px solid var(--color-rule);
-    border-radius: var(--radius-control);
+    gap: var(--ac-space-2);
+    border: 1px solid var(--ac-color-rule);
+    border-radius: var(--ac-radius-control);
     padding: 0.65rem 0.8rem;
-    background: var(--color-paper);
-    color: var(--color-ink-700);
+    background: var(--ac-color-paper);
+    color: var(--ac-color-ink-700);
     line-height: 1.35;
   }
 
   .choice-control:hover {
-    border-color: var(--color-blue-500);
+    border-color: var(--ac-color-blue-500);
   }
 
   .choice-control:has(input:checked) {
-    border-color: var(--color-navy-800);
+    border-color: var(--ac-color-navy-800);
     background: rgb(106 155 195 / 0.12);
-    color: var(--color-navy-900);
+    color: var(--ac-color-navy-900);
   }
 
   .choice-control:has(input:focus-visible) {
-    outline: 3px solid var(--color-focus);
+    outline: 3px solid var(--ac-color-focus);
     outline-offset: 3px;
   }
 
   .choice-control:has(input[aria-invalid="true"]) {
-    border-color: var(--color-error);
+    border-color: var(--ac-color-error);
   }
 
   .choice-control input {
     width: 1.15rem;
     height: 1.15rem;
     margin: 0;
-    accent-color: var(--color-navy-800);
+    accent-color: var(--ac-color-navy-800);
   }
 
   .choice-control input:focus-visible {
@@ -2170,35 +2172,34 @@ const yesNoUnsure = [
   }
 
   .form-group--areas {
-    margin-top: var(--space-6);
+    margin-top: var(--ac-space-6);
   }
 
   .choice-grid {
     display: grid;
-    gap: var(--space-2);
-    margin-top: var(--space-3);
+    gap: var(--ac-space-2);
+    margin-top: var(--ac-space-3);
   }
 
   .question-sheet {
-    margin-top: var(--space-7);
-    border-top: 2px solid var(--color-navy-800);
+    margin-top: var(--ac-space-7);
+    border-top: 2px solid var(--ac-color-navy-800);
   }
 
   .question-sheet > h2 {
     margin: 0;
-    border-bottom: 1px solid var(--color-rule);
-    padding-block: var(--space-4);
-    font-size: var(--step-2);
+    border-bottom: 1px solid var(--ac-color-rule);
+    padding-block: var(--ac-space-4);
   }
 
   .question-row {
     display: grid;
     min-width: 0;
-    gap: var(--space-3);
+    gap: var(--ac-space-3);
     border: 0;
-    border-bottom: 1px solid var(--color-rule);
+    border-bottom: 1px solid var(--ac-color-rule);
     margin: 0;
-    padding-block: var(--space-4);
+    padding-block: var(--ac-space-4);
   }
 
   .question-row .choice-row {
@@ -2208,18 +2209,17 @@ const yesNoUnsure = [
   .choice-control--compact {
     min-height: 2.75rem;
     padding-block: 0.5rem;
-    font-size: var(--step--1);
+    font-size: var(--ac-text-sm);
   }
 
   .condition-review {
-    margin-top: var(--space-7);
-    border-left: 3px solid var(--color-error);
-    padding-left: var(--space-4);
+    margin-top: var(--ac-space-7);
+    border-left: 3px solid var(--ac-color-error);
+    padding-left: var(--ac-space-4);
   }
 
   .condition-review__heading h2 {
-    margin-block: 0 var(--space-3);
-    font-size: var(--step-2);
+    margin-block: 0 var(--ac-space-3);
   }
 
   .condition-review__heading > p:last-child {
@@ -2227,36 +2227,35 @@ const yesNoUnsure = [
   }
 
   .condition-review__label {
-    color: var(--color-error);
+    color: var(--ac-color-error);
   }
 
   .question-sheet--conditions {
-    margin-top: var(--space-5);
+    margin-top: var(--ac-space-5);
     border-top-width: 1px;
   }
 
   .question-row--stop > legend::before {
-    color: var(--color-error);
+    color: var(--ac-color-error);
     content: "Review flag · ";
   }
 
   .condition-review__notice {
-    margin: var(--space-5) 0 0;
-    padding: var(--space-4);
+    margin: var(--ac-space-5) 0 0;
+    padding: var(--ac-space-4);
     background: #f8ecea;
     color: #6f211e;
-    font-size: var(--step--1);
+    font-size: var(--ac-text-sm);
   }
 
   .residence-questions {
-    margin-top: var(--space-7);
-    border-left: 3px solid var(--color-blue-500);
-    padding-left: var(--space-4);
+    margin-top: var(--ac-space-7);
+    border-left: 3px solid var(--ac-color-blue-500);
+    padding-left: var(--ac-space-4);
   }
 
   .residence-questions__heading h2 {
-    margin-block: 0 var(--space-3);
-    font-size: var(--text-h3);
+    margin-block: 0 var(--ac-space-3);
   }
 
   .residence-questions__heading > p:last-child {
@@ -2264,18 +2263,18 @@ const yesNoUnsure = [
   }
 
   .residence-questions .condition-review__label {
-    color: var(--color-navy-800);
+    color: var(--ac-color-navy-800);
   }
 
   .upload-field {
-    margin-top: var(--space-7);
-    border-block: 1px solid var(--color-rule);
-    padding-block: var(--space-5);
+    margin-top: var(--ac-space-7);
+    border-block: 1px solid var(--ac-color-rule);
+    padding-block: var(--ac-space-5);
   }
 
   .upload-field__control {
-    margin-top: var(--space-4);
-    padding: var(--space-4);
+    margin-top: var(--ac-space-4);
+    padding: var(--ac-space-4);
     background:
       repeating-linear-gradient(
         0deg,
@@ -2284,22 +2283,22 @@ const yesNoUnsure = [
         rgb(216 224 231 / 0.45) 2rem,
         rgb(216 224 231 / 0.45) calc(2rem + 1px)
       ),
-      var(--color-paper);
+      var(--ac-color-paper);
   }
 
   .upload-field input[type="file"] {
-    background: var(--color-warm-white);
+    background: var(--ac-color-warm-white);
   }
 
   .upload-field__empty {
-    border-top: 1px solid var(--color-rule);
-    padding-top: var(--space-3);
+    border-top: 1px solid var(--ac-color-rule);
+    padding-top: var(--ac-space-3);
   }
 
   .upload-field__files {
     display: grid;
-    gap: var(--space-2);
-    margin: var(--space-3) 0 0;
+    gap: var(--ac-space-2);
+    margin: var(--ac-space-3) 0 0;
     padding: 0;
     list-style: none;
   }
@@ -2309,9 +2308,9 @@ const yesNoUnsure = [
     min-width: 0;
     grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    gap: var(--space-3);
-    border-top: 1px solid var(--color-rule);
-    padding-top: var(--space-2);
+    gap: var(--ac-space-3);
+    border-top: 1px solid var(--ac-color-rule);
+    padding-top: var(--ac-space-2);
   }
 
   .upload-field__files span,
@@ -2323,38 +2322,38 @@ const yesNoUnsure = [
   }
 
   .upload-field__files strong {
-    color: var(--color-navy-900);
+    color: var(--ac-color-navy-900);
   }
 
   .upload-field__files small {
-    color: var(--color-ink-500);
+    color: var(--ac-color-ink-500);
   }
 
   .upload-field__files li[data-state="error"] small {
-    color: var(--color-error);
+    color: var(--ac-color-error);
     font-weight: 700;
   }
 
   .upload-field__remove {
     min-height: 3rem;
-    border: 1px solid var(--color-navy-800);
-    border-radius: var(--radius-control);
-    padding-inline: var(--space-3);
-    background: var(--color-paper);
-    color: var(--color-navy-800);
+    border: 1px solid var(--ac-color-navy-800);
+    border-radius: var(--ac-radius-control);
+    padding-inline: var(--ac-space-3);
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-800);
     cursor: pointer;
     font-weight: 700;
   }
 
   .upload-field__remove:hover {
-    background: var(--color-navy-900);
-    color: var(--color-paper);
+    background: var(--ac-color-navy-900);
+    color: var(--ac-color-paper);
   }
 
   .form-error {
-    margin: var(--space-2) 0 0;
-    color: var(--color-error);
-    font-size: var(--step--1);
+    margin: var(--ac-space-2) 0 0;
+    color: var(--ac-color-error);
+    font-size: var(--ac-text-sm);
     font-weight: 700;
   }
 
@@ -2363,17 +2362,17 @@ const yesNoUnsure = [
   }
 
   .intake-form__consent {
-    margin-top: var(--space-7);
-    border-block: 1px solid var(--color-rule);
-    padding-block: var(--space-5);
+    margin-top: var(--ac-space-7);
+    border-block: 1px solid var(--ac-color-rule);
+    padding-block: var(--ac-space-5);
   }
 
   .consent-control {
     display: grid;
     cursor: pointer;
     grid-template-columns: 1.4rem minmax(0, 1fr);
-    gap: var(--space-3);
-    color: var(--color-navy-900);
+    gap: var(--ac-space-3);
+    color: var(--ac-color-navy-900);
     font-weight: 600;
   }
 
@@ -2381,17 +2380,17 @@ const yesNoUnsure = [
     width: 1.25rem;
     height: 1.25rem;
     margin: 0.2rem 0 0;
-    accent-color: var(--color-navy-800);
+    accent-color: var(--ac-color-navy-800);
   }
 
   .consent-control + .consent-control {
-    margin-top: var(--space-4);
+    margin-top: var(--ac-space-4);
   }
 
   .intake-form__availability {
-    margin-top: var(--space-5);
-    border-left: 3px solid var(--color-error);
-    padding: var(--space-3) var(--space-4);
+    margin-top: var(--ac-space-5);
+    border-left: 3px solid var(--ac-color-error);
+    padding: var(--ac-space-3) var(--ac-space-4);
     background: #f8ecea;
     color: #6f211e;
   }
@@ -2407,28 +2406,28 @@ const yesNoUnsure = [
 
   .intake-form__turnstile {
     display: grid;
-    gap: var(--space-2);
-    margin-top: var(--space-5);
+    gap: var(--ac-space-2);
+    margin-top: var(--ac-space-5);
   }
 
   .intake-form__turnstile p,
   .intake-form__submit-status {
     margin: 0;
-    color: var(--color-ink-500);
-    font-size: var(--step--1);
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-sm);
   }
 
   .intake-form__no-script {
-    margin-top: var(--space-5);
-    border-left: 3px solid var(--color-blue-500);
-    padding: var(--space-3);
-    background: var(--color-paper);
+    margin-top: var(--ac-space-5);
+    border-left: 3px solid var(--ac-color-blue-500);
+    padding: var(--ac-space-3);
+    background: var(--ac-color-paper);
   }
 
   .intake-form__submit-status {
-    border-left: 3px solid var(--color-blue-500);
-    padding: var(--space-3);
-    background: var(--color-paper);
+    border-left: 3px solid var(--ac-color-blue-500);
+    padding: var(--ac-space-3);
+    background: var(--ac-color-paper);
   }
 
   .intake-form__availability p {
@@ -2437,28 +2436,28 @@ const yesNoUnsure = [
 
   .intake-form__actions {
     display: grid;
-    gap: var(--space-3);
-    margin-top: var(--space-5);
+    gap: var(--ac-space-3);
+    margin-top: var(--ac-space-5);
   }
 
   .intake-form__step-actions {
     display: flex;
     flex-wrap: wrap;
-    gap: var(--space-3);
-    border-top: 1px solid var(--color-rule);
-    margin-top: var(--space-7);
-    padding-top: var(--space-5);
+    gap: var(--ac-space-3);
+    border-top: 1px solid var(--ac-color-rule);
+    margin-top: var(--ac-space-7);
+    padding-top: var(--ac-space-5);
   }
 
   .button--secondary {
-    border-color: var(--color-navy-800);
-    background: var(--color-paper);
-    color: var(--color-navy-800);
+    border-color: var(--ac-color-navy-800);
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-800);
   }
 
   .button--secondary:hover {
-    background: var(--color-navy-900);
-    color: var(--color-paper);
+    background: var(--ac-color-navy-900);
+    color: var(--ac-color-paper);
   }
 
   .intake-form__actions .button {
@@ -2466,12 +2465,12 @@ const yesNoUnsure = [
   }
 
   .assessment__steps li[data-state="current"] {
-    border-top-color: var(--color-navy-800);
+    border-top-color: var(--ac-color-navy-800);
   }
 
   .assessment__steps li[data-state="current"] .assessment__step-number,
   .assessment__steps li[data-state="current"] strong {
-    color: var(--color-navy-900);
+    color: var(--ac-color-navy-900);
   }
 
   .assessment__steps li[data-state="complete"] .assessment__step-number::after {
@@ -2488,7 +2487,7 @@ const yesNoUnsure = [
           rgb(216 224 231 / 0.25) 50%,
           transparent calc(50% + 1px)
         ),
-        var(--color-warm-white);
+        var(--ac-color-warm-white);
     }
 
     .assessment__facts {
@@ -2497,21 +2496,12 @@ const yesNoUnsure = [
 
     .assessment__facts div {
       display: block;
-      border-left: 1px solid var(--color-rule);
-      padding-left: var(--space-3);
+      border-left: 1px solid var(--ac-color-rule);
+      padding-left: var(--ac-space-3);
     }
 
     .assessment__facts dd {
-      margin-top: var(--space-1);
-    }
-
-    .form-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .form-group,
-    .form-field--wide {
-      grid-column: 1 / -1;
+      margin-top: var(--ac-space-1);
     }
 
     .choice-grid {
@@ -2537,7 +2527,7 @@ const yesNoUnsure = [
     .assessment__masthead {
       grid-template-columns: minmax(0, 1.55fr) minmax(19rem, 0.75fr);
       align-items: end;
-      padding-block: var(--space-8) var(--space-7);
+      padding-block: var(--ac-space-8) var(--ac-space-7);
     }
 
     .assessment__facts {
@@ -2559,9 +2549,9 @@ const yesNoUnsure = [
     }
 
     .assessment__rail {
-      border-right: 1px solid var(--color-rule);
+      border-right: 1px solid var(--ac-color-rule);
       border-bottom: 0;
-      padding-block: var(--space-7);
+      padding-block: var(--ac-space-7);
       padding-right: clamp(2rem, 4vw, 4rem);
     }
 
@@ -2571,37 +2561,37 @@ const yesNoUnsure = [
     }
 
     .assessment__form-column {
-      padding-block: var(--space-7) var(--space-8);
+      padding-block: var(--ac-space-7) var(--ac-space-8);
     }
 
     .intake-step {
-      padding-block: var(--space-8);
+      padding-block: var(--ac-space-8);
     }
   }
 
   @media (max-width: 39.99rem) {
     .assessment__masthead {
-      gap: var(--space-4);
-      padding-block: var(--space-6) var(--space-5);
+      gap: var(--ac-space-4);
+      padding-block: var(--ac-space-6) var(--ac-space-5);
     }
 
     .assessment__eyebrow {
-      margin-bottom: var(--space-2);
+      margin-bottom: var(--ac-space-2);
     }
 
     .assessment h1 {
-      margin-bottom: var(--space-3);
+      margin-bottom: var(--ac-space-3);
     }
 
     .assessment__lead {
-      font-size: var(--step-0);
+      font-size: var(--ac-text-body);
       line-height: 1.55;
     }
 
     .assessment__facts {
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--space-3);
-      padding-block: var(--space-3);
+      gap: var(--ac-space-3);
+      padding-block: var(--ac-space-3);
     }
 
     .assessment__facts div {
@@ -2613,25 +2603,25 @@ const yesNoUnsure = [
     }
 
     .assessment__facts dd {
-      margin-top: var(--space-1);
-      font-size: var(--step--1);
+      margin-top: var(--ac-space-1);
+      font-size: var(--ac-text-sm);
       line-height: 1.4;
     }
 
     .assessment__rail {
-      padding-block: var(--space-4);
+      padding-block: var(--ac-space-4);
     }
 
     .assessment__steps {
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--space-2);
-      margin-top: var(--space-4);
+      gap: var(--ac-space-2);
+      margin-top: var(--ac-space-4);
     }
 
     .assessment__steps li {
       display: block;
-      border-top-color: var(--color-steel-300);
-      padding-top: var(--space-2);
+      border-top-color: var(--ac-color-steel-300);
+      padding-top: var(--ac-space-2);
     }
 
     .assessment__steps small,
@@ -2642,7 +2632,7 @@ const yesNoUnsure = [
     }
 
     .assessment__steps strong {
-      margin-top: var(--space-1);
+      margin-top: var(--ac-space-1);
       font-size: 0.76rem;
       line-height: 1.25;
     }
@@ -2656,19 +2646,19 @@ const yesNoUnsure = [
     }
 
     .assessment__form-column {
-      padding-block: var(--space-4) var(--space-7);
+      padding-block: var(--ac-space-4) var(--ac-space-7);
     }
 
     .intake-form {
-      margin-top: var(--space-4);
+      margin-top: var(--ac-space-4);
     }
 
     .intake-step {
-      padding-block: var(--space-6);
+      padding-block: var(--ac-space-6);
     }
 
     .intake-step:first-of-type {
-      padding-top: var(--space-4);
+      padding-top: var(--ac-space-4);
     }
 
     .intake-step:first-of-type .intake-step__intro {

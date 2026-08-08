@@ -1,0 +1,18 @@
+# Local secrets for `wrangler pages dev` (functions/api/lead.ts). Copy to
+# .dev.vars (git-ignored) and fill in real or test values as needed.
+#
+# Cloudflare's public Turnstile testing keys always pass verification and are
+# safe to commit/share: https://developers.cloudflare.com/turnstile/troubleshooting/testing/
+TURNSTILE_SECRET_KEY=1x0000000000000000000000000000000AA
+
+HUBSPOT_ACCESS_TOKEN=
+HUBSPOT_PIPELINE_ID=
+HUBSPOT_DEAL_STAGE_ID=
+RESEND_API_KEY=
+EMAIL_FROM_ADDRESS=
+OWNER_ALERT_EMAIL=
+TWILIO_ACCOUNT_SID=
+TWILIO_AUTH_TOKEN=
+TWILIO_FROM_NUMBER=
+LEAD_ALERT_PHONE=
+ALLOWED_ORIGINS=

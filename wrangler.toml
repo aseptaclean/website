@@ -1,0 +1,27 @@
+# Cloudflare Pages project configuration. Astro remains a plain static build
+# (no adapter — see docs/05-DECISIONS-LOG.md); this file exists solely to run
+# functions/api/lead.ts as a Cloudflare Pages Function against real bindings,
+# both locally (`wrangler pages dev`) and in the deployed project.
+name = "aseptaclean"
+pages_build_output_dir = "./dist"
+compatibility_date = "2026-08-01"
+
+# Private object storage for lead submissions and uploaded property media.
+# Matches LEAD_UPLOADS in functions/_lib/lead.ts's LeadEnvironment.
+# Create the real bucket with: wrangler r2 bucket create aseptaclean-lead-uploads
+[[r2_buckets]]
+binding = "LEAD_UPLOADS"
+bucket_name = "aseptaclean-lead-uploads"
+
+# Submission rate limiting (5 attempts / 15 minutes per hashed IP). Optional
+# in code (LEAD_RATE_LIMIT?), but wired here so the limit is actually enforced.
+# Create the real namespace with: wrangler kv namespace create LEAD_RATE_LIMIT
+[[kv_namespaces]]
+binding = "LEAD_RATE_LIMIT"
+id = "REPLACE_WITH_REAL_KV_NAMESPACE_ID"
+
+# All other LeadEnvironment fields (TURNSTILE_SECRET_KEY, HUBSPOT_*,
+# RESEND_API_KEY, EMAIL_FROM_ADDRESS, OWNER_ALERT_EMAIL, TWILIO_*,
+# LEAD_ALERT_PHONE, ALLOWED_ORIGINS) are secrets, not config, and are
+# intentionally not set here. Production: `wrangler pages secret put <NAME>`.
+# Local dev: create a git-ignored .dev.vars file (see .dev.vars.example).

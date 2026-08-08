@@ -3,11 +3,11 @@ import { homepage } from "@data/site";
 ---
 
 <section class="faq" id="faq" aria-labelledby="faq-title">
-  <div class="container faq__layout">
+  <div class="ac-measure-read faq__layout">
     <header>
-      <p class="faq__index">10 / Before you request a plan</p>
-      <h2 id="faq-title">Questions that affect scope, authority, and timing</h2>
-      <p>
+      <p class="ac-eyebrow">Before you request a plan</p>
+      <h2 id="faq-title" class="ac-type-h2">Questions that affect scope, authority, and timing</h2>
+      <p class="ac-type-body">
         These answers describe the assessment process. The signed scope controls
         the actual project.
       </p>
@@ -18,11 +18,10 @@ import { homepage } from "@data/site";
         homepage.faq.map((item, index) => (
           <details open={index === 0}>
             <summary>
-              <span>{String(index + 1).padStart(2, "0")}</span>
-              <h3>{item.question}</h3>
-              <span class="faq__toggle" aria-hidden="true"></span>
+              <h3 class="ac-type-h3">{item.question}</h3>
+              <span class="faq__toggle" aria-hidden="true" />
             </summary>
-            <p>{item.answer}</p>
+            <p class="ac-type-body">{item.answer}</p>
           </details>
         ))
       }
@@ -32,52 +31,43 @@ import { homepage } from "@data/site";
 
 <style>
   .faq {
-    padding-block: clamp(5rem, 10vw, 9rem);
-    background: var(--color-paper);
+    background: var(--ac-color-warm-white);
+    padding-top: var(--ac-rhythm-tight);
+    padding-bottom: 0;
   }
 
   .faq__layout {
     display: grid;
-    gap: var(--space-8);
-  }
-
-  .faq__index {
-    margin: 0;
-    color: var(--color-navy-800);
-    font-family: var(--font-heading);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
+    gap: var(--ac-space-6);
   }
 
   h2 {
     max-width: 20ch;
-    margin: var(--space-4) 0 0;
-    letter-spacing: -0.025em;
+    margin-top: var(--ac-space-3);
   }
 
-  header > p:last-child {
+  header > p.ac-type-body {
     max-width: 34rem;
-    margin: var(--space-5) 0 0;
+    margin-top: var(--ac-space-4);
   }
 
   .faq__list {
-    border-top: 2px solid var(--color-navy-900);
+    margin-top: var(--ac-space-6);
+    border-top: 2px solid var(--ac-color-navy-900);
   }
 
   details {
-    border-bottom: 1px solid var(--color-rule);
+    border-bottom: 1px solid var(--ac-color-rule);
   }
 
   summary {
     display: grid;
     min-height: 4rem;
     cursor: pointer;
-    grid-template-columns: 2.5rem 1fr 1.5rem;
+    grid-template-columns: 1fr 1.5rem;
     align-items: center;
-    gap: var(--space-3);
-    padding-block: var(--space-4);
+    gap: var(--ac-space-3);
+    padding-block: var(--ac-space-4);
     list-style: none;
   }
 
@@ -85,26 +75,15 @@ import { homepage } from "@data/site";
     display: none;
   }
 
-  summary > span:first-child {
-    color: var(--color-navy-800);
-    font-family: var(--font-heading);
-    font-size: 0.75rem;
-    font-weight: 700;
-  }
-
   h3,
   details p {
     margin: 0;
   }
 
-  h3 {
-    font-size: var(--step-1);
-  }
-
   details p {
     max-width: 50rem;
-    margin: 0 2rem var(--space-5) 2.5rem;
-    color: var(--color-ink-500);
+    margin: 0 2rem var(--ac-space-5) 0;
+    color: var(--ac-color-ink-500);
   }
 
   .faq__toggle {
@@ -121,9 +100,9 @@ import { homepage } from "@data/site";
     left: 0;
     width: 100%;
     height: 1px;
-    background: var(--color-navy-800);
+    background: var(--ac-color-navy-800);
     content: "";
-    transition: transform var(--transition-fast);
+    transition: transform var(--ac-transition-fast);
   }
 
   .faq__toggle::after {
@@ -135,23 +114,6 @@ import { homepage } from "@data/site";
   }
 
   summary:hover h3 {
-    color: var(--color-navy-800);
-  }
-
-  @media (min-width: 58rem) {
-    .faq__layout {
-      grid-template-columns: minmax(18rem, 4fr) minmax(0, 7fr);
-      align-items: start;
-      gap: clamp(4rem, 10vw, 9rem);
-    }
-
-    .faq header {
-      position: sticky;
-      top: 7rem;
-    }
-
-    details:nth-child(even) {
-      margin-left: clamp(1.5rem, 4vw, 4rem);
-    }
+    color: var(--ac-color-navy-800);
   }
 </style>

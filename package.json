@@ -7,7 +7,8 @@
     "dev": "astro dev",
     "start": "astro dev",
     "validate:env": "node scripts/validate-env.mjs",
-    "build": "npm run validate:env -- --mode production && astro build --mode production && node scripts/prepare-sites-output.mjs",
+    "build": "npm run validate:env -- --mode production && astro build --mode production",
+    "pages:dev": "npm run build && wrangler pages dev dist",
     "build:staging": "astro build --mode staging",
     "qa:phase1": "node scripts/phase1-browser-check.mjs",
     "qa:phase3:pass1": "node scripts/phase3-pass1-browser-check.mjs",
@@ -16,12 +17,17 @@
     "qa:phase4": "node scripts/phase4-browser-check.mjs",
     "qa:phase4:deep": "node scripts/phase4-deep-check.mjs",
     "qa:phase4:static": "node scripts/phase4-static-audit.mjs",
+    "qa:phase4:session3": "node scripts/phase4-session3-check.mjs",
     "preview": "astro preview",
     "check": "astro check"
   },
   "dependencies": {
+    "@fontsource-variable/fraunces": "^5.3.0",
     "@fontsource-variable/instrument-sans": "^5.3.0",
+    "@fontsource-variable/montserrat": "^5.3.0",
     "@fontsource-variable/newsreader": "^5.3.0",
+    "@fontsource-variable/open-sans": "^5.3.0",
+    "@fontsource-variable/source-serif-4": "^5.3.0",
     "astro": "^7.1.6"
   },
   "devDependencies": {
@@ -29,7 +35,8 @@
     "@axe-core/playwright": "^4.12.1",
     "lighthouse": "^13.4.1",
     "playwright-core": "^1.62.0",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "wrangler": "^4.118.0"
   },
   "engines": {
     "node": ">=20.11.0"

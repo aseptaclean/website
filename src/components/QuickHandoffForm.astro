@@ -1,0 +1,217 @@
+---
+// docs/07-ONE-PAGE-DIRECTIVE.md §7 — inline, 3 fields, no wizard, no progress bar.
+// Appears in the hero (movement 1) and the final movement. One shared component so
+// both instances stay identical instead of drifting.
+import { site } from "@data/site";
+
+interface Props {
+  formId: string;
+  entryRoute: string;
+}
+
+const { formId, entryRoute } = Astro.props;
+
+const endpointAvailable = Boolean(
+  site.integrations.formEnabled &&
+    site.urls.formEndpoint &&
+    site.integrations.turnstileSiteKey
+);
+---
+
+<form
+  class="quick-form"
+  method="post"
+  action={endpointAvailable ? site.urls.formEndpoint : undefined}
+  aria-label={site.offer.primaryCta}
+>
+  <input type="hidden" name="offer_type" value="handoff_reset" />
+  <input type="hidden" name="entry_route" value={entryRoute} />
+  <input
+    class="quick-form__honeypot"
+    type="text"
+    name="company_website"
+    tabindex="-1"
+    autocomplete="off"
+    aria-hidden="true"
+  />
+
+  <p class="quick-form__required-note ac-type-sm">
+    Fields marked <span aria-hidden="true">*</span><span class="visually-hidden">required</span> are required.
+  </p>
+
+  <div class="quick-form__field">
+    <label for={`${formId}-name`}>Name <span aria-hidden="true">*</span></label>
+    <input
+      id={`${formId}-name`}
+      name="contact_name"
+      type="text"
+      autocomplete="name"
+      required
+    />
+  </div>
+
+  <div class="quick-form__field">
+    <label for={`${formId}-phone`}>Phone <span aria-hidden="true">*</span></label>
+    <input
+      id={`${formId}-phone`}
+      name="contact_phone"
+      type="tel"
+      inputmode="tel"
+      autocomplete="tel"
+      required
+    />
+    <p class="quick-form__phone-note ac-type-xs">
+      We call this number back — usually same business day.
+    </p>
+  </div>
+
+  <div class="quick-form__field">
+    <label for={`${formId}-detail`}>
+      What are you looking at? <span class="quick-form__optional">(optional)</span>
+    </label>
+    <textarea
+      id={`${formId}-detail`}
+      name="property_detail"
+      rows="3"
+      placeholder="A quick description of the property and what needs to happen."
+    ></textarea>
+  </div>
+
+  <label class="quick-form__consent">
+    <input type="checkbox" name="privacy_consent" value="yes" required />
+    <span>
+      I agree to be contacted about this project by phone, text, or email. I
+      have read the <a class="quick-form__link" href={site.urls.privacyPolicy}>Privacy Policy</a>.
+    </span>
+  </label>
+
+  {
+    !endpointAvailable && (
+      <p class="quick-form__note" role="status">
+        Online submission is not fully configured in this preview. Your
+        answers will not be sent.
+      </p>
+    )
+  }
+
+  <button
+    class="button quick-form__submit"
+    type="submit"
+    disabled={!endpointAvailable}
+  >
+    {site.offer.primaryCta}
+  </button>
+</form>
+
+<style>
+  .quick-form {
+    --quick-form-label-color: var(--ac-color-navy-900);
+    --quick-form-muted-color: var(--ac-color-ink-500);
+    --quick-form-link-color: var(--ac-color-navy-800);
+    display: grid;
+    gap: var(--ac-space-4);
+  }
+
+  .quick-form__required-note {
+    margin: 0;
+    color: var(--quick-form-muted-color);
+  }
+
+  .quick-form__field label,
+  .quick-form__consent {
+    display: block;
+    color: var(--quick-form-label-color);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-sm);
+    font-weight: 700;
+    line-height: 1.4;
+  }
+
+  .quick-form__optional {
+    color: var(--quick-form-muted-color);
+    font-weight: 400;
+  }
+
+  .quick-form__phone-note {
+    margin: var(--ac-space-1) 0 0;
+    color: var(--quick-form-muted-color);
+    font-weight: 400;
+  }
+
+  .quick-form__link {
+    color: var(--quick-form-link-color);
+  }
+
+  .quick-form__field input,
+  .quick-form__field textarea {
+    width: 100%;
+    min-height: 3rem;
+    margin-top: var(--ac-space-2);
+    border: 1px solid var(--ac-color-steel-300);
+    border-radius: var(--ac-radius-control);
+    padding: 0.75rem;
+    background: var(--ac-color-paper);
+    color: var(--ac-color-ink-700);
+  }
+
+  .quick-form__field textarea {
+    min-height: 5rem;
+    resize: vertical;
+  }
+
+  .quick-form__field input:hover,
+  .quick-form__field textarea:hover {
+    border-color: var(--ac-color-navy-800);
+  }
+
+  .quick-form__field input:focus-visible,
+  .quick-form__field textarea:focus-visible {
+    border-color: var(--ac-color-focus);
+  }
+
+  .quick-form__consent {
+    display: grid;
+    grid-template-columns: 1.25rem minmax(0, 1fr);
+    gap: var(--ac-space-3);
+    cursor: pointer;
+    font-weight: 400;
+  }
+
+  .quick-form__consent input {
+    width: 1.15rem;
+    height: 1.15rem;
+    margin: 0.2rem 0 0;
+    accent-color: var(--ac-color-navy-800);
+  }
+
+  .quick-form__consent span {
+    font-weight: 400;
+  }
+
+  .quick-form__note {
+    margin: 0;
+    color: var(--quick-form-muted-color);
+    font-size: var(--ac-text-sm);
+  }
+
+  .quick-form__submit {
+    width: 100%;
+  }
+
+  .quick-form__honeypot {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+  }
+
+  @media (min-width: 40rem) {
+    .quick-form__submit {
+      width: auto;
+      justify-self: start;
+      padding-inline: var(--ac-space-6);
+    }
+  }
+</style>

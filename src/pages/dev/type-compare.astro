@@ -1,0 +1,186 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import "@styles/dev-type-compare-fonts.css";
+import { homepage } from "@data/site";
+
+// Representative H3 + body pulled from real homepage data (Qualification
+// ledger, item 1) rather than re-typed, so it can't drift from production copy.
+const h3Item = homepage.qualification[0];
+
+const sansStack = `"Open Sans Variable", "Helvetica Neue", Arial, sans-serif`;
+
+const variants = [
+  {
+    id: "a",
+    letter: "A",
+    name: "Montserrat 600/700",
+    note: "current locked heading face — H1–H2 only · Open Sans body · H3 sans",
+    display: `"Montserrat Variable", "Helvetica Neue", Arial, sans-serif`,
+    sans: sansStack,
+    weighted: true
+  },
+  {
+    id: "b",
+    letter: "B",
+    name: "Source Serif 4",
+    note: "H1–H2 only · Open Sans body · H3 sans",
+    display: `"Source Serif 4 Variable", "Iowan Old Style", "Palatino Linotype", serif`,
+    sans: sansStack,
+    weighted: false
+  },
+  {
+    id: "c",
+    letter: "C",
+    name: "Newsreader",
+    note: "same rule — H1–H2 only · Open Sans body · H3 sans",
+    display: `"Newsreader Variable", "Iowan Old Style", "Palatino Linotype", serif`,
+    sans: sansStack,
+    weighted: false
+  },
+  {
+    id: "d",
+    letter: "D",
+    name: "Fraunces (weight ≤600)",
+    note: "same rule — H1–H2 only · Open Sans body · H3 sans",
+    display: `"Fraunces Variable", "Iowan Old Style", "Palatino Linotype", serif`,
+    sans: sansStack,
+    weighted: false
+  }
+];
+---
+
+<BaseLayout
+  title="Type comparison — heading face (dev)"
+  description="Internal A/B/C/D heading-face comparison for the H1/H2 decision. Not part of the public site."
+  canonicalPath="/dev/type-compare/"
+  noindex={true}
+  showMobileCta={false}
+>
+  <div class="compare ac-measure-wide">
+    <header class="compare__intro">
+      <p class="ac-eyebrow">Internal / not indexed — not in sitemap.xml</p>
+      <h1 class="ac-type-h1">Heading face comparison</h1>
+      <p class="ac-type-body">
+        docs/17-REFERENCE-TRANSLATION-MARTEL.md §6.1: the H1/H2 heading-face
+        decision, self-hosted as woff2 with <code>font-display: swap</code>.
+        Type scale, tracking (letter-spacing), and <code>text-wrap: balance</code>
+        are identical in every variant below — only the font family (and, for
+        Montserrat, the weight pairing it was originally specified at) changes.
+        H3 and body stay in Open Sans across all four, per the "H3 sans" rule.
+      </p>
+    </header>
+
+    {
+      variants.map((variant) => (
+        <article
+          class="compare__variant"
+          class:list={{ "compare__variant--weighted": variant.weighted }}
+          style={`--ac-font-display: ${variant.display}; --ac-font-sans: ${variant.sans};`}
+          aria-labelledby={`variant-${variant.id}-label`}
+        >
+          <p id={`variant-${variant.id}-label`} class="compare__label ac-type-xs">
+            {variant.letter}. {variant.name}
+            <span class="compare__label-note">{variant.note}</span>
+          </p>
+
+          <h1 class="ac-type-h1 compare__h1">
+            Walk Back Into a Property That Finally Feels{" "}
+            <span class="ac-mark">Ready.</span>
+          </h1>
+
+          <h2 class="ac-type-h2 compare__h2">
+            Removing the contents is not the same as finishing the property
+          </h2>
+
+          <div class="compare__block">
+            <h3 class="ac-type-h3 compare__h3">{h3Item.label}</h3>
+            <p class="ac-type-body">{h3Item.detail}</p>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .compare {
+    display: grid;
+    gap: var(--ac-rhythm-open);
+    padding-block: var(--ac-space-8);
+  }
+
+  .compare__intro {
+    display: grid;
+    gap: var(--ac-space-4);
+    max-width: var(--ac-measure-read);
+  }
+
+  .compare__intro code {
+    font-family: monospace;
+  }
+
+  .compare__variant {
+    display: grid;
+    gap: var(--ac-space-5);
+    border-top: 2px solid var(--ac-color-navy-900);
+    padding-top: var(--ac-space-6);
+  }
+
+  .compare__label {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--ac-space-3);
+    margin: 0;
+    color: var(--ac-color-navy-800);
+  }
+
+  .compare__label-note {
+    color: var(--ac-color-ink-500);
+    font-weight: 400;
+    letter-spacing: normal;
+    text-transform: none;
+  }
+
+  /* Exact §6.1 rules, held constant across every variant: text-wrap: balance
+     on H1–H3. font-size, letter-spacing, and line-height already come
+     unmodified from the shared .ac-type-h1/h2/h3 classes above. */
+  .compare__h1,
+  .compare__h2,
+  .compare__h3 {
+    text-wrap: balance;
+  }
+
+  .compare__h1,
+  .compare__h2 {
+    max-width: 20ch;
+  }
+
+  .compare__h2 {
+    justify-self: center;
+    max-width: 24ch;
+    text-align: center;
+  }
+
+  .compare__block {
+    display: grid;
+    gap: var(--ac-space-2);
+    max-width: var(--ac-measure-read);
+  }
+
+  .compare__block p {
+    margin: 0;
+    color: var(--ac-color-ink-500);
+  }
+
+  /* Variant A only: Montserrat's own "600/700" spec, one weight step between
+     H1 and H2, exactly as docs/17 §6.1 names it. Every other variant inherits
+     the shared 520 optical weight from .ac-type-h1/h2 unchanged. */
+  .compare__variant--weighted .compare__h1 {
+    font-weight: 700;
+  }
+
+  .compare__variant--weighted .compare__h2 {
+    font-weight: 600;
+  }
+</style>

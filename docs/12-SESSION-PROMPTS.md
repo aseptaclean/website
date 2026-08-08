@@ -350,8 +350,17 @@ Append the decision and its evidence to docs/05-DECISIONS-LOG.md.
 
 ## After launch, in this order
 
+Items 1 and 2 are the highest-priority operational work after launch — ahead of any further
+design or copy work on the page itself (items 3–5). `docs/14-RESEARCH-FINDINGS.md` §2.1: 93–97%
+of consumers read reviews before choosing a local business, and a review-backed profile makes a
+business roughly 2.7x more likely to be perceived as reputable. A review count of zero is closer
+to a pass/fail gate on whether a stranger calls at all than a soft trust signal — no page
+structure fix substitutes for it. Item 2 cannot start before item 1 (there is no one to answer
+the calls those first jobs generate), so it is sequenced second, not deprioritized.
+
 1. Live answering service contracted and tested — before any paid traffic.
-2. First 3–5 jobs bid for proof: photographs with signed release, case study, Google review.
+2. **First 3–5 jobs bid for proof: photographs with signed release, case study, Google review.**
+   The single highest-priority operational item after launch once phone coverage is live.
 3. R2 uploads if deferred; real photography into the artifact and movement 3.
 4. `/private-residence-reset/` per the canonical spec and the Private Residence Reset strategy doc.
 5. Astro major migration on a branch, with visual baselines, once leads are flowing.

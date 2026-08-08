@@ -1,34 +1,43 @@
 ---
 import BaseLayout from "@layouts/BaseLayout.astro";
 import CategoryContrast from "@components/CategoryContrast.astro";
+import ConfidenceAndFit from "@components/ConfidenceAndFit.astro";
 import FAQ from "@components/FAQ.astro";
 import FinalCTA from "@components/FinalCTA.astro";
-import FounderAuthority from "@components/FounderAuthority.astro";
-import HandoffAssurance from "@components/HandoffAssurance.astro";
+import HandoffRecord from "@components/HandoffRecord.astro";
 import HandoffStandard from "@components/HandoffStandard.astro";
 import Hero from "@components/Hero.astro";
 import OutcomeComparison from "@components/OutcomeComparison.astro";
-import PricingContext from "@components/PricingContext.astro";
-import ProcessTimeline from "@components/ProcessTimeline.astro";
 import Qualification from "@components/Qualification.astro";
-import ScopeIncluded from "@components/ScopeIncluded.astro";
+import { homepage, site } from "@data/site";
+
+const faqSchema = {
+  "@type": "FAQPage",
+  "@id": new URL("/#faq", site.urls.site).href,
+  mainEntity: homepage.faq.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: item.answer
+    }
+  }))
+};
 ---
 
 <BaseLayout
   title="Property Cleanout & Deep Cleaning San Jose | Aseptaclean"
   description="Clear unwanted contents, deep-clean the property, and document completion for estates, pre-sale homes, and landlord turnovers. Serving San Jose and the South Bay."
   canonicalPath="/"
+  schema={faqSchema}
 >
   <Hero />
   <Qualification />
   <OutcomeComparison />
   <CategoryContrast />
   <HandoffStandard />
-  <ScopeIncluded />
-  <HandoffAssurance />
-  <PricingContext />
-  <FounderAuthority />
-  <ProcessTimeline />
-  <FAQ />
+  <HandoffRecord />
+  <ConfidenceAndFit />
   <FinalCTA />
+  <FAQ />
 </BaseLayout>

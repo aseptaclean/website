@@ -1,14 +1,13 @@
 ---
-import HandoffRecord from "@components/HandoffRecord.astro";
 import { homepage } from "@data/site";
 ---
 
 <section class="standard" id="standards" aria-labelledby="standard-title">
-  <div class="container">
+  <div class="ac-measure-wide">
     <header class="standard__header">
-      <p>04 / Five-stage control</p>
-      <h2 id="standard-title">One company stays accountable from the first decision to the final closeout</h2>
-      <p>
+      <p class="ac-eyebrow">Five-stage standard</p>
+      <h2 id="standard-title" class="ac-type-h2">One company stays accountable from the first decision to the final closeout</h2>
+      <p class="ac-type-body">
         You should not have to coordinate a hauler, a cleaner, disposal, access,
         family approvals, and a final walkthrough just to get one property
         finished. The Aseptaclean Five-Stage Handoff Standard keeps the work in
@@ -16,68 +15,49 @@ import { homepage } from "@data/site";
       </p>
     </header>
 
-    <div class="standard__composition">
-      <ol class="standard__stages">
-        {
-          homepage.handoffStages.map((stage, index) => (
-            <li>
-              <span class="standard__number">{String(index + 1).padStart(2, "0")}</span>
-              <div>
-                <h3>{stage.name}</h3>
-                <p>{stage.detail}</p>
-                <small>Record: {stage.record}</small>
-              </div>
-            </li>
-          ))
-        }
-      </ol>
-      <HandoffRecord />
-    </div>
+    <ol class="standard__stages">
+      {
+        homepage.handoffStages.map((stage, index) => (
+          <li>
+            <span class="standard__number">{String(index + 1).padStart(2, "0")}</span>
+            <div class="standard__content">
+              <h3 class="ac-type-h3">{stage.name}</h3>
+              <p class="ac-type-body">{stage.detail}</p>
+              <small class="standard__record ac-type-xs">Record: {stage.record}</small>
+            </div>
+          </li>
+        ))
+      }
+    </ol>
   </div>
 </section>
 
 <style>
   .standard {
-    overflow: hidden;
-    padding-block: clamp(5rem, 10vw, 9rem);
-    background: var(--color-paper);
+    background: var(--ac-color-warm-white);
+    padding-top: var(--ac-rhythm-open);
+    padding-bottom: 0;
   }
 
   .standard__header {
     display: grid;
-    gap: var(--space-4);
-  }
-
-  .standard__header > p:first-child {
-    margin: 0;
-    color: var(--color-navy-800);
-    font-family: var(--font-heading);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
+    gap: var(--ac-space-4);
+    max-width: 48rem;
   }
 
   h2 {
     max-width: 22ch;
-    margin: 0;
-    letter-spacing: -0.03em;
   }
 
-  .standard__header > p:last-child {
+  .standard__header > p.ac-type-body {
     max-width: 38rem;
-    margin: 0;
-  }
-
-  .standard__composition {
-    display: grid;
-    gap: var(--space-8);
-    margin-top: var(--space-8);
   }
 
   .standard__stages {
-    margin: 0;
-    border-top: 2px solid var(--color-navy-900);
+    display: grid;
+    gap: 0;
+    margin: var(--ac-space-8) 0 0;
+    border-top: 2px solid var(--ac-color-navy-900);
     padding: 0;
     list-style: none;
   }
@@ -85,59 +65,35 @@ import { homepage } from "@data/site";
   .standard__stages li {
     display: grid;
     max-width: none;
-    grid-template-columns: 2.5rem 1fr;
-    gap: var(--space-3);
-    border-bottom: 1px solid var(--color-rule);
-    padding-block: var(--space-5);
+    grid-template-columns: minmax(3.5rem, 22%) 1fr;
+    gap: var(--ac-space-4);
+    border-bottom: 1px solid var(--ac-color-rule);
+    padding-block: var(--ac-space-6);
   }
 
   .standard__number {
-    color: var(--color-navy-800);
-    font-family: var(--font-heading);
-    font-size: var(--step--1);
-    font-weight: 700;
+    color: var(--ac-color-steel-200);
+    font-family: var(--ac-font-display);
+    font-size: var(--ac-text-h3);
+    font-weight: 500;
   }
 
-  .standard__stages h3,
-  .standard__stages p {
+  .standard__content h3,
+  .standard__content p {
     margin: 0;
   }
 
-  .standard__stages h3 {
-    font-size: var(--step-1);
+  .standard__content p {
+    margin-top: var(--ac-space-2);
+    color: var(--ac-color-ink-500);
   }
 
-  .standard__stages p {
-    margin-top: var(--space-2);
-    color: var(--color-ink-500);
-  }
-
-  .standard__stages small {
+  .standard__record {
     display: block;
-    margin-top: var(--space-3);
-    color: var(--color-navy-800);
-    font-family: var(--font-heading);
-    font-size: 0.75rem;
+    margin-top: var(--ac-space-3);
+    color: var(--ac-color-navy-800);
     font-weight: 700;
     letter-spacing: 0.04em;
     text-transform: uppercase;
-  }
-
-  @media (min-width: 55rem) {
-    .standard__header {
-      grid-template-columns: minmax(10rem, 2fr) minmax(22rem, 4fr) minmax(18rem, 3fr);
-      align-items: end;
-      gap: clamp(2rem, 5vw, 5rem);
-    }
-
-    .standard__composition {
-      grid-template-columns: minmax(18rem, 5fr) minmax(31rem, 7fr);
-      align-items: start;
-      gap: clamp(3rem, 7vw, 7rem);
-    }
-
-    .standard__stages li:nth-child(even) {
-      margin-left: clamp(1rem, 3vw, 3rem);
-    }
   }
 </style>

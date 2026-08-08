@@ -3,116 +3,77 @@ import { homepage } from "@data/site";
 ---
 
 <section class="qualification" id="who-it-is-for" aria-labelledby="qualification-title">
-  <div class="container qualification__layout">
-    <header>
-      <p class="qualification__index">01 / Property fit</p>
-      <h2 id="qualification-title">You are not looking for someone to carry out a few bags</h2>
-      <p>
-        You are trying to reach the point where the property can be listed,
-        transferred, rented, returned, inspected, or simply closed without
-        another unfinished task waiting behind the door.
-      </p>
-      <p>
-        The house may still be full. The cleaning may be more than a normal
-        cleaner will take on. Family members may disagree about what stays. You
-        may be trying to manage the property from another city.
-      </p>
-    </header>
+  <div class="ac-measure-intimate qualification__layout">
+    <p class="qualification__index ac-eyebrow">Recognition</p>
+    <h2 id="qualification-title" class="ac-type-h2">You are not looking for someone to carry out a few bags</h2>
+    <p class="ac-type-body">
+      You are trying to reach the point where the property can be listed,
+      transferred, rented, returned, inspected, or simply closed without
+      another unfinished task waiting behind the door.
+    </p>
+    <p class="ac-type-body">
+      The house may still be full. The cleaning may be more than a normal
+      cleaner will take on. Family members may disagree about what stays. You
+      may be trying to manage the property from another city.
+    </p>
+    <p class="ac-type-body">
+      Sometimes it is heavy accumulation that has built up for years.
+      Sometimes it is an inherited or estate property with decisions no one
+      has made yet. Sometimes it is a whole-house cleanout on a deadline, or a
+      property nobody in the family can get to right now.
+    </p>
 
-    <ol class="qualification__ledger">
+    <ul class="qualification__ledger">
       {
-        homepage.qualification.map((item, index) => (
+        homepage.qualification.map((item) => (
           <li>
-            <span>{String(index + 1).padStart(2, "0")}</span>
-            <div>
-              <h3>{item.label}</h3>
-              <p>{item.detail}</p>
-            </div>
+            <h3 class="ac-type-h3">{item.label}</h3>
+            <p class="ac-type-body">{item.detail}</p>
           </li>
         ))
       }
-    </ol>
+    </ul>
   </div>
 </section>
 
 <style>
   .qualification {
-    padding-block: clamp(4.5rem, 9vw, 8rem);
-    background: var(--color-paper);
+    border-top: 1px solid var(--ac-color-steel-200);
+    background: var(--ac-color-warm-white);
+    padding-top: var(--ac-rhythm-standard);
+    padding-bottom: 0;
   }
 
   .qualification__layout {
     display: grid;
-    gap: var(--space-7);
-  }
-
-  .qualification__index {
-    margin: 0;
-    color: var(--color-navy-800);
-    font-family: var(--font-heading);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
+    gap: var(--ac-space-4);
   }
 
   h2 {
-    max-width: 18ch;
-    margin: var(--space-4) 0 0;
-    letter-spacing: -0.025em;
-  }
-
-  header > p:last-child {
-    max-width: 33rem;
-    margin: var(--space-5) 0 0;
+    margin-top: var(--ac-space-3);
   }
 
   .qualification__ledger {
-    margin: 0;
-    border-top: 2px solid var(--color-navy-900);
+    display: grid;
+    gap: 0;
+    margin: var(--ac-space-6) 0 0;
+    border-top: 2px solid var(--ac-color-navy-900);
     padding: 0;
     list-style: none;
   }
 
   .qualification__ledger li {
-    display: grid;
-    max-width: none;
-    grid-template-columns: 2.5rem 1fr;
-    gap: var(--space-3);
-    border-bottom: 1px solid var(--color-rule);
-    padding-block: var(--space-5);
+    border-bottom: 1px solid var(--ac-color-rule);
+    padding-block: var(--ac-space-5);
   }
 
-  .qualification__ledger li > span {
-    color: var(--color-navy-800);
-    font-family: var(--font-heading);
-    font-size: var(--step--1);
-    font-weight: 700;
-  }
-
-  h3,
+  .qualification__ledger h3,
   .qualification__ledger p {
     margin: 0;
   }
 
-  h3 {
-    font-size: var(--step-1);
-  }
-
   .qualification__ledger p {
-    margin-top: var(--space-2);
-    color: var(--color-ink-500);
-  }
-
-  @media (min-width: 55rem) {
-    .qualification__layout {
-      grid-template-columns: minmax(18rem, 4fr) minmax(0, 7fr);
-      gap: clamp(4rem, 10vw, 9rem);
-    }
-
-    .qualification__ledger li:nth-child(2),
-    .qualification__ledger li:nth-child(4) {
-      margin-left: clamp(1.5rem, 4vw, 4rem);
-    }
+    margin-top: var(--ac-space-2);
+    color: var(--ac-color-ink-500);
   }
 </style>

@@ -79,10 +79,10 @@ const schema = [
   showMobileCta={false}
 >
   <section class="residence-hero" aria-labelledby="residence-title">
-    <div class="container residence-hero__layout">
+    <div class="ac-measure-wide residence-hero__layout">
       <div>
         <p class="residence-label">Private Residence Reset</p>
-        <h1 id="residence-title">Bring the entire residence back to a <em>defined standard.</em></h1>
+        <h1 id="residence-title" class="ac-type-h1">Bring the entire residence back to a <em>defined standard.</em></h1>
         <p class="residence-hero__lead">
           A structured, detail-intensive whole-home reset for homeowners who
           need more than routine maintenance cleaning—and want the property,
@@ -103,7 +103,7 @@ const schema = [
         <p>Projects generally begin here. Final pricing follows the defined scope.</p>
       </aside>
     </div>
-    <div class="container residence-trust" aria-label="Residence project controls">
+    <div class="ac-measure-wide residence-trust" aria-label="Residence project controls">
       <span>Written room-by-room scope</span>
       <span>Documented changes</span>
       <span>Finish and access notes</span>
@@ -112,10 +112,10 @@ const schema = [
   </section>
 
   <section class="residence-intro" aria-labelledby="not-housekeeping">
-    <div class="container residence-intro__layout">
+    <div class="ac-measure-wide residence-intro__layout">
       <p class="residence-index">01 / The distinction</p>
       <div>
-        <h2 id="not-housekeeping">This is not routine housekeeping.</h2>
+        <h2 id="not-housekeeping" class="ac-type-h2">This is not routine housekeeping.</h2>
         <p>
           Maintenance cleaning keeps a known baseline in place. A Private
           Residence Reset is for the moment when deeper detail work, multiple
@@ -131,9 +131,9 @@ const schema = [
   </section>
 
   <section class="residence-outcome" aria-labelledby="residence-outcome-title">
-    <div class="container">
+    <div class="ac-measure-wide">
       <p class="residence-index">02 / The restored baseline</p>
-      <h2 id="residence-outcome-title">Walk back into a residence that feels <em>settled again.</em></h2>
+      <h2 id="residence-outcome-title" class="ac-type-display">Walk back into a residence that feels <em>settled again.</em></h2>
       <div class="residence-outcome__copy">
         <p>
           The deeper details no longer accumulate in the background. Priority
@@ -150,16 +150,16 @@ const schema = [
   </section>
 
   <section class="residence-method" aria-labelledby="residence-method-title">
-    <div class="container">
+    <div class="ac-measure-wide">
       <header>
         <p class="residence-index">03 / Aseptaclean Residence Baseline</p>
-        <h2 id="residence-method-title">A defined path through the whole residence.</h2>
+        <h2 id="residence-method-title" class="ac-type-h2">A defined path through the whole residence.</h2>
       </header>
       <ol>
         {stages.map(([name, detail], index) => (
           <li>
             <span>{String(index + 1).padStart(2, "0")}</span>
-            <h3>{name}</h3>
+            <h3 class="ac-type-h3">{name}</h3>
             <p>{detail}</p>
           </li>
         ))}
@@ -168,10 +168,10 @@ const schema = [
   </section>
 
   <section class="residence-record" aria-labelledby="record-section-title">
-    <div class="container residence-record__layout">
+    <div class="ac-measure-wide residence-record__layout">
       <header>
         <p class="residence-index">04 / The operating record</p>
-        <h2 id="record-section-title">The details live in the baseline—not in assumptions.</h2>
+        <h2 id="record-section-title" class="ac-type-h2">The details live in the baseline—not in assumptions.</h2>
         <p>
           Each priority room, included surface, finish note, restricted area,
           access instruction, approved change, and completion status has a
@@ -183,18 +183,18 @@ const schema = [
   </section>
 
   <section class="residence-scope" aria-labelledby="residence-scope-title">
-    <div class="container">
+    <div class="ac-measure-wide">
       <header>
         <p class="residence-index">05 / Scope boundary</p>
-        <h2 id="residence-scope-title">The residence is considered as a whole. The scope is still exact.</h2>
+        <h2 id="residence-scope-title" class="ac-type-h2">The residence is considered as a whole. The scope is still exact.</h2>
       </header>
       <div class="residence-scope__columns">
         <section aria-labelledby="may-include">
-          <h3 id="may-include">Work that may be included</h3>
+          <h3 id="may-include" class="ac-type-lead">Work that may be included</h3>
           <ul>{included.map((item) => <li>{item}</li>)}</ul>
         </section>
         <section aria-labelledby="separate-scope">
-          <h3 id="separate-scope">Separately scoped or outside the offer</h3>
+          <h3 id="separate-scope" class="ac-type-lead">Separately scoped or outside the offer</h3>
           <ul>{separate.map((item) => <li>{item}</li>)}</ul>
         </section>
       </div>
@@ -203,10 +203,10 @@ const schema = [
   </section>
 
   <section class="residence-confidence" aria-labelledby="residence-confidence-title">
-    <div class="container residence-confidence__layout">
+    <div class="ac-measure-wide residence-confidence__layout">
       <header>
         <p class="residence-index">06 / Property instructions</p>
-        <h2 id="residence-confidence-title">The home’s instructions stay attached to the work.</h2>
+        <h2 id="residence-confidence-title" class="ac-type-h2">The home’s instructions stay attached to the work.</h2>
       </header>
       <dl>
         <div>
@@ -230,10 +230,10 @@ const schema = [
   </section>
 
   <section class="residence-fit" aria-labelledby="residence-fit-title">
-    <div class="container residence-fit__layout">
+    <div class="ac-measure-wide residence-fit__layout">
       <div>
         <p class="residence-index">07 / Starting context and fit</p>
-        <h2 id="residence-fit-title">A whole-home baseline begins with a whole-home view.</h2>
+        <h2 id="residence-fit-title" class="ac-type-h2">A whole-home baseline begins with a whole-home view.</h2>
         <p>
           Initial Residence Reset projects generally begin at
           <strong>{currency.format(site.residenceOffer.startingPrice)}</strong>.
@@ -243,7 +243,7 @@ const schema = [
       </div>
       <aside>
         <span>Private retention</span>
-        <h3>Quarterly Residence Reset Care</h3>
+        <h3 class="ac-type-h3">Quarterly Residence Reset Care</h3>
         <p>
           Select residences may qualify after the initial baseline is
           established. The invitation is based on fit, continuity, and
@@ -255,10 +255,10 @@ const schema = [
   </section>
 
   <section class="residence-decision" aria-labelledby="residence-decision-title">
-    <div class="container residence-decision__layout">
+    <div class="ac-measure-wide residence-decision__layout">
       <div>
         <p class="residence-index">08 / Request an assessment</p>
-        <h2 id="residence-decision-title">Start with the rooms and details that matter most.</h2>
+        <h2 id="residence-decision-title" class="ac-type-h2">Start with the rooms and details that matter most.</h2>
         <p>
           Share the residence, priority areas, important finishes, access, and
           desired completion date. Aseptaclean will review whether the project
@@ -278,9 +278,9 @@ const schema = [
   .residence-hero aside > span,
   .residence-fit aside > span {
     margin: 0;
-    color: var(--color-navy-800);
-    font-family: var(--font-sans);
-    font-size: var(--text-xs);
+    color: var(--ac-color-navy-800);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-xs);
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -290,55 +290,54 @@ const schema = [
     overflow: hidden;
     background:
       linear-gradient(90deg, transparent 0 72%, rgb(168 184 200 / 0.12) 72%),
-      var(--color-warm-white);
+      var(--ac-color-warm-white);
   }
 
   .residence-hero__layout {
     display: grid;
-    gap: var(--space-7);
-    padding-block: clamp(4rem, 10vw, 8rem) var(--space-7);
+    gap: var(--ac-space-7);
+    padding-block: clamp(4rem, 10vw, 8rem) var(--ac-space-7);
   }
 
   h1 {
     max-width: 15ch;
-    margin: var(--space-4) 0 0;
-    font-size: var(--text-h1);
+    margin: var(--ac-space-4) 0 0;
   }
 
   h1 em,
   .residence-outcome h2 em {
-    color: var(--color-navy-800);
+    color: var(--ac-color-navy-800);
     font-weight: 430;
   }
 
   .residence-hero__lead {
-    max-width: var(--content-lead);
-    margin: var(--space-5) 0 0;
-    font-size: var(--text-lead);
+    max-width: var(--ac-measure-intimate);
+    margin: var(--ac-space-5) 0 0;
+    font-size: var(--ac-text-lead);
   }
 
   .residence-hero .button {
-    margin-top: var(--space-6);
+    margin-top: var(--ac-space-6);
   }
 
   .residence-hero__micro {
     max-width: 45rem;
-    margin: var(--space-3) 0 0;
-    color: var(--color-ink-500);
-    font-size: var(--text-sm);
+    margin: var(--ac-space-3) 0 0;
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-sm);
   }
 
   .residence-hero aside {
     align-self: end;
-    border-top: 2px solid var(--color-navy-900);
-    padding-top: var(--space-5);
+    border-top: 2px solid var(--ac-color-navy-900);
+    padding-top: var(--ac-space-5);
   }
 
   .residence-hero aside strong {
     display: block;
-    margin-top: var(--space-3);
-    color: var(--color-navy-900);
-    font-family: var(--font-display);
+    margin-top: var(--ac-space-3);
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-display);
     font-size: clamp(3.25rem, 8vw, 5.5rem);
     font-weight: 500;
     letter-spacing: -0.05em;
@@ -346,21 +345,21 @@ const schema = [
   }
 
   .residence-hero aside p {
-    margin: var(--space-3) 0 0;
-    color: var(--color-ink-500);
+    margin: var(--ac-space-3) 0 0;
+    color: var(--ac-color-ink-500);
   }
 
   .residence-trust {
     display: grid;
-    border-top: 1px solid var(--color-rule);
+    border-top: 1px solid var(--ac-color-rule);
   }
 
   .residence-trust span {
     min-height: 3rem;
-    border-bottom: 1px solid var(--color-rule);
-    padding-block: var(--space-3);
-    color: var(--color-navy-900);
-    font-size: var(--text-sm);
+    border-bottom: 1px solid var(--ac-color-rule);
+    padding-block: var(--ac-space-3);
+    color: var(--ac-color-navy-900);
+    font-size: var(--ac-text-sm);
     font-weight: 650;
   }
 
@@ -374,12 +373,12 @@ const schema = [
   }
 
   .residence-intro {
-    background: var(--color-paper);
+    background: var(--ac-color-paper);
   }
 
   .residence-intro__layout {
     display: grid;
-    gap: var(--space-5);
+    gap: var(--ac-space-5);
   }
 
   .residence-intro h2,
@@ -397,24 +396,23 @@ const schema = [
   .residence-record h2 + p,
   .residence-fit h2 + p,
   .residence-decision h2 + p {
-    margin-top: var(--space-5);
+    margin-top: var(--ac-space-5);
   }
 
   .residence-outcome {
     padding-block: clamp(5rem, 13vw, 11rem);
-    background: var(--color-warm-white);
+    background: var(--ac-color-warm-white);
   }
 
   .residence-outcome h2 {
     max-width: 16ch;
-    margin: var(--space-5) 0 0;
-    font-size: clamp(2.75rem, 7vw, 5.5rem);
+    margin: var(--ac-space-5) 0 0;
   }
 
   .residence-outcome__copy {
     display: grid;
-    gap: var(--space-4);
-    margin-top: var(--space-7);
+    gap: var(--ac-space-4);
+    margin-top: var(--ac-space-7);
   }
 
   .residence-outcome__copy p {
@@ -422,22 +420,22 @@ const schema = [
   }
 
   .residence-method {
-    background: var(--color-navy-900);
-    color: var(--color-warm-white);
+    background: var(--ac-color-navy-900);
+    color: var(--ac-color-warm-white);
   }
 
   .residence-method .residence-index,
   .residence-decision .residence-index {
-    color: var(--color-steel-300);
+    color: var(--ac-color-steel-on-navy);
   }
 
   .residence-method h2 {
-    margin-top: var(--space-4);
-    color: var(--color-paper);
+    margin-top: var(--ac-space-4);
+    color: var(--ac-color-paper);
   }
 
   .residence-method ol {
-    margin: var(--space-7) 0 0;
+    margin: var(--ac-space-7) 0 0;
     border-top: 1px solid rgb(168 184 200 / 0.45);
     padding: 0;
     list-style: none;
@@ -447,35 +445,35 @@ const schema = [
     display: grid;
     max-width: none;
     grid-template-columns: 2rem 1fr;
-    gap: var(--space-3);
+    gap: var(--ac-space-3);
     border-bottom: 1px solid rgb(168 184 200 / 0.35);
-    padding-block: var(--space-5);
+    padding-block: var(--ac-space-5);
   }
 
   .residence-method li > span {
-    color: var(--color-steel-300);
-    font-size: var(--text-xs);
+    color: var(--ac-color-steel-on-navy);
+    font-size: var(--ac-text-xs);
     font-weight: 700;
   }
 
   .residence-method h3,
   .residence-method li p {
     margin: 0;
-    color: var(--color-paper);
+    color: var(--ac-color-paper);
   }
 
   .residence-method li p {
     grid-column: 2;
-    color: var(--color-steel-300);
+    color: var(--ac-color-steel-on-navy);
   }
 
   .residence-record {
-    background: var(--color-paper);
+    background: var(--ac-color-paper);
   }
 
   .residence-record__layout {
     display: grid;
-    gap: var(--space-8);
+    gap: var(--ac-space-8);
   }
 
   .residence-record header > p:last-child {
@@ -483,125 +481,124 @@ const schema = [
   }
 
   .residence-scope {
-    background: var(--color-warm-white);
+    background: var(--ac-color-warm-white);
   }
 
   .residence-scope h2,
   .residence-scope__columns {
-    margin-top: var(--space-4);
+    margin-top: var(--ac-space-4);
   }
 
   .residence-scope__columns {
     display: grid;
-    gap: var(--space-7);
+    gap: var(--ac-space-7);
   }
 
   .residence-scope__columns section {
-    border-top: 2px solid var(--color-navy-900);
-    padding-top: var(--space-4);
+    border-top: 2px solid var(--ac-color-navy-900);
+    padding-top: var(--ac-space-4);
   }
 
   .residence-scope__columns section + section {
-    border-color: var(--color-error);
+    border-color: var(--ac-color-error);
   }
 
   .residence-scope h3 {
     margin: 0;
-    font-size: var(--text-lead);
   }
 
   .residence-scope ul {
-    margin: var(--space-4) 0 0;
+    margin: var(--ac-space-4) 0 0;
     padding: 0;
     list-style: none;
   }
 
   .residence-scope li {
-    border-top: 1px solid var(--color-rule);
-    padding: var(--space-3) 0;
+    border-top: 1px solid var(--ac-color-rule);
+    padding: var(--ac-space-3) 0;
   }
 
   .residence-scope__disclaimer {
-    margin: var(--space-7) 0 0;
-    border-left: 3px solid var(--color-blue-500);
-    padding-left: var(--space-4);
-    color: var(--color-ink-500);
-    font-size: var(--text-sm);
+    margin: var(--ac-space-7) 0 0;
+    border-left: 3px solid var(--ac-color-blue-500);
+    padding-left: var(--ac-space-4);
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-sm);
   }
 
   .residence-confidence {
-    background: var(--color-paper);
+    background: var(--ac-color-paper);
   }
 
   .residence-confidence__layout {
     display: grid;
-    gap: var(--space-7);
+    gap: var(--ac-space-7);
   }
 
   .residence-confidence dl {
     margin: 0;
-    border-top: 2px solid var(--color-navy-900);
+    border-top: 2px solid var(--ac-color-navy-900);
   }
 
   .residence-confidence dl > div {
-    border-bottom: 1px solid var(--color-rule);
-    padding-block: var(--space-5);
+    border-bottom: 1px solid var(--ac-color-rule);
+    padding-block: var(--ac-space-5);
   }
 
   .residence-confidence dt {
-    color: var(--color-navy-900);
+    color: var(--ac-color-navy-900);
     font-weight: 700;
   }
 
   .residence-confidence dd {
     max-width: 52ch;
-    margin: var(--space-2) 0 0;
-    color: var(--color-ink-500);
+    margin: var(--ac-space-2) 0 0;
+    color: var(--ac-color-ink-500);
   }
 
   .residence-fit {
-    background: var(--color-warm-white);
+    background: var(--ac-color-warm-white);
   }
 
   .residence-fit__layout {
     display: grid;
-    gap: var(--space-7);
+    gap: var(--ac-space-7);
   }
 
   .residence-fit aside {
-    border-top: 3px solid var(--color-navy-900);
-    padding-top: var(--space-5);
+    border-top: 3px solid var(--ac-color-navy-900);
+    padding-top: var(--ac-space-5);
   }
 
   .residence-fit aside h3 {
-    margin: var(--space-3) 0 0;
+    margin: var(--ac-space-3) 0 0;
   }
 
   .residence-fit aside p {
-    margin: var(--space-3) 0 0;
+    margin: var(--ac-space-3) 0 0;
   }
 
   .residence-decision {
     padding-block: clamp(4.5rem, 9vw, 8rem);
-    background: var(--color-navy-900);
-    color: var(--color-warm-white);
+    background: var(--ac-color-navy-900);
+    color: var(--ac-color-warm-white);
   }
 
   .residence-decision__layout {
     display: grid;
-    gap: var(--space-6);
+    gap: var(--ac-space-6);
   }
 
   .residence-decision h2 {
-    margin-top: var(--space-4);
-    color: var(--color-paper);
+    margin-top: var(--ac-space-4);
+    color: var(--ac-color-paper);
   }
 
   .residence-decision .button {
     align-self: center;
-    border-color: var(--color-paper);
-    background: var(--color-paper);
-    color: var(--color-navy-900);
+    border-color: var(--ac-color-paper);
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
   }
 
   @media (min-width: 48rem) {
@@ -614,8 +611,8 @@ const schema = [
     }
 
     .residence-trust span + span {
-      border-left: 1px solid var(--color-rule);
-      padding-left: var(--space-4);
+      border-left: 1px solid var(--ac-color-rule);
+      padding-left: var(--ac-space-4);
     }
 
     .residence-outcome__copy,

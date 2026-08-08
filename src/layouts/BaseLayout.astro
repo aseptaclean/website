@@ -7,6 +7,8 @@ import SeoHead from "@components/SeoHead.astro";
 import { site } from "@data/site";
 import "@styles/fonts.css";
 import "@styles/global.css";
+import newsreaderFontUrl from "../../node_modules/@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2?url";
+import instrumentSansFontUrl from "../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url";
 
 interface Props {
   title: string;
@@ -42,6 +44,20 @@ const termlyConsent = site.integrations.termly;
       href={site.business.siteIconUrl}
     />
     <link rel="apple-touch-icon" href={site.business.siteIconUrl} />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={newsreaderFontUrl}
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={instrumentSansFontUrl}
+      crossorigin
+    />
     <SeoHead
       title={title}
       description={description}

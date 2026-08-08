@@ -126,6 +126,19 @@ Movements 4 and 5 are both `wide` and adjacent — resolved by the asymmetric in
 so optical measure differs even though the container matches. Never leave two identical
 compositions adjacent.
 
+Row 7's "three internal blocks at differing widths" means differing *proportional* widths sized
+to each block's actual content length — not three equal-width columns, and not any fixed ratio
+either. The assurance ledger, pricing, and founder blocks do not carry comparable amounts of
+content, and CSS Grid sizes a row's height to its tallest cell regardless of how the `fr` widths
+are split between cells. Forcing all three into one parallel row — at `5fr/4fr/3fr` or any other
+fixed split — stretches the row to the longest block's height and leaves the shorter blocks
+trailing in empty space for the rest of that height. This is what produced the dead-space defect
+fixed in Phase 4 Session 8 (`05-DECISIONS-LOG.md`, audit item 12): the assurance ledger got
+capped at `max-width: 64%` instead of a column fraction, and pricing/founder were paired into
+their own shorter two-column strip below it rather than kept as a third parallel column. Do not
+revert this movement to three equal (or fixed-ratio) columns — the fix is the width-to-content
+match, not a CSS bug to patch differently.
+
 ---
 
 ## 6. The detail layer — what expensive pages have that cheap ones don't

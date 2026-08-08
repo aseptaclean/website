@@ -13,13 +13,13 @@ const phoneHref = site.business.phoneUri;
   showMobileCta={false}
 >
   <div class="confirmation">
-    <div class="container confirmation__layout">
+    <div class="ac-measure-wide confirmation__layout">
       <section
         class="confirmation__record"
         data-confirmation
       >
         <p class="confirmation__eyebrow" data-confirmation-eyebrow>Handoff plan intake</p>
-        <h1 data-confirmation-title>This page does not confirm that a request was received.</h1>
+        <h1 class="ac-type-h1" data-confirmation-title>This page does not confirm that a request was received.</h1>
         <div data-confirmed hidden>
           <p class="confirmation__status">Received</p>
           <p class="confirmation__lead" data-confirmation-email>
@@ -56,7 +56,7 @@ const phoneHref = site.business.phoneUri;
 
       <aside class="confirmation__next" aria-labelledby="next-title">
         <p>Next record</p>
-        <h2 id="next-title">What happens now</h2>
+        <h2 id="next-title" class="ac-type-h3">What happens now</h2>
         <ol>
           <li><span>01</span> Request details and media are reviewed.</li>
           <li><span>02</span> Aseptaclean confirms fit and the likely path.</li>
@@ -139,25 +139,25 @@ const phoneHref = site.business.phoneUri;
 <style>
   .confirmation {
     padding-block: clamp(3.5rem, 8vw, 7rem);
-    background: var(--color-warm-white);
+    background: var(--ac-color-warm-white);
   }
 
   .confirmation__layout {
     display: grid;
-    gap: var(--space-7);
+    gap: var(--ac-space-7);
   }
 
   .confirmation__record {
-    border-top: 3px solid var(--color-navy-900);
-    padding-top: var(--space-5);
+    border-top: 3px solid var(--ac-color-navy-900);
+    padding-top: var(--ac-space-5);
   }
 
   .confirmation__eyebrow,
   .confirmation__next > p,
   .confirmation__status {
     margin: 0;
-    color: var(--color-navy-800);
-    font-family: var(--font-heading);
+    color: var(--ac-color-navy-800);
+    font-family: var(--ac-font-sans);
     font-size: 0.75rem;
     font-weight: 700;
     letter-spacing: 0.09em;
@@ -166,63 +166,62 @@ const phoneHref = site.business.phoneUri;
 
   .confirmation__status {
     width: fit-content;
-    margin-top: var(--space-6);
-    border: 1px solid var(--color-success);
+    margin-top: var(--ac-space-6);
+    border: 1px solid var(--ac-color-success);
     padding: 0.35rem 0.55rem;
-    color: var(--color-success);
+    color: var(--ac-color-success);
   }
 
   .confirmation__status--neutral {
-    border-color: var(--color-ink-500);
-    color: var(--color-ink-500);
+    border-color: var(--ac-color-ink-500);
+    color: var(--ac-color-ink-500);
   }
 
   h1 {
     max-width: 18ch;
-    margin: var(--space-4) 0 0;
+    margin: var(--ac-space-4) 0 0;
   }
 
   .confirmation__lead {
     max-width: 43rem;
-    margin: var(--space-5) 0 0;
-    font-size: var(--step-1);
+    margin: var(--ac-space-5) 0 0;
+    font-size: var(--ac-text-lead);
   }
 
   .confirmation__callback,
   .confirmation__reference {
     max-width: 43rem;
-    margin: var(--space-5) 0 0;
-    border-left: 3px solid var(--color-blue-500);
-    padding-left: var(--space-4);
-    color: var(--color-navy-900);
+    margin: var(--ac-space-5) 0 0;
+    border-left: 3px solid var(--ac-color-blue-500);
+    padding-left: var(--ac-space-4);
+    color: var(--ac-color-navy-900);
     font-weight: 700;
   }
 
   .confirmation__boundary {
     max-width: 43rem;
-    margin-top: var(--space-7);
-    border-top: 1px solid var(--color-rule);
-    padding-top: var(--space-4);
+    margin-top: var(--ac-space-7);
+    border-top: 1px solid var(--ac-color-rule);
+    padding-top: var(--ac-space-4);
   }
 
   .confirmation__boundary p {
-    margin: var(--space-2) 0 0;
+    margin: var(--ac-space-2) 0 0;
   }
 
   .confirmation__next {
     align-self: start;
-    border: 1px solid var(--color-steel-300);
-    padding: var(--space-5);
-    background: var(--color-paper);
+    border: 1px solid var(--ac-color-steel-300);
+    padding: var(--ac-space-5);
+    background: var(--ac-color-paper);
   }
 
   .confirmation__next h2 {
-    margin: var(--space-3) 0 0;
-    font-size: var(--step-2);
+    margin: var(--ac-space-3) 0 0;
   }
 
   .confirmation__next ol {
-    margin: var(--space-5) 0;
+    margin: var(--ac-space-5) 0;
     padding: 0;
     list-style: none;
   }
@@ -230,14 +229,14 @@ const phoneHref = site.business.phoneUri;
   .confirmation__next li {
     display: grid;
     grid-template-columns: 2rem 1fr;
-    gap: var(--space-3);
-    border-top: 1px solid var(--color-rule);
-    padding-block: var(--space-3);
+    gap: var(--ac-space-3);
+    border-top: 1px solid var(--ac-color-rule);
+    padding-block: var(--ac-space-3);
   }
 
   .confirmation__next li span {
-    color: var(--color-navy-800);
-    font-family: var(--font-heading);
+    color: var(--ac-color-navy-800);
+    font-family: var(--ac-font-sans);
     font-size: 0.75rem;
     font-weight: 700;
   }
@@ -245,7 +244,7 @@ const phoneHref = site.business.phoneUri;
   .confirmation__next a,
   .confirmation__next small {
     display: block;
-    margin-top: var(--space-4);
+    margin-top: var(--ac-space-4);
   }
 
   @media (min-width: 60rem) {

@@ -7,7 +7,7 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
 ---
 
 <footer class="site-footer">
-  <div class="site-footer__main container">
+  <div class="site-footer__main ac-measure-wide">
     <div class="site-footer__identity">
       <img
         class="site-footer__wordmark"
@@ -16,43 +16,46 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
         height="215"
         alt={site.business.name}
       />
-      <p>{site.offer.category} for {site.location.serviceArea}.</p>
-      <p class="site-footer__cities">
+      <p class="ac-type-xs">{site.offer.category} for {site.location.serviceArea}.</p>
+      <p class="site-footer__cities ac-type-xs">
         Serving {site.location.cities.join(", ")}, and surrounding South Bay communities.
       </p>
     </div>
 
     <nav aria-label="Footer navigation">
-      <a href="/request-assessment/">{site.offer.primaryCta}</a>
-      <a href="/#standards">Handoff Standard</a>
-      <a href="/#faq">Frequently Asked Questions</a>
-      <a class="site-footer__campaign-link" href="/private-residence-reset/">
+      <a class="ac-type-xs" href="/request-assessment/">{site.offer.primaryCta}</a>
+      <a class="ac-type-xs" href="/#standards">Handoff Standard</a>
+      <a class="ac-type-xs" href="/#faq">Frequently Asked Questions</a>
+      <a class="site-footer__campaign-link ac-type-xs" href="/private-residence-reset/">
         Private Residence Reset
       </a>
-      <a href={site.urls.privacyPolicy}>Privacy</a>
-      <a href={site.urls.terms}>Terms</a>
-      {site.urls.cookiePolicy && <a href={site.urls.cookiePolicy}>Cookie Policy</a>}
+      <a class="ac-type-xs" href={site.urls.privacyPolicy}>Privacy</a>
+      <a class="ac-type-xs" href={site.urls.terms}>Terms</a>
+      {site.urls.cookiePolicy && <a class="ac-type-xs" href={site.urls.cookiePolicy}>Cookie Policy</a>}
       {termlyConsentEnabled && (
-        <button type="button" class="site-footer__link termly-display-preferences">
+        <button type="button" class="site-footer__link termly-display-preferences ac-type-xs">
           Cookie Preferences
         </button>
       )}
     </nav>
 
     <address>
-      <a href={`mailto:${site.business.email}`}>{site.business.email}</a>
-      {phoneHref && <a href={phoneHref}>{site.business.phone}</a>}
-      <p>Assessment responses {site.offer.responseTime}.</p>
+      <a class="ac-type-xs" href={`mailto:${site.business.email}`}>{site.business.email}</a>
+      {phoneHref && <a class="ac-type-xs" href={phoneHref}>{site.business.phone}</a>}
+      <p class="ac-type-xs">Assessment responses {site.offer.responseTime}.</p>
     </address>
   </div>
 
-  <div class="site-footer__legal container">
-    <p>{legal.scopeDisclaimer}</p>
-    <p>© {year} {site.business.legalName}. All rights reserved.</p>
+  <div class="site-footer__legal ac-measure-wide">
+    <div class="site-footer__disclaimers">
+      <p class="ac-type-xs">{legal.scopeDisclaimer}</p>
+      <p class="ac-type-xs">{legal.documentationDisclaimer}</p>
+    </div>
+    <p class="ac-type-xs">© {year} {site.business.legalName}. All rights reserved.</p>
   </div>
   {termlyConsentEnabled && (
     <noscript>
-      <p class="site-footer__noscript container">
+      <p class="site-footer__noscript ac-measure-wide ac-type-xs">
         Cookie Preferences requires JavaScript. The Cookie Policy remains
         available above, or email {site.business.privacyContact || site.business.email}
         for help.
@@ -63,21 +66,22 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
 
 <style>
   .site-footer {
-    border-top: 1px solid var(--color-steel-300);
-    padding-block: var(--space-7) var(--space-6);
-    background: var(--color-navy-900);
-    color: var(--color-warm-white);
+    border-top: 1px solid var(--ac-color-steel-on-navy);
+    background: var(--ac-color-navy-900);
+    color: var(--ac-color-warm-white);
+    padding-top: var(--ac-rhythm-standard);
+    padding-bottom: var(--ac-rhythm-tight);
   }
 
   .site-footer__main {
     display: grid;
-    gap: var(--space-6);
+    gap: var(--ac-space-6);
   }
 
   .site-footer__wordmark {
     width: min(13rem, 72%);
     height: auto;
-    margin-bottom: var(--space-3);
+    margin-bottom: var(--ac-space-3);
   }
 
   .site-footer p {
@@ -86,9 +90,8 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
 
   .site-footer__cities,
   .site-footer address p {
-    margin-top: var(--space-3) !important;
-    color: var(--color-steel-300);
-    font-size: var(--step--1);
+    margin-top: var(--ac-space-3) !important;
+    color: var(--ac-color-steel-on-navy);
   }
 
   .site-footer nav,
@@ -96,7 +99,7 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
     display: flex;
     align-items: flex-start;
     flex-direction: column;
-    gap: var(--space-2);
+    gap: var(--ac-space-2);
     font-style: normal;
   }
 
@@ -104,7 +107,7 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
     display: inline-flex;
     min-height: 3rem;
     align-items: center;
-    color: var(--color-warm-white);
+    color: var(--ac-color-warm-white);
   }
 
   .site-footer__link {
@@ -114,7 +117,7 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
     border: 0;
     padding: 0;
     background: transparent;
-    color: var(--color-warm-white);
+    color: var(--ac-color-warm-white);
     cursor: pointer;
     text-decoration: underline;
     text-decoration-thickness: 0.08em;
@@ -122,8 +125,7 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
   }
 
   .site-footer__campaign-link {
-    color: var(--color-steel-300) !important;
-    font-size: var(--text-sm);
+    color: var(--ac-color-steel-on-navy) !important;
   }
 
   .site-footer__link:hover {
@@ -132,18 +134,21 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
 
   .site-footer__legal {
     display: grid;
-    gap: var(--space-4);
+    gap: var(--ac-space-4);
     border-top: 1px solid rgb(168 184 200 / 0.35);
-    margin-top: var(--space-6);
-    padding-top: var(--space-5);
-    color: var(--color-steel-300);
-    font-size: var(--step--1);
+    margin-top: var(--ac-space-6);
+    padding-top: var(--ac-space-5);
+    color: var(--ac-color-steel-on-navy);
+  }
+
+  .site-footer__disclaimers {
+    display: grid;
+    gap: var(--ac-space-3);
   }
 
   .site-footer__noscript {
-    margin-top: var(--space-4);
-    color: var(--color-steel-300);
-    font-size: var(--step--1);
+    margin-top: var(--ac-space-4);
+    color: var(--ac-color-steel-on-navy);
   }
 
   @media (min-width: 48rem) {

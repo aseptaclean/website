@@ -2,7 +2,7 @@ import { mkdir, readFile, readdir, stat, writeFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const root = process.cwd();
-const dist = resolve(root, "dist/client");
+const dist = resolve(root, "dist");
 const reportDirectory = resolve(root, "artifacts/phase-4/reports");
 const failures = [];
 

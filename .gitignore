@@ -5,5 +5,7 @@ dist/
 .env
 .env.production
 .env.staging
+.dev.vars
+.wrangler/
 *.log
 artifacts/

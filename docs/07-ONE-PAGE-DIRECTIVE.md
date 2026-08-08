@@ -283,6 +283,9 @@ you will not know which file caused it.
    the site and ahead of ads.
 2. **Proof.** Zero completed jobs, zero reviews. Bid the first 3–5 jobs at reduced margin for
    photographs with signed release, a case study, and a Google review. That is acquisition
-   spend, not discounting.
+   spend, not discounting. Per `docs/14-RESEARCH-FINDINGS.md` §2.1, this is the single
+   highest-priority operational item after launch, ahead of any further design or copy work on
+   the page — see the ordered list in `docs/12-SESSION-PROMPTS.md`'s "After launch, in this
+   order."
 
 A one-page site is the right call for speed. It does not touch either of these.

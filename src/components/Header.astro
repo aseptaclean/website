@@ -1,9 +1,11 @@
 ---
 import { navigation, site } from "@data/site";
+
+const phoneHref = site.business.phoneUri;
 ---
 
 <header class="site-header">
-  <div class="site-header__inner container">
+  <div class="site-header__inner ac-measure-wide">
     <a class="site-header__brand" href="/" aria-label={`${site.business.name} home`}>
       <img
         src={site.business.logoUrl}
@@ -16,29 +18,60 @@ import { navigation, site } from "@data/site";
     <nav class="desktop-nav" aria-label="Primary navigation">
       <ul>
         {navigation.map((item) => (
-          <li><a href={item.href}>{item.label}</a></li>
+          <li class="ac-type-xs"><a href={item.href}>{item.label}</a></li>
         ))}
       </ul>
-      <a class="button" href="/request-assessment/">{site.offer.compactCta}</a>
+      {
+        phoneHref && (
+          <a class="site-header__tel ac-type-xs" href={phoneHref}>{site.business.phone}</a>
+        )
+      }
+      <a class="button" href="/request-assessment/">{site.offer.primaryCta}</a>
     </nav>
 
-    <details class="mobile-nav">
-      <summary aria-label="Open navigation">
-        <span>Menu</span>
-        <span class="mobile-nav__mark" aria-hidden="true"></span>
-      </summary>
-      <nav aria-label="Mobile navigation">
-        <ul>
-          {navigation.map((item) => (
-            <li><a href={item.href}>{item.label}</a></li>
-          ))}
-        </ul>
-      </nav>
-    </details>
+    <div class="site-header__mobile-actions">
+      {
+        phoneHref && (
+          <a
+            class="site-header__tel site-header__tel--compact ac-type-xs"
+            href={phoneHref}
+            aria-label={`Call ${site.business.phone}`}
+          >
+            {site.business.phone}
+          </a>
+        )
+      }
+
+      <details class="mobile-nav">
+        <summary aria-label="Open navigation">
+          <span class="ac-type-sm">Menu</span>
+          <span class="mobile-nav__mark" aria-hidden="true"></span>
+        </summary>
+        <nav aria-label="Mobile navigation">
+          <ul>
+            {navigation.map((item) => (
+              <li><a href={item.href}>{item.label}</a></li>
+            ))}
+          </ul>
+        </nav>
+      </details>
+    </div>
   </div>
 </header>
 
 <script>
+  const siteHeader = document.querySelector<HTMLElement>(".site-header");
+  const condenseThreshold = 48;
+
+  if (siteHeader) {
+    const updateCondensed = () => {
+      siteHeader.classList.toggle("site-header--condensed", window.scrollY > condenseThreshold);
+    };
+
+    window.addEventListener("scroll", updateCondensed, { passive: true });
+    updateCondensed();
+  }
+
   const mobileNavigation = document.querySelector<HTMLDetailsElement>(".mobile-nav");
   const mobileNavigationSummary =
     mobileNavigation?.querySelector<HTMLElement>("summary");
@@ -62,8 +95,8 @@ import { navigation, site } from "@data/site";
     position: sticky;
     z-index: 20;
     top: 0;
-    border-bottom: 1px solid var(--color-rule);
-    background: color-mix(in srgb, var(--color-warm-white) 96%, transparent);
+    border-bottom: 1px solid var(--ac-color-rule);
+    background: color-mix(in srgb, var(--ac-color-warm-white) 96%, transparent);
     backdrop-filter: blur(12px);
   }
 
@@ -72,7 +105,12 @@ import { navigation, site } from "@data/site";
     min-height: 4.5rem;
     align-items: center;
     justify-content: space-between;
-    gap: var(--space-4);
+    gap: var(--ac-space-4);
+    transition: min-height var(--ac-transition-fast);
+  }
+
+  .site-header--condensed .site-header__inner {
+    min-height: 3.5rem;
   }
 
   .site-header__brand {
@@ -85,10 +123,33 @@ import { navigation, site } from "@data/site";
   .site-header__brand img {
     width: clamp(8.75rem, 40vw, 10.5rem);
     height: auto;
+    transition: width var(--ac-transition-fast);
+  }
+
+  .site-header--condensed .site-header__brand img {
+    width: clamp(7.5rem, 32vw, 8.5rem);
   }
 
   .desktop-nav {
     display: none;
+  }
+
+  .site-header__tel {
+    flex-shrink: 0;
+    color: var(--ac-color-navy-900);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .site-header__mobile-actions {
+    display: flex;
+    align-items: center;
+    gap: var(--ac-space-3);
+  }
+
+  .site-header__tel--compact {
+    font-size: clamp(0.7rem, 3vw, var(--ac-text-xs));
   }
 
   .mobile-nav {
@@ -103,10 +164,8 @@ import { navigation, site } from "@data/site";
     list-style: none;
     align-items: center;
     justify-content: flex-end;
-    gap: var(--space-2);
-    color: var(--color-navy-900);
-    font-family: var(--font-heading);
-    font-size: var(--step--1);
+    gap: var(--ac-space-2);
+    color: var(--ac-color-navy-900);
     font-weight: 700;
   }
 
@@ -121,7 +180,7 @@ import { navigation, site } from "@data/site";
     height: 2px;
     background: currentColor;
     content: "";
-    transition: transform var(--transition-fast);
+    transition: transform var(--ac-transition-fast);
   }
 
   .mobile-nav__mark::before {
@@ -139,9 +198,9 @@ import { navigation, site } from "@data/site";
   .mobile-nav nav {
     position: fixed;
     inset: 4.5rem 0 auto;
-    border-bottom: 1px solid var(--color-rule);
-    padding: var(--space-3) var(--gutter) var(--space-5);
-    background: var(--color-warm-white);
+    border-bottom: 1px solid var(--ac-color-rule);
+    padding: var(--ac-space-3) var(--ac-gutter) var(--ac-space-5);
+    background: var(--ac-color-warm-white);
     box-shadow: 0 1rem 2rem rgb(18 40 64 / 0.08);
   }
 
@@ -156,8 +215,8 @@ import { navigation, site } from "@data/site";
     display: flex;
     min-height: 3rem;
     align-items: center;
-    border-bottom: 1px solid var(--color-rule);
-    font-family: var(--font-heading);
+    border-bottom: 1px solid var(--ac-color-rule);
+    font-family: var(--ac-font-sans);
     font-weight: 600;
     text-decoration: none;
   }
@@ -167,14 +226,18 @@ import { navigation, site } from "@data/site";
       width: clamp(9.5rem, 14vw, 11rem);
     }
 
-    .mobile-nav {
+    .site-header--condensed .site-header__brand img {
+      width: clamp(7.75rem, 11vw, 9rem);
+    }
+
+    .site-header__mobile-actions {
       display: none;
     }
 
     .desktop-nav {
       display: flex;
       align-items: center;
-      gap: var(--space-5);
+      gap: var(--ac-space-5);
     }
 
     .desktop-nav ul {
@@ -183,16 +246,16 @@ import { navigation, site } from "@data/site";
       gap: clamp(0.8rem, 1.4vw, 1.35rem);
     }
 
-    .desktop-nav li {
-      font-size: 0.79rem;
-    }
-
     .desktop-nav a:not(.button) {
       display: flex;
       min-height: 3rem;
       align-items: center;
       font-weight: 600;
       text-decoration: none;
+    }
+
+    .desktop-nav .button {
+      white-space: nowrap;
     }
   }
 </style>

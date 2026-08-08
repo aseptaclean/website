@@ -36,7 +36,7 @@ const rooms = [
     <header>
       <div>
         <p>SAMPLE / OPERATING DOCUMENT</p>
-        <h2 id="baseline-record-title">Residence Baseline Record</h2>
+        <h2 id="baseline-record-title" class="ac-type-h3">Residence Baseline Record</h2>
       </div>
       <span aria-label="Sample document">SAMPLE</span>
     </header>
@@ -53,7 +53,7 @@ const rooms = [
         <article role="listitem">
           <div class="baseline-record__room-heading">
             <span>{String(index + 1).padStart(2, "0")}</span>
-            <h3>{room.room}</h3>
+            <h3 class="ac-type-sm">{room.room}</h3>
             <strong>{room.priority}</strong>
           </div>
           <dl>
@@ -93,9 +93,9 @@ const rooms = [
   }
 
   .baseline-record__paper {
-    border: 1px solid var(--color-steel-300);
-    border-top: 5px solid var(--color-navy-900);
-    background: var(--color-paper);
+    border: 1px solid var(--ac-color-steel-300);
+    border-top: 5px solid var(--ac-color-navy-900);
+    background: var(--ac-color-paper);
     box-shadow: 0 1.25rem 3rem rgb(18 40 64 / 0.1);
   }
 
@@ -103,8 +103,8 @@ const rooms = [
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: var(--space-4);
-    padding: var(--space-5);
+    gap: var(--ac-space-4);
+    padding: var(--ac-space-5);
   }
 
   .baseline-record header p,
@@ -118,8 +118,8 @@ const rooms = [
   .baseline-record header p,
   .baseline-record dt,
   .baseline-record footer span {
-    color: var(--color-ink-500);
-    font-family: var(--font-sans);
+    color: var(--ac-color-ink-500);
+    font-family: var(--ac-font-sans);
     font-size: 0.7rem;
     font-weight: 650;
     letter-spacing: 0.08em;
@@ -127,18 +127,15 @@ const rooms = [
   }
 
   .baseline-record header h2 {
-    margin-top: var(--space-2);
-    font-family: var(--font-sans);
-    font-size: var(--text-h3);
+    margin-top: var(--ac-space-2);
     font-weight: 680;
     letter-spacing: -0.02em;
-    line-height: 1.12;
   }
 
   .baseline-record header > span {
-    border: 1px solid var(--color-error);
+    border: 1px solid var(--ac-color-error);
     padding: 0.3rem 0.45rem;
-    color: var(--color-error);
+    color: var(--ac-color-error);
     font-size: 0.68rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -146,67 +143,63 @@ const rooms = [
 
   .baseline-record__meta {
     display: grid;
-    border-block: 1px solid var(--color-rule);
-    background: var(--color-warm-white);
+    border-block: 1px solid var(--ac-color-rule);
+    background: var(--ac-color-warm-white);
   }
 
   .baseline-record__meta > div {
-    padding: var(--space-3) var(--space-5);
+    padding: var(--ac-space-3) var(--ac-space-5);
   }
 
   .baseline-record__meta dd,
   .baseline-record__rooms dd {
     margin-top: 0.15rem;
-    color: var(--color-navy-900);
-    font-size: var(--text-sm);
+    color: var(--ac-color-navy-900);
+    font-size: var(--ac-text-sm);
   }
 
   .baseline-record__rooms article {
-    padding: var(--space-4) var(--space-5);
+    padding: var(--ac-space-4) var(--ac-space-5);
   }
 
   .baseline-record__rooms article + article {
-    border-top: 1px solid var(--color-rule);
+    border-top: 1px solid var(--ac-color-rule);
   }
 
   .baseline-record__room-heading {
     display: grid;
     grid-template-columns: 1.75rem 1fr auto;
     align-items: baseline;
-    gap: var(--space-2);
+    gap: var(--ac-space-2);
   }
 
   .baseline-record__room-heading > span {
-    color: var(--color-navy-800);
+    color: var(--ac-color-navy-800);
     font-size: 0.72rem;
     font-weight: 700;
   }
 
-  .baseline-record h3 {
-    font-size: 1rem;
-  }
-
   .baseline-record__room-heading strong {
-    color: var(--color-navy-800);
+    color: var(--ac-color-navy-800);
     font-size: 0.75rem;
   }
 
   .baseline-record__rooms dl {
     display: grid;
-    gap: var(--space-3);
-    margin-top: var(--space-3);
+    gap: var(--ac-space-3);
+    margin-top: var(--ac-space-3);
     padding-left: 1.75rem;
   }
 
   .baseline-record footer {
     display: grid;
-    border-top: 2px solid var(--color-navy-900);
-    background: var(--color-navy-900);
-    color: var(--color-paper);
+    border-top: 2px solid var(--ac-color-navy-900);
+    background: var(--ac-color-navy-900);
+    color: var(--ac-color-paper);
   }
 
   .baseline-record footer div {
-    padding: var(--space-3) var(--space-5);
+    padding: var(--ac-space-3) var(--ac-space-5);
   }
 
   .baseline-record footer div + div {
@@ -219,19 +212,19 @@ const rooms = [
   }
 
   .baseline-record footer span {
-    color: var(--color-steel-300);
+    color: var(--ac-color-steel-on-navy);
   }
 
   .baseline-record footer strong {
     margin-top: 0.15rem;
-    font-size: var(--text-sm);
+    font-size: var(--ac-text-sm);
   }
 
   .baseline-record figcaption {
     max-width: 54ch;
-    margin-top: var(--space-3);
-    color: var(--color-ink-500);
-    font-size: var(--text-xs);
+    margin-top: var(--ac-space-3);
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-xs);
   }
 
   @media (min-width: 42rem) {
@@ -240,7 +233,7 @@ const rooms = [
     }
 
     .baseline-record__meta > div:nth-child(even) {
-      border-left: 1px solid var(--color-rule);
+      border-left: 1px solid var(--ac-color-rule);
     }
 
     .baseline-record__rooms dl {

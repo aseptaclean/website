@@ -15,9 +15,9 @@ const hasProviderPolicy = Boolean(policyId || hostedUrl);
 
 <article class="legal-policy">
   <header class="legal-policy__header">
-    <p>Legal record · Managed by Termly</p>
-    <h1>{title}</h1>
-    <p>
+    <p class="ac-type-xs">Legal record · Managed by Termly</p>
+    <h1 class="ac-type-h1">{title}</h1>
+    <p class="ac-type-lead">
       This page is an integration surface for Aseptaclean’s
       provider-controlled {label.toLowerCase()}. Aseptaclean does not replace
       the provider’s published policy with locally drafted legal text.
@@ -36,10 +36,10 @@ const hasProviderPolicy = Boolean(policyId || hostedUrl);
   ) : (
     <section class="legal-policy__unavailable" aria-labelledby="policy-status">
       <p class="legal-policy__status">Provider status</p>
-      <h2 id="policy-status">
+      <h2 id="policy-status" class="ac-type-h2">
         {hostedUrl ? "Use the provider-hosted policy" : "Policy not published in this preview"}
       </h2>
-      <p>
+      <p class="ac-type-body">
         {hostedUrl
           ? "The approved Termly policy is available on Termly’s secure hosted page."
           : "Final Termly policy configuration has not been added. No substitute legal language is shown."}
@@ -49,8 +49,8 @@ const hasProviderPolicy = Boolean(policyId || hostedUrl);
 
   <aside class="legal-policy__fallback" aria-labelledby="provider-fallback">
     <p class="legal-policy__status">Provider fallback</p>
-    <h2 id="provider-fallback">If the policy does not load</h2>
-    <p>
+    <h2 id="provider-fallback" class="ac-type-h2">If the policy does not load</h2>
+    <p class="ac-type-body">
       Provider content can be unavailable when JavaScript is disabled, a
       content blocker intervenes, or Termly is temporarily unreachable.
     </p>
@@ -84,41 +84,40 @@ const hasProviderPolicy = Boolean(policyId || hostedUrl);
 <style>
   .legal-policy {
     display: grid;
-    gap: var(--space-7);
+    gap: var(--ac-space-7);
     min-height: 55vh;
-    padding-block: var(--space-7) var(--space-8);
+    padding-block: var(--ac-space-7) var(--ac-space-8);
   }
 
   .legal-policy__header {
     max-width: 48rem;
-    border-top: 3px solid var(--color-navy-900);
-    padding-top: var(--space-5);
+    border-top: 3px solid var(--ac-color-navy-900);
+    padding-top: var(--ac-space-5);
   }
 
   .legal-policy__header > p:first-child,
   .legal-policy__status {
     margin: 0;
-    color: var(--color-navy-800);
-    font-family: var(--font-heading);
-    font-size: 0.75rem;
+    color: var(--ac-color-navy-800);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-xs);
     font-weight: 700;
     letter-spacing: 0.09em;
     text-transform: uppercase;
   }
 
   .legal-policy__header h1 {
-    margin: var(--space-3) 0 0;
+    margin: var(--ac-space-3) 0 0;
   }
 
   .legal-policy__header > p:last-child {
-    margin: var(--space-4) 0 0;
-    font-size: var(--step-1);
+    margin: var(--ac-space-4) 0 0;
   }
 
   .legal-policy__document {
     min-width: 0;
-    border-top: 1px solid var(--color-rule);
-    padding-top: var(--space-5);
+    border-top: 1px solid var(--ac-color-rule);
+    padding-top: var(--ac-space-5);
   }
 
   .legal-policy__document :global(iframe) {
@@ -130,28 +129,27 @@ const hasProviderPolicy = Boolean(policyId || hostedUrl);
   .legal-policy__unavailable,
   .legal-policy__fallback {
     max-width: 48rem;
-    border: 1px solid var(--color-steel-300);
-    padding: var(--space-5);
-    background: var(--color-paper);
+    border: 1px solid var(--ac-color-steel-300);
+    padding: var(--ac-space-5);
+    background: var(--ac-color-paper);
   }
 
   .legal-policy__unavailable h2,
   .legal-policy__fallback h2 {
-    margin: var(--space-3) 0 0;
-    font-size: var(--step-2);
+    margin: var(--ac-space-3) 0 0;
   }
 
   .legal-policy__unavailable p:last-child,
   .legal-policy__fallback > p {
-    margin: var(--space-3) 0 0;
+    margin: var(--ac-space-3) 0 0;
   }
 
   .legal-policy__actions {
     display: flex;
     align-items: flex-start;
     flex-direction: column;
-    gap: var(--space-3);
-    margin-top: var(--space-5);
+    gap: var(--ac-space-3);
+    margin-top: var(--ac-space-5);
   }
 
   .legal-policy__actions > a:not(.button) {
@@ -162,15 +160,15 @@ const hasProviderPolicy = Boolean(policyId || hostedUrl);
 
   .legal-policy__fallback noscript p {
     display: block;
-    margin: var(--space-5) 0 0;
-    border-left: 3px solid var(--color-blue-500);
-    padding-left: var(--space-4);
+    margin: var(--ac-space-5) 0 0;
+    border-left: 3px solid var(--ac-color-blue-500);
+    padding-left: var(--ac-space-4);
   }
 
   .legal-policy__preview-note {
     margin: 0;
-    color: var(--color-ink-500);
-    font-size: var(--step--1);
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-sm);
   }
 
   @media (min-width: 60rem) {
@@ -189,7 +187,7 @@ const hasProviderPolicy = Boolean(policyId || hostedUrl);
       grid-column: 2;
       grid-row: 1 / span 2;
       align-self: start;
-      margin-top: var(--space-7);
+      margin-top: var(--ac-space-7);
     }
 
     .legal-policy__preview-note {

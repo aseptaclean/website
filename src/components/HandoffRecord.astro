@@ -1,81 +1,210 @@
 ---
 import { homepage, legal } from "@data/site";
+
+const record = homepage.sampleRecord;
 ---
 
-<figure class="record">
-  <div class="record__masthead">
-    <div>
-      <p class="record__sample">Sample / Not a client record</p>
-      <h3>Property Handoff Record</h3>
-    </div>
-    <p class="record__mark" aria-hidden="true">A</p>
+<section class="record-movement" id="the-record" aria-labelledby="record-title">
+  <div class="ac-eyebrow-wrap ac-measure-wide">
+    <p class="ac-eyebrow">The Record</p>
+    <h2 id="record-title" class="ac-type-h2">Property Handoff Record</h2>
   </div>
 
-  <dl class="record__meta">
-    <div>
-      <dt>Property</dt>
-      <dd>Example residence</dd>
-    </div>
-    <div>
-      <dt>Scope version</dt>
-      <dd>Approved / 01</dd>
-    </div>
-    <div>
-      <dt>Closeout</dt>
-      <dd>Remote review</dd>
-    </div>
-  </dl>
-
-  <div class="record__rooms" role="table" aria-label="Sample room-by-room closeout record">
-    <div class="record__row record__row--head" role="row">
-      <span role="columnheader">Area</span>
-      <span role="columnheader">Clear</span>
-      <span role="columnheader">Reset</span>
-      <span role="columnheader">Verify</span>
-    </div>
-    {
-      homepage.sampleRecord.map((row) => (
-        <div class="record__row" role="row">
-          <strong role="rowheader">{row.area}</strong>
-          <span role="cell" data-label="Clear">{row.clear}</span>
-          <span role="cell" data-label="Reset">{row.reset}</span>
-          <span role="cell" data-label="Verify">{row.verify}</span>
+  <div class="record-stack">
+    <figure class="record" data-reveal>
+      <div class="record__masthead">
+        <div>
+          <p class="record__sample ac-type-xs">Sample / Not a client record</p>
+          <p class="record__title ac-type-h3">Property Handoff Record</p>
+          <p class="record__project ac-type-xs">Project {record.projectId}</p>
         </div>
-      ))
+        <div class="record__masthead-right">
+          <span class="record__stamp ac-type-xs" aria-hidden="true">Sample</span>
+          <span class="record__mark" aria-hidden="true">A</span>
+        </div>
+      </div>
+
+      <div class="record__panel">
+        <span class="record__tab ac-type-xs">Scope reference</span>
+        <dl class="record__meta">
+          <div>
+            <dt class="ac-type-xs">Authorized decision-maker</dt>
+            <dd class="ac-type-sm">{record.decisionMaker}</dd>
+          </div>
+          <div>
+            <dt class="ac-type-xs">Approved clearing scope</dt>
+            <dd class="ac-type-sm">{record.clearingScope}</dd>
+          </div>
+          <div>
+            <dt class="ac-type-xs">Approved cleaning scope</dt>
+            <dd class="ac-type-sm">{record.cleaningScope}</dd>
+          </div>
+          <div>
+            <dt class="ac-type-xs">Excluded conditions</dt>
+            <dd class="ac-type-sm">{record.excludedConditions}</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="record__panel">
+        <span class="record__tab ac-type-xs">Room disposition</span>
+        <div class="record__rooms" role="table" aria-label="Sample room-by-room disposition record">
+          <div class="record__row record__row--head" role="row">
+            <span role="columnheader" class="ac-type-xs">Area</span>
+            <span role="columnheader" class="ac-type-xs">Status</span>
+            <span role="columnheader" class="ac-type-xs">Note</span>
+          </div>
+          {
+            record.rooms.map((room) => (
+              <div class="record__row" role="row">
+                <strong role="rowheader" class="ac-type-sm">
+                  {room.area}
+                </strong>
+                <span role="cell" data-label="Status">
+                  <span class={`record__status record__status--${room.disposition.toLowerCase()}`}>
+                    {room.disposition}
+                  </span>
+                </span>
+                <span role="cell" data-label="Note" class="ac-type-sm">
+                  {room.note}
+                </span>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+
+      <div class="record__panel record__panel--closeout">
+        <span class="record__tab ac-type-xs">Closeout reference</span>
+        <div class="record__closeout">
+          <div>
+            <p class="ac-type-xs">Change authorization</p>
+            <strong class="ac-type-sm">{record.changeAuthorization}</strong>
+          </div>
+          <div>
+            <p class="ac-type-xs">Discovered-item log</p>
+            <strong class="ac-type-sm">{record.discoveredItemLog}</strong>
+          </div>
+          <div>
+            <p class="ac-type-xs">Exception status</p>
+            <strong class="ac-type-sm">{record.exceptionStatus}</strong>
+          </div>
+          <div>
+            <p class="ac-type-xs">Completion photograph index</p>
+            <strong class="ac-type-sm">{record.photographIndex}</strong>
+          </div>
+          <div>
+            <p class="ac-type-xs">Final review status</p>
+            <strong class="ac-type-sm">{record.finalReviewStatus}</strong>
+          </div>
+          <div>
+            <p class="ac-type-xs">Closeout date</p>
+            <strong class="ac-type-sm">{record.closeoutDate}</strong>
+          </div>
+        </div>
+      </div>
+
+      <figcaption class="ac-type-sm">{legal.documentationDisclaimer}</figcaption>
+    </figure>
+  </div>
+</section>
+
+<script>
+  const record = document.querySelector<HTMLElement>("[data-reveal]");
+
+  if (record) {
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    if (!prefersReducedMotion && "IntersectionObserver" in window) {
+      record.classList.add("record--pre-reveal");
+
+      const observer = new IntersectionObserver(
+        ([entry]) => {
+          if (entry?.isIntersecting) {
+            record.classList.add("record--visible");
+            observer.disconnect();
+          }
+        },
+        { threshold: 0.2 }
+      );
+
+      observer.observe(record);
     }
-  </div>
-
-  <div class="record__closeout">
-    <div>
-      <p>Exception log</p>
-      <strong>Primary closet held for owner review</strong>
-    </div>
-    <div>
-      <p>Authorized change 01</p>
-      <strong>Kitchen appliance interior added · owner approved</strong>
-    </div>
-    <div>
-      <p>Completion photo index</p>
-      <strong>18 starting-condition · 24 closeout images</strong>
-    </div>
-    <div>
-      <p>Final status</p>
-      <strong>Approved scope closed · 1 documented exception</strong>
-    </div>
-  </div>
-
-  <figcaption>{legal.documentationDisclaimer}</figcaption>
-</figure>
+  }
+</script>
 
 <style>
+  .record-movement {
+    background: var(--ac-color-steel-100);
+    overflow-x: hidden;
+    /* The site's one dramatic moment (docs/11 §7) — vast on both sides is an
+       explicit, documented exception to the one-sided rhythm rule every other
+       section follows. */
+    padding-block: var(--ac-rhythm-vast);
+  }
+
+  .ac-eyebrow-wrap {
+    display: grid;
+    gap: var(--ac-space-4);
+    margin-bottom: var(--ac-space-8);
+  }
+
+  /* Layered documents — docs/12 Session 6 "permitted" list. Two paper edges
+     offset behind the primary sheet, confined by the section's overflow-x:
+     hidden above so the offset never introduces horizontal scroll. */
+  .record-stack {
+    position: relative;
+    width: min(100% - (2 * var(--ac-gutter)), 1320px);
+    margin-inline: auto;
+  }
+
+  .record-stack::before,
+  .record-stack::after {
+    position: absolute;
+    z-index: 0;
+    border: 1px solid var(--ac-color-steel-300);
+    background: var(--ac-color-paper);
+    content: "";
+  }
+
+  .record-stack::before {
+    inset: 10px -10px -10px 10px;
+    opacity: 0.7;
+  }
+
+  .record-stack::after {
+    inset: 20px -20px -20px 20px;
+    opacity: 0.4;
+  }
+
   .record {
     position: relative;
+    z-index: 1;
     margin: 0;
-    border: 1px solid var(--color-steel-300);
+    border: 1px solid var(--ac-color-steel-300);
     padding: clamp(1rem, 3vw, 2rem);
-    background: var(--color-paper);
+    background: var(--ac-color-paper);
     box-shadow: 0 1rem 2.5rem rgb(18 40 64 / 0.12);
-    color: var(--color-ink-700);
+    color: var(--ac-color-ink-700);
+    /* --record-font-mono: docs/11 §10.2 — monospace for field labels and
+       status metadata only. Reading content (notes, values) stays sans. */
+    --record-font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas,
+      monospace;
+  }
+
+  .record--pre-reveal {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+
+  .record--pre-reveal.record--visible {
+    opacity: 1;
+    transform: none;
+    transition:
+      opacity 640ms ease,
+      transform 640ms ease;
   }
 
   .record::before {
@@ -87,44 +216,65 @@ import { homepage, legal } from "@data/site";
   }
 
   .record__masthead,
-  .record__meta,
-  .record__rooms,
-  .record__closeout,
+  .record__panel,
   figcaption {
     position: relative;
     z-index: 1;
+  }
+
+  .record :where(dt, .record__row--head span, .record__tab, .record__sample, .record__project,
+      .record__stamp, .record__status) {
+    font-family: var(--record-font-mono);
   }
 
   .record__masthead {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
-    gap: var(--space-4);
-    border-bottom: 2px solid var(--color-navy-900);
-    padding-bottom: var(--space-5);
+    gap: var(--ac-space-4);
+    border-bottom: 2px solid var(--ac-color-navy-900);
+    padding-bottom: var(--ac-space-5);
   }
 
   .record__sample,
-  .record__meta dt,
-  .record__row--head,
+  .record__project,
+  dt,
+  .record__row--head span,
   .record__closeout p {
     margin: 0;
-    color: var(--color-ink-500);
-    font-family: var(--font-heading);
-    font-size: 0.6875rem;
+    color: var(--ac-color-ink-500);
     font-weight: 700;
-    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
   .record__sample {
-    color: var(--color-error);
+    color: var(--ac-color-error);
   }
 
-  h3 {
-    margin: var(--space-2) 0 0;
-    font-size: var(--step-2);
+  .record__project {
+    margin-top: var(--ac-space-2);
+  }
+
+  .record__title {
+    margin: var(--ac-space-2) 0 0;
     letter-spacing: -0.02em;
+  }
+
+  .record__masthead-right {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: flex-start;
+    gap: var(--ac-space-3);
+  }
+
+  .record__stamp {
+    border: 1px solid var(--ac-color-error);
+    padding: 0.3rem 0.55rem;
+    color: var(--ac-color-error);
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
   }
 
   .record__mark {
@@ -133,19 +283,40 @@ import { homepage, legal } from "@data/site";
     height: 2.5rem;
     flex: 0 0 auto;
     place-items: center;
-    border: 1px solid var(--color-navy-900);
+    border: 1px solid var(--ac-color-navy-900);
     margin: 0;
-    color: var(--color-navy-900);
-    font-family: var(--font-heading);
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-sans);
     font-weight: 700;
+  }
+
+  .record__panel {
+    margin-top: var(--ac-space-6);
+  }
+
+  /* Tabs — docs/12 Session 6 "permitted" list. An inset folder-tab header
+     connected to each panel's top rule, not a protruding flag (avoids any
+     overflow risk and reads as paper hierarchy rather than app UI). */
+  .record__tab {
+    display: inline-block;
+    margin-bottom: -1px;
+    border: 1px solid var(--ac-color-steel-300);
+    border-bottom: none;
+    padding: 0.25rem 0.65rem 0.4rem;
+    background: var(--ac-color-warm-white);
+    color: var(--ac-color-ink-500);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .record__meta {
     display: grid;
-    gap: var(--space-3);
+    gap: var(--ac-space-3);
     margin: 0;
-    border-bottom: 1px solid var(--color-rule);
-    padding-block: var(--space-4);
+    border-top: 1px solid var(--ac-color-navy-900);
+    border-bottom: 1px solid var(--ac-color-rule);
+    padding: var(--ac-space-4);
   }
 
   .record__meta div {
@@ -153,21 +324,19 @@ import { homepage, legal } from "@data/site";
   }
 
   .record__meta dd {
-    margin: var(--space-1) 0 0;
-    font-size: var(--step--1);
+    margin: var(--ac-space-1) 0 0;
     font-weight: 700;
   }
 
   .record__rooms {
-    border-top: 1px solid var(--color-navy-900);
-    margin-top: var(--space-5);
+    border-top: 1px solid var(--ac-color-navy-900);
   }
 
   .record__row {
     display: grid;
-    gap: var(--space-2);
-    border-bottom: 1px solid var(--color-rule);
-    padding-block: var(--space-4);
+    gap: var(--ac-space-2);
+    border-bottom: 1px solid var(--ac-color-rule);
+    padding: var(--ac-space-4);
   }
 
   .record__row--head {
@@ -175,77 +344,109 @@ import { homepage, legal } from "@data/site";
   }
 
   .record__row strong {
-    color: var(--color-navy-900);
-    font-family: var(--font-heading);
-    font-size: var(--step--1);
+    color: var(--ac-color-navy-900);
   }
 
-  .record__row span {
+  .record__row > span {
     display: grid;
-    grid-template-columns: 4.25rem 1fr;
-    gap: var(--space-2);
-    font-size: var(--step--1);
+    grid-template-columns: 6rem 1fr;
+    gap: var(--ac-space-2);
   }
 
-  .record__row span::before {
-    color: var(--color-ink-500);
+  .record__row > span::before {
+    color: var(--ac-color-ink-500);
     content: attr(data-label);
-    font-family: var(--font-heading);
-    font-size: 0.6875rem;
     font-weight: 700;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
+  .record__status {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35em;
+    border: 1px solid var(--ac-color-steel-300);
+    padding: 0.15rem 0.5rem;
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .record__status--keep::before {
+    content: "✓";
+  }
+
+  .record__status--remove::before {
+    content: "–";
+  }
+
+  .record__status--review::before {
+    content: "?";
+  }
+
   .record__closeout {
     display: grid;
-    gap: var(--space-4);
-    margin-top: var(--space-5);
-    border-left: 3px solid var(--color-blue-500);
-    padding: var(--space-4);
-    background: var(--color-warm-white);
+    gap: var(--ac-space-4);
+    border-top: 1px solid var(--ac-color-navy-900);
+    border-left: 3px solid var(--ac-color-blue-500);
+    padding: var(--ac-space-4);
+    background: var(--ac-color-warm-white);
   }
 
   .record__closeout strong {
     display: block;
-    margin-top: var(--space-1);
-    color: var(--color-navy-900);
-    font-size: var(--step--1);
+    margin-top: var(--ac-space-1);
+    color: var(--ac-color-navy-900);
   }
 
   figcaption {
-    margin-top: var(--space-5);
-    color: var(--color-ink-500);
-    font-size: 0.75rem;
+    margin-top: var(--ac-space-5);
+    color: var(--ac-color-ink-500);
     line-height: 1.5;
   }
 
   @media (min-width: 34rem) {
     .record__meta {
-      grid-template-columns: repeat(3, 1fr);
+      grid-template-columns: repeat(2, 1fr);
     }
 
     .record__row {
-      grid-template-columns: minmax(7rem, 1.25fr) repeat(3, minmax(0, 1fr));
+      grid-template-columns: minmax(7rem, 1fr) minmax(6rem, 0.6fr) minmax(0, 1.6fr);
       align-items: center;
-      gap: var(--space-3);
-      padding-block: var(--space-3);
+      gap: var(--ac-space-3);
+      padding-block: var(--ac-space-3);
     }
 
     .record__row--head {
       display: grid;
     }
 
-    .record__row span {
+    .record__row > span {
       display: block;
     }
 
-    .record__row span::before {
+    .record__row > span::before {
       display: none;
     }
 
     .record__closeout {
       grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 60rem) {
+    .record__meta {
+      grid-template-columns: repeat(4, 1fr);
+    }
+
+    .record__meta div + div {
+      border-left: 1px solid var(--ac-color-rule);
+      padding-left: var(--ac-space-4);
+    }
+
+    .record__closeout {
+      grid-template-columns: repeat(3, 1fr);
     }
   }
 </style>

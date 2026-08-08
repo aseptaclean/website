@@ -4,6 +4,12 @@ import LegalPolicy from "@components/LegalPolicy.astro";
 import { site } from "@data/site";
 
 const policy = site.integrations.termly.policies.cookie;
+// The Cookie Policy ID is wired in Termly but intentionally held: the current
+// version was scanned against the old WordPress site and is wrong. It stays
+// disabled until it is regenerated against the live site post-deploy, at
+// which point it is re-enabled together with the consent banner (the same
+// flag gates both) — see docs/05-DECISIONS-LOG.md.
+const cookiePolicyPublished = site.integrations.termly.consentEnabled;
 ---
 
 <BaseLayout
@@ -12,12 +18,12 @@ const policy = site.integrations.termly.policies.cookie;
   canonicalPath="/cookie-policy/"
   showMobileCta={false}
 >
-  <div class="container">
+  <div class="ac-measure-wide">
     <LegalPolicy
       title="Cookie Policy"
       label="Cookie Policy"
-      policyId={policy.id}
-      hostedUrl={policy.hostedUrl}
+      policyId={cookiePolicyPublished ? policy.id : ""}
+      hostedUrl={cookiePolicyPublished ? policy.hostedUrl : ""}
     />
   </div>
 </BaseLayout>

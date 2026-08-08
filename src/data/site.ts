@@ -82,8 +82,7 @@ export const site = {
     assessmentFee: Number(value("PUBLIC_ASSESSMENT_FEE", "195")),
     assessmentFeeTerms: "Credited toward an approved project booked within 7 days.",
     startingPrice: Number(rawStartingPrice),
-    primaryCta: "Get My 24-Hour Handoff Plan",
-    compactCta: "Get My Handoff Plan"
+    primaryCta: "Get My 24-Hour Handoff Plan"
   },
   residenceOffer: {
     name: "Private Residence Reset",
@@ -223,60 +222,74 @@ export const homepage = {
     {
       name: "Scope",
       detail:
-        "Define what stays, what goes, what gets cleaned, what is excluded, and what the project requires.",
+        "We write down what stays, what goes, what gets cleaned, what is excluded, and what the project will require.",
       record: "Room-by-room plan"
     },
     {
       name: "Protect",
       detail:
-        "Identify keep areas. Separate uncertain items and report important discovered items.",
+        "Keep areas are identified. Uncertain and important discovered items are separated and reported. We do not decide what mattered to your family.",
       record: "Keep and review controls"
     },
     {
       name: "Clear",
       detail:
-        "Consolidate and remove approved unwanted contents within the signed nonhazardous scope.",
+        "Approved unwanted contents are consolidated, removed, or coordinated for disposal within the signed scope.",
       record: "Clearing status"
     },
     {
       name: "Reset",
       detail:
-        "Complete the detailed cleaning included for the property's next handoff.",
+        "The property receives the detailed cleaning included for its next handoff.",
       record: "Cleaning status"
     },
     {
       name: "Verify",
       detail:
-        "Deliver completion photographs, noted exceptions, and the Property Handoff Record.",
+        "You receive completion photographs, documented exceptions, and a Property Handoff Record showing how the approved scope was closed.",
       record: "Closeout package"
     }
   ],
-  sampleRecord: [
-    {
-      area: "Entry + living",
-      clear: "Approved",
-      reset: "Included",
-      verify: "Photo set"
-    },
-    {
-      area: "Kitchen",
-      clear: "Approved",
-      reset: "Interior detail",
-      verify: "Checklist"
-    },
-    {
-      area: "Primary closet",
-      clear: "Review area",
-      reset: "After approval",
-      verify: "Exception note"
-    },
-    {
-      area: "Garage",
-      clear: "Approved",
-      reset: "Sweep + surfaces",
-      verify: "Photo set"
-    }
-  ],
+  sampleRecord: {
+    projectId: "HR-1042",
+    decisionMaker: "Owner of record — single point of approval",
+    clearingScope:
+      "Nonhazardous contents, bagging and consolidation, garage and storage-area clearing, approved disposal coordination",
+    cleaningScope:
+      "Kitchen and bathroom deep cleaning, cabinet and appliance interiors, floors, baseboards, and accessible surfaces",
+    excludedConditions:
+      "None encountered on this project — full exclusion list attached to the signed scope",
+    rooms: [
+      {
+        area: "Entry + living",
+        disposition: "Keep",
+        note: "Furnishings remain in place; included in the detailed cleaning pass"
+      },
+      {
+        area: "Kitchen",
+        disposition: "Keep",
+        note: "Cabinet and appliance interiors detailed per approved scope"
+      },
+      {
+        area: "Primary closet",
+        disposition: "Review",
+        note: "Contents held for owner decision before any clearing proceeds"
+      },
+      {
+        area: "Garage",
+        disposition: "Remove",
+        note: "Unwanted contents cleared; surfaces swept and detailed"
+      }
+    ],
+    changeAuthorization:
+      "Change Auth 01 · Kitchen appliance interiors added to cleaning scope · owner-approved",
+    discoveredItemLog:
+      "Item Log 01 · Jewelry box isolated in primary closet · reported to owner, not disturbed",
+    exceptionStatus: "1 open exception — primary closet contents pending owner review",
+    photographIndex: "Photos 01–18 starting condition · 19–42 closeout condition",
+    finalReviewStatus: "Approved scope closed",
+    closeoutDate: "Confirmed at final walkthrough, prior to handoff"
+  },
   includedScope: [
     "Nonhazardous contents clearing",
     "Bagging and consolidation",
@@ -316,12 +329,17 @@ export const homepage = {
     {
       title: "Missed scope items corrected",
       detail:
-        "Notify Aseptaclean with a photograph within 24 hours when an item specifically included in the signed scope was missed."
+        "If an item specifically included in the signed scope is missed, notify Aseptaclean with a photograph within 24 hours of completion. Aseptaclean will return within two business days to correct that item at no additional labor charge."
     },
     {
       title: "Important discovered items reported",
       detail:
         "Keys, documents, photographs, cash, jewelry, and similar discovered items are isolated and reported."
+    },
+    {
+      title: "Discretion",
+      detail:
+        "Unmarked vehicles, plain clothing, and no signage. We do not discuss the property with neighbors, and scheduling can be arranged around who is home or visible nearby."
     }
   ],
   pricingDrivers: [
@@ -416,6 +434,12 @@ export const homepage = {
       question: "Do I have to be present?",
       answer:
         "Not always. Remote projects can be managed when access, authority, communication, and scope are clear."
+    },
+    {
+      question:
+        "Do you handle properties with heavy accumulation or hoarding conditions?",
+      answer:
+        "Yes, within our current lawful and insured operating scope. Heavy accumulation and whole-house cleanouts go through the same written-scope process as every project: keep, remove, and review areas are identified before work begins, and nothing is discarded automatically. Some conditions remain outside our current scope: human blood, bodily fluids, or regulated medical waste; sewage cleanup or active mold remediation; asbestos, lead, unknown chemicals, or hazardous materials; structural repair, construction, or demolition; pest extermination or chemical treatment; and appraisal, estate-sale, legal, or habitability determinations. If we observe one of these conditions, work in the affected area stops and you are notified before the project moves forward."
     }
   ]
 } as const;

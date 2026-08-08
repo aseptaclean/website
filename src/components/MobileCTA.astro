@@ -1,36 +1,48 @@
 ---
 import { site } from "@data/site";
+
+const phoneHref = site.business.phoneUri;
 ---
 
 <aside class="mobile-cta" aria-label="Request an assessment" hidden>
-  <a class="button" href="/request-assessment/">{site.offer.compactCta}</a>
+  {
+    phoneHref && (
+      <a class="mobile-cta__tel" href={phoneHref} aria-label={`Call ${site.business.phone}`}>
+        Call {site.business.phone}
+      </a>
+    )
+  }
+  <a class="button mobile-cta__button" href="/request-assessment/">{site.offer.primaryCta}</a>
 </aside>
 
 <script>
   const stickyCta = document.querySelector<HTMLElement>(".mobile-cta");
-  const heroAction = document.querySelector<HTMLElement>(".hero__action");
+  const heroFormBlock = document.querySelector<HTMLElement>(".hero__form-block");
   const finalCta = document.querySelector<HTMLElement>(".final-cta");
   const footer = document.querySelector<HTMLElement>(".site-footer");
-  let heroActionVisible = Boolean(heroAction);
+  const scrollThreshold = 400;
+  let heroFormVisible = Boolean(heroFormBlock);
   let finalCtaVisible = false;
   let footerVisible = false;
+  let pastScrollThreshold = window.scrollY > scrollThreshold;
 
   const updateStickyCta = () => {
     if (!stickyCta) return;
-    stickyCta.hidden = heroActionVisible || finalCtaVisible || footerVisible;
+    stickyCta.hidden =
+      !pastScrollThreshold || heroFormVisible || finalCtaVisible || footerVisible;
   };
 
   if (stickyCta) {
-    if (heroAction) {
+    if (heroFormBlock) {
       const heroObserver = new IntersectionObserver(
         ([entry]) => {
           if (!entry) return;
-          heroActionVisible = entry.isIntersecting;
+          heroFormVisible = entry.isIntersecting;
           updateStickyCta();
         },
         { threshold: 0.15 }
       );
-      heroObserver.observe(heroAction);
+      heroObserver.observe(heroFormBlock);
     }
 
     if (footer) {
@@ -57,6 +69,15 @@ import { site } from "@data/site";
       finalCtaObserver.observe(finalCta);
     }
 
+    window.addEventListener(
+      "scroll",
+      () => {
+        pastScrollThreshold = window.scrollY > scrollThreshold;
+        updateStickyCta();
+      },
+      { passive: true }
+    );
+
     updateStickyCta();
   }
 </script>
@@ -66,25 +87,37 @@ import { site } from "@data/site";
     position: fixed;
     z-index: 18;
     inset: auto 0 0;
-    display: grid;
-    min-height: var(--sticky-cta-height);
-    place-items: center;
-    border-top: 1px solid var(--color-rule);
-    padding: var(--space-3) var(--gutter);
-    padding-bottom: max(var(--space-3), env(safe-area-inset-bottom));
-    background: color-mix(in srgb, var(--color-paper) 97%, transparent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--ac-space-3);
+    min-height: var(--ac-sticky-cta-height);
+    border-top: 1px solid var(--ac-color-rule);
+    padding: var(--ac-space-3) var(--ac-gutter);
+    padding-bottom: max(var(--ac-space-3), env(safe-area-inset-bottom));
+    background: color-mix(in srgb, var(--ac-color-paper) 97%, transparent);
   }
 
-  .mobile-cta .button {
-    width: 100%;
-    max-width: 30rem;
+  .mobile-cta__tel {
+    flex-shrink: 0;
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-xs);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .mobile-cta__button {
+    flex: 1;
+    max-width: 20rem;
   }
 
   .mobile-cta[hidden] {
     display: none;
   }
 
-  @media (min-width: 64rem) {
+  @media (min-width: 48rem) {
     .mobile-cta {
       display: none;
     }
