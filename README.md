@@ -53,3 +53,4 @@ optional unsupported claims remain suppressed when their values are empty.
 - Do not approve the site from one desktop screenshot.
 - Do not accept “premium,” “accessible,” or “optimized” without evidence.
 - Do not expand to multiple SEO pages before the flagship offer begins generating real jobs and the owner authorizes expansion.
+# website
