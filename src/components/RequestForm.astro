@@ -1,0 +1,69 @@
+---
+// docs/aseptaclean-FINAL-v2.html FORM section — ported verbatim (05-DECISIONS-LOG.md).
+// Presentation-only port: wires into the existing QuickHandoffForm (lead endpoint, Turnstile
+// consent, honeypot) rather than the static markup shown in the mockup.
+import QuickHandoffForm from "@components/QuickHandoffForm.astro";
+import { site } from "@data/site";
+---
+
+<section id="request" aria-labelledby="request-title">
+  <div class="ac-measure-wide request__shell">
+    <div>
+      <p class="ac-eyebrow">Request an assessment</p>
+      <h2 id="request-title" class="request__title">Start with what you know. We will help define the rest.</h2>
+      <p class="request__intro">Tell us what you are looking at, what must remain, and when the property needs to be ready. Send photos if you have them. We respond {site.offer.responseTime}.</p>
+      <p class="request__note">No vague promise that every property is the same. No pressure to authorize work before the scope is clear.</p>
+    </div>
+    <div class="request__panel">
+      <div class="panel-head"><span>Assessment request</span><span class="id">1 business day</span></div>
+      <div class="request__panel-body">
+        <QuickHandoffForm formId="request-quick-form" entryRoute="/#request" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .request__shell {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .request__title {
+    margin-bottom: 16px;
+    font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+    line-height: 1.08;
+  }
+
+  .request__intro {
+    max-width: 48ch;
+    margin-bottom: 18px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.95rem;
+  }
+
+  .request__note {
+    max-width: 48ch;
+    color: var(--ac-color-ink-400);
+    font-size: 0.85rem;
+  }
+
+  .request__panel {
+    overflow: hidden;
+    border-radius: var(--ac-r);
+    background: #fff;
+    box-shadow: var(--ac-shadow-card);
+  }
+
+  .request__panel-body {
+    padding: 26px 24px;
+  }
+
+  @media (min-width: 56.25rem) {
+    .request__shell {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

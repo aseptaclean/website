@@ -10,8 +10,30 @@
 | `src/components/HandoffRecord.astro` | Aseptaclean operating-method content, rendered in native HTML/CSS | Project-owned implementation | Sample room status, approved change, exception, completion-photo index, and closeout evidence | Semantic figure/table labels | Readable stacked excerpt on narrow screens; four-column record at larger widths | Visibly labeled sample; not a client record |
 | `src/components/ResidenceBaselineRecord.astro` | Phase 4 approved campaign specification, rendered in native HTML/CSS | Project-owned implementation | Sample room priorities, finishes, access, exceptions, and completion review | Semantic figure/list labels | Readable room excerpts on narrow screens; expanded record at larger widths | Visibly labeled sample; not a client record |
 
+## Pending image slots — `docs/18-VISUAL-DIRECTION.md` §6, no file yet
+
+Phase 0 (owner shoot, `18` §5.1) has not happened. Every row below renders as a labelled,
+bordered placeholder (steel-100 surface, mono caption stating the slot and its required
+classification) per `18` §10 Phase 2 — "Image slots ship as labelled placeholders until Phase 0
+assets land. Placeholders are acceptable in development; they are a release blocker in
+production." None of these are real files; nothing here is a licensed/stock asset in use today.
+
+| Section | Slot | Required classification (`18` §5) | Component |
+| --- | --- | --- | --- |
+| Hero | South Bay residential exterior, dark overlay | `[ATMOS]` permitted | `src/components/Hero.astro` |
+| Service cards — Complex property clearing | Process kit, flat-lay | `[OWNED]` only | `src/components/ServiceCards.astro` |
+| Service cards — Reset & restoration cleaning | Clean kitchen or bath detail | `[ATMOS]` permitted | `src/components/ServiceCards.astro` |
+| Service cards — Animal & organic condition cleaning | Completed job photo | `[OWNED]` only — implies work performed; slot stays empty rather than substitute atmosphere stock (`18` §5) | `src/components/ServiceCards.astro` |
+| Five-stage standard | Hands + clipboard at a threshold | `[OWNED]` only | `src/components/HandoffStandard.astro` |
+| Founder / operator | Founder portrait | `[OWNED]` only | `src/components/OperatorAccountability.astro` (placeholder pre-dates this pass, Session B) |
+
+Before any of these ship a real file: confirm the classification above, source per `18` §5.1/§5.2,
+and move the row into the main table with source/licence/alt text/crop/proof-status filled in.
+
 ## Rules
 
 - Do not add stock cleaning crews, generated people, fake properties, or synthetic before-and-after proof.
 - Record the source, permission, purpose, alt text, crops, and proof status before an asset is used.
 - Sample operating documents must be visibly labeled `SAMPLE` and must not imply completed client work.
+- Every image slot is logged here — including placeholders — per `docs/18-VISUAL-DIRECTION.md` §5:
+  "Every image is logged in `06-ASSET-MANIFEST.md`... No exceptions."

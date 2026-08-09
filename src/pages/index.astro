@@ -1,20 +1,60 @@
 ---
+// Section order and markup ported verbatim from docs/aseptaclean-FINAL-v2.html
+// (05-DECISIONS-LOG.md supersedes docs/11-COMPOSITION-AND-TYPE.md and
+// docs/18-VISUAL-DIRECTION.md's homepage section map for this page).
 import BaseLayout from "@layouts/BaseLayout.astro";
-import CategoryContrast from "@components/CategoryContrast.astro";
-import ConfidenceAndFit from "@components/ConfidenceAndFit.astro";
-import FAQ from "@components/FAQ.astro";
+import AccentBand from "@components/AccentBand.astro";
+import CredentialBar from "@components/CredentialBar.astro";
+import FAQ, { faqItems } from "@components/FAQ.astro";
 import FinalCTA from "@components/FinalCTA.astro";
 import HandoffRecord from "@components/HandoffRecord.astro";
 import HandoffStandard from "@components/HandoffStandard.astro";
 import Hero from "@components/Hero.astro";
-import OutcomeComparison from "@components/OutcomeComparison.astro";
-import Qualification from "@components/Qualification.astro";
+import OperatorAccountability from "@components/OperatorAccountability.astro";
+import Pricing from "@components/Pricing.astro";
+import RequestForm from "@components/RequestForm.astro";
+import ServiceCards from "@components/ServiceCards.astro";
+import WhyAseptaclean from "@components/WhyAseptaclean.astro";
 import { homepage, site } from "@data/site";
+
+const localBusinessSchema = {
+  "@type": "LocalBusiness",
+  "@id": new URL("/#business", site.urls.site).href,
+  name: site.business.name,
+  url: site.urls.site,
+  email: site.business.email,
+  areaServed: site.location.cities.map((name) => ({
+    "@type": "City",
+    name
+  })),
+  address: {
+    "@type": "PostalAddress",
+    addressLocality: "San Jose",
+    addressRegion: "CA",
+    addressCountry: "US"
+  },
+  geo: {
+    "@type": "GeoCoordinates",
+    latitude: 37.3382,
+    longitude: -121.8863
+  }
+};
+
+const serviceSchemas = homepage.serviceCards.map((card) => ({
+  "@type": "Service",
+  serviceType: card.title,
+  description: card.detail,
+  provider: { "@id": new URL("/#business", site.urls.site).href },
+  areaServed: site.location.cities.map((name) => ({
+    "@type": "City",
+    name
+  }))
+}));
 
 const faqSchema = {
   "@type": "FAQPage",
   "@id": new URL("/#faq", site.urls.site).href,
-  mainEntity: homepage.faq.map((item) => ({
+  mainEntity: faqItems.map((item) => ({
     "@type": "Question",
     name: item.question,
     acceptedAnswer: {
@@ -26,18 +66,21 @@ const faqSchema = {
 ---
 
 <BaseLayout
-  title="Property Cleanout & Deep Cleaning San Jose | Aseptaclean"
-  description="Clear unwanted contents, deep-clean the property, and document completion for estates, pre-sale homes, and landlord turnovers. Serving San Jose and the South Bay."
+  title="Property Cleanout & Deep Cleaning | San Jose & South Bay | Aseptaclean"
+  description="Whole-property clearing and deep cleaning in San Jose and the South Bay. Written scope before work, documented closeout with a Property Handoff Record."
   canonicalPath="/"
-  schema={faqSchema}
+  schema={[localBusinessSchema, ...serviceSchemas, faqSchema]}
 >
   <Hero />
-  <Qualification />
-  <OutcomeComparison />
-  <CategoryContrast />
+  <CredentialBar />
+  <ServiceCards />
+  <WhyAseptaclean />
+  <AccentBand />
   <HandoffStandard />
   <HandoffRecord />
-  <ConfidenceAndFit />
-  <FinalCTA />
+  <Pricing />
+  <OperatorAccountability />
   <FAQ />
+  <RequestForm />
+  <FinalCTA />
 </BaseLayout>

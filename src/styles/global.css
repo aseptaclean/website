@@ -14,11 +14,12 @@ html {
 body {
   margin: 0;
   min-width: 20rem;
-  background: var(--ac-color-warm-white);
-  color: var(--ac-color-ink-700);
+  background: var(--ac-color-paper);
+  color: var(--ac-color-ink-900);
   font-family: var(--ac-font-sans);
   font-size: var(--ac-text-body);
-  line-height: 1.66;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
@@ -46,14 +47,29 @@ a:active {
   outline-offset: 4px;
 }
 
+/* Default section rhythm — docs/aseptaclean-FINAL-v2.html `section{padding-block:...}`.
+   Individual homepage section components override where the source file overrides
+   (hero, ribbon, credential bar, accent band, final CTA). */
+main > section {
+  padding-block: clamp(3.5rem, 7vw, 6rem);
+}
+
 /* ---------------------------------------------------------------------
-   Heading purity — docs/11-COMPOSITION-AND-TYPE.md §1
+   Heading purity — docs/11-COMPOSITION-AND-TYPE.md §1 (retained by
+   docs/18-VISUAL-DIRECTION.md and by the FINAL-v2 port, 05-DECISIONS-LOG.md).
    h1-h4 carry document structure only. No tag here declares a font-size.
    Every visible size comes from one of the .ac-type-* role classes below.
    --------------------------------------------------------------------- */
 h1,
 h2,
-h3,
+h3 {
+  margin: 0;
+  font-family: var(--ac-font-display);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--ac-color-navy-900);
+}
+
 h4 {
   margin: 0;
   color: var(--ac-color-navy-900);
@@ -109,11 +125,14 @@ textarea {
   text-wrap: pretty;
 }
 
+/* docs/18-VISUAL-DIRECTION.md §2: serif is now the heading system, used on every H1-H3 —
+   H3's face moves from Instrument Sans (docs/11 §2) to the display serif. */
 .ac-type-h3 {
-  font-family: var(--ac-font-sans);
+  font-family: var(--ac-font-display);
   font-size: var(--ac-text-h3);
-  font-weight: 600;
-  line-height: 1.18;
+  font-weight: 560;
+  line-height: 1.2;
+  text-wrap: pretty;
 }
 
 .ac-type-lead {
@@ -142,27 +161,185 @@ textarea {
   letter-spacing: 0.02em;
 }
 
-/* Eyebrow — docs/11 §6.1: xs, uppercase, 0.08em tracking, steel 300 */
+/* Eyebrow — docs/aseptaclean-FINAL-v2.html .eyebrow */
 .ac-eyebrow {
-  margin: 0;
-  color: var(--ac-color-steel-300);
-  font-family: var(--ac-font-sans);
-  font-size: var(--ac-text-xs);
-  font-weight: 700;
-  letter-spacing: 0.08em;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0 0 18px;
+  color: var(--ac-color-blue-deep);
+  font-family: var(--ac-font-mono);
+  font-size: 0.7rem;
+  font-weight: 400;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
 }
 
-/* The Mark — docs/11 §6.5: solid navy rectangle behind one word. Three
-   appearances maximum: the H1, the movement 3 display line, the final CTA
-   headline. The only decorative device on the site. */
+.ac-eyebrow::before {
+  flex-shrink: 0;
+  width: 24px;
+  height: 2px;
+  margin-top: 0.45em;
+  background: var(--ac-color-blue-500);
+  content: "";
+}
+
+/* The Mark — v2 has no boxed-word mark; headline emphasis uses the
+   lighter hero .hl color-only treatment instead (see Hero.astro). Kept
+   as a no-op-safe utility for any remaining reference. */
 .ac-mark {
   display: inline;
-  box-decoration-break: clone;
-  -webkit-box-decoration-break: clone;
-  padding-inline: 0.14em;
-  background: var(--ac-color-navy-900);
-  color: var(--ac-color-paper);
+  color: inherit;
+}
+
+/* Icon chip / glyph — docs/aseptaclean-FINAL-v2.html .why .ic, .card-img .glyph */
+.ac-icon-chip {
+  display: inline-flex;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 46px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 11px;
+  margin-bottom: 16px;
+  background: var(--ac-color-blue-pale);
+  color: var(--ac-color-blue-deep);
+  font-size: 1.25rem;
+}
+
+.ac-icon-chip svg {
+  width: 1.375rem;
+  height: 1.375rem;
+  stroke: currentColor;
+  fill: none;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Credential chip — docs/aseptaclean-FINAL-v2.html .chip. Fixed wording per
+   docs/18-VISUAL-DIRECTION.md §7 (retained): never "licensed," no job count, no years figure. */
+.ac-credential-chip {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.ac-credential-chip span {
+  border: 1px solid rgba(168, 192, 220, 0.35);
+  border-radius: 100px;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 6px 11px;
+  color: #a8c0dc;
+  font-family: var(--ac-font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* Card container — docs/aseptaclean-FINAL-v2.html .card / .card-img / .card-body */
+.ac-card {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border-radius: var(--ac-radius-card);
+  background: var(--ac-color-paper);
+  box-shadow: var(--ac-shadow-card);
+  transition: 0.2s;
+}
+
+.ac-card:hover {
+  box-shadow: var(--ac-shadow-pop);
+  transform: translateY(-4px);
+}
+
+.ac-card__image {
+  position: relative;
+  display: grid;
+  aspect-ratio: 16 / 10;
+  place-items: center;
+}
+
+.ac-card__image::after {
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.08) 1px, transparent 0);
+  background-size: 20px 20px;
+  content: "";
+}
+
+.ac-card__image span {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 64px;
+  height: 64px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(4px);
+  color: #fff;
+  font-size: 1.6rem;
+}
+
+.ac-card__body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 10px;
+  padding: 26px 26px 28px;
+}
+
+/* Status panel — docs/aseptaclean-FINAL-v2.html .panel / .panel-head / .prow. Shared by
+   Hero.astro (Handoff Status) and RequestForm.astro (Assessment request). */
+.panel {
+  overflow: hidden;
+  border-radius: var(--ac-r);
+  background: #fff;
+}
+
+.panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: linear-gradient(135deg, var(--ac-color-navy-800), var(--ac-color-navy-950));
+  padding: 15px 18px;
+  color: #fff;
+  font-family: var(--ac-font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+}
+
+.panel-head .id {
+  color: #8fb4de;
+}
+
+.prow {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid var(--ac-color-line);
+  padding: 14px 18px;
+}
+
+.prow:last-child {
+  border-bottom: 0;
+}
+
+.prow .lb {
+  color: var(--ac-color-navy-900);
+  font-size: 0.92rem;
+  font-weight: 600;
+}
+
+.prow .sb {
+  color: var(--ac-color-ink-400);
+  font-family: var(--ac-font-mono);
+  font-size: 0.76rem;
 }
 
 /* ---------------------------------------------------------------------
@@ -203,33 +380,44 @@ textarea {
   transform: translateY(0);
 }
 
-.button {
+/* Buttons — docs/aseptaclean-FINAL-v2.html .btn / .btn-primary / .btn-light / .btn-ghost-dark */
+.button,
+.btn {
   display: inline-flex;
   min-height: 3rem;
   align-items: center;
   justify-content: center;
-  border: 1px solid var(--ac-color-navy-800);
-  border-radius: var(--ac-radius-control);
-  padding: 0.7rem 1rem;
+  gap: 9px;
+  border: 0;
+  border-radius: var(--ac-r-sm);
+  padding: 14px 24px;
   background: var(--ac-color-navy-800);
-  color: var(--ac-color-paper);
+  color: #fff;
   font-family: var(--ac-font-sans);
-  font-size: var(--ac-text-sm);
-  font-weight: 700;
+  font-size: 0.9rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
   line-height: 1.2;
   text-align: center;
   text-decoration: none;
-  transition:
-    background-color var(--ac-transition-fast),
-    border-color var(--ac-transition-fast),
-    transform var(--ac-transition-fast);
+  cursor: pointer;
+  box-shadow: 0 2px 8px -2px rgba(28, 53, 94, 0.4);
+  transition: 0.18s;
 }
 
-.button:hover {
-  border-color: var(--ac-color-navy-900);
-  background: var(--ac-color-navy-900);
-  color: var(--ac-color-paper);
+.btn-primary {
+  background: var(--ac-color-navy-800);
+  color: #fff;
+  box-shadow: 0 2px 8px -2px rgba(28, 53, 94, 0.4);
+}
+
+.button:hover,
+.btn-primary:hover {
+  background: var(--ac-color-navy-950);
+  color: #fff;
   text-decoration: none;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px -4px rgba(28, 53, 94, 0.45);
 }
 
 .button:active {
@@ -240,6 +428,83 @@ textarea {
 .button:disabled {
   cursor: not-allowed;
   opacity: 0.55;
+}
+
+.btn-light {
+  border: 1px solid var(--ac-color-line-strong);
+  background: #fff;
+  color: var(--ac-color-navy-800);
+  box-shadow: none;
+}
+
+.btn-light:hover {
+  border-color: var(--ac-color-navy-800);
+  background: #fff;
+  color: var(--ac-color-navy-800);
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-ghost-dark {
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  box-shadow: none;
+}
+
+.btn-ghost-dark:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+  box-shadow: none;
+  transform: none;
+}
+
+.btn-on-light {
+  background: #fff;
+  color: var(--ac-color-navy-900);
+  box-shadow: 0 4px 14px -4px rgba(0, 0, 0, 0.4);
+}
+
+.btn-on-light:hover {
+  background: #fff;
+  color: var(--ac-color-navy-900);
+}
+
+/* Tag / status chip — docs/aseptaclean-FINAL-v2.html .tag / .st */
+.ac-tag {
+  display: inline-block;
+  border: 1px solid;
+  border-radius: 5px;
+  padding: 5px 9px;
+  font-family: var(--ac-font-mono);
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ac-tag--clear {
+  border-color: #bde0cc;
+  background: var(--ac-color-clear-pale);
+  color: var(--ac-color-clear);
+}
+
+.ac-tag--review {
+  border-color: #ecd6a8;
+  background: var(--ac-color-review-pale);
+  color: var(--ac-color-review);
+}
+
+.ac-tag--def {
+  border-color: #c2d7ef;
+  background: var(--ac-color-blue-pale);
+  color: var(--ac-color-blue-deep);
+}
+
+.ac-tag--rem {
+  border-color: var(--ac-color-line-strong);
+  background: var(--ac-color-bg-soft);
+  color: var(--ac-color-ink-600);
 }
 
 .route-shell {

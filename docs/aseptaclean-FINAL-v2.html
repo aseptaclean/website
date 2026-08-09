@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aseptaclean — FINAL Build Target</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:opsz,wght@6..72,500;6..72,600&family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy-950:#0b1830; --navy-900:#10233f; --navy-800:#1c355e; --navy-700:#27436f;
+  --blue:#4a7fc1; --blue-deep:#2e5c9e; --blue-pale:#e9f0f9; --blue-ghost:#f4f8fc;
+  --ink-900:#13202f; --ink-600:#46566b; --ink-400:#8494a8;
+  --line:#e3e9f0; --line-strong:#ccd6e2;
+  --bg:#ffffff; --bg-soft:#f5f8fb;
+  --gold:#c9a961; --clear:#1e7a4f; --clear-pale:#e7f3ec; --review:#9a6414; --review-pale:#fbf3e4;
+  --serif:"Newsreader",Georgia,serif; --sans:"Inter",-apple-system,sans-serif; --mono:"IBM Plex Mono",ui-monospace,monospace;
+  --shell:1200px; --gutter:clamp(1.25rem,4vw,3rem); --r:12px; --r-sm:6px;
+  --shadow-card:0 1px 2px rgba(16,35,63,.05),0 16px 40px -20px rgba(16,35,63,.22);
+  --shadow-pop:0 2px 4px rgba(11,24,48,.08),0 32px 64px -32px rgba(11,24,48,.35);
+  --s1:8px;--s2:16px;--s3:24px;--s4:32px;--s5:48px;--s6:64px;--s7:96px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--sans);color:var(--ink-900);background:var(--bg);line-height:1.6;-webkit-font-smoothing:antialiased}
+.shell{max-width:var(--shell);margin:0 auto;padding-inline:var(--gutter)}
+h1,h2,h3{font-family:var(--serif);font-weight:600;letter-spacing:-.015em;color:var(--navy-900)}
+.eyebrow{font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue-deep);display:flex;align-items:flex-start;gap:10px;margin-bottom:18px}
+.eyebrow::before{content:"";width:24px;height:2px;background:var(--blue);flex-shrink:0;margin-top:.45em}
+section{padding-block:clamp(3.5rem,7vw,6rem)}
+
+/* ribbon */
+.ribbon{background:var(--navy-950);color:#9fb2ca}
+.ribbon .shell{display:flex;gap:28px;align-items:center;height:32px;font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;overflow-x:auto;white-space:nowrap}
+.ribbon b{color:#fff;font-weight:500}
+.ribbon .dot{width:6px;height:6px;border-radius:50%;background:#37b57e;display:inline-block;margin-right:8px;vertical-align:middle}
+
+/* header */
+header{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.94);backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+.nav{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{display:flex;align-items:center;gap:11px;font-weight:800;font-size:1.15rem;letter-spacing:-.03em;color:var(--navy-900)}
+.logo .mark{width:34px;height:34px;background:linear-gradient(135deg,var(--navy-800),var(--navy-950));color:#fff;display:grid;place-items:center;font-family:var(--mono);font-weight:600;border-radius:8px;box-shadow:inset 0 1px 0 rgba(255,255,255,.15)}
+.logo .sept{color:var(--blue)}
+.nav-links{display:flex;gap:26px;font-size:.86rem;font-weight:500;color:var(--ink-600)}
+.nav-links a{color:inherit;text-decoration:none;transition:.15s}.nav-links a:hover{color:var(--navy-900)}
+.btn{font-size:.9rem;font-weight:600;padding:14px 24px;border-radius:var(--r-sm);text-decoration:none;display:inline-flex;align-items:center;gap:9px;transition:.18s;letter-spacing:-.01em;border:0;cursor:pointer}
+.btn-primary{background:var(--navy-800);color:#fff;box-shadow:0 2px 8px -2px rgba(28,53,94,.4)}
+.btn-primary:hover{background:var(--navy-950);transform:translateY(-1px);box-shadow:0 6px 16px -4px rgba(28,53,94,.45)}
+.btn-light{background:#fff;color:var(--navy-800);border:1px solid var(--line-strong)}
+.btn-light:hover{border-color:var(--navy-800)}
+.btn-ghost-dark{background:rgba(255,255,255,.08);color:#fff;border:1px solid rgba(255,255,255,.25)}
+.btn-ghost-dark:hover{background:rgba(255,255,255,.16)}
+.nav .btn{padding:9px 16px;font-size:.82rem}
+@media(max-width:940px){.nav-links{display:none}}
+
+/* ============ HERO — dark, rich, photo-free ============ */
+.hero{position:relative;padding-top:clamp(2.25rem,4.5vw,3.5rem);padding-bottom:clamp(3rem,6vw,4.5rem);background:
+  radial-gradient(1100px 500px at 85% -10%, rgba(74,127,193,.28), transparent 60%),
+  radial-gradient(700px 400px at -5% 110%, rgba(74,127,193,.15), transparent 55%),
+  linear-gradient(165deg, var(--navy-900) 0%, var(--navy-950) 70%);
+  color:#fff;overflow:hidden}
+.hero::before{content:"";position:absolute;inset:0;
+  background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 0);
+  background-size:26px 26px;mask-image:linear-gradient(to bottom,rgba(0,0,0,.9),transparent 80%)}
+.hero .shell{position:relative;display:grid;grid-template-columns:1.25fr 1fr;gap:clamp(2.5rem,5vw,4.5rem);align-items:center}
+@media(max-width:940px){.hero .shell{grid-template-columns:1fr}}
+.hero .eyebrow{color:#8fb4de}.hero .eyebrow::before{background:#8fb4de}
+.hero h1{color:#fff;font-size:clamp(2.5rem,5vw,3.8rem);line-height:1.05;margin-bottom:22px;text-wrap:balance}
+.hero h1 .hl{color:#a8c8ec}
+.hero .lead{font-size:1.12rem;color:#b9c9dd;max-width:46ch;margin-bottom:26px}
+.hero .approve{border-left:3px solid var(--gold);padding:4px 0 4px 16px;font-weight:600;color:#fff;font-size:1rem;margin-bottom:30px}
+.hero .actions{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:34px}
+.hero .chips{display:flex;gap:10px;flex-wrap:wrap}
+.chip{font-family:var(--mono);font-size:.64rem;letter-spacing:.06em;text-transform:uppercase;color:#a8c0dc;border:1px solid rgba(168,192,220,.35);padding:6px 11px;border-radius:100px;background:rgba(255,255,255,.04)}
+
+/* hero status panel */
+.panel{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-pop)}
+.panel-head{background:linear-gradient(135deg,var(--navy-800),var(--navy-950));color:#fff;padding:15px 18px;display:flex;align-items:center;justify-content:space-between;font-family:var(--mono);font-size:.68rem;letter-spacing:.09em;text-transform:uppercase}
+.panel-head .id{color:#8fb4de}
+.prow{display:grid;grid-template-columns:1fr auto;gap:12px;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line)}
+.prow:last-child{border-bottom:0}
+.prow .lb{font-weight:600;font-size:.92rem;color:var(--navy-900)}
+.prow .sb{font-size:.76rem;color:var(--ink-400);font-family:var(--mono)}
+.tag{font-family:var(--mono);font-size:.62rem;letter-spacing:.05em;text-transform:uppercase;padding:5px 9px;border-radius:5px;border:1px solid;font-weight:500}
+.tag.clear{color:var(--clear);background:var(--clear-pale);border-color:#bde0cc}
+.tag.review{color:var(--review);background:var(--review-pale);border-color:#ecd6a8}
+.tag.def{color:var(--blue-deep);background:var(--blue-pale);border-color:#c2d7ef}
+
+/* credential bar */
+.credbar{background:var(--bg);border-bottom:1px solid var(--line);padding-block:0}
+.credbar .shell{display:grid;grid-template-columns:repeat(4,1fr);}
+@media(max-width:820px){.credbar .shell{grid-template-columns:repeat(2,1fr)}}
+.cred{padding:26px 18px;text-align:center;border-right:1px solid var(--line);min-height:112px;display:flex;flex-direction:column;justify-content:center}
+.cred:last-child{border-right:0}
+@media(max-width:820px){.cred:nth-child(2){border-right:0}}
+.cred .t{font-family:var(--serif);font-weight:600;font-size:1.25rem;color:var(--navy-900)}
+.cred .s{font-size:.8rem;color:var(--ink-400);margin-top:2px}
+
+/* service cards */
+.svc{background:var(--bg-soft)}
+.svc-head{display:flex;justify-content:space-between;align-items:end;gap:var(--s4);flex-wrap:wrap;margin-bottom:var(--s5)}
+.svc-head h2{font-size:clamp(1.9rem,3.4vw,2.6rem);line-height:1.08;max-width:18ch}
+.svc-head p{color:var(--ink-600);max-width:38ch;font-size:.98rem}
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--s3)}
+@media(max-width:900px){.cards{grid-template-columns:1fr}}
+.card{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-card);transition:.2s;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-4px);box-shadow:var(--shadow-pop)}
+.card-img{aspect-ratio:16/10;position:relative;display:grid;place-items:center}
+.card-img.v1{background:linear-gradient(150deg,#27436f,#10233f)}
+.card-img.v2{background:linear-gradient(150deg,#4a7fc1,#1c355e)}
+.card-img.v3{background:linear-gradient(150deg,#7a9cc6,#2e5c9e)}
+.card-img::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.08) 1px, transparent 0);background-size:20px 20px}
+.card-img .glyph{position:relative;z-index:1;width:64px;height:64px;border-radius:14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);display:grid;place-items:center;color:#fff;font-size:1.6rem;backdrop-filter:blur(4px)}
+.card-img .photo-note{position:absolute;bottom:10px;right:12px;font-family:var(--mono);font-size:.56rem;letter-spacing:.06em;color:rgba(255,255,255,.5);text-transform:uppercase}
+.card-body{padding:26px 26px 28px;display:flex;flex-direction:column;gap:10px;flex:1}
+.card-body h3{font-size:1.35rem}
+.card-body p{font-size:.92rem;color:var(--ink-600)}
+.card-link{font-size:.85rem;font-weight:600;color:var(--blue-deep);text-decoration:none;display:inline-flex;gap:6px;align-items:center;margin-top:auto}
+.card-link:hover{color:var(--navy-900)}
+.card .pill{align-self:flex-start;font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--blue-deep);background:var(--blue-pale);padding:4px 9px;border-radius:100px;font-weight:500}
+
+/* why grid */
+.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--s3);margin-top:var(--s5)}
+@media(max-width:900px){.why-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:560px){.why-grid{grid-template-columns:1fr}}
+.why{padding:28px 24px;border:1px solid var(--line);border-radius:var(--r);background:#fff;transition:.2s}
+.why:hover{border-color:var(--blue);box-shadow:var(--shadow-card)}
+.why .ic{width:46px;height:46px;border-radius:11px;background:var(--blue-pale);color:var(--blue-deep);display:grid;place-items:center;font-size:1.25rem;margin-bottom:16px}
+.why h3{font-size:1.12rem;margin-bottom:8px}
+.why p{font-size:.88rem;color:var(--ink-600)}
+
+/* accent band */
+.band{background:linear-gradient(135deg,var(--blue-deep),var(--navy-800));color:#fff;padding-block:clamp(2.5rem,5vw,3.5rem)}
+.band .shell{display:flex;justify-content:space-between;align-items:center;gap:var(--s4) var(--s5);flex-wrap:wrap}
+.band h2{color:#fff;font-size:clamp(1.5rem,2.8vw,2.1rem);line-height:1.15;max-width:26ch}
+.band .right{display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+.band .phone{font-family:var(--mono);font-size:.95rem;color:#cfe0f2}
+
+/* stages */
+.stage-head{margin-bottom:var(--s5)}
+.stage-head h2{font-size:clamp(1.9rem,3.4vw,2.6rem);max-width:24ch;line-height:1.08}
+.stages{counter-reset:st;border-top:2px solid var(--navy-900)}
+.stage{display:grid;grid-template-columns:64px 1fr auto;gap:var(--s3);align-items:start;padding:var(--s3) 0;border-bottom:1px solid var(--line)}
+@media(max-width:640px){.stage{grid-template-columns:44px 1fr}.stage .rec{grid-column:2}}
+.stage .n{font-family:var(--mono);font-size:1.05rem;color:var(--ink-400)}
+.stage h3{font-size:1.3rem;margin-bottom:5px}
+.stage p{font-size:.92rem;color:var(--ink-600);max-width:62ch}
+.stage .rec{margin-top:6px;font-family:var(--mono);font-size:.64rem;letter-spacing:.05em;text-transform:uppercase;color:var(--blue-deep);background:var(--blue-ghost);border:1px solid var(--line);padding:6px 10px;border-radius:5px;white-space:nowrap}
+
+/* record */
+.record-sec{background:var(--bg-soft)}
+.record{background:#fff;border-radius:var(--r);overflow:hidden;box-shadow:var(--shadow-pop)}
+.rtop{padding:24px 28px;border-bottom:2px solid var(--navy-900);display:flex;justify-content:space-between;align-items:start;flex-wrap:wrap;gap:12px}
+.rtop .t{font-family:var(--serif);font-weight:600;font-size:1.45rem;color:var(--navy-900)}
+.rtop .m{font-family:var(--mono);font-size:.64rem;color:var(--ink-400);letter-spacing:.05em;text-transform:uppercase;margin-top:3px}
+.rtop .sm{font-family:var(--mono);font-size:.6rem;color:#a3392f;border:1px solid #e0b6b0;background:#fbeeec;padding:5px 9px;border-radius:5px;letter-spacing:.06em}
+.rgrid{display:grid;grid-template-columns:repeat(4,1fr)}
+@media(max-width:1000px){.rgrid{grid-template-columns:1fr 1fr}}
+@media(max-width:1000px){.rrow{grid-template-columns:1fr auto}.rrow .note{grid-column:1/-1;padding-top:2px}}
+.rcell{padding:20px 22px;border-right:1px solid var(--line);border-bottom:1px solid var(--line)}
+.rcell .k{font-family:var(--mono);font-size:.6rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-400);margin-bottom:7px}
+.rcell .v{font-size:.9rem;font-weight:600;color:var(--navy-900)}
+.rtable{padding:8px 28px 20px}
+.rrow{display:grid;grid-template-columns:1fr auto 1.5fr;gap:16px;align-items:center;padding:13px 0;border-bottom:1px solid var(--line);font-size:.9rem}
+.rrow:last-child{border-bottom:0}
+.rrow .a{font-weight:600;color:var(--navy-900)}
+.rrow .note{color:var(--ink-600);font-size:.85rem}
+.st{font-family:var(--mono);font-size:.6rem;letter-spacing:.05em;text-transform:uppercase;padding:4px 9px;border:1px solid;border-radius:5px;white-space:nowrap}
+.st.keep{color:var(--clear);border-color:#bde0cc;background:var(--clear-pale)}
+.st.rev{color:var(--review);border-color:#ecd6a8;background:var(--review-pale)}
+.st.rem{color:var(--ink-600);border-color:var(--line-strong);background:var(--bg-soft)}
+.rcap{font-size:.78rem;color:var(--ink-400);margin-top:18px;max-width:72ch}
+
+#pricing{grid-template-columns:1fr 1fr}
+@media(max-width:820px){#pricing{grid-template-columns:1fr!important}}
+/* founder */
+.founder .shell{display:grid;grid-template-columns:.85fr 1.35fr;gap:clamp(2.5rem,5vw,4rem);align-items:center}
+@media(max-width:860px){.founder .shell{grid-template-columns:1fr}}
+.portrait{aspect-ratio:4/5;border-radius:var(--r);position:relative;overflow:hidden;background:linear-gradient(160deg,#27436f,#0b1830);box-shadow:var(--shadow-card);display:grid;place-items:center}
+.portrait::after{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.06) 1px, transparent 0);background-size:22px 22px}
+.portrait .ph{font-family:var(--mono);font-size:.66rem;letter-spacing:.1em;color:#6d8bb0;text-transform:uppercase;position:relative;z-index:1}
+.founder h2{font-size:clamp(1.8rem,3vw,2.4rem);line-height:1.1;margin-bottom:18px}
+.founder .fl{color:var(--ink-600);margin-bottom:24px;max-width:54ch;font-size:.98rem}
+.creds{border-top:1px solid var(--line)}
+.cr{display:grid;grid-template-columns:110px 1fr;gap:16px;padding:13px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.cr .k{font-family:var(--mono);font-size:.64rem;color:var(--ink-400);text-transform:uppercase;letter-spacing:.05em}
+.cr .v{font-weight:500;font-size:.95rem;color:var(--navy-900)}
+.fnote{font-size:.78rem;color:var(--ink-400);margin-top:16px;border-left:2px solid var(--line-strong);padding-left:14px;max-width:52ch}
+
+#request{grid-template-columns:1fr 1fr}
+@media(max-width:900px){#request>.shell{grid-template-columns:1fr!important}}
+/* faq */
+.faq{background:var(--bg-soft)}
+.faq h2{font-size:clamp(1.9rem,3.2vw,2.5rem);margin-bottom:8px}
+.faq .fi{color:var(--ink-600);margin-bottom:30px}
+.faq-list{display:grid;gap:12px;max-width:820px}
+details{background:#fff;border:1px solid var(--line);border-radius:var(--r-sm);overflow:hidden;transition:.15s}
+details[open]{border-color:var(--blue);box-shadow:var(--shadow-card)}
+summary{list-style:none;cursor:pointer;padding:19px 22px;font-size:1.02rem;font-weight:600;color:var(--navy-900);display:flex;justify-content:space-between;align-items:center;gap:16px;font-family:var(--serif)}
+summary::-webkit-details-marker{display:none}
+summary .pm{font-family:var(--mono);color:var(--blue-deep);flex-shrink:0}
+details p{padding:0 22px 20px;color:var(--ink-600);font-size:.92rem;max-width:68ch}
+
+/* final cta */
+.cta{background:
+  radial-gradient(900px 400px at 15% -20%, rgba(74,127,193,.3), transparent 60%),
+  linear-gradient(160deg,var(--navy-900),var(--navy-950));color:#fff;text-align:center;position:relative;overflow:hidden}
+.cta::before{content:"";position:absolute;inset:0;background-image:radial-gradient(circle at 1px 1px, rgba(255,255,255,.05) 1px, transparent 0);background-size:26px 26px}
+.cta .shell{position:relative}
+.cta .eyebrow{justify-content:center;color:#8fb4de}.cta .eyebrow::before{background:#8fb4de}
+.cta h2{color:#fff;font-size:clamp(2rem,3.8vw,3rem);line-height:1.08;max-width:22ch;margin:0 auto 18px}
+.cta p{color:#b9c9dd;max-width:50ch;margin:0 auto 30px;font-size:1rem}
+.cta .actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.cta .sub{margin-top:22px;font-size:.8rem;color:#7d92ad}
+
+
+/* sticky mobile bar */
+.sticky-bar{position:fixed;bottom:0;left:0;right:0;z-index:60;display:none;gap:10px;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);box-shadow:0 -8px 24px -12px rgba(16,35,63,.2)}
+.sticky-bar .btn{flex:1;justify-content:center;padding:13px 10px;font-size:.86rem}
+@media(max-width:767px){.sticky-bar{display:flex}body{padding-bottom:74px}}
+/* footer */
+footer{background:var(--navy-950);color:#8ea2bc;padding-block:clamp(3rem,5vw,4rem)}
+.fgrid{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:2.5rem}
+@media(max-width:820px){.fgrid{grid-template-columns:1fr;gap:1.8rem}}
+footer .logo{color:#fff;margin-bottom:16px}
+footer .logo .mark{background:#fff;color:var(--navy-950)}
+footer p{font-size:.88rem;max-width:44ch;color:#7d92ad}
+.flinks{display:flex;flex-direction:column;gap:11px}
+.flinks a{color:#c2d0e2;text-decoration:none;font-size:.9rem}.flinks a:hover{color:#fff}
+.flegal{border-top:1px solid rgba(255,255,255,.1);margin-top:34px;padding-top:26px;font-size:.76rem;color:#68809d;line-height:1.65}
+</style>
+</head>
+<body>
+
+<div class="ribbon"><div class="shell">
+  <span><span class="dot"></span><b>Insured</b> — COI on request</span>
+  <span><b>Organic Pathogen Endorsed</b></span>
+  <span><b>Owner-operated</b> assessments</span>
+  <span>San Jose &amp; the South Bay</span>
+</div></div>
+
+<header><div class="shell nav">
+  <div class="logo"><span class="mark">A</span>Asepta<span class="sept">clean</span></div>
+  <nav class="nav-links">
+    <a href="#">Services</a><a href="#">Who It's For</a><a href="#">Method</a>
+    <a href="#">The Record</a><a href="#">About</a><a href="#">FAQ</a>
+  </nav>
+  <a href="#request" class="btn btn-primary">Request an assessment</a>
+</div></header>
+
+<!-- HERO -->
+<div class="hero"><div class="shell">
+  <div>
+    <div class="eyebrow">Property clearing · restoration · animal &amp; organic conditions</div>
+    <h1>Complex properties returned to a <span class="hl">controlled, documented</span> condition.</h1>
+    <p class="lead">Hoarding, estate, and severe-condition properties — cleared, cleaned, and closed out under one signed scope, by one accountable operator.</p>
+    <div class="approve">Nothing leaves the property without your written approval.</div>
+    <div class="actions">
+      <a href="#request" class="btn btn-primary" style="background:#fff;color:var(--navy-900);box-shadow:0 4px 14px -4px rgba(0,0,0,.4)">Request an assessment →</a>
+      <a href="#" class="btn btn-ghost-dark">Text a photo</a>
+    </div>
+    <p style="font-size:.85rem;color:#8fb4de;margin-bottom:18px">Every project closes with a <a href="#record" style="color:#cfe0f2;text-decoration:underline;text-underline-offset:3px">Property Handoff Record</a> — see a sample below.</p>
+    <div class="chips">
+      <span class="chip">Written scope before work</span>
+      <span class="chip">No unapproved charges</span>
+      <span class="chip">Documented closeout</span>
+    </div>
+  </div>
+  <div class="panel">
+    <div class="panel-head"><span>Handoff Status</span><span class="id">HR-1042 · SAMPLE</span></div>
+    <div class="prow"><div><div class="lb">Scope</div><div class="sb">Room-by-room, signed</div></div><span class="tag def">Defined</span></div>
+    <div class="prow"><div><div class="lb">Set-aside items</div><div class="sb">Docs · valuables · keys</div></div><span class="tag review">Held</span></div>
+    <div class="prow"><div><div class="lb">Clearing</div><div class="sb">Approved contents</div></div><span class="tag clear">Complete</span></div>
+    <div class="prow"><div><div class="lb">Reset cleaning</div><div class="sb">Kitchen · bath · surfaces</div></div><span class="tag clear">Complete</span></div>
+    <div class="prow"><div><div class="lb">Closeout record</div><div class="sb">Photos + exceptions</div></div><span class="tag def">Issued</span></div>
+  </div>
+</div></div>
+
+<!-- CREDENTIAL BAR -->
+<div class="credbar"><div class="shell">
+  <div class="cred"><div class="t">Insured</div><div class="s">COI available on request</div></div>
+  <div class="cred"><div class="t">Endorsed</div><div class="s">Organic pathogen endorsement</div></div>
+  <div class="cred"><div class="t">Owner-operated</div><div class="s">Founder on every scope</div></div>
+  <div class="cred"><div class="t">Santa Clara Co.</div><div class="s">San Jose &amp; the South Bay</div></div>
+</div></div>
+
+<!-- SERVICES -->
+<section class="svc"><div class="shell">
+  <div class="svc-head">
+    <div><div class="eyebrow">Scope of work</div><h2>Three ways properties reach this handoff</h2></div>
+    <p>Every project runs under a signed scope with a documented closeout — whichever way it starts.</p>
+  </div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-img v1"><div class="glyph">▣</div><span class="photo-note">Photo slot · owned</span></div>
+      <div class="card-body">
+        <h3>Complex property clearing</h3>
+        <p>Whole-property clearing for heavy accumulation, estate, and abandoned-contents conditions — nonhazardous contents, within a signed scope.</p>
+        <a class="card-link" href="#">What's included →</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img v2"><div class="glyph">✦</div><span class="photo-note">Photo slot · atmos</span></div>
+      <div class="card-body">
+        <h3>Reset &amp; restoration cleaning</h3>
+        <p>Deep reset cleaning after clearing — kitchens, baths, cabinet and appliance interiors, floors and accessible surfaces — for the next handoff.</p>
+        <a class="card-link" href="#">What's included →</a>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-img v3"><div class="glyph">❊</div><span class="photo-note">Photo slot · owned</span></div>
+      <div class="card-body">
+        <span class="pill">Endorsed</span>
+        <h3>Animal &amp; organic condition cleaning</h3>
+        <p>Heavy organic conditions and animal waste, cleaned under our organic pathogen endorsement. Cleaning only — not a decontamination or health-safety determination.</p>
+        <a class="card-link" href="#">What's included →</a>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- WHY -->
+<section><div class="shell">
+  <div class="eyebrow">Why Aseptaclean</div>
+  <h2 style="font-size:clamp(1.9rem,3.4vw,2.6rem);max-width:24ch;line-height:1.08">The difference is what happens before and after the work itself</h2>
+  <div class="why-grid">
+    <div class="why"><div class="ic">◉</div><h3>One accountable company</h3><p>Clearing, cleaning, and closeout documentation under one written scope — not coordinated across separate vendors.</p></div>
+    <div class="why"><div class="ic">✎</div><h3>Written scope, not verbal promises</h3><p>What stays, what leaves, what gets cleaned, and what is excluded — written down before work begins.</p></div>
+    <div class="why"><div class="ic">✓</div><h3>Nothing removed without approval</h3><p>Uncertain items are identified for review, never automatically discarded. Added work requires documented authorization.</p></div>
+    <div class="why"><div class="ic">▤</div><h3>Documented closeout</h3><p>Completion photographs, noted exceptions, and a Property Handoff Record showing how the approved scope was closed.</p></div>
+  </div>
+</div></section>
+
+<!-- ACCENT BAND -->
+<div class="band"><div class="shell">
+  <h2>Working against a listing, transfer, or family deadline?</h2>
+  <div class="right">
+    <span class="phone">Assessment response within one business day</span>
+    <a href="#request" class="btn" style="background:#fff;color:var(--navy-900)">Request an assessment →</a>
+  </div>
+</div></div>
+
+<!-- STAGES -->
+<section><div class="shell">
+  <div class="stage-head">
+    <div class="eyebrow">Five-stage standard</div>
+    <h2>One company stays accountable from the first decision to the final closeout</h2>
+  </div>
+  <div class="stages">
+    <div class="stage"><span class="n">01</span><div><h3>Scope</h3><p>We write down what stays, what goes, what gets cleaned, what is excluded, and what the project requires.</p></div><span class="rec">Room-by-room plan</span></div>
+    <div class="stage"><span class="n">02</span><div><h3>Protect</h3><p>Keep areas identified. Uncertain and important discovered items are separated and reported. We do not decide what mattered to your family.</p></div><span class="rec">Keep &amp; review controls</span></div>
+    <div class="stage"><span class="n">03</span><div><h3>Clear</h3><p>Approved unwanted contents are consolidated, removed, or coordinated for disposal within the signed scope.</p></div><span class="rec">Clearing status</span></div>
+    <div class="stage"><span class="n">04</span><div><h3>Reset</h3><p>The property receives the detailed cleaning included for its next handoff, including animal and organic conditions within lawful scope.</p></div><span class="rec">Cleaning status</span></div>
+    <div class="stage"><span class="n">05</span><div><h3>Verify</h3><p>You receive completion photographs, documented exceptions, and a Property Handoff Record showing how the approved scope was closed.</p></div><span class="rec">Closeout package</span></div>
+  </div>
+</div></section>
+
+<!-- RECORD -->
+<section class="record-sec" id="record"><div class="shell">
+  <div class="eyebrow">The record</div>
+  <h2 style="font-size:clamp(1.9rem,3.4vw,2.6rem);margin-bottom:34px">Property Handoff Record</h2>
+  <div class="record">
+    <div class="rtop">
+      <div><div class="t">Property Handoff Record</div><div class="m">Project HR-1042</div></div>
+      <span class="sm">Sample / not a client record</span>
+    </div>
+    <div class="rgrid">
+      <div class="rcell"><div class="k">Authorized decision-maker</div><div class="v">Owner of record — single point of approval</div></div>
+      <div class="rcell"><div class="k">Approved clearing scope</div><div class="v">Nonhazardous contents, garage &amp; storage, approved disposal</div></div>
+      <div class="rcell"><div class="k">Approved cleaning scope</div><div class="v">Kitchen &amp; bath deep clean, floors, accessible surfaces</div></div>
+      <div class="rcell"><div class="k">Excluded conditions</div><div class="v">Full exclusion list attached to signed scope</div></div>
+    </div>
+    <div class="rtable">
+      <div class="rrow"><span class="a">Entry + living</span><span class="st keep">✓ Keep</span><span class="note">Furnishings remain; included in the cleaning pass</span></div>
+      <div class="rrow"><span class="a">Kitchen</span><span class="st keep">✓ Keep</span><span class="note">Cabinet and appliance interiors detailed per scope</span></div>
+      <div class="rrow"><span class="a">Primary closet</span><span class="st rev">? Review</span><span class="note">Contents held for owner decision before clearing</span></div>
+      <div class="rrow"><span class="a">Garage</span><span class="st rem">— Remove</span><span class="note">Unwanted contents cleared; surfaces swept and detailed</span></div>
+    </div>
+  </div>
+  <p class="rcap">Project records document the work performed. They are not regulatory clearance, inspection approval, environmental certification, or a determination that a property is safe or habitable.</p>
+</div></section>
+
+
+<!-- PRICING -->
+<section><div class="shell" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(2.5rem,5vw,4rem);align-items:start" id="pricing">
+  <div>
+    <div class="eyebrow">What it costs</div>
+    <h2 style="font-size:clamp(1.9rem,3.4vw,2.6rem);line-height:1.08;margin-bottom:18px">One number, in writing, after the walkthrough.</h2>
+    <p style="color:var(--ink-600);font-size:.95rem;max-width:50ch;margin-bottom:18px">We do not quote from a photograph and we do not charge by the hour. After the walkthrough you get one number in the signed scope. It changes only by written change authorization.</p>
+    <div style="border:1px solid var(--line);border-left:3px solid var(--blue);border-radius:var(--r-sm);padding:18px 20px;background:var(--blue-ghost)">
+      <div style="font-family:var(--mono);font-size:.64rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-400);margin-bottom:6px">When remote scoping is not reliable</div>
+      <div style="font-family:var(--serif);font-weight:600;font-size:1.3rem;color:var(--navy-900)">$195 on-site assessment</div>
+      <div style="font-size:.85rem;color:var(--ink-600);margin-top:3px">Credited toward an approved project booked within 7 days.</div>
+    </div>
+  </div>
+  <div>
+    <div style="font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-400);margin-bottom:14px">Final pricing depends on</div>
+    <div style="border-top:1px solid var(--line)">
+      <div style="padding:12px 0;border-bottom:1px solid var(--line);font-size:.94rem;color:var(--ink-900)">Property size</div>
+      <div style="padding:12px 0;border-bottom:1px solid var(--line);font-size:.94rem;color:var(--ink-900)">Volume of contents</div>
+      <div style="padding:12px 0;border-bottom:1px solid var(--line);font-size:.94rem;color:var(--ink-900)">Cleaning condition</div>
+      <div style="padding:12px 0;border-bottom:1px solid var(--line);font-size:.94rem;color:var(--ink-900)">Access and stairs</div>
+      <div style="padding:12px 0;border-bottom:1px solid var(--line);font-size:.94rem;color:var(--ink-900)">Disposal requirements</div>
+      <div style="padding:12px 0;border-bottom:1px solid var(--line);font-size:.94rem;color:var(--ink-900)">Labor and deadline</div>
+    </div>
+    <p style="font-size:.8rem;color:var(--ink-400);margin-top:14px">Not a flat package price. Ask about current project minimums.</p>
+  </div>
+</div></section>
+
+<!-- FOUNDER -->
+<section class="founder"><div class="shell">
+  <div class="portrait"><span class="ph">[ Founder portrait — pending ]</span></div>
+  <div>
+    <div class="eyebrow">The operator, not a call center</div>
+    <h2>The person defining the work stays accountable for how it's carried out.</h2>
+    <p class="fl">Matthew Ruiz is directly involved in scope review, project planning, and operating oversight on every project — a controlled-process background applied to properties most companies handle with a truck and a guess.</p>
+    <div class="creds">
+      <div class="cr"><span class="k">Education</span><span class="v">B.S. Biochemistry, UC Riverside</span></div>
+      <div class="cr"><span class="k">Background</span><span class="v">Pharmaceutical manufacturing</span></div>
+      <div class="cr"><span class="k">Background</span><span class="v">Histology &amp; surgical pathology</span></div>
+      <div class="cr"><span class="k">On project</span><span class="v">Scope, planning, operating oversight</span></div>
+    </div>
+    <p class="fnote">This background reflects controlled-process discipline. It does not grant contractor, remediation, medical, environmental, or regulatory authority.</p>
+  </div>
+</div></section>
+
+<!-- FAQ -->
+<section class="faq"><div class="shell">
+  <div class="eyebrow">Before you request a plan</div>
+  <h2>Questions that affect scope, authority, and timing</h2>
+  <p class="fi">These answers describe the assessment process. The signed scope controls the actual project.</p>
+  <div class="faq-list">
+    <details><summary>Can I approve the project remotely? <span class="pm">+</span></summary><p>Yes, when access and decision authority are clear. Scope review, approvals, updates, and closeout can be handled electronically.</p></details>
+    <details><summary>Will you throw anything away without asking? <span class="pm">+</span></summary><p>No. The scope identifies keep, remove, and review areas. Uncertain items are not automatically discarded.</p></details>
+    <details><summary>Do you handle animal or organic conditions? <span class="pm">+</span></summary><p>Yes — cleaning of animal-affected and organic conditions is included under our organic pathogen endorsement, as cleaning within lawful scope. We do not make decontamination or health-safety determinations.</p></details>
+    <details><summary>What happens if a hazardous condition is discovered? <span class="pm">+</span></summary><p>Work stops on that item. We document it, tell you what we found, and refer you to the appropriate licensed specialist.</p></details>
+    <details><summary>What can change the price? <span class="pm">+</span></summary><p>Concealed conditions or customer-requested additions that materially change the work — documented before work proceeds, never as a surprise invoice.</p></details>
+    <details><summary>How quickly can the project begin? <span class="pm">+</span></summary><p>Assessment responses go out within one business day. Scheduling depends on scope, access, and the deadline.</p></details>
+  </div>
+</div></section>
+
+
+<!-- FORM -->
+<section id="request"><div class="shell" style="display:grid;grid-template-columns:1fr 1fr;gap:clamp(2.5rem,5vw,4rem);align-items:center" class="formgrid">
+  <div>
+    <div class="eyebrow">Request an assessment</div>
+    <h2 style="font-size:clamp(1.9rem,3.4vw,2.6rem);line-height:1.08;margin-bottom:16px">Start with what you know. We will help define the rest.</h2>
+    <p style="color:var(--ink-600);font-size:.95rem;max-width:48ch;margin-bottom:18px">Tell us what you are looking at, what must remain, and when the property needs to be ready. Send photos if you have them. We respond within one business day.</p>
+    <p style="font-size:.85rem;color:var(--ink-400);max-width:48ch">No vague promise that every property is the same. No pressure to authorize work before the scope is clear.</p>
+  </div>
+  <div class="panel" style="box-shadow:var(--shadow-card)">
+    <div class="panel-head"><span>Assessment request</span><span class="id">1 business day</span></div>
+    <div style="padding:26px 24px;display:grid;gap:16px">
+      <div><label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:6px">Name *</label><input type="text" style="width:100%;padding:13px 14px;border:1px solid var(--line-strong);border-radius:var(--r-sm);font-family:var(--sans);font-size:.92rem"></div>
+      <div><label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:6px">Phone *</label><input type="tel" style="width:100%;padding:13px 14px;border:1px solid var(--line-strong);border-radius:var(--r-sm);font-family:var(--sans);font-size:.92rem"><div style="font-size:.76rem;color:var(--ink-400);margin-top:5px">We call this number back — usually same business day.</div></div>
+      <div><label style="font-size:.82rem;font-weight:600;display:block;margin-bottom:6px">What are you looking at? <span style="font-weight:400;color:var(--ink-400)">(optional)</span></label><textarea rows="3" placeholder="A quick description of the property and what needs to happen." style="width:100%;padding:13px 14px;border:1px solid var(--line-strong);border-radius:var(--r-sm);font-family:var(--sans);font-size:.92rem;resize:vertical"></textarea></div>
+      <label style="display:flex;gap:10px;font-size:.8rem;color:var(--ink-600);align-items:start"><input type="checkbox" style="margin-top:3px"> I agree to be contacted about this project by phone, text, or email. I have read the <a href="#" style="color:var(--blue-deep)">Privacy Policy</a>.</label>
+      <button class="btn btn-primary" style="width:100%;justify-content:center">Request an assessment →</button>
+      <p style="font-size:.74rem;color:var(--ink-400);text-align:center">Submitting this form does not authorize work or create a service agreement.</p>
+    </div>
+  </div>
+</div></section>
+
+<!-- FINAL CTA -->
+<section class="cta"><div class="shell">
+  <div class="eyebrow">Final decision</div>
+  <h2>Start with what you know. We will help define the rest.</h2>
+  <p>Tell us what you are looking at, what must remain, and when the property needs to be ready. Send photos if you have them.</p>
+  <div class="actions">
+    <a href="#request" class="btn" style="background:#fff;color:var(--navy-900)">Request an assessment →</a>
+    <a href="#" class="btn btn-ghost-dark">Text a photo</a>
+  </div>
+  <p class="sub">Submitting a request does not authorize work or create a service agreement.</p>
+</div></section>
+
+<footer><div class="shell">
+  <div class="fgrid">
+    <div>
+      <div class="logo"><span class="mark">A</span>Asepta<span class="sept" style="color:#8fb4de">clean</span></div>
+      <p>Whole-property clearing, restoration cleaning, and documented closeout for San Jose and the South Bay.</p>
+    </div>
+    <div class="flinks"><a href="#">Request an assessment</a><a href="#">Handoff Standard</a><a href="#">FAQ</a><a href="#">About</a></div>
+    <div class="flinks"><a href="#">info@aseptaclean.com</a><a href="#">Privacy</a><a href="#">Terms</a><a href="#">Cookie Policy</a></div>
+  </div>
+  <div class="flegal">
+    Aseptaclean performs property clearing and approved cleaning within its current lawful and insured scope. Aseptaclean is not a licensed general contractor, remediation contractor, pest-control operator, appraiser, or provider of medical or legal services. Project records document the work performed; they are not regulatory clearance or a determination that a property is safe or habitable.<br>© 2026 Aseptaclean, LLC. All rights reserved.
+  </div>
+</div></footer>
+
+
+<div class="sticky-bar">
+  <a href="tel:" class="btn btn-light">Call</a>
+  <a href="#request" class="btn btn-primary">Request an assessment</a>
+</div>
+</body>
+</html>

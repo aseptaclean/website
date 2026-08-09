@@ -72,74 +72,39 @@ const currency = new Intl.NumberFormat("en-US", {
         </p>
       </div>
 
-      <div class="confidence__support">
-        <div class="confidence__block confidence__block--pricing">
-          <p class="confidence__block-label ac-type-h3">Know the starting point before you tell the whole story</p>
-          <p class="ac-type-body">
-            You should be able to decide whether this type of service is realistic
-            before spending an hour explaining the property. Photo review comes
-            first. Complex properties may require an on-site assessment before a
-            final scope and price can be issued.
+      <div class="confidence__block confidence__block--pricing">
+        <p class="confidence__block-label ac-type-h3">Know the starting point before you tell the whole story</p>
+        <p class="ac-type-body">
+          You should be able to decide whether this type of service is realistic
+          before spending an hour explaining the property. Photo review comes
+          first. Complex properties may require an on-site assessment before a
+          final scope and price can be issued.
+        </p>
+
+        <div class="pricing__figure">
+          <p class="ac-type-xs">
+            {site.offer.startingPrice !== null ? "Full Handoff Reset projects generally begin at" : "Project pricing"}
           </p>
-
-          <div class="pricing__figure">
-            <p class="ac-type-xs">Full Handoff Reset projects generally begin at</p>
-            <strong>{currency.format(site.offer.startingPrice)}</strong>
-            <small class="ac-type-sm">Not a flat package price</small>
-          </div>
-
-          <div class="pricing__drivers">
-            <p class="ac-type-xs">Final pricing depends on</p>
-            <ul>
-              {homepage.pricingDrivers.map((driver) => <li class="ac-type-body">{driver}</li>)}
-            </ul>
-          </div>
-
-          <aside class="pricing__assessment">
-            <p class="ac-type-xs">When remote scoping is not reliable</p>
-            <strong class="ac-type-h3">{currency.format(site.offer.assessmentFee)} on-site assessment</strong>
-            <span class="ac-type-sm">{site.offer.assessmentFeeTerms}</span>
-          </aside>
+          {site.offer.startingPrice !== null ? (
+            <strong class="ac-type-h3">{currency.format(site.offer.startingPrice)}</strong>
+          ) : (
+            <strong class="ac-type-h3">Ask about current project minimums</strong>
+          )}
+          <small class="ac-type-sm">Not a flat package price</small>
         </div>
 
-        <div class="confidence__block confidence__block--founder" id="about">
-          <p class="confidence__block-label ac-type-h3">The person defining the work stays accountable for how it is carried out</p>
-          <p class="ac-type-body">
-            {site.founder.name}, {site.founder.title}, is directly involved in scope
-            review, project planning, communication, and operating oversight.
-          </p>
-
-          <blockquote>
-            <p>
-              &ldquo;Difficult properties are not handled well through vague promises.
-              Before work begins, I want you to know what is included, what is
-              excluded, what happens when something unexpected is found, and what you
-              will receive when the job is closed. That is the standard I built
-              Aseptaclean around.&rdquo;
-            </p>
-            <footer>
-              <strong>{site.founder.name}</strong>
-              <span class="ac-type-sm">{site.founder.title}</span>
-            </footer>
-          </blockquote>
-
-          <div class="founder__record">
-            <p class="ac-type-xs">Relevant operating background</p>
-            <ul>
-              {homepage.founderCredentials.map((credential) => <li class="ac-type-body">{credential}</li>)}
-            </ul>
-            <small class="ac-type-sm">
-              This background does not grant contractor, remediation, medical,
-              environmental, biohazard, or regulatory authority.
-            </small>
-          </div>
-
-          {
-            site.business.insuranceStatus && (
-              <p class="confidence__insurance ac-type-sm">{site.business.insuranceStatus}</p>
-            )
-          }
+        <div class="pricing__drivers">
+          <p class="ac-type-xs">Final pricing depends on</p>
+          <ul>
+            {homepage.pricingDrivers.map((driver) => <li class="ac-type-body">{driver}</li>)}
+          </ul>
         </div>
+
+        <aside class="pricing__assessment">
+          <p class="ac-type-xs">When remote scoping is not reliable</p>
+          <strong class="ac-type-h3">{currency.format(site.offer.assessmentFee)} on-site assessment</strong>
+          <span class="ac-type-sm">{site.offer.assessmentFeeTerms}</span>
+        </aside>
       </div>
     </div>
   </div>
@@ -177,11 +142,6 @@ const currency = new Intl.NumberFormat("en-US", {
 
   .confidence__block > p.ac-type-body {
     margin-top: var(--ac-space-3);
-  }
-
-  .confidence__support {
-    display: grid;
-    gap: var(--ac-space-8);
   }
 
   /* Scope block */
@@ -309,11 +269,6 @@ const currency = new Intl.NumberFormat("en-US", {
     display: block;
     margin-top: var(--ac-space-2);
     color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-display);
-    font-weight: 520;
-    font-size: clamp(4rem, 12vw, 6.5rem);
-    letter-spacing: -0.065em;
-    line-height: 0.95;
   }
 
   .pricing__figure small {
@@ -378,90 +333,20 @@ const currency = new Intl.NumberFormat("en-US", {
     color: var(--ac-color-ink-500);
   }
 
-  /* Founder block */
-  .confidence__block--founder blockquote {
-    position: relative;
-    margin: var(--ac-space-6) 0 0;
-    border-top: 2px solid var(--ac-color-navy-900);
-    padding-top: var(--ac-space-6);
-  }
-
-  .confidence__block--founder blockquote > p {
-    max-width: none;
-    margin: 0;
-    color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-lead);
-    font-weight: 400;
-    line-height: 1.45;
-  }
-
-  .confidence__block--founder blockquote footer {
-    display: grid;
-    margin-top: var(--ac-space-5);
-  }
-
-  .confidence__block--founder blockquote strong {
-    color: var(--ac-color-navy-900);
-  }
-
-  .founder__record {
-    margin-top: var(--ac-space-6);
-    border: 1px solid var(--ac-color-steel-300);
-    padding: var(--ac-space-5);
-    background: var(--ac-color-paper);
-  }
-
-  .founder__record > p {
-    margin: 0;
-    color: var(--ac-color-navy-800);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .founder__record ul {
-    margin: var(--ac-space-4) 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .founder__record li {
-    max-width: none;
-    border-top: 1px solid var(--ac-color-rule);
-    padding-block: var(--ac-space-3);
-  }
-
-  .founder__record small {
-    display: block;
-    margin-top: var(--ac-space-4);
-    border-left: 2px solid var(--ac-color-blue-500);
-    padding-left: var(--ac-space-3);
-    color: var(--ac-color-ink-500);
-    line-height: 1.5;
-  }
-
-  .confidence__insurance {
-    margin-top: var(--ac-space-4);
-    color: var(--ac-color-ink-500);
-  }
-
   @media (min-width: 70rem) {
     /*
-      The assurance ledger (scope + assurance list) runs roughly 3x longer
-      than pricing or founder content. Forcing it into a third equal-height
-      column stretches the row to the ledger's height and leaves the shorter
-      columns trailing in near-empty space (audit item 12). It gets the
-      width its content needs instead; pricing and founder pair up as a
-      shorter strip below it, sized to their own (much shorter) content.
+      The assurance ledger (scope + assurance list) runs roughly 3x longer than
+      the pricing block. A single grid row sizes to its tallest cell regardless
+      of column width (audit item 12, docs/05-DECISIONS-LOG.md Session 8) — so
+      pricing stays a standalone capped-width block on its own row below the
+      ledger rather than a same-row column stretched to the ledger's height.
     */
     .confidence__block--scope {
       max-width: 64%;
     }
 
-    .confidence__support {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: clamp(2.5rem, 5vw, 5rem);
+    .confidence__block--pricing {
+      max-width: 28rem;
     }
 
     .confidence__scope-columns {

@@ -1,109 +1,88 @@
 ---
+// docs/aseptaclean-FINAL-v2.html .cta section — ported verbatim (05-DECISIONS-LOG.md).
 import { site } from "@data/site";
-import QuickHandoffForm from "@components/QuickHandoffForm.astro";
 
+const smsHref = site.business.smsUri;
 const phoneHref = site.business.phoneUri;
 ---
 
-<section class="final-cta" aria-labelledby="final-cta-title">
-  <div class="ac-measure-intimate final-cta__layout">
+<section class="cta" aria-labelledby="final-cta-title">
+  <div class="ac-measure-wide">
     <p class="ac-eyebrow">Final decision</p>
-    <h2 id="final-cta-title" class="ac-type-h2">
-      Start with what you know. We will help define the <span class="ac-mark">rest.</span>
-    </h2>
-    <p class="ac-type-lead">
-      Tell us what you are looking at, what must remain, and when the
-      property needs to be ready. Send photos if you have them.
-    </p>
-    <p class="final-cta__body ac-type-body">
-      We will review the situation, tell you whether it fits, and give you a
-      clear next step. No vague promise that every property is the same. No
-      pressure to authorize work before the scope is clear.
-    </p>
-    <p class="final-cta__closing ac-type-body">
-      <strong>The goal is not simply an empty room. It is a property you can
-      open, enter, and move forward with.</strong>
-    </p>
-
-    <div class="final-cta__form-block">
-      <QuickHandoffForm formId="final-quick-form" entryRoute="/#final-cta" />
-    </div>
-
-    <div class="final-cta__actions">
+    <h2 id="final-cta-title">Start with what you know. We will help define the rest.</h2>
+    <p class="cta__body">Tell us what you are looking at, what must remain, and when the property needs to be ready. Send photos if you have them.</p>
+    <div class="cta__actions">
+      <a href="#request" class="btn btn-on-light">Request an assessment →</a>
       {
-        phoneHref && (
-          <a class="final-cta__phone" href={phoneHref}>
-            Call {site.business.phone} and tell us what you are looking at
-          </a>
+        smsHref ? (
+          <a href={smsHref} class="btn btn-ghost-dark">Text a photo</a>
+        ) : (
+          <a href={phoneHref || "#request"} class="btn btn-ghost-dark">Text a photo</a>
         )
       }
-      <small class="ac-type-sm">Submitting this form does not authorize work or create a service agreement.</small>
     </div>
+    <p class="cta__sub">Submitting a request does not authorize work or create a service agreement.</p>
   </div>
 </section>
 
 <style>
-  .final-cta {
-    background: var(--ac-color-navy-900);
-    color: var(--ac-color-warm-white);
-    padding-top: var(--ac-rhythm-open);
-    padding-bottom: 0;
+  /* docs/aseptaclean-FINAL-v2.html .cta — ported verbatim */
+  .cta {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(900px 400px at 15% -20%, rgba(74, 127, 193, 0.3), transparent 60%),
+      linear-gradient(160deg, var(--ac-color-navy-900), var(--ac-color-navy-950));
+    color: #fff;
+    text-align: center;
   }
 
-  .final-cta__layout {
-    display: grid;
-    gap: var(--ac-space-5);
+  .cta::before {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+    background-size: 26px 26px;
+    content: "";
   }
 
-  h2 {
-    color: var(--ac-color-paper);
+  .cta .ac-measure-wide {
+    position: relative;
   }
 
-  .final-cta__body {
-    margin: 0;
-    color: var(--ac-color-steel-on-navy);
+  .cta :global(.ac-eyebrow) {
+    justify-content: center;
+    color: #8fb4de;
   }
 
-  /* This section's own .ac-eyebrow ("Final decision") sits on the navy-900
-     background, not the light surface the shared class assumes. */
-  .final-cta :global(.ac-eyebrow) {
-    color: var(--ac-color-steel-on-navy);
+  .cta :global(.ac-eyebrow)::before {
+    background: #8fb4de;
   }
 
-  .final-cta__closing {
-    margin: 0;
-    color: var(--ac-color-paper);
+  .cta h2 {
+    max-width: 22ch;
+    margin: 0 auto 18px;
+    color: #fff;
+    font-size: clamp(2rem, 3.8vw, 3rem);
+    line-height: 1.08;
   }
 
-  .final-cta__form-block {
-    max-width: 30rem;
+  .cta__body {
+    max-width: 50ch;
+    margin: 0 auto 30px;
+    color: #b9c9dd;
+    font-size: 1rem;
   }
 
-  /* QuickHandoffForm defaults assume a light surface; override for this
-     section's dark navy background (docs/07 §7 requires the identical form,
-     not a re-themed one, so the override lives here rather than forking it). */
-  .final-cta__form-block :global(.quick-form) {
-    --quick-form-label-color: var(--ac-color-paper);
-    --quick-form-muted-color: var(--ac-color-steel-on-navy);
-    --quick-form-link-color: var(--ac-color-paper);
+  .cta__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
   }
 
-  .final-cta__actions {
-    display: grid;
-    align-content: start;
-    gap: var(--ac-space-4);
-    margin-top: var(--ac-space-6);
-  }
-
-  .final-cta__phone {
-    min-height: 3rem;
-    align-items: center;
-    color: var(--ac-color-paper);
-    font-weight: 700;
-  }
-
-  .final-cta__actions small {
-    color: var(--ac-color-steel-on-navy);
-    line-height: 1.5;
+  .cta__sub {
+    margin-top: 22px;
+    color: #7d92ad;
+    font-size: 0.8rem;
   }
 </style>

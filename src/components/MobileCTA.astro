@@ -1,27 +1,22 @@
 ---
+// docs/aseptaclean-FINAL-v2.html .sticky-bar — ported verbatim (05-DECISIONS-LOG.md).
 import { site } from "@data/site";
 
 const phoneHref = site.business.phoneUri;
 ---
 
-<aside class="mobile-cta" aria-label="Request an assessment" hidden>
-  {
-    phoneHref && (
-      <a class="mobile-cta__tel" href={phoneHref} aria-label={`Call ${site.business.phone}`}>
-        Call {site.business.phone}
-      </a>
-    )
-  }
-  <a class="button mobile-cta__button" href="/request-assessment/">{site.offer.primaryCta}</a>
+<aside class="sticky-bar" aria-label="Request an assessment" hidden>
+  <a class={`btn btn-light${phoneHref ? "" : " sticky-bar__call--disabled"}`} href={phoneHref || "#request"} aria-label={phoneHref ? `Call ${site.business.phone}` : undefined}>Call</a>
+  <a class="btn btn-primary" href="#request">Request an assessment</a>
 </aside>
 
 <script>
-  const stickyCta = document.querySelector<HTMLElement>(".mobile-cta");
-  const heroFormBlock = document.querySelector<HTMLElement>(".hero__form-block");
-  const finalCta = document.querySelector<HTMLElement>(".final-cta");
+  const stickyCta = document.querySelector<HTMLElement>(".sticky-bar");
+  const heroActions = document.querySelector<HTMLElement>(".hero .actions");
+  const finalCta = document.querySelector<HTMLElement>(".cta");
   const footer = document.querySelector<HTMLElement>(".site-footer");
   const scrollThreshold = 400;
-  let heroFormVisible = Boolean(heroFormBlock);
+  let heroActionsVisible = Boolean(heroActions);
   let finalCtaVisible = false;
   let footerVisible = false;
   let pastScrollThreshold = window.scrollY > scrollThreshold;
@@ -29,20 +24,20 @@ const phoneHref = site.business.phoneUri;
   const updateStickyCta = () => {
     if (!stickyCta) return;
     stickyCta.hidden =
-      !pastScrollThreshold || heroFormVisible || finalCtaVisible || footerVisible;
+      !pastScrollThreshold || heroActionsVisible || finalCtaVisible || footerVisible;
   };
 
   if (stickyCta) {
-    if (heroFormBlock) {
+    if (heroActions) {
       const heroObserver = new IntersectionObserver(
         ([entry]) => {
           if (!entry) return;
-          heroFormVisible = entry.isIntersecting;
+          heroActionsVisible = entry.isIntersecting;
           updateStickyCta();
         },
         { threshold: 0.15 }
       );
-      heroObserver.observe(heroFormBlock);
+      heroObserver.observe(heroActions);
     }
 
     if (footer) {
@@ -83,42 +78,37 @@ const phoneHref = site.business.phoneUri;
 </script>
 
 <style>
-  .mobile-cta {
+  .sticky-bar {
     position: fixed;
-    z-index: 18;
+    z-index: 60;
     inset: auto 0 0;
     display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: var(--ac-space-3);
-    min-height: var(--ac-sticky-cta-height);
-    border-top: 1px solid var(--ac-color-rule);
-    padding: var(--ac-space-3) var(--ac-gutter);
-    padding-bottom: max(var(--ac-space-3), env(safe-area-inset-bottom));
-    background: color-mix(in srgb, var(--ac-color-paper) 97%, transparent);
+    gap: 10px;
+    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(255, 255, 255, 0.96);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--ac-color-line);
+    box-shadow: 0 -8px 24px -12px rgba(16, 35, 63, 0.2);
   }
 
-  .mobile-cta__tel {
-    flex-shrink: 0;
-    color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-xs);
-    font-weight: 700;
-    text-decoration: none;
-    white-space: nowrap;
-  }
-
-  .mobile-cta__button {
+  .sticky-bar .btn {
     flex: 1;
-    max-width: 20rem;
+    justify-content: center;
+    padding: 13px 10px;
+    font-size: 0.86rem;
   }
 
-  .mobile-cta[hidden] {
+  .sticky-bar__call--disabled {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  .sticky-bar[hidden] {
     display: none;
   }
 
   @media (min-width: 48rem) {
-    .mobile-cta {
+    .sticky-bar {
       display: none;
     }
   }

@@ -1,0 +1,109 @@
+---
+// docs/aseptaclean-FINAL-v2.html WHY section — ported verbatim, including copy
+// (05-DECISIONS-LOG.md supersedes docs/06-APPROVED-HOMEPAGE-COPY.md for this section).
+const icons: Record<string, string> = {
+  "One accountable company": "M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6l7-3z M9 12l2 2 4-4",
+  "Written scope, not verbal promises":
+    "M7 3h7l4 4v14H7z M14 3v4h4 M9 12h6 M9 15h6 M9 9h2",
+  "Nothing removed without approval": "M12 21a9 9 0 100-18 9 9 0 000 18z M8 12l3 3 5-6",
+  "Documented closeout": "M4 8h3l2-2h6l2 2h3v11H4z M12 13.5m-3.5 0a3.5 3.5 0 107 0 3.5 3.5 0 10-7 0"
+};
+
+const items = [
+  {
+    title: "One accountable company",
+    detail:
+      "Clearing, cleaning, and closeout documentation under one written scope — not coordinated across separate vendors."
+  },
+  {
+    title: "Written scope, not verbal promises",
+    detail:
+      "What stays, what leaves, what gets cleaned, and what is excluded — written down before work begins."
+  },
+  {
+    title: "Nothing removed without approval",
+    detail:
+      "Uncertain items are identified for review, never automatically discarded. Added work requires documented authorization."
+  },
+  {
+    title: "Documented closeout",
+    detail:
+      "Completion photographs, noted exceptions, and a Property Handoff Record showing how the approved scope was closed."
+  }
+] as const;
+---
+
+<section class="why-aseptaclean" aria-labelledby="why-aseptaclean-title">
+  <div class="ac-measure-wide">
+    <p class="ac-eyebrow">Why Aseptaclean</p>
+    <h2 id="why-aseptaclean-title" class="ac-type-h2">The difference is what happens before and after the work itself</h2>
+
+    <div class="why-grid">
+      {
+        items.map((item) => (
+          <div class="why">
+            <span class="ac-icon-chip" aria-hidden="true">
+              <svg viewBox="0 0 24 24">
+                <path d={icons[item.title]} />
+              </svg>
+            </span>
+            <h3 class="ac-type-h3">{item.title}</h3>
+            <p class="ac-type-body">{item.detail}</p>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  /* docs/aseptaclean-FINAL-v2.html .why-grid / .why — ported verbatim */
+  .why-aseptaclean {
+    background: var(--ac-color-paper);
+  }
+
+  h2 {
+    max-width: 24ch;
+    margin-top: var(--ac-space-3);
+  }
+
+  .why-grid {
+    display: grid;
+    gap: var(--ac-s3);
+    margin-top: var(--ac-s5);
+  }
+
+  .why {
+    border: 1px solid var(--ac-color-line);
+    border-radius: var(--ac-r);
+    background: #fff;
+    padding: 28px 24px;
+    transition: 0.2s;
+  }
+
+  .why:hover {
+    border-color: var(--ac-color-blue-500);
+    box-shadow: var(--ac-shadow-card);
+  }
+
+  .why h3 {
+    margin-bottom: 8px;
+  }
+
+  .why p {
+    max-width: none;
+    color: var(--ac-color-ink-600);
+  }
+
+  @media (min-width: 56.25rem) {
+    .why-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (min-width: 60rem) {
+    .why-grid {
+      grid-template-columns: repeat(4, 1fr);
+    }
+  }
+</style>

@@ -1,111 +1,53 @@
 ---
+// docs/aseptaclean-FINAL-v2.html RECORD section — ported verbatim (05-DECISIONS-LOG.md).
 import { homepage, legal } from "@data/site";
 
 const record = homepage.sampleRecord;
+
+const statusMap: Record<string, { label: string; className: string }> = {
+  Keep: { label: "✓ Keep", className: "keep" },
+  Review: { label: "? Review", className: "rev" },
+  Remove: { label: "— Remove", className: "rem" }
+};
 ---
 
-<section class="record-movement" id="the-record" aria-labelledby="record-title">
-  <div class="ac-eyebrow-wrap ac-measure-wide">
-    <p class="ac-eyebrow">The Record</p>
-    <h2 id="record-title" class="ac-type-h2">Property Handoff Record</h2>
-  </div>
+<section class="record-sec" id="record" aria-labelledby="record-title">
+  <div class="ac-measure-wide">
+    <p class="ac-eyebrow">The record</p>
+    <h2 id="record-title" class="record-sec__title">Property Handoff Record</h2>
 
-  <div class="record-stack">
-    <figure class="record" data-reveal>
-      <div class="record__masthead">
+    <div class="record" data-reveal>
+      <div class="rtop">
         <div>
-          <p class="record__sample ac-type-xs">Sample / Not a client record</p>
-          <p class="record__title ac-type-h3">Property Handoff Record</p>
-          <p class="record__project ac-type-xs">Project {record.projectId}</p>
+          <div class="rtop__title">Property Handoff Record</div>
+          <div class="rtop__meta">Project {record.projectId}</div>
         </div>
-        <div class="record__masthead-right">
-          <span class="record__stamp ac-type-xs" aria-hidden="true">Sample</span>
-          <span class="record__mark" aria-hidden="true">A</span>
-        </div>
+        <span class="rtop__sample">Sample / not a client record</span>
       </div>
 
-      <div class="record__panel">
-        <span class="record__tab ac-type-xs">Scope reference</span>
-        <dl class="record__meta">
-          <div>
-            <dt class="ac-type-xs">Authorized decision-maker</dt>
-            <dd class="ac-type-sm">{record.decisionMaker}</dd>
-          </div>
-          <div>
-            <dt class="ac-type-xs">Approved clearing scope</dt>
-            <dd class="ac-type-sm">{record.clearingScope}</dd>
-          </div>
-          <div>
-            <dt class="ac-type-xs">Approved cleaning scope</dt>
-            <dd class="ac-type-sm">{record.cleaningScope}</dd>
-          </div>
-          <div>
-            <dt class="ac-type-xs">Excluded conditions</dt>
-            <dd class="ac-type-sm">{record.excludedConditions}</dd>
-          </div>
-        </dl>
+      <div class="rgrid">
+        <div class="rcell"><div class="rcell__k">Authorized decision-maker</div><div class="rcell__v">{record.decisionMaker}</div></div>
+        <div class="rcell"><div class="rcell__k">Approved clearing scope</div><div class="rcell__v">{record.clearingScope}</div></div>
+        <div class="rcell"><div class="rcell__k">Approved cleaning scope</div><div class="rcell__v">{record.cleaningScope}</div></div>
+        <div class="rcell"><div class="rcell__k">Excluded conditions</div><div class="rcell__v">{record.excludedConditions}</div></div>
       </div>
 
-      <div class="record__panel">
-        <span class="record__tab ac-type-xs">Room disposition</span>
-        <div class="record__rooms" role="table" aria-label="Sample room-by-room disposition record">
-          <div class="record__row record__row--head" role="row">
-            <span role="columnheader" class="ac-type-xs">Area</span>
-            <span role="columnheader" class="ac-type-xs">Status</span>
-            <span role="columnheader" class="ac-type-xs">Note</span>
-          </div>
-          {
-            record.rooms.map((room) => (
-              <div class="record__row" role="row">
-                <strong role="rowheader" class="ac-type-sm">
-                  {room.area}
-                </strong>
-                <span role="cell" data-label="Status">
-                  <span class={`record__status record__status--${room.disposition.toLowerCase()}`}>
-                    {room.disposition}
-                  </span>
-                </span>
-                <span role="cell" data-label="Note" class="ac-type-sm">
-                  {room.note}
-                </span>
+      <div class="rtable">
+        {
+          record.rooms.map((room) => {
+            const status = statusMap[room.disposition] ?? { label: room.disposition, className: "rem" };
+            return (
+              <div class="rrow">
+                <span class="rrow__a">{room.area}</span>
+                <span class={`rrow__st rrow__st--${status.className}`}>{status.label}</span>
+                <span class="rrow__note">{room.note}</span>
               </div>
-            ))
-          }
-        </div>
+            );
+          })
+        }
       </div>
-
-      <div class="record__panel record__panel--closeout">
-        <span class="record__tab ac-type-xs">Closeout reference</span>
-        <div class="record__closeout">
-          <div>
-            <p class="ac-type-xs">Change authorization</p>
-            <strong class="ac-type-sm">{record.changeAuthorization}</strong>
-          </div>
-          <div>
-            <p class="ac-type-xs">Discovered-item log</p>
-            <strong class="ac-type-sm">{record.discoveredItemLog}</strong>
-          </div>
-          <div>
-            <p class="ac-type-xs">Exception status</p>
-            <strong class="ac-type-sm">{record.exceptionStatus}</strong>
-          </div>
-          <div>
-            <p class="ac-type-xs">Completion photograph index</p>
-            <strong class="ac-type-sm">{record.photographIndex}</strong>
-          </div>
-          <div>
-            <p class="ac-type-xs">Final review status</p>
-            <strong class="ac-type-sm">{record.finalReviewStatus}</strong>
-          </div>
-          <div>
-            <p class="ac-type-xs">Closeout date</p>
-            <strong class="ac-type-sm">{record.closeoutDate}</strong>
-          </div>
-        </div>
-      </div>
-
-      <figcaption class="ac-type-sm">{legal.documentationDisclaimer}</figcaption>
-    </figure>
+    </div>
+    <p class="record-sec__cap">{legal.documentationDisclaimer}</p>
   </div>
 </section>
 
@@ -136,62 +78,21 @@ const record = homepage.sampleRecord;
 </script>
 
 <style>
-  .record-movement {
-    background: var(--ac-color-steel-100);
-    overflow-x: hidden;
-    /* The site's one dramatic moment (docs/11 §7) — vast on both sides is an
-       explicit, documented exception to the one-sided rhythm rule every other
-       section follows. */
-    padding-block: var(--ac-rhythm-vast);
+  /* docs/aseptaclean-FINAL-v2.html .record-sec / .record / .rtop / .rgrid / .rtable — ported verbatim */
+  .record-sec {
+    background: var(--ac-color-warm-white);
   }
 
-  .ac-eyebrow-wrap {
-    display: grid;
-    gap: var(--ac-space-4);
-    margin-bottom: var(--ac-space-8);
-  }
-
-  /* Layered documents — docs/12 Session 6 "permitted" list. Two paper edges
-     offset behind the primary sheet, confined by the section's overflow-x:
-     hidden above so the offset never introduces horizontal scroll. */
-  .record-stack {
-    position: relative;
-    width: min(100% - (2 * var(--ac-gutter)), 1320px);
-    margin-inline: auto;
-  }
-
-  .record-stack::before,
-  .record-stack::after {
-    position: absolute;
-    z-index: 0;
-    border: 1px solid var(--ac-color-steel-300);
-    background: var(--ac-color-paper);
-    content: "";
-  }
-
-  .record-stack::before {
-    inset: 10px -10px -10px 10px;
-    opacity: 0.7;
-  }
-
-  .record-stack::after {
-    inset: 20px -20px -20px 20px;
-    opacity: 0.4;
+  .record-sec__title {
+    margin-bottom: 34px;
+    font-size: clamp(1.9rem, 3.4vw, 2.6rem);
   }
 
   .record {
-    position: relative;
-    z-index: 1;
-    margin: 0;
-    border: 1px solid var(--ac-color-steel-300);
-    padding: clamp(1rem, 3vw, 2rem);
-    background: var(--ac-color-paper);
-    box-shadow: 0 1rem 2.5rem rgb(18 40 64 / 0.12);
-    color: var(--ac-color-ink-700);
-    /* --record-font-mono: docs/11 §10.2 — monospace for field labels and
-       status metadata only. Reading content (notes, values) stays sans. */
-    --record-font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Roboto Mono", Menlo, Consolas,
-      monospace;
+    overflow: hidden;
+    border-radius: var(--ac-r);
+    background: #fff;
+    box-shadow: var(--ac-shadow-pop);
   }
 
   .record--pre-reveal {
@@ -207,246 +108,147 @@ const record = homepage.sampleRecord;
       transform 640ms ease;
   }
 
-  .record::before {
-    position: absolute;
-    inset: 0.5rem;
-    border: 1px solid rgb(168 184 200 / 0.45);
-    content: "";
-    pointer-events: none;
-  }
-
-  .record__masthead,
-  .record__panel,
-  figcaption {
-    position: relative;
-    z-index: 1;
-  }
-
-  .record :where(dt, .record__row--head span, .record__tab, .record__sample, .record__project,
-      .record__stamp, .record__status) {
-    font-family: var(--record-font-mono);
-  }
-
-  .record__masthead {
+  .rtop {
     display: flex;
+    flex-wrap: wrap;
     align-items: flex-start;
     justify-content: space-between;
-    gap: var(--ac-space-4);
+    gap: 12px;
     border-bottom: 2px solid var(--ac-color-navy-900);
-    padding-bottom: var(--ac-space-5);
+    padding: 24px 28px;
   }
 
-  .record__sample,
-  .record__project,
-  dt,
-  .record__row--head span,
-  .record__closeout p {
-    margin: 0;
-    color: var(--ac-color-ink-500);
-    font-weight: 700;
+  .rtop__title {
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-display);
+    font-size: 1.45rem;
+    font-weight: 600;
+  }
+
+  .rtop__meta {
+    margin-top: 3px;
+    color: var(--ac-color-ink-400);
+    font-family: var(--ac-font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
   }
 
-  .record__sample {
-    color: var(--ac-color-error);
+  .rtop__sample {
+    border: 1px solid #e0b6b0;
+    border-radius: 5px;
+    background: #fbeeec;
+    padding: 5px 9px;
+    color: #a3392f;
+    font-family: var(--ac-font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
   }
 
-  .record__project {
-    margin-top: var(--ac-space-2);
+  .rgrid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
   }
 
-  .record__title {
-    margin: var(--ac-space-2) 0 0;
-    letter-spacing: -0.02em;
+  .rcell {
+    border-right: 1px solid var(--ac-color-line);
+    border-bottom: 1px solid var(--ac-color-line);
+    padding: 20px 22px;
   }
 
-  .record__masthead-right {
-    display: flex;
-    flex: 0 0 auto;
-    align-items: flex-start;
-    gap: var(--ac-space-3);
+  .rcell__k {
+    margin-bottom: 7px;
+    color: var(--ac-color-ink-400);
+    font-family: var(--ac-font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
-  .record__stamp {
-    border: 1px solid var(--ac-color-error);
-    padding: 0.3rem 0.55rem;
-    color: var(--ac-color-error);
-    font-weight: 700;
-    letter-spacing: 0.1em;
+  .rcell__v {
+    color: var(--ac-color-navy-900);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .rtable {
+    padding: 8px 28px 20px;
+  }
+
+  .rrow {
+    display: grid;
+    grid-template-columns: 1fr auto 1.5fr;
+    align-items: center;
+    gap: 16px;
+    border-bottom: 1px solid var(--ac-color-line);
+    padding: 13px 0;
+    font-size: 0.9rem;
+  }
+
+  .rrow:last-child {
+    border-bottom: 0;
+  }
+
+  .rrow__a {
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+  }
+
+  .rrow__note {
+    color: var(--ac-color-ink-600);
+    font-size: 0.85rem;
+  }
+
+  .rrow__st {
+    border: 1px solid;
+    border-radius: 5px;
+    padding: 4px 9px;
+    font-family: var(--ac-font-mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
     white-space: nowrap;
   }
 
-  .record__mark {
-    display: grid;
-    width: 2.5rem;
-    height: 2.5rem;
-    flex: 0 0 auto;
-    place-items: center;
-    border: 1px solid var(--ac-color-navy-900);
-    margin: 0;
-    color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-sans);
-    font-weight: 700;
+  .rrow__st--keep {
+    border-color: #bde0cc;
+    background: var(--ac-color-clear-pale);
+    color: var(--ac-color-clear);
   }
 
-  .record__panel {
-    margin-top: var(--ac-space-6);
+  .rrow__st--rev {
+    border-color: #ecd6a8;
+    background: var(--ac-color-review-pale);
+    color: var(--ac-color-review);
   }
 
-  /* Tabs — docs/12 Session 6 "permitted" list. An inset folder-tab header
-     connected to each panel's top rule, not a protruding flag (avoids any
-     overflow risk and reads as paper hierarchy rather than app UI). */
-  .record__tab {
-    display: inline-block;
-    margin-bottom: -1px;
-    border: 1px solid var(--ac-color-steel-300);
-    border-bottom: none;
-    padding: 0.25rem 0.65rem 0.4rem;
-    background: var(--ac-color-warm-white);
-    color: var(--ac-color-ink-500);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+  .rrow__st--rem {
+    border-color: var(--ac-color-line-strong);
+    background: var(--ac-color-bg-soft);
+    color: var(--ac-color-ink-600);
   }
 
-  .record__meta {
-    display: grid;
-    gap: var(--ac-space-3);
-    margin: 0;
-    border-top: 1px solid var(--ac-color-navy-900);
-    border-bottom: 1px solid var(--ac-color-rule);
-    padding: var(--ac-space-4);
+  .record-sec__cap {
+    max-width: 72ch;
+    margin-top: 18px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.78rem;
   }
 
-  .record__meta div {
-    min-width: 0;
-  }
-
-  .record__meta dd {
-    margin: var(--ac-space-1) 0 0;
-    font-weight: 700;
-  }
-
-  .record__rooms {
-    border-top: 1px solid var(--ac-color-navy-900);
-  }
-
-  .record__row {
-    display: grid;
-    gap: var(--ac-space-2);
-    border-bottom: 1px solid var(--ac-color-rule);
-    padding: var(--ac-space-4);
-  }
-
-  .record__row--head {
-    display: none;
-  }
-
-  .record__row strong {
-    color: var(--ac-color-navy-900);
-  }
-
-  .record__row > span {
-    display: grid;
-    grid-template-columns: 6rem 1fr;
-    gap: var(--ac-space-2);
-  }
-
-  .record__row > span::before {
-    color: var(--ac-color-ink-500);
-    content: attr(data-label);
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .record__status {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.35em;
-    border: 1px solid var(--ac-color-steel-300);
-    padding: 0.15rem 0.5rem;
-    color: var(--ac-color-navy-800);
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .record__status--keep::before {
-    content: "✓";
-  }
-
-  .record__status--remove::before {
-    content: "–";
-  }
-
-  .record__status--review::before {
-    content: "?";
-  }
-
-  .record__closeout {
-    display: grid;
-    gap: var(--ac-space-4);
-    border-top: 1px solid var(--ac-color-navy-900);
-    border-left: 3px solid var(--ac-color-blue-500);
-    padding: var(--ac-space-4);
-    background: var(--ac-color-warm-white);
-  }
-
-  .record__closeout strong {
-    display: block;
-    margin-top: var(--ac-space-1);
-    color: var(--ac-color-navy-900);
-  }
-
-  figcaption {
-    margin-top: var(--ac-space-5);
-    color: var(--ac-color-ink-500);
-    line-height: 1.5;
-  }
-
-  @media (min-width: 34rem) {
-    .record__meta {
-      grid-template-columns: repeat(2, 1fr);
-    }
-
-    .record__row {
-      grid-template-columns: minmax(7rem, 1fr) minmax(6rem, 0.6fr) minmax(0, 1.6fr);
-      align-items: center;
-      gap: var(--ac-space-3);
-      padding-block: var(--ac-space-3);
-    }
-
-    .record__row--head {
-      display: grid;
-    }
-
-    .record__row > span {
-      display: block;
-    }
-
-    .record__row > span::before {
-      display: none;
-    }
-
-    .record__closeout {
-      grid-template-columns: repeat(2, 1fr);
+  @media (max-width: 62.5rem) {
+    .rgrid {
+      grid-template-columns: 1fr 1fr;
     }
   }
 
-  @media (min-width: 60rem) {
-    .record__meta {
-      grid-template-columns: repeat(4, 1fr);
+  @media (max-width: 62.5rem) {
+    .rrow {
+      grid-template-columns: 1fr auto;
     }
 
-    .record__meta div + div {
-      border-left: 1px solid var(--ac-color-rule);
-      padding-left: var(--ac-space-4);
-    }
-
-    .record__closeout {
-      grid-template-columns: repeat(3, 1fr);
+    .rrow__note {
+      grid-column: 1 / -1;
+      padding-top: 2px;
     }
   }
 </style>

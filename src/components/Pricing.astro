@@ -1,0 +1,121 @@
+---
+// docs/aseptaclean-FINAL-v2.html PRICING section — ported verbatim (05-DECISIONS-LOG.md).
+// docs/18-VISUAL-DIRECTION.md §7 (retained): no pricing figure ships unverified.
+import { homepage, site } from "@data/site";
+
+const currency = new Intl.NumberFormat("en-US", {
+  style: "currency",
+  currency: "USD",
+  maximumFractionDigits: 0
+});
+const assessmentFeeDisplay = Number.isFinite(site.offer.assessmentFee)
+  ? currency.format(site.offer.assessmentFee)
+  : "[OWNER DECISION REQUIRED]";
+---
+
+<section id="pricing" aria-labelledby="pricing-title">
+  <div class="ac-measure-wide pricing__shell">
+    <div>
+      <p class="ac-eyebrow">What it costs</p>
+      <h2 id="pricing-title" class="pricing__title">One number, in writing, after the walkthrough.</h2>
+      <p class="pricing__intro">We do not quote from a photograph and we do not charge by the hour. After the walkthrough you get one number in the signed scope. It changes only by written change authorization.</p>
+      <div class="pricing__assessment">
+        <div class="pricing__assessment-label">When remote scoping is not reliable</div>
+        <div class="pricing__assessment-fee">{assessmentFeeDisplay} on-site assessment</div>
+        <div class="pricing__assessment-note">{site.offer.assessmentFeeTerms}</div>
+      </div>
+    </div>
+    <div>
+      <p class="pricing__drivers-label">Final pricing depends on</p>
+      <div class="pricing__drivers">
+        {homepage.pricingDrivers.map((driver) => <div class="pricing__driver">{driver}</div>)}
+      </div>
+      <p class="pricing__disclaimer">Not a flat package price. Ask about current project minimums.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* docs/aseptaclean-FINAL-v2.html #pricing — ported verbatim */
+  .pricing__shell {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .pricing__title {
+    margin-bottom: 18px;
+    font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+    line-height: 1.08;
+  }
+
+  .pricing__intro {
+    max-width: 50ch;
+    margin-bottom: 18px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.95rem;
+  }
+
+  .pricing__assessment {
+    border: 1px solid var(--ac-color-line);
+    border-left: 3px solid var(--ac-color-blue-500);
+    border-radius: var(--ac-r-sm);
+    background: var(--ac-color-blue-ghost);
+    padding: 18px 20px;
+  }
+
+  .pricing__assessment-label {
+    margin-bottom: 6px;
+    color: var(--ac-color-ink-400);
+    font-family: var(--ac-font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .pricing__assessment-fee {
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+  }
+
+  .pricing__assessment-note {
+    margin-top: 3px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.85rem;
+  }
+
+  .pricing__drivers-label {
+    margin-bottom: 14px;
+    color: var(--ac-color-ink-400);
+    font-family: var(--ac-font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .pricing__drivers {
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .pricing__driver {
+    border-bottom: 1px solid var(--ac-color-line);
+    padding: 12px 0;
+    color: var(--ac-color-ink-900);
+    font-size: 0.94rem;
+  }
+
+  .pricing__disclaimer {
+    margin-top: 14px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.8rem;
+  }
+
+  @media (min-width: 51.25rem) {
+    .pricing__shell {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

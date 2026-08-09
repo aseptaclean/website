@@ -1,0 +1,93 @@
+---
+// docs/aseptaclean-FINAL-v2.html SERVICES section — ported verbatim (05-DECISIONS-LOG.md).
+// docs/18-VISUAL-DIRECTION.md §6.1 (retained): three cards only at launch.
+import Card from "@components/Card.astro";
+import { homepage } from "@data/site";
+
+const gradients: Record<string, "v1" | "v2" | "v3"> = {
+  "Complex property clearing": "v1",
+  "Reset & restoration cleaning": "v2",
+  "Animal & organic condition cleaning": "v3"
+};
+
+const glyphs: Record<string, string> = {
+  "Complex property clearing": "▣",
+  "Reset & restoration cleaning": "✦",
+  "Animal & organic condition cleaning": "❊"
+};
+
+const photoNotes: Record<string, string> = {
+  owned: "Photo slot · owned",
+  atmosphere: "Photo slot · atmos"
+};
+
+const pills: Record<string, string> = {
+  "Animal & organic condition cleaning": "Endorsed"
+};
+---
+
+<section class="service-cards" id="included" aria-labelledby="service-cards-title">
+  <div class="ac-measure-wide">
+    <div class="service-cards__head">
+      <div>
+        <p class="ac-eyebrow">Scope of work</p>
+        <h2 id="service-cards-title" class="ac-type-h2">Three ways properties reach this handoff</h2>
+      </div>
+      <p class="service-cards__intro">Every project runs under a signed scope with a documented closeout — whichever way it starts.</p>
+    </div>
+
+    <div class="service-cards__grid">
+      {
+        homepage.serviceCards.map((item) => (
+          <Card
+            title={item.title}
+            glyph={glyphs[item.title] ?? "▣"}
+            gradient={gradients[item.title] ?? "v1"}
+            photoNote={photoNotes[item.imageStatus] ?? "Photo slot"}
+            pill={pills[item.title]}
+          >
+            {item.detail}
+          </Card>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .service-cards {
+    background: var(--ac-color-warm-white);
+  }
+
+  .service-cards__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    gap: var(--ac-s4);
+    margin-bottom: var(--ac-s5);
+  }
+
+  .service-cards__head h2 {
+    max-width: 18ch;
+    margin-top: var(--ac-space-3);
+    font-size: clamp(1.9rem, 3.4vw, 2.6rem);
+    line-height: 1.08;
+  }
+
+  .service-cards__intro {
+    max-width: 38ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.98rem;
+  }
+
+  .service-cards__grid {
+    display: grid;
+    gap: var(--ac-s3);
+  }
+
+  @media (min-width: 56.25rem) {
+    .service-cards__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

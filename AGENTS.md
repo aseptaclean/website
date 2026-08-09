@@ -30,11 +30,14 @@ contradictory instructions.
 1. Current law, active insurance, verified business facts, explicit owner decisions
 2. `docs/01-QUALITY-GUARDRAILS.md`
 3. `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` — the Phase 4 canonical master specification
-4. `docs/06-APPROVED-HOMEPAGE-COPY.md` — controls all homepage wording
-5. `docs/07-ONE-PAGE-DIRECTIVE.md` — controls scope, routes, and offer architecture
-6. `docs/11-COMPOSITION-AND-TYPE.md` — controls type scale, measure, rhythm, composition
-7. `docs/02-OWNER-INPUTS.md` — confirmed business facts and values
-8. `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` — Phase 2 only, not part of the launch build
+4. `docs/18-VISUAL-DIRECTION.md` — owner-directed visual direction (contractor-professional);
+   controls imagery, cards, colour/accent, and the binding homepage section map
+5. `docs/06-APPROVED-HOMEPAGE-COPY.md` — controls all homepage wording
+6. `docs/07-ONE-PAGE-DIRECTIVE.md` — controls scope, routes, and offer architecture
+7. `docs/11-COMPOSITION-AND-TYPE.md` — controls type scale, measure, rhythm, composition
+   (superseded in part by `docs/18-VISUAL-DIRECTION.md` — see that file's preamble)
+8. `docs/02-OWNER-INPUTS.md` — confirmed business facts and values
+9. `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` — Phase 2 only, not part of the launch build
 
 Superseded for scope, kept for reference: `docs/00-MASTER-BRIEF.md`, `docs/03-BUILD-PLAN.md`.
 Archived: `docs/archive/` — never read from here.

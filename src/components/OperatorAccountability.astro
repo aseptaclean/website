@@ -1,0 +1,137 @@
+---
+// docs/aseptaclean-FINAL-v2.html FOUNDER section — ported verbatim (05-DECISIONS-LOG.md
+// supersedes docs/06-APPROVED-HOMEPAGE-COPY.md for this section's copy and structure).
+import { site } from "@data/site";
+
+const credentials = [
+  { k: "Education", v: "B.S. Biochemistry, UC Riverside" },
+  { k: "Background", v: "Pharmaceutical manufacturing" },
+  { k: "Background", v: "Histology & surgical pathology" },
+  { k: "On project", v: "Scope, planning, operating oversight" }
+] as const;
+---
+
+<section class="founder" id="about" aria-labelledby="founder-title">
+  <div class="ac-measure-wide founder__shell">
+    <div class="portrait" role="presentation">
+      <span class="portrait__label">[ Founder portrait — pending ]</span>
+    </div>
+    <div>
+      <p class="ac-eyebrow">The operator, not a call center</p>
+      <h2 id="founder-title">The person defining the work stays accountable for how it&rsquo;s carried out.</h2>
+      <p class="founder__lead">
+        {site.founder.name} is directly involved in scope review, project planning, and operating
+        oversight on every project — a controlled-process background applied to properties most
+        companies handle with a truck and a guess.
+      </p>
+      <div class="creds">
+        {
+          credentials.map((item) => (
+            <div class="cr">
+              <span class="cr__k">{item.k}</span>
+              <span class="cr__v">{item.v}</span>
+            </div>
+          ))
+        }
+      </div>
+      <p class="fnote">This background reflects controlled-process discipline. It does not grant contractor, remediation, medical, environmental, or regulatory authority.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* docs/aseptaclean-FINAL-v2.html .founder / .portrait / .creds / .cr / .fnote — ported verbatim */
+  .founder {
+    background: var(--ac-color-paper);
+  }
+
+  .founder__shell {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+    align-items: center;
+  }
+
+  .portrait {
+    position: relative;
+    display: grid;
+    aspect-ratio: 4 / 5;
+    place-items: center;
+    overflow: hidden;
+    border-radius: var(--ac-r);
+    background: linear-gradient(160deg, #27436f, #0b1830);
+    box-shadow: var(--ac-shadow-card);
+  }
+
+  .portrait::after {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.06) 1px, transparent 0);
+    background-size: 22px 22px;
+    content: "";
+  }
+
+  .portrait__label {
+    position: relative;
+    z-index: 1;
+    color: #6d8bb0;
+    font-family: var(--ac-font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .founder h2 {
+    margin-bottom: 18px;
+    font-size: clamp(1.8rem, 3vw, 2.4rem);
+    line-height: 1.1;
+  }
+
+  .founder__lead {
+    max-width: 54ch;
+    margin-bottom: 24px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.98rem;
+  }
+
+  .creds {
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .cr {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    align-items: baseline;
+    gap: 16px;
+    border-bottom: 1px solid var(--ac-color-line);
+    padding: 13px 0;
+  }
+
+  .cr__k {
+    color: var(--ac-color-ink-400);
+    font-family: var(--ac-font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .cr__v {
+    color: var(--ac-color-navy-900);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .fnote {
+    max-width: 52ch;
+    margin-top: 16px;
+    border-left: 2px solid var(--ac-color-line-strong);
+    padding-left: 14px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.78rem;
+  }
+
+  @media (min-width: 54rem) {
+    .founder__shell {
+      grid-template-columns: 0.85fr 1.35fr;
+    }
+  }
+</style>

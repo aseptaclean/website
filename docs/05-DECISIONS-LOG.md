@@ -905,4 +905,650 @@ needs to be pasted into `PUBLIC_TERMLY_WEBSITE_UUID` as part of the post-deploy 
    `PUBLIC_TERMLY_CONSENT_ENABLED=true` and a UUID-formatted `PUBLIC_TERMLY_WEBSITE_UUID`, and
    fails the build otherwise — this was not changed and remains the safety net.
 
+## `docs/17-REFERENCE-TRANSLATION-MARTEL.md` flagged as orphaned reference material (2026-08-07)
+
+**Not part of the precedence chain.** Root `AGENTS.md`'s "Document authority" list (items 1–8,
+ending at `08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md`) does not name this file. It has no rank and
+does not override or defer to anything in the enforced chain.
+
+**Internally broken as a reference, independent of chain ranking.** Its own header states it
+depends on and defers to `02-BUILD-SPEC.md`, `03-VOICE.md`, `04-CLAIMS-GUARDRAILS.md`, and
+`B01-home.md` ("locked spec wins" on conflict). None of those four files exist anywhere in this
+repository — not in `docs/`, not in `docs/archive/`. Confirmed by `find` across the whole tree.
+
+**Vocabulary mismatch with the live build.** It is written against a different token and
+component system than the one actually in `src/`:
+- Tokens it uses (`--ac-signal`, `--ac-radius`, `--ac-navy-deep`, `--ac-charcoal`,
+  `--ac-body-gray`, `--ac-bg-light`, `--ac-shell-width`, `--ac-caution`) do not exist in
+  `src/styles/tokens.css`, which uses `--ac-color-navy-900`, `--ac-text-h1`,
+  `--ac-radius-small`, etc.
+- Components it names (`ShortLeadForm`, `DocumentSample`, `GuaranteeGrid`, `TrustBar`,
+  `ReviewStrip`, `FoundPropertyProtocol`) do not exist anywhere in `src/components/`.
+- Its final brief assumes a "multi-page architecture preserved" with `/pricing/` and
+  `/projects/` routes, which `AGENTS.md`'s Scope section forbids for the launch build.
+
+**Decision: flagged, not deleted, not used.** Treat it as superseded/orphaned reference
+material pointing at a spec set from a different (earlier or parallel) project iteration that was
+never reconciled with this repo. Do not pull composition, token, or component guidance from it.
+`docs/11-COMPOSITION-AND-TYPE.md` remains the sole authority for composition, spacing, measure,
+and type scale on `/`. No file in `src/` was changed to reach this conclusion — this is a
+read-only documentation flag.
+
 Files changed: `.env.production`, `src/pages/cookie-policy.astro`.
+
+## `docs/11-COMPOSITION-AND-TYPE.md` §6 clarifications — eyebrow scope and hairline usage (2026-08-07)
+
+Two one-line clarifications added to `docs/11-COMPOSITION-AND-TYPE.md` §6, both scoping existing
+rules rather than changing them or any visual output. No `src/` files were touched.
+
+**§6.1 eyebrows — "seven total" scoped to eyebrows above an H2.** The rule counts only eyebrows
+sitting directly above a movement H2 (Recognition, Category Contrast, Five-Stage, Property Handoff
+Record, Confidence and Fit, Final Decision, FAQ — the same seven Session 3 enumerated). Verified
+against current code (`grep -rn "ac-eyebrow" src/`) that `Hero.astro` carries two further
+`.ac-eyebrow` elements outside that count: `hero__eyebrow` above the H1, and `hero__criteria-label`
+("The handoff outcome") above the criteria list, neither sitting above an H2. Session 3's log
+(above, "Detail layer (§6)") states Hero's top label "intentionally do not use `.ac-eyebrow`" —
+that is no longer accurate against the current build; direct inspection confirms `hero__eyebrow`
+does carry the class. The doc clarification reflects the code as it actually stands today, not the
+Session 3 log's description of it, so a future session counting toward the seven-total budget
+doesn't misread either the code or the stale log line.
+
+**§6 item 3, hairline rules — sparse by design, not the default boundary device.** Added a note
+that most movement-to-movement boundaries rely on the Surface column in §5 (a background change)
+rather than a hairline; a hairline marks a register change within one surface, not a section close.
+This documents existing intent already visible in the composition map (most adjacent movements
+differ by surface/container/rhythm, not a drawn rule) — it does not change which components have
+rules today.
+
+Files changed: `docs/11-COMPOSITION-AND-TYPE.md`.
+
+## CTA label "24-Hour" vs. business-days response commitment — conflict flagged, owner naming decision pending (2026-08-07)
+
+**Flag only, per instruction — nothing changed.** This entry records a conflict for owner
+decision; no CTA label, copy, or config file was touched to resolve it.
+
+**The conflict.** The primary CTA and lead-offer name both promise a literal 24-hour window:
+`site.offer.leadOffer` = "24-Hour Property Handoff Plan" and `site.offer.primaryCta` = "Get My
+24-Hour Handoff Plan" (`src/data/site.ts`; rendered in the header, `MobileCTA`, and both
+`QuickHandoffForm` instances — hero and final movement — plus `docs/00-MASTER-BRIEF.md` in
+several places, e.g. lines 144–149, 309, 585, 664, 1590, 1899, 1915). This is distinct from the
+CTA-label-consistency defect already logged and fixed above (Session 7, D3) — that was two
+different label strings for the same action; this is the "24-Hour" wording itself against the
+actual response mechanism.
+
+The owner-confirmed response commitment is measured in business days/hours, not a rolling
+24-hour clock: response commitment is "within one business day" (`PUBLIC_RESPONSE_TIME` default,
+`src/data/site.ts`); business hours are Monday–Saturday, 7:00 AM–7:00 PM Pacific, closed Sunday;
+and the 2026-07-29 entry above states the owner calls successful submissions within 5 minutes
+during business hours, with contact in the next business window outside hours — "to prevent a
+false 24/7 promise." A lead submitted Saturday evening or on Sunday has no path to a response
+within a literal 24 clock-hours; the next business window is Monday morning, which can exceed 24
+hours by a wide margin. No body copy on the page currently promises 24/7 turnaround — the
+business-day/business-hours language is consistently used everywhere except the CTA/offer name
+itself — but a button labeled "24-Hour" read literally states an hour count the guarantee behind
+it cannot always honor.
+
+**Owner naming decision pending.** Not this session's call, per instruction. Options for the
+owner: keep "24-Hour" as a plan/offer name understood as distinct from response timing (with nearby
+copy making that explicit), rename the offer/CTA to a business-day framing consistent with the
+rest of the guarantee copy, or narrow the claim (e.g. "within 24 business hours") only if the
+underlying mechanism can actually guarantee it across a Sunday closure.
+
+No files changed for this entry.
+
+## Session B — clinical/structured direction pass on the homepage (2026-08-07)
+
+Owner (Matthew Ruiz) supplied `docs/aseptaclean-clinical-direction.html` as directional visual
+reference for feel only — never copied as code — and five concrete moves (A–E) to shift the
+homepage from calm editorial toward "premium operational editorial": bright, bordered,
+document-led. `docs/17-REFERENCE-TRANSLATION-MARTEL.md` was not consulted, per its orphaned status
+logged above.
+
+**Budget accounting, checked before building anything.** `docs/11-COMPOSITION-AND-TYPE.md` caps
+Newsreader at exactly 9 uses (1 H1 + 1 display + 7 H2s) and eyebrows at 7 — both were already full.
+None of the new structure below adds an 8th H2 or an 8th eyebrow; the two new bands use
+`.ac-type-h3` (Instrument Sans) headlines and no eyebrow. Verified against the rendered DOM after
+the build (not just source grep): `{h1:1, h2:7, display:1, totalNewsreader:9, eyebrows:8}` — the
+eyebrow count is the 7 movement eyebrows plus Hero's own top eyebrow, unchanged from before this
+session.
+
+**A — status ribbon.** New `StatusRibbon.astro`, mounted in `BaseLayout.astro` above `<Header />`,
+non-sticky (scrolls away; only the header stays sticky, matching the reference). Mono/uppercase,
+`--ac-color-navy-950` background. Content: insurance line (suppressed when
+`site.business.insuranceStatus` is empty, per the existing suppression rule in
+`docs/02-OWNER-INPUTS.md`), "Owner-operated assessments," "Written scope before any work begins,"
+`site.location.serviceArea`. Horizontal-scrolls on narrow viewports rather than wrapping.
+
+**B — sitewide containment.** Implemented as: the two new bands below (bordered modules), Hero's
+aside rebuilt into a bordered panel with a real header row ("Handoff Status" + a "Sample" tag), and
+the scope-of-work strip's bordered 3-column grid. `--ac-radius-*` was not loosened — new bordered
+elements use 0/sharp corners, no gradients (none exist anywhere else in this codebase). Did not
+touch `Qualification.astro`'s existing ledger, which already carries hairline-divided rows from
+Session 3/4.
+
+**C — compact Handoff Status panel in the hero.** `Hero.astro`'s `.hero__criteria` aside was
+rebuilt from a bare eyebrow + list into a bordered panel with a navy header row ("Handoff Status" +
+a "Sample" tag) and five rows, each with a neutral bordered status tag (Defined / Held for review /
+Complete / Complete / Issued) sourced from a new `status` field added to
+`homepage.handoffStages[]` in `src/data/site.ts`. Reuses `HandoffRecord.astro`'s established
+no-color-on-status-tags convention (border + text only) so it doesn't collide with the site's
+existing red/green semantic use. `HandoffStandard.astro` (movement 5, same source array) ignores
+the new field and is unaffected.
+
+**D — founder/operator block moved to the first half.** New `OperatorAccountability.astro`,
+mounted after `Qualification` (Recognition) and before `OutcomeComparison`. Moved — not
+duplicated — the founder blockquote, credentials ledger, and disclaimer (verbatim) out of
+`ConfidenceAndFit.astro`'s movement-7 founder sub-block, including the `id="about"` anchor the
+header nav already links to (verified: `document.getElementById("about")` resolves and scrolls
+into view). Founder portrait is a plain bordered placeholder box labeled "Founder portrait —
+pending" — no stock or AI-generated image, per the explicit instruction and
+`docs/02-OWNER-INPUTS.md`.
+
+Consequence for `ConfidenceAndFit.astro` / `docs/11-COMPOSITION-AND-TYPE.md` §5 row 7: with the
+founder block gone, the movement drops from three internal blocks to two (assurance ledger +
+pricing). Pricing is now a standalone block capped at `max-width: 28rem` on its own row below the
+ledger, not paired into a two-column strip (there is nothing left to pair it with). This avoids
+reintroducing the Session 8 dead-space defect (audit item 12) — a lone block forced into a
+same-row column with the 3x-longer ledger would reproduce the identical bug. Table and prose
+updated in `docs/11-COMPOSITION-AND-TYPE.md` §5/§5.1; dead CSS for the removed founder markup
+(`.confidence__block--founder blockquote`, `.founder__record`, `.confidence__insurance`) deleted,
+confirmed zero remaining references (`grep -c confidence__block--founder dist/index.html` → `0`).
+
+**E — scope-of-work strip.** New `ScopeOfWork.astro`, mounted directly after `<Hero />`. Bordered
+3-column strip (desktop) / stacked (mobile), fed by a new `homepage.scopeOfWork` array in
+`src/data/site.ts`: (1) complex property clearing, (2) reset & restoration cleaning, (3)
+environmental remediation, tagged "coming."
+
+**Compliance flag — organic pathogen endorsement (owner-supplied fact, not verified against COI
+yet).** Item 2's copy states animal-waste/heavy-organic-condition cleaning is covered "under our
+organic pathogen endorsement," in the owner's exact constrained wording (cleaning only — no
+"disease," "decontamination," "sanitization," or "sterilization"; those four words are explicitly
+named as excluded and were grepped for zero hits in the final copy). This is a new public operating
+claim, narrower than and distinct from TSWMP (which stays pending/unverified for human
+biohazard/trauma-scene work — unchanged by this session). Added to `docs/02-OWNER-INPUTS.md`
+"Approved for the current build" as an owner-confirmed fact (2026-08-07), and to "Must be confirmed
+before production release" for a match against the actual COI/policy documents before launch. Also
+added as one line to `homepage.includedScope` (rendered in `ConfidenceAndFit.astro`) so the claim
+is consistent everywhere the site already lists included work, not only in the new strip.
+
+**Remediation "coming" tag — no fabricated date.** No launch month is confirmed. Rather than invent
+one (`docs/01-QUALITY-GUARDRAILS.md` §15.4, "no fake project dates presented as real"),
+`site.offer.remediationLaunchLabel` is a new config value defaulting to "Coming soon · pending
+certification," overridable via `PUBLIC_REMEDIATION_LAUNCH_LABEL` once a real date is confirmed.
+Logged in `docs/02-OWNER-INPUTS.md`.
+
+**Verification.** `astro check`: 0 errors, 53 files (2 type errors surfaced and fixed first — the
+`scopeOfWork` array needed an explicit `coming: false` on the non-"coming" items so TypeScript's
+`as const` literal-union inference didn't reject `item.coming` on the other branches).
+`npm run build`: 9 routes, clean. Rendered-DOM checks against the production preview
+(`astro preview` + `playwright-core`/Chrome, not `astro dev`): Newsreader/eyebrow budget exact as
+above; `#about` resolves and scrolls into view; no horizontal overflow at 390px; hero fold at
+390×800 — the trust line (`hero__trust`) bottom edge sits at 670px, inside the first viewport,
+matching Session 4's own "first proof discoverable without a full-screen scroll" standard (the
+ribbon's added ~36px did not push it out). Screenshots reviewed directly (not just computed
+positions) at 390 and 1440px: full homepage, hero fold, the Handoff Status panel, the scope-of-work
+strip, and the operator band — all render as intended, sharp corners, no overlap, no dead space.
+Zero new JavaScript shipped (all three new components and Hero's rebuilt aside are static
+markup/CSS) and no new font or image requests, so the stated JS/performance budget is unaffected by
+construction; a live Lighthouse pass in CI/staging is still recommended per `AGENTS.md`'s
+"Definition of done" and was not run in this environment.
+
+**§9 failure-audit re-run** (rendered production preview, 390/1440px):
+
+| # | Check | Result |
+| --- | --- | --- |
+| 1 | Two adjacent sections share container width *and* vertical padding | PASS — the two new bands use `tight`/`open` rhythm, distinct from the `wide`-container movements they sit beside |
+| 2 | Font-size declared on a heading tag | PASS — new bands' `<h3>` carries `.ac-type-h3`, no bare tag sizing |
+| 3 | H1:body ratio | PASS — unchanged, no hero type values touched |
+| 4 | Newsreader appears more than nine times | PASS — exactly 9, confirmed above |
+| 5 | Three consecutive text elements within 15% on size/weight/color | PASS on review |
+| 6 | More than one dramatic moment | PASS — Property Handoff Record (movement 6) remains the sole dramatic moment; the two new bands are deliberately quiet document-style panels, not competing moments |
+| 7 | Three or more icon+title+paragraph sections | PASS — no icons introduced |
+| 8 | More than six hairline rules | PASS on review |
+| 9 | More than two deep-dark sections consecutively | PASS — ribbon (navy-950) is directly followed by the light header/hero, not another dark section |
+| 10 | Logo-swap test | Not re-run in full this session (copy/imagery scope unchanged); composition changes strengthen rather than weaken the prior PASS |
+
+Files changed: `src/components/StatusRibbon.astro` (new), `src/components/ScopeOfWork.astro`
+(new), `src/components/OperatorAccountability.astro` (new), `src/components/Hero.astro`,
+`src/components/ConfidenceAndFit.astro`, `src/layouts/BaseLayout.astro`, `src/pages/index.astro`,
+`src/data/site.ts`, `src/styles/tokens.css`, `docs/11-COMPOSITION-AND-TYPE.md`,
+`docs/02-OWNER-INPUTS.md`, `.env.example`.
+
+## `docs/18-VISUAL-DIRECTION.md` lands — precedence, supersession, and Phase 1 (2026-08-08)
+
+**Owner-directed** (Matthew Ruiz), dated 2026-08-08 — one day after Session B above. Supplies a
+new binding visual direction ("contractor-professional": photo-forward, card-structured,
+serif-headlined, warm-accented), reached after the owner selected the same reference twice, a
+month apart. This is `docs/18-VISUAL-DIRECTION.md`'s own Phase 1
+("this document lands in the repo, `AGENTS.md` precedence updated, the superseded sections of
+`11-COMPOSITION-AND-TYPE.md` struck with a pointer here, direction change logged here").
+
+**Precedence.** `AGENTS.md`'s "Document authority" chain now reads: 1. current
+law/facts/owner-decisions, 2. `01-QUALITY-GUARDRAILS.md`, 3.
+`10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md`, **4. `18-VISUAL-DIRECTION.md` (new)**, 5.
+`06-APPROVED-HOMEPAGE-COPY.md`, 6. `07-ONE-PAGE-DIRECTIVE.md`, 7. `11-COMPOSITION-AND-TYPE.md`, 8.
+`02-OWNER-INPUTS.md`, 9. `08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` (each item after 4 shifted down
+one). `18` now outranks the copy and scope directives but stays below quality guardrails and the
+Phase 4 canonical spec, matching `18`'s own header ("Sits directly below
+`01-QUALITY-GUARDRAILS.md`").
+
+**`11-COMPOSITION-AND-TYPE.md` strikes.** Five items named in `18`'s preamble struck in place with
+pointers back to `18`, per its own instruction ("Leave the retained sections intact"):
+- §2 serif budget ("Newsreader appears in exactly nine places") — struck. `18` §2 replaces it:
+  serif is no longer a spent budget and now applies to every H1–H3, which also moves H3's face
+  from Instrument Sans to serif (a change beyond the budget sentence alone, but stated directly in
+  `18` §2's own body text and type table, so treated as part of this supersession).
+- §6 eyebrow cap of seven — struck. No eyebrow-count limit applies going forward.
+- §6 The Mark, three-appearance cap — struck. The Mark remains the site's one decorative
+  typographic device; no numeric cap on it.
+- §9 failure-audit items (icon+title+paragraph ban, Newsreader count check, hairline cap) — all
+  three struck. Icon+title+paragraph is now an expected card structure per `18` §3.
+- "The 2px sharp-corner rule wherever it appears" — **investigated, not struck: no such rule
+  exists in `11`'s text.** Grepped the file for "2px," "sharp," "corner," and "radius" — zero
+  hits. The only `--ac-radius: 2px` value anywhere in the repo's docs lives in the orphaned,
+  out-of-chain `docs/17-REFERENCE-TRANSLATION-MARTEL.md` (flagged non-authoritative above,
+  2026-08-07). Current code uses sharp/0-radius borders by convention (Session B) with no codified
+  numeric rule in `11` or `tokens.css` to override. Noted in `11`'s new preamble block rather than
+  silently invented text to strike. `18` §3's `--ac-radius-card: 12px` is the live rule for card
+  containers going forward (added to `tokens.css` in the Phase 2 build below).
+
+Retained per `18`'s explicit list, unchanged: §1 (headings styled by role, never by tag; the
+H1-to-body ratio floor), §3 (measure variation), §4 (rhythm ratios), §7 (spend boldness once —
+the Handoff Record stays the one dramatic moment), §10.2/§10.4/§10.5 (document artifact,
+interaction, and responsive art-direction rules).
+
+**Scope note on `18` §6's "Section map — binding."** `18`'s preamble lists five specific items it
+supersedes in `11`; it does not name `11` §5 (the 8-movement composition map) as superseded. But
+`18` §6 itself is titled "binding" and lists a materially different section list (credential bar,
+service cards, "Why Aseptaclean," an accent band, and areas-we-served all appear there and nowhere
+in `11` §5). Read literally, the two section maps conflict beyond what the preamble's supersession
+list accounts for. Resolved by the owner's own instruction to "build to 18 §6" (this session,
+below): `18` §6 governs the sections it names and their order/imagery; existing content sections
+`18` does not name (Recognition/`Qualification.astro`, Category Contrast, "What finished feels
+like"/`OutcomeComparison.astro`, Confidence and Fit) were **not** deleted, since `18` never
+instructs their removal and they carry owner-approved copy from `06-APPROVED-HOMEPAGE-COPY.md`
+that `18` doesn't address. They were kept and placed at the points in the new order where they
+functionally belong. Flagging this rather than silently resolving it: if the owner intended `18`
+§6 as an exhaustive replacement of the whole page (i.e., those four sections should come out), that
+is a separate decision this session did not make.
+
+No `src/` files changed in this half of the session — Phase 1 is documentation only, per `18` §10.
+The Phase 2 build (§6) is logged separately below.
+
+## `docs/18-VISUAL-DIRECTION.md` Phase 2 — build to §6, labelled placeholders (2026-08-08)
+
+Owner shoot (§5.1) has not happened, so every image slot below ships as a labelled bordered
+placeholder (steel-100 surface, mono caption naming the slot and its `18` §5 classification),
+per `18` §10 Phase 2. Logged in full in the new "Pending image slots" table in
+`06-ASSET-MANIFEST.md`.
+
+**Design-system foundation.** `tokens.css`: added `--ac-radius-card: 12px`, `--ac-radius-chip:
+8px`, `--ac-shadow-card`, `--ac-color-accent-tint`, `--ac-color-accent-text` (§3/§4).
+`global.css`: `.ac-type-h3` moved from Instrument Sans to the display serif at 560 weight (§2 —
+serif now spans H1–H3); `.button` (used sitewide — header, `MobileCTA`, both `QuickHandoffForm`
+instances, `request-assessment`) recoloured from navy to the accent Slate Blue with dark-navy text
+rather than white, because white-on-`#6A9BC3` measures ~3:1 (checked via WCAG relative-luminance
+math), short of the 4.5:1 body-text minimum; navy-on-accent measures ~5:1 and passes. Hover state
+inverts to solid navy/white rather than darkening the accent further — darkening it moves dark
+text to ~3.4:1, still short. Added shared `.ac-icon-chip`, `.ac-credential-chip`, and `.ac-card`/
+`.ac-card__image`/`.ac-card__body` utility classes for the new card-based sections.
+
+**Hero (`18` §6 row 1).** Added a labelled `[ATMOS]` image placeholder ("South Bay residential
+exterior — pending, dark overlay planned") inside the existing status aside — appended after the
+Handoff Status panel's position in the DOM rather than replacing the section background, so the
+mobile above-the-fold trust-line position verified in Session 4/B is untouched. Added the
+three-item credential chip (`Insured · Organic Pathogen Endorsed · Owner-Operated`, §7 exact
+wording) below the eyebrow. **Not done:** converting the hero to a literal full-bleed photo
+background with dark overlay and two CTAs replacing the inline form — `18` doesn't instruct
+removing the 3-field form (`docs/07-ONE-PAGE-DIRECTIVE.md` §7's "appears twice: hero and final
+movement," still in force), and faking a dark-overlay effect over a blank placeholder would look
+broken rather than "labelled." The image slot is real and placed; the background treatment waits
+for Phase 0.
+
+**Credential bar (row 2, `StatusRibbon.astro`).** Content replaced with `18` §7's exact four
+items: `Insured · Organic Pathogen Endorsed · Owner-Operated · Santa Clara County`. Added
+`site.location.county` (env `PUBLIC_SERVICE_COUNTY`, default `"Santa Clara County"`) rather than
+reusing `serviceArea` (a different-grain fact already in use elsewhere). Position (above header,
+non-sticky) left unchanged from Session B — `18` doesn't discuss ribbon-vs-header ordering, and
+moving it into the in-page flow was judged disproportionate to fix an ordering technicality with
+no stated visual requirement behind it.
+
+**Service cards (row 3, new `ServiceCards.astro`, replaces `ScopeOfWork.astro`).** Three-card
+launch set per `18` §6.1, each following the §3 card anatomy (image → icon chip → title → body,
+12px radius, soft shadow, white on warm-white). **Claims fix, not just a relabel:** the prior
+third item was "Environmental remediation... coming soon" (Session B). `18` §7 states remediation
+"does not appear on the live site at all... not even a 'coming soon' tag until the credential is
+held" — stricter than Session B's own claims read at the time. Replaced with `18`'s actual third
+card, "Animal & organic condition cleaning," carrying §7's mandatory limiting clause verbatim
+("This is cleaning only — not a decontamination, sterilization, or health-safety determination").
+`site.offer.remediationLaunchLabel` and its env var removed (dead once the card was cut); grepped
+first to confirm no other call sites. `docs/02-OWNER-INPUTS.md` updated to match. Image
+classifications: card 1 (process kit flat-lay) and card 3 (completed job photo) are `[OWNED]`
+only; card 2 (kitchen/bath detail) is `[ATMOS]` permitted. Card 3 specifically is `[OWNED]`-only
+rather than atmosphere-permitted because it would otherwise read as proof of a specific service
+performed (§5's "does this image imply Aseptaclean performed this work?" test) — its placeholder
+caption states "ships only when owner-shot" so a future session can't casually drop stock art in.
+
+**Why Aseptaclean (row 4, new `WhyAseptaclean.astro`).** Four-item icon grid, no image. Content
+restates four claims already approved and rendered elsewhere on the page (hero trust line,
+`homepage.assurance`) rather than introducing new claims — kept claims risk at zero for a section
+this session invented the framing for.
+
+**Accent band (row 5, new `AccentBand.astro`).** The one full-width accent band `18` §4 allows.
+Exact copy from `18` §6 ("Working against a listing, transfer, or family deadline?" + call CTA).
+Uses `--ac-rhythm-band` — a token `11-COMPOSITION-AND-TYPE.md` §4 defined specifically for
+full-bleed bands but that no component had used until now (confirmed by grep). One-sided
+padding-top per the sitewide rhythm-cascade convention (Session 3), with a small
+`--ac-space-6` internal bottom pad (not a rhythm token) so text doesn't sit flush against the
+band's lower edge — does not violate the "never sum two rhythm paddings" convention since it's a
+component-internal space token, not a second rhythm contribution.
+
+**Five-stage standard (row 6, `HandoffStandard.astro`).** Added a labelled `[OWNED]` placeholder
+("Hands + clipboard at a threshold — pending") between the header and the stage rail.
+
+**Property Handoff Record (row 7).** Unchanged, per `18`'s own instruction.
+
+**Areas we serve (row 8, new `AreasWeServe.astro`).** Pill list of the existing
+`site.location.cities` set, no image, per row 8.
+
+**Founder/operator (row 9) — repositioned, not rebuilt.** `OperatorAccountability.astro` already
+carried the `[OWNED]` portrait placeholder from Session B; only its position changed. Session B
+had deliberately moved this block early (right after Recognition) as one of its five structural
+moves. `18` §6's binding order puts Founder/operator at position 9 — after the Handoff Record,
+before FAQ. Since `18` is a newer (2026-08-08 vs. 2026-08-07), explicitly "binding" owner
+document, and the task instruction was to build to `18` §6, the block was moved back to row 9's
+position (now between the new Areas We Serve section and `ConfidenceAndFit`), reversing Session
+B's move D. Flagging the reversal here rather than silently overwriting Session B's own rationale.
+
+**Section order and the scope question (`index.astro`).** Final mount order: `Hero,
+ServiceCards, WhyAseptaclean, Qualification, AccentBand, OutcomeComparison, CategoryContrast,
+HandoffStandard, HandoffRecord, AreasWeServe, OperatorAccountability, ConfidenceAndFit, FAQ,
+FinalCTA` (Footer via `BaseLayout`). `Qualification` (Recognition), `OutcomeComparison` ("what
+finished feels like"), `CategoryContrast`, and `ConfidenceAndFit` are not named anywhere in `18`
+§6's table; per the scope note logged above, they were kept (not deleted) and placed at the points
+in the new sequence where they read naturally, since `18` never instructs their removal and they
+carry approved copy from `06-APPROVED-HOMEPAGE-COPY.md`. **FAQ now precedes Final CTA** (`18` rows
+10–11), the reverse of the previous order (and of `11` §5's "FAQ continues from 8" note) — `18`'s
+explicit row numbering was followed; verified in the build output that `id="faq"` precedes
+`class="final-cta"` precedes `class="site-footer"` in document order.
+
+**Icons.** No icon library added (`AGENTS.md` bars UI kits without approval). Hand-authored
+minimal inline SVG line icons (box, sparkle-burst, leaf for the three service cards; shield-check,
+document, check-circle, camera for Why Aseptaclean) — zero new dependencies, zero new network
+requests.
+
+**Verification.** `astro check`: 0 errors, 54 files. `npm run build` (full production mode): 9
+routes, clean; zero `$NaN` in output (confirmed by grep). Screenshots and DOM-level checks
+captured against `astro preview` (production build) via Playwright/system Chrome at 390×900 and
+1440×1000, saved to `artifacts/phase-4/visual-direction/`. One capture-tooling note for a future
+session: a `fullPage: true` screenshot at 390px produced a visibly glitched/duplicated-looking
+image — the real cause is the page's actual scroll height (24,331px at 390px, 18,973px at 1440px)
+exceeding Chrome's known texture-size ceiling for single-shot full-page capture, not a real content
+duplication (confirmed via `grep -c` on the built HTML — every id/heading occurs exactly once).
+Same class of false positive Session 6 already logged for a different capture method; resolved
+here by using clipped viewport/element screenshots instead. The genuine page height (~24k px on
+mobile) is long for a single-page site but is a consequence of the section count `18` §6 asks for,
+not a defect this session introduced without cause.
+
+### `18` §9 failure audit — run against the production preview, 390×900 and 1440×1000
+
+| # | Check | Result |
+| --- | --- | --- |
+| 1 | `font-size` declared on a heading tag anywhere in the codebase | PASS — zero; `global.css`'s heading-purity rule (§1, retained) is unchanged, only role-class values were edited |
+| 2 | H1-to-body ratio below 2.5:1 at 390px or 4:1 at 1440px | PASS — 2.61:1 at 390px, 4.22:1 at 1440px (measured via computed styles) |
+| 3 | Two adjacent sections share container width *and* vertical padding | PASS — every adjacent pair with a matching container (`wide`/`wide` occurs at Service Cards→Why Aseptaclean, Category Contrast→Five-Stage, Five-Stage→Handoff Record, Operator→Confidence) differs in computed `padding-top`, so none match on both axes. **Caveat:** `11-COMPOSITION-AND-TYPE.md` §3's stricter retained prose rule ("no two consecutive movements share a container," width alone) is violated by those same four pairs — a pre-existing tension (Hero/`ScopeOfWork` were already both `wide` and adjacent before this session) that this build made more frequent by inserting new `wide` sections next to existing ones. Not silently resolved: flagging it as a known gap between the audit checklist (passes) and `11` §3's prose (doesn't), since fully eliminating it would mean denying several new sections the width their content (card grids, the stage rail) actually needs |
+| 4 | More than one dramatic moment | PASS — the Property Handoff Record remains the only one; none of the new sections (cards, icon grid, accent band, pills) compete for drama by design (flat, restrained, document-style per `18` §3's card treatment) |
+| 5 | More than one accent band | PASS — exactly one (`AccentBand.astro`), confirmed programmatically (one section matches the accent background colour) |
+| 6 | Any image in an `[OWNED]` slot that is not owner-shot | PASS — every `[OWNED]` slot (hero, service card 1, service card 3, five-stage, founder) is an unstyled labelled placeholder, not a substitute photo of any kind |
+| 7 | Any atmosphere image captioned as, or placed inside, a completed-job claim | PASS — no atmosphere images exist yet (all six image slots are placeholders); the `[ATMOS]`-labelled slots (hero, service card 2) carry no completed-job language |
+| 8 | Any image absent from `06-ASSET-MANIFEST.md` | PASS — all six pending slots logged in the manifest's new table with required classification |
+| 9 | Credential chip or bar contains "licensed," a job count, or a years figure | PASS — chip text is exactly "Insured · Organic Pathogen Endorsed · Owner-Operated," bar is exactly "Insured · Organic Pathogen Endorsed · Owner-Operated · Santa Clara County" (checked via `textContent`, not visual review) |
+| 10 | Copy uses remediation, biohazard, decontamination, sanitize, or sterilize | **Reviewed individually, not a mechanical grep-PASS.** All five root words appear on the page (grepped the built HTML), every occurrence in a negation/exclusion clause required by `01-QUALITY-GUARDRAILS.md` and `18` §7 itself (e.g. "not a licensed general contractor, remediation contractor..."; "Sewage or active mold remediation" in the exclusion list; "not a decontamination, sterilization, or health-safety determination" — `18` §7's own mandated clause for the animal/organic card). Zero occurrences market or claim any of these services. Read literally, this checklist item would flag the exact sentence `18` §7 requires — treated as an internal inconsistency in `18` between §7 (mandates the negation) and the literal §9 checklist wording, resolved in favor of the substantive rule (§7: don't claim it; negating it is required) |
+| 11 | Cover the logo — generic cleaning company, SaaS product, or junk hauler? | PASS with a caveat — the credential chip/bar, Property Handoff Record, Five-Stage rail, and founder's biochemistry/pathology background are specific and not swappable to a generic competitor. The caveat: every image slot is currently a grey placeholder, and placeholder-grey boxes are themselves a generic-template signal until Phase 0 photography lands — expected and disclosed, not a hidden gap |
+
+Files changed: `src/components/AccentBand.astro` (new), `src/components/AreasWeServe.astro`
+(new), `src/components/ServiceCards.astro` (new, replaces deleted `ScopeOfWork.astro`),
+`src/components/WhyAseptaclean.astro` (new), `src/components/Hero.astro`,
+`src/components/HandoffStandard.astro`, `src/components/StatusRibbon.astro`,
+`src/styles/tokens.css`, `src/styles/global.css`, `src/data/site.ts`, `src/pages/index.astro`,
+`docs/06-ASSET-MANIFEST.md`, `docs/02-OWNER-INPUTS.md`, `.env.example`.
+
+## `18` §2/§3/§4 foundation build-out (2026-08-08)
+
+Tokens (`--ac-radius-card`, `--ac-shadow-card`), the accent promotion (buttons, header CTA, icon
+chips, credential chip, one `AccentBand`), and serif H1–H3/sans lead-body-sm-xs typography were
+already in place from the prior session's work. Two gaps closed this session:
+
+- `.ac-card__body` padding was `--ac-space-6` (32px), outside `18` §3's 24–28px range. Changed to
+  `--ac-space-5` (24px).
+- No reusable Card component existed — `ServiceCards.astro` inlined the `.ac-card` markup
+  directly. Extracted `src/components/Card.astro` (image slot, icon chip, serif h3, sans body via
+  a default `<slot />>`) and refactored `ServiceCards.astro` to consume it.
+
+**§9 ratio check re-verified** against the rebuilt page (Chromium, computed styles, real
+`<h1>`/`.ac-type-body` elements, not hand math):
+
+| Viewport | H1 | body | Ratio | Floor | Result |
+| --- | --- | --- | --- | --- | --- |
+| 390px | 44.4px | 17px | 2.612:1 | ≥2.5:1 | PASS |
+| 1440px | 76px | 18px | 4.222:1 | ≥4:1 | PASS |
+
+Matches the ratio already recorded in the Session 2 §9 audit table above (2.61:1 / 4.22:1) — the
+Card/padding changes this session did not touch H1 or body type scale, so the ratio was expected
+to hold, not re-derived from scratch.
+
+`astro check` (0 errors) and `astro build` (9 pages) both pass after the change.
+
+Files changed: `src/components/Card.astro` (new), `src/components/ServiceCards.astro`,
+`src/styles/global.css`.
+
+## `18` §9 failure audit re-run — current working tree (2026-08-08)
+
+Re-run at owner request against the full current uncommitted state on `phase-4-session-1`
+(everything in `git status`, not just the prior session's diff), superseding the "Phase 2"
+audit table above, which was run against an earlier point in this same branch. Production
+build (`npm run build` + `astro preview`), Playwright/Chromium, screenshots at exactly 390×900
+and 1440×1000. `fullPage: true` capture reproduced the previously-logged Chrome texture-ceiling
+corruption at this page's height (~24,255px at 390px, ~18,957px at 1440px) — confirmed corrupted
+by direct inspection, discarded, and replaced with scroll-and-stitch capture. Clean stitched
+screenshots saved to `artifacts/phase-4/visual-direction-audit/390.png` and `1440.png`
+(directory is gitignored, not committed).
+
+| # | Check | Result | Evidence |
+| --- | --- | --- | --- |
+| 1 | `font-size` declared on a heading tag anywhere in the codebase | PASS | Every `<style>` block in every `.astro` file and every `.css` file scanned for `h1`–`h6` selectors; zero declare `font-size`. Global rule (`global.css`) sets only `margin`/`color` on bare heading tags. All sizing comes from `.ac-type-h1/h2/h3` role classes, confirmed component-by-component (Hero, ServiceCards, ConfidenceAndFit, CategoryContrast, WhyAseptaclean, FinalCTA, Qualification, FAQ, AreasWeServe, HandoffStandard, thank-you, private-residence-reset) |
+| 2 | H1-to-body ratio below 2.5:1 at 390px or 4:1 at 1440px | PASS | Computed styles on the live `<h1>` and hero `.ac-type-body`: 390px = 44.4px / 17px = **2.612:1**; 1440px = 76px / 18px = **4.222:1**. Unchanged from the prior audit — this round's edits didn't touch type-scale tokens |
+| 3 | Two adjacent sections share container width *and* vertical padding | PASS | 14 top-level sections compared in DOM order by computed container width + `padding-top` at 1440px. Several adjacent pairs share width only (Hero/Service Cards, Service Cards/Why Aseptaclean, Category Contrast/Five-Stage, Five-Stage/Handoff Record, Operator band/Confidence) but each pair differs in `padding-top`, so none match on both axes |
+| 4 | Three consecutive text elements within 15% on size, weight, and colour | PASS | Sampled 5 heading→h3→body/eyebrow runs via computed styles (e.g., Why Aseptaclean: H2 53.6px/520/navy → H3 29.28px/560/navy → eyebrow 13.8px/700/steel-blue) — size drops 45–75% at every step and colour changes by the third element in every run |
+| 5 | More than one dramatic moment competing with the Handoff Record | PASS | Visual review of both stitched screenshots — the Property Handoff Record is the only section styled as a distinct document artifact (largest single-column padding on the page). Category Contrast (dark navy) and "What finished feels like" are bold but flat/typographic, not document-styled, consistent with `18` §3 giving every other section the plain card treatment |
+| 6 | More than one accent band | PASS | Programmatic scan for elements with `background-color: rgb(106,155,195)` (Slate Blue `#6A9BC3`): exactly one full-width match (`AccentBand.astro`'s `.accent-band` section). All other matches were buttons/CTAs, which §4 explicitly permits |
+| 7 | Any image in an `[OWNED]` slot that is not owner-shot | PASS | All four `[OWNED]` slots (Service card 1 — process-kit flat-lay; Service card 3 — completed job photo; Five-stage — hands + clipboard; Founder portrait) render as unstyled labelled placeholders, no `<img>`. Only two real `<img>` elements exist site-wide: the two wordmark brand assets |
+| 8 | Any atmosphere image captioned as, or placed inside, a completed-job claim | PASS (moot) | Zero photographs exist yet — every image slot, including the `[ATMOS]`-labelled ones (Hero, Service card 2), is a text-labelled placeholder |
+| 9 | Any image absent from `06-ASSET-MANIFEST.md` | PASS | Every `<img>` and every placeholder caption in the built output (Hero, ServiceCards ×3 via `Card.astro`, HandoffStandard, OperatorAccountability, both wordmark files) is logged in the manifest's main table or its "Pending image slots" table |
+| 10 | Credential chip or bar contains "licensed," a job count, or a years figure | PASS, wording defect found separately (below) | Raw HTML: Hero chip = "Insured / Organic Pathogen Endorsed / Owner-Operated"; StatusRibbon bar = "Insured / Organic Pathogen Endorsed / Owner-Operated / Santa Clara County." Neither contains "licensed," a job count, or a years-in-business figure |
+| 11 | Copy uses remediation, biohazard, decontamination, sanitize, or sterilize | PASS, reviewed individually | 7 hits in built `dist/index.html` across `remediation`/`decontaminat*`/`steriliz*`/`biohazard`; zero for `sanitiz*`. Every hit is a negation or exclusion clause required by `18` §7 or `01-QUALITY-GUARDRAILS.md` (e.g., the stop/notify/refer exclusion list; the animal/organic card's mandatory limiting clause; "not a licensed general contractor, remediation contractor…"; the founder's authority-limit disclaimer). Zero occurrences market or claim any of these services |
+| 12 | Cover the logo — generic cleaning company, SaaS product, or junk hauler? | PASS, with a disclosed caveat | Non-generic anchors: the Property Handoff Record (bespoke sample-labeled operating document), the Five-Stage rail's named "RECORD:" fields, the founder's disclosed biochemistry/pharma-manufacturing background with an explicit authority-limit disclaimer, and the specific stop/notify/refer exclusion list. Caveat, unchanged from the prior audit: every image slot is still a grey/steel placeholder box, which reads as generically templated until Phase 0 photography lands — a known, disclosed gap, not a new defect |
+
+**Failure found and fixed this session — credential bar missing its required separator.**
+`StatusRibbon.astro` (the four-item credential bar) rendered "Insured," "Organic Pathogen
+Endorsed," "Owner-Operated," and the county as four flex-gapped `<span>`s with **no `·`
+character between them** — confirmed in raw `dist/index.html` and in zoomed screenshot crops.
+This fails `18` §7's verbatim requirement ("Insured · Organic Pathogen Endorsed ·
+Owner-Operated · Santa Clara County") even though it passes §9 checklist item 10 literally
+(no "licensed," no job count, no years figure — the checklist doesn't test for the separator).
+The Hero's own three-item credential chip (`.ac-credential-chip`) already had a
+`span:not(:last-child)::after { content: "·" }` rule; the ribbon had no equivalent. This is
+likely why it went unnoticed in the prior audit: a `textContent`-equality check can't
+distinguish "has a CSS-generated separator" from "doesn't," since `::after` content doesn't
+appear in `textContent`. **Fixed:** added the matching `.status-ribbon span:not(:last-child)::after`
+rule to `src/components/StatusRibbon.astro`. Re-verified via `astro check` (0 errors, 55 files)
+after the fix.
+
+No other failures found. Files touched by this audit: `src/components/StatusRibbon.astro`
+(middot fix only — no other source files modified by the audit itself).
+
+## `docs/aseptaclean-FINAL-v2.html` becomes the binding homepage implementation target (2026-08-08)
+
+Owner directive: `docs/aseptaclean-FINAL-v2.html` is not directional reference — it is the
+implementation target for `/`, ported verbatim (markup, CSS custom properties, section-by-section
+structure). Where it conflicts with `docs/11-COMPOSITION-AND-TYPE.md` or
+`docs/18-VISUAL-DIRECTION.md`, the HTML file wins. This is a narrower, later-dated override of
+`AGENTS.md`'s existing precedence chain for `/` specifically — `11` and `18` remain otherwise
+active (they still govern anything the HTML file doesn't specify, and any future page besides `/`).
+Per owner confirmation this session, the override extends to **copy and structure**, not only
+visual system: `docs/06-APPROVED-HOMEPAGE-COPY.md`'s Hero H1/lead/CTA wording, trust line, "Why
+Aseptaclean" item copy, founder-section copy/structure (the blockquote is dropped), and FAQ
+question set are all superseded by the HTML file's verbatim text for `/`. `06-APPROVED-HOMEPAGE-COPY.md`
+should be updated to match in a follow-up pass; until then, treat this log entry and the live
+component source as authoritative over that doc for the sections named above.
+
+Per owner confirmation, `01-QUALITY-GUARDRAILS.md`'s anti-AI blacklist (§5) is also treated as
+overridden for `/` where the HTML file's patterns conflict with it (e.g., the radial-gradient hero
+background, three equal service cards under a credential strip, icon-chip-above-title repeated
+across the "Why" grid, pill-shaped labels, uniform card shadow/radius). `01`'s claims guardrails
+(licensed/remediation/biohazard wording, no fabricated proof, no aggregateRating) remain fully
+in force — nothing in the HTML file required violating them, and none were violated (verified
+against the built output; see below).
+
+**Token system:** `src/styles/tokens.css` keeps its existing `--ac-` prefix and role names
+(`--ac-color-navy-900`, `--ac-text-h1`, etc.) rather than adopting the HTML file's literal
+`--navy-950` / `--s1..--s7` names, so the ~15 existing component files did not all need a
+find-and-replace rename pass. Every `--ac-` token's *value* was replaced with the HTML file's
+value (navy-950/900/800/700, blue/blue-deep/blue-pale/blue-ghost, gold, clear/review status
+colors, the 8/16/24/32/48/64/96px spacing scale exposed as both `--ac-s1..--ac-s7` and the
+existing `--ac-space-*` aliases, `--ac-r`/`--ac-r-sm` radii, `--ac-shadow-card`/`--ac-shadow-pop`).
+Legacy `--ac-steel-*` / `--ac-color-focus` tokens some older components still reference were kept
+as aliases mapped onto the closest new value so nothing resolves to an undefined custom property.
+
+**Fonts:** self-hosted via `@fontsource-variable/inter` and `@fontsource/ibm-plex-mono` (added to
+`package.json`), following the project's existing self-hosting pattern rather than the HTML file's
+Google Fonts `<link>` tags. `Newsreader Variable` and the new `Inter Variable` / `IBM Plex Mono`
+`@font-face` rules live in `src/styles/fonts.css` with `font-display: swap` and a `size-adjust`
+fallback metric on the two variable faces; `BaseLayout.astro` preloads the three woff2 files
+(Newsreader, Inter, IBM Plex Mono 400).
+
+**Composition:** the HTML file's section list (ribbon, header, hero, credential bar, service
+cards, why grid, accent band, five-stage standard, Property Handoff Record, pricing, founder,
+FAQ, request form, final CTA, footer, sticky mobile bar) replaces the prior homepage section map.
+Five existing sections not present in the HTML file — `Qualification.astro` ("Recognition"),
+`OutcomeComparison.astro` ("What finished feels like"), `CategoryContrast.astro`, `ConfidenceAndFit.astro`,
+and `AreasWeServe.astro` — were removed from `src/pages/index.astro`'s render order (component
+files left in place; `src/pages/dev/type-compare.astro` still imports some of them for type
+comparison and was not touched). New components added: `CredentialBar.astro`, `Pricing.astro`,
+`RequestForm.astro`. `Card.astro`/`ServiceCards.astro` rebuilt around the HTML file's gradient-slot
+treatment (v1/v2/v3 linear gradients standing in for photography, per `18` §5/§10's placeholder
+policy, retained) rather than the bordered-placeholder-box treatment used previously.
+
+**Form wiring — presentation-only port, confirmed with owner intent:** the HTML file's `#request`
+form markup (plain `<input>`/`<textarea>`/`<button>`, no live endpoint) was not copied verbatim.
+`RequestForm.astro` and `Hero.astro` both render the existing `QuickHandoffForm.astro` component
+inside the HTML file's layout/styling, preserving the working lead endpoint, Turnstile, honeypot,
+and consent-checkbox wiring per `docs/07-ONE-PAGE-DIRECTIVE.md` §7. The deep multi-step
+`AssessmentForm.astro` on `/request-assessment/` is unchanged.
+
+**SEO layer (net-new; not present in the HTML mockup):** `src/pages/index.astro` sets
+`<title>Property Cleanout & Deep Cleaning | San Jose & South Bay | Aseptaclean</title>`, a
+151-character meta description, canonical `https://aseptaclean.com/`, and a JSON-LD `@graph` adding
+`LocalBusiness` (with `areaServed` city list and San Jose `geo` coordinates), three `Service`
+entries (one per launch service card), and a `FAQPage` built from the same six-question array
+`FAQ.astro` renders on-page (`faqItems`, exported from `FAQ.astro` and imported by `index.astro` so
+schema text can never drift from visible copy). Verified in the built `dist/index.html`: exactly
+one `<h1>`, zero occurrences of `aggregateRating`, and every occurrence of
+licensed/remediation/decontamination/sterilization is inside a negation or exclusion clause
+(referral language, the exclusion list, or the animal/organic card's mandated limiting clause) —
+none market or claim the service.
+
+`astro check` (0 errors, 58 files) and `npm run build` (production mode, env validation +
+`astro build`, 9 pages) both pass. Visual/Lighthouse/schema-validator verification recorded
+separately per session convention.
+
+Files changed: `src/styles/tokens.css`, `src/styles/fonts.css`, `src/styles/global.css`,
+`src/layouts/BaseLayout.astro`, `src/components/StatusRibbon.astro`, `src/components/Header.astro`,
+`src/components/Hero.astro`, `src/components/Card.astro`, `src/components/ServiceCards.astro`,
+`src/components/WhyAseptaclean.astro`, `src/components/AccentBand.astro`,
+`src/components/HandoffStandard.astro`, `src/components/HandoffRecord.astro`,
+`src/components/OperatorAccountability.astro`, `src/components/FAQ.astro`,
+`src/components/FinalCTA.astro`, `src/components/MobileCTA.astro`, `src/components/Footer.astro`,
+`src/components/CredentialBar.astro` (new), `src/components/Pricing.astro` (new),
+`src/components/RequestForm.astro` (new), `src/pages/index.astro`, `package.json`.
+
+### Verification pass (2026-08-08)
+
+Screenshots at 390px and 1440px, `npx astro preview` on a `PUBLIC_DEPLOYMENT_ENV=production`
+build, Playwright/Chromium, compared side-by-side against `docs/aseptaclean-FINAL-v2.html`
+rendered directly from disk at the same two widths. Section order, spacing, gradients, card
+treatment, credential bar, stages, record artifact, pricing, founder, FAQ, form, and final CTA all
+match the mockup. Three real deviations found and fixed during this pass (not left as known gaps):
+
+1. **Hero eyebrow missing its leading rule.** `Hero.astro` used `class="eyebrow"` instead of
+   `class="ac-eyebrow eyebrow"`, so it never picked up the shared `::before` line rule from
+   `global.css`. Fixed.
+2. **Header nav/CTA copy didn't match the HTML file.** `navigation` in `site.ts` still had the
+   pre-port labels ("Overview," "Who It Is For," "How It Works," "What Is Included") and
+   `site.offer.primaryCta` was still "Get My 24-Hour Handoff Plan." Both replaced with the HTML
+   file's literal text ("Services / Method / The Record / About / FAQ" and "Request an
+   assessment"), consistent with the copy-supersession decision above.
+3. **Hero embedded a `QuickHandoffForm` the mockup doesn't have.** Confirmed with owner and
+   removed; the mockup's hero is two buttons + record-sample link + three chips only. The
+   `#request` section (built this session) and the sticky mobile bar remain the fast paths to the
+   form. `MobileCTA.astro`'s hero-visibility `IntersectionObserver` target updated from the removed
+   `.hero__form-block` to `.hero .actions` so its show/hide behavior still works.
+
+**Screenshot methodology note:** the Property Handoff Record uses a scroll-triggered opacity
+reveal (`docs/11-COMPOSITION-AND-TYPE.md` §7 / `docs/18-VISUAL-DIRECTION.md` §8, both retained —
+one scroll reveal on the artifact, `prefers-reduced-motion` respected). A `fullPage: true`
+Playwright screenshot resizes the viewport rather than performing a real incremental scroll, so
+the first two comparison captures showed the record as blank. Verified via computed-style checks
+(`getComputedStyle(...).opacity`) that a real scroll-into-view resolves it to `opacity: 1` within
+the existing 640ms transition and it stays visible on scrolling away — this is the reveal working
+as designed, not a defect. Final comparison screenshots used a real `scrollIntoViewIfNeeded()` +
+settle wait before capture.
+
+**Lighthouse (mobile, `astro preview`, simulated throttling):**
+
+| Category | Score | Target |
+| --- | --- | --- |
+| Accessibility | 100 | 100 |
+| SEO | 100 | ≥95 |
+| Performance | 91 | ≥95 |
+
+Two real accessibility defects found and fixed (both were literal colors carried over from the
+HTML file, which does not itself claim WCAG compliance):
+- `.sept` ("clean" in the wordmark), `--ac-color-blue-500` (`#4a7fc1`) on white measured 4.12:1,
+  below the 4.5:1 floor for 18px bold text. Changed the header wordmark's `.sept` to
+  `--ac-color-blue-deep` (6.69:1); `blue-500` is unchanged everywhere else (icon chips, borders,
+  non-text uses) where it still matches the mockup exactly.
+- Credential-bar caption text and other `--ac-color-ink-400` uses (`#8494a8`) on white measured
+  3.09:1. Token value darkened to `#617087` (5.03:1) — same muted-gray role, no component changed.
+- Footer `.flegal` legal text, `#68809d` on navy-950, measured 4.34:1. Darkened to `#7891a9`
+  (5.41:1).
+- Logo links and the mobile-menu toggle used an `aria-label` that didn't include their visible
+  text (WCAG 2.5.3 Label in Name / axe `label-content-name-mismatch`). Removed the label overrides
+  and added `.visually-hidden` suffix text instead, so the accessible name is computed from (and
+  therefore always contains) the visible text.
+
+SEO's first measurement came back 66 — traced to `astro build` having been run without
+`PUBLIC_DEPLOYMENT_ENV=production` set, which correctly (by existing, intentional design in
+`SeoHead.astro`) emits `noindex, nofollow` for any non-production build. Not a page defect;
+re-running the build with the env var set resolved it to `index, follow` and the SEO score to 100.
+
+**Performance gap (91 vs ≥95 target) — real but environment-caused, not closed this session.**
+`astro preview` is a local Node dev server: it serves `dist/`'s CSS uncompressed over HTTP/1.1
+with no CDN caching. Confirmed directly — `curl -I` on the two render-blocking CSS files
+(`BaseLayout.*.css` at 18,386 bytes, `index.*.css` at 20,326 bytes) returned no
+`Content-Encoding` header even when the request declared `Accept-Encoding: gzip, br`. Piping the
+same files through `gzip -c` locally drops them to 4,634 and 3,899 bytes respectively — a ~78%
+reduction that any real static host (this project deploys to Cloudflare Pages per the `wrangler`
+devDependency) applies automatically via brotli/gzip and HTTP/2, which Lighthouse's local run
+cannot reflect. The `render-blocking-insight` and `network-dependency-tree-insight` audits (the
+two largest point losses) are downstream of this uncompressed-transfer artifact. Re-run Lighthouse
+against the deployed Cloudflare Pages preview (or `wrangler pages dev dist`, which does compress)
+before treating 91 as the production number — this session did not have that deployment available
+to test against.
+
+Schema validated structurally (not against Google's live Rich Results Test, which requires a
+public URL): `@graph` contains `Organization`, `WebSite`, `WebPage`, `LocalBusiness` (required
+`name`/`url` present, plus `address`, `geo`, `areaServed`), three `Service` entries (each with
+`serviceType`/`provider`), and one `FAQPage` with exactly 6 well-formed `Question`/`acceptedAnswer`
+pairs matching the visible FAQ text verbatim (same `faqItems` array). Zero occurrences of
+`aggregateRating` anywhere in the built output.

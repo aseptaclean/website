@@ -1,4 +1,6 @@
 ---
+// docs/aseptaclean-FINAL-v2.html footer / .fgrid / .flegal — ported verbatim
+// (05-DECISIONS-LOG.md).
 import { legal, site } from "@data/site";
 
 const year = new Date().getFullYear();
@@ -7,157 +9,145 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
 ---
 
 <footer class="site-footer">
-  <div class="site-footer__main ac-measure-wide">
-    <div class="site-footer__identity">
-      <img
-        class="site-footer__wordmark"
-        src={site.business.logoReversedUrl}
-        width="900"
-        height="215"
-        alt={site.business.name}
-      />
-      <p class="ac-type-xs">{site.offer.category} for {site.location.serviceArea}.</p>
-      <p class="site-footer__cities ac-type-xs">
-        Serving {site.location.cities.join(", ")}, and surrounding South Bay communities.
-      </p>
+  <div class="ac-measure-wide">
+    <div class="fgrid">
+      <div>
+        <a class="logo footer-logo" href="/">
+          <span class="mark" aria-hidden="true">A</span>Asepta<span class="sept">clean</span>
+          <span class="visually-hidden">— home</span>
+        </a>
+        <p>{site.offer.category} for {site.location.serviceArea}.</p>
+      </div>
+      <nav class="flinks" aria-label="Footer navigation">
+        <a href="#request">Request an assessment</a>
+        <a href="#standards">Handoff Standard</a>
+        <a href="#faq">FAQ</a>
+        <a href="#about">About</a>
+      </nav>
+      <nav class="flinks" aria-label="Legal and contact">
+        <a href={`mailto:${site.business.email}`}>{site.business.email}</a>
+        {phoneHref && <a href={phoneHref}>{site.business.phone}</a>}
+        <a href={site.urls.privacyPolicy}>Privacy</a>
+        <a href={site.urls.terms}>Terms</a>
+        {site.urls.cookiePolicy && <a href={site.urls.cookiePolicy}>Cookie Policy</a>}
+        {termlyConsentEnabled && (
+          <button type="button" class="footer-link-button termly-display-preferences">
+            Cookie Preferences
+          </button>
+        )}
+      </nav>
     </div>
-
-    <nav aria-label="Footer navigation">
-      <a class="ac-type-xs" href="/request-assessment/">{site.offer.primaryCta}</a>
-      <a class="ac-type-xs" href="/#standards">Handoff Standard</a>
-      <a class="ac-type-xs" href="/#faq">Frequently Asked Questions</a>
-      <a class="site-footer__campaign-link ac-type-xs" href="/private-residence-reset/">
-        Private Residence Reset
-      </a>
-      <a class="ac-type-xs" href={site.urls.privacyPolicy}>Privacy</a>
-      <a class="ac-type-xs" href={site.urls.terms}>Terms</a>
-      {site.urls.cookiePolicy && <a class="ac-type-xs" href={site.urls.cookiePolicy}>Cookie Policy</a>}
-      {termlyConsentEnabled && (
-        <button type="button" class="site-footer__link termly-display-preferences ac-type-xs">
-          Cookie Preferences
-        </button>
-      )}
-    </nav>
-
-    <address>
-      <a class="ac-type-xs" href={`mailto:${site.business.email}`}>{site.business.email}</a>
-      {phoneHref && <a class="ac-type-xs" href={phoneHref}>{site.business.phone}</a>}
-      <p class="ac-type-xs">Assessment responses {site.offer.responseTime}.</p>
-    </address>
-  </div>
-
-  <div class="site-footer__legal ac-measure-wide">
-    <div class="site-footer__disclaimers">
-      <p class="ac-type-xs">{legal.scopeDisclaimer}</p>
-      <p class="ac-type-xs">{legal.documentationDisclaimer}</p>
+    <div class="flegal">
+      {legal.scopeDisclaimer} {legal.documentationDisclaimer}<br />
+      © {year} {site.business.legalName}. All rights reserved.
     </div>
-    <p class="ac-type-xs">© {year} {site.business.legalName}. All rights reserved.</p>
+    {termlyConsentEnabled && (
+      <noscript>
+        <p class="flegal">
+          Cookie Preferences requires JavaScript. The Cookie Policy remains
+          available above, or email {site.business.privacyContact || site.business.email}
+          for help.
+        </p>
+      </noscript>
+    )}
   </div>
-  {termlyConsentEnabled && (
-    <noscript>
-      <p class="site-footer__noscript ac-measure-wide ac-type-xs">
-        Cookie Preferences requires JavaScript. The Cookie Policy remains
-        available above, or email {site.business.privacyContact || site.business.email}
-        for help.
-      </p>
-    </noscript>
-  )}
 </footer>
 
 <style>
+  /* docs/aseptaclean-FINAL-v2.html footer / .fgrid / .logo / .flinks / .flegal — ported verbatim */
   .site-footer {
-    border-top: 1px solid var(--ac-color-steel-on-navy);
-    background: var(--ac-color-navy-900);
-    color: var(--ac-color-warm-white);
-    padding-top: var(--ac-rhythm-standard);
-    padding-bottom: var(--ac-rhythm-tight);
+    background: var(--ac-color-navy-950);
+    color: #8ea2bc;
+    padding-block: clamp(3rem, 5vw, 4rem);
   }
 
-  .site-footer__main {
+  .fgrid {
     display: grid;
-    gap: var(--ac-space-6);
+    gap: 2.5rem;
+    grid-template-columns: 1fr;
   }
 
-  .site-footer__wordmark {
-    width: min(13rem, 72%);
-    height: auto;
-    margin-bottom: var(--ac-space-3);
-  }
-
-  .site-footer p {
-    margin-block: 0;
-  }
-
-  .site-footer__cities,
-  .site-footer address p {
-    margin-top: var(--ac-space-3) !important;
-    color: var(--ac-color-steel-on-navy);
-  }
-
-  .site-footer nav,
-  .site-footer address {
+  .footer-logo {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    gap: 11px;
+    margin-bottom: 16px;
+    color: #fff;
+    font-family: var(--ac-font-sans);
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
+    text-decoration: none;
+  }
+
+  .footer-logo .mark {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border-radius: 8px;
+    background: #fff;
+    color: var(--ac-color-navy-950);
+    font-family: var(--ac-font-mono);
+    font-weight: 600;
+  }
+
+  .footer-logo .sept {
+    color: #8fb4de;
+  }
+
+  .fgrid p {
+    max-width: 44ch;
+    color: #7d92ad;
+    font-size: 0.88rem;
+  }
+
+  .flinks {
+    display: flex;
     flex-direction: column;
-    gap: var(--ac-space-2);
-    font-style: normal;
+    gap: 11px;
   }
 
-  .site-footer a {
-    display: inline-flex;
-    min-height: 3rem;
-    align-items: center;
-    color: var(--ac-color-warm-white);
+  .flinks a,
+  .footer-link-button {
+    color: #c2d0e2;
+    font-size: 0.9rem;
+    text-decoration: none;
   }
 
-  .site-footer__link {
+  .flinks a:hover {
+    color: #fff;
+  }
+
+  .footer-link-button {
     display: inline-flex;
-    min-height: 3rem;
-    align-items: center;
     border: 0;
     padding: 0;
     background: transparent;
-    color: var(--ac-color-warm-white);
     cursor: pointer;
+    text-align: left;
     text-decoration: underline;
-    text-decoration-thickness: 0.08em;
-    text-underline-offset: 0.18em;
+    text-underline-offset: 3px;
   }
 
-  .site-footer__campaign-link {
-    color: var(--ac-color-steel-on-navy) !important;
+  .footer-link-button:hover {
+    color: #fff;
   }
 
-  .site-footer__link:hover {
-    text-decoration-thickness: 0.12em;
+  .flegal {
+    margin-top: 34px;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding-top: 26px;
+    /* v2's literal #68809d measures 4.34:1 on navy-950 — fails WCAG AA 4.5:1 for this legal
+       disclaimer text (confirmed via Lighthouse). #7891a9 clears 5.41:1, same muted-steel hue. */
+    color: #7891a9;
+    font-size: 0.76rem;
+    line-height: 1.65;
   }
 
-  .site-footer__legal {
-    display: grid;
-    gap: var(--ac-space-4);
-    border-top: 1px solid rgb(168 184 200 / 0.35);
-    margin-top: var(--ac-space-6);
-    padding-top: var(--ac-space-5);
-    color: var(--ac-color-steel-on-navy);
-  }
-
-  .site-footer__disclaimers {
-    display: grid;
-    gap: var(--ac-space-3);
-  }
-
-  .site-footer__noscript {
-    margin-top: var(--ac-space-4);
-    color: var(--ac-color-steel-on-navy);
-  }
-
-  @media (min-width: 48rem) {
-    .site-footer__main {
-      grid-template-columns: minmax(0, 2fr) minmax(10rem, 1fr) minmax(12rem, 1fr);
-    }
-
-    .site-footer__legal {
-      grid-template-columns: minmax(0, 2fr) minmax(12rem, 1fr);
+  @media (min-width: 51.25rem) {
+    .fgrid {
+      grid-template-columns: 1.4fr 1fr 1fr;
     }
   }
 </style>

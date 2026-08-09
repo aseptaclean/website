@@ -1,0 +1,88 @@
+---
+// docs/aseptaclean-FINAL-v2.html .card / .card-img / .card-body — ported verbatim
+// (05-DECISIONS-LOG.md). Gradient slot stands in for a photograph until Phase 0 assets land
+// (docs/18-VISUAL-DIRECTION.md §10, retained); role="presentation" per the porting brief.
+interface Props {
+  title: string;
+  glyph: string;
+  gradient: "v1" | "v2" | "v3";
+  photoNote: string;
+  pill?: string;
+}
+
+const { title, glyph, gradient, photoNote, pill } = Astro.props;
+---
+
+<article class="ac-card">
+  <div class={`ac-card__image ac-card__image--${gradient}`} role="presentation">
+    <span class="ac-card__glyph" aria-hidden="true">{glyph}</span>
+    <span class="ac-card__photo-note">{photoNote}</span>
+  </div>
+  <div class="ac-card__body">
+    {pill && <span class="ac-card__pill">{pill}</span>}
+    <h3 class="ac-type-h3">{title}</h3>
+    <p class="ac-type-body">
+      <slot />
+    </p>
+    <a class="ac-card__link" href="#included">What&rsquo;s included →</a>
+  </div>
+</article>
+
+<style>
+  .ac-card__image--v1 {
+    background: linear-gradient(150deg, #27436f, #10233f);
+  }
+
+  .ac-card__image--v2 {
+    background: linear-gradient(150deg, #4a7fc1, #1c355e);
+  }
+
+  .ac-card__image--v3 {
+    background: linear-gradient(150deg, #7a9cc6, #2e5c9e);
+  }
+
+  .ac-card__photo-note {
+    position: absolute;
+    right: 12px;
+    bottom: 10px;
+    color: rgba(255, 255, 255, 0.5);
+    font-family: var(--ac-font-mono);
+    font-size: 0.56rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .ac-card__pill {
+    align-self: flex-start;
+    border-radius: 100px;
+    background: var(--ac-color-blue-pale);
+    padding: 4px 9px;
+    color: var(--ac-color-blue-deep);
+    font-family: var(--ac-font-mono);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .ac-card__body p {
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.92rem;
+  }
+
+  .ac-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: auto;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .ac-card__link:hover {
+    color: var(--ac-color-navy-900);
+  }
+</style>

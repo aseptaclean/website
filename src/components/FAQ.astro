@@ -1,27 +1,56 @@
 ---
-import { homepage } from "@data/site";
+// docs/aseptaclean-FINAL-v2.html FAQ section — ported verbatim, including the six-question set
+// (05-DECISIONS-LOG.md supersedes docs/06-APPROVED-HOMEPAGE-COPY.md's larger FAQ set for this
+// section). index.astro's FAQPage JSON-LD reads this same list so schema matches visible copy.
+export const faqItems = [
+  {
+    question: "Can I approve the project remotely?",
+    answer:
+      "Yes, when access and decision authority are clear. Scope review, approvals, updates, and closeout can be handled electronically."
+  },
+  {
+    question: "Will you throw anything away without asking?",
+    answer:
+      "No. The scope identifies keep, remove, and review areas. Uncertain items are not automatically discarded."
+  },
+  {
+    question: "Do you handle animal or organic conditions?",
+    answer:
+      "Yes — cleaning of animal-affected and organic conditions is included under our organic pathogen endorsement, as cleaning within lawful scope. We do not make decontamination or health-safety determinations."
+  },
+  {
+    question: "What happens if a hazardous condition is discovered?",
+    answer:
+      "Work stops on that item. We document it, tell you what we found, and refer you to the appropriate licensed specialist."
+  },
+  {
+    question: "What can change the price?",
+    answer:
+      "Concealed conditions or customer-requested additions that materially change the work — documented before work proceeds, never as a surprise invoice."
+  },
+  {
+    question: "How quickly can the project begin?",
+    answer:
+      "Assessment responses go out within one business day. Scheduling depends on scope, access, and the deadline."
+  }
+] as const;
 ---
 
 <section class="faq" id="faq" aria-labelledby="faq-title">
-  <div class="ac-measure-read faq__layout">
-    <header>
-      <p class="ac-eyebrow">Before you request a plan</p>
-      <h2 id="faq-title" class="ac-type-h2">Questions that affect scope, authority, and timing</h2>
-      <p class="ac-type-body">
-        These answers describe the assessment process. The signed scope controls
-        the actual project.
-      </p>
-    </header>
+  <div class="ac-measure-wide">
+    <p class="ac-eyebrow">Before you request a plan</p>
+    <h2 id="faq-title" class="faq__title">Questions that affect scope, authority, and timing</h2>
+    <p class="faq__intro">These answers describe the assessment process. The signed scope controls the actual project.</p>
 
-    <div class="faq__list">
+    <div class="faq-list">
       {
-        homepage.faq.map((item, index) => (
-          <details open={index === 0}>
+        faqItems.map((item) => (
+          <details>
             <summary>
-              <h3 class="ac-type-h3">{item.question}</h3>
-              <span class="faq__toggle" aria-hidden="true" />
+              {item.question}
+              <span class="faq-list__pm" aria-hidden="true">+</span>
             </summary>
-            <p class="ac-type-body">{item.answer}</p>
+            <p>{item.answer}</p>
           </details>
         ))
       }
@@ -30,90 +59,69 @@ import { homepage } from "@data/site";
 </section>
 
 <style>
+  /* docs/aseptaclean-FINAL-v2.html .faq / .faq-list / details / summary — ported verbatim */
   .faq {
     background: var(--ac-color-warm-white);
-    padding-top: var(--ac-rhythm-tight);
-    padding-bottom: 0;
   }
 
-  .faq__layout {
+  .faq__title {
+    margin-bottom: 8px;
+    font-size: clamp(1.9rem, 3.2vw, 2.5rem);
+  }
+
+  .faq__intro {
+    margin-bottom: 30px;
+    color: var(--ac-color-ink-600);
+  }
+
+  .faq-list {
     display: grid;
-    gap: var(--ac-space-6);
-  }
-
-  h2 {
-    max-width: 20ch;
-    margin-top: var(--ac-space-3);
-  }
-
-  header > p.ac-type-body {
-    max-width: 34rem;
-    margin-top: var(--ac-space-4);
-  }
-
-  .faq__list {
-    margin-top: var(--ac-space-6);
-    border-top: 2px solid var(--ac-color-navy-900);
+    gap: 12px;
+    max-width: 820px;
   }
 
   details {
-    border-bottom: 1px solid var(--ac-color-rule);
+    overflow: hidden;
+    border: 1px solid var(--ac-color-line);
+    border-radius: var(--ac-r-sm);
+    background: #fff;
+    transition: 0.15s;
+  }
+
+  details[open] {
+    border-color: var(--ac-color-blue-500);
+    box-shadow: var(--ac-shadow-card);
   }
 
   summary {
-    display: grid;
-    min-height: 4rem;
-    cursor: pointer;
-    grid-template-columns: 1fr 1.5rem;
+    display: flex;
     align-items: center;
-    gap: var(--ac-space-3);
-    padding-block: var(--ac-space-4);
+    justify-content: space-between;
+    gap: 16px;
+    cursor: pointer;
     list-style: none;
+    padding: 19px 22px;
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-display);
+    font-size: 1.02rem;
+    font-weight: 600;
   }
 
   summary::-webkit-details-marker {
     display: none;
   }
 
-  h3,
+  .faq-list__pm {
+    flex-shrink: 0;
+    color: var(--ac-color-blue-deep);
+    font-family: var(--ac-font-mono);
+  }
+
   details p {
+    max-width: 68ch;
     margin: 0;
-  }
-
-  details p {
-    max-width: 50rem;
-    margin: 0 2rem var(--ac-space-5) 0;
-    color: var(--ac-color-ink-500);
-  }
-
-  .faq__toggle {
-    position: relative;
-    width: 1rem;
-    height: 1rem;
-    justify-self: end;
-  }
-
-  .faq__toggle::before,
-  .faq__toggle::after {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background: var(--ac-color-navy-800);
-    content: "";
-    transition: transform var(--ac-transition-fast);
-  }
-
-  .faq__toggle::after {
-    transform: rotate(90deg);
-  }
-
-  details[open] .faq__toggle::after {
-    transform: rotate(0);
-  }
-
-  summary:hover h3 {
-    color: var(--ac-color-navy-800);
+    padding: 0 22px 20px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.92rem;
   }
 </style>

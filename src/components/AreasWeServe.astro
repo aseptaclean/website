@@ -1,0 +1,58 @@
+---
+// docs/18-VISUAL-DIRECTION.md §6 row 8 — "Areas we serve," pill list, existing city set, [NONE]
+// image.
+import { site } from "@data/site";
+---
+
+<section class="areas-served" aria-labelledby="areas-served-title">
+  <div class="ac-measure-intimate">
+    <p class="ac-eyebrow">Areas we serve</p>
+    <h2 id="areas-served-title" class="ac-type-h2">{site.location.serviceArea}</h2>
+
+    <ul class="areas-served__pills">
+      {site.location.cities.map((city) => <li>{city}</li>)}
+    </ul>
+    <p class="areas-served__note ac-type-sm">
+      And surrounding {site.location.county} communities.
+    </p>
+  </div>
+</section>
+
+<style>
+  .areas-served {
+    background: var(--ac-color-warm-white);
+    padding-top: var(--ac-rhythm-tight);
+    padding-bottom: 0;
+    text-align: center;
+  }
+
+  h2 {
+    margin-top: var(--ac-space-3);
+  }
+
+  .areas-served__pills {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--ac-space-3);
+    margin: var(--ac-space-6) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .areas-served__pills li {
+    max-width: none;
+    border: 1px solid var(--ac-color-blue-500);
+    border-radius: 999px;
+    padding: 0.5rem 1.1rem;
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-sm);
+    font-weight: 600;
+  }
+
+  .areas-served__note {
+    margin: var(--ac-space-5) 0 0;
+    color: var(--ac-color-ink-500);
+  }
+</style>

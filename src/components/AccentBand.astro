@@ -1,0 +1,51 @@
+---
+// docs/aseptaclean-FINAL-v2.html .band — ported verbatim (05-DECISIONS-LOG.md).
+// docs/18-VISUAL-DIRECTION.md §4/§6 row 5 (retained): one accent band per page, maximum.
+import { site } from "@data/site";
+---
+
+<div class="band">
+  <div class="ac-measure-wide band__inner">
+    <h2>Working against a listing, transfer, or family deadline?</h2>
+    <div class="band__right">
+      <span class="band__phone">Assessment response {site.offer.responseTime}</span>
+      <a href="#request" class="btn btn-on-light">Request an assessment →</a>
+    </div>
+  </div>
+</div>
+
+<style>
+  .band {
+    background: linear-gradient(135deg, var(--ac-color-blue-deep), var(--ac-color-navy-800));
+    color: #fff;
+    padding-block: clamp(2.5rem, 5vw, 3.5rem);
+  }
+
+  .band__inner {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ac-s4) var(--ac-s5);
+  }
+
+  .band h2 {
+    max-width: 26ch;
+    color: #fff;
+    font-size: clamp(1.5rem, 2.8vw, 2.1rem);
+    line-height: 1.15;
+  }
+
+  .band__right {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .band__phone {
+    color: #cfe0f2;
+    font-family: var(--ac-font-mono);
+    font-size: 0.95rem;
+  }
+</style>

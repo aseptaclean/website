@@ -17,6 +17,12 @@ if (isProductionBuild && rawStartingPrice === OWNER_DECISION_REQUIRED) {
       "point) before this value may reach a production build."
   );
 }
+// Non-production builds/previews (e.g. bare `astro dev`) load no PUBLIC_STARTING_PRICE, so
+// rawStartingPrice falls back to the placeholder string above and Number(...) of it is NaN.
+// Resolve to a real number when possible; otherwise null so the UI renders a text fallback
+// instead of formatting NaN as currency ("$NaN").
+const parsedStartingPrice = Number(rawStartingPrice);
+const startingPrice = Number.isFinite(parsedStartingPrice) ? parsedStartingPrice : null;
 
 const rawPhone = value("PUBLIC_PHONE");
 const phoneUri = rawPhone ? `tel:${rawPhone.replace(/[^\d+]/g, "")}` : "";
@@ -81,8 +87,13 @@ export const site = {
     ),
     assessmentFee: Number(value("PUBLIC_ASSESSMENT_FEE", "195")),
     assessmentFeeTerms: "Credited toward an approved project booked within 7 days.",
-    startingPrice: Number(rawStartingPrice),
-    primaryCta: "Get My 24-Hour Handoff Plan"
+    startingPrice,
+    // docs/aseptaclean-FINAL-v2.html — every CTA reads "Request an assessment" and anchors to
+    // #request (05-DECISIONS-LOG.md supersedes docs/06-APPROVED-HOMEPAGE-COPY.md §8.4 for `/`).
+    primaryCta: "Request an assessment"
+    // remediationLaunchLabel removed — docs/18-VISUAL-DIRECTION.md §7: environmental/human
+    // biohazard remediation does not appear on the live site at all (not even a "coming soon"
+    // tag) until the credential is held. See docs/05-DECISIONS-LOG.md.
   },
   residenceOffer: {
     name: "Private Residence Reset",
@@ -99,6 +110,9 @@ export const site = {
       "PUBLIC_SERVICE_AREA",
       "San Jose and the South Bay"
     ),
+    // docs/18-VISUAL-DIRECTION.md §7 credential bar reads "... · Santa Clara County" —
+    // a distinct, more specific fact than the metro-area serviceArea phrase above.
+    county: value("PUBLIC_SERVICE_COUNTY", "Santa Clara County"),
     cities: [
       "San Jose",
       "Mountain View",
@@ -150,12 +164,12 @@ export const site = {
   }
 } as const;
 
+// docs/aseptaclean-FINAL-v2.html nav — ported verbatim (05-DECISIONS-LOG.md). Labels match the
+// mockup exactly; hrefs point at this build's actual section ids (the mockup used bare "#").
 export const navigation = [
-  { label: "Overview", href: "/#overview" },
-  { label: "Who It Is For", href: "/#who-it-is-for" },
-  { label: "How It Works", href: "/#how-it-works" },
-  { label: "What Is Included", href: "/#included" },
-  { label: "Standards", href: "/#standards" },
+  { label: "Services", href: "/#included" },
+  { label: "Method", href: "/#standards" },
+  { label: "The Record", href: "/#record" },
   { label: "About", href: "/#about" },
   { label: "FAQ", href: "/#faq" }
 ] as const;
@@ -223,31 +237,36 @@ export const homepage = {
       name: "Scope",
       detail:
         "We write down what stays, what goes, what gets cleaned, what is excluded, and what the project will require.",
-      record: "Room-by-room plan"
+      record: "Room-by-room plan",
+      status: "Defined"
     },
     {
       name: "Protect",
       detail:
         "Keep areas are identified. Uncertain and important discovered items are separated and reported. We do not decide what mattered to your family.",
-      record: "Keep and review controls"
+      record: "Keep and review controls",
+      status: "Held for review"
     },
     {
       name: "Clear",
       detail:
         "Approved unwanted contents are consolidated, removed, or coordinated for disposal within the signed scope.",
-      record: "Clearing status"
+      record: "Clearing status",
+      status: "Complete"
     },
     {
       name: "Reset",
       detail:
         "The property receives the detailed cleaning included for its next handoff.",
-      record: "Cleaning status"
+      record: "Cleaning status",
+      status: "Complete"
     },
     {
       name: "Verify",
       detail:
         "You receive completion photographs, documented exceptions, and a Property Handoff Record showing how the approved scope was closed.",
-      record: "Closeout package"
+      record: "Closeout package",
+      status: "Issued"
     }
   ],
   sampleRecord: {
@@ -290,6 +309,61 @@ export const homepage = {
     finalReviewStatus: "Approved scope closed",
     closeoutDate: "Confirmed at final walkthrough, prior to handoff"
   },
+  // docs/18-VISUAL-DIRECTION.md §6.1 — "Three cards, not six." Launch set is exactly these
+  // three; add a fourth only once completed jobs generate owned photography for it. Per §7,
+  // environmental remediation does not appear on the live site until the credential is held —
+  // the prior "coming soon" remediation card (Session B, 05-DECISIONS-LOG.md) is removed, not
+  // just relabeled. `imageStatus` records which imagery policy (§5) governs the slot until a
+  // real photo lands: "owned" = must be owner-shot or the slot stays empty; "atmosphere" =
+  // licensed/self-shot atmosphere permitted.
+  serviceCards: [
+    {
+      title: "Complex property clearing",
+      detail:
+        "Whole-property clearing for heavy accumulation, estate, and abandoned-contents conditions — nonhazardous contents only, within a signed scope.",
+      imageLabel: "Process kit, flat-lay",
+      imageStatus: "owned"
+    },
+    {
+      title: "Reset & restoration cleaning",
+      detail:
+        "Deep reset cleaning after clearing — kitchens, baths, interiors, and accessible surfaces, within the signed scope.",
+      imageLabel: "Clean kitchen or bath detail",
+      imageStatus: "atmosphere"
+    },
+    {
+      title: "Animal & organic condition cleaning",
+      detail:
+        "Heavy organic conditions and animal waste, cleaned under our organic pathogen endorsement. This is cleaning only — not a decontamination, sterilization, or health-safety determination.",
+      imageLabel: "Completed job photo",
+      imageStatus: "owned"
+    }
+  ],
+  // docs/18-VISUAL-DIRECTION.md §6 row 4 — "Why Aseptaclean," a four-item icon grid, [NONE]
+  // image. Each line restates a claim already approved and rendered elsewhere on the page
+  // (Hero's trust line, homepage.assurance) rather than introducing a new claim.
+  whyAseptaclean: [
+    {
+      title: "One accountable company",
+      detail:
+        "Clearing, cleaning, and closeout documentation are managed under one written scope instead of coordinated across separate vendors."
+    },
+    {
+      title: "Written scope, not verbal promises",
+      detail:
+        "What stays, what leaves, what gets cleaned, and what is excluded is written down before work begins."
+    },
+    {
+      title: "Nothing removed without approval",
+      detail:
+        "Uncertain items are identified for review, not automatically discarded, and added work requires documented authorization."
+    },
+    {
+      title: "Documented closeout",
+      detail:
+        "Completion photographs, noted exceptions, and a Property Handoff Record show how the approved scope was closed."
+    }
+  ],
   includedScope: [
     "Nonhazardous contents clearing",
     "Bagging and consolidation",
@@ -298,6 +372,7 @@ export const homepage = {
     "Kitchen and bathroom deep cleaning",
     "Cabinet and appliance interiors when included",
     "Floors, baseboards, doors, and accessible surfaces",
+    "Heavy organic conditions and animal waste, cleaned under our organic pathogen endorsement",
     "Approved disposal coordination",
     "Completion photographs and remote closeout"
   ],

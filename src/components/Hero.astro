@@ -1,231 +1,172 @@
 ---
+// docs/aseptaclean-FINAL-v2.html HERO — ported verbatim (05-DECISIONS-LOG.md supersedes
+// docs/06-APPROVED-HOMEPAGE-COPY.md §8.2-8.6 for this section's copy). No inline form here —
+// the mockup's hero is two buttons + record link + chips only; the form lives at #request.
 import { homepage, site } from "@data/site";
-import QuickHandoffForm from "@components/QuickHandoffForm.astro";
-
-const trustItems = [
-  site.business.insuranceStatus,
-  "Written scope",
-  "Nothing removed without approval",
-  "No unapproved charges",
-  "Documented closeout"
-].filter(Boolean);
 
 const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
 ---
 
 <section class="hero" id="overview" aria-labelledby="hero-title">
-  <div class="ac-measure-wide hero__layout">
+  <div class="ac-measure-wide hero__shell">
     <div class="hero__main">
-      <p class="hero__eyebrow ac-eyebrow">
-        Property Cleanout &amp; Deep Cleaning <span aria-hidden="true">/</span>
-        {site.location.serviceArea}
-      </p>
-      <h1 id="hero-title" class="ac-type-h1">
-        Walk Back Into a Property That Finally Feels <span class="ac-mark">Ready.</span>
-      </h1>
-      <p class="hero__lead ac-type-lead">
-        When a home is still full of belongings, unfinished cleaning, and
-        decisions nobody has made, it follows you everywhere.
-      </p>
-
-      <div class="hero__trust" aria-label="Project controls">
+      <p class="ac-eyebrow eyebrow">Property clearing &middot; restoration &middot; animal &amp; organic conditions</p>
+      <h1 id="hero-title">Complex properties returned to a <span class="hl">controlled, documented</span> condition.</h1>
+      <p class="lead">Hoarding, estate, and severe-condition properties — cleared, cleaned, and closed out under one signed scope, by one accountable operator.</p>
+      <div class="approve">Nothing leaves the property without your written approval.</div>
+      <div class="actions">
+        <a href="#request" class="btn btn-on-light">Request an assessment →</a>
         {
-          trustItems.map((item) => (
-            <span class="ac-type-xs">{item}</span>
-          ))
+          smsHref ? (
+            <a href={smsHref} class="btn btn-ghost-dark">Text a photo</a>
+          ) : (
+            <a href={phoneHref || "#request"} class="btn btn-ghost-dark">Text a photo</a>
+          )
         }
       </div>
-
-      <p class="hero__detail ac-type-body">
-        Aseptaclean gives you one accountable path through it. You decide what
-        stays. We clear what you approve, complete the defined deep-cleaning
-        scope, and document the result so the property can move to its next
-        owner, tenant, listing, inspection, or family decision.
+      <p class="hero__record-link">
+        Every project closes with a <a href="#record">Property Handoff Record</a> — see a sample below.
       </p>
-
-      <div class="hero__form-block">
-        <QuickHandoffForm formId="hero-quick-form" entryRoute="/#hero" />
-        <p class="hero__form-microcopy ac-type-sm">
-          Send photos and basic property details. We will tell you whether the
-          project fits, what the likely path looks like, and what should happen
-          next {site.offer.responseTime}.
-        </p>
+      <div class="chips">
+        <span class="chip">Written scope before work</span>
+        <span class="chip">No unapproved charges</span>
+        <span class="chip">Documented closeout</span>
       </div>
+    </div>
 
+    <div class="panel">
+      <div class="panel-head"><span>Handoff Status</span><span class="id">HR-1042 &middot; SAMPLE</span></div>
       {
-        phoneHref && (
-          <p class="hero__urgent ac-type-sm">
-            Looking at a complex or time-sensitive property?
-            {" "}
-            <a href={phoneHref}>Call {site.business.phone}</a> and tell us what you are seeing.
-          </p>
+        homepage.sampleRecord.rooms.length > 0 && (
+          <>
+            <div class="prow"><div><div class="lb">Scope</div><div class="sb">Room-by-room, signed</div></div><span class="ac-tag ac-tag--def">Defined</span></div>
+            <div class="prow"><div><div class="lb">Set-aside items</div><div class="sb">Docs · valuables · keys</div></div><span class="ac-tag ac-tag--review">Held</span></div>
+            <div class="prow"><div><div class="lb">Clearing</div><div class="sb">Approved contents</div></div><span class="ac-tag ac-tag--clear">Complete</span></div>
+            <div class="prow"><div><div class="lb">Reset cleaning</div><div class="sb">Kitchen · bath · surfaces</div></div><span class="ac-tag ac-tag--clear">Complete</span></div>
+            <div class="prow"><div><div class="lb">Closeout record</div><div class="sb">Photos + exceptions</div></div><span class="ac-tag ac-tag--def">Issued</span></div>
+          </>
         )
       }
     </div>
-
-    <aside class="hero__criteria" aria-label="The handoff outcome">
-      <p class="hero__criteria-label ac-eyebrow">The handoff outcome</p>
-      <ol>
-        {
-          homepage.handoffStages.map((stage) => (
-            <li>
-              <strong>{stage.name}</strong>
-              <small class="ac-type-sm">{stage.record}</small>
-            </li>
-          ))
-        }
-      </ol>
-      <p class="hero__criteria-note">
-        One approved scope.<br />One accountable company.
-      </p>
-    </aside>
   </div>
 </section>
 
 <style>
+  /* docs/aseptaclean-FINAL-v2.html .hero — ported verbatim */
   .hero {
     position: relative;
     overflow: hidden;
-    background: var(--ac-color-warm-white);
+    padding-top: clamp(2.25rem, 4.5vw, 3.5rem);
+    padding-bottom: clamp(3rem, 6vw, 4.5rem);
+    background:
+      radial-gradient(1100px 500px at 85% -10%, rgba(74, 127, 193, 0.28), transparent 60%),
+      radial-gradient(700px 400px at -5% 110%, rgba(74, 127, 193, 0.15), transparent 55%),
+      linear-gradient(165deg, var(--ac-color-navy-900) 0%, var(--ac-color-navy-950) 70%);
+    color: #fff;
   }
 
-  .hero::after {
+  .hero::before {
     position: absolute;
-    z-index: 0;
-    top: 0;
-    right: max(var(--ac-gutter), calc((100vw - var(--ac-measure-wide)) / 2));
-    width: 1px;
-    height: 100%;
-    background: var(--ac-color-rule);
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+    background-size: 26px 26px;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 80%);
     content: "";
   }
 
-  .hero__layout {
+  .hero__shell {
     position: relative;
     z-index: 1;
     display: grid;
-    padding-top: var(--ac-rhythm-open);
-    padding-bottom: 0;
+    gap: clamp(2.5rem, 5vw, 4.5rem);
+    align-items: center;
   }
 
   .hero__main {
     max-width: 49rem;
   }
 
-  .hero__eyebrow span {
-    padding-inline: 0.25rem;
-    color: var(--ac-color-blue-500);
+  .hero .eyebrow {
+    color: #8fb4de;
   }
 
-  h1 {
-    max-width: 17ch;
-    margin: var(--ac-space-5) 0 0;
+  .hero .eyebrow::before {
+    background: #8fb4de;
   }
 
-  .hero__lead {
-    max-width: 41rem;
-    margin: var(--ac-space-6) 0 0;
+  .hero h1 {
+    margin-bottom: 22px;
+    color: #fff;
+    font-size: clamp(2.5rem, 5vw, 3.8rem);
+    line-height: 1.05;
+    text-wrap: balance;
   }
 
-  .hero__detail {
-    max-width: 41rem;
-    margin: var(--ac-space-4) 0 0;
-    color: var(--ac-color-ink-500);
+  .hero h1 .hl {
+    color: #a8c8ec;
   }
 
-  .hero__form-block {
-    max-width: 30rem;
-    margin-top: var(--ac-space-6);
+  .hero .lead {
+    max-width: 46ch;
+    margin: 0 0 26px;
+    color: #b9c9dd;
+    font-size: 1.12rem;
   }
 
-  .hero__form-microcopy {
-    margin: var(--ac-space-3) 0 0;
-    color: var(--ac-color-ink-500);
+  .hero .approve {
+    margin-bottom: 30px;
+    border-left: 3px solid var(--ac-color-gold);
+    padding: 4px 0 4px 16px;
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
   }
 
-  .hero__urgent {
-    margin: var(--ac-space-4) 0 0;
-    color: var(--ac-color-ink-500);
-  }
-
-  .hero__criteria {
-    position: relative;
-    margin-top: var(--ac-space-7);
-    border-top: 1px solid var(--ac-color-navy-800);
-    padding-top: var(--ac-space-4);
-  }
-
-  .hero__criteria ol {
-    margin: var(--ac-space-4) 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .hero__criteria li {
-    display: grid;
-    max-width: none;
-    grid-template-columns: minmax(4.5rem, 0.7fr) 1.5fr;
-    align-items: baseline;
-    gap: var(--ac-space-3);
-    border-top: 1px solid var(--ac-color-rule);
-    padding-block: var(--ac-space-3);
-  }
-
-  .hero__criteria small {
-    color: var(--ac-color-ink-500);
-  }
-
-  .hero__criteria strong {
-    color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-sans);
-  }
-
-  .hero__criteria-note {
-    margin: var(--ac-space-5) 0 0;
-    color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-sm);
-    font-weight: 700;
-    line-height: 1.45;
-  }
-
-  .hero__trust {
+  .hero .actions {
     display: flex;
     flex-wrap: wrap;
-    gap: 0;
-    max-width: 41rem;
-    margin-top: var(--ac-space-5);
+    gap: 12px;
+    margin-bottom: 22px;
   }
 
-  .hero__trust span {
-    color: var(--ac-color-navy-900);
-    font-weight: 700;
-    letter-spacing: 0.02em;
+  .hero__record-link {
+    margin-bottom: 18px;
+    color: #8fb4de;
+    font-size: 0.85rem;
   }
 
-  .hero__trust span:not(:last-child)::after {
-    margin-inline: 0.65rem;
-    color: var(--ac-color-blue-500);
-    content: "/";
+  .hero__record-link a {
+    color: #cfe0f2;
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
-  @media (min-width: 64rem) {
-    .hero__layout {
-      grid-template-columns: minmax(0, 1.38fr) minmax(18rem, 1fr);
-      align-items: start;
-      gap: clamp(3rem, 8vw, 8rem);
-    }
+  .hero .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
 
-    .hero__criteria {
-      align-self: start;
-      margin-top: 0;
-      border-top: 0;
-      border-left: 1px solid var(--ac-color-rule);
-      padding: var(--ac-space-4) 0 var(--ac-space-3) clamp(2rem, 4vw, 4rem);
-    }
+  .chip {
+    border: 1px solid rgba(168, 192, 220, 0.35);
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 6px 11px;
+    color: #a8c0dc;
+    font-family: var(--ac-font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
 
-    .hero__criteria-note {
-      margin-top: clamp(3rem, 6vh, 5rem);
+  .panel {
+    box-shadow: var(--ac-shadow-pop);
+  }
+
+  @media (min-width: 60rem) {
+    .hero__shell {
+      grid-template-columns: 1.25fr 1fr;
     }
   }
 </style>

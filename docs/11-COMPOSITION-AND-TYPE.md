@@ -1,9 +1,24 @@
 # 11 — Composition and Type Authority
 
-**Status:** Active. Binds `/` and every future page.
+**Status:** Active, partially superseded. Binds `/` and every future page.
 **Repo location:** `docs/11-COMPOSITION-AND-TYPE.md`
 **Supersedes:** `09-PREMIUM-VISUAL-AND-TYP…` — archive it in Session 2. Two typography
 authorities in one folder is how a future session produces a wrong answer nobody can trace.
+
+**Superseded in part by `docs/18-VISUAL-DIRECTION.md`** (owner-directed, 2026-08-08, ranks above
+this file in `AGENTS.md`'s precedence chain). `18`'s preamble lists five items it supersedes in
+this file: the §2 serif budget, the §6 eyebrow cap of seven, the §6 Mark three-appearance cap, the
+§9 icon+title+paragraph/Newsreader-count/hairline-cap audit items, and "the 2px sharp-corner rule
+wherever it appears." Each is struck in place below with a pointer to `18`. On the last item: no
+literal "2px" radius rule exists anywhere in this file's text (confirmed by search) — the only
+place a `--ac-radius: 2px` value is written down is the orphaned, non-authoritative
+`docs/17-REFERENCE-TRANSLATION-MARTEL.md` (already flagged out of the precedence chain,
+`05-DECISIONS-LOG.md`). Current code uses sharp/0-radius borders by convention (Session B,
+`05-DECISIONS-LOG.md`) without a codified numeric rule in either this file or `tokens.css`. There
+is nothing to strike here as a result; `18` §3's `--ac-radius-card: 12px` is the current rule for
+card containers going forward. Everything else in this file — §1, §3, §4, §7, §10.2, §10.4, §10.5,
+and the parts of §2/§6/§9 not named above — remains active per `18`'s own "Explicitly retained"
+list.
 
 This file exists because the site reads as templated, and the two reported symptoms —
 inconsistent heading sizes and inconsistent spacing — are not the disease. This file names the
@@ -50,9 +65,12 @@ size has no job on this page, delete it.
 | `--ac-text-sm` | Captions, helper text, form hints | | Instrument Sans |
 | `--ac-text-xs` | Eyebrows, labels, artifact fields, metadata, numerals | | Instrument Sans |
 
-**Serif is spent, not sprinkled.** Newsreader appears in exactly nine places: one display line,
+~~**Serif is spent, not sprinkled.** Newsreader appears in exactly nine places: one display line,
 one H1, seven H2s. A serif used everywhere reads as a template with a serif on it. A serif used
-nine times reads as authorship.
+nine times reads as authorship.~~ **Superseded by `docs/18-VISUAL-DIRECTION.md` §2** — serif is no
+longer a capped budget. `18` §2 states it plainly: "Serif is now the heading system, not a spent
+budget. Use it on every H1–H3." That also moves H3's face from Instrument Sans (this table, above)
+to serif — see `18` §2's own type table for the current authoritative face assignment.
 
 **Three-in-a-row ban, enforceable.** No three consecutive text elements may sit within 15% of
 each other on size, weight, and color simultaneously. If an H3, a lead, and a body paragraph
@@ -112,7 +130,7 @@ Every cell is a decision. Codex implements this table and does not improvise aro
 | 4 | Category contrast | `wide` | `standard` | Navy 900 full-bleed band | `h2` + two-column comparison at `body` |
 | 5 | Five-Stage Standard | `wide`, rail 22% / content 78% | `open` | Warm white | `h2` + 5× (`xs` numeral + `h3` + `body`) |
 | 6 | Property Handoff Record | `bleed`, artifact 1320px | `vast` | Steel 100, artifact on white with paper edge | `h2` + `xs` field labels only |
-| 7 | Confidence and fit | `wide`, three internal blocks at differing widths | `standard` | Warm white | `h2` + `h3` items + `body` |
+| 7 | Confidence and fit | `wide`, two internal blocks at differing widths | `standard` | Warm white | `h2` + `h3` items + `body` |
 | 8 | Final decision | `intimate` | `open` | Navy 950 full-bleed | `h2` + `lead` + CTA |
 | — | FAQ | `read` | `tight` — continues from 8 | Warm white | `h3` questions + `body` answers |
 | — | Footer | `wide` | `standard` | Navy 950 | `xs` throughout |
@@ -126,18 +144,38 @@ Movements 4 and 5 are both `wide` and adjacent — resolved by the asymmetric in
 so optical measure differs even though the container matches. Never leave two identical
 compositions adjacent.
 
-Row 7's "three internal blocks at differing widths" means differing *proportional* widths sized
-to each block's actual content length — not three equal-width columns, and not any fixed ratio
-either. The assurance ledger, pricing, and founder blocks do not carry comparable amounts of
-content, and CSS Grid sizes a row's height to its tallest cell regardless of how the `fr` widths
-are split between cells. Forcing all three into one parallel row — at `5fr/4fr/3fr` or any other
-fixed split — stretches the row to the longest block's height and leaves the shorter blocks
-trailing in empty space for the rest of that height. This is what produced the dead-space defect
-fixed in Phase 4 Session 8 (`05-DECISIONS-LOG.md`, audit item 12): the assurance ledger got
-capped at `max-width: 64%` instead of a column fraction, and pricing/founder were paired into
-their own shorter two-column strip below it rather than kept as a third parallel column. Do not
-revert this movement to three equal (or fixed-ratio) columns — the fix is the width-to-content
-match, not a CSS bug to patch differently.
+Row 7's "two internal blocks at differing widths" means differing *proportional* widths sized to
+each block's actual content length — not equal-width columns. The assurance ledger runs roughly 3x
+longer than the pricing block, and CSS Grid sizes a row's height to its tallest cell regardless of
+how the `fr` widths are split between cells. This is what produced the dead-space defect fixed in
+Phase 4 Session 8 (`05-DECISIONS-LOG.md`, audit item 12): the assurance ledger got capped at
+`max-width: 64%` instead of a column fraction, and the shorter block(s) were kept off that same
+grid row entirely. As of Session B (`05-DECISIONS-LOG.md`), the founder/operator content that used
+to be the third block here moved to its own band earlier on the page (see §5.1) — pricing is now a
+single standalone block, capped at `max-width: 28rem`, sitting on its own row below the assurance
+ledger rather than paired into a strip. Do not force pricing back into a same-row column with the
+ledger — the fix is still the width-to-content match, not a CSS bug to patch differently.
+
+### 5.1 Inserted detail bands (Session B, 2026-08-07)
+
+Two content bands were added between the 8 canonical movements to move capability and founder
+proof earlier on the page, per an owner-directed clinical/structured pass
+(`05-DECISIONS-LOG.md`). Both budgets in §2 and §6.1 (Newsreader at exactly 9 uses, eyebrows capped
+at 7) were already full before this change, so neither band is a 9th "movement": both use an
+`.ac-type-h3` headline (Instrument Sans, not Newsreader) and carry no eyebrow. They read as
+detail/proof panels — bordered, document-like — rather than another full editorial movement.
+
+| Band | Position | Container | Rhythm | Surface | Type entry |
+| --- | --- | --- | --- | --- | --- |
+| Scope of work | After Hero, before Recognition | `wide` | `tight` (continuation of Hero) | Paper (bordered 3-column strip) | `h3` items + `sm` body, no eyebrow |
+| Operator accountability | After Recognition, before "What finished feels like" | `wide` | `open` | Paper (bordered 2-column panel) | `h3` headline + `body` + `xs` credential ledger, no eyebrow |
+
+The operator band absorbs the founder content that previously lived inside Confidence and Fit
+(§5 row 7) and takes over the `#about` anchor the header nav already links to. Hero's own aside
+(the handoff-outcome list) was also rebuilt into a bordered "Handoff Status" panel with a real
+header row, using the same neutral bordered-tag convention `HandoffRecord.astro` already
+established for status (border + text, no semantic color, so it doesn't collide with the site's
+red/green use elsewhere) — see §6.1 for the eyebrow-scope note this required.
 
 ---
 
@@ -147,15 +185,29 @@ Cheap pages contain nothing below 14px. Expensive pages carry a substantial amou
 utility type doing real work, and that density is most of what reads as craft.
 
 1. **Eyebrows.** `--ac-text-xs`, uppercase, `0.08em` tracking, steel 300, above every H2. States
-   the section's function, not a slogan: `SCOPE` · `WHAT IS EXCLUDED` · `THE RECORD`. Seven total.
+   the section's function, not a slogan: `SCOPE` · `WHAT IS EXCLUDED` · `THE RECORD`.
+   ~~Seven total. That count is scoped to eyebrows sitting directly above a movement H2; the
+   Hero's own top eyebrow carries the `.ac-eyebrow` class but sits above the H1, not an H2, and is
+   out of scope for this cap.~~ **The seven-total cap is superseded by `docs/18-VISUAL-DIRECTION.md`
+   §preamble** — no numeric limit on eyebrow count applies going forward. As of Session B
+   (`05-DECISIONS-LOG.md`), the Hero aside's former `hero__criteria-label` eyebrow no longer
+   exists — the aside was rebuilt into a bordered "Handoff Status" panel with its own header row
+   (mono label + a "Sample" tag), not an eyebrow. The two new detail bands in §5.1 use no eyebrow
+   at all.
 2. **Stage numerals.** `01`–`05` on the stage rail, Newsreader at `--ac-text-h3`, steel 200,
    positioned as a margin element rather than inline. Numbered markers are earned here because
    the content is a genuine sequence. They appear nowhere else.
 3. **Hairline rules.** 1px steel 200, marking a change of register, never decoration. Six maximum.
+   Used sparingly by design — most movement-to-movement boundaries rely on the Surface column in
+   §5 (a background change) rather than a rule; a hairline is for a register change within one
+   surface, not the default way to close a section.
 4. **Artifact metadata.** Field labels, status stamps, photo indices at `--ac-text-xs`. This is
    the densest type on the page and should look like it.
-5. **The Mark.** Solid navy rectangle behind one word. Three appearances maximum: the H1, the
-   movement 3 display line, the final CTA headline. The only decorative device on the site.
+5. **The Mark.** Solid navy rectangle behind one word. ~~Three appearances maximum: the H1, the
+   movement 3 display line, the final CTA headline.~~ **The three-appearance cap is superseded by
+   `docs/18-VISUAL-DIRECTION.md` §preamble** — no numeric limit applies going forward. The Mark
+   remains the site's one decorative typographic device (distinct from the photography and card
+   system `18` introduces, which are imagery/structure, not typographic ornament).
 
 ---
 
@@ -201,11 +253,15 @@ Screenshot `/` at 390px and 1440px, then answer each in writing:
 - [ ] Do any two adjacent sections share container width *and* vertical padding? → fail
 - [ ] Is any font-size declared on a heading tag anywhere in the codebase? → fail
 - [ ] Is the H1-to-body ratio below 2.5:1 at 390px or 4:1 at 1440px? → fail
-- [ ] Does Newsreader appear more than nine times on the page? → fail
+- [ ] ~~Does Newsreader appear more than nine times on the page?~~ **Struck — superseded by
+      `docs/18-VISUAL-DIRECTION.md` §preamble.** No Newsreader count check applies.
 - [ ] Three consecutive text elements within 15% on size, weight, and color? → fail
 - [ ] More than one dramatic moment? → fail
-- [ ] Three or more sections using icon + title + paragraph as their structure? → fail
-- [ ] More than six hairline rules? → fail
+- [ ] ~~Three or more sections using icon + title + paragraph as their structure?~~ **Struck —
+      superseded by `docs/18-VISUAL-DIRECTION.md` §preamble.** Icon+title+paragraph is an expected
+      card structure under `18` §3; no ban applies.
+- [ ] ~~More than six hairline rules?~~ **Struck — superseded by `docs/18-VISUAL-DIRECTION.md`
+      §preamble.** No hairline-count cap applies; see `18` §9 for the current audit list.
 - [ ] More than two deep-dark sections consecutively? → fail
 - [ ] Cover the logo. Could this be a generic cleaning company, a SaaS product, or a junk
       hauler? → fail, and name which movements caused it

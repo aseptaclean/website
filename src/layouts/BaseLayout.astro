@@ -4,11 +4,13 @@ import Analytics from "@components/Analytics.astro";
 import Header from "@components/Header.astro";
 import MobileCTA from "@components/MobileCTA.astro";
 import SeoHead from "@components/SeoHead.astro";
+import StatusRibbon from "@components/StatusRibbon.astro";
 import { site } from "@data/site";
 import "@styles/fonts.css";
 import "@styles/global.css";
 import newsreaderFontUrl from "../../node_modules/@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2?url";
-import instrumentSansFontUrl from "../../node_modules/@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url";
+import interFontUrl from "../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+import plexMonoFontUrl from "../../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2?url";
 
 interface Props {
   title: string;
@@ -55,7 +57,14 @@ const termlyConsent = site.integrations.termly;
       rel="preload"
       as="font"
       type="font/woff2"
-      href={instrumentSansFontUrl}
+      href={interFontUrl}
+      crossorigin
+    />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={plexMonoFontUrl}
       crossorigin
     />
     <SeoHead
@@ -76,6 +85,7 @@ const termlyConsent = site.integrations.termly;
   </head>
   <body class:list={{ "has-mobile-cta": showMobileCta }}>
     <a class="skip-link" href="#main-content">Skip to main content</a>
+    <StatusRibbon />
     <Header />
     <main id="main-content" tabindex="-1">
       <slot />

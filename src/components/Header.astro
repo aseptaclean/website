@@ -5,35 +5,31 @@ const phoneHref = site.business.phoneUri;
 ---
 
 <header class="site-header">
-  <div class="site-header__inner ac-measure-wide">
-    <a class="site-header__brand" href="/" aria-label={`${site.business.name} home`}>
-      <img
-        src={site.business.logoUrl}
-        width="900"
-        height="215"
-        alt=""
-      />
+  <div class="site-header__inner ac-measure-wide nav">
+    <a class="logo" href="/">
+      <span class="mark" aria-hidden="true">A</span>Asepta<span class="sept">clean</span>
+      <span class="visually-hidden">— home</span>
     </a>
 
     <nav class="desktop-nav" aria-label="Primary navigation">
-      <ul>
+      <ul class="nav-links">
         {navigation.map((item) => (
-          <li class="ac-type-xs"><a href={item.href}>{item.label}</a></li>
+          <li><a href={item.href}>{item.label}</a></li>
         ))}
       </ul>
       {
         phoneHref && (
-          <a class="site-header__tel ac-type-xs" href={phoneHref}>{site.business.phone}</a>
+          <a class="site-header__tel" href={phoneHref}>{site.business.phone}</a>
         )
       }
-      <a class="button" href="/request-assessment/">{site.offer.primaryCta}</a>
+      <a class="btn btn-primary" href="#request">Request an assessment</a>
     </nav>
 
     <div class="site-header__mobile-actions">
       {
         phoneHref && (
           <a
-            class="site-header__tel site-header__tel--compact ac-type-xs"
+            class="site-header__tel site-header__tel--compact"
             href={phoneHref}
             aria-label={`Call ${site.business.phone}`}
           >
@@ -43,8 +39,9 @@ const phoneHref = site.business.phoneUri;
       }
 
       <details class="mobile-nav">
-        <summary aria-label="Open navigation">
-          <span class="ac-type-sm">Menu</span>
+        <summary>
+          <span>Menu</span>
+          <span class="visually-hidden"> navigation</span>
           <span class="mobile-nav__mark" aria-hidden="true"></span>
         </summary>
         <nav aria-label="Mobile navigation">
@@ -60,18 +57,6 @@ const phoneHref = site.business.phoneUri;
 </header>
 
 <script>
-  const siteHeader = document.querySelector<HTMLElement>(".site-header");
-  const condenseThreshold = 48;
-
-  if (siteHeader) {
-    const updateCondensed = () => {
-      siteHeader.classList.toggle("site-header--condensed", window.scrollY > condenseThreshold);
-    };
-
-    window.addEventListener("scroll", updateCondensed, { passive: true });
-    updateCondensed();
-  }
-
   const mobileNavigation = document.querySelector<HTMLDetailsElement>(".mobile-nav");
   const mobileNavigationSummary =
     mobileNavigation?.querySelector<HTMLElement>("summary");
@@ -91,47 +76,79 @@ const phoneHref = site.business.phoneUri;
 </script>
 
 <style>
+  /* docs/aseptaclean-FINAL-v2.html header / .nav / .logo — ported verbatim (05-DECISIONS-LOG.md) */
   .site-header {
     position: sticky;
-    z-index: 20;
+    z-index: 50;
     top: 0;
-    border-bottom: 1px solid var(--ac-color-rule);
-    background: color-mix(in srgb, var(--ac-color-warm-white) 96%, transparent);
+    border-bottom: 1px solid var(--ac-color-line);
+    background: rgba(255, 255, 255, 0.94);
     backdrop-filter: blur(12px);
   }
 
   .site-header__inner {
     display: flex;
-    min-height: 4.5rem;
     align-items: center;
     justify-content: space-between;
-    gap: var(--ac-space-4);
-    transition: min-height var(--ac-transition-fast);
+    height: 60px;
   }
 
-  .site-header--condensed .site-header__inner {
-    min-height: 3.5rem;
-  }
-
-  .site-header__brand {
-    display: inline-flex;
-    min-height: 3rem;
+  .logo {
+    display: flex;
     align-items: center;
+    gap: 11px;
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-sans);
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.03em;
     text-decoration: none;
   }
 
-  .site-header__brand img {
-    width: clamp(8.75rem, 40vw, 10.5rem);
-    height: auto;
-    transition: width var(--ac-transition-fast);
+  .logo .mark {
+    display: grid;
+    width: 34px;
+    height: 34px;
+    place-items: center;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--ac-color-navy-800), var(--ac-color-navy-950));
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
+    color: #fff;
+    font-family: var(--ac-font-mono);
+    font-weight: 600;
   }
 
-  .site-header--condensed .site-header__brand img {
-    width: clamp(7.5rem, 32vw, 8.5rem);
+  .logo .sept {
+    /* v2's literal --blue (#4a7fc1) measures 4.12:1 on white — fails WCAG AA 4.5:1 for this
+       18px bold text (confirmed via Lighthouse). --ac-color-blue-deep clears 6.69:1 while
+       staying the same hue family; blue-500 is unchanged everywhere else (icon chips,
+       borders, non-text uses) where it still matches the mockup exactly. */
+    color: var(--ac-color-blue-deep);
   }
 
   .desktop-nav {
     display: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 26px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.86rem;
+    font-weight: 500;
+  }
+
+  .nav-links a {
+    color: inherit;
+    text-decoration: none;
+    transition: 0.15s;
+  }
+
+  .nav-links a:hover {
+    color: var(--ac-color-navy-900);
   }
 
   .site-header__tel {
@@ -142,6 +159,11 @@ const phoneHref = site.business.phoneUri;
     white-space: nowrap;
   }
 
+  .site-header .btn {
+    padding: 9px 16px;
+    font-size: 0.82rem;
+  }
+
   .site-header__mobile-actions {
     display: flex;
     align-items: center;
@@ -149,7 +171,7 @@ const phoneHref = site.business.phoneUri;
   }
 
   .site-header__tel--compact {
-    font-size: clamp(0.7rem, 3vw, var(--ac-text-xs));
+    font-size: clamp(0.7rem, 3vw, 0.82rem);
   }
 
   .mobile-nav {
@@ -197,15 +219,14 @@ const phoneHref = site.business.phoneUri;
 
   .mobile-nav nav {
     position: fixed;
-    inset: 4.5rem 0 auto;
-    border-bottom: 1px solid var(--ac-color-rule);
+    inset: 60px 0 auto;
+    border-bottom: 1px solid var(--ac-color-line);
     padding: var(--ac-space-3) var(--ac-gutter) var(--ac-space-5);
-    background: var(--ac-color-warm-white);
-    box-shadow: 0 1rem 2rem rgb(18 40 64 / 0.08);
+    background: #fff;
+    box-shadow: 0 1rem 2rem rgb(16 35 63 / 0.08);
   }
 
-  .mobile-nav ul,
-  .desktop-nav ul {
+  .mobile-nav ul {
     margin: 0;
     padding: 0;
     list-style: none;
@@ -215,21 +236,14 @@ const phoneHref = site.business.phoneUri;
     display: flex;
     min-height: 3rem;
     align-items: center;
-    border-bottom: 1px solid var(--ac-color-rule);
+    border-bottom: 1px solid var(--ac-color-line);
     font-family: var(--ac-font-sans);
     font-weight: 600;
     text-decoration: none;
+    color: var(--ac-color-ink-900);
   }
 
-  @media (min-width: 64rem) {
-    .site-header__brand img {
-      width: clamp(9.5rem, 14vw, 11rem);
-    }
-
-    .site-header--condensed .site-header__brand img {
-      width: clamp(7.75rem, 11vw, 9rem);
-    }
-
+  @media (min-width: 60rem) {
     .site-header__mobile-actions {
       display: none;
     }
@@ -238,24 +252,6 @@ const phoneHref = site.business.phoneUri;
       display: flex;
       align-items: center;
       gap: var(--ac-space-5);
-    }
-
-    .desktop-nav ul {
-      display: flex;
-      align-items: center;
-      gap: clamp(0.8rem, 1.4vw, 1.35rem);
-    }
-
-    .desktop-nav a:not(.button) {
-      display: flex;
-      min-height: 3rem;
-      align-items: center;
-      font-weight: 600;
-      text-decoration: none;
-    }
-
-    .desktop-nav .button {
-      white-space: nowrap;
     }
   }
 </style>
