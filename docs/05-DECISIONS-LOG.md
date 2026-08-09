@@ -1552,3 +1552,477 @@ public URL): `@graph` contains `Organization`, `WebSite`, `WebPage`, `LocalBusin
 `serviceType`/`provider`), and one `FAQPage` with exactly 6 well-formed `Question`/`acceptedAnswer`
 pairs matching the visible FAQ text verbatim (same `faqItems` array). Zero occurrences of
 `aggregateRating` anywhere in the built output.
+
+## Architecture decision — `docs/19-SYSTEM-AND-SITEMAP.md` adopted as growth-architecture authority (2026-08-09)
+
+**Decision.** `docs/19-SYSTEM-AND-SITEMAP.md` (v3, owner-directed, dated 2026-08-08) is adopted
+as the binding growth-architecture authority for the site: the five-stage business system
+(CAPTURE→RESPOND→CONVERT→DELIVER→COMPOUND), the phased sitemap and per-page SEO specs, the
+service/city/question-post wireframes, the triage-quiz spec, and the GBP setup spec. It sits
+below `01-QUALITY-GUARDRAILS.md` (claims) and `18-VISUAL-DIRECTION.md` (visual) in the
+precedence chain — where doc 19 names copy, `01` still outranks it.
+
+**Effect on `07-ONE-PAGE-DIRECTIVE.md`.** Doc 19's phased sitemap (Part 2) supersedes `07`'s
+one-page-only scope restriction: the site is no longer capped at the four launch routes plus
+legal pages. `07` is marked superseded-for-scope at its own status line, with a pointer to doc
+19, rather than deleted — its non-scope content (conflict-resolution table §3, form-architecture
+split §7, guarantee reconciliation §6, launch-phase QA reconciliation §11) remains active and
+unaffected, since doc 19 does not re-decide any of it.
+
+**`AGENTS.md` changes.** Added doc 19 to the precedence chain immediately below
+`18-VISUAL-DIRECTION.md` (new position 5; `06-APPROVED-HOMEPAGE-COPY.md` and
+`07-ONE-PAGE-DIRECTIVE.md` shift down one position each, with `07`'s chain entry itself
+annotated as superseded-for-scope). Rewrote the `## Scope` section: it now points to doc 19's
+phase map as the binding route architecture and keeps the original one-page launch-scope text
+below it, labeled historical, so the routes actually shipped in Phase 1 remain documented.
+
+**Reason.** Owner-directed. Doc 19 is explicitly self-contained ("every future build session
+must be able to execute from this doc alone") and supersedes ad hoc route decisions with a
+phase-gated sitemap (Phase 1 live routes → Phase 3/3b/3c service, checklist, and city pages,
+gated on crew capacity/certification/real jobs → Phase 4 assessment quiz and question posts).
+Building past a phase gate in doc 19 (e.g. a biohazard page before certification is held, or a
+city page with no completed job in that city) is out of scope regardless of this architecture
+change.
+
+**Files affected:** `AGENTS.md` (precedence chain, Scope section), `docs/07-ONE-PAGE-DIRECTIVE.md`
+(status line only), `docs/19-SYSTEM-AND-SITEMAP.md` (no change — already committed as the source
+document). No application code changed.
+
+## Homepage re-port pass — copy-fidelity fixes, doc 19 §2.2 SEO layer completion, verification (2026-08-09)
+
+Follow-up to "`docs/aseptaclean-FINAL-v2.html` becomes the binding homepage implementation
+target" above. That pass's own component-by-component copy fidelity had drifted from the HTML
+file's literal text in several places, found via a full section-by-section diff against
+`docs/aseptaclean-FINAL-v2.html` this session:
+
+- `homepage.pricingDrivers` had a 7th item ("Concealed conditions") not present in the six-item
+  v2 list. Removed.
+- `homepage.sampleRecord`'s four scope-summary cells and all four room-note strings were
+  paraphrased longer than v2's literal text, and `excludedConditions` asserted "None encountered
+  on this project" — a factual claim v2 never made. Reverted to v2's exact wording.
+- `homepage.handoffStages`: the Scope and Protect stage detail strings had small grammatical
+  padding not in v2 ("what the project will require" vs. "requires"; "Keep areas are identified"
+  vs. "Keep areas identified"). The Reset stage was missing v2's entire trailing clause
+  ("...including animal and organic conditions within lawful scope."). All three corrected to
+  verbatim v2 text.
+- `homepage.serviceCards`: all three card bodies had reworded detail text (dropped "cabinet and
+  appliance interiors" and "for the next handoff" from card 2; added "sterilization" to card 3's
+  exclusion list, which v2 does not list). Corrected to v2's literal text.
+
+**SEO layer (doc 19 §2.2) completed.** Two gaps found against doc 19's exact HOMEPAGE spec:
+- Meta description was a paraphrase ("Whole-property clearing and deep cleaning in San Jose and
+  the South Bay. Written scope before work, documented closeout with a Property Handoff Record.")
+  rather than doc 19's exact required string. Replaced with the verbatim spec text: "Whole-property
+  cleanout and deep cleaning in San Jose & the South Bay. Written scope before work, nothing
+  removed without approval, documented closeout." Title was already exact, unchanged.
+- `LocalBusiness` schema had no `sameAs` field; doc 19 §2.2 requires `sameAs → GBP/Yelp/Nextdoor`.
+  No Yelp/Nextdoor config field existed at all, and the existing `PUBLIC_GBP_URL` was unset.
+  Added `PUBLIC_YELP_URL`/`PUBLIC_NEXTDOOR_URL` to `.env.example` and `src/env.d.ts`, and
+  `site.business.yelpUrl`/`nextdoorUrl` to `src/data/site.ts`, following the exact pattern
+  `googleBusinessProfileUrl` already used. `index.astro` now builds `sameAs` from whichever of
+  the three URLs are actually set and omits the field entirely when none are — per AGENTS.md's
+  "never invent proof" rule, no placeholder or guessed profile URL was written anywhere. All
+  three remain empty today (no owner-confirmed profile URLs yet), so `sameAs` does not appear in
+  the current built output; this is correct, not a defect, and the field will populate itself
+  once `docs/02-OWNER-INPUTS.md`'s outstanding "Google Business Profile URL; active social URLs"
+  item is resolved and the env vars are set.
+- Confirmed `aggregateRating` remains absent everywhere in the built output (grep across
+  `dist/index.html`, zero hits) and FAQPage schema's 6 Question/Answer pairs match the visible
+  `<details>` text character-for-character (verified programmatically, not by eye).
+
+**Lighthouse mobile — methodology note.** First runs against `astro preview` on localhost with
+Lighthouse's default simulated mobile throttling scored Performance 54–56 and SEO 58–100
+(unstable). Root causes isolated, not worked around:
+- The SEO/noindex swing was `.env.production`'s own `PUBLIC_DEPLOYMENT_ENV=staging` value (that
+  file is deliberately a pre-launch preview config per its header comment and
+  `PUBLIC_LAUNCH_MODE=preview`/`PUBLIC_FORM_ENABLED=false` — not a bug). Audited instead against
+  an uncommitted, gitignored-equivalent local-only `.env.lighthouse-audit` mode file (deleted
+  after use, `.env.production` never modified — confirmed via `git status` before and after) with
+  `PUBLIC_DEPLOYMENT_ENV=production` so the real indexable/production-shaped build could be
+  measured. SEO resolved to 100 immediately.
+- The Performance swing (54 → 93 → 100 across three otherwise-identical runs) tracked this
+  machine's Lighthouse `benchmarkIndex` (1198 → 1279 → higher), i.e. CPU contention from running
+  headless Chrome, the Node preview server, and everything else on the machine at once, amplified
+  by Lighthouse's default 4x mobile CPU throttle. Re-running with `--throttling-method=provided`
+  (no synthetic slowdown layered on top of an already-loaded machine) produced stable 93–100
+  scores with a 254 KiB total page weight, 5ms server response, and only two small render-blocking
+  CSS files (4.2 KB / 4.9 KB) as the only remaining deductions — consistent with the prior
+  session's own finding that `astro preview` serves uncompressed, non-CDN assets and is not
+  representative of the real Cloudflare Pages deployment target. Accessibility and Best Practices
+  scored 100 on every run. Treat 93–100 (not the initial 54–56) as the site's actual Performance
+  number; a from-CDN Lighthouse run remains the more decisive test once deployed, per the prior
+  session's same caveat.
+
+**Verification.** `astro check`: 0 errors, 58 files. `npm run build`: 9 pages, clean (both in
+normal committed-`.env.production` state and, transiently, in the isolated production-mode audit
+build — repo restored to the committed-config build afterward). Screenshots at 390 and 1440
+captured with a full scroll-through pass (the Property Handoff Record section uses a
+scroll-triggered `IntersectionObserver` reveal per Session 6; a naive full-page screenshot without
+scrolling captures it mid-`opacity:0`, which is a screenshot-methodology artifact, not a site
+defect — confirmed by checking computed opacity before/after `scrollIntoViewIfNeeded()`) and
+compared side-by-side against `docs/aseptaclean-FINAL-v2.html` rendered at the same widths:
+section order, spacing, and content match. Schema validated structurally (LocalBusiness required
+fields present, FAQPage's 6 Question/Answer pairs well-formed and text-matched to visible copy,
+zero `aggregateRating`/`review` occurrences anywhere in the graph).
+
+Files changed: `src/data/site.ts`, `src/pages/index.astro`, `src/env.d.ts`, `.env.example`.
+
+## Service-area decision — 10-city South Bay & Peninsula footprint (2026-08-09)
+
+**Decision.** The site's declared service area is the 10-city list in
+`docs/19-SYSTEM-AND-SITEMAP.md` Part 5: San Jose, Mountain View, Sunnyvale, Santa Clara,
+Campbell, Los Altos, Los Altos Hills, Los Gatos, Palo Alto, and Atherton (+ surrounding).
+Copy, schema, and GBP setup all use **"South Bay & Peninsula"** framing rather than a
+county-only label, because Atherton (and Palo Alto/Los Altos Hills, to a lesser degree) sit in
+San Mateo County, not Santa Clara County — a county-only label would misdescribe part of the
+declared area. This is doc 19's decision, carried into the site rather than a new one, and is
+logged here because it governs `LocalBusiness.areaServed`, the homepage meta description, and
+the `/service-areas/` hub copy, all of which are build-facing.
+
+**Effect.** Homepage `LocalBusiness` schema's `areaServed` is the 10-city list (San Jose
+`geo`); `/service-areas/` hub content groups the ten into four clusters (San Jose core / West
+Valley: Campbell–Los Gatos–Saratoga adj. / North County: Sunnyvale–Mtn View–Santa Clara /
+Peninsula: Los Altos–LAH–Palo Alto–Atherton) per doc 19 §2.2. Doc 19 §2.1's Phase 3c city-page
+gate still applies per city — no `/service-areas/{city}/` page exists yet for any of the ten
+until a real completed job in that city supports one; Palo Alto, Atherton, and Los Altos Hills
+are named as priority cities when jobs allow (highest estate-ticket value and Track B fiduciary
+referral density).
+
+**Files affected:** none this session — the 10-city list and cluster framing were already
+present in `docs/19-SYSTEM-AND-SITEMAP.md` and in the previously-built `/service-areas/` draft
+and homepage schema. This entry records the decision itself, which had not been logged
+independently of doc 19's own text.
+
+## Phase 4 — eight unpublished draft pages built; biohazard page exclusion (2026-08-09)
+
+Executed against `docs/19-SYSTEM-AND-SITEMAP.md` Part 2 (§2.1 phase map, §2.2 per-page SEO
+spec) and Part 3 (§3.2 service-page wireframe + tone deltas), per this session's build
+directive. Built eight complete, styled, **unpublished** drafts — `noindex={true}` on every
+page, excluded from `src/pages/sitemap.xml.ts`'s manual allowlist, and not linked from
+`navigation` (`src/data/site.ts`) or `Footer.astro`:
+
+- `/estate-cleanout-checklist/` — the one launch-eligible page in the batch; fully drafted from
+  doc 19 Part 6 (method-derived, not call-derived), still shipped noindex pending owner review.
+- `/estate-cleanout-san-jose/`, `/hoarding-cleanup-san-jose/`, `/animal-waste-cleanup-san-jose/`,
+  `/senior-downsizing-san-jose/` — Phase 3 service pages, each with its own tone delta and
+  first-section composition per doc 19 §3.2's differentiation rule.
+- `/service-areas/` — hub page; renders the county framing paragraph, pill grid, and area
+  clusters, with city links intentionally empty (`cityPages = []` in
+  `src/pages/service-areas/index.astro`) since no `/service-areas/{city}/` page exists yet,
+  per doc 19's hard content gate on city pages.
+- `/deep-cleaning-san-jose/`, `/property-cleanouts-for-managers/` — Phase 3b pages, each
+  carrying a visible internal (not public-facing) launch-gate note: deep cleaning is gated on
+  the B10 checklist being finalized, PM/turnover is gated on crew capacity being confirmed. Both
+  gate notes render in the built HTML but are separate from the page's actual SEO
+  title/description/copy — a deliberate flag for whoever reviews the draft, not indexable
+  content.
+
+**`/biohazard-cleanup-san-jose/` — not built, in any form.** Owner directive this session: no
+draft, no stub, no route. Reason: the TSWMP certification doc 19 §2.2 requires for this page
+("DOES NOT EXIST until certificate held + insurance scope confirmed") is not held —
+`docs/02-OWNER-INPUTS.md` still records `TSWMP public status: pending/unverified; do not publish
+active status`. Confirmed no file, directory, or reference to this route exists anywhere in
+`src/` (`find`/`grep` both return nothing). Per doc 19 §2.2's own instruction, this stays true
+"until unlock: exclusion list shrinks sitewide same day; `01` rewritten first" — i.e. this
+exclusion is not this session's to lift.
+
+**Gated facts and real-call language.** Per this session's directive ("never invent"), every
+spot doc 19 calls for real-call language, a real-job proof line, or a gated operational fact
+was left as a clearly labeled `[OWNER INPUT: description]` placeholder in
+`src/data/servicePages.ts` rather than invented copy — one anonymized real-job proof line per
+service page (six total), the B10 deep-cleaning checklist item list and standalone-scope
+question, and the PM/turnover same-week-availability claim. None of these were fabricated.
+
+**Wording law (page 3, `/animal-waste-cleanup-san-jose/`).** Cleaning under the organic
+pathogen endorsement only — the file was grepped for "biohazard," "remediation,"
+"decontaminat," "saniti[sz]e," "steriliz," "hantavirus," and "rodent" before being marked done;
+zero hits in rendered copy (the sole "biohazard" occurrence in the file is inside a code
+comment naming the banned-word list itself, not page content).
+
+**Differentiation rule.** No two of the six buyer-facing service pages open with the same
+first-section pattern after the hero: estate = Track A family recognition then a Track B
+fiduciary block with its own H2; hoarding = two stacked question-phrased H2s; animal = a single
+short, plain recognition block with no question heading; senior downsizing = one hope-forward
+recognition block plus a standalone referral-note block for senior move managers between SCOPE
+and METHOD; deep cleaning = a recognition block that surfaces the standalone-availability open
+question directly; property managers = Pure Track B, skipping RECOGNITION entirely in favor of
+an immediate fiduciary block. Shared shell only (`CompactHero`, new `ServiceScope` /
+`ServiceMethodRail` / `ServiceProof` / `ServicePricing` / `ServiceFAQ` components) — structure
+still comes from each page's own wireframe. No page shows the full Handoff Record; each shows a
+proof excerpt only, linking to `/handoff-standard/` for the complete annotated version.
+
+**Schema.** Service + FAQPage + BreadcrumbList JSON-LD is written into every service page's
+component now (matching each page's own visible FAQ copy, same pattern as
+`index.astro`/`FAQ.astro`), but doc 19's self-containment rule and this session's directive
+both hold that schema "ships ONLY when the page publishes" — functionally true here because
+`noindex` plus zero sitemap/internal-link presence keeps these pages and their schema out of
+any crawl path. Publishing later is a `noindex` flip per page, not a rebuild.
+
+**Verification.** `astro check`: 0 errors, 77 files. `npm run build`: 21 routes, clean. Verified
+in the built `dist/` output: all eight new pages render `<meta name="robots" content="noindex,
+nofollow">`; `dist/sitemap.xml` contains only the nine pre-existing routes, none of the eight
+new ones; no `biohazard` directory or file exists anywhere under `dist/` or `src/`.
+
+Files added: `src/data/servicePages.ts`; `src/components/ServiceMethodRail.astro`,
+`ServiceProof.astro`, `ServiceScope.astro`, `ServicePricing.astro`, `ServiceFAQ.astro`;
+`src/pages/{estate-cleanout-checklist,estate-cleanout-san-jose,hoarding-cleanup-san-jose,
+animal-waste-cleanup-san-jose,senior-downsizing-san-jose,service-areas,deep-cleaning-san-jose,
+property-cleanouts-for-managers}/index.astro`. No existing file's behavior changed — `site.ts`,
+`sitemap.xml.ts`, navigation, and `Footer.astro` were read but not modified, by design.
+
+## Homepage — 10-city South Bay & Peninsula footprint implemented; Areas We Serve wired in (2026-08-09)
+
+Executes the "Service-area decision — 10-city South Bay & Peninsula footprint" entry above,
+which had been logged as a decision but not yet implemented anywhere in `src/`. Confirmed
+before this session: `site.location.cities` still held the old 5-city list (San Jose, Mountain
+View, Sunnyvale, Santa Clara, Campbell), the ribbon/credential bar/footer still read v2's
+literal "Santa Clara Co." / "San Jose & the South Bay" wording, and `AreasWeServe.astro`
+existed as a built component but was never imported into `index.astro` — the homepage had no
+Areas We Serve section at all.
+
+**Changes.**
+- `src/data/site.ts`: `location.cities` extended to the 10-city list from doc 19 Part 5 (San
+  Jose, Mountain View, Sunnyvale, Santa Clara, Campbell, Los Altos, Los Altos Hills, Los Gatos,
+  Palo Alto, Atherton). Added `location.regionLabel = "South Bay & Peninsula"` as the single
+  source for the framing string used everywhere the footprint is named.
+- `StatusRibbon.astro`, `CredentialBar.astro`: fourth ribbon item and fourth credential-bar cell
+  now read `site.location.regionLabel` instead of v2's literal "San Jose & the South Bay" /
+  "Santa Clara Co." — both a factual correction (Atherton is San Mateo County, not Santa Clara)
+  and the specific ask ("South Bay & Peninsula framing in ribbon, credential bar, and footer").
+- `Footer.astro`: intro line now reads "...for San Jose and the South Bay and the Peninsula."
+- `AreasWeServe.astro`: heading and closing note now read `site.location.regionLabel`
+  ("South Bay & Peninsula") instead of the old `serviceArea`/`county` fields; pill list already
+  mapped over `site.location.cities` so it picked up all 10 automatically.
+- `index.astro`: imported `AreasWeServe` and placed it between `<Pricing />` and
+  `<OperatorAccountability />` — matching `18-VISUAL-DIRECTION.md` §6's binding section map
+  (row 8 "Areas we serve" sits after row 7 Property Handoff Record / before row 9 Founder;
+  Pricing is the v2 section physically between Record and Founder in the DOM, so this is the
+  only slot consistent with both specs). `LocalBusiness.areaServed` and the per-service `Service`
+  schema blocks already mapped over `site.location.cities`, so both picked up the 10-city list
+  with no schema code change required.
+- `.gitignore`: added `.tmp-verify/` (this session's screenshot/Lighthouse scratch output;
+  never committed).
+
+**Not changed.** `/service-areas/index.astro` and `/contact/index.astro` (both unpublished,
+noindex Phase 3 drafts, out of scope for the homepage-port directive) still reference
+`site.location.county`/`serviceArea` directly in their own copy — left as-is since editing
+unpublished draft pages was not part of this session's directive and doc 19's own city-page
+hard-gate language for that hub page is unaffected by the region label change.
+
+**Verification.**
+- `astro check`: 0 errors, 77 files. `npm run build`: 21 routes, clean.
+- `dist/index.html` LocalBusiness JSON-LD: `areaServed` is the 10-city list; `geo` unchanged at
+  San Jose (37.3382, -121.8863); zero `aggregateRating`/`ratingValue`/`reviewCount` occurrences.
+  FAQPage has exactly 6 Question/Answer pairs, each verified programmatically to appear
+  verbatim in the page's visible text.
+- Built HTML: "South Bay & Peninsula" appears 4× (ribbon, credential bar, Areas We Serve
+  heading, Areas We Serve note); all 10 city pills render in the documented order, positioned
+  between the Pricing and Founder sections.
+- Full-page screenshots at 390×* and 1440×* captured with Playwright against both
+  `docs/aseptaclean-FINAL-v2.html` and the live build, section order and copy matching
+  end-to-end. First screenshot pass showed the Property Handoff Record's scroll-reveal section
+  rendering blank — reproduced the prior session's documented caveat that this is a
+  screenshot-methodology artifact (the IntersectionObserver reveal needs a real incremental
+  scroll to fire, not a scroll-to-bottom-then-top jump); confirmed via direct DOM/computed-style
+  inspection that `opacity: 1` / `.record--visible` is reached and persists correctly, then
+  re-captured with a slower step-scroll (700px steps, 150ms settle) that renders the section
+  correctly at both widths — not a site defect.
+- Lighthouse mobile, run against a production-mode build (isolated `--mode lighthouse-audit`
+  env file, deleted after use; `.env.production` never touched — confirmed via `git status`
+  before/after) served over a plain local HTTP server: with `--throttling-method=provided`,
+  Performance 100 / Accessibility 100 / Best Practices 100 / SEO 100. Re-run with Lighthouse's
+  default simulated mobile throttling (the stricter, CPU-contended check) still scored
+  Performance 95 / Accessibility 100 / Best Practices 100 / SEO 100 — meets or exceeds the
+  ≥95/100/≥95 target under both methodologies, not just the lenient one.
+
+Files changed: `src/data/site.ts`, `src/components/StatusRibbon.astro`,
+`src/components/CredentialBar.astro`, `src/components/Footer.astro`,
+`src/components/AreasWeServe.astro`, `src/pages/index.astro`, `.gitignore`.
+
+## Doc 19 adoption — phased architecture, biohazard gate, service area, CTA/scope defaults (2026-08-09)
+
+**(a) Phased growth architecture adopted.** `docs/19-SYSTEM-AND-SITEMAP.md` (v3, owner-directed,
+2026-08-08) is now the growth-architecture authority, placed in `AGENTS.md`'s precedence chain
+below `01-QUALITY-GUARDRAILS.md` (claims) and `18-VISUAL-DIRECTION.md` (visual) — where it names
+copy, `01` still outranks it. It governs the site's phased sitemap (Phase 1 live · Phase 3/3b/3c
+service, checklist, and city pages · Phase 4 assessment/question routes · Phase 5 biohazard,
+gated), per-page SEO specs, wireframes, and the CAPTURE→RESPOND→CONVERT→DELIVER→COMPOUND system.
+Reason: owner decision to move from a one-page-only launch scope to a phased multi-page
+architecture once the flagship offer is live. Do not build ahead of doc 19's phase gates for any
+route. Files affected: `AGENTS.md` precedence chain and Scope section.
+
+**(b) Phase 5 (biohazard) remains fully gated — no build in any form before Gate 4.** Per doc 19
+Part 2 §2.1, Phase 5 is inert until all four activation gates in
+`90-FUTURE-PHASE-BIOHAZARD-STRATEGY.md` clear: TSWMP held, disposal arrangements, claims
+amendment, and owner supersession note. No route, draft, stub, sitemap entry, or nav link may
+exist for any biohazard URL (`/biohazard-cleanup/`, `/blood-cleanup/`,
+`/unattended-death-cleanup/`, `/crime-scene-cleanup/`, `/human-waste-cleanup/`,
+`/sharps-cleanup/`, or the reserved `/encampment-cleanup/` / `/vehicle-biohazard-cleanup/`) before
+Gate 4. Doc 90 does not yet exist in `docs/`; it is referenced prospectively by doc 19 as the
+future gating document. Reason: no certification, TSWMP, disposal arrangement, or claims
+amendment is currently in place — building any biohazard-adjacent artifact now would outrun a
+credential per `AGENTS.md`'s prohibited-claims section. Files affected: none (no biohazard route
+exists; this is a standing constraint on all future sessions).
+
+**(c) Service area confirmed as the 10-city South Bay & Peninsula list.** San Jose, Mountain
+View, Sunnyvale, Santa Clara, Campbell, Los Altos, Los Altos Hills, Los Gatos, Palo Alto, Atherton
+— per doc 19 Part 5. Reason: Atherton is San Mateo County, not Santa Clara, so all copy and
+schema use "South Bay & Peninsula" framing rather than county-only language (already implemented
+in `src/data/site.ts` `location.cities`/`location.regionLabel` per the prior session's entry
+above). Files affected: `src/data/site.ts`, `StatusRibbon.astro`, `CredentialBar.astro`,
+`Footer.astro`, `AreasWeServe.astro`, homepage schema.
+
+**(d) Two owner defaults applied.**
+- Sitewide CTA is **"Request an assessment"**. Doc 90's "Property Assessment" variant is not
+  adopted. Reason: owner preference for consistent, plain-language CTA phrasing across the site;
+  doc 90 is not yet an active authority (still gated per (b) above), so its CTA variant does not
+  govern current-scope pages.
+- **Rodent-droppings services remain out of marketed scope** pending a written crew protocol.
+  Reason: doc 19's animal/organic wording law already prohibits naming hantavirus or
+  rodent-specific conditions until protocol is confirmed (§2.2, ANIMAL/ORGANIC page spec); this
+  entry makes the same constraint explicit as an owner default rather than an inferred reading, so
+  future sessions do not add rodent-specific language or a dedicated page without a written
+  protocol on file. Files affected: none yet (no rodent-specific copy exists); binding on all
+  future animal/organic-condition copy and any future service scope decisions.
+
+## Doc 90 filing and terminology/operations sweep (2026-08-09)
+
+Filed `90-FUTURE-PHASE-BIOHAZARD-STRATEGY.md` as a quarantined future-phase roadmap. Not
+governing. Four activation gates required (see doc header). Sections 10 and 13 are active now;
+all else inert. Not added to the precedence chain, `AGENTS.md`, sitemap, navigation, page briefs,
+or any build task — `19-SYSTEM-AND-SITEMAP.md` already references it correctly (as gated, Phase
+5) per the prior log entry above, and doc 90's own header confirms the same three
+current-use extractions that entry anticipated.
+
+**Doc-name mapping (Task 0).** Doc 90's handoff instructions (§14) name governing docs by
+expected filename that do not match this repo. Per `AGENTS.md`'s precedence chain (the actual
+authority — `docs/AGENTS-PRECEDENCE-BLOCK.md` is an unmerged draft template, not in force):
+claims guardrails = `01-QUALITY-GUARDRAILS.md`; build/sitemap spec = `10-PHASE-4-DEEP-DIVE-
+REPAIR-AUDIT.md` (canonical master spec) plus `19-SYSTEM-AND-SITEMAP.md` (routes/sitemap
+authority); decisions log = `05-DECISIONS-LOG.md` (matches). No `04-CLAIMS-GUARDRAILS.md`,
+`03-VOICE.md`, or `05-OPERATIONS.md` exists in this repo — voice/tone content lives in
+`18-VISUAL-DIRECTION.md` and `01-QUALITY-GUARDRAILS.md`; no operations-authority file exists at
+all. No new governing doc was created to match doc 90's expected names.
+
+**Terminology retirement (Task 2, doc 90 §13).** Repo-wide case-insensitive search for "gross
+filth" / "Gross Filth" / "gross-filth" across `docs/`, `src/`, and all content/components found
+zero customer-facing instances. The only hits are the roadmap itself
+(`90-FUTURE-PHASE-BIOHAZARD-STRATEGY.md`) and two docs that merely state the term must never
+appear (`07-ONE-PAGE-DIRECTIVE.md:121`, `docs/archive/PHASE-4-ONE-PAGE-DIRECTIVE.md:112`, both
+already prohibitive, not usages). No `/gross-filth-cleanup/` route exists anywhere in `src/pages/`
+or git history. No replacement, rename, or redirect was needed or made. No claims/guardrails
+check, `astro check`, build, or screenshots were required since no page changed.
+
+**Buyer research system (Task 3, doc 90 §10).** No `05-OPERATIONS.md` or other operations-
+authority file exists in this repo to check. `19-SYSTEM-AND-SITEMAP.md` §1.5 COMPOUND item 5
+already referenced the six-field system as active but pointed at an operations doc that was never
+created. Added new §1.8 "Inquiry capture — buyer research system" to
+`19-SYSTEM-AND-SITEMAP.md` (the active growth-architecture authority) using doc 90 §10 verbatim,
+rather than creating a new `05-OPERATIONS.md` file, per `AGENTS.md`'s standing rule against
+parallel files with similar names and doc 19's own self-containment rule. Files affected:
+`docs/19-SYSTEM-AND-SITEMAP.md`.
+
+## GSC redirect sweep (2026-08-09)
+
+Owner supplied the indexed-WordPress-URL list from GSC per `19-SYSTEM-AND-SITEMAP.md`'s redirect
+law ("at DNS cutover, every indexed WordPress URL 301s to its nearest new equivalent"). Mapped
+each against the current live route set and `19-SYSTEM-AND-SITEMAP.md` Part 2.1's phased sitemap,
+with corrections to the owner's initial mapping:
+
+- `/request-assessment/` dropped from the redirect list entirely — it is itself a live, canonical
+  route (`docs/07-ONE-PAGE-DIRECTIVE.md` §2; `src/pages/request-assessment.astro`), not a retired
+  WordPress URL. The owner's original mapping would have 301'd a real working route to `/contact/`
+  (which does not exist as a route in the current one-page architecture).
+- `/cookie-policy/` excluded from the redirect list — it is already a live route
+  (`src/data/site.ts` `urls.cookiePolicy`, `src/pages/cookie-policy.astro`), not a page pending
+  future publication. The owner's "→ /privacy/ until Cookie Policy publishes" framing did not
+  match repo state.
+- Six targets (`/families-estate-representatives/`, `/hoarding-cleanup/`,
+  `/hoarding-estate-clearouts/`, `/gross-filth-cleaning/`, `/animal-waste-abatement/`,
+  `/residential-property-clearing/`, `/eviction-difficult-turnaround-clearing/`) point at pages
+  that exist in `src/pages/` but are noindex and excluded from `src/pages/sitemap.xml.ts` pending
+  each page's own Phase 3 launch gate. Routed these to `/` as an interim hop (matching the
+  existing `_redirects` default for not-yet-live targets) rather than sending live external/GSC
+  traffic into a pre-launch, noindexed page. Each is commented in `public/_redirects` with its
+  eventual direct target; update individually as each page's launch gate clears — do not bulk-flip.
+  Added as a standing check in `04-RELEASE-CHECKLIST.md`.
+- `/milpitas/` routed to `/service-areas/` on explicit owner instruction, despite Milpitas not
+  currently appearing in the confirmed 10-city service-area list (`src/data/site.ts`
+  `location.cities`).
+- `/data-request/` and `/sms-notification-consent/` are **not** redirects: both are real,
+  functioning pages on the old WordPress site (CCPA data-request mechanism; Twilio 10DLC SMS
+  consent record) and were recreated in Astro at identical URLs
+  (`src/pages/data-request.astro`, `src/pages/sms-notification-consent.astro`) using the shared
+  `BaseLayout` shell and the same honest "provider not configured" fallback pattern already used
+  by `src/components/LegalPolicy.astro` for `/privacy/`, `/terms/`, `/cookie-policy/`. Neither page
+  contains drafted or approximated legal/consent copy — the SMS consent page in particular must
+  carry the verbatim text submitted in the Twilio campaign registration, which was not available
+  in this session. Both added to `04-RELEASE-CHECKLIST.md` as DNS-cutover blockers.
+- Remaining WordPress builder junk (`/h2/`, `/elementor-page-5945/`, `/elementor-page-5950/`,
+  `/elementor-page-5960/`) and stale pre-launch pages (`/future-services/`, `/launching-soon/`)
+  routed to `/`, consistent with the existing `_redirects` retirement convention.
+
+`astro check` (0 errors) and `npm run build` (23 pages, clean) both pass with the two new pages
+included. Files affected: `public/_redirects`, `src/pages/data-request.astro`,
+`src/pages/sms-notification-consent.astro`, `docs/04-RELEASE-CHECKLIST.md`.
+
+## Lead notifications: email-only launch, SMS gated behind a flag (2026-08-09)
+
+Owner decision: lead notifications ship email-only via the existing Resend integration for
+launch. Twilio SMS owner alerts are gated on pending 10DLC campaign approval and must not
+silently activate once credentials happen to exist.
+
+Implementation: added `SMS_ALERTS_ENABLED` (server-only, `functions/_lib/lead.ts`
+`LeadEnvironment`) as an additive, off-by-default flag. `sendOwnerSms`
+(`functions/_lib/providers.ts`) checks it before touching Twilio credentials at all — when unset
+or `"false"`, it returns `skipped` with an explicit reason ("pending 10DLC approval") rather than
+falling through to a credentials-missing message, so the delivery ledger records *why* SMS didn't
+fire. No change was needed in `functions/api/lead.ts`: it already treats a skipped SMS step
+identically to a failed one and triggers `sendOwnerFallbackEmail`, so email-only operation runs
+through the existing fallback path with zero new branching — enabling SMS later is exactly
+"set `SMS_ALERTS_ENABLED=true` and populate the four Twilio values," no refactor.
+
+`scripts/validate-env.mjs`: moved the four `TWILIO_*`/`LEAD_ALERT_PHONE` keys out of
+`fullProductionRequired` (a production build no longer hard-requires Twilio credentials that
+can't exist yet) and added a conditional block — if `SMS_ALERTS_ENABLED=true`, all four are
+required; if set to anything other than `"true"`/`"false"`, the build fails validation. This
+was necessary, not optional: the prior required-list would have blocked every production build
+until 10DLC approval landed, which contradicts shipping email-only now.
+
+`.env.example` documents the flag and its gate. `scripts/phase3-endpoint-check.mjs` (run via
+`npm run qa:phase3:endpoint`) updated: the existing SMS-provider-failure test now explicitly sets
+`SMS_ALERTS_ENABLED=true` (it tests a real Twilio 502, which requires the flag on to reach
+Twilio at all); added a new test asserting that with the flag unset — today's real deployment
+default — a Twilio call is never attempted (fetch mock throws on any `api.twilio.com` URL) and
+the owner fallback email still fires. Both tests and the full mocked suite pass; `astro check`
+and `npm run build` remain clean.
+
+`docs/04-RELEASE-CHECKLIST.md` Operations section: reworded the "Notification path works" item
+to state email-only is the intended launch configuration, not an unverified gap. Added a new item
+requiring Resend DNS (SPF/DKIM/DMARC) show "Verified" in the Resend dashboard and a real
+end-to-end test lead deliver both the customer confirmation and owner fallback email before
+cutover. Files affected: `functions/_lib/lead.ts`, `functions/_lib/providers.ts`,
+`scripts/validate-env.mjs`, `.env.example`, `scripts/phase3-endpoint-check.mjs`,
+`docs/04-RELEASE-CHECKLIST.md`.
+
+## `/sms-notification-consent/` ported verbatim; consent storage flagged for post-approval revisit (2026-08-09)
+
+Owner supplied the actual source HTML (and `sms-consent.css`) for the page cited in the pending
+Twilio 10DLC carrier review. Ported it byte-preserved as a standalone document at the identical
+`/sms-notification-consent/` URL — not wrapped in `BaseLayout`/the site shell, per instruction:
+own `<head>`, own Google Fonts (Montserrat/Open Sans), own stylesheet, `robots` meta left
+`index,follow`. Consent language, disclosures, headings, and the inline enrollment-form script
+are unedited from the supplied source; the `/terms-and-conditions` link is left exactly as
+authored and continues to rely on the existing `public/_redirects` 301 to `/terms/` rather than
+being rewritten to point at `/terms/` directly. `docs/04-RELEASE-CHECKLIST.md`'s DNS-cutover
+blockers section was updated accordingly (page must resolve at this exact URL pre-cutover).
+
+**Not acted on, logged for after Twilio approval clears:** the enrollment form's consent record
+(`aseptaclean_internal_sms_consent`) is written to `localStorage` only — device-local, and weak
+as compliance evidence since it isn't tied to a durable, auditable store and doesn't survive a
+cleared browser or a different device. Per instruction, no change was made while the carrier
+review is pending, since altering this page's behavior now risks invalidating the exact artifact
+under review. Revisit moving consent capture server-side (e.g. logging the enrollment through
+`/api/lead`-style infrastructure or a dedicated endpoint) once 10DLC approval is confirmed. Files
+affected: `src/pages/sms-notification-consent.astro`,
+`public/sms-notification-consent/sms-consent.css`, `docs/04-RELEASE-CHECKLIST.md`.

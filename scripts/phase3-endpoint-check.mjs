@@ -242,6 +242,7 @@ try {
       RESEND_API_KEY: "test-resend-key",
       EMAIL_FROM_ADDRESS: "test@example.test",
       OWNER_ALERT_EMAIL: "owner@example.test",
+      SMS_ALERTS_ENABLED: "true",
       TWILIO_ACCOUNT_SID: "test-account",
       TWILIO_AUTH_TOKEN: "test-token",
       TWILIO_FROM_NUMBER: "+14085550101",
@@ -263,6 +264,50 @@ try {
     throw new Error("SMS failure did not preserve success and trigger fallback email.");
   }
 
+  globalThis.fetch = async (url) => {
+    const target = String(url);
+    if (target.includes("turnstile")) {
+      return Response.json({ success: true });
+    }
+    if (target.includes("api.resend.com")) {
+      return Response.json({ id: "email-test-id" });
+    }
+    throw new Error(`Unexpected provider call (Twilio must not be reached when disabled): ${url}`);
+  };
+  const smsDisabledForm = makeForm();
+  smsDisabledForm.set("idempotency_key", "phase4-sms-disabled-submission-0001");
+  const smsDisabledResponse = await onRequestPost({
+    request: requestFor(smsDisabledForm),
+    env: {
+      ...env,
+      RESEND_API_KEY: "test-resend-key",
+      EMAIL_FROM_ADDRESS: "test@example.test",
+      OWNER_ALERT_EMAIL: "owner@example.test",
+      // SMS_ALERTS_ENABLED intentionally omitted — today's real deployment default
+      // pending Twilio 10DLC approval. Twilio credentials present but must be ignored.
+      TWILIO_ACCOUNT_SID: "test-account",
+      TWILIO_AUTH_TOKEN: "test-token",
+      TWILIO_FROM_NUMBER: "+14085550101",
+      LEAD_ALERT_PHONE: "+14085550102"
+    },
+    waitUntil() {}
+  });
+  const smsDisabledPayload = await smsDisabledResponse.json();
+  const smsDisabledStored = await bucket.get(
+    `leads/${smsDisabledPayload.submissionId}/submission.json`
+  );
+  const smsDisabledLead = await smsDisabledStored?.json();
+  if (
+    smsDisabledResponse.status !== 201 ||
+    smsDisabledLead?.delivery.customerEmail.state !== "succeeded" ||
+    smsDisabledLead?.delivery.ownerSms.state !== "skipped" ||
+    smsDisabledLead?.delivery.ownerFallbackEmail.state !== "succeeded"
+  ) {
+    throw new Error(
+      "SMS_ALERTS_ENABLED=false/unset did not skip Twilio and fall back to owner email."
+    );
+  }
+
   console.log(`PASS staging adapter submission: ${payload.submissionId}`);
   console.log("PASS recoverable R2 core record before provider delivery");
   console.log("PASS private upload storage and delivery status ledger");
@@ -271,6 +316,7 @@ try {
   console.log("PASS server file-type validation");
   console.log("PASS Private Residence Reset schema and offer mapping");
   console.log("PASS simulated SMS provider failure and owner fallback email");
+  console.log("PASS SMS_ALERTS_ENABLED=false/unset skips Twilio and uses owner fallback email");
 } finally {
   globalThis.fetch = originalFetch;
 }

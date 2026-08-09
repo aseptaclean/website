@@ -1,0 +1,85 @@
+---
+// Shared SCOPE section for Phase 3/3b draft service pages (docs/19-SYSTEM-AND-SITEMAP.md
+// §3.2: "SCOPE — 'What this covers' ✓-list + link to exclusions").
+interface Props {
+  heading: string;
+  headingId: string;
+  included: readonly string[];
+  exclusionsNote: string;
+}
+
+const { heading, headingId, included, exclusionsNote } = Astro.props;
+---
+
+<section class="service-scope" aria-labelledby={headingId}>
+  <div class="ac-measure-wide">
+    <p class="ac-eyebrow">What this covers</p>
+    <h2 id={headingId} class="ac-type-h2 service-scope__heading">{heading}</h2>
+    <ul class="service-scope__list">
+      {included.map((item) => <li>{item}</li>)}
+    </ul>
+    <p class="service-scope__note">
+      {exclusionsNote} <a href="/handoff-standard/#record">The Handoff Standard →</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .service-scope {
+    background: var(--ac-color-paper);
+  }
+
+  .service-scope__heading {
+    max-width: 34ch;
+    margin-top: var(--ac-space-3);
+  }
+
+  .service-scope__list {
+    display: grid;
+    gap: var(--ac-space-3);
+    max-width: 60rem;
+    margin: var(--ac-space-6) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .service-scope__list li {
+    position: relative;
+    padding-left: 1.6rem;
+    color: var(--ac-color-ink-600);
+    font-size: 0.96rem;
+  }
+
+  .service-scope__list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--ac-color-clear);
+    font-weight: 700;
+  }
+
+  .service-scope__note {
+    max-width: 62ch;
+    margin-top: var(--ac-space-5);
+    color: var(--ac-color-ink-500);
+    font-size: 0.88rem;
+  }
+
+  .service-scope__note a {
+    color: var(--ac-color-navy-800);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .service-scope__note a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 40rem) {
+    .service-scope__list {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: var(--ac-space-6);
+    }
+  }
+</style>

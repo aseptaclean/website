@@ -2,10 +2,16 @@ import type { APIRoute } from "astro";
 
 import { site } from "@data/site";
 
+// Phase 3/3b draft pages (estate, hoarding, animal, senior downsizing, checklist, service-areas
+// hub, deep cleaning, property managers) are intentionally NOT listed here — they ship
+// noindex={true} per docs/19-SYSTEM-AND-SITEMAP.md and this session's build directive, and stay
+// out of the sitemap until each page's own launch gate clears. Do not add them back as a group;
+// add each individually when its owner review / launch gate is cleared.
 const routes = [
   "/",
-  "/request-assessment/",
-  "/private-residence-reset/",
+  "/about/",
+  "/contact/",
+  "/handoff-standard/",
   "/privacy/",
   "/terms/"
 ];

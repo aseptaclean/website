@@ -1,0 +1,253 @@
+---
+// doc 19 §2.2 CONTACT + §3.6 wireframe. Public phone number only (NAP law) — same
+// site.business.phone used everywhere else (footer, header, ribbon). No street address:
+// site.business.addressPolicy is "service-area business — no published street address",
+// so the map slot is a labeled placeholder rather than an embed built on a fabricated pin.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import CompactHero from "@components/CompactHero.astro";
+import RequestForm from "@components/RequestForm.astro";
+import { site } from "@data/site";
+
+const phoneHref = site.business.phoneUri;
+
+const schema = [
+  {
+    "@type": "LocalBusiness",
+    "@id": new URL("/#business", site.urls.site).href,
+    name: site.business.name,
+    url: site.urls.site,
+    email: site.business.email,
+    ...(site.business.phone ? { telephone: site.business.phone } : {}),
+    areaServed: site.location.cities.map((name) => ({ "@type": "City", name }))
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Contact",
+        item: new URL("/contact/", site.urls.site).href
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="Contact Aseptaclean | San Jose & South Bay Property Cleanouts"
+  description="Call, email, or send property details. Aseptaclean serves San Jose and the South Bay and responds within one business day."
+  canonicalPath="/contact/"
+  schema={schema}
+>
+  <CompactHero eyebrow="Contact" headingId="contact-title">
+    <h1 id="contact-title">Contact Aseptaclean</h1>
+  </CompactHero>
+
+  <section class="contact-info" aria-labelledby="contact-info-title">
+    <div class="ac-measure-wide contact-info__shell">
+      <div class="contact-info__details">
+        <h2 id="contact-info-title" class="visually-hidden">Contact details</h2>
+        <dl>
+          {
+            phoneHref && (
+              <div>
+                <dt>Phone</dt>
+                <dd><a href={phoneHref}>{site.business.phone}</a></dd>
+              </div>
+            )
+          }
+          <div>
+            <dt>Email</dt>
+            <dd><a href={`mailto:${site.business.email}`}>{site.business.email}</a></dd>
+          </div>
+          <div>
+            <dt>Hours</dt>
+            <dd>{site.business.hours}</dd>
+          </div>
+          <div>
+            <dt>Response time</dt>
+            <dd>Assessment requests are reviewed {site.offer.responseTime}.</dd>
+          </div>
+        </dl>
+
+        <div class="contact-info__area">
+          <p class="ac-eyebrow">Service area</p>
+          <ul class="contact-info__pills">
+            {site.location.cities.map((city) => <li>{city}</li>)}
+          </ul>
+          <p class="contact-info__area-note ac-type-sm">
+            And surrounding {site.location.county} communities.
+          </p>
+        </div>
+      </div>
+
+      <div class="panel contact-info__panel">
+        <div class="panel-head"><span>Assessment request</span><span class="id">1 business day</span></div>
+        <div class="contact-info__panel-body">
+          <p>
+            Send photos and property details and Aseptaclean will review fit and the likely
+            next step {site.offer.responseTime}.
+          </p>
+          <a class="button" href="/#request">Request an assessment →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="ac-measure-wide contact-info__map" aria-label="Service area">
+      <div class="map-slot" role="presentation">
+        <span>[ Service-area map — pending ]</span>
+      </div>
+      <p class="contact-info__map-note ac-type-sm">
+        {site.business.addressPolicy}. {site.location.serviceArea}.
+      </p>
+    </div>
+
+    <div class="ac-measure-wide contact-info__nap">
+      <p>
+        <strong>{site.business.legalName}</strong> · {phoneHref ? site.business.phone : site.business.email} ·
+        {site.location.serviceArea}
+      </p>
+    </div>
+  </section>
+
+  <RequestForm />
+</BaseLayout>
+
+<style>
+  .contact-info {
+    background: var(--ac-color-paper);
+  }
+
+  .contact-info__shell {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+  }
+
+  .contact-info__details dl {
+    margin: 0;
+    border-top: 2px solid var(--ac-color-navy-900);
+  }
+
+  .contact-info__details dl > div {
+    display: grid;
+    grid-template-columns: 8rem 1fr;
+    gap: 16px;
+    border-bottom: 1px solid var(--ac-color-line);
+    padding-block: 16px;
+  }
+
+  .contact-info__details dt {
+    color: var(--ac-color-ink-400);
+    font-family: var(--ac-font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .contact-info__details dd {
+    margin: 0;
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+  }
+
+  .contact-info__details dd a {
+    color: var(--ac-color-navy-900);
+    text-decoration: none;
+  }
+
+  .contact-info__details dd a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .contact-info__area {
+    margin-top: 32px;
+  }
+
+  .contact-info__pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .contact-info__pills li {
+    max-width: none;
+    border: 1px solid var(--ac-color-blue-500);
+    border-radius: 999px;
+    padding: 0.4rem 0.9rem;
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-sm);
+    font-weight: 600;
+  }
+
+  .contact-info__area-note {
+    margin: 14px 0 0;
+    color: var(--ac-color-ink-500);
+  }
+
+  .contact-info__panel {
+    align-self: start;
+    box-shadow: var(--ac-shadow-card);
+  }
+
+  .contact-info__panel-body {
+    padding: 26px 24px;
+  }
+
+  .contact-info__panel-body p {
+    max-width: 42ch;
+    margin: 0 0 20px;
+    color: var(--ac-color-ink-600);
+  }
+
+  .contact-info__map {
+    margin-top: clamp(3rem, 6vw, 4.5rem);
+  }
+
+  .map-slot {
+    display: grid;
+    aspect-ratio: 16 / 6;
+    place-items: center;
+    border: 1px dashed var(--ac-color-line-strong);
+    border-radius: var(--ac-r);
+    background: var(--ac-color-warm-white);
+  }
+
+  .map-slot span {
+    color: var(--ac-color-ink-400);
+    font-family: var(--ac-font-mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .contact-info__map-note {
+    max-width: 60ch;
+    margin: 12px 0 0;
+    color: var(--ac-color-ink-500);
+  }
+
+  .contact-info__nap {
+    margin-top: clamp(2rem, 4vw, 3rem);
+    border-top: 1px solid var(--ac-color-rule);
+    padding-top: 20px;
+  }
+
+  .contact-info__nap p {
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 60rem) {
+    .contact-info__shell {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

@@ -1,0 +1,96 @@
+---
+// doc 19 §3.8 branded 404: "Ribbon/nav/footer intact · 'That page isn't here.' · three
+// links: Home, Services, Contact · form panel omitted · logs 404 path to analytics for
+// redirect patching." Astro serves this file automatically for unmatched routes under
+// `output: "static"` (astro.config.mjs).
+import BaseLayout from "@layouts/BaseLayout.astro";
+import CompactHero from "@components/CompactHero.astro";
+---
+
+<BaseLayout
+  title="Page Not Found | Aseptaclean"
+  description="That page isn't here. Find your way back to Aseptaclean's property cleanout and deep cleaning services in San Jose and the South Bay."
+  canonicalPath="/404/"
+  noindex={true}
+  showMobileCta={false}
+>
+  <CompactHero eyebrow="404" headingId="not-found-title">
+    <h1 id="not-found-title">That page isn&rsquo;t here.</h1>
+    <p class="compact-hero__lead">
+      The link may be out of date, or the page may have moved. Try one of these instead.
+    </p>
+  </CompactHero>
+
+  <section class="not-found-links" aria-labelledby="not-found-links-title">
+    <div class="ac-measure-wide">
+      <h2 id="not-found-links-title" class="visually-hidden">Where to go next</h2>
+      <div class="not-found-links__grid">
+        <a class="not-found-links__card" href="/">
+          <span class="not-found-links__label">Home</span>
+          <span class="not-found-links__detail">Start from the beginning.</span>
+        </a>
+        <a class="not-found-links__card" href="/#included">
+          <span class="not-found-links__label">Services</span>
+          <span class="not-found-links__detail">See what Aseptaclean clears and cleans.</span>
+        </a>
+        <a class="not-found-links__card" href="/contact/">
+          <span class="not-found-links__label">Contact</span>
+          <span class="not-found-links__detail">Reach us directly.</span>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  window.dataLayer = window.dataLayer || [];
+  window.dataLayer.push({
+    event: "page_not_found",
+    not_found_path: window.location.pathname + window.location.search,
+    referrer: document.referrer || undefined
+  });
+</script>
+
+<style>
+  .not-found-links {
+    background: var(--ac-color-paper);
+  }
+
+  .not-found-links__grid {
+    display: grid;
+    gap: var(--ac-space-4);
+  }
+
+  .not-found-links__card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-top: 2px solid var(--ac-color-navy-900);
+    padding-top: 16px;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .not-found-links__label {
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-display);
+    font-size: 1.2rem;
+    font-weight: 600;
+  }
+
+  .not-found-links__card:hover .not-found-links__label {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .not-found-links__detail {
+    color: var(--ac-color-ink-500);
+    font-size: 0.9rem;
+  }
+
+  @media (min-width: 40rem) {
+    .not-found-links__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

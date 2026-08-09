@@ -20,6 +20,8 @@ interface ImportMetaEnv {
   readonly PUBLIC_INSURANCE_STATUS?: string;
   readonly PUBLIC_BUSINESS_HOURS?: string;
   readonly PUBLIC_GBP_URL?: string;
+  readonly PUBLIC_YELP_URL?: string;
+  readonly PUBLIC_NEXTDOOR_URL?: string;
   readonly PUBLIC_LOGO_URL?: string;
   readonly PUBLIC_LOGO_REVERSED_URL?: string;
   readonly PUBLIC_SITE_ICON_URL?: string;

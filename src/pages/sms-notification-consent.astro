@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="index,follow" />
+  <title>Internal SMS Alert Enrollment | Aseptaclean</title>
+  <meta
+    name="description"
+    content="Enrollment page for Aseptaclean internal operational SMS lead alerts."
+  />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;600;700&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="sms-consent.css" />
+</head>
+
+<body>
+  <main class="page">
+    <a class="brand" href="https://aseptaclean.com">ASEPTACLEAN</a>
+
+    <h1>Internal SMS Alert Enrollment</h1>
+
+    <p class="intro">
+      This page is for the Aseptaclean owner or an authorized Aseptaclean
+      representative to enroll a mobile number for internal operational lead alerts.
+    </p>
+
+    <div class="rule"></div>
+
+    <section aria-labelledby="purpose-heading">
+      <h2 id="purpose-heading">What these messages are for</h2>
+
+      <p>
+        When a prospective customer submits a service inquiry through the Aseptaclean
+        website, Aseptaclean may send an automated SMS alert to the enrolled
+        authorized business recipient so the inquiry can be reviewed and followed up on.
+      </p>
+
+      <p>
+        Website visitors and prospective customers do not receive SMS messages through
+        this internal notification campaign.
+      </p>
+    </section>
+
+    <section class="enrollment" aria-labelledby="enrollment-heading">
+      <h2 id="enrollment-heading">Enroll in internal SMS alerts</h2>
+
+      <form id="sms-consent-form">
+        <div class="field">
+          <label for="mobile-number">Mobile number</label>
+          <input
+            id="mobile-number"
+            name="mobile_number"
+            type="tel"
+            autocomplete="tel"
+            inputmode="tel"
+            placeholder="(669) 279-2002"
+            required
+            aria-describedby="phone-help"
+          />
+          <p class="field-help" id="phone-help">
+            Enter the mobile number that should receive Aseptaclean's internal lead alerts.
+          </p>
+        </div>
+
+        <label class="consent-row" for="sms-consent">
+          <input
+            id="sms-consent"
+            name="sms_consent"
+            type="checkbox"
+            required
+          />
+          <span>
+            I agree to receive automated <strong>internal operational SMS lead alerts</strong>
+            from Aseptaclean when website service inquiries are submitted.
+            Message frequency varies based on website inquiries. Message and data rates may apply.
+            Reply STOP to opt out or HELP for help.
+            View the
+            <a href="https://aseptaclean.com/privacy" target="_blank" rel="noopener">Privacy Policy</a>
+            and
+            <a href="https://aseptaclean.com/terms-and-conditions" target="_blank" rel="noopener">Terms &amp; Conditions</a>.
+          </span>
+        </label>
+
+        <button type="submit">Enroll in SMS Alerts</button>
+
+        <p class="form-note">
+          Enrollment is voluntary and is intended only for the Aseptaclean owner or
+          an authorized business representative.
+        </p>
+
+        <div
+          id="success-message"
+          class="success-message"
+          role="status"
+          aria-live="polite"
+          hidden
+        >
+          <strong>Enrollment recorded.</strong>
+          <span>
+            This mobile number has been recorded on this device as opted in to
+            Aseptaclean internal operational SMS lead alerts.
+          </span>
+        </div>
+      </form>
+    </section>
+
+    <section aria-labelledby="disclosures-heading">
+      <h2 id="disclosures-heading">Messaging disclosures</h2>
+
+      <ul>
+        <li>Message type: internal operational lead notifications.</li>
+        <li>Message frequency varies based on website service inquiries.</li>
+        <li>Message and data rates may apply.</li>
+        <li>Reply STOP to opt out.</li>
+        <li>Reply HELP for help.</li>
+      </ul>
+    </section>
+
+    <section aria-labelledby="privacy-heading">
+      <h2 id="privacy-heading">Privacy</h2>
+
+      <p>
+        Mobile information and SMS opt-in or consent data are not sold, rented,
+        or shared with third parties or affiliates for marketing or promotional purposes.
+      </p>
+
+      <p class="legal-links">
+        <a href="https://aseptaclean.com/privacy">Privacy Policy</a>
+        <span>·</span>
+        <a href="https://aseptaclean.com/terms-and-conditions">Terms &amp; Conditions</a>
+      </p>
+    </section>
+
+    <footer class="footer">
+      © Aseptaclean. Internal operational SMS notification enrollment.
+    </footer>
+  </main>
+
+  <script is:inline>
+    (() => {
+      const form = document.getElementById("sms-consent-form");
+      const phoneInput = document.getElementById("mobile-number");
+      const success = document.getElementById("success-message");
+
+      form.addEventListener("submit", (event) => {
+        event.preventDefault();
+
+        const phone = phoneInput.value.trim();
+        const consent = document.getElementById("sms-consent").checked;
+
+        if (!phone || !consent) {
+          form.reportValidity();
+          return;
+        }
+
+        const record = {
+          mobileNumber: phone,
+          consented: true,
+          consentTextVersion: "2026-08-07",
+          consentedAt: new Date().toISOString(),
+          program: "Aseptaclean internal operational SMS lead alerts"
+        };
+
+        localStorage.setItem(
+          "aseptaclean_internal_sms_consent",
+          JSON.stringify(record)
+        );
+
+        success.hidden = false;
+        success.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -16,15 +16,16 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
           <span class="mark" aria-hidden="true">A</span>Asepta<span class="sept">clean</span>
           <span class="visually-hidden">— home</span>
         </a>
-        <p>{site.offer.category} for {site.location.serviceArea}.</p>
+        <p>{site.offer.category} for {site.location.serviceArea} and the Peninsula.</p>
       </div>
       <nav class="flinks" aria-label="Footer navigation">
-        <a href="#request">Request an assessment</a>
-        <a href="#standards">Handoff Standard</a>
-        <a href="#faq">FAQ</a>
-        <a href="#about">About</a>
+        <a href="/#request">Request an assessment</a>
+        <a href="/handoff-standard/">Handoff Standard</a>
+        <a href="/#faq">FAQ</a>
+        <a href="/about/">About</a>
       </nav>
       <nav class="flinks" aria-label="Legal and contact">
+        <a href="/contact/">Contact</a>
         <a href={`mailto:${site.business.email}`}>{site.business.email}</a>
         {phoneHref && <a href={phoneHref}>{site.business.phone}</a>}
         <a href={site.urls.privacyPolicy}>Privacy</a>

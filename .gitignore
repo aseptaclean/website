@@ -9,3 +9,4 @@ dist/
 .wrangler/
 *.log
 artifacts/
+.tmp-verify/

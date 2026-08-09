@@ -1,0 +1,108 @@
+---
+// Deep-cleaning signature moment (docs/19-SYSTEM-AND-SITEMAP.md §2.2 DEEP CLEANING spec:
+// "Selling mechanic: the WRITTEN CHECKLIST is the product — sell the itemized room-by-room
+// scope, never outcome adjectives... Page structure: checklist categories as H2s (Bathrooms &
+// glass / Kitchen & appliances / Floors & surfaces / Whole-house detail), each with its
+// itemized ✓-list."). Distinct from ServiceScope's single-list pattern used on every other
+// service page in this batch — this is the one page where the checklist itself, broken into
+// named categories, is the primary visual device and the proof of specificity.
+interface ChecklistCategory {
+  heading: string;
+  items: readonly string[];
+}
+
+interface Props {
+  eyebrow: string;
+  intro: string;
+  categories: readonly ChecklistCategory[];
+  headingIdPrefix: string;
+}
+
+const { eyebrow, intro, categories, headingIdPrefix } = Astro.props;
+---
+
+<section class="service-checklist" aria-label={eyebrow}>
+  <div class="ac-measure-wide">
+    <p class="ac-eyebrow">{eyebrow}</p>
+    <p class="service-checklist__intro">{intro}</p>
+    <div class="service-checklist__grid">
+      {
+        categories.map((category, index) => (
+          <div class="checklist-category">
+            <h2 id={`${headingIdPrefix}-${index}`} class="ac-type-h3 checklist-category__heading">
+              {category.heading}
+            </h2>
+            <ul class="checklist-category__list">
+              {category.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .service-checklist {
+    background: var(--ac-color-paper);
+  }
+
+  .service-checklist__intro {
+    max-width: 58ch;
+    margin: var(--ac-space-3) 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 1.02rem;
+  }
+
+  .service-checklist__grid {
+    display: grid;
+    gap: var(--ac-space-7);
+    margin-top: var(--ac-space-7);
+  }
+
+  .checklist-category {
+    border-top: 2px solid var(--ac-color-navy-900);
+    padding-top: var(--ac-space-4);
+  }
+
+  .checklist-category__heading {
+    margin-bottom: var(--ac-space-4);
+  }
+
+  .checklist-category__list {
+    display: grid;
+    gap: var(--ac-space-3);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .checklist-category__list li {
+    position: relative;
+    padding-left: 1.6rem;
+    color: var(--ac-color-ink-600);
+    font-size: 0.94rem;
+    line-height: 1.5;
+  }
+
+  .checklist-category__list li::before {
+    content: "✓";
+    position: absolute;
+    left: 0;
+    color: var(--ac-color-clear);
+    font-weight: 700;
+  }
+
+  @media (min-width: 56.25rem) {
+    .service-checklist__grid {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: var(--ac-space-7);
+    }
+
+    .checklist-category:nth-child(odd) {
+      border-top-width: 2px;
+    }
+  }
+</style>

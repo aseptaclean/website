@@ -1,0 +1,158 @@
+---
+// UNPUBLISHED DRAFT — docs/19-SYSTEM-AND-SITEMAP.md §2.1 Phase 3b ("gate: B10 checklist
+// finalized"), §2.2 DEEP CLEANING spec (EXPANDED per this session's build directive: checklist
+// categories as H2s, surface-restoration scope, damage-restoration wording law). Ships
+// noindex, excluded from sitemap.xml.ts, not linked from nav/footer, same as the rest of this
+// batch — but this page carries an additional, permanent gate note: it must not launch even
+// after the noindex/sitemap restrictions are lifted from its siblings, until the B10
+// deep-cleaning checklist is finalized. The gated facts (the actual checklist item list,
+// standalone-scope availability) are [OWNER INPUT] placeholders, never invented.
+//
+// WORDING LAW (owner directive, this session): surface/finish restoration through cleaning
+// only; never water/fire/flood/smoke damage restoration. Grepped for "water damage", "fire
+// damage", "flood", "smoke damage", "damage restoration" before being marked done — zero hits
+// as page copy.
+//
+// DIFFERENTIATION: this page's signature moment is the ServiceChecklist grid — four named
+// checklist categories (Bathrooms & glass / Kitchen & appliances / Floors & surfaces /
+// Whole-house detail), each its own ✓-list — replacing the single-list ServiceScope pattern
+// used on every other page in this batch, per doc 19's explicit "selling mechanic: the WRITTEN
+// CHECKLIST is the product." No Track A/B, no fiduciary block, no referral-note block.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import CompactHero from "@components/CompactHero.astro";
+import ServiceChecklist from "@components/ServiceChecklist.astro";
+import ServiceScope from "@components/ServiceScope.astro";
+import ServiceMethodRail from "@components/ServiceMethodRail.astro";
+import ServiceProof from "@components/ServiceProof.astro";
+import ServicePricing from "@components/ServicePricing.astro";
+import ServiceFAQ from "@components/ServiceFAQ.astro";
+import RequestForm from "@components/RequestForm.astro";
+import { deepCleaningPage } from "@data/servicePages";
+import { site } from "@data/site";
+
+const schema = [
+  {
+    "@type": "Service",
+    serviceType: "Deep cleaning and surface restoration",
+    provider: { "@id": new URL("/#organization", site.urls.site).href },
+    areaServed: site.location.cities.map((name) => ({ "@type": "City", name })),
+    name: "Deep Cleaning & Surface Restoration"
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: deepCleaningPage.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Deep Cleaning San Jose",
+        item: new URL(deepCleaningPage.slug, site.urls.site).href
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="Deep Cleaning & Surface Restoration | San Jose | Aseptaclean"
+  description="Detailed deep cleaning with a written room-by-room checklist — shower glass and hard-water treatment, tile and grout, appliance interiors, whole-house reset. San Jose & the Peninsula."
+  canonicalPath={deepCleaningPage.slug}
+  noindex={true}
+  schema={schema}
+>
+  <section class="gate-note" aria-label="Internal launch gate — not visible copy guidance">
+    <div class="ac-measure-wide">
+      <p><strong>LAUNCH GATE — not for publication:</strong> {deepCleaningPage.gate}</p>
+    </div>
+  </section>
+
+  <CompactHero eyebrow={deepCleaningPage.hero.eyebrow} headingId="deep-title">
+    <h1 id="deep-title">{deepCleaningPage.hero.h1}</h1>
+    <p class="compact-hero__lead">{deepCleaningPage.hero.lead}</p>
+  </CompactHero>
+
+  <section class="recognition" aria-labelledby="recognition-title">
+    <div class="ac-measure-intimate">
+      <h2 id="recognition-title" class="ac-type-h2 recognition__heading">{deepCleaningPage.recognition.heading}</h2>
+      {deepCleaningPage.recognition.body.map((paragraph) => <p class="recognition__body">{paragraph}</p>)}
+    </div>
+  </section>
+
+  <ServiceChecklist
+    eyebrow={deepCleaningPage.checklist.eyebrow}
+    intro={deepCleaningPage.checklist.intro}
+    categories={deepCleaningPage.checklist.categories}
+    headingIdPrefix="deep-checklist"
+  />
+
+  <ServiceScope
+    heading={deepCleaningPage.scope.heading}
+    headingId="deep-scope-title"
+    included={deepCleaningPage.scope.included}
+    exclusionsNote={deepCleaningPage.scope.exclusionsNote}
+  />
+
+  <ServiceMethodRail heading={deepCleaningPage.method.heading} headingId="deep-method-title" />
+
+  <ServiceProof
+    recordLabel={deepCleaningPage.proof.recordLabel}
+    recordField={deepCleaningPage.proof.recordField}
+    recordValue={deepCleaningPage.proof.recordValue}
+    jobLine={deepCleaningPage.proof.jobLine}
+    headingId="deep-proof-title"
+  />
+
+  <ServicePricing
+    heading={deepCleaningPage.pricing.heading}
+    headingId="deep-pricing-title"
+    drivers={deepCleaningPage.pricing.drivers}
+  />
+
+  <ServiceFAQ
+    heading="Questions about scope and scheduling"
+    headingId="deep-faq-title"
+    intro="These answers describe the assessment process. The signed scope controls the actual project."
+    items={deepCleaningPage.faq}
+  />
+
+  <RequestForm />
+</BaseLayout>
+
+<style>
+  .gate-note {
+    background: #fbeeec;
+    border-bottom: 1px solid #e0b6b0;
+    padding-block: 14px;
+  }
+
+  .gate-note p {
+    margin: 0;
+    color: #a3392f;
+    font-size: 0.85rem;
+  }
+
+  .recognition {
+    background: var(--ac-color-warm-white);
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .recognition__heading {
+    max-width: 26ch;
+    margin-top: var(--ac-space-3);
+  }
+
+  .recognition__body {
+    max-width: 56ch;
+    margin-top: var(--ac-space-4);
+    color: var(--ac-color-ink-600);
+    font-size: 1.02rem;
+  }
+</style>

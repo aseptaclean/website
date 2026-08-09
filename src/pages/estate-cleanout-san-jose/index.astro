@@ -1,0 +1,230 @@
+---
+// UNPUBLISHED DRAFT — docs/19-SYSTEM-AND-SITEMAP.md §2.1 Phase 3, §2.2 ESTATE spec ("highest
+// value page on the site"), §3.2 service-page template + tone delta ("grief-aware,
+// decision-relief"). Ships noindex, excluded from sitemap.xml.ts, not linked from nav/footer,
+// per this session's build directive.
+//
+// DIFFERENTIATION: this is the only page in the batch that opens (after the hero) with a
+// Track A / Track B split — grieving family first, then a distinct "For executors, attorneys,
+// and property managers" H2 fiduciary block, per §2.2's "Audience split: Track A grieving
+// family (top) + Track B executor/attorney (own H2)". No other page in this batch has two
+// audience-split blocks back to back. Full Handoff Record lives only at /handoff-standard/ —
+// this page shows excerpts only (ServiceProof + the Track B record-field callout).
+import BaseLayout from "@layouts/BaseLayout.astro";
+import CompactHero from "@components/CompactHero.astro";
+import ServiceScope from "@components/ServiceScope.astro";
+import ServiceMethodRail from "@components/ServiceMethodRail.astro";
+import ServiceProof from "@components/ServiceProof.astro";
+import ServicePricing from "@components/ServicePricing.astro";
+import ServiceFAQ from "@components/ServiceFAQ.astro";
+import RequestForm from "@components/RequestForm.astro";
+import { estatePage } from "@data/servicePages";
+import { site } from "@data/site";
+
+const schema = [
+  {
+    "@type": "Service",
+    serviceType: "Estate cleanout",
+    provider: { "@id": new URL("/#organization", site.urls.site).href },
+    areaServed: site.location.cities.map((name) => ({ "@type": "City", name })),
+    name: "Estate Cleanout"
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: estatePage.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Estate Cleanout San Jose",
+        item: new URL(estatePage.slug, site.urls.site).href
+      }
+    ]
+  }
+  // Schema ships when this page publishes (docs/19-SYSTEM-AND-SITEMAP.md self-containment
+  // rule) — kept here now so publishing is a `noindex` flip, not a rebuild.
+];
+---
+
+<BaseLayout
+  title="Estate Cleanout in San Jose & South Bay | Aseptaclean"
+  description="Estate and probate property cleanouts with a signed scope, held-for-review controls, and a documented Handoff Record. Serving San Jose & the South Bay."
+  canonicalPath={estatePage.slug}
+  noindex={true}
+  schema={schema}
+>
+  <CompactHero eyebrow={estatePage.hero.eyebrow} headingId="estate-title">
+    <h1 id="estate-title">{estatePage.hero.h1}</h1>
+    <p class="compact-hero__lead">{estatePage.hero.lead}</p>
+  </CompactHero>
+
+  <section class="track-a" aria-labelledby="track-a-title">
+    <div class="ac-measure-intimate">
+      <p class="ac-eyebrow">{estatePage.trackA.eyebrow}</p>
+      <h2 id="track-a-title" class="ac-type-h2 track-a__heading">{estatePage.trackA.heading}</h2>
+      {estatePage.trackA.body.map((paragraph) => <p class="track-a__body">{paragraph}</p>)}
+    </div>
+  </section>
+
+  <section class="track-b" aria-labelledby="track-b-title">
+    <div class="ac-measure-wide track-b__shell">
+      <div>
+        <p class="ac-eyebrow track-b__eyebrow">{estatePage.trackB.eyebrow}</p>
+        <h2 id="track-b-title" class="track-b__heading">{estatePage.trackB.heading}</h2>
+        {estatePage.trackB.body.map((paragraph) => <p class="track-b__body">{paragraph}</p>)}
+      </div>
+      <div class="track-b__record">
+        <p class="track-b__record-label">{estatePage.trackB.recordExcerpt.label}</p>
+        <div class="track-b__record-field">
+          <span>{estatePage.trackB.recordExcerpt.field}</span>
+          <strong>{estatePage.trackB.recordExcerpt.value}</strong>
+        </div>
+        <a href="/handoff-standard/">See the full annotated record →</a>
+      </div>
+    </div>
+  </section>
+
+  <ServiceScope
+    heading={estatePage.scope.heading}
+    headingId="estate-scope-title"
+    included={estatePage.scope.included}
+    exclusionsNote={estatePage.scope.exclusionsNote}
+  />
+
+  <ServiceMethodRail heading={estatePage.method.heading} headingId="estate-method-title" />
+
+  <ServiceProof
+    recordLabel={estatePage.proof.recordLabel}
+    recordField={estatePage.proof.recordField}
+    recordValue={estatePage.proof.recordValue}
+    jobLine={estatePage.proof.jobLine}
+    headingId="estate-proof-title"
+  />
+
+  <ServicePricing
+    heading={estatePage.pricing.heading}
+    headingId="estate-pricing-title"
+    drivers={estatePage.pricing.drivers}
+  />
+
+  <ServiceFAQ
+    heading="Questions families and executors ask before requesting a plan"
+    headingId="estate-faq-title"
+    intro="These answers describe the assessment process. The signed scope controls the actual project."
+    items={estatePage.faq}
+  />
+
+  <RequestForm />
+</BaseLayout>
+
+<style>
+  .track-a {
+    background: var(--ac-color-paper);
+  }
+
+  .track-a__heading {
+    max-width: 26ch;
+    margin-top: var(--ac-space-3);
+  }
+
+  .track-a__body {
+    max-width: 58ch;
+    margin-top: var(--ac-space-4);
+    color: var(--ac-color-ink-600);
+    font-size: 1.02rem;
+  }
+
+  .track-b {
+    background: var(--ac-color-navy-900);
+    color: var(--ac-color-warm-white);
+  }
+
+  .track-b__shell {
+    display: grid;
+    gap: var(--ac-space-6);
+  }
+
+  .track-b__eyebrow {
+    color: var(--ac-color-steel-on-navy);
+  }
+
+  .track-b__heading {
+    max-width: 26ch;
+    margin: var(--ac-space-3) 0 0;
+    color: var(--ac-color-paper);
+    font-family: var(--ac-font-display);
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    line-height: 1.15;
+  }
+
+  .track-b__body {
+    max-width: 54ch;
+    margin-top: var(--ac-space-4);
+    color: #b9c9dd;
+  }
+
+  .track-b__record {
+    align-self: start;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: var(--ac-r);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 24px 22px;
+  }
+
+  .track-b__record-label {
+    margin: 0 0 14px;
+    color: var(--ac-color-steel-on-navy);
+    font-family: var(--ac-font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .track-b__record-field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+    padding-top: 14px;
+  }
+
+  .track-b__record-field span {
+    color: var(--ac-color-steel-on-navy);
+    font-size: 0.78rem;
+  }
+
+  .track-b__record-field strong {
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .track-b__record a {
+    display: inline-block;
+    margin-top: 18px;
+    color: #cfe0f2;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .track-b__record a:hover {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 56.25rem) {
+    .track-b__shell {
+      grid-template-columns: 1.3fr 1fr;
+      align-items: center;
+    }
+  }
+</style>

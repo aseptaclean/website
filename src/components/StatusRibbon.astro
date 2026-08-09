@@ -3,7 +3,9 @@ import { site } from "@data/site";
 
 // docs/aseptaclean-FINAL-v2.html .ribbon — ported verbatim (05-DECISIONS-LOG.md). Fixed
 // wording per docs/18-VISUAL-DIRECTION.md §7 (retained): never "licensed," no job count or
-// years figure.
+// years figure. Region phrase updated per docs/19-SYSTEM-AND-SITEMAP.md Part 5 / 05-DECISIONS-LOG.md
+// "Service-area decision — 10-city South Bay & Peninsula footprint" (supersedes v2's literal
+// "San Jose & the South Bay" — Atherton and Palo Alto/Los Altos Hills sit outside the South Bay).
 ---
 
 <div class="status-ribbon" aria-label="Operating standards">
@@ -11,7 +13,7 @@ import { site } from "@data/site";
     <span><span class="status-ribbon__dot" aria-hidden="true"></span><b>Insured</b> — COI on request</span>
     <span><b>Organic Pathogen Endorsed</b></span>
     <span><b>Owner-operated</b> assessments</span>
-    <span>{site.location.serviceArea}</span>
+    <span>{site.location.regionLabel}</span>
   </div>
 </div>
 

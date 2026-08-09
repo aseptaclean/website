@@ -1,0 +1,102 @@
+---
+// Shared METHOD section for Phase 3/3b draft service pages (docs/19-SYSTEM-AND-SITEMAP.md
+// §3.2: "METHOD — 5 stages condensed to 5 rows w/ record tags"). Same stage data and rail
+// pattern as HandoffStandard.astro/handoff-standard's own rail; only the heading text varies
+// per page so composition differs without inventing a second stage system.
+import { homepage } from "@data/site";
+
+interface Props {
+  heading: string;
+  headingId: string;
+}
+
+const { heading, headingId } = Astro.props;
+---
+
+<section class="method-rail" aria-labelledby={headingId}>
+  <div class="ac-measure-wide">
+    <p class="ac-eyebrow">Five-stage standard</p>
+    <h2 id={headingId} class="ac-type-h2 method-rail__heading">{heading}</h2>
+    <ol class="stages">
+      {
+        homepage.handoffStages.map((stage, index) => (
+          <li class="stage">
+            <span class="stage__n">{String(index + 1).padStart(2, "0")}</span>
+            <div>
+              <h3 class="ac-type-h3">{stage.name}</h3>
+              <p class="ac-type-body">{stage.detail}</p>
+            </div>
+            <span class="stage__rec">{stage.record}</span>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>
+
+<style>
+  .method-rail {
+    background: var(--ac-color-paper);
+  }
+
+  .method-rail__heading {
+    max-width: 32ch;
+    margin-top: var(--ac-space-3);
+  }
+
+  .stages {
+    border-top: 2px solid var(--ac-color-navy-900);
+    margin: var(--ac-space-6) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .stage {
+    display: grid;
+    grid-template-columns: 64px 1fr auto;
+    align-items: start;
+    gap: var(--ac-s3);
+    border-bottom: 1px solid var(--ac-color-line);
+    padding-block: var(--ac-s4);
+  }
+
+  .stage__n {
+    color: var(--ac-color-ink-400);
+    font-family: var(--ac-font-mono);
+    font-size: 1.05rem;
+  }
+
+  .stage h3 {
+    margin-bottom: 5px;
+  }
+
+  .stage p {
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.92rem;
+  }
+
+  .stage__rec {
+    margin-top: 6px;
+    border: 1px solid var(--ac-color-line);
+    border-radius: 5px;
+    background: var(--ac-color-blue-ghost);
+    padding: 6px 10px;
+    color: var(--ac-color-blue-deep);
+    font-family: var(--ac-font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 40rem) {
+    .stage {
+      grid-template-columns: 44px 1fr;
+    }
+
+    .stage__rec {
+      grid-column: 2;
+    }
+  }
+</style>

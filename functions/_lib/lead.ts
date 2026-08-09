@@ -34,6 +34,10 @@ export interface LeadEnvironment {
   RESEND_API_KEY?: string;
   EMAIL_FROM_ADDRESS?: string;
   OWNER_ALERT_EMAIL?: string;
+  // Additive channel, off by default: SMS owner alerts are gated on pending Twilio 10DLC
+  // campaign approval. Email (Resend) is the notification path until this flips to "true".
+  // See docs/05-DECISIONS-LOG.md.
+  SMS_ALERTS_ENABLED?: string;
   TWILIO_ACCOUNT_SID?: string;
   TWILIO_AUTH_TOKEN?: string;
   TWILIO_FROM_NUMBER?: string;

@@ -1,0 +1,109 @@
+---
+// Shared PROOF section for Phase 3/3b draft service pages (docs/19-SYSTEM-AND-SITEMAP.md
+// §3.2: "PROOF — Handoff Record excerpt + ONE anonymized real-job line"). The record excerpt
+// is real, published data already approved for homepage.sampleRecord; the real-job line is an
+// [OWNER INPUT] placeholder on every page here, since none of these pages may invent one
+// (directive: "insert clearly labeled [OWNER INPUT: description] placeholders — never invent").
+interface Props {
+  recordLabel: string;
+  recordField: string;
+  recordValue: string;
+  jobLine: string;
+  headingId: string;
+}
+
+const { recordLabel, recordField, recordValue, jobLine, headingId } = Astro.props;
+---
+
+<section class="service-proof" aria-labelledby={headingId}>
+  <div class="ac-measure-wide service-proof__shell">
+    <div class="service-proof__record">
+      <p class="ac-eyebrow">{recordLabel}</p>
+      <h2 id={headingId} class="visually-hidden">Documented proof</h2>
+      <div class="service-proof__field">
+        <span class="service-proof__k">{recordField}</span>
+        <span class="service-proof__v">{recordValue}</span>
+      </div>
+      <a class="service-proof__link" href="/handoff-standard/">See the full annotated record →</a>
+    </div>
+    <div class="service-proof__job">
+      <p class="service-proof__job-label">From a completed project</p>
+      <p class="service-proof__job-line">{jobLine}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .service-proof {
+    background: var(--ac-color-warm-white);
+  }
+
+  .service-proof__shell {
+    display: grid;
+    gap: var(--ac-space-6);
+  }
+
+  .service-proof__record {
+    border-top: 2px solid var(--ac-color-navy-900);
+    padding-top: var(--ac-space-4);
+  }
+
+  .service-proof__field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: var(--ac-space-5) 0 var(--ac-space-4);
+  }
+
+  .service-proof__k {
+    color: var(--ac-color-ink-400);
+    font-family: var(--ac-font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .service-proof__v {
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+  }
+
+  .service-proof__link {
+    color: var(--ac-color-navy-800);
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .service-proof__link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .service-proof__job {
+    border-left: 2px solid var(--ac-color-gold);
+    padding-left: var(--ac-space-4);
+  }
+
+  .service-proof__job-label {
+    margin: 0 0 var(--ac-space-2);
+    color: var(--ac-color-ink-400);
+    font-family: var(--ac-font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .service-proof__job-line {
+    max-width: 58ch;
+    margin: 0;
+    color: var(--ac-color-ink-600);
+    font-style: italic;
+  }
+
+  @media (min-width: 56.25rem) {
+    .service-proof__shell {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+</style>

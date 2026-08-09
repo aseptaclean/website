@@ -1,0 +1,306 @@
+---
+// doc 19 §2.2 ABOUT + §3.5 wireframe. Founder-story copy assembled verbatim from
+// docs/06-APPROVED-HOMEPAGE-COPY.md §8.15 (paragraphs, quote, credential list) and
+// src/data/site.ts (legal.scopeDisclaimer, site.business.insuranceStatus) — no new
+// sentences invented. Founder portrait stays the labeled placeholder per
+// docs/02-OWNER-INPUTS.md ("not yet supplied... plain bordered placeholder").
+import BaseLayout from "@layouts/BaseLayout.astro";
+import CompactHero from "@components/CompactHero.astro";
+import RequestForm from "@components/RequestForm.astro";
+import { legal, site } from "@data/site";
+
+const credentials = [
+  { k: "Education", v: "B.S. Biochemistry, UC Riverside" },
+  { k: "Background", v: "Pharmaceutical manufacturing" },
+  { k: "Background", v: "Histology & surgical pathology" },
+  { k: "On project", v: "Scope, planning, operating oversight" }
+] as const;
+
+const links = [
+  { href: "/handoff-standard/", label: "The Handoff Standard" },
+  { href: "/#included", label: "Services" },
+  { href: "/contact/", label: "Contact" }
+] as const;
+
+const schema = [
+  {
+    "@type": "Person",
+    "@id": new URL("/#founder", site.urls.site).href,
+    name: site.founder.name,
+    jobTitle: site.founder.title,
+    worksFor: { "@id": new URL("/#business", site.urls.site).href },
+    alumniOf: {
+      "@type": "CollegeOrUniversity",
+      name: "University of California, Riverside"
+    }
+  },
+  {
+    "@type": "LocalBusiness",
+    "@id": new URL("/#business", site.urls.site).href,
+    name: site.business.name,
+    founder: { "@id": new URL("/#founder", site.urls.site).href }
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "About",
+        item: new URL("/about/", site.urls.site).href
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="About Aseptaclean | Founder, Standards & Insurance | San Jose"
+  description="Founded by Matthew Ruiz — a controlled-process background from pharmaceutical manufacturing and surgical pathology, applied to property cleanouts. Insured, owner-operated, documented."
+  canonicalPath="/about/"
+  schema={schema}
+>
+  <CompactHero eyebrow="The operator" headingId="about-title">
+    <h1 id="about-title">The person defining the work stays accountable for how it&rsquo;s carried out.</h1>
+  </CompactHero>
+
+  <section class="founder-story" aria-labelledby="founder-story-title">
+    <div class="ac-measure-wide founder-story__shell">
+      <div class="portrait" role="presentation">
+        <span class="portrait__label">[ Founder portrait — pending ]</span>
+      </div>
+      <div>
+        <p class="ac-eyebrow">Founder &amp; Principal Operator</p>
+        <h2 id="founder-story-title" class="ac-type-h2">{site.founder.name}</h2>
+        <p class="founder-story__lead">
+          Aseptaclean is founder-led. {site.founder.name}, {site.founder.title}, remains directly
+          involved in scope review, planning, communication, and operating oversight.
+        </p>
+        <p>
+          His background in pharmaceutical manufacturing and surgical pathology shaped the way
+          Aseptaclean works: define the task before starting, document changes, protect what
+          should not be disturbed, and make completion verifiable.
+        </p>
+        <blockquote class="founder-story__quote">
+          <p>
+            &ldquo;Difficult properties are not handled well through vague promises. Before work
+            begins, I want you to know what is included, what is excluded, what happens when
+            something unexpected is found, and what you will receive when the job is closed.
+            That is the standard I built Aseptaclean around.&rdquo;
+          </p>
+        </blockquote>
+      </div>
+    </div>
+  </section>
+
+  <section class="founder-credentials" aria-labelledby="credentials-title">
+    <div class="ac-measure-wide">
+      <h2 id="credentials-title" class="ac-type-h3">Verified background</h2>
+      <div class="creds">
+        {
+          credentials.map((item) => (
+            <div class="cr">
+              <span class="cr__k">{item.k}</span>
+              <span class="cr__v">{item.v}</span>
+            </div>
+          ))
+        }
+      </div>
+
+      <p class="disclaimer">{legal.scopeDisclaimer}</p>
+      <p class="insurance">{site.business.insuranceStatus}</p>
+    </div>
+  </section>
+
+  <section class="founder-links" aria-labelledby="founder-links-title">
+    <div class="ac-measure-wide founder-links__shell">
+      <div>
+        <p class="ac-eyebrow">More about the operator</p>
+        <h2 id="founder-links-title" class="ac-type-h3">The standard, the services, and how to reach us</h2>
+      </div>
+      <nav class="founder-links__list" aria-label="Related pages">
+        {links.map((link) => <a href={link.href}>{link.label} →</a>)}
+      </nav>
+    </div>
+  </section>
+
+  <RequestForm />
+</BaseLayout>
+
+<style>
+  .founder-story {
+    background: var(--ac-color-paper);
+  }
+
+  .founder-story__shell {
+    display: grid;
+    gap: clamp(2.5rem, 5vw, 4rem);
+    align-items: start;
+  }
+
+  .portrait {
+    position: relative;
+    display: grid;
+    aspect-ratio: 4 / 5;
+    place-items: center;
+    overflow: hidden;
+    border-radius: var(--ac-r);
+    background: linear-gradient(160deg, #27436f, #0b1830);
+    box-shadow: var(--ac-shadow-card);
+  }
+
+  .portrait::after {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.06) 1px, transparent 0);
+    background-size: 22px 22px;
+    content: "";
+  }
+
+  .portrait__label {
+    position: relative;
+    z-index: 1;
+    color: #6d8bb0;
+    font-family: var(--ac-font-mono);
+    font-size: 0.66rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .founder-story h2 {
+    margin-bottom: 16px;
+  }
+
+  .founder-story__lead {
+    max-width: 54ch;
+    margin-bottom: 16px;
+    color: var(--ac-color-ink-600);
+    font-size: 1.02rem;
+  }
+
+  .founder-story p {
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+  }
+
+  .founder-story__quote {
+    max-width: 52ch;
+    margin: 24px 0 0;
+    border-left: 3px solid var(--ac-color-gold);
+    padding-left: 18px;
+  }
+
+  .founder-story__quote p {
+    margin: 0;
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-display);
+    font-size: 1.15rem;
+    font-style: italic;
+    line-height: 1.45;
+  }
+
+  .founder-credentials {
+    background: var(--ac-color-warm-white);
+  }
+
+  .founder-credentials h2 {
+    margin-bottom: 20px;
+  }
+
+  .creds {
+    border-top: 1px solid var(--ac-color-line);
+    max-width: 40rem;
+  }
+
+  .cr {
+    display: grid;
+    grid-template-columns: 130px 1fr;
+    align-items: baseline;
+    gap: 16px;
+    border-bottom: 1px solid var(--ac-color-line);
+    padding: 13px 0;
+  }
+
+  .cr__k {
+    color: var(--ac-color-ink-400);
+    font-family: var(--ac-font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .cr__v {
+    color: var(--ac-color-navy-900);
+    font-size: 0.95rem;
+    font-weight: 500;
+  }
+
+  .disclaimer {
+    max-width: 64ch;
+    margin-top: 28px;
+    border-left: 2px solid var(--ac-color-line-strong);
+    padding-left: 14px;
+    color: var(--ac-color-ink-500);
+    font-size: 0.85rem;
+    line-height: 1.55;
+  }
+
+  .insurance {
+    max-width: 64ch;
+    margin-top: 12px;
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+    font-size: 0.92rem;
+  }
+
+  .founder-links {
+    background: var(--ac-color-navy-900);
+    color: var(--ac-color-warm-white);
+  }
+
+  /* This section's own .ac-eyebrow sits on the navy-900 background, not the
+     light surface the shared class assumes (same fix as CategoryContrast.astro). */
+  .founder-links :global(.ac-eyebrow) {
+    color: var(--ac-color-steel-on-navy);
+  }
+
+  .founder-links__shell {
+    display: grid;
+    gap: var(--ac-space-5);
+  }
+
+  .founder-links h2 {
+    margin-top: 8px;
+    color: var(--ac-color-paper);
+  }
+
+  .founder-links__list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .founder-links__list a {
+    color: #cfe0f2;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .founder-links__list a:hover {
+    color: #fff;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  @media (min-width: 54rem) {
+    .founder-story__shell {
+      grid-template-columns: 0.85fr 1.35fr;
+    }
+
+    .founder-links__shell {
+      grid-template-columns: 1.4fr 1fr;
+      align-items: center;
+    }
+  }
+</style>

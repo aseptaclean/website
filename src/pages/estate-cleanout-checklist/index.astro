@@ -1,0 +1,208 @@
+---
+// UNPUBLISHED DRAFT — docs/19-SYSTEM-AND-SITEMAP.md §2.1 Phase 3, §2.2 CHECKLIST spec, §3
+// (no dedicated wireframe row; built as the standalone ungated asset the spec describes: "Fully
+// ungated. Print stylesheet. Contents in Part 6.") and Part 6 (full section/item contents).
+// This is the one launch-eligible page in this batch — content is method-derived from Part 6,
+// not call-derived, so it needed no [OWNER INPUT] placeholders. It still ships noindex and out
+// of the sitemap/nav/footer with the other seven until the owner reviews and explicitly
+// approves launch (directive: "flag all its copy for owner review").
+//
+// DIFFERENTIATION: this page's first section after the hero is a document-style checklist
+// list, not a Track A/B split, recognition block, or fiduciary block — no other page in this
+// batch opens this way. No Handoff Record excerpt (a link only), no full Handoff Record.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import CompactHero from "@components/CompactHero.astro";
+import RequestForm from "@components/RequestForm.astro";
+import { checklist } from "@data/servicePages";
+import { site } from "@data/site";
+
+const schema = [
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Estate Cleanout Checklist",
+        item: new URL("/estate-cleanout-checklist/", site.urls.site).href
+      }
+    ]
+  }
+  // Ships when this page publishes, not before (docs/19-SYSTEM-AND-SITEMAP.md self-containment
+  // rule + this session's noindex/sitemap-exclusion directive). Kept in the component now so
+  // publishing later is a flip of `noindex`, not a rebuild.
+];
+---
+
+<BaseLayout
+  title="The Executor's Estate Cleanout Checklist (Free) | Aseptaclean"
+  description="A free, neutral checklist for executors and families clearing an estate: authority, legal steps, sorting, choosing a vendor, and closeout — five sections, print-ready."
+  canonicalPath="/estate-cleanout-checklist/"
+  noindex={true}
+  schema={schema}
+>
+  <CompactHero eyebrow="Free resource · No vendor required" headingId="checklist-title">
+    <h1 id="checklist-title">{checklist.title}</h1>
+    <p class="compact-hero__lead">{checklist.intro}</p>
+  </CompactHero>
+
+  <section class="checklist-print-actions no-print" aria-label="Print this checklist">
+    <div class="ac-measure-wide">
+      <button type="button" class="button button--secondary" data-print-checklist>Print this checklist →</button>
+    </div>
+  </section>
+
+  <section class="checklist-body" aria-labelledby="checklist-body-title">
+    <div class="ac-measure-wide">
+      <h2 id="checklist-body-title" class="visually-hidden">Checklist sections</h2>
+      <ol class="checklist-sections">
+        {
+          checklist.sections.map((section, index) => (
+            <li class="checklist-section">
+              <div class="checklist-section__head">
+                <span class="checklist-section__n">{String(index + 1).padStart(2, "0")}</span>
+                <h3 class="ac-type-h3">{section.title}</h3>
+              </div>
+              <ul class="checklist-section__items">
+                {section.items.map((item) => (
+                  <li>
+                    <span class="checklist-section__box" aria-hidden="true" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+  </section>
+
+  <section class="checklist-record no-print" aria-labelledby="checklist-record-title">
+    <div class="ac-measure-wide checklist-record__shell">
+      <div>
+        <p class="ac-eyebrow">A sample of what closeout should look like</p>
+        <h2 id="checklist-record-title" class="ac-type-h3">Whoever you hire, ask for something like this at the end</h2>
+        <p class="checklist-record__body">{checklist.vendorCta}</p>
+        <a class="checklist-record__link" href="/handoff-standard/">See the annotated sample Handoff Record →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="checklist-footer-note no-print" aria-label="About this checklist">
+    <div class="ac-measure-wide">
+      <p>{checklist.footerNote}</p>
+    </div>
+  </section>
+
+  <RequestForm />
+</BaseLayout>
+
+<script>
+  document.querySelector("[data-print-checklist]")?.addEventListener("click", () => {
+    window.print();
+  });
+</script>
+
+<style>
+  .checklist-print-actions {
+    background: var(--ac-color-paper);
+    padding-block: var(--ac-space-4) 0;
+  }
+
+  .checklist-body {
+    background: var(--ac-color-paper);
+  }
+
+  .checklist-sections {
+    display: grid;
+    gap: var(--ac-space-7);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .checklist-section__head {
+    display: flex;
+    align-items: baseline;
+    gap: var(--ac-space-3);
+    border-bottom: 2px solid var(--ac-color-navy-900);
+    padding-bottom: 10px;
+  }
+
+  .checklist-section__n {
+    color: var(--ac-color-ink-400);
+    font-family: var(--ac-font-mono);
+    font-size: 1.1rem;
+  }
+
+  .checklist-section__items {
+    display: grid;
+    gap: var(--ac-space-3);
+    margin: var(--ac-space-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .checklist-section__items li {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 12px;
+    align-items: start;
+    color: var(--ac-color-ink-600);
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+
+  .checklist-section__box {
+    width: 16px;
+    height: 16px;
+    margin-top: 3px;
+    border: 1.5px solid var(--ac-color-line-strong);
+    border-radius: 3px;
+  }
+
+  .checklist-record {
+    background: var(--ac-color-warm-white);
+  }
+
+  .checklist-record__shell {
+    max-width: 42rem;
+  }
+
+  .checklist-record__body {
+    max-width: 56ch;
+    margin: var(--ac-space-4) 0;
+    color: var(--ac-color-ink-600);
+  }
+
+  .checklist-record__link {
+    color: var(--ac-color-navy-800);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .checklist-record__link:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .checklist-footer-note {
+    background: var(--ac-color-warm-white);
+    padding-top: 0;
+  }
+
+  .checklist-footer-note p {
+    max-width: 60ch;
+    margin: 0;
+    color: var(--ac-color-ink-400);
+    font-size: 0.82rem;
+  }
+
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+  }
+</style>

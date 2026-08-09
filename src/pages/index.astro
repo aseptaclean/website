@@ -4,6 +4,7 @@
 // docs/18-VISUAL-DIRECTION.md's homepage section map for this page).
 import BaseLayout from "@layouts/BaseLayout.astro";
 import AccentBand from "@components/AccentBand.astro";
+import AreasWeServe from "@components/AreasWeServe.astro";
 import CredentialBar from "@components/CredentialBar.astro";
 import FAQ, { faqItems } from "@components/FAQ.astro";
 import FinalCTA from "@components/FinalCTA.astro";
@@ -16,6 +17,14 @@ import RequestForm from "@components/RequestForm.astro";
 import ServiceCards from "@components/ServiceCards.astro";
 import WhyAseptaclean from "@components/WhyAseptaclean.astro";
 import { homepage, site } from "@data/site";
+
+// doc 19 §2.2: sameAs → GBP/Yelp/Nextdoor. Only owner-confirmed profile URLs are ever
+// included (never fabricated) — matches AGENTS.md's "never invent proof" rule.
+const sameAs = [
+  site.business.googleBusinessProfileUrl,
+  site.business.yelpUrl,
+  site.business.nextdoorUrl
+].filter((url): url is string => Boolean(url));
 
 const localBusinessSchema = {
   "@type": "LocalBusiness",
@@ -37,7 +46,8 @@ const localBusinessSchema = {
     "@type": "GeoCoordinates",
     latitude: 37.3382,
     longitude: -121.8863
-  }
+  },
+  ...(sameAs.length > 0 ? { sameAs } : {})
 };
 
 const serviceSchemas = homepage.serviceCards.map((card) => ({
@@ -67,7 +77,7 @@ const faqSchema = {
 
 <BaseLayout
   title="Property Cleanout & Deep Cleaning | San Jose & South Bay | Aseptaclean"
-  description="Whole-property clearing and deep cleaning in San Jose and the South Bay. Written scope before work, documented closeout with a Property Handoff Record."
+  description="Whole-property cleanout and deep cleaning in San Jose & the South Bay. Written scope before work, nothing removed without approval, documented closeout."
   canonicalPath="/"
   schema={[localBusinessSchema, ...serviceSchemas, faqSchema]}
 >
@@ -79,6 +89,7 @@ const faqSchema = {
   <HandoffStandard />
   <HandoffRecord />
   <Pricing />
+  <AreasWeServe />
   <OperatorAccountability />
   <FAQ />
   <RequestForm />

@@ -1,0 +1,115 @@
+---
+// Shared PRICING HONESTY section for Phase 3/3b draft service pages
+// (docs/19-SYSTEM-AND-SITEMAP.md §3.2: "PRICING HONESTY — drivers + $195 assessment credit
+// (no invented figures)"). No dollar figures beyond the approved $195 assessment fee and the
+// approved public starting position from src/data/site.ts.
+import { site } from "@data/site";
+
+interface Props {
+  heading: string;
+  headingId: string;
+  drivers: readonly string[];
+}
+
+const { heading, headingId, drivers } = Astro.props;
+---
+
+<section class="service-pricing" aria-labelledby={headingId}>
+  <div class="ac-measure-wide service-pricing__shell">
+    <div>
+      <p class="ac-eyebrow">Pricing, honestly</p>
+      <h2 id={headingId} class="ac-type-h2 service-pricing__heading">{heading}</h2>
+      <ul class="service-pricing__drivers">
+        {drivers.map((driver) => <li>{driver}</li>)}
+      </ul>
+    </div>
+    <div class="service-pricing__panel">
+      <p class="service-pricing__fee">${site.offer.assessmentFee}</p>
+      <p class="service-pricing__fee-label">On-site assessment</p>
+      <p class="service-pricing__fee-note">{site.offer.assessmentFeeTerms}</p>
+      {
+        site.offer.startingPrice && (
+          <p class="service-pricing__floor">
+            Full projects generally begin at ${site.offer.startingPrice.toLocaleString()}.
+          </p>
+        )
+      }
+    </div>
+  </div>
+</section>
+
+<style>
+  .service-pricing {
+    background: var(--ac-color-warm-white);
+  }
+
+  .service-pricing__shell {
+    display: grid;
+    gap: var(--ac-space-6);
+  }
+
+  .service-pricing__heading {
+    max-width: 32ch;
+    margin-top: var(--ac-space-3);
+  }
+
+  .service-pricing__drivers {
+    display: grid;
+    gap: var(--ac-space-2);
+    max-width: 40ch;
+    margin: var(--ac-space-5) 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .service-pricing__drivers li {
+    border-bottom: 1px solid var(--ac-color-line);
+    padding-block: 10px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.92rem;
+  }
+
+  .service-pricing__panel {
+    align-self: start;
+    border-radius: var(--ac-r);
+    background: #fff;
+    box-shadow: var(--ac-shadow-card);
+    padding: 26px 24px;
+  }
+
+  .service-pricing__fee {
+    margin: 0;
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-display);
+    font-size: 2.4rem;
+    font-weight: 600;
+  }
+
+  .service-pricing__fee-label {
+    margin: 2px 0 0;
+    color: var(--ac-color-ink-500);
+    font-size: 0.85rem;
+  }
+
+  .service-pricing__fee-note {
+    max-width: 32ch;
+    margin: 14px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9rem;
+  }
+
+  .service-pricing__floor {
+    margin: 14px 0 0;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 14px;
+    color: var(--ac-color-ink-500);
+    font-size: 0.85rem;
+  }
+
+  @media (min-width: 56.25rem) {
+    .service-pricing__shell {
+      grid-template-columns: 1.3fr 1fr;
+    }
+  }
+</style>

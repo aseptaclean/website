@@ -66,11 +66,12 @@ const fullProductionRequired = [
   "HUBSPOT_DEAL_STAGE_ID",
   "RESEND_API_KEY",
   "EMAIL_FROM_ADDRESS",
-  "OWNER_ALERT_EMAIL",
-  "TWILIO_ACCOUNT_SID",
-  "TWILIO_AUTH_TOKEN",
-  "TWILIO_FROM_NUMBER",
-  "LEAD_ALERT_PHONE"
+  "OWNER_ALERT_EMAIL"
+  // TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_FROM_NUMBER / LEAD_ALERT_PHONE are
+  // intentionally NOT required here. SMS owner alerts are gated behind SMS_ALERTS_ENABLED
+  // pending Twilio 10DLC campaign approval (docs/05-DECISIONS-LOG.md); until that flag is
+  // "true", email (Resend) is the sole notification path and Twilio credentials do not need
+  // to exist for a production build to ship. See the SMS_ALERTS_ENABLED check below.
 ];
 const privatePreviewRequired = [
   "PUBLIC_SITE_URL",
@@ -222,6 +223,21 @@ if (!privatePreview) {
   if (values.PUBLIC_TERMLY_CONSENT_ENABLED !== "true") {
     errors.push("Public production requires PUBLIC_TERMLY_CONSENT_ENABLED=true.");
   }
+}
+
+if (values.SMS_ALERTS_ENABLED === "true") {
+  for (const key of [
+    "TWILIO_ACCOUNT_SID",
+    "TWILIO_AUTH_TOKEN",
+    "TWILIO_FROM_NUMBER",
+    "LEAD_ALERT_PHONE"
+  ]) {
+    if (!values[key]?.trim()) {
+      errors.push(`${key} is required when SMS_ALERTS_ENABLED=true.`);
+    }
+  }
+} else if (values.SMS_ALERTS_ENABLED && values.SMS_ALERTS_ENABLED !== "false") {
+  errors.push("SMS_ALERTS_ENABLED must be true or false.");
 }
 
 if (values.PUBLIC_TSWMP_STATUS && values.PUBLIC_TSWMP_STATUS !== "pending") {

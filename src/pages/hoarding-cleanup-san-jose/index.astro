@@ -1,0 +1,167 @@
+---
+// UNPUBLISHED DRAFT — docs/19-SYSTEM-AND-SITEMAP.md §2.1 Phase 3, §2.2 HOARDING spec
+// ("written to the ADULT CHILD, not the person who hoards. Question-phrased H2s... to feed AI
+// Overviews"), §3.2 tone delta ("shame-disarmament, family-addressed, zero clinical labels for
+// the person"). Ships noindex, excluded from sitemap.xml.ts, not linked from nav/footer.
+//
+// DIFFERENTIATION: this page's first section after the hero is a stacked pair of
+// question-phrased H2s ("Will everything be thrown away?" / "Will the crew judge what they
+// find?") — no other page in this batch uses a question as a heading, and no other page stacks
+// two recognition beats back to back. The word "hoarder" as a noun does not appear anywhere in
+// this file (grep-verified) — only "hoarding" as an adjective, matching the homepage FAQ's own
+// established convention (src/data/site.ts homepage.faq).
+import BaseLayout from "@layouts/BaseLayout.astro";
+import CompactHero from "@components/CompactHero.astro";
+import ServiceScope from "@components/ServiceScope.astro";
+import ServiceMethodRail from "@components/ServiceMethodRail.astro";
+import ServiceProof from "@components/ServiceProof.astro";
+import ServicePricing from "@components/ServicePricing.astro";
+import ServiceFAQ from "@components/ServiceFAQ.astro";
+import RequestForm from "@components/RequestForm.astro";
+import { hoardingPage } from "@data/servicePages";
+import { site } from "@data/site";
+
+const schema = [
+  {
+    "@type": "Service",
+    serviceType: "Hoarding cleanup",
+    provider: { "@id": new URL("/#organization", site.urls.site).href },
+    areaServed: site.location.cities.map((name) => ({ "@type": "City", name })),
+    name: "Hoarding Cleanup"
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: hoardingPage.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Hoarding Cleanup San Jose",
+        item: new URL(hoardingPage.slug, site.urls.site).href
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="Hoarding Cleanup in San Jose & South Bay | Aseptaclean"
+  description="Compassionate hoarding cleanup with nothing removed without written approval. Discreet, judgment-free, documented. San Jose & the South Bay."
+  canonicalPath={hoardingPage.slug}
+  noindex={true}
+  schema={schema}
+>
+  <CompactHero eyebrow={hoardingPage.hero.eyebrow} headingId="hoarding-title">
+    <h1 id="hoarding-title">{hoardingPage.hero.h1}</h1>
+    <p class="compact-hero__lead">{hoardingPage.hero.lead}</p>
+  </CompactHero>
+
+  <section class="recognition" aria-labelledby="recognition-title-1">
+    <div class="ac-measure-intimate">
+      <p class="ac-eyebrow">{hoardingPage.recognition.eyebrow}</p>
+      <h2 id="recognition-title-1" class="recognition__q">{hoardingPage.recognition.heading}</h2>
+      {hoardingPage.recognition.body.map((paragraph) => <p class="recognition__body">{paragraph}</p>)}
+
+      <h2 id="recognition-title-2" class="recognition__q recognition__q--second">
+        {hoardingPage.recognition.secondQuestion.heading}
+      </h2>
+      <p class="recognition__body">{hoardingPage.recognition.secondQuestion.body}</p>
+    </div>
+  </section>
+
+  <ServiceScope
+    heading={hoardingPage.scope.heading}
+    headingId="hoarding-scope-title"
+    included={hoardingPage.scope.included}
+    exclusionsNote={hoardingPage.scope.exclusionsNote}
+  />
+
+  <section class="fiduciary" aria-labelledby="fiduciary-title">
+    <div class="ac-measure-wide fiduciary__shell">
+      <h2 id="fiduciary-title" class="ac-type-h3 fiduciary__heading">{hoardingPage.fiduciary.heading}</h2>
+      <p class="fiduciary__body">{hoardingPage.fiduciary.body}</p>
+    </div>
+  </section>
+
+  <ServiceMethodRail heading={hoardingPage.method.heading} headingId="hoarding-method-title" />
+
+  <ServiceProof
+    recordLabel={hoardingPage.proof.recordLabel}
+    recordField={hoardingPage.proof.recordField}
+    recordValue={hoardingPage.proof.recordValue}
+    jobLine={hoardingPage.proof.jobLine}
+    headingId="hoarding-proof-title"
+  />
+
+  <ServicePricing
+    heading={hoardingPage.pricing.heading}
+    headingId="hoarding-pricing-title"
+    drivers={hoardingPage.pricing.drivers}
+  />
+
+  <ServiceFAQ
+    heading="Questions families ask before requesting a plan"
+    headingId="hoarding-faq-title"
+    intro="These answers describe the assessment process. The signed scope controls the actual project."
+    items={hoardingPage.faq}
+  />
+
+  <RequestForm />
+</BaseLayout>
+
+<style>
+  .recognition {
+    background: var(--ac-color-warm-white);
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .recognition__q {
+    max-width: 26ch;
+    margin: var(--ac-space-3) 0 0;
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-display);
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    line-height: 1.15;
+  }
+
+  .recognition__q--second {
+    margin-top: var(--ac-space-7);
+    padding-top: var(--ac-space-6);
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .recognition__body {
+    max-width: 56ch;
+    margin-top: var(--ac-space-4);
+    color: var(--ac-color-ink-600);
+    font-size: 1rem;
+  }
+
+  .fiduciary {
+    background: var(--ac-color-paper);
+  }
+
+  .fiduciary__shell {
+    max-width: 46rem;
+    border-left: 3px solid var(--ac-color-gold);
+    padding-left: var(--ac-space-5);
+  }
+
+  .fiduciary__heading {
+    margin-bottom: var(--ac-space-3);
+  }
+
+  .fiduciary__body {
+    max-width: 54ch;
+    margin: 0;
+    color: var(--ac-color-ink-600);
+  }
+</style>

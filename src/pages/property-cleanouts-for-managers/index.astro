@@ -1,0 +1,193 @@
+---
+// UNPUBLISHED DRAFT — docs/19-SYSTEM-AND-SITEMAP.md §2.1 Phase 3b ("gate: crew capacity
+// confirmed"), §2.2 PM/TURNOVER spec ("Pure Track B... same-week availability messaging
+// allowed only if operationally true"). Ships noindex, excluded from sitemap.xml.ts, not
+// linked from nav/footer — plus a permanent gate note (see deep-cleaning-san-jose's identical
+// pattern) that this page must not launch until crew capacity for PM-volume work is confirmed.
+// No same-week or specific-turnaround claim appears anywhere on this page; every instance is
+// an [OWNER INPUT] placeholder, never invented.
+//
+// DIFFERENTIATION: this is the only page in the batch that is Pure Track B — the FIDUCIARY
+// block runs immediately after the hero with no separate family-facing recognition section at
+// all, matching doc 19's "Pure Track B" instruction. No other page in this batch skips
+// RECOGNITION entirely.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import CompactHero from "@components/CompactHero.astro";
+import ServiceScope from "@components/ServiceScope.astro";
+import ServiceMethodRail from "@components/ServiceMethodRail.astro";
+import ServiceProof from "@components/ServiceProof.astro";
+import ServicePricing from "@components/ServicePricing.astro";
+import ServiceFAQ from "@components/ServiceFAQ.astro";
+import RequestForm from "@components/RequestForm.astro";
+import { propertyManagersPage } from "@data/servicePages";
+import { site } from "@data/site";
+
+const schema = [
+  {
+    "@type": "Service",
+    serviceType: "Tenant abandonment and turnover cleanout",
+    provider: { "@id": new URL("/#organization", site.urls.site).href },
+    areaServed: site.location.cities.map((name) => ({ "@type": "City", name })),
+    name: "Property Cleanouts for Managers"
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: propertyManagersPage.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Property Cleanouts for Managers",
+        item: new URL(propertyManagersPage.slug, site.urls.site).href
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="Property Cleanouts for Managers | San Jose & South Bay | Aseptaclean"
+  description="Tenant abandonment, eviction, and foreclosure turnover cleanouts under one signed scope, with a documented closeout record for the owner file. San Jose & South Bay."
+  canonicalPath={propertyManagersPage.slug}
+  noindex={true}
+  schema={schema}
+>
+  <section class="gate-note" aria-label="Internal launch gate — not visible copy guidance">
+    <div class="ac-measure-wide">
+      <p><strong>LAUNCH GATE — not for publication:</strong> {propertyManagersPage.gate}</p>
+    </div>
+  </section>
+
+  <CompactHero eyebrow={propertyManagersPage.hero.eyebrow} headingId="pm-title">
+    <h1 id="pm-title">{propertyManagersPage.hero.h1}</h1>
+    <p class="compact-hero__lead">{propertyManagersPage.hero.lead}</p>
+  </CompactHero>
+
+  <section class="fiduciary-lead" aria-labelledby="fiduciary-lead-title">
+    <div class="ac-measure-wide fiduciary-lead__shell">
+      <div>
+        <p class="ac-eyebrow fiduciary-lead__eyebrow">{propertyManagersPage.fiduciary.heading}</p>
+        <h2 id="fiduciary-lead-title" class="fiduciary-lead__heading">One vendor, one scope, one closeout record for the file</h2>
+        {propertyManagersPage.fiduciary.body.map((paragraph) => <p class="fiduciary-lead__body">{paragraph}</p>)}
+      </div>
+      <div class="fiduciary-lead__availability">
+        <p class="fiduciary-lead__availability-label">{propertyManagersPage.availability.heading}</p>
+        <p class="fiduciary-lead__availability-body">{propertyManagersPage.availability.body}</p>
+      </div>
+    </div>
+  </section>
+
+  <ServiceScope
+    heading={propertyManagersPage.scope.heading}
+    headingId="pm-scope-title"
+    included={propertyManagersPage.scope.included}
+    exclusionsNote={propertyManagersPage.scope.exclusionsNote}
+  />
+
+  <ServiceMethodRail heading={propertyManagersPage.method.heading} headingId="pm-method-title" />
+
+  <ServiceProof
+    recordLabel={propertyManagersPage.proof.recordLabel}
+    recordField={propertyManagersPage.proof.recordField}
+    recordValue={propertyManagersPage.proof.recordValue}
+    jobLine={propertyManagersPage.proof.jobLine}
+    headingId="pm-proof-title"
+  />
+
+  <ServicePricing
+    heading={propertyManagersPage.pricing.heading}
+    headingId="pm-pricing-title"
+    drivers={propertyManagersPage.pricing.drivers}
+  />
+
+  <ServiceFAQ
+    heading="Questions property managers ask before requesting a plan"
+    headingId="pm-faq-title"
+    intro="These answers describe the assessment process. The signed scope controls the actual project."
+    items={propertyManagersPage.faq}
+  />
+
+  <RequestForm />
+</BaseLayout>
+
+<style>
+  .gate-note {
+    background: #fbeeec;
+    border-bottom: 1px solid #e0b6b0;
+    padding-block: 14px;
+  }
+
+  .gate-note p {
+    margin: 0;
+    color: #a3392f;
+    font-size: 0.85rem;
+  }
+
+  .fiduciary-lead {
+    background: var(--ac-color-navy-900);
+    color: var(--ac-color-warm-white);
+  }
+
+  .fiduciary-lead__shell {
+    display: grid;
+    gap: var(--ac-space-6);
+  }
+
+  .fiduciary-lead__eyebrow {
+    color: var(--ac-color-steel-on-navy);
+  }
+
+  .fiduciary-lead__heading {
+    max-width: 26ch;
+    margin: var(--ac-space-3) 0 0;
+    color: var(--ac-color-paper);
+    font-family: var(--ac-font-display);
+    font-size: clamp(1.7rem, 3vw, 2.2rem);
+    line-height: 1.15;
+  }
+
+  .fiduciary-lead__body {
+    max-width: 54ch;
+    margin-top: var(--ac-space-4);
+    color: #b9c9dd;
+  }
+
+  .fiduciary-lead__availability {
+    align-self: start;
+    border: 1px solid rgba(255, 255, 255, 0.16);
+    border-radius: var(--ac-r);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 22px 20px;
+  }
+
+  .fiduciary-lead__availability-label {
+    margin: 0 0 10px;
+    color: var(--ac-color-steel-on-navy);
+    font-family: var(--ac-font-mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .fiduciary-lead__availability-body {
+    margin: 0;
+    color: #cfe0f2;
+    font-size: 0.88rem;
+    line-height: 1.5;
+  }
+
+  @media (min-width: 56.25rem) {
+    .fiduciary-lead__shell {
+      grid-template-columns: 1.3fr 1fr;
+      align-items: center;
+    }
+  }
+</style>

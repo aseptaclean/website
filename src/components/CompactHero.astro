@@ -1,0 +1,69 @@
+---
+// Shared compact dark hero for inner pages (doc 19 §3.2/3.5-3.8: "COMPACT DARK HERO
+// (~55% homepage hero height)"). Reuses Hero.astro's navy gradient/dot-grid treatment
+// at reduced padding and without the hero's two-column status panel.
+interface Props {
+  eyebrow: string;
+  headingId: string;
+}
+
+const { eyebrow, headingId } = Astro.props;
+---
+
+<section class="compact-hero" aria-labelledby={headingId}>
+  <div class="ac-measure-wide compact-hero__shell">
+    <p class="ac-eyebrow eyebrow">{eyebrow}</p>
+    <slot />
+  </div>
+</section>
+
+<style>
+  .compact-hero {
+    position: relative;
+    overflow: hidden;
+    padding-block: clamp(2.75rem, 6vw, 4.5rem);
+    background:
+      radial-gradient(1100px 500px at 85% -10%, rgba(74, 127, 193, 0.28), transparent 60%),
+      radial-gradient(700px 400px at -5% 110%, rgba(74, 127, 193, 0.15), transparent 55%),
+      linear-gradient(165deg, var(--ac-color-navy-900) 0%, var(--ac-color-navy-950) 70%);
+    color: #fff;
+  }
+
+  .compact-hero::before {
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+    background-size: 26px 26px;
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 80%);
+    content: "";
+  }
+
+  .compact-hero__shell {
+    position: relative;
+    z-index: 1;
+    max-width: 49rem;
+  }
+
+  .compact-hero .eyebrow {
+    color: #8fb4de;
+  }
+
+  .compact-hero .eyebrow::before {
+    background: #8fb4de;
+  }
+
+  .compact-hero :global(h1) {
+    margin-bottom: 0;
+    color: #fff;
+    font-size: clamp(2.1rem, 4vw, 2.9rem);
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  .compact-hero :global(.compact-hero__lead) {
+    max-width: 46ch;
+    margin: 18px 0 0;
+    color: #b9c9dd;
+    font-size: 1.05rem;
+  }
+</style>

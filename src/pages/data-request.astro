@@ -1,0 +1,118 @@
+---
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { site } from "@data/site";
+
+// Retired-WordPress route preserved at an identical URL (docs/19-SYSTEM-AND-SITEMAP.md
+// redirect law): the old site's CCPA/data-request page had a working request mechanism
+// that must not silently vanish under a generic redirect. No provider (Termly data
+// request/DSAR form) is wired in this repo yet — see docs/04-RELEASE-CHECKLIST.md
+// "DNS cutover blockers." This page intentionally shows an honest not-configured state
+// rather than substitute legal/process text, matching the LegalPolicy.astro fallback
+// pattern used by /privacy/, /terms/, and /cookie-policy/.
+const contactEmail = site.business.privacyContact || site.business.email;
+---
+
+<BaseLayout
+  title="Data Request | Aseptaclean"
+  description="Submit a data access, correction, or deletion request to Aseptaclean."
+  canonicalPath="/data-request/"
+  showMobileCta={false}
+>
+  <div class="ac-measure-wide">
+    <article class="data-request">
+      <header class="data-request__header">
+        <p class="ac-type-xs">Legal record</p>
+        <h1 class="ac-type-h1">Data Request</h1>
+        <p class="ac-type-lead">
+          This page is reserved for Aseptaclean's data access, correction, and deletion
+          request process.
+        </p>
+      </header>
+
+      <section class="data-request__status" aria-labelledby="request-status">
+        <p class="data-request__label">Provider status</p>
+        <h2 id="request-status" class="ac-type-h2">Request form not published in this preview</h2>
+        <p class="ac-type-body">
+          The provider-configured data request mechanism has not been added yet. No
+          substitute form or process is shown. To submit a data request now, contact
+          Aseptaclean directly.
+        </p>
+        <div class="data-request__actions">
+          <a href={`mailto:${contactEmail}`}>Email Aseptaclean about a data request</a>
+        </div>
+      </section>
+    </article>
+  </div>
+</BaseLayout>
+
+<style>
+  .data-request {
+    display: grid;
+    gap: var(--ac-space-7);
+    min-height: 55vh;
+    padding-block: var(--ac-space-7) var(--ac-space-8);
+  }
+
+  .data-request__header {
+    max-width: 48rem;
+    border-top: 3px solid var(--ac-color-navy-900);
+    padding-top: var(--ac-space-5);
+  }
+
+  .data-request__header > p:first-child {
+    margin: 0;
+    color: var(--ac-color-navy-800);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-xs);
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .data-request__header h1 {
+    margin: var(--ac-space-3) 0 0;
+  }
+
+  .data-request__header > p:last-child {
+    margin: var(--ac-space-4) 0 0;
+  }
+
+  .data-request__status {
+    max-width: 48rem;
+    border: 1px solid var(--ac-color-steel-300);
+    padding: var(--ac-space-5);
+    background: var(--ac-color-paper);
+  }
+
+  .data-request__label {
+    margin: 0;
+    color: var(--ac-color-navy-800);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-xs);
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .data-request__status h2 {
+    margin: var(--ac-space-3) 0 0;
+  }
+
+  .data-request__status p:last-of-type {
+    margin: var(--ac-space-3) 0 0;
+  }
+
+  .data-request__actions {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    gap: var(--ac-space-3);
+    margin-top: var(--ac-space-5);
+  }
+
+  .data-request__actions > a {
+    display: inline-flex;
+    min-height: 3rem;
+    align-items: center;
+  }
+</style>

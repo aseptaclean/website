@@ -32,12 +32,18 @@ contradictory instructions.
 3. `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` — the Phase 4 canonical master specification
 4. `docs/18-VISUAL-DIRECTION.md` — owner-directed visual direction (contractor-professional);
    controls imagery, cards, colour/accent, and the binding homepage section map
-5. `docs/06-APPROVED-HOMEPAGE-COPY.md` — controls all homepage wording
-6. `docs/07-ONE-PAGE-DIRECTIVE.md` — controls scope, routes, and offer architecture
-7. `docs/11-COMPOSITION-AND-TYPE.md` — controls type scale, measure, rhythm, composition
+5. `docs/19-SYSTEM-AND-SITEMAP.md` — owner-directed growth-architecture authority (v3,
+   2026-08-08); controls the site's phased sitemap, per-page SEO specs, wireframes, and the
+   CAPTURE→RESPOND→CONVERT→DELIVER→COMPOUND system. Below `01` (claims) and `18` (visual) —
+   where it names copy, `01` still outranks it. Supersedes `07-ONE-PAGE-DIRECTIVE.md`'s
+   one-page scope restriction; see that file's status line and the Scope section below.
+6. `docs/06-APPROVED-HOMEPAGE-COPY.md` — controls all homepage wording
+7. `docs/07-ONE-PAGE-DIRECTIVE.md` — superseded for scope by `docs/19-SYSTEM-AND-SITEMAP.md`
+   (see above); retained for reference on conflict-resolution decisions and launch-phase QA
+8. `docs/11-COMPOSITION-AND-TYPE.md` — controls type scale, measure, rhythm, composition
    (superseded in part by `docs/18-VISUAL-DIRECTION.md` — see that file's preamble)
-8. `docs/02-OWNER-INPUTS.md` — confirmed business facts and values
-9. `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` — Phase 2 only, not part of the launch build
+9. `docs/02-OWNER-INPUTS.md` — confirmed business facts and values
+10. `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` — Phase 2 only, not part of the launch build
 
 Superseded for scope, kept for reference: `docs/00-MASTER-BRIEF.md`, `docs/03-BUILD-PLAN.md`.
 Archived: `docs/archive/` — never read from here.
@@ -47,6 +53,15 @@ Record every material conflict in `docs/05-DECISIONS-LOG.md`.
 Report conflicts before coding. Never silently choose between contradictory instructions.
 
 ## Scope
+
+**Superseded 2026-08-08.** The one-page-only restriction below described the launch build only.
+Site architecture is now governed by `docs/19-SYSTEM-AND-SITEMAP.md` Part 2's phased sitemap
+(Phase 1 launch routes, then Phase 3/3b/3c service, checklist, and city pages, then Phase 4
+assessment/question routes — see that doc for the full route list, gates, and per-page SEO
+specs). Do not build ahead of the phase gates doc 19 sets for each route. If a task appears to
+require a new route, confirm it against doc 19's phase map before creating it.
+
+Original launch-build scope (historical, for the routes actually shipped in Phase 1):
 
 The launch build is a one-page site. Routes:
 
@@ -95,14 +110,19 @@ GUARDRAILS.md` governs and is run against every sentence before any page ships.
 - No Tailwind, React, Vue, Svelte, UI kit, CMS, or animation library without explicit owner approval
 
 ## Current routes
-Initial production routes only:
+Doc 19 Phase 1 routes, live:
 - `/`
 - `/request-assessment/`
 - `/thank-you/`
+- `/about/`
+- `/contact/`
+- `/handoff-standard/`
+- `/404`
 - `/privacy/`
 - `/terms/`
 
-Do not build the future multi-page SEO architecture yet.
+Do not build Phase 3+ routes (service pages, city pages, checklist, question posts) ahead of
+their doc 19 gates.
 
 ## Non-negotiable business rules
 - One flagship offer dominates: **Aseptaclean Handoff Reset**.

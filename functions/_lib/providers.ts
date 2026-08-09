@@ -187,6 +187,12 @@ export function sendCustomerEmail(env: LeadEnvironment, lead: LeadRecord) {
 }
 
 export async function sendOwnerSms(env: LeadEnvironment, lead: LeadRecord) {
+  if (env.SMS_ALERTS_ENABLED !== "true") {
+    return {
+      skipped: true,
+      detail: "SMS alerts are disabled (SMS_ALERTS_ENABLED is not \"true\"); pending 10DLC approval."
+    };
+  }
   if (
     !env.TWILIO_ACCOUNT_SID ||
     !env.TWILIO_AUTH_TOKEN ||
@@ -223,7 +229,7 @@ export async function sendOwnerSms(env: LeadEnvironment, lead: LeadRecord) {
 export function sendOwnerFallbackEmail(
   env: LeadEnvironment,
   lead: LeadRecord,
-  smsFailure: string
+  smsStatus: string
 ) {
   if (!env.OWNER_ALERT_EMAIL) {
     return Promise.resolve({
@@ -231,12 +237,31 @@ export function sendOwnerFallbackEmail(
       detail: "Owner alert email is not configured."
     });
   }
+  const isResidence = lead.data.offer_type === "private_residence_reset";
+  const offerLabel = isResidence ? "Private Residence Reset" : "Handoff Reset";
+  // SMS_ALERTS_ENABLED off (the default until 10DLC approval) means email is the sole,
+  // expected notification channel — not a degraded fallback — so the copy must not read
+  // as an incident. Any other skip/failure reason means SMS was actually attempted.
+  const smsIsByDesign = env.SMS_ALERTS_ENABLED !== "true";
+  const callbackPhone = String(lead.data.phone).replace(/[^\d+]/g, "");
+  const leadSummary = [
+    `Request ID: ${lead.id}`,
+    `Name: ${lead.data.full_name}`,
+    `Phone: ${lead.data.phone}`,
+    `Email: ${lead.data.email}`,
+    `City: ${lead.data.property_city}`,
+    `Situation: ${lead.data.property_situation}`,
+    `Callback window: ${lead.callbackWindow}`,
+    `Submitted: ${lead.receivedAt}`,
+    `Call: tel:${callbackPhone}`
+  ].join("\n");
   return sendResend(env, {
     to: env.OWNER_ALERT_EMAIL,
-    subject:
-      lead.data.offer_type === "private_residence_reset"
-        ? `SMS fallback: Private Residence Reset ${lead.id}`
-        : `SMS fallback: Handoff Reset ${lead.id}`,
-    text: `The owner SMS alert failed: ${smsFailure}\n\n${lead.data.full_name}\n${lead.data.phone}\n${lead.data.email}\n${lead.data.property_city}\n${lead.data.property_situation}\nSubmitted: ${lead.receivedAt}`
+    subject: smsIsByDesign
+      ? `New lead: ${offerLabel} ${lead.id}`
+      : `SMS fallback: ${offerLabel} ${lead.id}`,
+    text: smsIsByDesign
+      ? `New ${offerLabel} lead received. (SMS owner alerts are off pending 10DLC approval; email is the active notification channel.)\n\n${leadSummary}`
+      : `The owner SMS alert did not deliver: ${smsStatus}\n\n${leadSummary}`
   });
 }

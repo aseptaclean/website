@@ -1,6 +1,13 @@
 # 07 — One-Page Collapse Directive
 
-**Status:** Active. Supersedes the multi-page sprint plan in `03-BUILD-PLAN.md`.
+**Status:** Superseded for scope as of 2026-08-08 by `docs/19-SYSTEM-AND-SITEMAP.md`, the
+current growth-architecture authority — the site is no longer one-page-only; see that doc's
+Part 2 phased sitemap for the binding route architecture. This file is kept for reference: its
+conflict-resolution decisions (§3), form architecture (§7), guarantee reconciliation (§6), and
+launch-phase QA reconciliation (§11) are not superseded and still apply to the routes and
+content they govern. Do not use §1's precedence chain or §2's route collapse as current — see
+`AGENTS.md` instead. Previously: Active. Supersedes the multi-page sprint plan in
+`03-BUILD-PLAN.md`.
 **Date:** July 30, 2026
 **Repo location:** `docs/07-ONE-PAGE-DIRECTIVE.md`
 **Agent:** Codex. This file is referenced from `AGENTS.md`.

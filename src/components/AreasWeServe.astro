@@ -1,19 +1,21 @@
 ---
-// docs/18-VISUAL-DIRECTION.md §6 row 8 — "Areas we serve," pill list, existing city set, [NONE]
-// image.
+// docs/18-VISUAL-DIRECTION.md §6 row 8 — "Areas we serve," pill list, [NONE] image.
+// docs/19-SYSTEM-AND-SITEMAP.md Part 5 + docs/05-DECISIONS-LOG.md "Service-area decision —
+// 10-city South Bay & Peninsula footprint": 10-city set, "South Bay & Peninsula" framing
+// (not county-only — Atherton sits in San Mateo County, not Santa Clara County).
 import { site } from "@data/site";
 ---
 
 <section class="areas-served" aria-labelledby="areas-served-title">
   <div class="ac-measure-intimate">
     <p class="ac-eyebrow">Areas we serve</p>
-    <h2 id="areas-served-title" class="ac-type-h2">{site.location.serviceArea}</h2>
+    <h2 id="areas-served-title" class="ac-type-h2">{site.location.regionLabel}</h2>
 
     <ul class="areas-served__pills">
       {site.location.cities.map((city) => <li>{city}</li>)}
     </ul>
     <p class="areas-served__note ac-type-sm">
-      And surrounding {site.location.county} communities.
+      And surrounding {site.location.regionLabel} communities.
     </p>
   </div>
 </section>

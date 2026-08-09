@@ -59,6 +59,8 @@ export const site = {
     ),
     addressPolicy: "service-area business — no published street address",
     googleBusinessProfileUrl: value("PUBLIC_GBP_URL"),
+    yelpUrl: value("PUBLIC_YELP_URL"),
+    nextdoorUrl: value("PUBLIC_NEXTDOOR_URL"),
     logoUrl: value(
       "PUBLIC_LOGO_URL",
       "/assets/brand/aseptaclean-wordmark.png"
@@ -113,12 +115,22 @@ export const site = {
     // docs/18-VISUAL-DIRECTION.md §7 credential bar reads "... · Santa Clara County" —
     // a distinct, more specific fact than the metro-area serviceArea phrase above.
     county: value("PUBLIC_SERVICE_COUNTY", "Santa Clara County"),
+    // docs/19-SYSTEM-AND-SITEMAP.md Part 5 + docs/05-DECISIONS-LOG.md "Service-area decision —
+    // 10-city South Bay & Peninsula footprint": Atherton (and, to a lesser degree, Palo Alto /
+    // Los Altos Hills) sit in San Mateo County, not Santa Clara County, so this footprint reads
+    // "South Bay & Peninsula" rather than a county-only label anywhere it appears.
+    regionLabel: "South Bay & Peninsula",
     cities: [
       "San Jose",
       "Mountain View",
       "Sunnyvale",
       "Santa Clara",
-      "Campbell"
+      "Campbell",
+      "Los Altos",
+      "Los Altos Hills",
+      "Los Gatos",
+      "Palo Alto",
+      "Atherton"
     ]
   },
   urls: {
@@ -236,14 +248,14 @@ export const homepage = {
     {
       name: "Scope",
       detail:
-        "We write down what stays, what goes, what gets cleaned, what is excluded, and what the project will require.",
+        "We write down what stays, what goes, what gets cleaned, what is excluded, and what the project requires.",
       record: "Room-by-room plan",
       status: "Defined"
     },
     {
       name: "Protect",
       detail:
-        "Keep areas are identified. Uncertain and important discovered items are separated and reported. We do not decide what mattered to your family.",
+        "Keep areas identified. Uncertain and important discovered items are separated and reported. We do not decide what mattered to your family.",
       record: "Keep and review controls",
       status: "Held for review"
     },
@@ -257,7 +269,7 @@ export const homepage = {
     {
       name: "Reset",
       detail:
-        "The property receives the detailed cleaning included for its next handoff.",
+        "The property receives the detailed cleaning included for its next handoff, including animal and organic conditions within lawful scope.",
       record: "Cleaning status",
       status: "Complete"
     },
@@ -273,26 +285,26 @@ export const homepage = {
     projectId: "HR-1042",
     decisionMaker: "Owner of record — single point of approval",
     clearingScope:
-      "Nonhazardous contents, bagging and consolidation, garage and storage-area clearing, approved disposal coordination",
+      "Nonhazardous contents, garage & storage, approved disposal",
     cleaningScope:
-      "Kitchen and bathroom deep cleaning, cabinet and appliance interiors, floors, baseboards, and accessible surfaces",
+      "Kitchen & bath deep clean, floors, accessible surfaces",
     excludedConditions:
-      "None encountered on this project — full exclusion list attached to the signed scope",
+      "Full exclusion list attached to signed scope",
     rooms: [
       {
         area: "Entry + living",
         disposition: "Keep",
-        note: "Furnishings remain in place; included in the detailed cleaning pass"
+        note: "Furnishings remain; included in the cleaning pass"
       },
       {
         area: "Kitchen",
         disposition: "Keep",
-        note: "Cabinet and appliance interiors detailed per approved scope"
+        note: "Cabinet and appliance interiors detailed per scope"
       },
       {
         area: "Primary closet",
         disposition: "Review",
-        note: "Contents held for owner decision before any clearing proceeds"
+        note: "Contents held for owner decision before clearing"
       },
       {
         area: "Garage",
@@ -320,21 +332,21 @@ export const homepage = {
     {
       title: "Complex property clearing",
       detail:
-        "Whole-property clearing for heavy accumulation, estate, and abandoned-contents conditions — nonhazardous contents only, within a signed scope.",
+        "Whole-property clearing for heavy accumulation, estate, and abandoned-contents conditions — nonhazardous contents, within a signed scope.",
       imageLabel: "Process kit, flat-lay",
       imageStatus: "owned"
     },
     {
       title: "Reset & restoration cleaning",
       detail:
-        "Deep reset cleaning after clearing — kitchens, baths, interiors, and accessible surfaces, within the signed scope.",
+        "Deep reset cleaning after clearing — kitchens, baths, cabinet and appliance interiors, floors and accessible surfaces — for the next handoff.",
       imageLabel: "Clean kitchen or bath detail",
       imageStatus: "atmosphere"
     },
     {
       title: "Animal & organic condition cleaning",
       detail:
-        "Heavy organic conditions and animal waste, cleaned under our organic pathogen endorsement. This is cleaning only — not a decontamination, sterilization, or health-safety determination.",
+        "Heavy organic conditions and animal waste, cleaned under our organic pathogen endorsement. Cleaning only — not a decontamination or health-safety determination.",
       imageLabel: "Completed job photo",
       imageStatus: "owned"
     }
@@ -423,8 +435,7 @@ export const homepage = {
     "Cleaning condition",
     "Access and stairs",
     "Disposal requirements",
-    "Labor and deadline",
-    "Concealed conditions"
+    "Labor and deadline"
   ],
   founderCredentials: [
     "B.S. in Biochemistry, University of California, Riverside",

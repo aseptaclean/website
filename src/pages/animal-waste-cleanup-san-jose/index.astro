@@ -1,0 +1,127 @@
+---
+// UNPUBLISHED DRAFT — docs/19-SYSTEM-AND-SITEMAP.md §2.1 Phase 3, §2.2 ANIMAL/ORGANIC spec
+// ("fastest ranking win"), §3.2 tone delta ("matter-of-fact dignity; hardest-shame buyer; lead
+// with 'we have seen worse and we don't judge' energy without saying it"). Ships noindex,
+// excluded from sitemap.xml.ts, not linked from nav/footer.
+//
+// WORDING LAW (owner directive, this session): cleaning under the organic pathogen endorsement
+// only. This file was grepped for "biohazard", "remediation", "decontaminat", "saniti[sz]e",
+// "steriliz", "hantavirus", and "rodent" before being marked done — zero hits outside this
+// comment itself, which exists only to name the banned list, not use it as page copy.
+//
+// DIFFERENTIATION: this page's first section after the hero is the shortest, plainest
+// recognition block in the batch — two short paragraphs, no question heading, no Track A/B,
+// no fiduciary aside before scope. That directness (not softened, not clinical) is the
+// signature moment doc 19 asks for on this specific page.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import CompactHero from "@components/CompactHero.astro";
+import ServiceScope from "@components/ServiceScope.astro";
+import ServiceMethodRail from "@components/ServiceMethodRail.astro";
+import ServiceProof from "@components/ServiceProof.astro";
+import ServicePricing from "@components/ServicePricing.astro";
+import ServiceFAQ from "@components/ServiceFAQ.astro";
+import RequestForm from "@components/RequestForm.astro";
+import { animalPage } from "@data/servicePages";
+import { site } from "@data/site";
+
+const schema = [
+  {
+    "@type": "Service",
+    serviceType: "Animal waste and organic condition cleaning",
+    provider: { "@id": new URL("/#organization", site.urls.site).href },
+    areaServed: site.location.cities.map((name) => ({ "@type": "City", name })),
+    name: "Animal Waste & Organic Condition Cleaning"
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: animalPage.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Animal Waste Cleanup San Jose",
+        item: new URL(animalPage.slug, site.urls.site).href
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="Animal Waste & Organic Condition Cleaning | San Jose | Aseptaclean"
+  description="Cleaning of animal-affected and heavy organic conditions under our organic pathogen endorsement. Cleaning only — documented, discreet, South Bay."
+  canonicalPath={animalPage.slug}
+  noindex={true}
+  schema={schema}
+>
+  <CompactHero eyebrow={animalPage.hero.eyebrow} headingId="animal-title">
+    <h1 id="animal-title">{animalPage.hero.h1}</h1>
+    <p class="compact-hero__lead">{animalPage.hero.lead}</p>
+  </CompactHero>
+
+  <section class="recognition" aria-labelledby="recognition-title">
+    <div class="ac-measure-intimate">
+      <h2 id="recognition-title" class="ac-type-h2 recognition__heading">{animalPage.recognition.heading}</h2>
+      {animalPage.recognition.body.map((paragraph) => <p class="recognition__body">{paragraph}</p>)}
+    </div>
+  </section>
+
+  <ServiceScope
+    heading={animalPage.scope.heading}
+    headingId="animal-scope-title"
+    included={animalPage.scope.included}
+    exclusionsNote={animalPage.scope.exclusionsNote}
+  />
+
+  <ServiceMethodRail heading={animalPage.method.heading} headingId="animal-method-title" />
+
+  <ServiceProof
+    recordLabel={animalPage.proof.recordLabel}
+    recordField={animalPage.proof.recordField}
+    recordValue={animalPage.proof.recordValue}
+    jobLine={animalPage.proof.jobLine}
+    headingId="animal-proof-title"
+  />
+
+  <ServicePricing
+    heading={animalPage.pricing.heading}
+    headingId="animal-pricing-title"
+    drivers={animalPage.pricing.drivers}
+  />
+
+  <ServiceFAQ
+    heading="Questions about scope and process"
+    headingId="animal-faq-title"
+    intro="These answers describe the cleaning scope and assessment process. The signed scope controls the actual project."
+    items={animalPage.faq}
+  />
+
+  <RequestForm />
+</BaseLayout>
+
+<style>
+  .recognition {
+    background: var(--ac-color-warm-white);
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .recognition__heading {
+    max-width: 26ch;
+    margin-top: var(--ac-space-3);
+  }
+
+  .recognition__body {
+    max-width: 56ch;
+    margin-top: var(--ac-space-4);
+    color: var(--ac-color-ink-600);
+    font-size: 1.02rem;
+  }
+</style>

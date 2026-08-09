@@ -7,11 +7,15 @@
 # build") — they are retired-by-plan, not retired-by-deletion. Listed explicitly for a clear
 # audit trail.
 #
+# docs/19-SYSTEM-AND-SITEMAP.md Phase 1 supersedes the four-route collapse for /about/: it is now
+# a real, live page (src/pages/about/index.astro). Removed from this retirement list — Cloudflare
+# Pages applies _redirects unconditionally before checking for a real asset, so leaving it here
+# 301-looped every visitor and internal link away from the real page.
+#
 # No wildcard catch-all here: Cloudflare Pages applies _redirects rules unconditionally, before
 # checking whether a real asset exists at that path (confirmed via `wrangler pages dev`), so a
 # `/* / 301` rule matches every request including `/` itself and would 301-loop the entire site,
 # homepage included. Unmatched paths fall through to Cloudflare Pages' standard 404 instead.
-/about/                                 /  301
 /project-standards/                     /  301
 /service-area/                          /  301
 /estate-cleanout-san-jose/              /  301
@@ -20,3 +24,39 @@
 /hoarding-cleanup-san-jose/             /  301
 /landlord-turnover-cleaning-san-jose/   /  301
 /projects/*                             /  301
+
+# --- GSC redirect sweep, 2026-08-09 (docs/19-SYSTEM-AND-SITEMAP.md redirect law) ---
+# Mapped against indexed WordPress URLs the owner supplied from GSC. /, /thank-you/,
+# /privacy/, /terms/, /cookie-policy/, /request-assessment/, and /data-request/ and
+# /sms-notification-consent/ (added this pass, see docs/04-RELEASE-CHECKLIST.md) are live
+# routes already, not redirect targets, so they are intentionally absent below.
+#
+# Targets marked "interim" point at pages that exist in this repo but are still noindex
+# and excluded from sitemap.xml.ts pending their own Phase 3 launch gate
+# (docs/19-SYSTEM-AND-SITEMAP.md Part 2.1). Sending live external/GSC traffic into a
+# pre-launch, noindexed page was judged riskier than a same-site interim hop to `/`; update
+# these to the direct page path individually as each gate clears — do not bulk-flip.
+/terms-and-conditions/                        /terms/            301
+/process-documentation/                       /handoff-standard/ 301
+/fiduciary-probate-professionals/             /handoff-standard/ 301
+/property-managers/                           /handoff-standard/ 301
+/locations/                                   /service-areas/    301
+/san-jose/                                    /service-areas/    301
+/santa-clara/                                 /service-areas/    301
+/sunnyvale/                                    /service-areas/   301
+/mountain-view/                               /service-areas/    301
+/campbell/                                     /service-areas/   301
+/milpitas/                                     /service-areas/   301
+/families-estate-representatives/             /              301  # interim — target is /about/, currently noindex pending launch gate
+/hoarding-cleanup/                            /              301  # interim — target is /hoarding-cleanup-san-jose/, currently noindex pending launch gate
+/hoarding-estate-clearouts/                   /              301  # interim — target is /estate-cleanout-san-jose/, currently noindex pending launch gate
+/gross-filth-cleaning/                        /              301  # interim — target is /hoarding-cleanup-san-jose/; term also under docs/90 §13 retirement (separate workstream)
+/animal-waste-abatement/                      /              301  # interim — target is /animal-waste-cleanup-san-jose/, currently noindex pending launch gate
+/residential-property-clearing/               /              301  # interim — target is /estate-cleanout-san-jose/, currently noindex pending launch gate
+/eviction-difficult-turnaround-clearing/      /              301  # interim — target is /property-cleanouts-for-managers/, currently noindex pending launch gate
+/future-services/                             /              301
+/launching-soon/                              /              301
+/h2/                                          /              301  # WordPress builder junk page
+/elementor-page-5945/                         /              301  # WordPress builder junk page
+/elementor-page-5950/                         /              301  # WordPress builder junk page
+/elementor-page-5960/                         /              301  # WordPress builder junk page

@@ -1,0 +1,162 @@
+---
+// UNPUBLISHED DRAFT — docs/19-SYSTEM-AND-SITEMAP.md §2.1 Phase 3, §2.2 SENIOR DOWNSIZING spec
+// ("feeds the senior-move-manager referral ring"), §3.2 tone delta ("NOBODY DIED. A parent is
+// moving. Hope-forward, not grief-forward; the parent may read this page themselves — write it
+// so that is safe."). Ships noindex, excluded from sitemap.xml.ts, not linked from nav/footer.
+//
+// Tone check performed on every sentence in this file: no loss/grief/estate/deceased language
+// anywhere — this is the one service page in the batch where none of that vocabulary is
+// appropriate. "Move," "next chapter," "fresh start," and "new place" replace it.
+//
+// DIFFERENTIATION: this page's first section after the hero is a single hope-forward
+// recognition block (no question heading like hoarding, no Track A/B like estate, no terse
+// matter-of-fact tone like animal). Its second distinguishing element is the dedicated
+// referral-note block for senior move managers between SCOPE and METHOD — no other page in
+// this batch has a standalone referral-audience block in that position.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import CompactHero from "@components/CompactHero.astro";
+import ServiceScope from "@components/ServiceScope.astro";
+import ServiceMethodRail from "@components/ServiceMethodRail.astro";
+import ServiceProof from "@components/ServiceProof.astro";
+import ServicePricing from "@components/ServicePricing.astro";
+import ServiceFAQ from "@components/ServiceFAQ.astro";
+import RequestForm from "@components/RequestForm.astro";
+import { seniorDownsizingPage } from "@data/servicePages";
+import { site } from "@data/site";
+
+const schema = [
+  {
+    "@type": "Service",
+    serviceType: "Senior downsizing and move-out support",
+    provider: { "@id": new URL("/#organization", site.urls.site).href },
+    areaServed: site.location.cities.map((name) => ({ "@type": "City", name })),
+    name: "Senior Downsizing & Move-Out Support"
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: seniorDownsizingPage.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Senior Downsizing San Jose",
+        item: new URL(seniorDownsizingPage.slug, site.urls.site).href
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="Senior Downsizing & Move-Out Support | San Jose | Aseptaclean"
+  description="Respectful downsizing support when a parent moves — sorting, set-aside controls, clearing, and cleaning under one signed scope. San Jose & South Bay."
+  canonicalPath={seniorDownsizingPage.slug}
+  noindex={true}
+  schema={schema}
+>
+  <CompactHero eyebrow={seniorDownsizingPage.hero.eyebrow} headingId="senior-title">
+    <h1 id="senior-title">{seniorDownsizingPage.hero.h1}</h1>
+    <p class="compact-hero__lead">{seniorDownsizingPage.hero.lead}</p>
+  </CompactHero>
+
+  <section class="recognition" aria-labelledby="recognition-title">
+    <div class="ac-measure-intimate">
+      <h2 id="recognition-title" class="ac-type-h2 recognition__heading">{seniorDownsizingPage.recognition.heading}</h2>
+      {seniorDownsizingPage.recognition.body.map((paragraph) => <p class="recognition__body">{paragraph}</p>)}
+    </div>
+  </section>
+
+  <ServiceScope
+    heading={seniorDownsizingPage.scope.heading}
+    headingId="senior-scope-title"
+    included={seniorDownsizingPage.scope.included}
+    exclusionsNote={seniorDownsizingPage.scope.exclusionsNote}
+  />
+
+  <section class="referral-note" aria-labelledby="referral-title">
+    <div class="ac-measure-wide referral-note__shell">
+      <p class="ac-eyebrow referral-note__eyebrow">Referral partners</p>
+      <h2 id="referral-title" class="referral-note__heading">{seniorDownsizingPage.referralNote.heading}</h2>
+      <p class="referral-note__body">{seniorDownsizingPage.referralNote.body}</p>
+    </div>
+  </section>
+
+  <ServiceMethodRail heading={seniorDownsizingPage.method.heading} headingId="senior-method-title" />
+
+  <ServiceProof
+    recordLabel={seniorDownsizingPage.proof.recordLabel}
+    recordField={seniorDownsizingPage.proof.recordField}
+    recordValue={seniorDownsizingPage.proof.recordValue}
+    jobLine={seniorDownsizingPage.proof.jobLine}
+    headingId="senior-proof-title"
+  />
+
+  <ServicePricing
+    heading={seniorDownsizingPage.pricing.heading}
+    headingId="senior-pricing-title"
+    drivers={seniorDownsizingPage.pricing.drivers}
+  />
+
+  <ServiceFAQ
+    heading="Questions families ask before a move"
+    headingId="senior-faq-title"
+    intro="These answers describe the assessment process. The signed scope controls the actual project."
+    items={seniorDownsizingPage.faq}
+  />
+
+  <RequestForm />
+</BaseLayout>
+
+<style>
+  .recognition {
+    background: var(--ac-color-warm-white);
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .recognition__heading {
+    max-width: 26ch;
+    margin-top: var(--ac-space-3);
+  }
+
+  .recognition__body {
+    max-width: 56ch;
+    margin-top: var(--ac-space-4);
+    color: var(--ac-color-ink-600);
+    font-size: 1.02rem;
+  }
+
+  .referral-note {
+    background: var(--ac-color-blue-ghost);
+  }
+
+  .referral-note__shell {
+    max-width: 44rem;
+  }
+
+  .referral-note__eyebrow {
+    color: var(--ac-color-blue-deep);
+  }
+
+  .referral-note__heading {
+    max-width: 30ch;
+    margin: var(--ac-space-3) 0 0;
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-display);
+    font-size: clamp(1.5rem, 2.6vw, 1.9rem);
+    line-height: 1.2;
+  }
+
+  .referral-note__body {
+    max-width: 54ch;
+    margin-top: var(--ac-space-4);
+    color: var(--ac-color-ink-600);
+  }
+</style>
