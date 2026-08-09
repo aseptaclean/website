@@ -23,7 +23,6 @@
 /vacant-home-cleaning-san-jose/         /  301
 /hoarding-cleanup-san-jose/             /  301
 /landlord-turnover-cleaning-san-jose/   /  301
-/projects/*                             /  301
 
 # --- GSC redirect sweep, 2026-08-09 (docs/19-SYSTEM-AND-SITEMAP.md redirect law) ---
 # Mapped against indexed WordPress URLs the owner supplied from GSC. /, /thank-you/,
@@ -47,16 +46,31 @@
 /mountain-view/                               /service-areas/    301
 /campbell/                                     /service-areas/   301
 /milpitas/                                     /service-areas/   301
-/families-estate-representatives/             /              301  # interim — target is /about/, currently noindex pending launch gate
-/hoarding-cleanup/                            /              301  # interim — target is /hoarding-cleanup-san-jose/, currently noindex pending launch gate
-/hoarding-estate-clearouts/                   /              301  # interim — target is /estate-cleanout-san-jose/, currently noindex pending launch gate
-/gross-filth-cleaning/                        /              301  # interim — target is /hoarding-cleanup-san-jose/; term also under docs/90 §13 retirement (separate workstream)
-/animal-waste-abatement/                      /              301  # interim — target is /animal-waste-cleanup-san-jose/, currently noindex pending launch gate
-/residential-property-clearing/               /              301  # interim — target is /estate-cleanout-san-jose/, currently noindex pending launch gate
-/eviction-difficult-turnaround-clearing/      /              301  # interim — target is /property-cleanouts-for-managers/, currently noindex pending launch gate
+
+# interim — target is /about/, currently noindex pending launch gate
+/families-estate-representatives/             /              301
+# interim — target is /hoarding-cleanup-san-jose/, currently noindex pending launch gate
+/hoarding-cleanup/                            /              301
+# interim — target is /estate-cleanout-san-jose/, currently noindex pending launch gate
+/hoarding-estate-clearouts/                   /              301
+# interim — target is /hoarding-cleanup-san-jose/; term also under docs/90 §13 retirement (separate workstream)
+/gross-filth-cleaning/                        /              301
+# interim — target is /animal-waste-cleanup-san-jose/, currently noindex pending launch gate
+/animal-waste-abatement/                      /              301
+# interim — target is /estate-cleanout-san-jose/, currently noindex pending launch gate
+/residential-property-clearing/               /              301
+# interim — target is /property-cleanouts-for-managers/, currently noindex pending launch gate
+/eviction-difficult-turnaround-clearing/      /              301
 /future-services/                             /              301
 /launching-soon/                              /              301
-/h2/                                          /              301  # WordPress builder junk page
-/elementor-page-5945/                         /              301  # WordPress builder junk page
-/elementor-page-5950/                         /              301  # WordPress builder junk page
-/elementor-page-5960/                         /              301  # WordPress builder junk page
+# WordPress builder junk page
+/h2/                                          /              301
+# WordPress builder junk page
+/elementor-page-5945/                         /              301
+# WordPress builder junk page
+/elementor-page-5950/                         /              301
+# WordPress builder junk page
+/elementor-page-5960/                         /              301
+
+# Splat rule — must sort after exact-match rules per Cloudflare Pages performance hints.
+/projects/*                             /  301

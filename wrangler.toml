@@ -18,7 +18,7 @@ bucket_name = "aseptaclean-lead-uploads"
 # Create the real namespace with: wrangler kv namespace create LEAD_RATE_LIMIT
 [[kv_namespaces]]
 binding = "LEAD_RATE_LIMIT"
-id = "REPLACE_WITH_REAL_KV_NAMESPACE_ID"
+id = "5e5faee201c34b36b76ecda6de34927f"
 
 # All other LeadEnvironment fields (TURNSTILE_SECRET_KEY, HUBSPOT_*,
 # RESEND_API_KEY, EMAIL_FROM_ADDRESS, OWNER_ALERT_EMAIL, TWILIO_*,

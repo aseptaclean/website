@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "start": "astro dev",
     "validate:env": "node scripts/validate-env.mjs",
-    "build": "npm run validate:env -- --mode production && astro build --mode production",
+    "build": "npm run validate:env -- --mode production && astro build --mode production && node scripts/prune-dev-routes.mjs",
     "pages:dev": "npm run build && wrangler pages dev dist",
     "build:staging": "astro build --mode staging",
     "qa:phase1": "node scripts/phase1-browser-check.mjs",
