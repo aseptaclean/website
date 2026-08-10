@@ -37,6 +37,14 @@ const termlyConsent = site.integrations.termly;
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
+    {termlyConsent.consentEnabled && (
+      <script
+        is:inline
+        id={termlyConsent.websiteUuid}
+        src={termlyConsent.consentScriptUrl}
+        data-name="termly-embed-banner"
+      />
+    )}
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#122840" />
     <link
@@ -74,14 +82,6 @@ const termlyConsent = site.integrations.termly;
       noindex={noindex}
       schema={schema}
     />
-    {termlyConsent.consentEnabled && (
-      <script
-        is:inline
-        id={termlyConsent.websiteUuid}
-        src={termlyConsent.consentScriptUrl}
-        data-name="termly-embed-banner"
-      />
-    )}
   </head>
   <body class:list={{ "has-mobile-cta": showMobileCta }}>
     <a class="skip-link" href="#main-content">Skip to main content</a>
