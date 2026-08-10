@@ -179,7 +179,7 @@ export const site = {
 // docs/aseptaclean-FINAL-v2.html nav — ported verbatim (05-DECISIONS-LOG.md). Labels match the
 // mockup exactly; hrefs point at this build's actual section ids (the mockup used bare "#").
 export const navigation = [
-  { label: "Services", href: "/#included" },
+  { label: "Services", href: "/#service-cards" },
   { label: "Method", href: "/#standards" },
   { label: "The Record", href: "/#record" },
   { label: "About", href: "/#about" },

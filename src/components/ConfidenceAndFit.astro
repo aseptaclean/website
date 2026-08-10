@@ -1,11 +1,8 @@
 ---
-import { homepage, legal, site } from "@data/site";
-
-const currency = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 0
-});
+// Pricing half of this section (assessment fee, drivers) is intentionally
+// dropped — it duplicates content already rendered in Pricing.astro's
+// #pricing section further down the homepage.
+import { homepage, legal } from "@data/site";
 ---
 
 <section class="confidence" id="confidence-and-fit" aria-labelledby="confidence-title">
@@ -70,41 +67,6 @@ const currency = new Intl.NumberFormat("en-US", {
           Scope-completion correction applies to items specifically included in the
           signed scope. It does not guarantee results outside that scope.
         </p>
-      </div>
-
-      <div class="confidence__block confidence__block--pricing">
-        <p class="confidence__block-label ac-type-h3">Know the starting point before you tell the whole story</p>
-        <p class="ac-type-body">
-          You should be able to decide whether this type of service is realistic
-          before spending an hour explaining the property. Photo review comes
-          first. Complex properties may require an on-site assessment before a
-          final scope and price can be issued.
-        </p>
-
-        <div class="pricing__figure">
-          <p class="ac-type-xs">
-            {site.offer.startingPrice !== null ? "Full Handoff Reset projects generally begin at" : "Project pricing"}
-          </p>
-          {site.offer.startingPrice !== null ? (
-            <strong class="ac-type-h3">{currency.format(site.offer.startingPrice)}</strong>
-          ) : (
-            <strong class="ac-type-h3">Ask about current project minimums</strong>
-          )}
-          <small class="ac-type-sm">Not a flat package price</small>
-        </div>
-
-        <div class="pricing__drivers">
-          <p class="ac-type-xs">Final pricing depends on</p>
-          <ul>
-            {homepage.pricingDrivers.map((driver) => <li class="ac-type-body">{driver}</li>)}
-          </ul>
-        </div>
-
-        <aside class="pricing__assessment">
-          <p class="ac-type-xs">When remote scoping is not reliable</p>
-          <strong class="ac-type-h3">{currency.format(site.offer.assessmentFee)} on-site assessment</strong>
-          <span class="ac-type-sm">{site.offer.assessmentFeeTerms}</span>
-        </aside>
       </div>
     </div>
   </div>
@@ -250,103 +212,9 @@ const currency = new Intl.NumberFormat("en-US", {
     font-weight: 600;
   }
 
-  /* Pricing block */
-  .pricing__figure {
-    margin-top: var(--ac-space-6);
-    border-block: 2px solid var(--ac-color-navy-900);
-    padding-block: var(--ac-space-5);
-  }
-
-  .pricing__figure p {
-    margin: 0;
-    color: var(--ac-color-ink-500);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .pricing__figure strong {
-    display: block;
-    margin-top: var(--ac-space-2);
-    color: var(--ac-color-navy-900);
-  }
-
-  .pricing__figure small {
-    display: block;
-    margin-top: var(--ac-space-4);
-    color: var(--ac-color-navy-800);
-  }
-
-  .pricing__drivers {
-    margin-top: var(--ac-space-6);
-  }
-
-  .pricing__drivers > p {
-    margin: 0;
-    color: var(--ac-color-ink-500);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .pricing__drivers ul {
-    display: grid;
-    margin: var(--ac-space-4) 0 0;
-    border-top: 1px solid var(--ac-color-rule);
-    padding: 0;
-    list-style: none;
-  }
-
-  .pricing__drivers li {
-    max-width: none;
-    border-bottom: 1px solid var(--ac-color-rule);
-    padding: var(--ac-space-3) var(--ac-space-3) var(--ac-space-3) 0;
-  }
-
-  .pricing__assessment {
-    margin-top: var(--ac-space-6);
-    border-left: 3px solid var(--ac-color-blue-500);
-    padding: var(--ac-space-5);
-    background: var(--ac-color-paper);
-  }
-
-  .pricing__assessment p {
-    margin: 0;
-    color: var(--ac-color-ink-500);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .pricing__assessment strong,
-  .pricing__assessment span {
-    display: block;
-  }
-
-  .pricing__assessment strong {
-    margin-top: var(--ac-space-3);
-    color: var(--ac-color-navy-900);
-  }
-
-  .pricing__assessment span {
-    margin-top: var(--ac-space-3);
-    color: var(--ac-color-ink-500);
-  }
-
   @media (min-width: 70rem) {
-    /*
-      The assurance ledger (scope + assurance list) runs roughly 3x longer than
-      the pricing block. A single grid row sizes to its tallest cell regardless
-      of column width (audit item 12, docs/05-DECISIONS-LOG.md Session 8) — so
-      pricing stays a standalone capped-width block on its own row below the
-      ledger rather than a same-row column stretched to the ledger's height.
-    */
     .confidence__block--scope {
       max-width: 64%;
-    }
-
-    .confidence__block--pricing {
-      max-width: 28rem;
     }
 
     .confidence__scope-columns {

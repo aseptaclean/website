@@ -24,6 +24,14 @@ const { title, glyph, gradient, photoNote, pill } = Astro.props;
     <p class="ac-type-body">
       <slot />
     </p>
+    {
+      /*
+        Placeholder target: homepage's own "what may be included" scope
+        section (ConfidenceAndFit.astro #included). Swap each card's href to
+        its published service page at launch (docs/19-SYSTEM-AND-SITEMAP.md
+        §"Linking rules" — homepage cards ↔ service pages).
+      */
+    }
     <a class="ac-card__link" href="#included">What&rsquo;s included →</a>
   </div>
 </article>
