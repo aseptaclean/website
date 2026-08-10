@@ -23,9 +23,13 @@ const endpointAvailable = Boolean(
   method="post"
   action={endpointAvailable ? site.urls.formEndpoint : undefined}
   aria-label={site.offer.primaryCta}
+  data-quick-form
 >
   <input type="hidden" name="offer_type" value="handoff_reset" />
   <input type="hidden" name="entry_route" value={entryRoute} />
+  <input type="hidden" name="submitted_from" value={entryRoute} />
+  <input type="hidden" name="submission_timestamp" value="" />
+  <input type="hidden" name="idempotency_key" value="" />
   <input
     class="quick-form__honeypot"
     type="text"
@@ -35,6 +39,10 @@ const endpointAvailable = Boolean(
     aria-hidden="true"
   />
 
+  <div class="quick-form__errors" tabindex="-1" role="alert" hidden data-quick-form-errors>
+    <ul></ul>
+  </div>
+
   <p class="quick-form__required-note ac-type-sm">
     Fields marked <span aria-hidden="true">*</span><span class="visually-hidden">required</span> are required.
   </p>
@@ -43,7 +51,7 @@ const endpointAvailable = Boolean(
     <label for={`${formId}-name`}>Name <span aria-hidden="true">*</span></label>
     <input
       id={`${formId}-name`}
-      name="contact_name"
+      name="full_name"
       type="text"
       autocomplete="name"
       required
@@ -54,7 +62,7 @@ const endpointAvailable = Boolean(
     <label for={`${formId}-phone`}>Phone <span aria-hidden="true">*</span></label>
     <input
       id={`${formId}-phone`}
-      name="contact_phone"
+      name="phone"
       type="tel"
       inputmode="tel"
       autocomplete="tel"
@@ -86,6 +94,25 @@ const endpointAvailable = Boolean(
   </label>
 
   {
+    site.integrations.turnstileSiteKey && (
+      <div class="quick-form__turnstile">
+        <div
+          class="cf-turnstile"
+          data-sitekey={site.integrations.turnstileSiteKey}
+          data-theme="light"
+          data-size="flexible"
+        />
+      </div>
+    )
+  }
+  <noscript>
+    <p class="quick-form__note">
+      Security verification requires JavaScript. Please call Aseptaclean if
+      you cannot enable it.
+    </p>
+  </noscript>
+
+  {
     !endpointAvailable && (
       <p class="quick-form__note" role="status">
         Online submission is not fully configured in this preview. Your
@@ -98,10 +125,248 @@ const endpointAvailable = Boolean(
     class="button quick-form__submit"
     type="submit"
     disabled={!endpointAvailable}
+    data-quick-form-submit
   >
-    {site.offer.primaryCta}
+    <span data-quick-form-submit-label>{site.offer.primaryCta}</span>
   </button>
+  <p
+    class="quick-form__status"
+    data-quick-form-status
+    role="status"
+    aria-live="polite"
+    hidden
+  ></p>
 </form>
+
+{
+  site.integrations.turnstileSiteKey && (
+    <script
+      is:inline
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+    />
+  )
+}
+
+<script>
+  type FormControl = HTMLInputElement | HTMLTextAreaElement;
+
+  document
+    .querySelectorAll<HTMLFormElement>("[data-quick-form]")
+    .forEach((form) => {
+      if (form.dataset.enhanced === "true") return;
+      form.dataset.enhanced = "true";
+      form.noValidate = true;
+
+      const errorBox = form.querySelector<HTMLElement>(
+        "[data-quick-form-errors]"
+      );
+      const errorList = errorBox?.querySelector("ul");
+      const statusEl = form.querySelector<HTMLElement>(
+        "[data-quick-form-status]"
+      );
+      const submitButton = form.querySelector<HTMLButtonElement>(
+        "[data-quick-form-submit]"
+      );
+      const submitLabel = form.querySelector<HTMLElement>(
+        "[data-quick-form-submit-label]"
+      );
+      const defaultLabel = submitLabel?.textContent ?? "Submit";
+      const timestampInput = form.elements.namedItem(
+        "submission_timestamp"
+      );
+      const idempotencyInput = form.elements.namedItem("idempotency_key");
+
+      if (idempotencyInput instanceof HTMLInputElement) {
+        idempotencyInput.value =
+          window.crypto?.randomUUID?.() ??
+          `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      }
+
+      const resetTurnstile = () => {
+        const turnstile = (
+          window as Window & {
+            turnstile?: { reset: (widget?: string | HTMLElement) => void };
+          }
+        ).turnstile;
+        const widget = form.querySelector<HTMLElement>(".cf-turnstile");
+        if (turnstile && widget) turnstile.reset(widget);
+      };
+
+      const clearFieldErrors = () => {
+        form
+          .querySelectorAll<HTMLElement>("[data-generated-error]")
+          .forEach((el) => el.remove());
+        form
+          .querySelectorAll<FormControl>('[aria-invalid="true"]')
+          .forEach((control) => control.removeAttribute("aria-invalid"));
+      };
+
+      const labelFor = (control: FormControl) => {
+        const label = form.querySelector<HTMLLabelElement>(
+          `label[for="${CSS.escape(control.id)}"]`
+        );
+        return label?.textContent?.replace("*", "").trim() ?? "Field";
+      };
+
+      const renderErrors = (errors: Record<string, string>) => {
+        clearFieldErrors();
+        const messages: string[] = [];
+
+        for (const [key, message] of Object.entries(errors)) {
+          if (key === "form") {
+            messages.push(message);
+            continue;
+          }
+          const control = form.elements.namedItem(key);
+          if (control instanceof HTMLInputElement && control.type === "checkbox") {
+            control.setAttribute("aria-invalid", "true");
+            const wrapper = control.closest("label");
+            if (wrapper) {
+              const inline = document.createElement("p");
+              inline.className = "form-error";
+              inline.dataset.generatedError = "";
+              inline.textContent = message;
+              wrapper.after(inline);
+            }
+            messages.push(message);
+            continue;
+          }
+          if (
+            control instanceof HTMLInputElement ||
+            control instanceof HTMLTextAreaElement
+          ) {
+            control.setAttribute("aria-invalid", "true");
+            const field = control.closest(".quick-form__field");
+            if (field) {
+              const inline = document.createElement("p");
+              inline.className = "form-error";
+              inline.dataset.generatedError = "";
+              inline.textContent = message;
+              field.append(inline);
+            }
+            messages.push(`${labelFor(control)}: ${message}`);
+            continue;
+          }
+          messages.push(message);
+        }
+
+        if (errorBox && errorList) {
+          errorList.replaceChildren();
+          if (messages.length) {
+            messages.forEach((message) => {
+              const item = document.createElement("li");
+              item.textContent = message;
+              errorList.append(item);
+            });
+            errorBox.hidden = false;
+            errorBox.focus({ preventScroll: true });
+            errorBox.scrollIntoView({ behavior: "smooth", block: "start" });
+          } else {
+            errorBox.hidden = true;
+          }
+        }
+      };
+
+      const setSubmitting = (submitting: boolean, message = "") => {
+        if (submitButton) submitButton.disabled = submitting;
+        form.setAttribute("aria-busy", String(submitting));
+        if (submitLabel) {
+          submitLabel.textContent = submitting
+            ? "Sending request…"
+            : defaultLabel;
+        }
+        if (statusEl) {
+          statusEl.hidden = !message;
+          statusEl.textContent = message;
+        }
+      };
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!form.action) return;
+
+        clearFieldErrors();
+        if (errorBox) errorBox.hidden = true;
+
+        const turnstileWidget = form.querySelector(".cf-turnstile");
+        const turnstileToken = form.elements.namedItem(
+          "cf-turnstile-response"
+        );
+        if (
+          turnstileWidget &&
+          (!(turnstileToken instanceof HTMLInputElement) ||
+            !turnstileToken.value)
+        ) {
+          setSubmitting(
+            false,
+            "Complete the security verification, then submit again."
+          );
+          return;
+        }
+
+        if (timestampInput instanceof HTMLInputElement) {
+          timestampInput.value = new Date().toISOString();
+        }
+
+        setSubmitting(true, "Sending your request…");
+
+        try {
+          const response = await fetch(form.action, {
+            method: "POST",
+            headers: { Accept: "application/json" },
+            body: new FormData(form)
+          });
+          let payload: Record<string, unknown> = {};
+          try {
+            payload = await response.json();
+          } catch {
+            payload = {};
+          }
+
+          if (response.ok && payload.ok === true) {
+            const parameters = new URLSearchParams({
+              received: "1",
+              callback:
+                typeof payload.callbackWindow === "string"
+                  ? payload.callbackWindow
+                  : "next-business-window",
+              email:
+                payload.confirmationEmailSent === true ? "sent" : "attention"
+            });
+            const submissionId =
+              typeof payload.submissionId === "string"
+                ? payload.submissionId
+                : "";
+            if (submissionId) parameters.set("submission", submissionId);
+            window.location.assign(`/thank-you/?${parameters.toString()}`);
+            return;
+          }
+
+          if (
+            payload.errors &&
+            typeof payload.errors === "object"
+          ) {
+            renderErrors(payload.errors as Record<string, string>);
+          }
+          setSubmitting(
+            false,
+            typeof payload.message === "string"
+              ? payload.message
+              : "We could not send the request. Please try again or call Aseptaclean."
+          );
+          resetTurnstile();
+        } catch {
+          setSubmitting(
+            false,
+            "The request could not be sent. Check your connection and try again, or call Aseptaclean."
+          );
+          resetTurnstile();
+        }
+      });
+    });
+</script>
 
 <style>
   .quick-form {
@@ -115,6 +380,38 @@ const endpointAvailable = Boolean(
   .quick-form__required-note {
     margin: 0;
     color: var(--quick-form-muted-color);
+  }
+
+  .quick-form__errors {
+    scroll-margin-top: 6rem;
+    border: 2px solid var(--ac-color-error);
+    padding: var(--ac-space-4);
+    background: #f8ecea;
+    color: #6f211e;
+  }
+
+  .quick-form__errors ul {
+    display: grid;
+    gap: var(--ac-space-2);
+    margin: 0;
+    padding-left: 1.25rem;
+  }
+
+  .quick-form :global(.form-error) {
+    margin: var(--ac-space-1) 0 0;
+    color: var(--ac-color-error);
+    font-size: var(--ac-text-sm);
+    font-weight: 700;
+  }
+
+  .quick-form__turnstile {
+    display: flex;
+  }
+
+  .quick-form__status {
+    margin: 0;
+    color: var(--quick-form-muted-color);
+    font-size: var(--ac-text-sm);
   }
 
   .quick-form__field label,

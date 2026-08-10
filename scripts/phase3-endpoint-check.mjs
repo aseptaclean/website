@@ -34,6 +34,7 @@ globalThis.fetch = async (url) => {
 const makeForm = () => {
   const data = new FormData();
   const values = {
+    form_version: "phase3-test-v1",
     offer_type: "handoff_reset",
     entry_route: "/",
     property_city: "San Jose",

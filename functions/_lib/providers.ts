@@ -5,6 +5,19 @@ const providerError = async (response: Response, provider: string) => {
   throw new Error(`${provider} returned ${response.status}: ${body}`);
 };
 
+const NOT_SUPPLIED = "Not supplied";
+
+// Most fields are optional now that the short homepage form (name, phone, optional
+// description, consent) shares this pipeline with the long assessment questionnaire —
+// see docs/05-DECISIONS-LOG.md. This renders whatever was actually collected instead of
+// printing "undefined" for the fields the short form never asks about.
+const field = (value: LeadRecord["data"][string] | undefined) => {
+  if (Array.isArray(value)) return value.length ? value.join(", ") : NOT_SUPPLIED;
+  return value && String(value).trim() ? String(value) : NOT_SUPPLIED;
+};
+
+const isDetailedLead = (lead: LeadRecord) => Boolean(lead.data.form_version);
+
 export async function verifyTurnstile(
   env: LeadEnvironment,
   token: string,
@@ -33,19 +46,25 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
   ) {
     return { skipped: true, detail: "HubSpot credentials are not configured." };
   }
+  const email = typeof lead.data.email === "string" ? lead.data.email : "";
+  if (!email) {
+    return {
+      skipped: true,
+      detail: "No email was collected on this submission; HubSpot contact sync needs one."
+    };
+  }
 
   const headers = {
     authorization: `Bearer ${env.HUBSPOT_ACCESS_TOKEN}`,
     "content-type": "application/json"
   };
-  const email = String(lead.data.email);
   const name = String(lead.data.full_name).trim().split(/\s+/);
   const contactProperties = {
     email,
     firstname: name[0] ?? "",
     lastname: name.slice(1).join(" "),
     phone: String(lead.data.phone),
-    city: String(lead.data.property_city)
+    city: field(lead.data.property_city)
   };
   const searchResponse = await fetch(
     "https://api.hubapi.com/crm/v3/objects/contacts/search",
@@ -82,37 +101,44 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
 
   const isResidence = lead.data.offer_type === "private_residence_reset";
   const summary = (
-    isResidence
+    !isDetailedLead(lead)
+      ? [
+          `Offer: Quick request (short form)`,
+          `Request ID: ${lead.id}`,
+          `Description: ${field(lead.data.property_detail || lead.data.additional_notes)}`,
+          `Private uploads: ${lead.files.length}`
+        ]
+      : isResidence
       ? [
           `Offer: Private Residence Reset`,
           `Request ID: ${lead.id}`,
-          `Residence: ${lead.data.property_address}, ${lead.data.property_city} ${lead.data.property_zip}`,
-          `Situation: ${lead.data.property_situation}`,
-          `Size / levels: ${lead.data.approximate_square_footage}; ${lead.data.number_of_levels}`,
-          `Occupancy: ${lead.data.occupancy_status}`,
-          `Deadline: ${lead.data.desired_completion_date}`,
-          `Priority rooms: ${lead.data.priority_rooms}`,
-          `Detail priorities: ${lead.data.detail_priorities}`,
-          `Important finishes: ${lead.data.important_finishes || "Not supplied"}`,
-          `Pets / presence: ${lead.data.pets || "Not supplied"}; ${lead.data.someone_present || "Not supplied"}`,
-          `Access: ${lead.data.access_notes || "Not supplied"}`,
-          `Safety routing: ${lead.data.safety_routing}`,
-          `Investment: ${lead.data.investment_range || "Not supplied"}`,
-          `Authority: ${lead.data.authority_to_approve}`,
+          `Residence: ${field(lead.data.property_address)}, ${field(lead.data.property_city)} ${field(lead.data.property_zip)}`,
+          `Situation: ${field(lead.data.property_situation)}`,
+          `Size / levels: ${field(lead.data.approximate_square_footage)}; ${field(lead.data.number_of_levels)}`,
+          `Occupancy: ${field(lead.data.occupancy_status)}`,
+          `Deadline: ${field(lead.data.desired_completion_date)}`,
+          `Priority rooms: ${field(lead.data.priority_rooms)}`,
+          `Detail priorities: ${field(lead.data.detail_priorities)}`,
+          `Important finishes: ${field(lead.data.important_finishes)}`,
+          `Pets / presence: ${field(lead.data.pets)}; ${field(lead.data.someone_present)}`,
+          `Access: ${field(lead.data.access_notes)}`,
+          `Safety routing: ${field(lead.data.safety_routing)}`,
+          `Investment: ${field(lead.data.investment_range)}`,
+          `Authority: ${field(lead.data.authority_to_approve)}`,
           `Private uploads: ${lead.files.length}`
         ]
       : [
           `Offer: Handoff Reset`,
           `Request ID: ${lead.id}`,
-          `Property: ${lead.data.property_address}, ${lead.data.property_city}`,
-          `Situation: ${lead.data.property_situation}`,
-          `Deadline: ${lead.data.desired_completion_date}`,
-          `Authority: ${lead.data.authority_to_approve}`,
-          `Contents removal: ${lead.data.contents_removal}`,
-          `Heavy cleaning: ${lead.data.heavy_cleaning}`,
-          `Known conditions: animal waste=${lead.data.animal_waste}; biological material=${lead.data.human_biological_material}; sharps=${lead.data.needles_sharps}; sewage=${lead.data.sewage}; mold=${lead.data.mold}; pests=${lead.data.pest_activity}`,
-          `Must remain: ${lead.data.must_remain}`,
-          `Must remove: ${lead.data.must_remove}`,
+          `Property: ${field(lead.data.property_address)}, ${field(lead.data.property_city)}`,
+          `Situation: ${field(lead.data.property_situation)}`,
+          `Deadline: ${field(lead.data.desired_completion_date)}`,
+          `Authority: ${field(lead.data.authority_to_approve)}`,
+          `Contents removal: ${field(lead.data.contents_removal)}`,
+          `Heavy cleaning: ${field(lead.data.heavy_cleaning)}`,
+          `Known conditions: animal waste=${field(lead.data.animal_waste)}; biological material=${field(lead.data.human_biological_material)}; sharps=${field(lead.data.needles_sharps)}; sewage=${field(lead.data.sewage)}; mold=${field(lead.data.mold)}; pests=${field(lead.data.pest_activity)}`,
+          `Must remain: ${field(lead.data.must_remain)}`,
+          `Must remove: ${field(lead.data.must_remove)}`,
           `Private uploads: ${lead.files.length}`
         ]
   ).join("\n");
@@ -122,8 +148,8 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
     body: JSON.stringify({
       properties: {
         dealname: isResidence
-          ? `Private Residence Reset — ${lead.data.full_name} — ${lead.data.property_city}`
-          : `Handoff Reset — ${lead.data.full_name} — ${lead.data.property_city}`,
+          ? `Private Residence Reset — ${lead.data.full_name} — ${field(lead.data.property_city)}`
+          : `Handoff Reset — ${lead.data.full_name} — ${field(lead.data.property_city)}`,
         pipeline: env.HUBSPOT_PIPELINE_ID,
         dealstage: env.HUBSPOT_DEAL_STAGE_ID,
         offer_type: isResidence
@@ -170,13 +196,20 @@ async function sendResend(
 }
 
 export function sendCustomerEmail(env: LeadEnvironment, lead: LeadRecord) {
+  const email = typeof lead.data.email === "string" ? lead.data.email : "";
+  if (!email) {
+    return Promise.resolve({
+      skipped: true,
+      detail: "No email was collected on this submission; confirmation email needs one."
+    });
+  }
   const isResidence = lead.data.offer_type === "private_residence_reset";
   const callback =
     lead.callbackWindow === "business-hours"
       ? "Because your request arrived during published business hours, our operating standard is to call within 5 minutes."
       : "Because your request arrived outside published business hours, we will call during the next business window.";
   return sendResend(env, {
-    to: String(lead.data.email),
+    to: email,
     subject: isResidence
       ? "We received your Private Residence Reset assessment"
       : "We received your Aseptaclean Handoff Plan request",
@@ -203,12 +236,15 @@ export async function sendOwnerSms(env: LeadEnvironment, lead: LeadRecord) {
   }
   const callbackPhone = String(lead.data.phone).replace(/[^\d+]/g, "");
   const isResidence = lead.data.offer_type === "private_residence_reset";
+  const source = field(lead.data.entry_route || lead.data.landing_page || lead.data.submitted_from);
   const body = new URLSearchParams({
     From: env.TWILIO_FROM_NUMBER,
     To: env.LEAD_ALERT_PHONE,
-    Body: isResidence
-      ? `New PRIVATE RESIDENCE RESET ${lead.id}: ${lead.data.full_name}, ${lead.data.property_city}, ${lead.data.property_situation}; priorities: ${lead.data.priority_rooms}. ${lead.receivedAt}. Source: ${lead.data.entry_route || lead.data.landing_page}. Call: tel:${callbackPhone}`
-      : `New HANDOFF RESET ${lead.id}: ${lead.data.full_name}, ${lead.data.property_city}, ${lead.data.property_situation}. ${lead.receivedAt}. Source: ${lead.data.landing_page || lead.data.submitted_from}. Call: tel:${callbackPhone}`
+    Body: !isDetailedLead(lead)
+      ? `New quick request ${lead.id}: ${lead.data.full_name}, ${field(lead.data.property_detail || lead.data.additional_notes)}. ${lead.receivedAt}. Source: ${source}. Call: tel:${callbackPhone}`
+      : isResidence
+      ? `New PRIVATE RESIDENCE RESET ${lead.id}: ${lead.data.full_name}, ${field(lead.data.property_city)}, ${field(lead.data.property_situation)}; priorities: ${field(lead.data.priority_rooms)}. ${lead.receivedAt}. Source: ${source}. Call: tel:${callbackPhone}`
+      : `New HANDOFF RESET ${lead.id}: ${lead.data.full_name}, ${field(lead.data.property_city)}, ${field(lead.data.property_situation)}. ${lead.receivedAt}. Source: ${source}. Call: tel:${callbackPhone}`
   });
   const response = await fetch(
     `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`,
@@ -238,7 +274,11 @@ export function sendOwnerFallbackEmail(
     });
   }
   const isResidence = lead.data.offer_type === "private_residence_reset";
-  const offerLabel = isResidence ? "Private Residence Reset" : "Handoff Reset";
+  const offerLabel = !isDetailedLead(lead)
+    ? "Quick request"
+    : isResidence
+    ? "Private Residence Reset"
+    : "Handoff Reset";
   // SMS_ALERTS_ENABLED off (the default until 10DLC approval) means email is the sole,
   // expected notification channel — not a degraded fallback — so the copy must not read
   // as an incident. Any other skip/failure reason means SMS was actually attempted.
@@ -248,9 +288,12 @@ export function sendOwnerFallbackEmail(
     `Request ID: ${lead.id}`,
     `Name: ${lead.data.full_name}`,
     `Phone: ${lead.data.phone}`,
-    `Email: ${lead.data.email}`,
-    `City: ${lead.data.property_city}`,
-    `Situation: ${lead.data.property_situation}`,
+    `Email: ${field(lead.data.email)}`,
+    `City: ${field(lead.data.property_city)}`,
+    `Situation: ${field(lead.data.property_situation)}`,
+    ...(!isDetailedLead(lead)
+      ? [`Description: ${field(lead.data.property_detail || lead.data.additional_notes)}`]
+      : []),
     `Callback window: ${lead.callbackWindow}`,
     `Submitted: ${lead.receivedAt}`,
     `Call: tel:${callbackPhone}`

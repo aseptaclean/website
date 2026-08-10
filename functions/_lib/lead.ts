@@ -73,28 +73,36 @@ export interface ValidationResult {
   errors: Record<string, string>;
 }
 
+// Fields every submission must have, regardless of which intake form was used: the short
+// homepage form (name, phone, optional description, consent) and the long assessment
+// questionnaire both collect these. Everything else below is optional so the short form's
+// request isn't rejected for fields it never asks about; the long-form/quiz fields are
+// preserved for when that flow is reintroduced (see docs/05-DECISIONS-LOG.md).
 const commonRequiredFields = [
+  "full_name",
+  "phone",
+  "privacy_consent",
+  "submission_timestamp",
+  "idempotency_key"
+] as const;
+
+const commonOptionalFields = [
+  "offer_type",
   "property_city",
   "property_type",
   "vacant_status",
   "property_situation",
   "desired_completion_date",
   "approximate_square_footage",
-  "offer_type",
-  "full_name",
-  "phone",
   "email",
   "relationship_to_property",
   "authority_to_approve",
   "property_address",
   "preferred_contact_method",
-  "privacy_consent",
-  "scope_acknowledgment",
-  "submission_timestamp",
-  "idempotency_key"
+  "scope_acknowledgment"
 ] as const;
 
-const handoffRequiredFields = [
+const handoffOptionalFields = [
   "contents_removal",
   "heavy_cleaning",
   "garage_storage",
@@ -110,7 +118,7 @@ const handoffRequiredFields = [
   "must_remove"
 ] as const;
 
-const residenceRequiredFields = [
+const residenceOptionalFields = [
   "property_zip",
   "number_of_levels",
   "occupancy_status",
@@ -121,14 +129,16 @@ const residenceRequiredFields = [
 
 const allowedScalarFields = new Set([
   ...commonRequiredFields,
-  ...handoffRequiredFields,
-  ...residenceRequiredFields,
+  ...commonOptionalFields,
+  ...handoffOptionalFields,
+  ...residenceOptionalFields,
   "form_version",
   "submitted_from",
   "entry_route",
   "access_notes",
   "best_contact_time",
   "additional_notes",
+  "property_detail",
   "important_finishes",
   "pets",
   "someone_present",
@@ -270,10 +280,16 @@ export function validateLead(formData: FormData): ValidationResult {
     .filter(Boolean);
 
   const offerType = data.offer_type;
-  const requiredFields =
-    offerType === "private_residence_reset"
-      ? [...commonRequiredFields, ...residenceRequiredFields]
-      : [...commonRequiredFields, ...handoffRequiredFields];
+  // The long assessment questionnaire (AssessmentForm.astro) always sends form_version;
+  // the short homepage form (QuickHandoffForm.astro) never does. That distinction — not
+  // offer_type — is what determines which fields beyond the common set are mandatory, so
+  // the short form's request isn't rejected for the full questionnaire's fields.
+  const isDetailedSubmission = Boolean(data.form_version);
+  const requiredFields = isDetailedSubmission
+    ? offerType === "private_residence_reset"
+      ? [...commonRequiredFields, ...commonOptionalFields, ...residenceOptionalFields]
+      : [...commonRequiredFields, ...commonOptionalFields, ...handoffOptionalFields]
+    : commonRequiredFields;
   for (const field of requiredFields) {
     if (!data[field] || (Array.isArray(data[field]) && !data[field].length)) {
       errors[field] = "This field is required.";
@@ -285,7 +301,7 @@ export function validateLead(formData: FormData): ValidationResult {
       errors[field] = "Select a valid option.";
     }
   }
-  if (offerType !== "private_residence_reset") {
+  if (isDetailedSubmission && offerType !== "private_residence_reset") {
     if (!(data["areas_involved[]"] as string[]).length) {
       errors["areas_involved[]"] = "Select at least one area.";
     } else if (
@@ -316,7 +332,10 @@ export function validateLead(formData: FormData): ValidationResult {
   if (data.privacy_consent !== "yes") {
     errors.privacy_consent = "Consent is required.";
   }
-  if (data.scope_acknowledgment !== "yes") {
+  if (
+    isDetailedSubmission &&
+    data.scope_acknowledgment !== "yes"
+  ) {
     errors.scope_acknowledgment = "Acknowledgment is required.";
   }
   if (
