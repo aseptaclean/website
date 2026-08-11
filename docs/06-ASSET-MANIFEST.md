@@ -1,39 +1,111 @@
-# Asset Manifest
+# 06 — Asset Manifest
 
-| File | Source / owner | License or permission | Purpose | Alt text | Crop / responsive treatment | Proof status |
+**Regenerated 2026-08-11** from the real inventory. The previous version listed a retired
+typeface, omitted two live ones, and described a placeholder treatment that no longer matches
+the build — which meant the manifest failed `18` §9's own rule that any asset absent from it
+is a release blocker.
+
+**Rule:** no image enters production without a row here. No exceptions, including
+free-licence images.
+
+---
+
+## 1. Brand assets — the entire shipped image inventory
+
+| File | Size | Dimensions | Source | Licence | Purpose | Proof status |
 | --- | --- | --- | --- | --- | --- | --- |
-| `public/assets/brand/aseptaclean-wordmark.png` | Owner-supplied `IMG_6795 2.PNG` | Supplied by owner for Aseptaclean brand use, 2026-07-30 | Primary wordmark on light header surfaces | Empty inside the home link; the link has the accessible name `Aseptaclean home` | Exact artwork, proportionally resized from 2127×510 to 900×215; no crop; responsive CSS width | Authentic brand asset; not project proof |
-| `public/assets/brand/aseptaclean-wordmark-reversed.png` | Owner-supplied `IMG_6800.PNG` | Supplied by owner for Aseptaclean brand use, 2026-07-30 | Reversed wordmark on the dark footer | `Aseptaclean` | Exact artwork, proportionally resized from 2127×510 to 900×215; no crop | Authentic brand asset; not project proof |
-| `public/assets/brand/aseptaclean-site-icon-512.png` | Owner-supplied `aseptaclean-site-icon-512.png` | Supplied by owner for Aseptaclean brand use, 2026-07-30 | Browser favicon and touch icon | Not rendered as page content | Exact 512×512 supplied artwork; no crop | Authentic brand asset; not project proof |
-| `@fontsource-variable/newsreader` Latin variable WOFF2 build asset | Newsreader project via Fontsource | SIL Open Font License 1.1; package license retained in `node_modules/@fontsource-variable/newsreader/LICENSE` | Editorial display headings and selected outcome statements | Not applicable | Weight-variable Latin webfont; emitted and self-hosted by the Astro build | Type asset; not project proof |
-| `@fontsource-variable/instrument-sans` Latin variable WOFF2 build asset | Instrument Sans project via Fontsource | SIL Open Font License 1.1; package license retained in `node_modules/@fontsource-variable/instrument-sans/LICENSE` | Body, navigation, controls, forms, labels, and operating documents | Not applicable | Weight-variable Latin webfont; emitted and self-hosted by the Astro build | Type asset; not project proof |
-| `src/components/HandoffRecord.astro` | Aseptaclean operating-method content, rendered in native HTML/CSS | Project-owned implementation | Sample room status, approved change, exception, completion-photo index, and closeout evidence | Semantic figure/table labels | Readable stacked excerpt on narrow screens; four-column record at larger widths | Visibly labeled sample; not a client record |
-| `src/components/ResidenceBaselineRecord.astro` | Phase 4 approved campaign specification, rendered in native HTML/CSS | Project-owned implementation | Sample room priorities, finishes, access, exceptions, and completion review | Semantic figure/list labels | Readable room excerpts on narrow screens; expanded record at larger widths | Visibly labeled sample; not a client record |
+| `public/assets/brand/aseptaclean-wordmark.png` | 86,930 B | 900 × 215 | Owner-supplied 2026-07-30, resized from 2127 × 510 | Owned | Header, light surfaces | Authentic brand asset — not project proof |
+| `public/assets/brand/aseptaclean-wordmark-reversed.png` | 64,857 B | 900 × 215 | Owner-supplied 2026-07-30 | Owned | Footer, dark surfaces | Authentic brand asset — not project proof |
+| `public/assets/brand/aseptaclean-site-icon-512.png` | 104,103 B | 512 × 512 | Owner-supplied 2026-07-30 | Owned | Favicon, PWA, schema logo | Authentic brand asset — not project proof |
 
-## Pending image slots — `docs/18-VISUAL-DIRECTION.md` §6, no file yet
+**That is the complete list.** There are no photographic assets anywhere in the repository —
+no files under `src/assets/`, and no `.png`, `.jpg`, `.svg`, or `.webp` anywhere in `src/`.
 
-Phase 0 (owner shoot, `18` §5.1) has not happened. Every row below renders as a labelled,
-bordered placeholder (steel-100 surface, mono caption stating the slot and its required
-classification) per `18` §10 Phase 2 — "Image slots ship as labelled placeholders until Phase 0
-assets land. Placeholders are acceptable in development; they are a release blocker in
-production." None of these are real files; nothing here is a licensed/stock asset in use today.
+---
 
-| Section | Slot | Required classification (`18` §5) | Component |
+## 2. Type assets
+
+Cross-checked against `package.json` `dependencies` as committed (2026-08-11): only three
+font packages are installed. Instrument Sans Variable, Fraunces, Montserrat, Open Sans, and
+Source Serif 4 have already been removed from `dependencies` — they are not merely unused,
+they are no longer installed at all.
+
+| Family | Package | Licence | Status |
 | --- | --- | --- | --- |
-| Hero | South Bay residential exterior, dark overlay | `[ATMOS]` permitted | `src/components/Hero.astro` |
-| Service cards — Complex property clearing | Process kit, flat-lay | `[OWNED]` only | `src/components/ServiceCards.astro` |
-| Service cards — Reset & restoration cleaning | Clean kitchen or bath detail | `[ATMOS]` permitted | `src/components/ServiceCards.astro` |
-| Service cards — Animal & organic condition cleaning | Completed job photo | `[OWNED]` only — implies work performed; slot stays empty rather than substitute atmosphere stock (`18` §5) | `src/components/ServiceCards.astro` |
-| Five-stage standard | Hands + clipboard at a threshold | `[OWNED]` only | `src/components/HandoffStandard.astro` |
-| Founder / operator | Founder portrait | `[OWNED]` only | `src/components/OperatorAccountability.astro` (placeholder pre-dates this pass, Session B) |
+| Newsreader Variable | `@fontsource-variable/newsreader` | OFL 1.1 | **Live** — `--ac-font-display`, preloaded |
+| Inter Variable | `@fontsource-variable/inter` | OFL 1.1 | **Live** — `--ac-font-sans`, preloaded |
+| IBM Plex Mono 400 | `@fontsource/ibm-plex-mono` | OFL 1.1 | **Live** — `--ac-font-mono`, preloaded |
+| Instrument Sans Variable | `@fontsource-variable/instrument-sans` | OFL 1.1 | **Retired and removed.** Not in `package.json`. No `@font-face` rule remains. |
+| Fraunces | `@fontsource-variable/fraunces` | OFL 1.1 | **Removed.** Not in `package.json`. |
+| Montserrat | `@fontsource-variable/montserrat` | OFL 1.1 | **Removed as an installed package.** Still loaded from Google Fonts CDN on one page — see exception below. |
+| Open Sans | `@fontsource-variable/open-sans` | OFL 1.1 | **Removed as an installed package.** Still loaded from Google Fonts CDN on one page — see exception below. |
+| Source Serif 4 | `@fontsource-variable/source-serif-4` | OFL 1.1 | **Removed.** Not in `package.json`. |
 
-Before any of these ship a real file: confirm the classification above, source per `18` §5.1/§5.2,
-and move the row into the main table with source/licence/alt text/crop/proof-status filled in.
+**Exception, deliberate:** `/sms-notification-consent/` loads Montserrat and Open Sans from
+Google Fonts (`fonts.googleapis.com`, not the removed local packages). Byte-preserved under
+Twilio 10DLC carrier review. Do not edit that page or "fix" its font loading — this is the one
+sanctioned Google Fonts CDN request on the entire site; see `AGENTS.md` §6.
 
-## Rules
+---
 
-- Do not add stock cleaning crews, generated people, fake properties, or synthetic before-and-after proof.
-- Record the source, permission, purpose, alt text, crops, and proof status before an asset is used.
-- Sample operating documents must be visibly labeled `SAMPLE` and must not imply completed client work.
-- Every image slot is logged here — including placeholders — per `docs/18-VISUAL-DIRECTION.md` §5:
-  "Every image is logged in `06-ASSET-MANIFEST.md`... No exceptions."
+## 3. Document artifacts
+
+| Component | Purpose | Proof status |
+| --- | --- | --- |
+| `HandoffRecord.astro` | Property Handoff Record — the page's signature moment | **Visibly labeled SAMPLE. Not a client record.** |
+| `ResidenceBaselineRecord.astro` | Residence Baseline Record | **Visibly labeled SAMPLE. Not a client record.** |
+
+Both must carry the documentation disclaimer from `21` §6 wherever they appear.
+
+---
+
+## 4. Image slots — six, all unfilled
+
+`homepage.serviceCards` in `src/data/site.ts:336-358` carries `imageLabel` and `imageStatus`
+fields describing what should eventually occupy each slot. These are text descriptors, not
+`<img>` elements. **Whether they render as visible on-page text has not been confirmed** —
+verify before launch, since a visible "Photo slot · owned" caption on an indexable page reads
+as unfinished.
+
+| Slot | Component | Class | Can it be filled by purchase? |
+| --- | --- | --- | --- |
+| Hero — South Bay exterior, dark overlay | `Hero.astro` | `[ATMOS]` | Yes. **May no longer exist** — v2's hero is a radial-gradient composition; verify. |
+| Service card 1 — process kit flat-lay | `ServiceCards.astro` | `[OWNED]` | **No** |
+| Service card 2 — kitchen or bath detail | `ServiceCards.astro` | `[ATMOS]` | Yes |
+| Service card 3 — completed job photo | `ServiceCards.astro` | `[OWNED]` | **No** — slot stays empty rather than substitute stock |
+| Five-stage — hands and clipboard at a threshold | `HandoffStandard.astro` | `[OWNED]` | **No** |
+| Founder portrait | `OperatorAccountability.astro` | `[OWNED]` | **No** |
+
+**Four slots cannot be filled by any purchase.** They gate on the Phase 0 owner shoot, which
+has not happened. Per `18` §9, a non-owner-shot image in an `[OWNED]` slot is a hard release
+blocker. Per `18` §10, placeholders are a production release blocker.
+
+**Empty beats fake. Always.** The one test per slot: *does this image imply Aseptaclean
+performed this work?* Yes → owner-shot or empty. No → licensed or self-shot atmosphere,
+capped at three slots total.
+
+---
+
+## 5. Phase 0 owner shoot — five setups
+
+Cannot be delegated. Nothing in the `[OWNED]` column renders honestly until this happens.
+
+1. **Founder portrait** — real, current, not stock, not AI
+2. **Process-kit flat-lay** — the strongest owned asset available before any job exists
+3. **Vehicle, three-quarter** — only if the discretion copy's "unmarked" claim is accurate;
+   **verify the vehicle is actually unmarked before shipping that word**
+4. **Hands and clipboard at a threshold** — no faces, no identifiable interior
+5. **3–4 South Bay exteriors** — no identifiable addresses, no people
+
+Target: **zero atmosphere images by the fifth completed project.** Every atmosphere slot is a
+placeholder for real proof, not a permanent solution.
+
+---
+
+## 6. Permanently prohibited
+
+Fake before/after · AI-generated people, properties, documents, or crews · smiling cleaning
+crews · staged maids · branded fleet not owned · sensational hoarding interiors · hazmat or PPE
+theatre · any image implying a regulated service · the generic moving-box motif · any interior
+of an overwhelmed property that could be mistaken for Aseptaclean's work · stock photography
+selected to make the company look larger, older, busier, or more credentialed than it is.

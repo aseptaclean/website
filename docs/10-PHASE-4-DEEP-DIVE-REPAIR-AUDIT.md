@@ -73,6 +73,15 @@ Resolution:
 - manually review wraps across all required widths
 - self-host and performance-test the fonts
 
+**Amended 2026-08-11.** The shipping stack is **Newsreader Variable + Inter Variable + IBM
+Plex Mono**, not Instrument Sans Variable — the FINAL-v2 port swapped the sans face and the
+build is measured and working. All three are self-hosted via `@fontsource`/`@fontsource-variable`
+and preloaded in `src/layouts/BaseLayout.astro:57-77`. Instrument Sans is retired: removed from
+`docs/06-ASSET-MANIFEST.md`, no longer referenced by any font-loading code. See `AGENTS.md` §6
+and `docs/05-DECISIONS-LOG.md` for the resolution. Do not revert to Instrument Sans — that would
+re-open font loading, LCP, and every H1:body ratio measurement on a near-done site for no
+user-visible benefit.
+
 ### 4. Visual-direction conflict
 
 Observed:
@@ -136,6 +145,15 @@ Repair:
 - create deliberate visual pauses
 - combine scope, assurance, price, and founder where useful
 - preserve exact claims while improving pacing
+
+**Amended 2026-08-11.** The eight-movement target above was superseded during build. The
+homepage that actually ships (`src/pages/index.astro`) renders **fourteen top-level sections**:
+Hero, CredentialBar, ServiceCards, ConfidenceAndFit, WhyAseptaclean, AccentBand,
+HandoffStandard, HandoffRecord, Pricing, AreasWeServe, OperatorAccountability, FAQ,
+RequestForm, FinalCTA. Three binding section maps had coexisted in this doc set (this item,
+`docs/11-COMPOSITION-AND-TYPE.md` §5's eight-movement-plus-two-bands table, and the code) and
+none matched the code or each other. The code is truth here — see `docs/11-COMPOSITION-AND-TYPE.md`
+§5 for the corrected map and `docs/05-DECISIONS-LOG.md` for the resolution.
 
 ### 8. Handoff Record needs to function as evidence
 

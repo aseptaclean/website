@@ -118,11 +118,45 @@ feels wrong.
 
 ---
 
-## 5. The composition map — binding, per movement
+## 5. The composition map — binding, per section
 
-Every cell is a decision. Codex implements this table and does not improvise around it.
+**Amended 2026-08-11.** The eight-movement-plus-two-bands table below described a target that
+build sessions departed from further with each pass. Three binding section maps had come to
+coexist in this doc set (this table, `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` item 7's
+eight-movement target, and the actual code) and none of the three matched each other or the
+shipped homepage. The code is truth. `src/pages/index.astro` renders these **fourteen**
+top-level sections, in this order, inside `BaseLayout` (Header before, Footer/MobileCTA after
+— not counted as page sections):
 
-| # | Movement | Container | Rhythm | Surface | Type entry |
+| # | Component | Visible heading |
+| --- | --- | --- |
+| 1 | `Hero` | h1 — "Complex properties returned to a controlled, documented condition." |
+| 2 | `CredentialBar` | No heading — 4 credential chips |
+| 3 | `ServiceCards` | h2 — "Three ways properties reach this handoff" |
+| 4 | `ConfidenceAndFit` | h2 — "The decisions stay yours" |
+| 5 | `WhyAseptaclean` | h2 — "The difference is what happens before and after the work itself" |
+| 6 | `AccentBand` | h2 — "Working against a listing, transfer, or family deadline?" |
+| 7 | `HandoffStandard` | h2 — "One company stays accountable from the first decision to the final closeout" |
+| 8 | `HandoffRecord` | h2 — "Property Handoff Record" |
+| 9 | `Pricing` | h2 — "One number, in writing, after the walkthrough." |
+| 10 | `AreasWeServe` | h2 — renders `{site.location.regionLabel}` ("South Bay & Peninsula") |
+| 11 | `OperatorAccountability` | h2 — "The person defining the work stays accountable for how it's carried out." |
+| 12 | `FAQ` | h2 — "Questions that affect scope, authority, and timing" |
+| 13 | `RequestForm` | h2 — "Start with what you know. We will help define the rest." |
+| 14 | `FinalCTA` | h2 — "Start with what you know. We will help define the rest." |
+
+Per-section container, rhythm, and surface values are set component-by-component in
+`src/components/*.astro` and `src/pages/index.astro`; this doc no longer prescribes a binding
+table independent of the code, since keeping one in sync manually is exactly what produced the
+three-way drift. Verify current values by reading the component, not this table. See
+`docs/05-DECISIONS-LOG.md` for the resolution and `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md`
+item 7 (also amended) for the corresponding fix on that side.
+
+The historical eight-movement map and its design rationale are preserved below for the
+reasoning behind container/rhythm variation — read it for principle, not as a current
+per-section binding list.
+
+| # | Movement (historical) | Container | Rhythm | Surface | Type entry |
 | --- | --- | --- | --- | --- | --- |
 | 1 | Hero | `wide`, asymmetric — copy at 58% not 50% | `open` top, `standard` bottom | Warm white | `h1` + `lead` + `xs` trust line |
 | 2 | Recognition | `intimate` | `standard` | Warm white, hairline top rule | `h2` + `body`. No lead |

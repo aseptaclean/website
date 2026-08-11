@@ -1,6 +1,6 @@
 # Private Residence Reset — Phase 4 Build Specification
 
-This implementation spec applies the approved strategy in `docs/07-PRIVATE-RESIDENCE-RESET-STRATEGY.md`.
+This implementation spec applies the approved strategy for the Private Residence Reset offer. (`docs/07-PRIVATE-RESIDENCE-RESET-STRATEGY.md` does not exist and never has — see `AGENTS.md` §1, "files that do not exist." No separate strategy document exists; this file is the sole authority for the route.)
 
 ## 1. Strategic role
 

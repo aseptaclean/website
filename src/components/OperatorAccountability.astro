@@ -1,7 +1,7 @@
 ---
 // docs/aseptaclean-FINAL-v2.html FOUNDER section — ported verbatim (05-DECISIONS-LOG.md
 // supersedes docs/06-APPROVED-HOMEPAGE-COPY.md for this section's copy and structure).
-import { site } from "@data/site";
+import { legal, site } from "@data/site";
 
 const credentials = [
   { k: "Education", v: "B.S. Biochemistry, UC Riverside" },
@@ -34,7 +34,7 @@ const credentials = [
           ))
         }
       </div>
-      <p class="fnote">This background reflects controlled-process discipline. It does not grant contractor, remediation, medical, environmental, or regulatory authority.</p>
+      <p class="fnote">{legal.founderAuthorityLimit}</p>
       <a class="founder__more" href="/about/">More about the operator →</a>
     </div>
   </div>

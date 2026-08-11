@@ -183,14 +183,12 @@ delay launch for it. Do not ship a broken upload control.
 
 ---
 
-## 8. Astro version — freeze, do not migrate before launch
+## 8. Astro version
 
-Astro 7.0 shipped June 22, 2026 with a Rust compiler enforcing stricter HTML parsing, Vite 8
-with Rolldown, and a Cloudflare adapter major bump. This repo is on Astro 5. That is a
-two-major migration on the only revenue asset, mid-launch, for zero conversion benefit.
-
-**Freeze at the installed major. Ship. Migrate on a branch after the first leads land.** Record
-the freeze in `05-DECISIONS-LOG.md` so it does not read as an oversight.
+**Struck 2026-08-11.** This section previously froze the repo at Astro 5 and deferred
+migration until after launch. `package.json` is on Astro `^7.1.6` — the migration already
+happened. Leaving the freeze note in place invited someone to re-plan a migration that is
+already done. See `docs/05-DECISIONS-LOG.md` for the resolution.
 
 ---
 

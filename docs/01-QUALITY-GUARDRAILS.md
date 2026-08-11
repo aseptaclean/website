@@ -1,4 +1,4 @@
-# 10 — $20K Website Quality and Anti-AI Guardrails
+# 01 — Execution Quality and Anti-Generic Guardrails
 
 **Purpose:** Make the Aseptaclean website feel custom, strategically authored, technically complete, and worth a professional agency investment of approximately **$20,000**—without pretending that price alone proves quality.
 
@@ -10,15 +10,11 @@
 
 ## Precedence
 
-1. `04-CLAIMS-GUARDRAILS.md`
-2. Active technical authority for the current build
-3. `07-DESIGN-SYSTEM-AND-LAYOUT-SPEC.md`
-4. `02-BUILD-SPEC.md` for the technical areas it still governs
-5. Active route brief
-6. `03-VOICE.md`
-7. This file
-8. `09-PREMIUM-EXECUTION-BAR.md`
-9. General inspiration or trend references
+The operative precedence chain lives in the repository root `AGENTS.md`. This file is rank 3
+in that chain — below current law/business facts and `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md`,
+above everything else. Do not maintain a duplicate chain here; the list that previously
+appeared in this section named four files that never existed and ranked this file 7th. See
+`docs/05-DECISIONS-LOG.md` for the resolution.
 
 Where this file conflicts with a higher authority, the higher authority wins. Report the conflict. Do not silently improvise.
 
@@ -1171,7 +1167,7 @@ No page may be marked complete with a score below 90 or any noncompensable failu
 # 26. One-time integration instruction for Codex
 
 ```text
-Read docs/10-20K-WEBSITE-QUALITY-ANTI-AI-GUARDRAILS.md.
+Read docs/01-QUALITY-GUARDRAILS.md.
 
 Audit the current website system and all built pages against it. Do not fix anything yet.
 

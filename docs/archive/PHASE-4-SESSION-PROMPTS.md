@@ -1,5 +1,13 @@
 # Phase 4 — One-Page Build: Session Prompts
 
+**Archived and superseded.** `docs/PHASE-4-CANONICAL-MASTER-SPEC.md` never existed under that
+name — `docs/PHASE-4-AUDIT.md` §0 resolved it to `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md`,
+and `PHASE-4-ONE-PAGE-DIRECTIVE.md` resolved to `docs/07-ONE-PAGE-DIRECTIVE.md`. Every
+`docs/PHASE-4-CANONICAL-MASTER-SPEC.md` and unqualified `docs/PHASE-4-ONE-PAGE-DIRECTIVE.md`
+reference below is that placeholder, unresolved at the time this file was written. Read the
+real files (`docs/10-...` and `docs/07-...`) instead; do not act on this file's instructions
+directly. [Corrected 2026-08-11.]
+
 Nine sessions. One per Claude Code session, in order. Each block is self-contained — paste it
 whole. Do not run two in one session; that is how context dilution produced the flat output
 the canonical spec is now repairing.
@@ -62,7 +70,10 @@ Read docs/PHASE-4-ONE-PAGE-DIRECTIVE.md §1, §2, §10 and docs/PHASE-4-AUDIT.md
    in the audit with a config import.
 5. Add _redirects entries: every deleted route 301s to / with its query string preserved.
    No route 404s. No chain longer than one hop.
-6. Create docs/DECISION-LOG.md. First entries: the Astro version freeze (directive §8), the
+6. Create docs/05-DECISIONS-LOG.md. [Path corrected 2026-08-11 — the file this session's
+   instructions call `docs/DECISION-LOG.md` was in fact created as `docs/05-DECISIONS-LOG.md`
+   (plural, numbered) and is now the live, actively appended decisions log.] First entries: the
+   Astro version freeze (directive §8 — since reversed, see AGENTS.md §1 rank 11 note), the
    --ac- prefix retention (§3 row 8), and the deferred QA scope (§11).
 
 Report the deleted file list and the redirect map. Do not touch styling this session.
@@ -80,7 +91,9 @@ Replace the type and token system. Do not patch it alongside the old one.
 1. Fonts: remove Montserrat and Open Sans entirely. Self-host Newsreader Variable and
    Instrument Sans Variable as WOFF2 in src/assets/fonts. font-display: swap. Preload only the
    first-viewport files and weights actually used. Record source and license in
-   docs/ASSET-MANIFEST.md.
+   docs/06-ASSET-MANIFEST.md. [Path corrected 2026-08-11 — no `docs/ASSET-MANIFEST.md` has ever
+   existed; the real file is numbered `06-`. This session's own text is otherwise historical and
+   superseded — see AGENTS.md §6 for the current font stack.]
 2. Tokens: keep the --ac- prefix. Adopt the canonical §8 color values and §9.2 type scale,
    mapped into --ac- names. Write the old-to-new map into docs/TOKEN-MAP.md. Delete every
    token no longer consumed. There must be exactly one token file.

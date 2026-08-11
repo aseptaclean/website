@@ -512,9 +512,11 @@ TASK 2 — Execute the terminology retirement (section 13, active now)
    changed page per the evidence rules.
 
 TASK 3 — Verify the buyer research system placement (section 10, active now)
-1. Check whether docs/05-OPERATIONS.md (or the current operations authority)
-   contains the six-field inquiry capture system (trigger, frustration,
-   desired outcome, fear, objection, vocabulary).
+1. `docs/05-OPERATIONS.md` does not exist and never has — see `AGENTS.md` §1,
+   "files that do not exist." There is no current operations authority
+   document. Check whether the six-field inquiry capture system (trigger,
+   frustration, desired outcome, fear, objection, vocabulary) exists anywhere
+   in `docs/` before assuming a home for it.
 2. If absent, add it as a new section titled "Inquiry capture — buyer research
    system" using section 10 of the roadmap verbatim, and log the addition in
    docs/05-DECISIONS-LOG.md.

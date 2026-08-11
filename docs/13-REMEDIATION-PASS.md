@@ -1,5 +1,14 @@
 # 13 — Build Remediation Pass
 
+> **Not a valid regression guard — historical only, amended 2026-08-11.** §1 describes an
+> approximation of the build at commit `88ab2a6`, which predates the `--ac-` token
+> architecture entirely (`grep -r "\-\-ac-" src/` returned zero results at that commit —
+> see `docs/PHASE-4-AUDIT.md` item 2). Every item in D1–D11 below is either already resolved
+> or superseded by later, more current documents (`docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md`,
+> `docs/11-COMPOSITION-AND-TYPE.md`, `docs/18-VISUAL-DIRECTION.md`). Do not run this file's
+> checklist against the current build and do not treat a passing or failing item here as
+> evidence of the current build's state. See `docs/05-DECISIONS-LOG.md` for the resolution.
+
 **Status:** Active. Run after the current build, before any further movement work.
 **Repo location:** `docs/13-REMEDIATION-PASS.md`
 **Basis:** Desktop review of the rendered page at ~1440px, July 30 2026.

@@ -1,7 +1,9 @@
 # Phase 4 — Composition and Type Authority
 
-**Status:** Active. Binds `/` and every future page.
-**Repo location:** `docs/PHASE-4-COMPOSITION-AND-TYPE.md`
+**Status:** Archived and superseded by `docs/11-COMPOSITION-AND-TYPE.md`. No longer binding.
+**Repo location:** `docs/archive/PHASE-4-COMPOSITION-AND-TYPE.md` (corrected 2026-08-11 — this
+file moved to `docs/archive/` when it was superseded; the `docs/PHASE-4-COMPOSITION-AND-TYPE.md`
+path above is stale).
 **Supersedes:** `07-VISUAL-SYSTEM.md` and the v2 typography rules in `02-BUILD-SPEC.md` §3.
 **Read with:** canonical spec §7–§12, `PHASE-4-ONE-PAGE-DIRECTIVE.md` §3 and §9.
 
@@ -221,7 +223,9 @@ the old one — remove the old one.
 1. Fonts: remove Montserrat and Open Sans entirely. Self-host Newsreader Variable and
    Instrument Sans Variable as WOFF2 in src/assets/fonts. font-display: swap. Preload only the
    first-viewport files and weights actually used. Record source and license in
-   docs/ASSET-MANIFEST.md.
+   docs/06-ASSET-MANIFEST.md. [Path corrected 2026-08-11 — no `docs/ASSET-MANIFEST.md` has ever
+   existed; the real file is numbered `06-`. This session's own text is otherwise historical and
+   superseded — see AGENTS.md §6 for the current font stack.]
 
 2. Tokens: keep the --ac- prefix. Implement the §2 type scale, the §3 measure tokens, the §4
    rhythm tokens, and the canonical §8 color values. Write the old-to-new map into

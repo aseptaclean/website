@@ -3,11 +3,6 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import ResidenceBaselineRecord from "@components/ResidenceBaselineRecord.astro";
 import { legal, site } from "@data/site";
 
-const currency = new Intl.NumberFormat("en-US", {
-  style: "currency",
-  currency: "USD",
-  maximumFractionDigits: 0
-});
 const stages = [
   ["Assess", "Review the residence, desired outcome, priority rooms, finishes, access, and timing."],
   ["Define", "Write the room-by-room baseline, including what is included, restricted, or separately scoped."],
@@ -43,13 +38,7 @@ const schema = [
       "A structured whole-home deep reset with a written room-by-room scope, controlled changes, and final completion review.",
     provider: { "@id": new URL("/#organization", site.urls.site).href },
     areaServed: site.location.serviceArea,
-    url: new URL("/private-residence-reset/", site.urls.site).href,
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "USD",
-      price: site.residenceOffer.startingPrice,
-      description: "Initial Residence Reset projects generally begin at this amount; final pricing depends on the approved scope."
-    }
+    url: new URL("/private-residence-reset/", site.urls.site).href
   },
   {
     "@type": "BreadcrumbList",
@@ -97,10 +86,10 @@ const schema = [
           walkthrough is required.
         </p>
       </div>
-      <aside aria-label="Starting investment">
-        <span>Initial reset</span>
-        <strong>{currency.format(site.residenceOffer.startingPrice)}</strong>
-        <p>Projects generally begin here. Final pricing follows the defined scope.</p>
+      <aside aria-label="Assessment">
+        <span>On-site assessment</span>
+        <strong>${site.offer.assessmentFee}</strong>
+        <p>{site.offer.assessmentFeeTerms} Final pricing follows the defined scope.</p>
       </aside>
     </div>
     <div class="ac-measure-wide residence-trust" aria-label="Residence project controls">
@@ -235,10 +224,9 @@ const schema = [
         <p class="residence-index">07 / Starting context and fit</p>
         <h2 id="residence-fit-title" class="ac-type-h2">A whole-home baseline begins with a whole-home view.</h2>
         <p>
-          Initial Residence Reset projects generally begin at
-          <strong>{currency.format(site.residenceOffer.startingPrice)}</strong>.
-          Final pricing depends on residence size, current condition, priority
-          rooms, included detail areas, finishes, access, labor, and timing.
+          Final pricing for an Initial Residence Reset depends on residence
+          size, current condition, priority rooms, included detail areas,
+          finishes, access, labor, and timing.
         </p>
       </div>
       <aside>

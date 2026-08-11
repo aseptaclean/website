@@ -405,7 +405,7 @@ export const serviceAreasHub = {
   slug: "/service-areas/",
   gate: null as string | null,
   intro:
-    "Aseptaclean serves San Jose and the surrounding South Bay — property cleanouts, estate clearing, and deep cleaning under one written scope, wherever the property sits in the county.",
+    "Aseptaclean serves San Jose and the surrounding South Bay & Peninsula — property cleanouts, estate clearing, and deep cleaning under one written scope, wherever the property sits in the service area.",
   clusters: [
     {
       name: "West Valley",
@@ -648,7 +648,7 @@ export const servicesHub = {
     {
       title: "Animal & organic condition cleaning",
       detail:
-        "Heavy organic conditions and animal waste, cleaned under our organic pathogen endorsement. Cleaning only — not a decontamination or health-safety determination.",
+        "Heavy organic conditions and animal waste, cleaned under our organic pathogen endorsement. Cleaning only — not a decontamination, sterilization, or health-safety determination.",
       links: [{ label: "Animal waste cleanup", href: animalPage.slug }]
     },
     {

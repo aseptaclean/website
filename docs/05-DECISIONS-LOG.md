@@ -24,7 +24,7 @@ written into the repo's root `AGENTS.md` (which names full filenames, not the `�
 
 - `{CANONICAL}` = `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` — the Phase 4 canonical master specification.
 - `{RESIDENCE}` = `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` — Private Residence Reset strategy/build spec, Phase 2 only.
-- `{OLD-VISUAL}` = `docs/09-PREMIUM-VISUAL-AND-TYPOGRAPHY-SPEC.md` — the older premium visual/typography document, superseded by `docs/11-COMPOSITION-AND-TYPE.md`.
+- `{OLD-VISUAL}` = `docs/archive/09-PREMIUM-VISUAL-AND-TYPOGRAPHY-SPEC.md` — the older premium visual/typography document, superseded by `docs/11-COMPOSITION-AND-TYPE.md`. (Path corrected 2026-08-11: this file now lives under `docs/archive/`, not `docs/`; see the doc-cleanup entry below.)
 
 No application code was changed to reach this resolution; it is a read-only confirmation. Full
 reasoning and evidence are in `docs/PHASE-4-AUDIT.md` §0.
@@ -2026,3 +2026,333 @@ under review. Revisit moving consent capture server-side (e.g. logging the enrol
 `/api/lead`-style infrastructure or a dedicated endpoint) once 10DLC approval is confirmed. Files
 affected: `src/pages/sms-notification-consent.astro`,
 `public/sms-notification-consent/sms-consent.css`, `docs/04-RELEASE-CHECKLIST.md`.
+
+## Documentation cleanup pass — precedence, dangling references, and reality drift (2026-08-11)
+
+Documentation-only pass, run against `docs/REPO-STATE.md` (the 2026-08-11 ground-truth audit)
+and the operative precedence chain in root `AGENTS.md`. No file under `src/`, `functions/`, or
+any config was touched. Eleven items, each logged separately below.
+
+### 1. Deleted `docs/AGENTS-PRECEDENCE-BLOCK.md`
+
+A: `docs/AGENTS-PRECEDENCE-BLOCK.md` — "One endpoint: `src/pages/api/lead.ts`. Do not maintain
+a competing implementation in `functions/`." (unranked — a stale, unmerged draft, not in the
+precedence chain)
+B: `AGENTS.md` §0.1 — "`functions/api/lead.ts` is the only lead endpoint. It is correct. Do not
+touch it... Do not create `src/pages/api/lead.ts`. It has never existed." (rank 1, current
+governing file)
+
+Resolution: B wins — inverted and dangerous. `src/pages/api/lead.ts` has never existed;
+`functions/api/lead.ts` is the only working implementation. `AGENTS.md`'s own header already
+states it "replaces `docs/AGENTS-PRECEDENCE-BLOCK.md` in full."
+Type: violated rule (actively wrong instruction) → file deleted, not merely corrected.
+Changed: `docs/AGENTS-PRECEDENCE-BLOCK.md` deleted. (It was already removed from the working
+tree at session start; this pass confirmed the deletion was intentional and correct rather than
+restoring it.)
+Not changed: historical mentions of the filename in `docs/PHASE-4-AUDIT.md`,
+`docs/20ALIGNMENTAUDIT20260811.md`, `docs/22DOCDISPOSITION.md`, and this log's own earlier
+entries — these are accurate historical records of a file that used to exist and do not need
+correction.
+
+### 2. Fixed `docs/01-QUALITY-GUARDRAILS.md` title, precedence block, and self-reference
+
+A: `docs/01-QUALITY-GUARDRAILS.md` §Precedence (old) — ranked itself 7th, below
+`04-CLAIMS-GUARDRAILS.md`, `07-DESIGN-SYSTEM-AND-LAYOUT-SPEC.md`, `02-BUILD-SPEC.md`, and
+`09-PREMIUM-EXECUTION-BAR.md` — none of which exist in `docs/`.
+B: `AGENTS.md` §1 — ranks this file 3rd (below current law and `21-CLAIMS-AND-COMPLIANCE-LAW.md`,
+above everything else) and lists all four of the above filenames under "Files that do not
+exist — stop if a document points you at one."
+
+Resolution: B wins. Replaced the duplicate, wrong local chain with a pointer to the root
+`AGENTS.md` chain. Also retitled from "# 10 — $20K Website Quality and Anti-AI Guardrails" to
+"# 01 — Execution Quality and Anti-Generic Guardrails" (the file is numbered `01-`, not `10-`,
+and the dollar-figure framing was cosmetic marketing language, not a rule) and fixed line 1174's
+self-reference from `docs/10-20K-WEBSITE-QUALITY-ANTI-AI-GUARDRAILS.md` (a filename that has
+never existed) to `docs/01-QUALITY-GUARDRAILS.md`.
+Type: stale description → corrected doc.
+Changed: `docs/01-QUALITY-GUARDRAILS.md` (title, §Precedence, line ~1174).
+Not changed: the rest of the file's content (anti-AI guardrails, scoring rubric) — out of
+scope, still accurate.
+
+### 3. Repaired the nine dangling doc-to-doc references (`docs/REPO-STATE.md` §11)
+
+Each of the nine filenames `docs/REPO-STATE.md`'s cross-reference audit flagged as pointing at
+a file that does not exist on disk was resolved individually:
+
+1. `docs/05-OPERATIONS.md` (from `docs/90-FUTURE-PHASE-BIOHAZARD-STRATEGY.md:515`) — never
+   existed. Corrected inline to say so and to stop assuming a home for the six-field inquiry
+   capture system before checking whether it exists anywhere.
+2. `docs/07-PRIVATE-RESIDENCE-RESET-STRATEGY.md` (from
+   `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md:3`) — never existed. Corrected inline; doc 08
+   is the sole authority for `/private-residence-reset/`, no separate strategy doc exists.
+3. `docs/09-PREMIUM-VISUAL-AND-TYPOGRAPHY-SPEC.md` (from `docs/05-DECISIONS-LOG.md:27`, this
+   file) — exists, but moved to `docs/archive/` when superseded. Path corrected in the
+   historical entry above (Phase 4 Session 1 §0 resolution) without altering the historical
+   record of what was decided.
+4. `docs/10-20K-WEBSITE-QUALITY-ANTI-AI-GUARDRAILS.md` (self-reference,
+   `docs/01-QUALITY-GUARDRAILS.md:1174`) — fixed as part of item 2 above.
+5. `docs/ASSET-MANIFEST.md` (from `docs/archive/PHASE-4-COMPOSITION-AND-TYPE.md:224` and
+   `docs/archive/PHASE-4-SESSION-PROMPTS.md:83`) — numbering mismatch; real file is
+   `docs/06-ASSET-MANIFEST.md`. Corrected inline in both archived files with a note that the
+   surrounding session text is otherwise historical and superseded.
+6. `docs/DECISION-LOG.md` (from `docs/archive/PHASE-4-SESSION-PROMPTS.md:65`) — singular/plural
+   mismatch; real file is `docs/05-DECISIONS-LOG.md` (this file). Corrected inline.
+7. `docs/PHASE-4-CANONICAL-MASTER-SPEC.md` (from `docs/archive/PHASE-4-SESSION-PROMPTS.md:19`
+   and other lines in the same file) — a placeholder name, resolved by `docs/PHASE-4-AUDIT.md`
+   §0 to `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md`. Added a corrective banner at the top of
+   the archived file pointing to the real filename rather than rewriting every instance inside
+   a frozen historical session script.
+8. `docs/PHASE-4-COMPOSITION-AND-TYPE.md` (self-reference,
+   `docs/archive/PHASE-4-COMPOSITION-AND-TYPE.md:4,216`) — the file's own "repo location" header
+   was stale after it moved to `docs/archive/` on being superseded by
+   `docs/11-COMPOSITION-AND-TYPE.md`. Corrected the header and marked the file archived/superseded.
+9. `docs/PHASE-4-ONE-PAGE-DIRECTIVE.md` (self-reference,
+   `docs/archive/PHASE-4-ONE-PAGE-DIRECTIVE.md:5`, also referenced from
+   `docs/archive/PHASE-4-SESSION-PROMPTS.md:19,49`) — same pattern as #8; corrected the header,
+   marked archived/superseded by `docs/07-ONE-PAGE-DIRECTIVE.md`, and resolved the
+   `PHASE-4-CANONICAL-MASTER-SPEC.md`/`04-CLAIMS-GUARDRAILS.md` placeholders in its own
+   "Read with" line to the real files (`docs/10-...` and `docs/21-...`).
+
+Type: all nine were stale descriptions (broken paths / unresolved placeholders), not violated
+rules → all corrected in place, none required a code or behavior change.
+Changed: `docs/90-FUTURE-PHASE-BIOHAZARD-STRATEGY.md`, `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md`,
+`docs/05-DECISIONS-LOG.md` (this file), `docs/01-QUALITY-GUARDRAILS.md`,
+`docs/archive/PHASE-4-COMPOSITION-AND-TYPE.md`, `docs/archive/PHASE-4-SESSION-PROMPTS.md`,
+`docs/archive/PHASE-4-ONE-PAGE-DIRECTIVE.md`.
+Not changed: the substantive instructions inside the archived session-prompt files (e.g. the
+Instrument Sans references in `docs/archive/PHASE-4-SESSION-PROMPTS.md` and
+`docs/archive/PHASE-4-COMPOSITION-AND-TYPE.md`) — these are frozen historical drafts, already
+marked non-governing by `AGENTS.md`, and rewriting their intent would misrepresent what was
+actually instructed at the time. Only the broken paths were fixed.
+
+### 4. `docs/19-SYSTEM-AND-SITEMAP.md` — added `/services/` and `/who-we-help/`, deleted the Phase 3b biohazard line
+
+A: `docs/19-SYSTEM-AND-SITEMAP.md` §2.1 (old) — Phase 3b listed
+"`/biohazard-cleanup-san-jose/` gate: certification held (highest margin)" as a single-gate
+route, and the phase map had no entry at all for `/services/` or `/who-we-help/`.
+B: `AGENTS.md` §2 — "`19` §2.1 Phase 3b's single-gate `/biohazard-cleanup-san-jose/` line is
+**void** — Phase 5's four-gate rule governs. If you find that Phase 3b line, delete it." Same
+section also lists `/services/` under "Do not build... any `/services/*` or `/locations/*`
+route (that is the superseded `site map` architecture)" — itself now stale, since
+`src/pages/services/index.astro` is a real, shipped hub page, distinct from the unlawful
+`/services/{service}/` per-service-type architecture the prohibition actually targets.
+
+Resolution: B wins on the Phase 3b deletion (both same doc-family rank, but `AGENTS.md` is
+rank 1 and explicit). On `/services/` and `/who-we-help/`: neither is the superseded
+`site map` architecture — `docs/REPO-STATE.md` §2 confirms both are real, indexed, sitemapped,
+nav-and-footer-linked hub pages (`servicesHub`/`whoWeHelpHub` in `servicePages.ts`), added in
+the uncommitted "IA expansion Chunk 3" work. Doc 19 needed to document reality, not the
+`AGENTS.md` §2 prohibition text (which targets `/services/{service}/` per-service routes and
+`/locations/*`, not the `/services/` and `/who-we-help/` hub pages themselves).
+Type: mixed — Phase 3b line was a violated rule (already voided by `AGENTS.md`, just not yet
+deleted from doc 19) → deleted. Missing `/services/`/`/who-we-help/` entries were a stale
+description (doc 19 simply didn't know they existed yet) → added.
+Changed: `docs/19-SYSTEM-AND-SITEMAP.md` §2.1 — added a "PHASE 3d — IA EXPANSION, CHUNK 3"
+block documenting both live hub routes; deleted the Phase 3b `/biohazard-cleanup-san-jose/`
+line entirely (Phase 3b now lists only the two crew/checklist-gated routes).
+Not changed: the BIOHAZARD per-page SEO spec subsection (§2.2) — it already correctly deferred
+to Phase 5 and doc 90, with no reference to the now-deleted Phase 3b line, so no edit was
+needed there. `AGENTS.md` §2's own prohibition text was left as-is per this task's scope
+(documentation-only within `docs/`); flagging here that its `/services/*` wording is now
+imprecise relative to the real `/services/` hub and may be worth tightening in a future pass.
+
+### 5. Amended `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` item 3 — font stack
+
+A: `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` item 3 (old) — "supersede the prior
+implementation with Newsreader Variable + Instrument Sans Variable."
+B: `AGENTS.md` §6 — "The shipping stack is: `--serif` Newsreader Variable, `--sans` Inter
+Variable, `--mono` IBM Plex Mono... Instrument Sans is removed." Confirmed against
+`src/styles/tokens.css:58-60` (`--ac-font-sans: "Inter Variable"...`) and
+`src/layouts/BaseLayout.astro:11-13,57-77` (Newsreader, Inter, and IBM Plex Mono all imported
+and preloaded; no Instrument Sans import anywhere in the file).
+
+Resolution: B wins — the FINAL-v2 port swapped the sans face after item 3 was written, and the
+build is measured and working (`AGENTS.md` §6's own rationale for not reverting).
+Type: stale description → corrected doc.
+Changed: `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` item 3 — appended an "Amended 2026-08-11"
+note with the corrected stack, exact `BaseLayout.astro:57-77` citation, and an explicit
+do-not-revert instruction.
+Not changed: the original "Observed / Risk / Resolution" prose above the amendment — left
+intact as the historical record of the original finding.
+
+### 6. Amended doc 10 item 7 and `docs/11-COMPOSITION-AND-TYPE.md` §5 — homepage section count
+
+A: `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` item 7 — "consolidate into eight movements."
+A2: `docs/11-COMPOSITION-AND-TYPE.md` §5 (old) — a binding eight-movement-plus-two-detail-band
+composition map (10 rows total counting FAQ/Footer).
+B: `docs/REPO-STATE.md` §5 — `src/pages/index.astro` renders exactly 14 top-level sections in a
+verified order (Hero, CredentialBar, ServiceCards, ConfidenceAndFit, WhyAseptaclean, AccentBand,
+HandoffStandard, HandoffRecord, Pricing, AreasWeServe, OperatorAccountability, FAQ, RequestForm,
+FinalCTA), confirmed by reading `index.astro` lines 85-98 directly.
+
+Resolution: B wins on both — three binding section maps had come to coexist (doc 10 item 7, doc
+11 §5, and the code) and none of the three agreed with either of the others. Per the
+doc-precedence skill's standing rule, "the code is ahead of the documents... where a document
+describes reality incorrectly, correct the document." Neither doc 10 item 7 nor doc 11 §5 was
+prescribing a rule the code was violating — both were stale descriptions of an earlier,
+abandoned target.
+Type: stale description → corrected doc, both files.
+Changed: `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` item 7 (appended amendment note pointing to
+doc 11 §5 as the corrected map). `docs/11-COMPOSITION-AND-TYPE.md` §5 (replaced the binding
+table with the real fourteen-section list and component names, sourced verbatim from
+`docs/REPO-STATE.md` §5; kept the old eight-movement table below, relabeled "historical," since
+its container/rhythm/surface variation reasoning is still useful design principle even though
+it's no longer the binding per-section map).
+Not changed: §5.1 ("Inserted detail bands") — its internal "§5 row 7" cross-references still
+resolve correctly since the historical table is preserved in place, just relabeled.
+
+### 7. Struck `docs/07-ONE-PAGE-DIRECTIVE.md` §8 — Astro version freeze
+
+A: `docs/07-ONE-PAGE-DIRECTIVE.md` §8 (old) — "Freeze at the installed major [Astro 5]. Ship.
+Migrate on a branch after the first leads land."
+B: `package.json` — `"astro": "^7.1.6"`. Verified business fact: the migration already
+happened, two majors past the frozen version.
+
+Resolution: B wins — current installed-version fact outranks a stale prescriptive note (rank 1
+in the precedence chain, "current law, active insurance, verified business facts"). Leaving the
+freeze note live invited a future session to re-plan a migration that already shipped.
+Type: violated/obsolete rule → struck, not merely corrected, since the rule has no remaining
+purpose once the migration it was gating has already occurred.
+Changed: `docs/07-ONE-PAGE-DIRECTIVE.md` §8 — replaced the freeze instruction with a short
+struck-notice pointing here.
+Not changed: doc 07's other precedence-chain-eligible sections (§3 conflicts, §6 guarantees, §7
+forms, §11 QA) — out of scope, §8 was never in that eligible list per `AGENTS.md` §1 rank 11.
+
+### 8. "Site map" project doc — superseded notice
+
+The task asked for a superseded banner on the project doc described in `AGENTS.md` §5 (a
+`/services/*` + `/locations/*` architecture with biohazard, trauma-scene, decomposition,
+rodent-droppings, rodent-urine, and post-infestation routes, plus a `/projects/` case-study
+hub) and flagged as partly unlawful per `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §3 and §5.
+
+Searched the entire repository — every file in `docs/`, `docs/archive/`, and every `.html`
+file — for content matching that description. None exists on disk under any filename; the only
+matches are descriptive references to it in `AGENTS.md` §5 and `docs/22DOCDISPOSITION.md` §1
+and §4b, both of which already state it is superseded by `docs/19-SYSTEM-AND-SITEMAP.md`. Per
+the doc-precedence skill's explicit instruction ("If a document points you at a missing file,
+stop and report — do not infer what it would have said"), this was raised to the user rather
+than guessed at. User directed: treat `docs/22DOCDISPOSITION.md` §4b as the authoritative
+record rather than searching further or fabricating a target file.
+
+Resolution: no live file to banner exists. Reinforced the existing supersession notice instead.
+Type: stale/missing description → strengthened the existing corrected-doc record.
+Changed: `docs/22DOCDISPOSITION.md` — added a note to the §1 table row for "the `site map`
+project doc" recording that no matching file exists anywhere in the current tree, that this
+row plus `AGENTS.md` §5 and §4b function as its superseded notice, and that the prohibited
+routes (`/services/{service}/`, `/locations/{city}-ca/`, `/projects/`, biohazard/rodent routes)
+must never be built from it regardless.
+Not changed: no file was deleted or created, since none was found. If a source document for
+this surfaces later (e.g. supplied externally by the owner), add this same banner to it
+directly per `AGENTS.md` §5's original instruction.
+
+### 9. Banner added to `docs/13-REMEDIATION-PASS.md`
+
+A: `docs/13-REMEDIATION-PASS.md` §1 — implicitly presented as a still-checkable state
+("Status: Active. Run after the current build...") describing the build at commit `88ab2a6`.
+B: `docs/PHASE-4-AUDIT.md` item 2 — "The `--ac-` token system does not exist yet. `grep` for
+`--ac-` across `src/` returns zero results [at commit `88ab2a6`]... The standing rule ('Keep
+`--ac-`. Adopt canonical values.') describes a target state, not the current one." Also
+`docs/22DOCDISPOSITION.md` §1 — "Its §1 describes an approximation... that never built the
+`--ac-` architecture. D1–D11 are all resolved or superseded. Not a valid regression guard."
+
+Resolution: B wins — doc 13 describes a pre-token-system build state that cannot be used to
+regression-test the current, fully `--ac-`-prefixed system.
+Type: stale description presented as active → banner added rather than deleting the file, since
+its content remains a useful historical record per `docs/22DOCDISPOSITION.md`'s disposition
+plan (extract-or-delete, not yet executed).
+Changed: `docs/13-REMEDIATION-PASS.md` — added a blockquote banner at the top stating the file
+is historical-only, not a valid regression guard, and should not be run against the current
+build.
+Not changed: the body content (D1–D11 findings) — left intact as historical record.
+
+### 10. Regenerated `docs/TOKEN-MAP.md` and ran a real contrast checker
+
+A: `docs/TOKEN-MAP.md` (old) — documented a pre-v2 palette (`--ac-color-navy-900: #122840`,
+`--ac-color-steel-300` path `#a8b8c8` → `#59738d`, etc.) that does not match any value currently
+in `src/styles/tokens.css`.
+B: `src/styles/tokens.css` (as committed) — the actual current values (e.g.
+`--ac-color-navy-950: #0b1830`, `--ac-color-steel-300: #8494a8`).
+
+Resolution: B wins — regenerated the file's color, font, type-scale, measure, rhythm, and
+spacing tables directly from `tokens.css`, replacing every stale hex.
+
+Also ran a real WCAG 2.1 contrast computation (sRGB→linear relative luminance, not a visual
+estimate) against every text-token-on-surface-token pairing that renders as text or
+non-text-but-AA-relevant (borders) in `src/`, cross-referenced against actual consumption sites
+via `grep -rn` across `src/`. Findings:
+- `--ac-color-steel-300` (`#8494a8`) on white: 3.10:1 — fails AA-normal (4.5:1), passes
+  AA-large and the 3:1 non-text threshold. Not a live bug: verified via grep that `steel-300` is
+  used exclusively as a `border` color in `src/` (never as text), where the 3:1 non-text
+  threshold is the applicable one, which it clears on white (3.10:1) though not on warm-white
+  (2.90:1, noted as a low-severity follow-up).
+- `--ac-color-ink-400` (`#617087`) on white: 5.03:1 — passes AA-normal, consistent with the
+  token's own code comment (darkened from v2's literal `#8494a8`, which measured 3.09:1,
+  specifically to clear 4.5:1 for muted caption text). Verified via grep as the token actually
+  used for muted text throughout `src/` — correct application.
+- Steel-on-navy counterpart: already exists (`--ac-color-steel-on-navy: #9fb2ca`) and is already
+  the token used everywhere `src/` needs steel-toned text on a navy surface (verified via grep:
+  `about/index.astro`, `estate-cleanout-san-jose/index.astro`,
+  `property-cleanouts-for-managers/index.astro`, `private-residence-reset.astro`,
+  `ResidenceBaselineRecord.astro`). Measured 8.16:1 / 7.27:1 / 5.64:1 on navy-950/900/800
+  respectively — all pass AA-normal. No new token was needed; the system was already correctly
+  built, just previously undocumented.
+
+Type: stale description → regenerated doc, plus new audit content that did not exist before.
+Changed: `docs/TOKEN-MAP.md` — full rewrite: current token tables plus a new "Contrast audit"
+section with the full computed matrix and the two specifically-requested token findings.
+Not changed: no token values in `src/styles/tokens.css` were altered — this was a documentation
+pass. The one sub-3:1 border case (`steel-300` on warm-white, 2.90:1) is flagged in the new doc
+for a future code-touching session, not fixed here, since AA's 3:1 non-text rule applies to
+graphical objects required to understand content and a decorative hairline border does not
+clearly meet that bar — a judgment call left to whoever next touches `tokens.css`, not decided
+unilaterally in a documentation-only pass.
+
+### 11. Regenerated `docs/06-ASSET-MANIFEST.md`
+
+Found already substantially regenerated in the working tree (uncommitted; the file's own header
+already read "Regenerated 2026-08-11" and correctly listed Instrument Sans as retired and Inter
+Variable / IBM Plex Mono as live). Verified the rest of the file against ground truth and found
+one remaining stale section:
+
+A: `docs/06-ASSET-MANIFEST.md` §2 (as found) — listed Fraunces, Montserrat, Open Sans, and
+Source Serif 4 as "Unused" font packages, implying they were still installed dependencies.
+B: `package.json` `dependencies` (as committed) — only three font packages present
+(`@fontsource-variable/inter`, `@fontsource-variable/newsreader`, `@fontsource/ibm-plex-mono`).
+Confirmed via `node_modules/@fontsource-variable/` listing (only `inter` and `newsreader`
+present) that the other packages are fully removed, not merely unused. Also verified the old
+manifest text's claim about `dev-type-compare-fonts.css` and `/dev/type-compare/` pulling those
+fonts into `dist/_astro/` is now stale — both that stylesheet and that page are deleted in the
+working tree (`git status`: `D src/styles/dev-type-compare-fonts.css`,
+`D src/pages/dev/type-compare.astro`).
+
+Resolution: B wins — corrected §2 to state the five retired families are removed from
+`package.json` entirely (not merely unused), removed the now-false claim about `dist/_astro/`
+leakage through deleted dev routes, and clarified the Montserrat/Open Sans exception is served
+from the Google Fonts CDN on `/sms-notification-consent/`, unrelated to the removed local
+packages.
+Type: stale description → corrected doc.
+Changed: `docs/06-ASSET-MANIFEST.md` §2.
+Confirmed unchanged (already correct): §1 brand-asset inventory — cross-checked file sizes
+(86,930 B / 64,857 B / 104,103 B) against `public/assets/brand/` directly, exact match. §4
+image-slot inventory — matches `docs/REPO-STATE.md` §9 ("no photographic assets anywhere,"
+three-PNG total inventory).
+
+---
+
+**Summary of files changed in this pass:** `docs/AGENTS-PRECEDENCE-BLOCK.md` (deleted),
+`docs/01-QUALITY-GUARDRAILS.md`, `docs/90-FUTURE-PHASE-BIOHAZARD-STRATEGY.md`,
+`docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md`, `docs/05-DECISIONS-LOG.md` (this file),
+`docs/archive/PHASE-4-COMPOSITION-AND-TYPE.md`, `docs/archive/PHASE-4-SESSION-PROMPTS.md`,
+`docs/archive/PHASE-4-ONE-PAGE-DIRECTIVE.md`, `docs/19-SYSTEM-AND-SITEMAP.md`,
+`docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md`, `docs/11-COMPOSITION-AND-TYPE.md`,
+`docs/07-ONE-PAGE-DIRECTIVE.md`, `docs/22DOCDISPOSITION.md`, `docs/13-REMEDIATION-PASS.md`,
+`docs/TOKEN-MAP.md`, `docs/06-ASSET-MANIFEST.md`. No file under `src/`, `functions/`, or any
+config file was read for the purpose of changing it — only for verification (grep, diff against
+`package.json`, file-size checks) that documentation claims matched reality.
+
+**Not done, and why:** item 8's target file could not be located and was not fabricated (see
+above — user directed treating doc 22 as the record instead). The `steel-300`-on-warm-white
+border contrast finding (2.90:1, below the 3:1 non-text threshold) was documented but not
+fixed, since this was a documentation-only pass and the fix requires a judgment call about
+whether a decorative border counts as an "essential graphical object" under WCAG — left to a
+future session with the authority to touch `tokens.css`.

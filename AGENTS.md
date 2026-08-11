@@ -1,201 +1,256 @@
-# Aseptaclean Astro Launch — Codex Instructions
+# AGENTS.md — Aseptaclean repository operating rules
 
-## Mission
-Build the first production launch of the Aseptaclean Astro website around one flagship offer: **Aseptaclean Handoff Reset**.
+**Version:** 2026-08-11. Replaces `docs/AGENTS-PRECEDENCE-BLOCK.md` in full.
+**Why this file exists:** an alignment audit on 2026-08-11 found five competing precedence
+chains in `docs/`, three of them pointing at files that do not exist, and a standing rule that
+forbade the only working lead endpoint in the repository. This file is the single operative
+chain. If any other document disagrees with this one, this one wins and the conflict goes in
+`docs/05-DECISIONS-LOG.md`.
 
-The website has two equal goals:
-1. Explain the offer clearly enough that the right visitor understands it and self-qualifies quickly.
-2. Generate qualified inquiries from authorized property decision-makers with meaningful clearing, cleaning, deadline, and handoff needs.
+---
 
-Do not optimize for maximum form volume. Optimize for qualified conversations, issued scopes, deposits, revenue, and gross profit.
+## 0. Read this before touching anything
 
-## Required reading order
-Before doing any work:
-1. Read this file.
-2. Read `docs/00-MASTER-BRIEF.md`.
-3. For homepage work, read `docs/06-APPROVED-HOMEPAGE-COPY.md`.
-4. Read only the task-relevant portions of `docs/01-QUALITY-GUARDRAILS.md`.
-5. Read `docs/02-OWNER-INPUTS.md`.
-6. Read the active phase in `docs/03-BUILD-PLAN.md`.
-7. Check `docs/05-DECISIONS-LOG.md` for approved changes.
+Three rules have caused, or nearly caused, production damage. They are absolute.
 
-Do not read or import older Aseptaclean website systems unless the owner explicitly asks. The current one-page Astro brief supersedes older WordPress and multi-page build directions for this launch.
+### 0.1 The lead endpoint
 
-## Document authority
+**`functions/api/lead.ts` is the only lead endpoint. It is correct. Do not touch it.**
 
-This repository contains multiple overlapping specification documents written at different
-times. When they conflict, resolve upward through this chain. Do not silently merge
-contradictory instructions.
+- Do **not** create `src/pages/api/lead.ts`. It has never existed.
+- Do **not** install `@astrojs/cloudflare`. The adapter emits `_worker.js`, which causes
+  Cloudflare Pages to ignore `functions/` entirely and silently kills lead delivery.
+- The public URL contract is `/api/lead`. That is preserved by Pages routing, not by Astro.
+- Deploy target is **Cloudflare Pages**. `output: "static"` plus a `functions/` directory.
 
-1. Current law, active insurance, verified business facts, explicit owner decisions
-2. `docs/01-QUALITY-GUARDRAILS.md`
-3. `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` — the Phase 4 canonical master specification
-4. `docs/18-VISUAL-DIRECTION.md` — owner-directed visual direction (contractor-professional);
-   controls imagery, cards, colour/accent, and the binding homepage section map
-5. `docs/19-SYSTEM-AND-SITEMAP.md` — owner-directed growth-architecture authority (v3,
-   2026-08-08); controls the site's phased sitemap, per-page SEO specs, wireframes, and the
-   CAPTURE→RESPOND→CONVERT→DELIVER→COMPOUND system. Below `01` (claims) and `18` (visual) —
-   where it names copy, `01` still outranks it. Supersedes `07-ONE-PAGE-DIRECTIVE.md`'s
-   one-page scope restriction; see that file's status line and the Scope section below.
-6. `docs/06-APPROVED-HOMEPAGE-COPY.md` — controls all homepage wording
-7. `docs/07-ONE-PAGE-DIRECTIVE.md` — superseded for scope by `docs/19-SYSTEM-AND-SITEMAP.md`
-   (see above); retained for reference on conflict-resolution decisions and launch-phase QA
-8. `docs/11-COMPOSITION-AND-TYPE.md` — controls type scale, measure, rhythm, composition
-   (superseded in part by `docs/18-VISUAL-DIRECTION.md` — see that file's preamble)
-9. `docs/02-OWNER-INPUTS.md` — confirmed business facts and values
-10. `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` — Phase 2 only, not part of the launch build
+The previous version of this file said the opposite. If you find a document that still says
+"one endpoint: `src/pages/api/lead.ts`," it is wrong — flag it, do not act on it.
 
-Superseded for scope, kept for reference: `docs/00-MASTER-BRIEF.md`, `docs/03-BUILD-PLAN.md`.
-Archived: `docs/archive/` — never read from here.
+### 0.2 Claims
 
-Record every material conflict in `docs/05-DECISIONS-LOG.md`.
+`docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` governs every public-facing word on this site,
+including titles, meta descriptions, alt text, JSON-LD, form copy, and third-party profiles.
+It outranks every design, copy, and composition document. Read it before writing copy.
 
-Report conflicts before coding. Never silently choose between contradictory instructions.
+Historically this pointer went to `04-CLAIMS-GUARDRAILS.md`, which does not exist. Doc 21 is
+that file, written.
 
-## Scope
+### 0.3 Never invent
 
-**Superseded 2026-08-08.** The one-page-only restriction below described the launch build only.
-Site architecture is now governed by `docs/19-SYSTEM-AND-SITEMAP.md` Part 2's phased sitemap
-(Phase 1 launch routes, then Phase 3/3b/3c service, checklist, and city pages, then Phase 4
-assessment/question routes — see that doc for the full route list, gates, and per-page SEO
-specs). Do not build ahead of the phase gates doc 19 sets for each route. If a task appears to
-require a new route, confirm it against doc 19's phase map before creating it.
+No fabricated review, rating, testimonial, project count, case study, client logo, statistic,
+badge, before/after image, or credential. No AI-generated people, properties, documents, or
+crews. If a proof slot has no real asset, **the slot ships empty**. Empty beats fake, always.
 
-Original launch-build scope (historical, for the routes actually shipped in Phase 1):
+---
 
-The launch build is a one-page site. Routes:
+## 1. Precedence chain
 
-    /  ·  /request-assessment/  ·  /thank-you/  ·  legal pages  ·  /api/lead
+Conflicts resolve **up** this list. Never silently merge contradictory instructions — record
+every material conflict in `docs/05-DECISIONS-LOG.md`.
 
-Do not create service pages, location pages, audience pages, or a `/private-residence-reset/`
-route during the launch build. If a task appears to require a new route, stop and ask.
+| # | Authority | Governs |
+| --- | --- | --- |
+| 1 | Current law, active insurance, verified business facts, explicit owner decisions | Everything |
+| 2 | `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` | Every public word, claim, and regulated-service boundary |
+| 3 | `docs/01-QUALITY-GUARDRAILS.md` | Execution quality, anti-generic, evidence standards |
+| 4 | `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` | Phase 4 canonical spec — architecture, acceptance |
+| 5 | `docs/18-VISUAL-DIRECTION.md` | Visual system, section map, imagery, accent discipline |
+| 6 | `docs/19-SYSTEM-AND-SITEMAP.md` | Route architecture, phased sitemap, growth |
+| 7 | `docs/aseptaclean-FINAL-v2.html` | `/` only — markup, tokens, structure, copy |
+| 8 | `docs/06-APPROVED-HOMEPAGE-COPY.md` | Copy for every route **except** `/` |
+| 9 | `docs/11-COMPOSITION-AND-TYPE.md` | Type scale, measure, rhythm (where 18 has not struck it) |
+| 10 | `docs/02-OWNER-INPUTS.md` | Business facts, where not contradicted by the decisions log |
+| 11 | `docs/07-ONE-PAGE-DIRECTIVE.md` | §3 conflicts, §6 guarantees, §7 forms, §11 QA only |
+| 12 | `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` | `/private-residence-reset/` only |
 
-## Standing rules
+**Rank 10 note.** `07` §10 says "if they disagree, `02-OWNER-INPUTS.md` wins." That is
+**revoked**. `02` is demonstrably stale on the primary CTA, the city list, and the county
+label. The decisions log (rank 1) wins. `02` is being corrected — until it is, treat any
+`02` value contradicted by a dated log entry as void.
 
-- **Verify before creating.** This repo already has a decisions log, an asset manifest, and a
-  release checklist. Append to them. Never create a parallel file with a similar name.
-- **One endpoint.** `src/pages/api/lead.ts`. Do not maintain a competing implementation in
-  `functions/`.
-- **One token file.** `--ac-` prefix. No component declares a font-size on a heading tag.
-- **Never invent proof.** No reviews, project counts, years in business, certifications, partner
-  logos, ratings, or before-and-after imagery presented as client work. Where proof is missing,
-  emit a visible placeholder and report it. Placeholders must be zero on production builds.
-- **Never hardcode business facts.** Phone, email, hours, service area, prices, and insurance
-  wording come from the config module only.
-- **Astro version is frozen** at the installed major for the launch build. Do not upgrade.
-- **Do not report work as complete because the build compiles.** Completion requires rendered
-  evidence: screenshots at 390 and 1440, and the named audit for that session.
+**Rank 7 note.** The FINAL-v2 override applies to `/` and covers markup, CSS custom property
+values, section structure, **and copy**. It does **not** override ranks 2, 3, or 4. Where v2
+conflicts with a claims rule, the claims rule wins and v2 gets edited.
 
-## Prohibited claims
+### Reference only — do not build from
+`00-MASTER-BRIEF.md` · `03-BUILD-PLAN.md` · `12-SESSION-PROMPTS.md` (predates doc 18) ·
+`13-REMEDIATION-PASS.md` (describes a build state that no longer exists) ·
+`14-RESEARCH-FINDINGS.md` · `15-UX-DESIGN-RESEARCH-FINDINGS.md`
 
-Never state or imply that Aseptaclean is a licensed contractor, performs remediation, biohazard,
-mold, sewage, asbestos, lead, or pest work, determines habitability or safety, appraises
-property, or holds a credential that is not currently active and verifiable. `docs/01-QUALITY-
-GUARDRAILS.md` governs and is run against every sentence before any page ships.
+### Orphaned — never read for values
+`17-REFERENCE-TRANSLATION-MARTEL.md` — depends on four files that do not exist and names
+eight tokens and five components that do not exist. Read for reasoning only.
 
-## Working method
-- Plan before coding.
-- Work one phase or clearly bounded task at a time.
-- For any material UI task, first provide: page thesis, mobile order, desktop composition, component map, signature moment, interaction inventory, claims risks, and likely responsive failures.
-- Do not build the entire site in one uncontrolled pass.
-- After every phase, run the phase checks and update the decision log only with owner-approved decisions.
-- Preserve confirmed work. Do not rewrite unrelated files.
+### Non-governing
+`90-FUTURE-PHASE-BIOHAZARD-STRATEGY.md` — inert until all four gates clear and the owner
+issues an explicit supersession note. `site map` — superseded architecture, see §5.
 
-## Stack
-- Astro
-- TypeScript
-- Static output unless form architecture requires otherwise
-- Plain CSS with custom properties
-- Minimal vanilla JavaScript / Astro islands only when necessary
-- No Tailwind, React, Vue, Svelte, UI kit, CMS, or animation library without explicit owner approval
+### Files that do not exist — stop if a document points you at one
+`02-BUILD-SPEC.md` · `03-VOICE.md` · `04-CLAIMS-GUARDRAILS.md` · `05-OPERATIONS.md` ·
+`01-STRATEGY.md` · `B01-home.md` · `07-PRIVATE-RESIDENCE-RESET-STRATEGY.md` ·
+`09-PREMIUM-VISUAL-AND-TYPOGRAPHY-SPEC.md` (archived)
 
-## Current routes
-Doc 19 Phase 1 routes, live:
-- `/`
-- `/request-assessment/`
-- `/thank-you/`
-- `/about/`
-- `/contact/`
-- `/handoff-standard/`
-- `/404`
-- `/privacy/`
-- `/terms/`
+---
 
-Do not build Phase 3+ routes (service pages, city pages, checklist, question posts) ahead of
-their doc 19 gates.
+## 2. Current route architecture
 
-## Non-negotiable business rules
-- One flagship offer dominates: **Aseptaclean Handoff Reset**.
-- One primary CTA label: **Get My 24-Hour Handoff Plan**.
-- Public projects generally begin at **$1,500**.
-- On-site assessment is **$195**, credited toward an approved project booked within 7 days.
-- Response commitment is **within one business day**.
-- No equal-weight service menu.
-- No routine-housekeeping positioning.
-- No fabricated reviews, case studies, clients, results, project images, crew, fleet, credentials, or regulatory status.
-- No public TSWMP or regulated biohazard claim unless written approval is verified and the owner updates the authority files.
-- No contractor, restoration, remediation, hazardous-material, pest-control, legal, appraisal, or habitability implication.
+The site is **no longer one-page**. `19-SYSTEM-AND-SITEMAP.md` Part 2 supersedes `07` §2.
 
-## Design standard
-The result must feel like a strategically authored $20K-caliber site, not an AI landing-page template.
+**Live and indexable**
+```
+/                          homepage (FINAL-v2)
+/request-assessment/       progressive form — a real canonical route, never redirect it
+/private-residence-reset/  campaign page, out of nav, one low-emphasis crawlable link
+/thank-you/                noindex
+/privacy/  /terms/  /cookie-policy/        Termly-controlled
+/data-request/             live compliance surface — must resolve before DNS cutover
+/sms-notification-consent/ byte-preserved, under Twilio 10DLC carrier review — DO NOT EDIT
+/api/lead                  Cloudflare Pages Function
+```
 
-Required:
-- content-shaped composition
-- deliberate mobile art direction
-- custom Handoff Record / scope-document artifact
-- founder accountability
-- complete interaction states
-- purposeful section rhythm
-- restrained editorial visual system
-- evidence-based release review
+**Built, `noindex`, excluded from `sitemap.xml.ts`, unlinked from nav and footer**
+```
+/estate-cleanout-san-jose/          /hoarding-cleanup-san-jose/
+/animal-waste-cleanup-san-jose/     /senior-downsizing-san-jose/
+/deep-cleaning-san-jose/            /property-cleanouts-for-managers/
+/service-areas/  (cityPages = [])   /estate-cleanout-checklist/
+/contact/
+```
+Each stays noindex until its own gate clears. Do not bulk-flip.
 
-Prohibited defaults:
-- generic SaaS split hero
-- gradient orbs, glassmorphism, Bento grids, floating dashboards
-- endless rounded cards
-- repeated icon-heading-paragraph modules
-- mechanical dark/light alternation
-- fade-up animation on every section
-- stock cleaning crews, AI-generated people, fake properties, fake before/after proof
-- fake testimonials, star ratings, counters, logo walls, or trust theater
+**Do not build, in any form — no route, draft, stub, sitemap entry, or nav link**
+```
+/biohazard-cleanup*/  /blood-cleanup/  /unattended-death-cleanup/
+/crime-scene-cleanup/ /human-waste-cleanup/  /sharps-cleanup/
+/encampment-cleanup/  /vehicle-biohazard-cleanup/
+garage-cleanout · basement-cleanout · furniture-removal · mattress-disposal
+any reviews page, until reviews exist
+any /services/* or /locations/* route (that is the superseded `site map` architecture)
+```
+`19` §2.1 Phase 3b's single-gate `/biohazard-cleanup-san-jose/` line is **void** — Phase 5's
+four-gate rule governs. If you find that Phase 3b line, delete it.
 
-## Mobile and accessibility
-- Mobile is designed independently, not merely stacked.
-- No horizontal overflow at 320px.
-- Primary controls target 48px.
-- Visible keyboard focus.
-- Logical landmarks and heading order.
-- Forms preserve input after errors.
-- Site content remains usable with JavaScript disabled; enhancements may require JavaScript only where explicitly allowed.
-- Respect reduced motion.
+**City pages** nest under `/service-areas/{city}/` and require ≥1 completed job in that city
+plus original content that could only be about that city. No verified content → no page.
 
-## Production facts
-Never guess missing public facts. Use `docs/02-OWNER-INPUTS.md` and environment variables.
+---
 
-Production must fail when required public values are missing, especially:
-- phone
-- form endpoint
-- legal/contact values required by the page
+## 3. Business facts — single source of truth
 
-Conditional claims must disappear cleanly when unsupported.
+Everything below lives in `src/data/site.ts`. Never hardcode any of it in a component.
 
-## Definition of done
-A phase is not complete because it compiles.
+```
+brand            Aseptaclean
+legal            Aseptaclean, LLC
+founder          Matthew Ruiz — Founder & Principal Operator
+phone            (408) 785-7588   tel:+14087857588   sms:+14087857588
+email            info@aseptaclean.com        (inbox test still required)
+hours            Mon–Sat 7:00 AM – 7:00 PM PT, closed Sunday
+address          service-area business — no published street address, ever
+region           South Bay & Peninsula        (NOT "Santa Clara County" — Atherton is San Mateo)
+insurance        Insured. Certificate of Insurance available upon request.
+endorsement      Organic Pathogen Endorsed    (cleaning language only — see doc 21)
+primary CTA      Request an assessment
+secondary CTA    Text a photo
+assessment fee   $195, credited toward an approved project booked within 7 days
+starting price   NOT PUBLISHED — see §4
+response         within one business day
+TSWMP            pending / unverified — never published in any form
+```
 
-Required evidence as applicable:
-- screenshots at specified widths
-- 320px overflow check
-- keyboard test
-- JavaScript-disabled test
-- form error/loading/success evidence
-- Lighthouse mobile results
-- accessibility results
-- schema validation
-- sitemap/robots verification
-- environment validation
-- asset manifest
-- claims audit
-- anti-AI audit
-- honest quality score
+**Suppression rules — all six are absolute.** Unverified insurance wording → suppress the
+insurance statement. Inactive social account → omit it. Never render an empty phone link.
+Never show a success state against a non-working endpoint. Never expose a placeholder in a
+production build. Never infer a physical office from service-area coverage.
 
-Release requires at least **90/100** and zero noncompensable failures from the master brief.
+---
+
+## 4. Pricing — owner decision, 2026-08-11
+
+**No price figure is published anywhere on the site.** Owner rationale: with zero reviews and
+zero completed-project proof, a published floor invites price shoppers and undercuts the
+positioning. This closes `07` §5.
+
+Implementation:
+- Remove `PUBLIC_STARTING_PRICE` from every rendered surface. Keep the env var and the
+  build-time validation only if the value is genuinely consumed; if nothing renders it,
+  delete the variable and its gate rather than leaving a dead check.
+- **Keep the cost drivers.** Silence is weaker than "here is what moves the number." The
+  pricing section states what determines price — property size and access, volume of approved
+  contents, sorting and review required, cleaning condition, disposal requirements, labor and
+  schedule, concealed conditions — and then routes to the assessment.
+- The **$195 on-site assessment fee stays published.** It is a real, fixed, defensible number
+  and it is the only figure on the site.
+- `/private-residence-reset/`'s `$2,000` anchor is removed under the same rule.
+- Revisit once there are ≥5 completed projects with photographs and ≥5 Google reviews.
+
+---
+
+## 5. `site map` — superseded, do not build from
+
+The project doc named `site map` describes a `/services/*` + `/locations/*` architecture with
+biohazard, trauma-scene, decomposition, rodent-droppings, rodent-urine, and post-infestation
+routes, plus a `/projects/` hub with named case studies. **All of it is superseded and parts
+of it are unlawful to publish.**
+
+- Biohazard/trauma routes violate the Phase 5 four-gate rule and the owner's TSWMP deferral.
+- Rodent- and infestation-named service routes carry real Structural Pest Control Board
+  exposure — see doc 21 §3.
+- The `/projects/` case studies do not exist. Zero completed jobs are documented.
+
+`19-SYSTEM-AND-SITEMAP.md` is the architecture authority. Give `site map` a superseded banner
+or remove it from the working set.
+
+---
+
+## 6. Typography — amended 2026-08-11
+
+`10` item 3 mandates "Newsreader Variable + Instrument Sans Variable." **That mandate is
+amended.** The shipping stack is:
+
+```
+--serif   Newsreader Variable      (display, H1–H3)
+--sans    Inter Variable           (body, UI)
+--mono    IBM Plex Mono            (artifact field labels, status metadata only)
+```
+
+Rationale: the FINAL-v2 port swapped the sans face and the build is measured and working.
+Reverting re-opens font loading, LCP, and every H1:body ratio measurement on a near-done
+site for no user-visible benefit. Instrument Sans is removed from `06-ASSET-MANIFEST.md`;
+Inter Variable and IBM Plex Mono are added, with source and license.
+
+All three are self-hosted WOFF2 via `@fontsource`. **Never a Google Fonts CDN request in
+production.** One exception, deliberate and fenced: `/sms-notification-consent/` is
+byte-preserved under carrier review and loads Montserrat/Open Sans from Google. Do not
+"fix" that page. Exclude it from any font grep gate.
+
+### The two typography laws that do not bend
+
+1. **No `font-size` declaration on any heading tag. Zero exceptions.** Not in a component
+   `<style>` block, not inline. Headings get size from their `.ac-type-*` role class.
+2. **H1:body ratio floor — ≥2.5:1 at 390px, ≥4:1 at 1440px.** Measured on computed styles,
+   not on token values. This is the fix for "the page looks flat"; it is not negotiable.
+
+---
+
+## 7. Standing prohibitions
+
+- No `licensed` in any credential chip, bar, schema, or answering-service script.
+- No `remediation`, `biohazard`, `decontamination`, `sanitization`, `sterilization` as a
+  service claim. See doc 21 for the exact permitted and forbidden constructions.
+- No `hoarder` as a noun. No `gross filth` anywhere.
+- No hantavirus or rodent-specific handling language until written crew protocol exists.
+- No stat bar — no job counts, years in business, or review counts.
+- No `free assessment` or `free consultation` — the on-site assessment is $195.
+- No retired mechanism names: `Assess → Define → Authorize → Clear → Document` is dead.
+  The sequence is `Scope → Protect → Clear → Reset → Verify`.
+- No retired guarantee names. The block is the **Handoff Assurance**.
+- No placeholder, `[OWNER INPUT: …]` string, or `REPLACE_WITH_*` value in a production build.
+
+---
+
+## 8. Before you close a session
+
+Append to `docs/05-DECISIONS-LOG.md`: what changed, what conflicted, what you did not do and
+why, and any rule in this file you had to work around. A conflict you resolved silently is a
+defect, even when the resolution was right.

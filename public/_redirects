@@ -7,10 +7,12 @@
 # build") — they are retired-by-plan, not retired-by-deletion. Listed explicitly for a clear
 # audit trail.
 #
-# docs/19-SYSTEM-AND-SITEMAP.md Phase 1 supersedes the four-route collapse for /about/: it is now
-# a real, live page (src/pages/about/index.astro). Removed from this retirement list — Cloudflare
-# Pages applies _redirects unconditionally before checking for a real asset, so leaving it here
-# 301-looped every visitor and internal link away from the real page.
+# docs/19-SYSTEM-AND-SITEMAP.md Phase 1 supersedes the four-route collapse for /about/,
+# /estate-cleanout-san-jose/, and /hoarding-cleanup-san-jose/: all three are now real, live pages.
+# Removed from this retirement list — Cloudflare Pages applies _redirects unconditionally before
+# checking for a real asset, so leaving any of them here 301-looped every visitor and internal
+# link away from the real page (confirmed live on the deployed preview, docs/20-ALIGNMENT-AUDIT
+# P0-2 / docs/04-RELEASE-CHECKLIST.md C6).
 #
 # No wildcard catch-all here: Cloudflare Pages applies _redirects rules unconditionally, before
 # checking whether a real asset exists at that path (confirmed via `wrangler pages dev`), so a
@@ -18,10 +20,8 @@
 # homepage included. Unmatched paths fall through to Cloudflare Pages' standard 404 instead.
 /project-standards/                     /  301
 /service-area/                          /  301
-/estate-cleanout-san-jose/              /  301
 /property-cleanout-san-jose/            /  301
 /vacant-home-cleaning-san-jose/         /  301
-/hoarding-cleanup-san-jose/             /  301
 /landlord-turnover-cleaning-san-jose/   /  301
 
 # --- GSC redirect sweep, 2026-08-09 (docs/19-SYSTEM-AND-SITEMAP.md redirect law) ---

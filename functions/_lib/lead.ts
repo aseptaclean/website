@@ -280,10 +280,11 @@ export function validateLead(formData: FormData): ValidationResult {
     .filter(Boolean);
 
   const offerType = data.offer_type;
-  // The long assessment questionnaire (AssessmentForm.astro) always sends form_version;
-  // the short homepage form (QuickHandoffForm.astro) never does. That distinction — not
-  // offer_type — is what determines which fields beyond the common set are mandatory, so
-  // the short form's request isn't rejected for the full questionnaire's fields.
+  // Form-identity contract: AssessmentForm.astro (the long questionnaire) always sends a
+  // form_version hidden field; QuickHandoffForm.astro (the short homepage form) never sends
+  // one. That presence/absence — not offer_type — is what determines which fields beyond the
+  // common set are mandatory, so the short form's request isn't rejected for the full
+  // questionnaire's fields. Do not add form_version to the short form without updating this.
   const isDetailedSubmission = Boolean(data.form_version);
   const requiredFields = isDetailedSubmission
     ? offerType === "private_residence_reset"

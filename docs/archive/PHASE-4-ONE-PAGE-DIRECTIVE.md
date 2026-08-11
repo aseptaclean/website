@@ -1,9 +1,13 @@
 # Phase 4 — One-Page Collapse Directive
 
-**Status:** Active. Supersedes the multi-page sprint plan.
+**Status:** Archived and superseded by `docs/07-ONE-PAGE-DIRECTIVE.md`. No longer binding.
 **Date:** July 30, 2026
-**Repo location:** `docs/PHASE-4-ONE-PAGE-DIRECTIVE.md`
-**Read with:** `PHASE-4-CANONICAL-MASTER-SPEC.md` (the canonical file), `04-CLAIMS-GUARDRAILS.md`
+**Repo location:** `docs/archive/PHASE-4-ONE-PAGE-DIRECTIVE.md` (corrected 2026-08-11 — this file
+moved to `docs/archive/` when it was superseded; the `docs/PHASE-4-ONE-PAGE-DIRECTIVE.md` path
+above is stale).
+**Read with:** `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` (the canonical file, resolved from the
+`PHASE-4-CANONICAL-MASTER-SPEC.md` placeholder below), `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md`
+(resolved from the `04-CLAIMS-GUARDRAILS.md` placeholder — that filename never existed).
 
 This file does one job: it tells you and the build agent **what the canonical Phase 4 spec
 changes about the existing repo**, and **what is now out of scope for launch.**

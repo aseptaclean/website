@@ -3,27 +3,6 @@ const env = import.meta.env;
 const value = (key: keyof ImportMetaEnv, fallback = "") =>
   env[key]?.trim() || fallback;
 
-const isProductionBuild = value("PUBLIC_DEPLOYMENT_ENV") === "production";
-
-// docs/07-ONE-PAGE-DIRECTIVE.md §10 marks the flagship starting price OWNER DECISION REQUIRED
-// (see §5 — the $1,500 problem). This placeholder must never resolve in a production build.
-const OWNER_DECISION_REQUIRED =
-  "[OWNER DECISION REQUIRED — see docs/07-ONE-PAGE-DIRECTIVE.md §5]";
-const rawStartingPrice = value("PUBLIC_STARTING_PRICE", OWNER_DECISION_REQUIRED);
-if (isProductionBuild && rawStartingPrice === OWNER_DECISION_REQUIRED) {
-  throw new Error(
-    "PUBLIC_STARTING_PRICE is unresolved. docs/07-ONE-PAGE-DIRECTIVE.md §5 requires an owner " +
-      "decision (raise the floor, publish a band, or label $1,500 as a Handoff Finish entry " +
-      "point) before this value may reach a production build."
-  );
-}
-// Non-production builds/previews (e.g. bare `astro dev`) load no PUBLIC_STARTING_PRICE, so
-// rawStartingPrice falls back to the placeholder string above and Number(...) of it is NaN.
-// Resolve to a real number when possible; otherwise null so the UI renders a text fallback
-// instead of formatting NaN as currency ("$NaN").
-const parsedStartingPrice = Number(rawStartingPrice);
-const startingPrice = Number.isFinite(parsedStartingPrice) ? parsedStartingPrice : null;
-
 const rawPhone = value("PUBLIC_PHONE");
 const phoneUri = rawPhone ? `tel:${rawPhone.replace(/[^\d+]/g, "")}` : "";
 const smsUri = rawPhone ? `sms:${rawPhone.replace(/[^\d+]/g, "")}` : "";
@@ -89,7 +68,6 @@ export const site = {
     ),
     assessmentFee: Number(value("PUBLIC_ASSESSMENT_FEE", "195")),
     assessmentFeeTerms: "Credited toward an approved project booked within 7 days.",
-    startingPrice,
     // docs/aseptaclean-FINAL-v2.html — every CTA reads "Request an assessment" and anchors to
     // #request (05-DECISIONS-LOG.md supersedes docs/06-APPROVED-HOMEPAGE-COPY.md §8.4 for `/`).
     primaryCta: "Request an assessment"
@@ -100,9 +78,6 @@ export const site = {
   residenceOffer: {
     name: "Private Residence Reset",
     category: "Structured whole-home deep reset",
-    startingPrice: Number(
-      value("PUBLIC_RESIDENCE_STARTING_PRICE", "2000")
-    ),
     primaryCta: "Request a Private Residence Assessment",
     assessmentUrl:
       "/request-assessment/?offer=private-residence-reset"
@@ -195,7 +170,11 @@ export const legal = {
   scopeDisclaimer:
     "Aseptaclean performs property clearing and approved cleaning within its current lawful and insured scope. Aseptaclean is not a licensed general contractor, remediation contractor, pest-control operator, appraiser, or provider of medical or legal services.",
   documentationDisclaimer:
-    "Project records document the work performed. They are not regulatory clearance, inspection approval, environmental certification, or a determination that a property is safe or habitable."
+    "Project records document the work performed. They are not regulatory clearance, inspection approval, environmental certification, or a determination that a property is safe or habitable.",
+  // docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §2.4 — verbatim, mandatory wherever the founder's
+  // background appears.
+  founderAuthorityLimit:
+    "This background reflects controlled-process discipline. It does not grant contractor, remediation, medical, environmental, or regulatory authority."
 } as const;
 
 export const homepage = {
@@ -351,7 +330,7 @@ export const homepage = {
     {
       title: "Animal & organic condition cleaning",
       detail:
-        "Heavy organic conditions and animal waste, cleaned under our organic pathogen endorsement. Cleaning only — not a decontamination or health-safety determination.",
+        "Heavy organic conditions and animal waste, cleaned under our organic pathogen endorsement. Cleaning only — not a decontamination, sterilization, or health-safety determination.",
       imageLabel: "Completed job photo",
       imageStatus: "owned"
     }
@@ -473,64 +452,6 @@ export const homepage = {
       title: "Walk back into a property that can move forward",
       detail:
         "After completion, receive photographs, noted exceptions, and the Property Handoff Record."
-    }
-  ],
-  faq: [
-    {
-      question: "Can I approve the project remotely?",
-      answer:
-        "Yes, when access and decision authority are clear. Scope review, approvals, updates, and closeout can be handled electronically."
-    },
-    {
-      question: "How do you know what should stay?",
-      answer:
-        "The written scope identifies keep, remove, and review areas. Uncertain items are not automatically discarded."
-    },
-    {
-      question: "What happens if you find important documents or valuables?",
-      answer:
-        "Discovered keys, documents, photographs, cash, jewelry, and similar items are isolated and reported. Aseptaclean does not guarantee that every concealed item will be found."
-    },
-    {
-      question: "Can you coordinate a dumpster?",
-      answer:
-        "Approved disposal or dumpster coordination may be included when appropriate for the project and current legal operating scope."
-    },
-    {
-      question: "Can you clean after the property has already been emptied?",
-      answer:
-        "Yes. Some already-cleared properties may qualify for a detailed Handoff Finish scope after review."
-    },
-    {
-      question: "What can change the price?",
-      answer:
-        "Customer-requested changes, concealed or undisclosed conditions, disposal changes, access limitations, or prohibited materials may require a written scope change."
-    },
-    {
-      question: "What happens if a hazardous condition is discovered?",
-      answer:
-        "Work in the affected area stops. The condition is documented and the customer is notified before any next step is taken."
-    },
-    {
-      question: "How quickly can the project begin?",
-      answer:
-        "Availability depends on scope, access, labor, disposal requirements, and existing commitments. A start date is reserved after scope approval and deposit."
-    },
-    {
-      question: "Can you work with my realtor, property manager, or family member?",
-      answer:
-        "Yes, provided one authorized decision-maker controls approvals and payment."
-    },
-    {
-      question: "Do I have to be present?",
-      answer:
-        "Not always. Remote projects can be managed when access, authority, communication, and scope are clear."
-    },
-    {
-      question:
-        "Do you handle properties with heavy accumulation or hoarding conditions?",
-      answer:
-        "Yes, within our current lawful and insured operating scope. Heavy accumulation and whole-house cleanouts go through the same written-scope process as every project: keep, remove, and review areas are identified before work begins, and nothing is discarded automatically. Some conditions remain outside our current scope: human blood, bodily fluids, or regulated medical waste; sewage cleanup or active mold remediation; asbestos, lead, unknown chemicals, or hazardous materials; structural repair, construction, or demolition; pest extermination or chemical treatment; and appraisal, estate-sale, legal, or habitability determinations. If we observe one of these conditions, work in the affected area stops and you are notified before the project moves forward."
     }
   ]
 } as const;

@@ -14,8 +14,6 @@ interface ImportMetaEnv {
   readonly PUBLIC_SERVICE_AREA?: string;
   readonly PUBLIC_RESPONSE_TIME?: string;
   readonly PUBLIC_ASSESSMENT_FEE?: string;
-  readonly PUBLIC_STARTING_PRICE?: string;
-  readonly PUBLIC_RESIDENCE_STARTING_PRICE?: string;
   readonly PUBLIC_FOUNDER_NAME?: string;
   readonly PUBLIC_INSURANCE_STATUS?: string;
   readonly PUBLIC_BUSINESS_HOURS?: string;

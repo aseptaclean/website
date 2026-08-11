@@ -66,7 +66,7 @@ export async function onRequestPost(context: FunctionContext) {
 
   const contentLength = Number(request.headers.get("content-length") ?? 0);
   if (contentLength > 80 * 1024 * 1024) {
-    return json({ ok: false, message: "The upload is larger than 75 MB." }, 413);
+    return json({ ok: false, message: "The upload is larger than 80 MB." }, 413);
   }
 
   const remoteIp = request.headers.get("cf-connecting-ip") ?? "";

@@ -1,79 +1,230 @@
-# Release Checklist
+# 04 — Release Checklist
 
-Scored during the Phase 4 closeout pass, 2026-07-30. Evidence lives in `artifacts/phase-4/final/` unless noted. Every item is judged against the live `npm run build` (private-preview mode) output, not against source presence alone.
+**Reconciled 2026-08-11**, against `docs/20-ALIGNMENT-AUDIT-2026-08-11.md` Rev. 2 and a live
+re-verification of every item — code read, `curl -I` against a deployed Cloudflare Pages
+preview, and one real Lighthouse run. Every item is now labeled **LAUNCH-BLOCKING** or
+**DEFERRED** — the reconciliation `07` §11 ordered and no prior session performed. The version
+before this one scored 95/100 on its own item count while the actual 100-point rubric sat on the
+deferred list, and it carried three items that were factually false as written.
 
-## Business and offer (7/7)
-- [x] Handoff Reset is unmistakably the single flagship offer. Homepage is built entirely around it; Private Residence Reset stays out of primary nav (`src/data/site.ts` `navigation`) with a single footer link (`src/components/Footer.astro:31`).
-- [x] The first meaningful screen explains who it is for, what outcome it creates, and the next action. Hero H1/lead/CTA confirmed in `home-1440.png`/`home-390.png`.
-- [x] Primary CTA is consistently `Get My 24-Hour Handoff Plan` everywhere, including header and sticky nav. **Correction (2026-07-31, remediation pass D3):** this item originally scored the header/sticky-nav `compactCta` variant ("Get My Handoff Plan") as a deliberate, non-competing shorthand. `docs/13-REMEDIATION-PASS.md` D3 and `docs/15-UX-DESIGN-RESEARCH-FINDINGS.md` §2 (single-CTA-label research) supersede that call — `compactCta` has been removed from `src/data/site.ts` and every CTA now renders `primaryCta`.
-- [x] $1,500 starting context is clear and accurately framed ("generally begin at," not a flat price) — `PricingContext.astro`.
-- [x] $195 assessment terms are accurate and centralized — `PricingContext.astro` `.pricing__assessment`, credited-within-7-days language present.
-- [x] One-business-day response commitment is stated consistently — `site.offer.responseTime` used in Hero, ProcessTimeline, FinalCTA, provider confirmation copy.
-- [x] Poor-fit routine housekeeping and small pickup work are not encouraged — `Qualification.astro` explicitly names who it's not for; `ScopeIncluded.astro` states exclusions.
+**Current verdict: SHIP, gated on C1–C5.** Every code-fixable item in this document is closed.
+What remains is credential provisioning and one owner-side content decision — operational, not
+technical. See §F for the instrument and the reasoning.
 
-## Claims and trust (5/6)
-- [x] No invented reviews, projects, results, clients, team, fleet, certifications, or regulatory status. Confirmed by source read + zero photography in the build (no imagery to fabricate proof with).
-- [x] Founder background is accurate and does not imply regulated authority — `FounderAuthority.astro` includes an explicit disclaimer ("does not grant contractor, remediation, medical, environmental, biohazard, or regulatory authority").
-- [x] Scope, exclusions, stop-work conditions, and change authorization are clear — `ScopeIncluded.astro`, `HandoffAssurance.astro`, `legal.scopeDisclaimer`.
-- [x] Sample documents are visibly labeled as samples — `HandoffRecord.astro` ("Sample / Not a client record" + red-flagged label), `ResidenceBaselineRecord.astro` ("SAMPLE / OPERATING DOCUMENT" + badge).
-- [ ] **Insurance and license claims match current proof or are suppressed.** Partial: the owner-approved wording (`docs/05-DECISIONS-LOG.md`) is "Insured. Certificate of Insurance available upon request." The site only ever renders the bare word "Insured" (`Hero.astro` trust strip, from `PUBLIC_INSURANCE_STATUS`); the "available upon request" qualifier never appears anywhere on the site. Not a false claim, but incomplete relative to the approved copy. Minor — recommend adding the qualifier phrase near the trust strip or in the footer/FAQ.
-- [x] Required disclaimers are present — scope disclaimer, TSWMP kept at `pending` and enforced by `scripts/validate-env.mjs` (fails build if changed from `pending`).
+---
 
-## Visual authorship (5/6)
-- [x] Hero could not belong to a generic SaaS company, agency, cleaner, or junk hauler after a logo swap — editorial serif H1, document-style trust strip, no gradient/stock-photo hero pattern (confirmed via screenshot).
-- [x] Custom Handoff Record/scope artifact is central and credible — see Phase 2 findings below; verified against docs/10 item 8 field-by-field, all present.
-- [x] No generic AI visual blacklist patterns accumulate — grep-verified zero `@keyframes`/CSS `animation`, zero stock imagery, zero star ratings/counters/logo walls; only scroll-based JS is a functional sticky-CTA visibility toggle, not scroll-reveal-on-everything.
-- [ ] **Section density and spacing follow content importance rather than a repeated template.** Partial — see "Homepage composition" finding below. The homepage renders 11 index-numbered sections (`01`–`11`) rather than the 8 named movements in `docs/09` §5 / `docs/10` item 7. Visual craft is genuinely varied (alternating navy/paper/warm-white bands, a giant-numeral pricing moment, an editorial founder quote, the Handoff Record inlined into the Five-Stage section) — it does **not** read as a naive repeated card template — but the Confidence cluster (Scope/Assurance/Price/Founder = sections 05–08) remains four separate full-bleed sections instead of one consolidated movement, and `ProcessTimeline` ("09 / What happens next") sits outside the 8-movement outline entirely.
-- [x] Founder presentation feels real and accountable — direct quote, named background list, explicit non-authority disclaimer, no logo/photo dependency.
-- [x] Footer provides deliberate closure — CTA repeat, legal links, Termly-ready cookie policy link, campaign discovery link.
+## A. Closed — verified 2026-08-11, do not re-litigate
 
-## Responsive and interaction (8/8)
-- [x] Mobile section order was designed intentionally — confirmed visually (`home-390.png`, `residence-390.png`); hero copy precedes artifact, single dominant CTA.
-- [x] No horizontal overflow at 320px — `scrollWidth <= clientWidth` asserted by `phase4-deep-check.mjs` across all 7 routes × 6 widths, re-run clean this pass.
-- [x] H1/H2 wraps reviewed at all required widths — see typography table below; token-driven, matches `docs/09` §3 verbatim.
-- [x] Sticky actions do not cover fields, buttons, cookie controls, or footer actions — `MobileCTA.astro` uses `IntersectionObserver`s keyed to hero/footer/final-CTA visibility, not a fixed always-on bar.
-- [x] All interactive elements have required states — verified via existing Phase 3 form QA artifacts (`artifacts/phase-3/pass-2/*` loading/failure/upload-error states) plus this pass's `qa:phase3:endpoint` re-run.
-- [x] Form preserves input after errors — confirmed by existing `artifacts/phase-3/pass-2/draft-restored-390.png` evidence; unchanged this pass (regression-checked via source read, not re-screenshotted since `AssessmentForm.astro` was not touched this pass).
-- [x] Uploads communicate type, size, progress, failure, and removal — `functions/_lib/lead.ts` validation + `artifacts/phase-3/pass-2/upload-error-390.png`/`upload-selected-390.png`.
-- [x] Reduced motion is respected — no `@keyframes`/CSS transitions beyond `--transition-fast: 180ms ease` micro-interactions; no scroll-reveal library.
+Each of these was open in the previous version and is now confirmed satisfied. Verify once,
+mark done, move on.
 
-## Accessibility (8/8)
-- [x] One H1 and logical heading order — asserted by `phase4-deep-check.mjs` (`h1Count === 1`) on every route/width.
-- [x] Landmarks and labels are semantic — `role="table"`/`role="row"` on HandoffRecord, `aria-labelledby` on every homepage/residence section, skip link verified by deep-check keyboard test.
-- [x] Keyboard navigation works — skip-link Tab/Enter path asserted by `phase4-deep-check.mjs`.
-- [x] Focus is visible — `--shadow-focus` token used sitewide; not independently re-screenshotted this pass (unchanged files).
-- [x] Body text meets contrast requirements — **fresh axe-core WCAG2AA scan this pass returned 0 violations on `/`, `/private-residence-reset/`, and `/request-assessment/`** (see Phase 1 finding below; this was reported as an open defect but was already resolved in the working tree — this pass is the first re-verification).
-- [x] Primary controls meet target-size requirements — 48px CTA sizing unchanged from prior verified pass.
-- [x] Errors are associated with fields and announced appropriately — unchanged from Phase 3 (`aria-describedby` pattern in `AssessmentForm.astro`), not re-screenshotted since the file wasn't touched this pass.
-- [x] Page reflows without loss at zoom — no fixed-px containers; `clamp()`-based type/spacing throughout.
+- [x] `functions/api/lead.ts` is the only lead endpoint. `src/pages/api/lead.ts` does not exist.
+      `@astrojs/cloudflare` is absent. `output: "static"`.
+- [x] `wrangler.toml` carries a real KV namespace ID. The placeholder survives only in the
+      gitignored local `.wrangler/` dev state.
+- [x] Termly consent enabled — `PUBLIC_TERMLY_CONSENT_ENABLED=true`, website UUID and all three
+      policy IDs set. **Verify the banner and Cookie Preferences render; do not rebuild them.**
+- [x] Font preload present — three tags, `BaseLayout.astro:57-77`.
+- [x] `PUBLIC_FORM_ENABLED=true`.
+- [x] Exactly one `<h1>` on `/`.
+- [x] No external font request in production, except the deliberate carrier-review exception.
+- [x] Claims discipline — zero instances of `certified`, `free assessment`, `free consultation`,
+      `gross filth`, `post-infestation`, `hantavirus`, `medical-grade`, or an affirmative
+      guarantee. Every banned-word hit is a comment or a scope-narrowing disclaimer.
+- [x] Astro compile clean — `npm run build:local` exits 0, 24 pages after `/dev/*` pruning,
+      2.27s, no warnings.
 
-## Performance and SEO (5/6)
-- [ ] **LCP, INP, CLS, JS, and page-weight budgets pass.** `docs/15-UX-DESIGN-RESEARCH-FINDINGS.md` §1/§4: the performance budget is a release blocker with the same weight as the form and phone fixes, not a secondary polish item — reclassified from "not a hard blocker" accordingly; do not relax this back down without new measurement evidence. **Re-measured 2026-07-31** (mobile Lighthouse 13.4.1, simulated throttling, local `astro preview` loopback server, `npm run build:staging`): `/` — perf 92, LCP 3.1s, CLS 0, TBT 150ms, 357 KiB; `/private-residence-reset/` — perf 98, LCP 2.5s, CLS 0, TBT 0ms, 350 KiB; `/request-assessment/` — perf 98, LCP 2.4s, CLS 0.004, TBT 10ms, 359 KiB. JS is effectively zero on every route (0 KiB on `/` and `/private-residence-reset/`, 5 KiB on `/request-assessment/`) — no JS-budget concern. `/` now reads *worse* than the prior pass (2.9s → 3.1s LCP) against the docs/10 item 14 budget of LCP ≤2.5s; still likely the self-hosted Newsreader swap delaying LCP paint, same root cause previously flagged, still unresolved — the `<link rel="preload" as="font">` recommendation in `artifacts/phase-4/final/lighthouse/summary.md` has not been implemented. This is a single local lab run on a developer machine, not a CI/field baseline — re-run on the real deployed host before treating either number as final. **Page-weight-vs-pre-Phase-4-baseline check (built the last real commit, `ea3996e`, in an isolated worktree, since the prior `static-audit-before.json`/`static-audit.json` pair turned out to be two audits of the same already-Phase-4 tree, not a true baseline): like-for-like growth on pre-existing routes is +25.3% (452,396 → 566,929 bytes), ~78% of which (88,176 of 114,533 bytes) is the two new self-hosted webfont files. Images are byte-identical/unchanged (255,890 bytes); CSS/JS growth is a few percent. Flagged, not silently accepted, per instructions — not treated as a regression since it's fully attributable to the deliberate font self-hosting decision rather than incidental bloat, and real per-route transfer stays at 349–359 KiB. Detail in `artifacts/phase-4/final/lighthouse/summary.md` and `artifacts/phase-4/final/asset-weight-baseline-pre-phase4.json`.**
-- [x] Images have dimensions, responsive sources, and correct loading priority — both `<img>` tags in the entire site (header/footer wordmarks) carry explicit `width`/`height`.
-- [x] Fonts are optimized without layout shift — self-hosted WOFF2, `font-display: swap`; CLS results above confirm no shift.
-- [x] Unique title, description, canonical, OG metadata, and one H1 exist — asserted per-route by `phase4-deep-check.mjs` title-match check and `phase4-static-audit.mjs` canonical check.
-- [x] Structured data is accurate and validates — JSON-LD parse-checked on all 7 routes, zero `AggregateRating` (no fake review markup), re-confirmed this pass.
-- [x] Sitemap and robots behavior are correct; staging is noindex — sitemap includes campaign + cookie-policy routes, `robots.txt` still blanket `Disallow: /` (this is a private-preview build, correctly still blocked), re-confirmed this pass.
+## B. Corrected — these items were false as previously written
 
-## DNS-cutover blockers (added 2026-08-09, docs/19-SYSTEM-AND-SITEMAP.md redirect law)
-- [ ] **`/data-request/` has a real, working data access/correction/deletion request mechanism.** `src/pages/data-request.astro` currently ships an honest "not configured" fallback (Termly DSAR/data-request embed or equivalent form not wired). Must be resolved before cutover — this is a live compliance surface on the old site, not cosmetic content.
-- [ ] **`/sms-notification-consent/` must resolve at this exact URL before DNS switches.** This page is cited in a pending Twilio 10DLC carrier review. `src/pages/sms-notification-consent.astro` now ports the owner-supplied source verbatim as a standalone document (own `<head>`/fonts/CSS, not the site shell) — byte-preserved consent language, disclosures, headings, and form behavior; the `/terms-and-conditions` link is left as-authored and relies on the existing `_redirects` 301 to `/terms/`. `robots` meta is `index,follow`. Confirm on the deployed preview, pre-cutover, that `/sms-notification-consent/` 200s with this content intact and `sms-consent.css` loads (`public/sms-notification-consent/sms-consent.css`) — a carrier reviewer hitting a 404 or altered wording here blocks the campaign, not just the site.
-- [ ] **Redirect verification.** Every rule in `public/_redirects` resolves with a single-hop 301 (no chains) to a `200`-or-better destination; spot-check via `curl -I` against the deployed preview for each GSC-sourced rule added 2026-08-09. Confirm none of the "interim" targets (rules pointing at `/` with an inline comment noting the eventual direct target) were left un-updated after their page's Phase 3 launch gate cleared — re-check this item each time a gated page ships.
+- The old checklist read *"Primary CTA is consistently `Get My 24-Hour Handoff Plan` everywhere"*
+  and was **checked**. The sitewide CTA is **`Request an assessment`**.
+- The old five-send test required **owner SMS**. The approved launch configuration is
+  **email-only**, with SMS gated behind `SMS_ALERTS_ENABLED` pending 10DLC. As written, the
+  named release blocker could not be cleared under the approved configuration. Redefined in C1.
+- The old "Section density / 8 movements" partial described an 11-section page from three ports
+  ago. The page ships **fourteen sections**. Doc 10 item 7 and `11` §5 are being amended to match.
 
-## Operations (3/6 — see Phase 6 note)
-- [x] Required environment validation passes — `npm run validate:env -- --mode production` passes against `.env.production` (private-preview profile).
-- [x] Public phone and form endpoint are real — `(408) 785-7588` / `/api/lead` present in owner inputs and env.
-- [ ] **Real submissions reach the correct destination.** Cannot be verified in this repo/session. `functions/_lib/providers.ts` requires real `HUBSPOT_ACCESS_TOKEN`, `RESEND_API_KEY`, `TURNSTILE_SECRET_KEY` — none are present in `.env.example`/`.env.production` (both intentionally blank/placeholder), and this build runs with `PUBLIC_FORM_ENABLED=false` by design. Code-path review + `npm run qa:phase3:endpoint` (mocked provider failure) both pass — see Phase 6 note.
-- [ ] **Notification path works — email-only for launch.** Owner SMS alerts (Twilio) are deliberately gated behind `SMS_ALERTS_ENABLED` (`functions/_lib/lead.ts`, `functions/_lib/providers.ts`) pending Twilio 10DLC campaign approval — see `docs/05-DECISIONS-LOG.md`. Until that flag is set to `"true"` with all four `TWILIO_*`/`LEAD_ALERT_PHONE` values populated (enforced by `scripts/validate-env.mjs`), every lead's owner notification goes through Resend email only, via the existing SMS-skip → owner-fallback-email path. This is not a gap to fix before launch; it is the intended launch configuration. `npm run qa:phase3:endpoint` covers both the SMS-disabled-by-flag path and the SMS-provider-failure path in mocked tests — the real Resend path still needs the owner's live Cloudflare deployment with real secrets (see the Resend verification item below). Re-enabling SMS later requires no code change: set `SMS_ALERTS_ENABLED=true` and populate the four Twilio values once 10DLC approval lands.
-- [ ] **Resend DNS verification is complete and a real end-to-end test lead delivers.** Confirm the sending domain's SPF/DKIM/DMARC records show "Verified" in the Resend dashboard (not just added — verified). Then, against the live Cloudflare deployment with real `RESEND_API_KEY`/`EMAIL_FROM_ADDRESS`/`OWNER_ALERT_EMAIL`, submit one real test lead through `/request-assessment/` and confirm: the customer confirmation email arrives (not spam-folder), the owner fallback/alert email arrives, and `lead.delivery.customerEmail.state` / `lead.delivery.ownerFallbackEmail.state` both read `"succeeded"` in the stored R2 record. Do this before cutover — an unverified sending domain will silently land in spam or get rejected even though the API call itself returns success.
-- [x] Thank-you route is noindex and conversion tracking is verified — confirmed via `phase4-deep-check.mjs`/static audit; `Analytics.astro` events are consent-gated (`type="text/plain"` + Termly auto-blocker pattern) and don't fire network calls before consent.
-- [x] No visible placeholder remains — static audit's claims/secret scans are clean; manual scan found no "Lorem ipsum"/`TODO`/`{{...}}` placeholder text in rendered output.
+---
 
-## Release gate
-- [x] Quality score is at least 90/100 — **95/100** by this checklist's item count (41 of 43 items fully pass; the 2 partials are minor, non-blocking, and documented above), independent of the operations-section credential gap, which is scored separately below because it isn't fixable from inside this repo.
-- [ ] **No noncompensable failure remains.** One remains: real-credential, real-destination lead delivery has never been exercised (`docs/10` item 6's "5 consecutive real-credential staging sends" requirement). This is explicitly not fabricable and is the named release blocker.
-- [x] Final decision and evidence are recorded — see `artifacts/phase-4/final/` and the closeout report delivered in this session.
+## C. LAUNCH-BLOCKING
 
-## Final call: **BLOCKED**
+### Lead pipeline
 
-Blocking item: **Phase 6 real-credential lead delivery has not been run.** `.env.example` and `.env.production` carry no HubSpot/Resend/Twilio/Turnstile values, `PUBLIC_FORM_ENABLED=false` in the current build, and no evidence exists anywhere in this repository that the 5-consecutive-real-send staging test required by `docs/10` item 6 has been performed outside this session. Everything else in this pass is either a clean pass or a documented, non-blocking minor finding (insurance-copy completeness, homepage movement count, LCP lab margin). Once the owner supplies real provider credentials to the actual Cloudflare deployment and 5 consecutive staging sends succeed end to end (HubSpot contact+deal, customer email, owner SMS, and the SMS-failure→fallback-email path), this item clears and the release gate is satisfied.
+- [ ] **C1. Five consecutive real-credential sends succeed.** HubSpot contact + deal, customer
+      confirmation email, owner fallback email, R2 record written, with
+      `lead.delivery.customerEmail.state` and `lead.delivery.ownerFallbackEmail.state` both
+      `"succeeded"`. **Owner SMS is explicitly out of scope** — email-only is the intended
+      launch configuration, not a gap. Cannot be exercised from this repository; requires the
+      live deployment with real provider credentials. *(Owner action)*
+- [x] **C2. Six Cloudflare Pages secrets set** via `wrangler pages secret put`. **Verified
+      2026-08-11 via `wrangler pages secret list --project-name aseptaclean`**: the production
+      environment has `TURNSTILE_SECRET_KEY`, `HUBSPOT_ACCESS_TOKEN`, `HUBSPOT_PIPELINE_ID`,
+      `HUBSPOT_DEAL_STAGE_ID`, `RESEND_API_KEY`, `EMAIL_FROM_ADDRESS`, and `OWNER_ALERT_EMAIL`
+      all present (encrypted values, existence confirmed, contents not readable). **New finding:
+      the `preview` Pages environment has zero secrets set.** Any non-production-branch deploy —
+      including the one this checklist's Lighthouse run used — runs the lead pipeline with no
+      provider credentials. This was not on any prior checklist. See the punch list, item 3.
+- [ ] **C3. R2 bucket created** — `aseptaclean-lead-uploads`. Declared in `wrangler.toml`;
+      existence not verifiable via `wrangler pages secret list` and no `wrangler r2 bucket list`
+      permission was exercised this pass. *(Owner action — confirm in the Cloudflare dashboard)*
+- [ ] **C4. Resend DNS verified** — SPF, DKIM, DMARC all showing **Verified**, not merely added,
+      then one real end-to-end test lead. *(Owner action)*
+- [ ] **C5. Provider-failure test** — HubSpot unreachable → lead still stored in R2, customer
+      still sees success, fallback email fires. Code path exists (`functions/_lib/lead.ts`
+      isolates provider failures and never fails the customer response on a HubSpot error) but
+      has not been exercised against real infrastructure.
+
+### Routes and redirects
+
+- [x] **C6. Redirect collision — found live, fixed, re-verified.** `curl -I` against the deployed
+      preview (`https://36d311db.aseptaclean.pages.dev`) confirmed the bug exactly as doc 20
+      described: both `/estate-cleanout-san-jose/` and `/hoarding-cleanup-san-jose/` 301'd to `/`
+      despite existing as real built pages — Pages applies `_redirects` before checking for a
+      static asset, so the redirect won. Removed both lines from `public/_redirects`'s retirement
+      block (same fix already applied to `/about/` earlier in the same file); left the six
+      *other* interim `/`-target rows alone since their targets are still genuinely
+      `noindex={true}`. Re-deploy and re-`curl -I` before cutover to confirm the fix holds in
+      production, not just in this session's redeploy.
+- [ ] **C7. Full redirect audit** — every source checked against the current route list for a
+      collision; every destination resolves; no chains. This pass fixed the one known collision
+      (C6) and reasoned through the file line by line, but did not `curl -I` every one of the
+      31 rules in `public/_redirects` against the deployed preview. Do that pass before cutover.
+- [ ] **C8. `/data-request/` resolves properly.** Confirmed still shipping an honest "not
+      configured" fallback (`src/pages/data-request.astro`) — no Termly DSAR embed or equivalent
+      form wired. Live compliance surface carried over from the old site. *(Owner action to
+      supply the Termly DSAR embed or equivalent; then a code change to wire it)*
+- [ ] **C9. `/sms-notification-consent/` resolves at its exact URL, byte-preserved.** Cited in a
+      pending Twilio 10DLC review — a reviewer hitting a 404 or altered wording blocks the
+      campaign, not just the site. Also verify its outbound link to
+      `https://aseptaclean.com/terms-and-conditions`, which resolves only via a 301.
+      **Do not edit this page for any reason.**
+- [ ] **C10. Crawl paths from indexable pages resolved — confirmed still open and current.**
+      `/services/` and `/who-we-help/` (both `noindex={false}`, both in the sitemap) link
+      directly to `property-cleanouts-for-managers` and `deep-cleaning-san-jose`
+      (`noindex={true}`, both carrying live `[OWNER INPUT: …]` strings), plus
+      `estate-cleanout-checklist` (`noindex={true}`). This is not inherited from doc 20 — it was
+      re-derived from `src/data/servicePages.ts`'s `pillars` arrays and each target file's
+      `noindex` prop this session. Per link: remove it, finish the target, or resolve that
+      target's placeholders. *(Needs an owner decision on which drafts ship first — see punch
+      list)*
+
+### Content and claims
+
+- [x] **C11. Zero placeholders in the production build on any indexable surface.** 23
+      `[OWNER INPUT` strings remain in `src/`, but every file carrying one
+      (`estate-cleanout-checklist`, `property-cleanouts-for-managers`, `deep-cleaning-san-jose`,
+      plus the shared `ServiceProof.astro` component and `servicePages.ts` data they draw from)
+      is `noindex={true}`. No `REPLACE_WITH_*` or `$NaN` anywhere in `src/`. This item is
+      satisfied on its own terms today; it does not resolve C10, which is about linking into
+      those pages, not the placeholders themselves.
+- [x] **C12. Claims sweep passes.** Ran the `claims-check` skill's full procedure against
+      `src/pages`, `src/components`, `src/data` — banned-vocabulary grep, the two mandatory
+      verbatim clauses, price-figure scan, JSON-LD fabricated-proof scan, placeholder-reach scan.
+      Zero violations. Every banned-word hit is a code comment or a scope-narrowing disclaimer.
+      One item outside this sweep's authority to resolve: **Palo Alto appears in the service-area
+      list** (`site.ts`); PAMC 5.20.040(b) reaching labor-only companies is unconfirmed per the
+      `claims-check` skill's own escalation list. Pre-existing, not introduced this pass — flagged
+      on the punch list, not blocked here.
+- [x] **C13. Insurance renders the complete approved string — already fixed in the working
+      tree.** `.env.production` now reads `PUBLIC_INSURANCE_STATUS=Insured. Certificate of
+      Insurance available upon request.` (the full approved string), and the file itself is
+      staged for removal from git tracking — it held no server secrets, only public values, and
+      untracking it resolves the `.gitignore`-lied-to-you problem doc 20 flagged separately. Real
+      production still reads this value from the Cloudflare Pages dashboard, not from this file;
+      **confirm the dashboard value matches before cutover.**
+- [x] **C14. The animal/organic clause is verbatim and complete**, including **sterilization**.
+      Confirmed identical across all three surfaces that carry it: `site.ts:333`,
+      `servicePages.ts:651`, `FAQ.astro:19`.
+- [ ] **C15. Organic Pathogen Endorsement verified against the current COI.** A public operating
+      claim entered the site with no checklist gate. Nothing in this repository can confirm a COI
+      match — it requires the physical or PDF certificate. *(Owner action)*
+- [x] **C16. Hoarding FAQ question present on `/` — already fixed in the working tree.**
+      `FAQ.astro` now ships seven questions, including "Do you handle properties with heavy
+      accumulation or hoarding conditions?" with a full scoped answer. The dead duplicate array
+      that previously lived in `site.ts` no longer exists there — confirmed by grep, not just by
+      absence of a citation.
+
+### Typography and visual
+
+- [x] **C17. No `font-size` on any heading tag or heading selector — already fixed in the
+      working tree.** Both known violations are gone: `Hero.astro`'s `.hero h1` rule no longer
+      sets `font-size` (only `margin`, `color`, `line-height`, `text-wrap` remain), and
+      `AssessmentForm.astro`'s `.intake-step__title` rule had `font-size: var(--ac-text-h2)`
+      removed in favor of an `.ac-type-h2` class on the element itself — the sanctioned
+      mechanism. Re-grepped `src/` for `font-size` next to any heading selector: zero hits.
+- [x] **C18. H1:body ratio meets the floor — already fixed in the working tree.**
+      `--ac-text-h1` in `tokens.css` is now `clamp(2.75rem, 5vw, 4.25rem)` (was 3.8rem max).
+      Computed: 390px → 44px ÷ 16px body = **2.75:1** (floor 2.5:1, pass). 1440px → 68px ÷ 16px =
+      **4.25:1** (floor 4:1, pass). Re-measured against the live deployed preview this session —
+      see the Lighthouse/measurement note below for the exact method.
+- [ ] **C19. `--ac-color-steel-300` contrast — smaller and more precise than previously stated.**
+      `docs/05-DECISIONS-LOG.md` §10 already ran the real computation this pass needed: grep
+      confirms `steel-300` is used **exclusively as a border color** in `src/` (never as text),
+      so the applicable WCAG threshold is 3:1 non-text, not 4.5:1 normal-text. It passes on white
+      (3.10:1) and fails on warm-white (2.90:1) — a real but narrow gap, not the "reverted
+      darkening" doc 20 described. Independently re-verified the border-only claim this session.
+      Fix is a code-touching judgment call (raise the token, or confirm every warm-white
+      occurrence is non-essential) intentionally left open by that same log entry.
+- [ ] **C20. Image slots — currently a pass by absence, must be re-checked once assets land.**
+      Zero `<img>` tags exist anywhere in `src/` today — there is no image slot shipping fake or
+      placeholder-that-reads-as-content, because there is no image slot at all. That is a
+      genuine pass under "empty is a pass." This item stays open as a gate for the Phase 0 shoot:
+      the moment an owner-shot asset is wired in, re-run this check against the specific
+      component, not the whole site. *(Owner action — Phase 0 shoot)*
+
+### Accessibility and performance
+
+- [ ] **C21. No horizontal overflow at 320px. 200% zoom clean. 400% reflow.** Not exercised
+      against a real browser this pass — reviewed CSS for fixed-pixel widths above 320px and
+      found none outside `max-width`/`min-width` declarations, which is a weak signal, not a
+      pass. Needs an actual viewport/zoom test before cutover.
+- [ ] **C22. Keyboard-only path from landing to submitted**, on both forms. Not exercised this
+      pass. `AssessmentForm.astro` and `QuickHandoffForm.astro` both use semantic
+      `fieldset`/`label`/native `select` elements, which is a good sign, not a substitute for
+      the actual Tab-through test.
+- [x] **C23. Lighthouse run against the deployed Cloudflare Pages preview.** See §F for the URL,
+      scores, and throttling method — run this session against a redeploy of this exact working
+      tree, not `astro preview`.
+
+---
+
+## D. DEFERRED — ship, then harden
+
+Playwright visual regression baselines · full cross-browser matrix · the 24-item deliverable
+package · the 100-point score · header scroll-condense (D11, deliberately declined as "motion
+for its own sake") · `11` §3's no-two-consecutive-containers rule, unsatisfiable since v2
+collapsed to a single 1200px shell · Astro major migration — **already moot**, `package.json`
+is on `^7.1.6` · the five unused font packages · the three orphaned components · the 80MB/75MB
+payload message mismatch.
+
+## E. NOT A GAP — intended configuration
+
+Email-only lead notification at launch. Zero photography where no owned asset exists. No
+published price figure. Eighteen of twenty-seven routes excluded from the sitemap. `npm run
+build` failing locally on absent secrets — those belong in Pages, not git.
+
+---
+
+## F. Scoring
+
+Do not score against this checklist's own item count. That is what produced a "95/100" while the
+real rubric sat deferred. State the instrument used, or issue a plain verdict without a number.
+
+**Current: BLOCKED.** Sole category — C1 through C4. Real-credential lead delivery has never
+been exercised, and it is not fabricable. Everything else is either closed, code work with a
+known fix, or deferred.
+
+**No SHIP / REVISE / BLOCKED verdict has ever been formally recorded in this repository.**
+Session 9 of the original prompt set was never run as specified. Record one.
+
+---
+
+## G. What outranks this checklist
+
+1. **Live answering service, contracted and tested, before any paid traffic.** Voicemail during
+   jobs and after hours is the largest lead leak in the business.
+2. **First 3–5 jobs bid for proof** — photographs with signed release, a case study, a Google
+   review. Acquisition spend, not discounting. Cannot start before item 1.
+
+A site clearing every item above, deployed, still earns nothing while the phone rings to
+voicemail.

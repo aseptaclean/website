@@ -146,7 +146,12 @@ PHASE 3 — MONTH 2 (value order)
 PHASE 3b — AS GATES CLEAR
 /deep-cleaning-san-jose/             gate: B10 checklist finalized
 /property-cleanouts-for-managers/    gate: crew capacity confirmed
-/biohazard-cleanup-san-jose/         gate: certification held (highest margin)
+
+PHASE 3d — IA EXPANSION, CHUNK 3 (added 2026-08-11; live)
+/services/                          hub page — indexed, in sitemap, in nav + footer;
+                                     links out to servicesHub.pillars (servicePages.ts)
+/who-we-help/                       hub page — indexed, in sitemap, in nav + footer;
+                                     links out to whoWeHelpHub.segments (servicePages.ts)
 
 PHASE 3c — TRAILING REAL JOBS ONLY (nested under the hub)
 /service-areas/{city}/               one per city actually worked; hard content gate

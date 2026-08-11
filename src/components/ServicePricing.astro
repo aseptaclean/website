@@ -27,13 +27,6 @@ const { heading, headingId, drivers } = Astro.props;
       <p class="service-pricing__fee">${site.offer.assessmentFee}</p>
       <p class="service-pricing__fee-label">On-site assessment</p>
       <p class="service-pricing__fee-note">{site.offer.assessmentFeeTerms}</p>
-      {
-        site.offer.startingPrice && (
-          <p class="service-pricing__floor">
-            Full projects generally begin at ${site.offer.startingPrice.toLocaleString()}.
-          </p>
-        )
-      }
     </div>
   </div>
 </section>
