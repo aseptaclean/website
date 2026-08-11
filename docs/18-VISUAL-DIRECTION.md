@@ -279,10 +279,12 @@ land. Placeholders are acceptable in development; they are a release blocker in 
 
 **Phase 3 — swap atmosphere for owned work** as completed jobs accumulate.
 
-**Note on `17-REFERENCE-TRANSLATION-MARTEL.md`:** logged as orphaned because its token
-vocabulary and component names do not match this codebase. Its *analysis* of the reference
-(spacing rhythm, card structure, two-colour discipline) is sound and informed this file.
-Read it for reasoning; never for implementation values.
+**Note on `17-REFERENCE-TRANSLATION-MARTEL.md`:** deleted 2026-08-11 per
+`docs/22DOCDISPOSITION.md` §1 — it was orphaned (its token vocabulary and component names
+never matched this codebase) and specified a TrustBar reading "licensed," which this file §7
+and `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` forbid outright. Its *analysis* of the reference
+(spacing rhythm, card structure, two-colour discipline) was sound and already informed this
+file before deletion; nothing further needs to be read from it.
 
 ---
 

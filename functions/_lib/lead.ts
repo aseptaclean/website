@@ -55,6 +55,9 @@ export interface DeliveryStep {
 
 export interface LeadRecord {
   id: string;
+  // Display-only confirmation code (AC-XXXXXX) derived from `id`. Never an identifier:
+  // nothing is stored under it, deduped on it, or looked up by it. See confirmationCode().
+  code: string;
   receivedAt: string;
   callbackWindow: "business-hours" | "next-business-window";
   data: Record<string, string | string[]>;
@@ -400,6 +403,34 @@ export function callbackWindow(
   return openDay && hour >= 7 && hour < 19
     ? "business-hours"
     : "next-business-window";
+}
+
+// Crockford base32 — no I, L, O, or U. Those are precisely the characters that get
+// misheard on a phone call or mistyped from a photo of a screen, which is how this code
+// actually travels between a customer and the office.
+const crockfordAlphabet = "0123456789ABCDEFGHJKMNPQRSTVWXYZ";
+
+/**
+ * The human-readable code for a submission: `AC-` plus six Crockford base32 characters,
+ * taken from the top 30 bits of the submission UUID (6 chars x 5 bits).
+ *
+ * Presentation only. The UUID remains the internal key — R2 paths, the idempotency
+ * record, and the HubSpot deal are all still addressed by it. Deriving instead of
+ * generating means no counter to keep, no extra round trip, and a code that can always
+ * be recomputed from the record it belongs to. A sequential counter was rejected
+ * deliberately: "AC-000004" tells a customer how few leads the business has ever had.
+ *
+ * Six characters is a 1,073,741,824-value space, ~0.19% chance of any collision across
+ * 2,000 leads — affordable precisely because no lookup depends on the code being unique.
+ */
+export function confirmationCode(id: string) {
+  let bits = parseInt(id.replace(/-/g, "").slice(0, 8), 16) >>> 2;
+  let code = "";
+  for (let index = 0; index < 6; index += 1) {
+    code = crockfordAlphabet[bits & 31] + code;
+    bits >>>= 5;
+  }
+  return `AC-${code}`;
 }
 
 export async function sha256(value: string) {

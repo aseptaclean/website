@@ -51,6 +51,12 @@ active and verifiable.
 narrows scope — that is their only legitimate use. Any automated grep gate must whitelist the
 mandated negation clauses in §2.3 rather than fail them.
 
+**Dignity language — migrated from `07-ONE-PAGE-DIRECTIVE.md` §4, 2026-08-11.** `hoarder`
+never appears as a noun, anywhere — situational language only ("heavy accumulation,"
+"hoarding conditions"). `gross filth` never appears at all, in any form. (Status: already
+clean — confirmed by this session's baseline `claims-check` sweep and by
+`hoarding-cleanup-san-jose/index.astro`'s own code comment recording the same grep.)
+
 ### 2.3 The animal / organic limiting clause — verbatim, mandatory
 
 Wherever animal or organic condition work is described, this clause appears in full:
@@ -282,6 +288,33 @@ owner-shot, or the slot stays empty.** Empty beats fake. A non-owner-shot image 
 > Project records document the work performed. They are not regulatory clearance, inspection
 > approval, environmental certification, or a determination that a property is safe or
 > habitable.
+
+**Assessment disclaimer** — migrated from `00-MASTER-BRIEF.md` §11.1, 2026-08-11. Place next
+to the form consent:
+
+> Submitting this form authorizes Aseptaclean to contact you. It does not authorize work or
+> create a service agreement.
+
+**Scope disclaimer** — migrated from `00-MASTER-BRIEF.md` §11.1, 2026-08-11. Place in the
+footer and near exclusions where practical:
+
+> Aseptaclean performs property clearing and approved cleaning within its current lawful and
+> insured scope. Aseptaclean is not a licensed general contractor, remediation contractor,
+> pest-control operator, appraiser, or provider of medical or legal services.
+
+### 6.1 Structured data
+
+Migrated from `00-MASTER-BRIEF.md` §11, 2026-08-11. Use accurate JSON-LD. Recommended types:
+`Organization` · appropriate `LocalBusiness` subtype · `WebSite` · `WebPage` · `Person` for
+founder · `BreadcrumbList` on supporting pages.
+
+Do not add fake aggregate ratings. Do not mark up self-serving reviews in a way that implies
+guaranteed organic review stars — consistent with §6's proof discipline above.
+
+Values are sourced from `src/data/site.ts` (see `AGENTS.md` §3), never hardcoded in a
+component: business name, legal name, site URL, phone, email, logo URL, founder name, service
+area, business hours, and social profiles — each subject to the same suppression rules as
+§6's proof discipline (unverified → omit, never a placeholder in a production build).
 
 ---
 

@@ -57,7 +57,17 @@ const fullProductionRequired = [
   "PUBLIC_FOUNDER_NAME",
   "PUBLIC_TSWMP_STATUS",
   "PUBLIC_DEPLOYMENT_ENV",
-  "PUBLIC_FORM_ENABLED",
+  "PUBLIC_FORM_ENABLED"
+];
+
+// Consumed only by functions/api/lead.ts at request time, not compiled into
+// static output. Cloudflare Pages direct-upload builds run on this machine
+// where these live as dashboard Secrets, not build-time env vars, so they
+// cannot be validated here. functions/api/lead.ts already 503s when
+// TURNSTILE_SECRET_KEY or LEAD_UPLOADS is absent, covering the runtime
+// failure mode. TWILIO_* stay conditional on SMS_ALERTS_ENABLED per
+// docs/05-DECISIONS-LOG.md.
+const runtimeOnlyRequired = [
   "TURNSTILE_SECRET_KEY",
   "HUBSPOT_ACCESS_TOKEN",
   "HUBSPOT_PIPELINE_ID",
@@ -65,11 +75,6 @@ const fullProductionRequired = [
   "RESEND_API_KEY",
   "EMAIL_FROM_ADDRESS",
   "OWNER_ALERT_EMAIL"
-  // TWILIO_ACCOUNT_SID / TWILIO_AUTH_TOKEN / TWILIO_FROM_NUMBER / LEAD_ALERT_PHONE are
-  // intentionally NOT required here. SMS owner alerts are gated behind SMS_ALERTS_ENABLED
-  // pending Twilio 10DLC campaign approval (docs/05-DECISIONS-LOG.md); until that flag is
-  // "true", email (Resend) is the sole notification path and Twilio credentials do not need
-  // to exist for a production build to ship. See the SMS_ALERTS_ENABLED check below.
 ];
 const privatePreviewRequired = [
   "PUBLIC_SITE_URL",
@@ -221,6 +226,10 @@ if (!privatePreview) {
   }
 }
 
+const runtimeOnlyMissing = runtimeOnlyRequired.filter((key) => {
+  const value = values[key]?.trim();
+  return !value || placeholderPattern.test(value);
+});
 if (values.SMS_ALERTS_ENABLED === "true") {
   for (const key of [
     "TWILIO_ACCOUNT_SID",
@@ -228,12 +237,15 @@ if (values.SMS_ALERTS_ENABLED === "true") {
     "TWILIO_FROM_NUMBER",
     "LEAD_ALERT_PHONE"
   ]) {
-    if (!values[key]?.trim()) {
-      errors.push(`${key} is required when SMS_ALERTS_ENABLED=true.`);
-    }
+    if (!values[key]?.trim()) runtimeOnlyMissing.push(key);
   }
 } else if (values.SMS_ALERTS_ENABLED && values.SMS_ALERTS_ENABLED !== "false") {
   errors.push("SMS_ALERTS_ENABLED must be true or false.");
+}
+if (runtimeOnlyMissing.length) {
+  console.log(
+    `Runtime-only secrets not present at build time (expected — set as Cloudflare Pages Secrets): ${runtimeOnlyMissing.join(", ")}`
+  );
 }
 
 if (values.PUBLIC_TSWMP_STATUS && values.PUBLIC_TSWMP_STATUS !== "pending") {

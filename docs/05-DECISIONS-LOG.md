@@ -14,6 +14,8 @@ Record only decisions explicitly approved by the owner. Do not use this file for
 | 2026-07-29 | Google Business Profile URL, analytics IDs, and public mailing address are deferred. Logo asset may be supplied later; use a restrained text wordmark during development. | Not required to begin the build. | Owner inputs, build gates, visual QA |
 | 2026-07-30 | Homepage copy must make the client feel the transition from an unresolved property to a property they can open, enter, and move forward with. Operational proof must support the emotion. | Owner explicitly approved the emotional-outcome direction and requested the website copy be updated. | Master brief Section 6.5 and Section 8; approved copy extract; homepage composition |
 | 2026-07-30 | Use the owner-supplied Aseptaclean horizontal wordmarks and 512px site icon as the production brand assets. | Replaces the temporary development wordmark with authentic owner-provided artwork. | Header, footer, metadata, owner inputs, asset manifest |
+| 2026-08-11 | Customer-facing submissions are identified by a short code `AC-XXXXXX`, six Crockford base32 characters derived from the top 30 bits of the submission UUID. The UUID stays the internal key for R2 paths, idempotency, and HubSpot. **A sequential counter is explicitly rejected.** | The UUID is unreadable on a phone and cannot be read aloud or typed from a photo. Crockford's alphabet drops I, L, O, and U, the characters that get misheard or mistyped. Deriving rather than generating needs no counter and always recomputes from the record. A counter was rejected because `AC-000004` publishes how few leads the business has ever had. | `functions/_lib/lead.ts`, `functions/api/lead.ts`, `functions/_lib/providers.ts`, `src/pages/thank-you.astro`, both form components, HubSpot deal schema |
+| 2026-08-11 | Owner alert subject line is `New lead · <city> · <situation> · <code>`, city and situation first, ID last. Missing fields are dropped, never rendered as "Not supplied". | The subject is read on a phone lock screen before the message is opened; it must carry what decides whether to answer. The prior format led with the offer label and a raw UUID, which was unreadable at that size. | `functions/_lib/providers.ts` |
 
 ## Phase 4 Session 1 — §0 canonical document resolution (2026-07-30)
 
@@ -2356,3 +2358,285 @@ border contrast finding (2.90:1, below the 3:1 non-text threshold) was documente
 fixed, since this was a documentation-only pass and the fix requires a judgment call about
 whether a decorative border counts as an "essential graphical object" under WCAG — left to a
 future session with the authority to touch `tokens.css`.
+
+## `07-ONE-PAGE-DIRECTIVE.md` §3 — the fourteen pre-resolved conflict rows (migrated 2026-08-11)
+
+Per `docs/22DOCDISPOSITION.md` §2, these are decisions, not standing directives, so they move
+here rather than staying in a file being deleted for superseded scope. All fourteen were
+already adopted in the current build; recorded here as the historical resolution record.
+
+| # | Older plan | Canonical (adopted) | Decision |
+| --- | --- | --- | --- |
+| 1 | Hoarding / estate / severe-condition clearing | Aseptaclean Handoff Reset — clearing + deep clean + documented closeout | Adopted. Situational search language kept (see §4 migration below) |
+| 2 | $6,500–12,000, $8,000 planning average | "Projects generally begin at $1,500" | Superseded by the 2026-08-11 pricing decision (`AGENTS.md` §4): no price figure is published anywhere; only the $195 assessment fee |
+| 3 | Free on-site assessment | Photo review free; on-site $195, credited within 7 days | Adopted. "Free assessment / free consultation" purged |
+| 4 | Four named guarantees incl. Discretion Standard | Handoff Assurance: 5 items + Scope-Completion Guarantee | Adopted, discretion re-inserted as sixth item |
+| 5 | Assess → Define → Authorize → Clear → Document | Scope → Protect → Clear → Reset → Verify | Adopted repo-wide |
+| 6 | Defined Scope Document + Completion Record | Property Handoff Record (one artifact) | Adopted |
+| 7 | Montserrat + Open Sans | Newsreader Variable + Instrument Sans Variable | Superseded again by the 2026-08-11 typography amendment (`AGENTS.md` §6): shipping stack is Newsreader Variable + Inter Variable + IBM Plex Mono |
+| 8 | Token prefix `--ac-*` | Unprefixed `--color-*`, `--text-*` | Kept `--ac-`; canonical values/scale/fonts adopted; mapped in `docs/TOKEN-MAP.md` |
+| 9 | 3 fields only, no wizard | 3-step progressive disclosure, ~20 fields | Both, split by route — short form on `/`, full form on `/request-assessment/` (see `docs/19-SYSTEM-AND-SITEMAP.md` Part 4B) |
+| 10 | Worker → HubSpot → Zapier/Make | Astro endpoint → Turnstile → store → HubSpot → Resend → Twilio | Adopted; Zapier/Make dropped |
+| 11 | Astro 5 | Astro 7.1.x | Closed — `package.json` is on Astro `^7.1.6`, migration already happened |
+| 12 | The Mark (navy rectangle) | Not mentioned | Superseded by `docs/18-VISUAL-DIRECTION.md` |
+| 13 | Stock photography harms trust | Canonical §15 — same conclusion | No conflict; every asset logged in `docs/06-ASSET-MANIFEST.md` |
+| 14 | Phone unverified | (408) 785-7588 | Closed — live in config, mirrors GBP |
+
+Rows 2 and 7 show a decision superseding a decision: `07`'s "canonical" column was itself later
+overridden by dated 2026-08-11 owner decisions recorded in `AGENTS.md` §4 and §6. Recording
+both layers here rather than silently collapsing to only the newest, since that is exactly the
+kind of silent-override pattern `doc-precedence` exists to catch.
+
+## `docs/22DOCDISPOSITION.md` cleanup pass — full session record (2026-08-11)
+
+Executed the worklist in `docs/22DOCDISPOSITION.md` end to end: installed skills, ran baseline
+audits, deleted nine superseded files (four standalone plus the five-file archive directory,
+corrected from the doc's claimed six — see discrepancies below), extracted five sections from
+two files into their precedence-chain destinations before deleting the sources, verified an
+already-complete third extraction, applied the per-file fix list, reconciled the route
+architecture doc, repaired eleven dangling references (two more than the nine the source
+document counted), and now deletes the worklist itself. This entry is the record; the
+worklist's job is done.
+
+### 0. Before starting — discrepancies found in the worklist itself
+
+The task instructions and `docs/22DOCDISPOSITION.md` both describe a state that did not fully
+match the repository as found. Recorded here rather than silently corrected, per this file's
+own standing rule:
+
+- **The file didn't exist at the path given.** The task named `docs/22-DOC-DISPOSITION.md`;
+  the real file is `docs/22DOCDISPOSITION.md` (no hyphens). Same pattern already present on
+  disk for docs 20 and 21 — see below.
+- **Docs 20 and 21 were already hyphen-drifted.** `docs/20ALIGNMENTAUDIT20260811.md` and
+  `docs/21CLAIMSANDCOMPLIANCELAW.md` existed without hyphens, while every reference to them
+  throughout the doc set (including inside the two files' own bodies) used the hyphenated form
+  every other numbered doc follows. Renamed both to `docs/20-ALIGNMENT-AUDIT-2026-08-11.md` and
+  `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` to match the convention and fix the drift at the
+  source rather than patch every citation individually.
+- **`docs/23-BUILD-REQUIREMENTS-FROM-RESEARCH.md` already existed**, fully written, correctly
+  capturing the four binding requirements from docs 14/15 with the right directional framing
+  and the right exclusion list — a prior session had already done this extraction but had not
+  deleted the two source files. Verified the extraction was faithful against the original
+  files' full text before deleting 14 and 15 this pass; nothing further to write.
+- **`.claude/skills/` already existed at the repository root**, untracked. Nothing to copy in
+  from elsewhere — committed it as-is (see §1 below) rather than performing a no-op copy.
+- **Several §3 per-file fixes were already done.** `01-QUALITY-GUARDRAILS.md`'s retitle and
+  precedence-block replacement, `02-OWNER-INPUTS.md`'s three stale values, all of
+  `04-RELEASE-CHECKLIST.md`'s LAUNCH-BLOCKING/DEFERRED labeling, `06-ASSET-MANIFEST.md`'s
+  regeneration, `10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` items 3 and 7, `11-COMPOSITION-AND-
+  TYPE.md` §5, and `TOKEN-MAP.md`'s full regeneration were all already correct on disk. Only
+  the genuinely-open items in that table (01's claims pointer, 06-copy's supersession banner,
+  08's `$2,000` anchor and dangling reference, 90's CTA claim) needed work this pass.
+- **Line counts in the worklist were approximate, not exact**, and in a few cases materially
+  off (e.g. `05-DECISIONS-LOG.md` cited at "2,028," actually 2,358 at session start; `19` cited
+  at "505," actually 510; `archive/` cited at "1,320" across 6 files, actually 1,341 across 7
+  files — the disposition's own subtotal named six archive filenames but the directory held
+  seven). This entry uses real `wc -l` output throughout, not the worklist's figures.
+- **`docs/REPO-STATE.md` (887 lines) is outside this worklist's scope entirely** — it appears
+  in neither the disposition doc's 30-file baseline count nor its 17-file target, in no delete
+  list, and no keep list. It is a separate, already-stale, frozen audit snapshot (dated
+  2026-08-11, predates this session's changes) documenting the "nine dangling references" this
+  task also asked to repair. Left untouched and excluded from the file/line totals below, since
+  including or excluding it was never actually decided by the source document — flagging
+  rather than guessing.
+
+### 1. Skills installed and baseline run
+
+`.claude/skills/{claims-check,type-law,route-audit,doc-precedence}/SKILL.md` committed to the
+repository root (commit `63ae7aa`). Ran `claims-check` and `route-audit` against the whole
+repository as the reference-point baseline the task requested; `type-law` and `doc-precedence`
+were not run standalone this pass (no heading/token change and no cross-doc conflict was open
+at baseline time — both remain available for the next session that touches either surface).
+Full reports saved to `docs/BASELINE-CLAIMS-CHECK-20260811.md` (87 lines — zero violations,
+matches the skill's own stated baseline) and `docs/BASELINE-ROUTE-AUDIT-20260811.md` (73 lines
+— zero new redirect collisions, one known/accepted crawl-path finding carried forward from
+`04-RELEASE-CHECKLIST.md` C10, one confirmed orphan `/service-areas/`, three confirmed
+unimported components).
+
+### 2. Files deleted outright (§1 of the worklist)
+
+| File | Lines | Note |
+| --- | --- | --- |
+| `docs/03-BUILD-PLAN.md` | 119 | Superseded; sole surviving rule already implemented in `scripts/validate-env.mjs` |
+| `docs/12-SESSION-PROMPTS.md` | 366 | All nine sessions run; predates doc 18; pointed at already-deleted `AGENTS-PRECEDENCE-BLOCK.md` |
+| `docs/13-REMEDIATION-PASS.md` | 197 | Self-banners "not a valid regression guard, historical only" |
+| `docs/PHASE-4-AUDIT.md` | 224 | Dated 2026-07-30, an old commit; findings resolved and superseded |
+| `docs/archive/09-PREMIUM-VISUAL-AND-TYPOGRAPHY-SPEC.md` | 236 | Superseded by doc 11; live content pre-migrated into doc 11 §10 (see 05-DECISIONS-LOG history above) |
+| `docs/archive/INSTALL-PHASE-4-UPDATE.md` | 53 | Superseded install prompt |
+| `docs/archive/PHASE-4-CLOSEOUT-PROMPT.md` | 115 | Superseded closeout prompt |
+| `docs/archive/PHASE-4-CODEX-PROMPT.md` | 82 | Superseded build prompt |
+| `docs/archive/PHASE-4-COMPOSITION-AND-TYPE.md` | 257 | Superseded by doc 11 |
+| `docs/archive/PHASE-4-ONE-PAGE-DIRECTIVE.md` | 283 | Superseded by (the now also deleted) doc 07 |
+| `docs/archive/PHASE-4-SESSION-PROMPTS.md` | 315 | Superseded session prompts |
+| `docs/aseptaclean-clinical-direction.html` | — | Superseded direction, never adopted |
+| `docs/aseptaclean-homepage-mockup.html` | — | Superseded by `aseptaclean-FINAL-v2.html`; dead token names |
+
+`docs/AGENTS-PRECEDENCE-BLOCK.md` (78 lines) and `docs/17-REFERENCE-TRANSLATION-MARTEL.md`
+(368 lines) were both already deleted before this session began — `AGENTS.md`'s own header
+already claimed to replace the former, and doc 18/doc 11 already treated the latter as gone.
+No action needed; confirmed absent, not re-deleted.
+
+**§1 subtotal this session: 2,247 lines (four standalone files) + 1,341 lines (archive/, seven
+files) = 3,588 lines, plus two superseded HTML mockups.**
+
+### 3. Extractions (§2 of the worklist)
+
+**`docs/00-MASTER-BRIEF.md` (1,923 lines) — deleted after verified extraction:**
+
+| Section | Destination | Verified landed at |
+| --- | --- | --- |
+| §9 Assessment Form Specification | `19-SYSTEM-AND-SITEMAP.md` new Part 4B.1 | `19-SYSTEM-AND-SITEMAP.md:493` |
+| §13 Analytics event names | `19-SYSTEM-AND-SITEMAP.md` Part 4B.1 (folded in, doc 19 had no prior event list) | `19-SYSTEM-AND-SITEMAP.md:563` |
+| §11 Structured-data types | `21-CLAIMS-AND-COMPLIANCE-LAW.md` new §6.1 | `21-CLAIMS-AND-COMPLIANCE-LAW.md:307` |
+| §11.1 Three required disclaimers | `21-CLAIMS-AND-COMPLIANCE-LAW.md` §6 (documentation disclaimer already present; assessment and scope disclaimers added) | `21-CLAIMS-AND-COMPLIANCE-LAW.md:292,298` |
+
+Doc 19 had no existing "Part 4" for the *current* form (its Part 4 is the future-phase triage
+quiz spec) — added as a new Part 4B rather than overwriting or renumbering, to keep the
+current-build spec and the future-phase spec distinct.
+
+**`docs/07-ONE-PAGE-DIRECTIVE.md` (296 lines) — deleted after verified extraction:**
+
+| Section | Destination | Verified landed at |
+| --- | --- | --- |
+| §3 Fourteen pre-resolved conflict rows | `05-DECISIONS-LOG.md` (this file, above) | `05-DECISIONS-LOG.md:2360` |
+| §4 SEO correction (situational language + FAQ requirement) | `19-SYSTEM-AND-SITEMAP.md` §2.2 | `19-SYSTEM-AND-SITEMAP.md:186` |
+| §4 Dignity language (`hoarder`/`gross filth`) | `21-CLAIMS-AND-COMPLIANCE-LAW.md` §2.2 | `21-CLAIMS-AND-COMPLIANCE-LAW.md:54` |
+| §6 Guarantee reconciliation (discretion sixth item) | `19-SYSTEM-AND-SITEMAP.md` Part 3.1 | `19-SYSTEM-AND-SITEMAP.md:374` |
+| §7 Form architecture | `19-SYSTEM-AND-SITEMAP.md` new Part 4B.0 | `19-SYSTEM-AND-SITEMAP.md:473` |
+| §11 Launch-blocking QA | Confirmed already reconciled into `04-RELEASE-CHECKLIST.md` §C (C1–C23, LAUNCH-BLOCKING/DEFERRED-labeled, more current than §11 itself) by a prior session; corrected doc 04's header, which claimed this reconciliation had never been done | `04-RELEASE-CHECKLIST.md:6` |
+
+§5 (price floor) and §8 (Astro freeze) were already closed per the worklist's own note — no
+extraction needed, both facts already live in `AGENTS.md` §4 and the decisions log.
+
+**`docs/14-RESEARCH-FINDINGS.md` (97 lines) + `docs/15-UX-DESIGN-RESEARCH-FINDINGS.md` (87
+lines) — deleted after confirming the extraction already at `docs/23-BUILD-REQUIREMENTS-FROM-
+RESEARCH.md` (78 lines) was complete and faithful.** Re-read both source files in full against
+doc 23's text: all four binding requirements (phone-field copy, single-column forms, the
+3-field/multi-step split, mobile-only sticky call bar) present with the right directional
+framing; every opaque `<cite>`-marked statistic correctly excluded (the 266% single-CTA
+figure, the 18.7% phone-field figure, the Vodafone/Swappie/Yelp case studies, the dead-token
+contrast table); both self-limiting caveats preserved. Nothing further to extract.
+
+**§2 subtotal this session: 1,923 + 296 + 97 + 87 = 2,403 lines deleted** (the worklist's own
+§2 estimate was "2,405 more lines deleted" — within 2 lines of the real figure, the one
+estimate in the source document that held up almost exactly).
+
+### 4. Per-file fixes applied (§3 of the worklist)
+
+Of the fourteen files in the worklist's fix table, seven needed no action (already correct —
+see discrepancies above: `01` retitle/precedence, `02`, `04`'s labeling, `06-ASSET-MANIFEST`,
+`10` items 3/7, `11` §5, `TOKEN-MAP`, `18` "keep as-is", `aseptaclean-FINAL-v2.html` "keep").
+Six needed real changes, applied this pass:
+
+- `01-QUALITY-GUARDRAILS.md` — added the explicit "Claims are governed by `docs/21-CLAIMS-
+  AND-COMPLIANCE-LAW.md`" pointer to the Precedence section. (The line-1174 self-reference the
+  worklist described was already fixed before this session; current file has no such string.)
+- `06-APPROVED-HOMEPAGE-COPY.md` — added the "superseded for `/` by `aseptaclean-FINAL-v2.html`,
+  authoritative for every other route" banner; body left unchanged as instructed.
+- `08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` — removed the `$2,000` starting-context anchor
+  from both its copy block and its release-criteria checklist (the live route already carried
+  no such string; the doc was the only place still citing it). Line-3 dangling reference to
+  `07-PRIVATE-RESIDENCE-RESET-STRATEGY.md` was already self-documented as never-existed before
+  this session — confirmed, not re-fixed.
+- `90-FUTURE-PHASE-BIOHAZARD-STRATEGY.md` — corrected the §9 CTA claim: "Request a Property
+  Assessment" was never adopted; the governed phrase is "Request an assessment." Fixed in both
+  the page-architecture list and the dedicated CTA-language section, which had the correction
+  backwards (claimed the *governed* phrase was the property-assessment wording).
+- `19-SYSTEM-AND-SITEMAP.md` — see §5 below (route reconciliation folded in here since both
+  touch the same file).
+
+### 5. Route reconciliation (§5 of the worklist, task step 5)
+
+Found already substantially done by a prior session: `/services/` and `/who-we-help/` were
+already documented under a "PHASE 3d — IA EXPANSION, CHUNK 3" block in Part 2, and Phase 3b
+already carried no single-gate biohazard line — Phase 5's four-gate rule was already the sole
+governing section, with no contradiction left inside the document. One real staleness found
+and fixed: Phase 1 was still labeled "LIVE THIS WEEK," when all seven of its routes (including
+`/about/`, `/contact/`, `/handoff-standard/`, specifically named as stale in the worklist) are
+confirmed built and live. Relabeled to "LIVE (reconciled 2026-08-11 — all seven built and
+shipped, not 'this week')."
+
+### 6. Dangling references repaired (task step 6)
+
+The worklist's own count was nine (catalogued in `docs/REPO-STATE.md` §11, a frozen snapshot).
+A fresh whole-tree link check this session found **eleven** total needing repair — two the
+original snapshot missed. Repaired:
+
+1. `docs/90-FUTURE-PHASE-BIOHAZARD-STRATEGY.md` §10 and its migration table — pointed at
+   `05-OPERATIONS.md`, confirmed never to have existed; annotated in place and pointed at where
+   the buyer-research content actually lives (this section itself).
+2. `docs/11-COMPOSITION-AND-TYPE.md` §10 — pointed at `docs/archive/09-PREMIUM-VISUAL-AND-
+   TYPOGRAPHY-SPEC.md`, which was a correct reference until this session's own §1 deletion of
+   `docs/archive/` made it dangling. Annotated with the deletion date and confirmed the live
+   content had already been migrated into this same file before the archive copy was removed.
+3. `docs/11-COMPOSITION-AND-TYPE.md` (2px radius note) — same file, cited
+   `17-REFERENCE-TRANSLATION-MARTEL.md` as evidentiary source for a fact; file confirmed
+   already deleted (before this session). Annotated with the deletion note; conclusion stands
+   independent of the now-gone source.
+4. `docs/18-VISUAL-DIRECTION.md` — same `17-REFERENCE-TRANSLATION-MARTEL.md` reference,
+   instructed "read it for reasoning" for a file that no longer exists. Rewritten to describe
+   what it said and why it was deleted (TrustBar reading "licensed," forbidden by doc 21),
+   rather than pointing at a dead file.
+5. `docs/20-ALIGNMENT-AUDIT-2026-08-11.md` §P3 — three items ("delete `AGENTS-PRECEDENCE-
+   BLOCK.md`," "retitle `01`," "nine dangling refs") read as an open task list; all three
+   already resolved. Annotated the whole block as historical record, struck the two
+   already-closed line items explicitly.
+6. `docs/19-SYSTEM-AND-SITEMAP.md` and `docs/BASELINE-CLAIMS-CHECK-20260811.md` — both cited
+   the pre-rename `docs/21CLAIMSANDCOMPLIANCELAW.md` (no hyphens); updated to the renamed path.
+7. **New, not on the original nine:** `docs/01-QUALITY-GUARDRAILS.md` — two live pointers to
+   `03-VOICE.md` (§8.4 punctuation/rhythm rule, §20.6 scoring rubric), confirmed in `AGENTS.md`
+   §1 to never have existed. Fixed both to point at where voice/tone content actually lives
+   (`01-QUALITY-GUARDRAILS.md` itself and `18-VISUAL-DIRECTION.md`, per this file's own prior
+   resolution above).
+8. **New, not on the original nine:** `docs/90-FUTURE-PHASE-BIOHAZARD-STRATEGY.md` gate 3 of
+   4 — cited `04-CLAIMS-GUARDRAILS.md` as "the claims authority" for a legally load-bearing
+   activation gate. That file never existed; the real claims authority is `docs/21-CLAIMS-AND-
+   COMPLIANCE-LAW.md`. Fixed — this was the highest-stakes finding of the repair pass, since an
+   agent activating this gated document off the wrong filename would have amended nothing.
+
+Re-ran the full-tree link check after all repairs (`grep`-based extraction of every
+`docs/*.md`-shaped reference across all nineteen live files plus `AGENTS.md`, cross-checked
+against disk). Remaining hits against nonexistent filenames are all either: (a) inside
+`AGENTS.md`'s own "reference only / orphaned / non-governing / does not exist" sections, whose
+purpose is naming retired or nonexistent files; (b) "migrated from"/"replaces" provenance notes
+describing where content came from, not live read-pointers; or (c) inside this decisions log's
+own historical narration, describing past states accurately as they were at the time. No
+further live, unannotated dangling reference found.
+
+### 7. Final count
+
+| | Files | Lines |
+| --- | --- | --- |
+| Before this session (disposition doc's own baseline) | 30 | 11,146 (disposition's stated figure; real `wc -l` at session start across all `.md` files including the disposition doc itself was 13,402 across 33 files — the 30/11,146 figures apparently excluded `REPO-STATE.md`, `TOKEN-MAP.md`, and possibly counted archive as 6 files instead of 7) |
+| After this session, before deleting this worklist | 20 | 9,142 |
+| After deleting `docs/22DOCDISPOSITION.md` (216 lines) | **19** | **9,173** |
+
+Deleting the 216-line worklist did not shrink the total the way the other deletions did,
+because this decisions-log entry — appended before the deletion, as the task's own ordering
+required ("append everything... then delete") — is itself longer than the file it replaced.
+Net effect of this final step: −216, +~447 (this entry). That tradeoff is correct, not an
+error: the worklist's content was disposable once executed, but the record of *how* it was
+executed is exactly what rank-1 governance in this file exists to hold.
+
+**`docs/REPO-STATE.md` (887 lines) is excluded from the "target" comparison** — it was never
+part of the disposition doc's 30-file baseline or 17-file target (see discrepancy note above).
+Excluding it: **18 files, 8,286 lines.**
+
+This lands above the worklist's own "17 files, ~6,100 lines" target. The gap is almost entirely
+`docs/05-DECISIONS-LOG.md` itself, which grew from 2,358 lines at session start to 2,633 lines
+by design — every extraction and every repair this task performed added to it, per rank-1
+governance and the explicit instruction to append rather than drop history — plus two new
+baseline-report files (160 lines total) the original worklist did not anticipate as permanent
+artifacts. No file was trimmed below what its live, still-binding content required; the rule
+throughout was extract-then-delete, never delete-and-shrink-regardless. If a tighter number is
+wanted, the two baseline reports are the only candidates for consolidation (e.g., folding into
+this log instead of standalone files) — flagging rather than doing that unasked, since the
+task's own instruction was to "save both reports" as artifacts in their own right.
+
+### 8. Skills baseline going forward
+
+`claims-check` and `route-audit` baselines are saved at `docs/BASELINE-CLAIMS-CHECK-20260811.md`
+and `docs/BASELINE-ROUTE-AUDIT-20260811.md`. Both are clean relative to their own scope (zero
+claims violations; one pre-existing, owner-level route finding carried forward, no new failure
+mode). Future sessions touching public copy or routes should diff against these baselines, not
+re-derive from zero.

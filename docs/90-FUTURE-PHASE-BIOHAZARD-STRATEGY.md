@@ -14,8 +14,10 @@ The 90-series prefix signals: outside the precedence chain, inert until promoted
    verifiable under California Health & Safety Code requirements.
 2. Trauma scene waste transport and disposal arrangements in place with a permitted
    hauler and disposal facility, documented.
-3. The claims authority (`04-CLAIMS-GUARDRAILS.md`) formally amended to permit human
-   biohazard language — issued as a new dated version and logged in `05-DECISIONS-LOG.md`.
+3. The claims authority (`docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` — corrected 2026-08-11;
+   `04-CLAIMS-GUARDRAILS.md` does not exist and never has, see `AGENTS.md` §1) formally amended
+   to permit human biohazard language — issued as a new dated version and logged in
+   `05-DECISIONS-LOG.md`.
 4. Owner issues an explicit supersession note promoting this document into the
    precedence chain.
 
@@ -307,9 +309,10 @@ separately, factually, and only while active and verifiable.
 9. **FAQ** — answer the objections preventing contact (cost logic, photos,
    timeline, whether they must enter the property, discretion, what happens if
    more is discovered).
-10. **CTA** — Request a Property Assessment. Supporting copy: "Tell us what is
-    happening. We will help determine what level of service the property actually
-    requires."
+10. **CTA** — **Amended 2026-08-11: "Request a Property Assessment" was never adopted.**
+    The governed primary CTA is **Request an assessment** (`AGENTS.md` §3,
+    `docs/02-OWNER-INPUTS.md`). Supporting copy: "Tell us what is happening. We will help
+    determine what level of service the property actually requires."
 
 ## SEO + conversion rule (retained)
 
@@ -352,10 +355,11 @@ table's assumptions.
 
 ## CTA language
 
-Primary: **Request a Property Assessment** (matches sitewide governance — the
-original draft's "Request an Assessment" is corrected to the governed phrasing).
-Secondary: **Text a Photo of the Property** — with an explicit note on biohazard
-pages that photos are optional and no one should re-enter an unsafe scene to take
+**Amended 2026-08-11: this section had the correction backwards.** Primary CTA is
+**Request an assessment** — that is the governed sitewide phrasing (`AGENTS.md` §3,
+`docs/02-OWNER-INPUTS.md`). "Request a Property Assessment" was never adopted anywhere in the
+live build; do not use it. Secondary: **Text a Photo of the Property** — with an explicit note
+on biohazard pages that photos are optional and no one should re-enter an unsafe scene to take
 them.
 
 ---
@@ -363,8 +367,10 @@ them.
 # 10. Buyer research capture system (extracted — active NOW, not gated)
 
 This is the one net-new operational mechanism from the original draft. It is
-approved for immediate use across ALL service categories and should be formalized
-in `05-OPERATIONS.md`. Do not invent customer psychology; capture it.
+approved for immediate use across ALL service categories. **`05-OPERATIONS.md` does not exist
+and never has** (`AGENTS.md` §1) — there is no current operations authority document to
+formalize this into. Until one is created by explicit owner decision, this section is the
+system's only home. Do not invent customer psychology; capture it.
 
 For every inquiry, record six fields:
 
@@ -400,7 +406,7 @@ step logged in `05-DECISIONS-LOG.md`:
 | §7 Proof ladder | `01-QUALITY-GUARDRAILS.md` §15 | Stage-appropriate evidence rules for biohazard pages |
 | §8 Founder framing | `00-MASTER-BRIEF.md` §0.3 | No change needed — used verbatim |
 | §9 Page architecture | New page briefs (B-series continuation) | One brief per Tier B service, sequenced by search volume |
-| §10 Buyer research | `05-OPERATIONS.md` | Already active — verify it is formalized before activation |
+| §10 Buyer research | ~~`05-OPERATIONS.md`~~ — does not exist, see §10 below | Already active in this section; no operations authority document exists to move it into |
 | Credential chip | Sitewide component | New owner-approved chip wording including TSWMP; "licensed" remains banned unless a license is actually held |
 
 Rule: no Tier B page brief is written until rows 1–2 of this table are complete.

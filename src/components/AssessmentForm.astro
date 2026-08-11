@@ -1728,9 +1728,11 @@ const yesNoUnsure = [
         if (status >= 200 && status < 300 && payload.ok === true) {
           safeStorage.remove(window.localStorage, localDraftKey);
           safeStorage.remove(window.sessionStorage, sessionDraftKey);
-          const submissionId =
-            typeof payload.submissionId === "string"
-              ? payload.submissionId
+          // The short code, not the UUID: this is what the visitor may write down or
+          // photograph, and it is the reference the office can act on.
+          const code =
+            typeof payload.confirmationCode === "string"
+              ? payload.confirmationCode
               : "";
           const callbackWindow =
             typeof payload.callbackWindow === "string"
@@ -1743,7 +1745,7 @@ const yesNoUnsure = [
               payload.confirmationEmailSent === true ? "sent" : "attention"
           });
           if (isResidenceOffer) parameters.set("offer", "private-residence-reset");
-          if (submissionId) parameters.set("submission", submissionId);
+          if (code) parameters.set("code", code);
           window.location.assign(`/thank-you/?${parameters.toString()}`);
           return;
         }

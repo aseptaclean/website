@@ -1,5 +1,6 @@
 import {
   callbackWindow,
+  confirmationCode,
   json,
   safeFileName,
   sha256,
@@ -45,7 +46,13 @@ const allowedOrigin = (request: Request, env: LeadEnvironment) => {
 const persist = (env: LeadEnvironment, lead: LeadRecord) =>
   env.LEAD_UPLOADS.put(recordKey(lead.id), JSON.stringify(lead), {
     httpMetadata: { contentType: "application/json" },
-    customMetadata: { recordType: "aseptaclean-lead", leadId: lead.id }
+    customMetadata: {
+      recordType: "aseptaclean-lead",
+      leadId: lead.id,
+      // Carried in metadata as well as the body so a record can be found from the code a
+      // customer reads out, without fetching and parsing every object in the bucket.
+      confirmationCode: lead.code
+    }
   });
 
 export async function onRequestPost(context: FunctionContext) {
@@ -130,6 +137,9 @@ export async function onRequestPost(context: FunctionContext) {
       ok: true,
       duplicate: true,
       submissionId: prior.submissionId,
+      // Recomputed rather than read back: the code is a pure function of the UUID, so a
+      // resubmit shows the customer the same code the first attempt did.
+      confirmationCode: confirmationCode(prior.submissionId),
       callbackWindow: prior.callbackWindow,
       confirmationEmailSent: false
     });
@@ -139,6 +149,7 @@ export async function onRequestPost(context: FunctionContext) {
   const receivedAt = new Date().toISOString();
   const lead: LeadRecord = {
     id,
+    code: confirmationCode(id),
     receivedAt,
     callbackWindow: callbackWindow(new Date(receivedAt)),
     data: Object.fromEntries(
@@ -264,6 +275,7 @@ export async function onRequestPost(context: FunctionContext) {
     {
       ok: true,
       submissionId: id,
+      confirmationCode: lead.code,
       callbackWindow: lead.callbackWindow,
       confirmationEmailSent:
         lead.delivery.customerEmail?.state === "succeeded"

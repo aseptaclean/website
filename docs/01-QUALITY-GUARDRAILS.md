@@ -18,6 +18,9 @@ appeared in this section named four files that never existed and ranked this fil
 
 Where this file conflicts with a higher authority, the higher authority wins. Report the conflict. Do not silently improvise.
 
+Claims are governed by `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md`. It outranks this file on every
+question of what may be said publicly — read it before writing or reviewing any copy.
+
 ---
 
 # 1. The hard truth
@@ -430,7 +433,9 @@ Manual line breaks are permitted only when they remain sound across responsive r
 
 ## 8.4 Punctuation and rhythm
 
-Copy must pass `03-VOICE.md` and then receive a second visual read in the browser.
+**`03-VOICE.md` does not exist and never has** (`AGENTS.md` §1) — voice and tone rules live in
+this file and in `18-VISUAL-DIRECTION.md`. Copy must pass those standards and then receive a
+second visual read in the browser.
 
 A sentence that is good in a document may produce an ugly, dense, or repetitive layout. Edit the copy and composition together.
 
@@ -992,7 +997,7 @@ Score every completed page out of 100.
 
 ## 20.6 Content and credibility — 10 points
 
-- 4: voice matches `03-VOICE.md`
+- 4: voice matches this file and `18-VISUAL-DIRECTION.md` (`03-VOICE.md` does not exist — `AGENTS.md` §1)
 - 3: claims pass the guardrails
 - 3: no filler, generic, or synthetic proof
 

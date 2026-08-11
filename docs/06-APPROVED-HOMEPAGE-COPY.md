@@ -1,8 +1,15 @@
 # Approved Homepage Copy — Emotional Outcome Edition
 
-**Status:** Owner-approved copy direction for the current one-page Astro launch.
+**Status:** Superseded for `/` by `aseptaclean-FINAL-v2.html` (rank 7 in `AGENTS.md`'s
+precedence chain) — the v2 port is the binding copy source for the homepage. This file remains
+**authoritative for every other route.** Owner-approved copy direction, current one-page Astro
+launch.
 
-**Authority:** This file is a convenience extract of Section 8 in `00-MASTER-BRIEF.md`. When building the homepage, preserve this wording and emotional sequence unless the owner explicitly approves a change. Legal, claims, factual, and accessibility guardrails still override unsupported language.
+**Authority:** This file was originally a convenience extract of Section 8 in
+`00-MASTER-BRIEF.md`, now deleted (see `docs/22DOCDISPOSITION.md`). When building any route
+other than `/`, preserve this wording and emotional sequence unless the owner explicitly
+approves a change. Legal, claims, factual, and accessibility guardrails still override
+unsupported language.
 
 **Required emotional sequence:**
 

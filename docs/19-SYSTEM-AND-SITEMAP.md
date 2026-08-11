@@ -126,7 +126,7 @@ Everything passes the claims check (`01-QUALITY-GUARDRAILS.md`) before publicati
 ### 2.1 Phase map
 
 ```
-PHASE 1 — LIVE THIS WEEK (or immediately after; two fix launch defects)
+PHASE 1 — LIVE (reconciled 2026-08-11 — all seven built and shipped, not "this week")
 /                                    homepage (FINAL-v2)
 /thank-you/                          conversion confirmation
 /about/                              E-E-A-T + brand-search catcher
@@ -182,6 +182,20 @@ furniture removal, mattress disposal pages. No reviews page until reviews exist.
 ```
 
 ### 2.2 Per-page SEO spec (the part that must not live in chat)
+
+**The SEO correction — migrated from `07-ONE-PAGE-DIRECTIVE.md` §4, 2026-08-11.** The
+homepage title and meta target property cleanout and deep cleaning — that term competes
+against junk removal and maid services (high volume, low intent, a fight a zero-review
+business loses on proximity and budget). The higher-intent, weaker-incumbent query is hoarding
+and estate cleanout language, so the recognition movement and the FAQ carry the situational
+language a hoarding or estate searcher types — heavy accumulation, inherited property, estate
+cleanout, whole-house cleanout, a property nobody can get to — written as situations, never as
+a keyword block. Required homepage FAQ: *"Do you handle properties with heavy accumulation or
+hoarding conditions?"*, answered factually inside the lawful scope with the exclusion list
+attached. (Status: already shipped — `FAQ.astro` carries this question; see
+`docs/04-RELEASE-CHECKLIST.md` C16.) `hoarder` never appears as a noun and `gross filth` never
+appears at all anywhere on the site — see `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §2.2 for that as
+a standing claims rule, not just a homepage note.
 
 **HOMEPAGE `/`**
 - Primary: property cleanout san jose
@@ -357,6 +371,17 @@ discretion line in hero chips or Recognition — candidate copy:
 *"Unmarked assessment · no photographs shared without permission"* — VERIFY the
 vehicle is actually unmarked before shipping the word "unmarked."
 
+**Guarantee reconciliation — migrated from `07-ONE-PAGE-DIRECTIVE.md` §6, 2026-08-11.** The
+Handoff Assurance block (`06-APPROVED-HOMEPAGE-COPY.md`) requires discretion re-inserted as a
+sixth item — "someone will find out" is one of the three fears that block this sale, and it
+must be written operationally, not adjectivally: unmarked vehicles, plain clothing, no
+signage, no conversation with neighbors, scheduling around visibility. Ship only what is true
+today (see the VERIFY note above — this is the same open item, not a separate one). Keep the
+response commitment concrete ("within one business day") without attaching a financial penalty
+unless it will be held every week. "Handoff Assurance" replaces "the four named guarantees"
+repo-wide — purge old guarantee names from components, copy, footer, and schema wherever
+found.
+
 ### 3.2 Service page template
 ```
 [Ribbon / Nav — shared components]
@@ -440,6 +465,109 @@ Result logic (gated on name + phone):
 Result page = 3 lines: the likely path, what happens next, the one-business-day
 promise. No diagnosis language, no condition labels for people, no price quotes.
 `01` governs result copy. Lead arrives pre-qualified with all four answers attached.
+
+---
+
+## PART 4B — ASSESSMENT FORM SPECIFICATION (current, `/request-assessment/`)
+
+### 4B.0 Form architecture — migrated from `07-ONE-PAGE-DIRECTIVE.md` §7, 2026-08-11
+
+**On `/`** — inline, short form (`QuickHandoffForm.astro`), no wizard, no progress bar. Name,
+phone, "What are you looking at?" textarea, consent line, honeypot, hidden context values. Its
+only job is to capture someone ready now, before qualification can scare them off. Note the
+current placement deviation from the original spec (which called for the short form to appear
+twice, hero and final movement): the v2 port removed it from the hero by owner confirmation.
+It now lives in a `#request` section, the final CTA, and the sticky bar — a deliberate,
+recorded deviation, not a regression. See `docs/23-BUILD-REQUIREMENTS-FROM-RESEARCH.md` §3.
+
+**On `/request-assessment/`** — the full three-step progressive-disclosure form in §4B.1
+below, uploads, visible progress, back/next, input preservation.
+
+Both post to `/api/lead` with `offer_type=handoff_reset`; `entry_route` distinguishes them.
+Photo upload is the highest-value field in the system — if upload handling threatens a launch
+date, ship the SMS photo path as a launch mechanism and add uploads immediately after, but
+never delay launch for it and never ship a broken upload control.
+
+### 4B.1 Field specification
+
+**Migrated from `00-MASTER-BRIEF.md` §9, 2026-08-11.** This governs the live long-form
+progressive-disclosure form (`AssessmentForm.astro`), distinct from Part 4's future triage
+quiz. Three-step form.
+
+### Step 1: Property fit
+
+Fields: property city · property type · is the property vacant? · what is happening with the
+property? · desired completion date · approximate square footage.
+
+Suggested "what is happening" options: inherited or estate property · preparing to sell ·
+landlord turnover · difficult move-out · accumulated contents · overwhelmed property · already
+empty but requires detailed cleaning · other.
+
+### Step 2: Scope and condition
+
+Fields: areas involved · unwanted contents removal required? · heavy cleaning required? ·
+garage or storage area included? · appliance interiors included? · cabinet interiors included?
+· known animal waste? · known human biological material? · known needles or sharps? · known
+sewage? · known mold? · known pest activity? · upload photos or video · access notes · what
+must remain? · what must be removed?
+
+Hazard questions must not imply service availability.
+
+### Step 3: Authority and contact
+
+Fields: full name · phone · email · relationship to property · are you authorized to approve
+the work? · property address · preferred contact method · best contact time · additional notes
+· privacy consent checkbox.
+
+### Form header microcopy
+
+> Takes approximately 3–5 minutes. Photos are strongly recommended. Your information and
+> property images are used only to evaluate the requested project.
+
+### Form completion message
+
+> Thank you. Your request has been received, and a confirmation email is on its way. During
+> business hours, Aseptaclean will call within 5 minutes to review the property and determine
+> the next step. Requests submitted outside business hours will be called during the next
+> business window. Submitting this form does not create a service agreement.
+
+**Published business hours:** Monday–Saturday, 7:00 AM–7:00 PM Pacific Time. Closed Sunday.
+
+### Form behavior
+
+- Autosave progress locally when practical; show progress indicator; support multiple image
+  uploads; validate file size and type; use clear inline error messages; preserve user input
+  after validation errors; do not require account creation.
+- Send form data to the configured form endpoint. Include spam protection and hidden
+  source/UTM fields.
+- Send an immediate confirmation email to the customer when a valid email address is provided.
+- Send an immediate SMS lead alert to the owner at the private server-side alert number,
+  including lead name, phone, city, situation summary, submission time, source URL, and a
+  direct callback link. Target SMS delivery within 60 seconds of successful submission; create
+  a fallback owner email alert if SMS delivery fails.
+- Redirect to `/thank-you/`. Never expose email-provider, SMS-provider, CRM, or notification
+  secrets in browser code.
+
+### Lead-response operating standard
+
+- During published business hours, the owner calls a successfully submitted lead within 5
+  minutes.
+- Outside published business hours, the confirmation email and success message state that the
+  lead will be called during the next business window.
+- The 5-minute standard is an operating commitment, not a claim of 24/7 availability.
+- Record submission time, first-contact time, and elapsed response time so the standard can be
+  audited later.
+
+### Analytics event names
+
+**Migrated from `00-MASTER-BRIEF.md` §13, 2026-08-11.** Recommended event names:
+`handoff_plan_click` · `phone_click` · `assessment_start` · `assessment_step_1_complete` ·
+`assessment_step_2_complete` · `assessment_submit` · `photo_upload` · `qualified_lead` ·
+`quote_issued` · `deposit_collected`.
+
+Also track: page views, scroll depth, primary CTA clicks, source/medium/campaign, thank-you
+page views, revenue, gross profit, time from inquiry to deposit. Do not optimize around raw
+form volume — optimize around qualified leads, deposits, and gross profit.
 
 ---
 

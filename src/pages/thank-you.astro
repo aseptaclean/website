@@ -131,13 +131,15 @@ const phoneHref = site.business.phoneUri;
     } else if (confirmationEmail && emailState !== "sent") {
       confirmationEmail.textContent =
         isResidence
-          ? "Your residence assessment was received, but confirmation-email delivery could not be verified. Save the request reference below. Aseptaclean will still review the residence details within one business day."
-          : "Your request was received, but confirmation-email delivery could not be verified. Save the request reference below. Aseptaclean will still review the property details and provide the Handoff Plan within one business day.";
+          ? "Your residence assessment was received, but confirmation-email delivery could not be verified. Save the confirmation code below. Aseptaclean will still review the residence details within one business day."
+          : "Your request was received, but confirmation-email delivery could not be verified. Save the confirmation code below. Aseptaclean will still review the property details and provide the Handoff Plan within one business day.";
     }
-    const submission = parameters.get("submission");
-    if (reference && submission && /^[a-zA-Z0-9-]{8,80}$/.test(submission)) {
+    // Six Crockford base32 characters, so the visitor can read this down the phone or
+    // type it from a photo. The submission UUID stays internal and is never shown here.
+    const code = parameters.get("code");
+    if (reference && code && /^AC-[0-9A-HJKMNP-TV-Z]{6}$/.test(code)) {
       reference.hidden = false;
-      reference.textContent = `Request reference: ${submission}`;
+      reference.textContent = `Confirmation code: ${code}`;
     }
     window.history.replaceState({}, "", "/thank-you/");
   }

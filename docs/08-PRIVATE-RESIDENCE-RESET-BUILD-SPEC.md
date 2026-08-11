@@ -74,7 +74,10 @@ Microcopy:
 
 Starting context:
 
-`Initial Residence Reset projects generally begin at $2,000.`
+**Removed per the 2026-08-11 pricing decision (`AGENTS.md` §4) — no price figure is published
+anywhere on the site.** Route to cost drivers and the $195 assessment fee instead, same
+mechanism as the homepage pricing section. Already reflected in the live route
+(`src/pages/private-residence-reset.astro` carries no `$2,000` string).
 
 ## 5. Emotional outcome section
 
@@ -226,7 +229,7 @@ Consent-gate optional analytics through Termly.
 
 - Handoff Reset remains the obvious flagship on the homepage
 - page cannot be mistaken for a maid-service package page
-- $2,000 starting context is centralized and accurate
+- no price figure renders anywhere on the page — cost drivers and the $195 assessment fee only, per `AGENTS.md` §4
 - form variant reaches HubSpot correctly
 - customer receives the correct email
 - owner SMS clearly identifies the residence offer

@@ -113,6 +113,7 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
     !isDetailedLead(lead)
       ? [
           `Offer: Quick request (short form)`,
+          `Confirmation code: ${lead.code}`,
           `Request ID: ${lead.id}`,
           `Description: ${field(lead.data.property_detail || lead.data.additional_notes)}`,
           `Private uploads: ${lead.files.length}`
@@ -120,6 +121,7 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
       : isResidence
       ? [
           `Offer: Private Residence Reset`,
+          `Confirmation code: ${lead.code}`,
           `Request ID: ${lead.id}`,
           `Residence: ${field(lead.data.property_address)}, ${field(lead.data.property_city)} ${field(lead.data.property_zip)}`,
           `Situation: ${field(lead.data.property_situation)}`,
@@ -138,6 +140,7 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
         ]
       : [
           `Offer: Handoff Reset`,
+          `Confirmation code: ${lead.code}`,
           `Request ID: ${lead.id}`,
           `Property: ${field(lead.data.property_address)}, ${field(lead.data.property_city)}`,
           `Situation: ${field(lead.data.property_situation)}`,
@@ -168,6 +171,10 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
         offer_type: isResidence
           ? "Private Residence Reset"
           : "Handoff Reset",
+        // Custom deal property (created 2026-08-11). Lets the owner pull up the deal from
+        // the code a customer reads out, and is the join key between the CRM record, the
+        // R2 record, and the confirmation email.
+        confirmation_code: lead.code,
         description: summary
       },
       associations: [
@@ -240,9 +247,11 @@ export function sendCustomerEmail(env: LeadEnvironment, lead: LeadRecord) {
     subject: isResidence
       ? "We received your Private Residence Reset assessment"
       : "We received your Aseptaclean Handoff Plan request",
+    // The customer sees the short code and not the UUID. Giving them two references for
+    // one request invites them to quote the wrong one; the UUID stays internal.
     text: isResidence
-      ? `Thank you, ${lead.data.full_name}.\n\nWe received your Private Residence Reset assessment (${lead.id}). ${callback}\n\nWithin one business day, Aseptaclean will review the residence, desired baseline, priority rooms, access, and whether an on-site walkthrough is required.\n\nSubmitting this request does not authorize work, create a service agreement, or reserve a project date.`
-      : `Thank you, ${lead.data.full_name}.\n\nWe received your request (${lead.id}). ${callback}\n\nWithin one business day, Aseptaclean will provide a fit decision, preliminary scope direction, and clear next step.\n\nSubmitting this request does not authorize work, create a service agreement, or reserve a project date.`
+      ? `Thank you, ${lead.data.full_name}.\n\nWe received your Private Residence Reset assessment. Your confirmation code is ${lead.code} — quote it if you call. ${callback}\n\nWithin one business day, Aseptaclean will review the residence, desired baseline, priority rooms, access, and whether an on-site walkthrough is required.\n\nSubmitting this request does not authorize work, create a service agreement, or reserve a project date.`
+      : `Thank you, ${lead.data.full_name}.\n\nWe received your request. Your confirmation code is ${lead.code} — quote it if you call. ${callback}\n\nWithin one business day, Aseptaclean will provide a fit decision, preliminary scope direction, and clear next step.\n\nSubmitting this request does not authorize work, create a service agreement, or reserve a project date.`
   });
 }
 
@@ -314,7 +323,27 @@ export function sendOwnerFallbackEmail(
   // Replying to a lead alert should reach the lead, not Aseptaclean. The short form
   // collects no email, so this is absent on that path and no Reply-To is set.
   const customerEmail = typeof lead.data.email === "string" ? lead.data.email : "";
+  // The subject is read on a phone lock screen before the message is ever opened, so it
+  // leads with the two facts that decide whether to pick up — where the property is and
+  // what is wrong with it — and trails the code. Absent parts are dropped entirely:
+  // field()'s "Not supplied" is honest in a body but wastes the only line that gets read.
+  // Situation falls back to the offer label so the short form, which collects neither a
+  // city nor a situation, still says something more than its own code.
+  const subjectPart = (value: LeadRecord["data"][string] | undefined, max: number) => {
+    const text = typeof value === "string" ? value.trim() : "";
+    if (!text) return "";
+    return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
+  };
+  const subject = [
+    smsIsByDesign ? "New lead" : "SMS fallback",
+    subjectPart(lead.data.property_city, 24),
+    subjectPart(lead.data.property_situation, 34) || offerLabel,
+    lead.code
+  ]
+    .filter(Boolean)
+    .join(" · ");
   const leadSummary = [
+    `Confirmation code: ${lead.code}`,
     `Request ID: ${lead.id}`,
     `Name: ${lead.data.full_name}`,
     `Phone: ${lead.data.phone}`,
@@ -331,9 +360,7 @@ export function sendOwnerFallbackEmail(
   return sendResend(env, {
     to: env.OWNER_ALERT_EMAIL,
     ...(customerEmail ? { replyTo: customerEmail } : {}),
-    subject: smsIsByDesign
-      ? `New lead: ${offerLabel} ${lead.id}`
-      : `SMS fallback: ${offerLabel} ${lead.id}`,
+    subject,
     text: smsIsByDesign
       ? `New ${offerLabel} lead received. (SMS owner alerts are off pending 10DLC approval; email is the active notification channel.)\n\n${leadSummary}`
       : `The owner SMS alert did not deliver: ${smsStatus}\n\n${leadSummary}`

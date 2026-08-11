@@ -339,11 +339,13 @@ const endpointAvailable = Boolean(
               email:
                 payload.confirmationEmailSent === true ? "sent" : "none"
             });
-            const submissionId =
-              typeof payload.submissionId === "string"
-                ? payload.submissionId
+            // The short code, not the UUID: this is what the visitor may write down or
+            // photograph, and it is the reference the office can act on.
+            const code =
+              typeof payload.confirmationCode === "string"
+                ? payload.confirmationCode
                 : "";
-            if (submissionId) parameters.set("submission", submissionId);
+            if (code) parameters.set("code", code);
             window.location.assign(`/thank-you/?${parameters.toString()}`);
             return;
           }

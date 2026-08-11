@@ -252,14 +252,24 @@ disagree with the rail.
 
 ## P3 — housekeeping
 
+**All four items below are resolved as of the 2026-08-11 `docs/22DOCDISPOSITION.md` cleanup
+pass — kept as the historical record of what this audit originally found, not as an open
+task list.**
+
 - **Nine dangling doc-to-doc references confirmed**, including `01-QUALITY-GUARDRAILS.md:1174`
   pointing at its own former filename, and `08`'s reference to a strategy doc that has never
-  existed. Full list in the state report §11.
-- `docs/AGENTS-PRECEDENCE-BLOCK.md` still on disk. Delete it — its endpoint rule is inverted.
-- `01-QUALITY-GUARDRAILS.md` still titled `# 10 — $20K Website Quality…`, colliding with
-  `10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md`.
+  existed. Full list was in the state report §11 (`docs/REPO-STATE.md`, a frozen snapshot, not
+  re-verified since). Resolved: the two references still landing in live files were repaired
+  during the doc-cleanup pass; the rest lived in files since deleted or in historical log
+  narration.
+- ~~`docs/AGENTS-PRECEDENCE-BLOCK.md` still on disk. Delete it — its endpoint rule is
+  inverted.~~ Deleted.
+- ~~`01-QUALITY-GUARDRAILS.md` still titled `# 10 — $20K Website Quality…`, colliding with
+  `10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md`.~~ Retitled to `# 01 — Execution Quality and
+  Anti-Generic Guardrails`.
 - **Astro is 7.1.6.** The `07` §8 "freeze at Astro 5, migrate later" decision is moot — the
-  migration already happened. Strike it so nobody re-plans it.
+  migration already happened. (`07-ONE-PAGE-DIRECTIVE.md` itself is now deleted; this fact is
+  preserved in `docs/05-DECISIONS-LOG.md`'s migrated §3 row 11.)
 
 ---
 

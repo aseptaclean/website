@@ -11,8 +11,9 @@ this file: the §2 serif budget, the §6 eyebrow cap of seven, the §6 Mark thre
 §9 icon+title+paragraph/Newsreader-count/hairline-cap audit items, and "the 2px sharp-corner rule
 wherever it appears." Each is struck in place below with a pointer to `18`. On the last item: no
 literal "2px" radius rule exists anywhere in this file's text (confirmed by search) — the only
-place a `--ac-radius: 2px` value is written down is the orphaned, non-authoritative
-`docs/17-REFERENCE-TRANSLATION-MARTEL.md` (already flagged out of the precedence chain,
+place a `--ac-radius: 2px` value was written down was the orphaned, non-authoritative
+`docs/17-REFERENCE-TRANSLATION-MARTEL.md`, deleted 2026-08-11 per `docs/22DOCDISPOSITION.md`
+§1 (it was already flagged out of the precedence chain before deletion — see
 `05-DECISIONS-LOG.md`). Current code uses sharp/0-radius borders by convention (Session B,
 `05-DECISIONS-LOG.md`) without a codified numeric rule in either this file or `tokens.css`. There
 is nothing to strike here as a result; `18` §3's `--ac-radius-card: 12px` is the current rule for
@@ -305,13 +306,17 @@ compiles.
 
 ---
 
-## 10. Migrated from `09-PREMIUM-VISUAL-AND-TYPOGRAPHY-SPEC.md` (archived Session 2)
+## 10. Migrated from `09-PREMIUM-VISUAL-AND-TYPOGRAPHY-SPEC.md` (archived Session 2, deleted 2026-08-11)
 
-`09-PREMIUM-VISUAL-AND-TYPOGRAPHY-SPEC.md` is archived to `docs/archive/` per `07` §12 — its
-typography (old clamp scale) and homepage-composition sections (§3, §5, §6 of that file) are
-fully superseded by §1–§7 above and by `08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` §6, and were not
-carried forward. The sections below were still true and outside this file's original scope, so
-they move here rather than disappearing with the archived file.
+**`09-PREMIUM-VISUAL-AND-TYPOGRAPHY-SPEC.md` no longer exists.** It was archived to
+`docs/archive/` per `07` §12, and `docs/archive/` itself was deleted in full per
+`docs/22DOCDISPOSITION.md` §1 — every file in it was already superseded by a numbered
+successor with nothing live left unmigrated. Its typography (old clamp scale) and
+homepage-composition sections (§3, §5, §6 of that file) were fully superseded by §1–§7 above
+and by `08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` §6, and were never carried forward. The
+sections below were still true and outside this file's original scope, so they were migrated
+here rather than being allowed to disappear with the archived file — this migration predates
+and is unaffected by the later archive deletion.
 
 ### 10.1 Color and material system
 
