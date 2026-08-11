@@ -167,11 +167,16 @@ const phoneHref = site.business.phoneUri;
   .site-header__mobile-actions {
     display: flex;
     align-items: center;
-    gap: var(--ac-space-3);
+    gap: var(--ac-space-2);
+    min-width: 0;
   }
 
   .site-header__tel--compact {
-    font-size: clamp(0.7rem, 3vw, 0.82rem);
+    flex-shrink: 1;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: clamp(0.62rem, 3vw, 0.82rem);
   }
 
   .mobile-nav {
@@ -180,8 +185,9 @@ const phoneHref = site.business.phoneUri;
 
   .mobile-nav summary {
     display: flex;
-    min-width: 4.75rem;
+    flex-shrink: 0;
     min-height: 3rem;
+    padding-inline: var(--ac-space-2);
     cursor: pointer;
     list-style: none;
     align-items: center;
