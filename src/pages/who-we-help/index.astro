@@ -1,0 +1,169 @@
+---
+// Chunk 3 of the nested-hub-layer IA expansion (owner-approved plan, 2026-08-11, see
+// src/pages/services/index.astro's header comment for the shared plan reference): this page
+// shipped as an unpublished noindex draft in Chunk 2 and is now a real, linked, indexable
+// page — linked from primary nav and the footer, included in sitemap.xml.ts. Hybrid IA
+// decision: this hub sits ABOVE the existing flat service-page URLs without migrating or
+// 301-ing them — every segment card below links straight to an existing flat page (e.g.
+// /estate-cleanout-san-jose/), never to a not-yet-built nested child route. No dropdown/
+// submenu — flat nav entry only (owner decision, see src/data/site.ts). No biohazard segment
+// or link exists anywhere on this page, per the standing owner directive
+// (docs/05-DECISIONS-LOG.md, docs/19-SYSTEM-AND-SITEMAP.md Phase 5, docs/90) — this is out
+// of scope in any form.
+//
+// DIFFERENTIATION: this is a hub/directory page, not a buyer-decision service page — same
+// class as /services/ and /service-areas/ (no Track A/B split, no FAQ, no proof section, no
+// pricing). Framing is audience-segment ("who this is for"), not service-category like
+// /services/ ("what we do") — segment copy is re-angled from already-approved estate/hoarding/
+// property-manager/senior-downsizing material in servicePages.ts and homepage qualification/
+// contrast copy in site.ts, not new claims. See the whoWeHelpHub export in servicePages.ts for
+// the full scope-trim rationale (3 of the owner's original 7 candidate audiences; the other 4
+// — realtors, contractors, fiduciaries as a standalone page, commercial properties — would
+// require net-new claims not currently supported anywhere in this codebase).
+//
+// REDIRECT CHECK: public/_redirects has root-level rules for /families-estate-representatives/
+// (→ /, interim) and /property-managers/ (→ /handoff-standard/) — different paths than this
+// page's nested /who-we-help/families-estate-representatives/ and
+// /who-we-help/property-managers/ segment slugs referenced in copy below (no child pages built
+// yet). No collision. Re-checked against the full rule set at build time of this page.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import CompactHero from "@components/CompactHero.astro";
+import RequestForm from "@components/RequestForm.astro";
+import { whoWeHelpHub } from "@data/servicePages";
+import { site } from "@data/site";
+
+const schema = [
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Who We Help",
+        item: new URL(whoWeHelpHub.slug, site.urls.site).href
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="Who We Help | Aseptaclean"
+  description="Aseptaclean works with families and estate representatives, property managers, and seniors and move managers — one written scope and documented closeout, whoever is responsible for the property. San Jose & the South Bay."
+  canonicalPath={whoWeHelpHub.slug}
+  noindex={false}
+  schema={schema}
+>
+  <CompactHero eyebrow="Who we help" headingId="who-we-help-title">
+    <h1 id="who-we-help-title">Whoever is responsible for the property</h1>
+    <p class="compact-hero__lead">{whoWeHelpHub.intro}</p>
+  </CompactHero>
+
+  <section class="segments" aria-labelledby="segments-title">
+    <div class="ac-measure-wide">
+      <p class="ac-eyebrow">By audience</p>
+      <h2 id="segments-title" class="ac-type-h2 segments__heading">One written scope, whoever is deciding</h2>
+      <div class="segments__grid">
+        {
+          whoWeHelpHub.segments.map((segment) => (
+            <div class="segment-card">
+              <h3 class="ac-type-h3">{segment.title}</h3>
+              <p class="segment-card__detail">{segment.detail}</p>
+              <ul class="segment-card__points">
+                {segment.points.map((point) => (
+                  <li>{point}</li>
+                ))}
+              </ul>
+              <ul class="segment-card__links">
+                {segment.links.map((link) => (
+                  <li>
+                    <a href={link.href}>{link.label} →</a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <RequestForm />
+</BaseLayout>
+
+<style>
+  .segments {
+    background: var(--ac-color-paper);
+  }
+
+  .segments__heading {
+    max-width: 36ch;
+    margin-top: var(--ac-space-3);
+  }
+
+  .segments__grid {
+    display: grid;
+    gap: var(--ac-space-5);
+    margin-top: var(--ac-space-6);
+  }
+
+  .segment-card {
+    border-top: 2px solid var(--ac-color-navy-900);
+    padding-top: 16px;
+  }
+
+  .segment-card h3 {
+    margin-bottom: 8px;
+  }
+
+  .segment-card__detail {
+    max-width: 46ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.92rem;
+  }
+
+  .segment-card__points {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 46ch;
+    margin: var(--ac-space-4) 0 0;
+    padding: 0;
+    list-style: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.88rem;
+  }
+
+  .segment-card__points li {
+    padding-left: 16px;
+    border-left: 2px solid var(--ac-color-line);
+  }
+
+  .segment-card__links {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: var(--ac-space-4) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .segment-card__links a {
+    color: var(--ac-color-navy-800);
+    font-weight: 600;
+    font-size: 0.92rem;
+    text-decoration: none;
+  }
+
+  .segment-card__links a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 40rem) {
+    .segments__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+</style>

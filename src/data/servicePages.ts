@@ -621,3 +621,123 @@ export const propertyManagersPage = {
     }
   ]
 } as const;
+
+// Chunk 1 of the nested-hub-layer IA expansion (2026-08-11 owner sitemap paste, see the
+// session plan referenced in src/pages/services/index.astro's header comment). Hybrid IA
+// decision: this hub links DOWN to the existing flat service-page slugs above — it does not
+// introduce or require any new nested child routes. Card copy is pulled verbatim from
+// site.ts's already-approved homepage.serviceCards (docs/18-VISUAL-DIRECTION.md §6 row 3) so
+// no new claim is introduced by this page. No biohazard pillar — out of scope per
+// docs/05-DECISIONS-LOG.md / docs/19 Phase 5 / docs/90.
+export const servicesHub = {
+  slug: "/services/",
+  gate: null as string | null,
+  intro:
+    "Every project starts with the same written scope, whichever kind of work the property needs — clearing heavy accumulation, cleaning after it's cleared, or resetting a property that just needs deep cleaning on its own.",
+  pillars: [
+    {
+      title: "Complex property clearing",
+      detail:
+        "Whole-property clearing for heavy accumulation, estate, and abandoned-contents conditions — nonhazardous contents, within a signed scope.",
+      links: [
+        { label: "Estate cleanout", href: estatePage.slug },
+        { label: "Hoarding cleanup", href: hoardingPage.slug },
+        { label: "Property cleanouts for managers", href: propertyManagersPage.slug }
+      ]
+    },
+    {
+      title: "Animal & organic condition cleaning",
+      detail:
+        "Heavy organic conditions and animal waste, cleaned under our organic pathogen endorsement. Cleaning only — not a decontamination or health-safety determination.",
+      links: [{ label: "Animal waste cleanup", href: animalPage.slug }]
+    },
+    {
+      title: "Reset & restoration cleaning",
+      detail:
+        "Deep reset cleaning after clearing — kitchens, baths, cabinet and appliance interiors, floors and accessible surfaces — for the next handoff.",
+      links: [
+        { label: "Deep cleaning", href: deepCleaningPage.slug },
+        { label: "Senior downsizing", href: seniorDownsizingPage.slug }
+      ]
+    }
+  ]
+} as const;
+
+// Chunk 2 of the nested-hub-layer IA expansion (2026-08-11 owner sitemap paste, see the plan
+// referenced in src/pages/who-we-help/index.astro's header comment). Audience framing, not
+// service framing — segment copy is re-angled from already-approved material elsewhere in this
+// file and in site.ts (estatePage.trackB, hoardingPage.fiduciary, seniorDownsizingPage.
+// referralNote, propertyManagersPage.fiduciary, homepage.qualification/contrast) rather than
+// inventing new claims. Every segment below links DOWN to existing flat service-page slugs —
+// no new nested child routes.
+//
+// SCOPE DECISION: the owner's original pasted sitemap listed seven audiences (property owners,
+// families & estate representatives, property managers, realtors, contractors, fiduciaries/
+// attorneys, commercial properties). Trimmed to three segments this pass because that's what
+// existing copy actually supports as a distinct, non-thin page:
+//   - Families & estate representatives — merges "property owners" and "fiduciaries/attorneys"
+//     into the families segment. estatePage.trackB and hoardingPage.fiduciary already frame
+//     executors/attorneys/property-managers-as-fiduciary together with the family audience
+//     rather than as a separate persona with its own distinct copy — splitting them into two
+//     pages would mean duplicating the same paragraphs under two URLs, not writing two real
+//     pages.
+//   - Property managers — propertyManagersPage is already a full fiduciary-framed page for this
+//     exact audience; site.ts's FAQ ("Can you work with my realtor, property manager...")
+//     corroborates.
+//   - Seniors & move managers — seniorDownsizingPage plus its referralNote block, which already
+//     explicitly addresses senior move managers and care coordinators as a secondary audience.
+// NOT built — would require net-new claims doc 19/04-CLAIMS-GUARDRAILS.md don't currently
+// support:
+//   - Realtors — appears only as a third party a finished property gets "shown to" (docs/00,
+//     docs/06) and in one FAQ line. No realtor-framed value prop (listing timelines, staging-
+//     ready condition, etc.) exists anywhere to re-angle.
+//   - Contractors — zero mentions anywhere in src/data.
+//   - Commercial properties — site content (residenceOffer, service-area cities, FAQ) is
+//     residential-cleanout framed throughout; no commercial-property scope, pricing driver, or
+//     claim exists to re-angle.
+// Revisit if/when the owner supplies real realtor/contractor/commercial-specific content.
+export const whoWeHelpHub = {
+  slug: "/who-we-help/",
+  gate: null as string | null,
+  intro:
+    "Aseptaclean works with whoever is responsible for a property's next step — a family member, an executor, a property manager, or a move manager coordinating on someone else's behalf. Every situation gets the same written scope and documented closeout.",
+  segments: [
+    {
+      title: "Families & estate representatives",
+      detail:
+        "For the family member sorting a parent's home, and for the executor, attorney, or trustee who needs a written scope and a documented closeout for the estate file.",
+      points: [
+        "Nothing is removed without written approval — uncertain items go into a review category, not a dumpster.",
+        "One accountable operator for clearing and cleaning together, with a signed scope before work begins and a Property Handoff Record at closeout.",
+        "Discovered documents, photographs, jewelry, keys, and cash are isolated and reported, not disturbed or discarded."
+      ],
+      links: [
+        { label: "Estate cleanout", href: estatePage.slug },
+        { label: "Hoarding cleanup", href: hoardingPage.slug },
+        { label: "Estate cleanout checklist (free resource)", href: "/estate-cleanout-checklist/" }
+      ]
+    },
+    {
+      title: "Property managers",
+      detail:
+        "For property managers and owners turning over a vacant unit — tenant abandonment, eviction cleanout, or foreclosure turnover — who need the vacancy back on schedule without a surprise change order mid-turnover.",
+      points: [
+        "A signed scope before work starts, so cost and timeline are set before the crew arrives.",
+        "Discovered tenant belongings are isolated and reported so your abandonment-notice and holding-period procedures apply before anything is discarded.",
+        "A Property Handoff Record at closeout — photographs, exception list, discovered-item log — for the owner file."
+      ],
+      links: [{ label: "Property cleanouts for managers", href: propertyManagersPage.slug }]
+    },
+    {
+      title: "Seniors & move managers",
+      detail:
+        "For a parent moving to a smaller place, and for the senior move managers and care coordinators recommending a vendor to a client's family before the move.",
+      points: [
+        "Sorting follows a keep / donate-or-gift / clear framework, at a pace that doesn't force a single overwhelming weekend.",
+        "Set-aside items for family members are handled separately from clearing, so gifts and keepsakes don't get mixed in with what's removed.",
+        "Clearing and the post-move deep clean happen under one signed scope, so the property is ready for its next handoff."
+      ],
+      links: [{ label: "Senior downsizing", href: seniorDownsizingPage.slug }]
+    }
+  ]
+} as const;

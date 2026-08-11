@@ -7,13 +7,17 @@ import { site } from "@data/site";
 // noindex={true} per docs/19-SYSTEM-AND-SITEMAP.md and this session's build directive, and stay
 // out of the sitemap until each page's own launch gate clears. Do not add them back as a group;
 // add each individually when its owner review / launch gate is cleared.
+// /services/ and /who-we-help/ shipped noindex in Chunks 1/2 but no longer fall in that
+// category as of Chunk 3 — they're now linked from primary nav and footer, so they're listed.
 const routes = [
   "/",
   "/about/",
   "/contact/",
   "/handoff-standard/",
   "/privacy/",
-  "/terms/"
+  "/terms/",
+  "/services/",
+  "/who-we-help/"
 ];
 if (site.urls.cookiePolicy) routes.push(site.urls.cookiePolicy);
 

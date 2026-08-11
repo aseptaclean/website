@@ -176,10 +176,15 @@ export const site = {
   }
 } as const;
 
-// docs/aseptaclean-FINAL-v2.html nav — ported verbatim (05-DECISIONS-LOG.md). Labels match the
-// mockup exactly; hrefs point at this build's actual section ids (the mockup used bare "#").
+// docs/aseptaclean-FINAL-v2.html nav — ported verbatim (05-DECISIONS-LOG.md), extended in
+// Chunk 3 of the IA expansion (owner-approved plan, 2026-08-11) with flat links to the
+// /services/ and /who-we-help/ hub pages. No dropdown/submenu — owner decision after
+// confirming no doc (07/18/19) specs a nested-nav shape. The original "Services" entry
+// pointed at the homepage's /#service-cards anchor; now that /services/ exists as a real
+// page, it replaces that anchor entry rather than duplicating the "Services" label.
 export const navigation = [
-  { label: "Services", href: "/#service-cards" },
+  { label: "Services", href: "/services/" },
+  { label: "Who We Help", href: "/who-we-help/" },
   { label: "Method", href: "/#standards" },
   { label: "The Record", href: "/#record" },
   { label: "About", href: "/#about" },
