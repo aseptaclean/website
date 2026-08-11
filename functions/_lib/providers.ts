@@ -47,10 +47,11 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
     return { skipped: true, detail: "HubSpot credentials are not configured." };
   }
   const email = typeof lead.data.email === "string" ? lead.data.email : "";
-  if (!email) {
+  const phone = String(lead.data.phone ?? "").trim();
+  if (!email && !phone) {
     return {
       skipped: true,
-      detail: "No email was collected on this submission; HubSpot contact sync needs one."
+      detail: "No email or phone was collected on this submission; HubSpot needs one identifier."
     };
   }
 
@@ -59,22 +60,30 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
     "content-type": "application/json"
   };
   const name = String(lead.data.full_name).trim().split(/\s+/);
+  // The short homepage form collects no email, so phone is the identifier on that path.
+  // Dropping the CRM write there would leave homepage leads in R2 and nowhere else.
   const contactProperties = {
-    email,
+    ...(email ? { email } : {}),
     firstname: name[0] ?? "",
     lastname: name.slice(1).join(" "),
-    phone: String(lead.data.phone),
-    city: field(lead.data.property_city)
+    phone,
+    // field() renders "Not supplied" for humans reading a summary; writing that into a
+    // real CRM property would make it look like a city named "Not supplied".
+    ...(lead.data.property_city ? { city: String(lead.data.property_city) } : {})
   };
+  // Dedupe on whichever identifier we have. Phone matching is an exact-value match, so it
+  // only collapses repeat submissions that share the site's own formatting — the long and
+  // short forms both post the digits as the visitor typed them.
+  const dedupeFilter = email
+    ? { propertyName: "email", operator: "EQ", value: email }
+    : { propertyName: "phone", operator: "EQ", value: phone };
   const searchResponse = await fetch(
     "https://api.hubapi.com/crm/v3/objects/contacts/search",
     {
       method: "POST",
       headers,
       body: JSON.stringify({
-        filterGroups: [
-          { filters: [{ propertyName: "email", operator: "EQ", value: email }] }
-        ],
+        filterGroups: [{ filters: [dedupeFilter] }],
         limit: 1
       })
     }
@@ -147,9 +156,13 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
     headers,
     body: JSON.stringify({
       properties: {
-        dealname: isResidence
-          ? `Private Residence Reset — ${lead.data.full_name} — ${field(lead.data.property_city)}`
-          : `Handoff Reset — ${lead.data.full_name} — ${field(lead.data.property_city)}`,
+        // The short form never asks for a city, so append it only when there is one
+        // rather than naming the deal "… — Not supplied".
+        dealname: [
+          isResidence ? "Private Residence Reset" : "Handoff Reset",
+          String(lead.data.full_name),
+          ...(lead.data.property_city ? [String(lead.data.property_city)] : [])
+        ].join(" — "),
         pipeline: env.HUBSPOT_PIPELINE_ID,
         dealstage: env.HUBSPOT_DEAL_STAGE_ID,
         offer_type: isResidence
@@ -175,20 +188,33 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
   return { skipped: false, detail: `Contact ${contactId}; deal ${deal.id}` };
 }
 
+// EMAIL_FROM_ADDRESS sends from contact.aseptaclean.com, the only domain verified in
+// Resend, and that domain has receiving disabled — a reply to the From address would
+// bounce. Every message therefore carries an explicit Reply-To, but not the same one:
+// the customer confirmation replies to monitored Google Workspace mail on the apex,
+// while the owner alert replies straight to the lead so hitting reply on the alert
+// lands in the customer's inbox.
+const CUSTOMER_REPLY_TO = "info@aseptaclean.com";
+
 async function sendResend(
   env: LeadEnvironment,
-  message: { to: string; subject: string; text: string }
+  message: { to: string; subject: string; text: string; replyTo?: string }
 ) {
   if (!env.RESEND_API_KEY || !env.EMAIL_FROM_ADDRESS) {
     return { skipped: true, detail: "Resend credentials are not configured." };
   }
+  const { replyTo, ...email } = message;
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
       authorization: `Bearer ${env.RESEND_API_KEY}`,
       "content-type": "application/json"
     },
-    body: JSON.stringify({ from: env.EMAIL_FROM_ADDRESS, ...message })
+    body: JSON.stringify({
+      from: env.EMAIL_FROM_ADDRESS,
+      ...email,
+      ...(replyTo ? { reply_to: replyTo } : {})
+    })
   });
   if (!response.ok) await providerError(response, "Resend");
   const result = (await response.json()) as { id: string };
@@ -210,6 +236,7 @@ export function sendCustomerEmail(env: LeadEnvironment, lead: LeadRecord) {
       : "Because your request arrived outside published business hours, we will call during the next business window.";
   return sendResend(env, {
     to: email,
+    replyTo: CUSTOMER_REPLY_TO,
     subject: isResidence
       ? "We received your Private Residence Reset assessment"
       : "We received your Aseptaclean Handoff Plan request",
@@ -284,6 +311,9 @@ export function sendOwnerFallbackEmail(
   // as an incident. Any other skip/failure reason means SMS was actually attempted.
   const smsIsByDesign = env.SMS_ALERTS_ENABLED !== "true";
   const callbackPhone = String(lead.data.phone).replace(/[^\d+]/g, "");
+  // Replying to a lead alert should reach the lead, not Aseptaclean. The short form
+  // collects no email, so this is absent on that path and no Reply-To is set.
+  const customerEmail = typeof lead.data.email === "string" ? lead.data.email : "";
   const leadSummary = [
     `Request ID: ${lead.id}`,
     `Name: ${lead.data.full_name}`,
@@ -300,6 +330,7 @@ export function sendOwnerFallbackEmail(
   ].join("\n");
   return sendResend(env, {
     to: env.OWNER_ALERT_EMAIL,
+    ...(customerEmail ? { replyTo: customerEmail } : {}),
     subject: smsIsByDesign
       ? `New lead: ${offerLabel} ${lead.id}`
       : `SMS fallback: ${offerLabel} ${lead.id}`,

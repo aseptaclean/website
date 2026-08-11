@@ -121,7 +121,14 @@ const phoneHref = site.business.phoneUri;
           ? "Because this request arrived during published business hours, Aseptaclean’s operating standard is to call within 5 minutes."
           : "Because this request arrived outside published business hours, Aseptaclean will call during the next business window.";
     }
-    if (confirmationEmail && parameters.get("email") !== "sent") {
+    const emailState = parameters.get("email");
+    if (confirmationEmail && emailState === "none") {
+      // The short homepage form collects a phone number and no email address, so no
+      // confirmation email is ever attempted on that path. Reporting unverified
+      // delivery there would describe a message that was never sent.
+      confirmationEmail.textContent =
+        "No confirmation email was sent—this form collects a phone number, not an email address. Aseptaclean will call the number you provided and walk through the Handoff Plan—fit decision, preliminary scope direction, and clear next step—within one business day.";
+    } else if (confirmationEmail && emailState !== "sent") {
       confirmationEmail.textContent =
         isResidence
           ? "Your residence assessment was received, but confirmation-email delivery could not be verified. Save the request reference below. Aseptaclean will still review the residence details within one business day."

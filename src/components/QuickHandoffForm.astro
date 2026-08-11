@@ -333,8 +333,11 @@ const endpointAvailable = Boolean(
                 typeof payload.callbackWindow === "string"
                   ? payload.callbackWindow
                   : "next-business-window",
+              // This form collects no email address, so no confirmation email is ever
+              // attempted. "attention" would tell the visitor a delivery failed when
+              // none was tried; "none" renders the call-back promise instead.
               email:
-                payload.confirmationEmailSent === true ? "sent" : "attention"
+                payload.confirmationEmailSent === true ? "sent" : "none"
             });
             const submissionId =
               typeof payload.submissionId === "string"
