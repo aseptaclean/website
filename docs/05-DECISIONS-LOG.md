@@ -2640,3 +2640,125 @@ and `docs/BASELINE-ROUTE-AUDIT-20260811.md`. Both are clean relative to their ow
 claims violations; one pre-existing, owner-level route finding carried forward, no new failure
 mode). Future sessions touching public copy or routes should diff against these baselines, not
 re-derive from zero.
+
+---
+
+## `docs/27-COPY-CANONICAL.md` adopted as homepage/service-page copy source (2026-08-16)
+
+### 0. What happened
+
+Owner directive this session: "Copy source is now `docs/27-COPY-CANONICAL.md` §9–15
+(Astro/Cloudflare build). Migrate its finished copy onto the pages, applying the header's owner
+reconciliations... Ignore doc 27 §25 and anything technical — it describes the abandoned
+ChatGPT build." Doc 27 is a new, untracked file (`git status` shows `??`) and is **not yet in
+`AGENTS.md`'s precedence chain at all** — it postdates the 2026-08-11 chain and was never added.
+
+### 1. Conflict: doc 27's H1s vs. doc 19's H1 architecture rule
+
+A: `docs/19-SYSTEM-AND-SITEMAP.md` Part 3.2 (service-page wireframe) — "H1 in buyer's words
+(never brand vocabulary)" (rank 6, in the chain)
+
+B: `docs/27-COPY-CANONICAL.md` §12–15 — H1 fields given as literal service names ("Estate
+Cleanouts", "Hoarding Cleanup", "One-Time Deep Cleaning", "Animal Waste Cleanup") — brand
+vocabulary, not buyer's words. (not in the chain; doc 27's own header disclaims authority over
+"architecture/URLs/SEO waves (→ doc 19)... Where this doc restates those, the named owner-doc
+wins.")
+
+**Resolution — escalated to the owner rather than picked silently** (both the "not in the
+chain" and "would change what ships on every live/dark page" stop-and-ask triggers applied).
+Owner chose: keep doc 19's rule, keep the current buyer's-words H1s and their leads
+untouched; migrate doc 27 verbatim for everything else that has a direct counterpart (work-
+included/scope bullets, quote variables/pricing drivers, boundaries, FAQ, and — for the
+homepage specifically, per doc 27's own §9 fields — eyebrow, section headings, and body copy
+where no higher-ranked rule contradicts it).
+
+**Type:** violated rule → enforced (doc 19's H1 rule stands; doc 27's literal H1 text is not
+used verbatim anywhere in this pass).
+
+### 2. Conflict: doc 18's "three cards, not six" vs. doc 27's four-card homepage model
+
+A: `docs/18-VISUAL-DIRECTION.md` §6.1, "retained" per an explicit `ServiceCards.astro` code
+comment — exactly three homepage service cards at launch. (rank 5, above doc 19 and above doc
+27's unranked position.)
+
+B: `docs/27-COPY-CANONICAL.md` §9.4–9.5 — "Four ways a property reaches its next handoff,"
+four cards (Detailed / Specialty / Property Clearing / Commercial).
+
+**Resolution:** doc 18 wins (higher rank, explicit "retained" decision already recorded in
+code). Card count stays at three; doc 27's four-card copy and its literal "Four ways..." H2 are
+**not** applied to `ServiceCards.astro` — using either would either misstate the card count or
+require restructuring the section, which is a visual-system change doc 18 owns, not a copy
+change doc 27 owns.
+
+**Type:** violated rule → enforced. Not changed: `ServiceCards.astro` section header/intro
+copy — left as-is rather than partially aligned to a doc 27 section that assumes a different
+card count.
+
+### 3. Scope boundary applied without a conflict (recorded for the next session)
+
+Doc 27 §11's shared service-page structure (screening panel / trust strip / quote-variable
+section / scope-boundary panel / four-step process / related-service cards) is a *different*
+page architecture from doc 19 Part 3.2's built wireframe (compact hero / RECOGNITION / SCOPE /
+FIDUCIARY BLOCK / METHOD / PROOF / PRICING HONESTY / FAQ), which the four existing dark service
+pages (`estate-cleanout-san-jose`, `hoarding-cleanup-san-jose`, `animal-waste-cleanup-san-jose`,
+`deep-cleaning-san-jose`) are already built against, including page-specific tone deltas
+(grief-aware / shame-disarmament / matter-of-fact dignity) doc 27 has no equivalent for. Per
+doc 27's own header, doc 19 owns architecture. **Existing page architecture, section list, and
+tone-delta copy (Track A/B, recognition, fiduciary blocks) are left untouched.** Only the
+fields with a direct doc 27 counterpart — scope/work-included bullets, pricing/quote-variable
+bullets, and FAQ — are migrated, word-for-word from doc 27 where a topic match exists, appended
+(not substituted) where doc 27 supplies a genuinely new question with no current counterpart,
+and left alone where the current page covers something doc 27 doesn't address at all (e.g. the
+current estate FAQ's junk-removal-vs-cleanout comparison, or the hoarding FAQ's animal/organic
+cross-reference, which stays because dropping it would leave the page's own FAQ answer
+contradicting its scope list).
+
+`deep-cleaning-san-jose` is excluded entirely from this pass: its `scope.included` and
+`checklist` fields carry a permanent, explicit gate ("do not launch until the B10
+deep-cleaning checklist is finalized... never invent") and its differentiated hard-water/
+tile-grout/"surface restoration, not damage restoration" wording is load-bearing for a wording
+law doc 27 doesn't carry. Doc 27's generic §12.1 bullets would silently drop that wording-law
+sentence and the B10-linked specifics. Not touched.
+
+SEO title/meta description fields embedded inside doc 27 §12–15 are treated as "SEO," which
+doc 27's own header assigns to doc 19 — left unchanged (they already match doc 19 Part 2.2).
+
+### 4. Changed
+
+- `src/data/site.ts` — `homepage.sampleRecord` (four fields + four room notes), `homepage.
+  handoffStages` (Protect/Clear/Reset/Verify detail text), `homepage.pricingDrivers` (six
+  items) aligned to doc 27 §9.8–9.10 wording.
+- `src/components/Hero.astro` — eyebrow line, Handoff Status sample panel cell text.
+- `src/components/WhyAseptaclean.astro` — item titles/bodies aligned to doc 27 §9.6.
+- `src/components/Pricing.astro` — H2 and intro paragraph (the intro changes the photo-quote
+  stance from "we do not quote from a photograph" to "photos may support an initial range" —
+  both compliant, but flagged for the owner as an operational-claim change, not just wording).
+- `src/components/OperatorAccountability.astro` — founder body paragraph aligned to doc 27
+  §9.11.
+- `src/components/FAQ.astro` — 4 of 7 homepage FAQ items aligned to doc 27 §9.12 wording; 3
+  items with no doc 27 counterpart kept as-is.
+- `src/components/RequestForm.astro` — H2 and intro aligned to doc 27 §9.13 (this also fixes a
+  pre-existing duplicate-H2 issue: this section and `FinalCTA.astro` previously shared the
+  identical headline).
+- `src/components/FinalCTA.astro` — body aligned to doc 27 §9.14; secondary CTA changed from
+  "Text a photo" to "Call {phone}" per doc 27's explicit §9.14 CTA pair.
+- `src/data/servicePages.ts` — `estatePage`, `hoardingPage`, `animalPage`: `scope.included`
+  and `pricing.drivers` replaced with doc 27 §14.3/§14.2/§13.2 wording; `faq` arrays gained
+  doc 27's non-overlapping questions and had overlapping questions' wording aligned.
+
+### 5. Not changed
+
+- Homepage H1/lead/approval-statement/CTAs/trust chips — already verbatim matches to doc 27
+  §9.1, no edit needed.
+- `ServiceCards.astro` card count/copy (see §2 above).
+- Any service-page hero, recognition, Track A/B, fiduciary, or method-heading copy (see §3).
+- `deep-cleaning-san-jose` entirely (see §3).
+- SEO titles/meta descriptions on any page.
+- Pages doc 27 §9–15 has finished copy for but which do not exist in this repo yet: `/move-
+  out-cleaning-san-jose/`, `/post-construction-cleaning-san-jose/`, `/window-cleaning-san-
+  jose/`, `/extreme-cleaning-san-jose/`, `/rodent-dropping-cleanup-san-jose/`, pigeon-dropping
+  content (doc 19 wants it folded into the animal page as an H2, which does not exist yet —
+  adding it is a structural change, not a copy swap), `/property-cleanouts-san-jose/`,
+  `/debris-removal-san-jose/`, `/eviction-cleanout-san-jose/`, `/commercial-cleaning-san-
+  jose/`. No page exists to receive this copy; creating the pages is out of scope for a copy
+  migration and not done here.

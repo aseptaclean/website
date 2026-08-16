@@ -239,61 +239,58 @@ export const homepage = {
     {
       name: "Protect",
       detail:
-        "Keep areas identified. Uncertain and important discovered items are separated and reported. We do not decide what mattered to your family.",
+        "Keep areas are identified. Uncertain and important items are separated and reported.",
       record: "Keep and review controls",
       status: "Held for review"
     },
     {
       name: "Clear",
       detail:
-        "Approved unwanted contents are consolidated, removed, or coordinated for disposal within the signed scope.",
+        "Approved unwanted contents are consolidated, staged or coordinated for lawful disposal within the signed scope.",
       record: "Clearing status",
       status: "Complete"
     },
     {
       name: "Reset",
       detail:
-        "The property receives the detailed cleaning included for its next handoff, including animal and organic conditions within lawful scope.",
+        "The property receives the detailed cleaning included for its next handoff.",
       record: "Cleaning status",
       status: "Complete"
     },
     {
       name: "Verify",
       detail:
-        "You receive completion photographs, documented exceptions, and a Property Handoff Record showing how the approved scope was closed.",
+        "Completion photographs, documented exceptions and a Property Handoff Record close the approved scope.",
       record: "Closeout package",
       status: "Issued"
     }
   ],
   sampleRecord: {
     projectId: "HR-1042",
-    decisionMaker: "Owner of record — single point of approval",
-    clearingScope:
-      "Nonhazardous contents, garage & storage, approved disposal",
-    cleaningScope:
-      "Kitchen & bath deep clean, floors, accessible surfaces",
-    excludedConditions:
-      "Full exclusion list attached to signed scope",
+    decisionMaker: "Owner of record",
+    clearingScope: "Approved nonhazardous contents",
+    cleaningScope: "Kitchen, bath and accessible surfaces",
+    excludedConditions: "Attached to signed scope",
     rooms: [
       {
         area: "Entry + living",
         disposition: "Keep",
-        note: "Furnishings remain; included in the cleaning pass"
+        note: "Furnishings remain; cleaning included"
       },
       {
         area: "Kitchen",
         disposition: "Keep",
-        note: "Cabinet and appliance interiors detailed per scope"
+        note: "Cabinet and appliance interiors per scope"
       },
       {
         area: "Primary closet",
         disposition: "Review",
-        note: "Contents held for owner decision before clearing"
+        note: "Contents held for owner decision"
       },
       {
         area: "Garage",
         disposition: "Remove",
-        note: "Unwanted contents cleared; surfaces swept and detailed"
+        note: "Approved contents cleared; surfaces detailed"
       }
     ],
     changeAuthorization:
@@ -414,10 +411,10 @@ export const homepage = {
     }
   ],
   pricingDrivers: [
-    "Property size",
-    "Volume of contents",
+    "Property size and access",
+    "Volume of approved contents",
+    "Sorting and review required",
     "Cleaning condition",
-    "Access and stairs",
     "Disposal requirements",
     "Labor and deadline"
   ],

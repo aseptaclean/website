@@ -1,8 +1,10 @@
 ---
 // docs/aseptaclean-FINAL-v2.html .cta section — ported verbatim (05-DECISIONS-LOG.md).
+// Secondary CTA updated to "Call {phone}" per docs/27-COPY-CANONICAL.md §9.14 (Hero and this
+// section intentionally offer different secondary actions — Hero = text a photo, Final CTA =
+// call — see docs/05-DECISIONS-LOG.md).
 import { site } from "@data/site";
 
-const smsHref = site.business.smsUri;
 const phoneHref = site.business.phoneUri;
 ---
 
@@ -10,14 +12,12 @@ const phoneHref = site.business.phoneUri;
   <div class="ac-measure-wide">
     <p class="ac-eyebrow">Final decision</p>
     <h2 id="final-cta-title">Start with what you know. We will help define the rest.</h2>
-    <p class="cta__body">Tell us what you are looking at, what must remain, and when the property needs to be ready. Send photos if you have them.</p>
+    <p class="cta__body">Tell us what you are looking at, what must remain and when the property needs to be ready.</p>
     <div class="cta__actions">
       <a href="#request" class="btn btn-on-light">Request an assessment →</a>
       {
-        smsHref ? (
-          <a href={smsHref} class="btn btn-ghost-dark">Text a photo</a>
-        ) : (
-          <a href={phoneHref || "#request"} class="btn btn-ghost-dark">Text a photo</a>
+        phoneHref && (
+          <a href={phoneHref} class="btn btn-ghost-dark">Call {site.business.phone}</a>
         )
       }
     </div>
