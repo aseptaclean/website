@@ -98,12 +98,11 @@ export const estatePage = {
   scope: {
     heading: "What an estate cleanout covers",
     included: [
-      "Nonhazardous contents clearing, room by room",
-      "Bagging, consolidation, and approved disposal coordination",
-      "Garage, attic, and storage-area clearing",
-      "Kitchen and bathroom deep cleaning after clearing",
-      "Discovered-item isolation and reporting — documents, photographs, jewelry, keys, cash",
-      "Completion photographs and a documented closeout"
+      "Authorized decision-maker walkthrough",
+      "Keep, donate, remove and review zones",
+      "Contents staging and bagging",
+      "Container or disposal coordination",
+      "Optional post-clearout cleaning"
     ],
     exclusionsNote:
       "Some conditions sit outside our current scope — see the full exclusion list in the Handoff Standard."
@@ -120,12 +119,11 @@ export const estatePage = {
   pricing: {
     heading: "What affects the price — no invented figures",
     drivers: [
-      "Property size",
-      "Volume of contents",
-      "Cleaning condition",
-      "Access and stairs",
-      "Disposal requirements",
-      "Labor and deadline"
+      "Property and contents volume",
+      "Required sorting detail",
+      "Stairs, access and parking",
+      "Donation or disposal instructions",
+      "Deadline for sale or handoff"
     ]
   },
   faq: [
@@ -152,6 +150,14 @@ export const estatePage = {
     {
       question: "How much does an estate cleanout cost?",
       answer: "It depends on property size, volume, condition, access, and disposal needs. A $195 on-site assessment, credited toward an approved project booked within 7 days, gives you a written price instead of a guess."
+    },
+    {
+      question: "Do you buy or appraise estate items?",
+      answer: "No. Appraisal, resale and estate-sale services are separate. We follow the authorized sorting and removal plan."
+    },
+    {
+      question: "Can you clean the home afterward?",
+      answer: "Yes. Move-out or detailed cleaning can be added after the rooms are cleared and accessible."
     }
   ]
 } as const;
@@ -179,12 +185,12 @@ export const hoardingPage = {
   scope: {
     heading: "What hoarding cleanup covers",
     included: [
-      "Room-by-room sorting into keep, remove, and review categories",
-      "Heavy accumulation clearing, including pathways, blocked exits, and stacked contents",
-      "Nonhazardous contents bagging, consolidation, and approved disposal",
-      "Deep cleaning after clearing — floors, surfaces, kitchen and bathroom",
-      "Animal and organic condition cleaning under our organic pathogen endorsement, where present",
-      "Discovered-item isolation and reporting"
+      "Condition and access walkthrough",
+      "Keep, remove and review categories",
+      "Room-by-room clearing plan",
+      "Bagging, staging and disposal coordination",
+      "Cleaning of released areas when included",
+      "Animal and organic condition cleaning under our organic pathogen endorsement, where present"
     ],
     exclusionsNote:
       "Some conditions sit outside our current scope — see the full exclusion list in the Handoff Standard."
@@ -205,18 +211,17 @@ export const hoardingPage = {
   pricing: {
     heading: "What affects the price — no invented figures",
     drivers: [
-      "Property size",
-      "Volume of contents",
-      "Cleaning condition",
-      "Access and stairs",
-      "Disposal requirements",
-      "Labor and deadline"
+      "Volume and density of contents",
+      "Decision-making requirements",
+      "Waste types and pests",
+      "Utilities and safe access",
+      "Number of stages and crew days"
     ]
   },
   faq: [
     {
       question: "Will everything be thrown away?",
-      answer: "No. The scope identifies keep, remove, and review areas before any clearing starts. Uncertain items are not automatically discarded."
+      answer: "No. Removal rules are agreed in advance, and uncertain items can be placed in a review area for the authorized decision-maker."
     },
     {
       question: "Will you judge the condition of the property?",
@@ -237,6 +242,10 @@ export const hoardingPage = {
     {
       question: "How discreet is the crew and the vehicle?",
       answer: "Unmarked vehicles, plain clothing, and no signage. We do not discuss the property with neighbors, and scheduling can be arranged around who is home or visible nearby."
+    },
+    {
+      question: "Can the cleanup happen in stages?",
+      answer: "Yes. Staging is often the safest and most practical approach for dense or emotionally difficult properties."
     }
   ]
 } as const;
@@ -263,11 +272,11 @@ export const animalPage = {
   scope: {
     heading: "What this covers",
     included: [
-      "Cleaning of animal waste, heavy soiling, and organic buildup under our organic pathogen endorsement",
-      "Surface, floor, and accessible-area cleaning throughout affected rooms",
-      "Contents clearing where waste or organic material has affected belongings",
-      "Cabinet, appliance-interior, and baseboard cleaning within the approved scope",
-      "Odor-contributing material removal as part of the cleaning scope",
+      "Initial condition and material review",
+      "Removal of accepted surface waste",
+      "Cleaning of approved nonporous surfaces",
+      "Odor-source reduction within cleanable materials",
+      "Bagging and staging as defined in the scope",
       "Completion photographs and a documented closeout"
     ],
     exclusionsNote:
@@ -285,12 +294,11 @@ export const animalPage = {
   pricing: {
     heading: "What affects the price — no invented figures",
     drivers: [
-      "Property size",
-      "Volume of contents",
-      "Cleaning condition",
-      "Access and stairs",
-      "Disposal requirements",
-      "Labor and deadline"
+      "Waste type, amount and age",
+      "Porous versus nonporous surfaces",
+      "Affected rooms and contents",
+      "Ventilation and safe access",
+      "Disposal path and local requirements"
     ]
   },
   faq: [
@@ -317,6 +325,14 @@ export const animalPage = {
     {
       question: "How much does this cost?",
       answer: "It depends on the area affected, volume, and access. A $195 on-site assessment, credited toward an approved project booked within 7 days, gives you a written price."
+    },
+    {
+      question: "Do you remove live animals?",
+      answer: "No. Animal control or a pest professional must address live animals and active entry before cleanup."
+    },
+    {
+      question: "Will the odor be completely gone?",
+      answer: "Not always. Waste absorbed into subfloor, drywall or other porous materials may require removal or repair by an appropriate provider."
     }
   ]
 } as const;
