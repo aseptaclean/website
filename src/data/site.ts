@@ -61,7 +61,7 @@ export const site = {
     name: "Aseptaclean Handoff Reset",
     category:
       "Whole-property clearing, deep cleaning, and documented closeout",
-    leadOffer: "24-Hour Property Handoff Plan",
+    leadOffer: "Property Handoff Plan",
     responseTime: value(
       "PUBLIC_RESPONSE_TIME",
       "within one business day"

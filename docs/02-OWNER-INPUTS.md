@@ -32,7 +32,7 @@ the primary CTA, the city list, and the region label.
 | Cities served (10) | San Jose, Mountain View, Sunnyvale, Santa Clara, Campbell, Los Altos, Los Altos Hills, Los Gatos, Palo Alto, Atherton |
 | Flagship offer | Aseptaclean Handoff Reset |
 | Category | Whole-property clearing, deep cleaning, and documented closeout |
-| Lead offer | 24-Hour Property Handoff Plan |
+| Lead offer | Property Handoff Plan |
 | **Primary CTA** | **Request an assessment** |
 | Secondary CTA | Text a photo |
 | Response commitment | Within one business day |
@@ -52,6 +52,7 @@ the primary CTA, the city list, and the region label.
 | Primary CTA | `Get My 24-Hour Handoff Plan` | `Request an assessment` | Decisions log, 2026-08-09 |
 | Cities | 5-city list | 10-city list | Decisions log, 2026-08-09 |
 | Region | `Santa Clara County` | `South Bay & Peninsula` | Decisions log, 2026-08-09 — Atherton is San Mateo County |
+| Lead offer | `24-Hour Property Handoff Plan` | `Property Handoff Plan` | Decisions log, 2026-08-16 — "24-Hour" read as a literal turnaround promise the business-day response commitment can't always honor |
 
 Note: `PUBLIC_SERVICE_COUNTY` is unset in `.env.production`, so `site.ts` falls back to a
 hardcoded `"Santa Clara County"`. Find every surface where that string renders and confirm none

@@ -2762,3 +2762,38 @@ doc 27's own header assigns to doc 19 — left unchanged (they already match doc
   `/debris-removal-san-jose/`, `/eviction-cleanout-san-jose/`, `/commercial-cleaning-san-
   jose/`. No page exists to receive this copy; creating the pages is out of scope for a copy
   migration and not done here.
+
+## CTA/offer "24-Hour" wording retired — closes the 2026-08-07 pending item (2026-08-16)
+
+**The conflict**, flagged but left unresolved on 2026-08-07 (see that entry above): the literal
+"24-Hour" wording promised a turnaround the business-day response commitment ("within one
+business day," closed Sunday) cannot always honor. That entry only fixed the *inconsistent CTA
+label* half of the defect (unifying the button to `Request an assessment`, logged 2026-08-09,
+`02-OWNER-INPUTS.md` line 52) — it left the underlying "24-Hour" wording itself untouched
+wherever it appeared outside the button.
+
+**What was still live.** `site.offer.leadOffer` = `"24-Hour Property Handoff Plan"`
+(`src/data/site.ts`), rendered as the eyebrow label on the `/request-assessment` page
+(`AssessmentForm.astro` — `data-offer-eyebrow`). Every other surface (button text, form
+copy, `thank-you.astro`, doc 27 canonical copy) was already business-day-safe; this eyebrow
+was the one remaining literal instance.
+
+**Owner decision.** Retire "24-Hour" from this field. `leadOffer` becomes `"Property Handoff
+Plan"` — the offending qualifier dropped, rest of the name unchanged. `Get My Handoff Plan`
+(the pre-2026-08-09 header/compact CTA label) was considered and rejected as the
+replacement: reintroducing it as a second live label alongside the now-unified `Request an
+assessment` button would recreate the exact "two different CTA labels for one action" defect
+(D3) that the 2026-08-09 unification fixed. `Property Handoff Plan` keeps the eyebrow as a
+plan *name* (matching how `site.offer.name` and `site.offer.category` are already named)
+rather than reintroducing a second CTA verb.
+
+**Type:** violated rule → fixed code (a live business-days-guarantee conflict, not a stale
+doc description).
+
+**Changed:** `src/data/site.ts` (`offer.leadOffer`), `docs/06-APPROVED-HOMEPAGE-COPY.md`
+(§8.4, §8.18 — stale `Get My 24-Hour Handoff Plan` CTA text corrected to the actual current
+CTA, `Request an assessment`, matching the correction already recorded in `02` and `04`),
+`docs/02-OWNER-INPUTS.md` (Lead offer fact + corrected-from-previous-version table).
+
+**Not changed:** `docs/aseptaclean-FINAL-v2.html` and `docs/27-COPY-CANONICAL.md` — neither
+ever contained "24-Hour" or a `leadOffer`-equivalent field; no edit needed there.

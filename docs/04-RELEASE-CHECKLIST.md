@@ -694,6 +694,13 @@ action** means it cannot be resolved by editing this repository.
     C6's redirect fix and C9's `/sms-notification-consent/` byte-preservation one more time
     against whatever the final production deployment turns out to be — this session's fixes were
     verified against a preview branch, not the production branch itself.
+15. **Re-run the Termly cookie scan against the live production domain, then publish the Cookie
+    Policy.** *(Owner action — Termly dashboard.)* Depends on item 14. `.env.production` records
+    the Cookie Policy as last regenerated on 2026-08-09 against the pre-cutover Cloudflare Pages
+    URL, not `aseptaclean.com` — a domain change can surface cookies (analytics, CDN, third-party
+    embeds) the pre-cutover scan couldn't see on the old host. Re-scan against the live domain
+    once DNS resolves there, review the scan results, and publish before treating the policy as
+    accurate for the production domain.
 
 A site clearing every item above, deployed, still earns nothing while the phone rings to
 voicemail.

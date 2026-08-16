@@ -46,7 +46,12 @@ Aseptaclean gives you one accountable path through it. You decide what stays. We
 
 ## 8.4 Hero primary CTA
 
-**Get My 24-Hour Handoff Plan**
+**Request an assessment**
+
+Superseded 2026-08-16 — the sitewide primary CTA is `Request an assessment`
+(`05-DECISIONS-LOG.md`, 2026-08-09 and 2026-08-16 entries). The literal "24-Hour" wording is
+retired everywhere; it read as a promise the business-day response commitment could not
+always honor across a Sunday closure.
 
 ## 8.5 Hero CTA microcopy
 
@@ -352,7 +357,7 @@ Tell us what you are looking at, what must remain, and when the property needs t
 We will review the situation, tell you whether it fits, and give you a clear next step. No vague promise that every property is the same. No pressure to authorize work before the scope is clear.
 
 **Primary CTA:**  
-`Get My 24-Hour Handoff Plan`
+`Request an assessment`
 
 **Secondary CTA:**  
 `Call {{PHONE}} and tell us what you are looking at`
