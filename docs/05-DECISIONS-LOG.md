@@ -3051,3 +3051,121 @@ from the existing `CompactHero` component), route-audit (clean — no redirect c
 chains, no accidental sitemap/nav inclusion, no other stale references to the old PM path),
 `npm run build` (29 pages generated, all four new routes + the renamed route present, all
 correctly `noindex`).
+
+## Doc 27 copy migrated to every page; 10 new routes built (2026-08-16/17)
+
+**The instruction (owner, rank 1).** Migrate `docs/27-COPY-CANONICAL.md` copy to ALL pages,
+applying the §-copy exactly, using `docs/SITEMAP-MASTER.md`'s city-suffixed slugs, building any
+route that did not yet exist, keeping noindex/gate status, and 301-ing renamed slugs.
+Constraints given: ignore doc 27 §25 (abandoned build description), do not change fonts or
+visual layout (§30 forbids redesign), keep guarantees/disclaimer/consent text verbatim.
+
+**H1 supersession — the one place this reverses a prior ruling.** The 2026-08-16 entry above
+recorded that doc 19's "H1 in buyer's words" rule beat doc 27's literal service-name H1s
+(AGENTS.md rank 6 over rank 7). The owner's "apply the §-copy exactly" instruction is a rank-1
+decision and **supersedes that**. Doc 27's H1s now ship. Five pages changed visible H1:
+
+| Route | Was (doc 19 buyer's-words) | Now (doc 27) |
+| --- | --- | --- |
+| `/estate-cleanout-san-jose/` | Clearing a parent's estate without deciding everything today | Estate Cleanouts |
+| `/hoarding-cleanup-san-jose/` | Help for a parent's house that's become too full to manage | Hoarding Cleanup |
+| `/animal-waste-cleanup-san-jose/` | Cleaning for homes with heavy animal waste or organic buildup | Animal Waste Cleanup |
+| `/deep-cleaning-san-jose/` | Deep cleaning for a property that's ready to be occupied again | One-Time Deep Cleaning |
+| `/property-cleanouts-san-jose/` | Turnover cleanouts that keep a vacancy on schedule | Property Cleanouts |
+
+This is a marketing downgrade in isolation — the buyer's-words H1s were stronger copy — and it
+is reversible in one field per page (`h1` in `src/data/doc27ServicePages.ts`). Recorded plainly
+so the owner can reverse it deliberately rather than discover it.
+
+**Copy extracted mechanically, not retyped.** Doc 27 §12–15's fourteen service pages share one
+field structure, so they were parsed out of the markdown and emitted into
+`src/data/doc27ServicePages.ts` by script. No sentence was hand-transcribed, so none can drift.
+§16/§17 have no shared shape and were hand-shaped into `src/data/doc27CompanyPages.ts`.
+
+**Structure.** Doc 27 §11 defines ONE section sequence for every service page, so that sequence
+is now one component (`src/layouts/ServicePageLayout.astro`) and each of the fourteen routes is
+a ~10-line file supplying only its data record. Three new components carry §11 blocks that had
+no home: `ServiceFitPanel` (§11.4), `ServiceBoundaries` (§11.8), `RelatedServices` (§11.11).
+
+**Two deliberate deviations from §11's literal list**, both to honor "do not change visual
+layout": the trust strip is the existing `CredentialBar`, not a new component; and §11 item 9's
+four-step START process is NOT rendered, because these pages already carry `ServiceMethodRail`
+(the five-stage Scope → Protect → Clear → Reset → Verify sequence AGENTS.md §7 mandates by
+name) and stacking a second process rail on fourteen pages is a layout change.
+
+**Cost of the shared layout, stated honestly.** Six pages previously had bespoke doc 19 §3.2
+compositions — estate's Track A/Track B split, hoarding's stacked question-phrased H2s,
+deep-cleaning's `ServiceChecklist` grid, property-cleanouts' Pure-Track-B fiduciary lead. Those
+compositions and their copy are **gone**, replaced by the uniform §11 sequence. Doc 27 §11 is
+explicit that every service page follows one structure, so this is what "apply the §-copy
+exactly" means — but it did delete good, claims-reviewed conversion copy. It is recoverable
+from git history at `e13c483` if the owner wants any of it back.
+
+**Ten routes built** (all noindex, all excluded from `sitemap.xml.ts`, all unlinked from
+nav/footer): `/move-out-cleaning-san-jose/`, `/post-construction-cleaning-san-jose/`,
+`/window-cleaning-san-jose/`, `/extreme-cleaning-san-jose/`,
+`/rodent-dropping-cleanup-san-jose/`, `/pigeon-dropping-cleanup-san-jose/`,
+`/debris-removal-san-jose/`, `/eviction-cleanout-san-jose/`, `/projects/`, `/faq/`.
+
+**No slug renames this pass**, so no new 301s. Every doc 27 bare route already had its
+city-suffixed master equivalent either built or newly built here. Doc 27 §17.1 "Process"
+(`/process`) maps onto the existing `/handoff-standard/` per master's Company row, so that URL
+is unchanged.
+
+**`/projects/*` splat redirect REMOVED.** Building `/projects/` collided with a splat rule that
+301'd it to `/`. Cloudflare Pages applies `_redirects` before checking for a real asset, so the
+new page would have been unreachable — the identical failure already recorded for
+`/estate-cleanout-san-jose/` and `/hoarding-cleanup-san-jose/`. Caught by route-audit.
+
+**Specialty pages stay noindex — owner decision, 2026-08-16.** The instruction said the four
+§13 pages are "all INDEXABLE per owner override," and `SITEMAP-MASTER.md` does carry
+"index ✅ ungated (owner override 2026-08-09)". This was escalated rather than executed, because
+doc 27 §13.2–13.4 are each titled "— gated" and specify `noindex, follow`, §21 lists concrete
+unmet release inputs (insurance wording for the specific terminology, **pest-control/cleanup
+licensing boundary confirmation**, disposal procedure, PPE and work-zone limits, final claims
+review), AGENTS.md §7 bars rodent-specific language until written crew protocol exists, and
+B&P §8550(a) makes *advertising* unlicensed structural pest control unlawful — so indexing a
+rodent/pigeon page is the exact escalation trigger `claims-check` says to stop on. **The owner
+chose the gated path**: build the pages with doc 27 copy, ship noindex, flip later once §21's
+inputs are on record. That flip is a one-line change per page; do not make it on the strength
+of master's column alone.
+
+**Claims regression found and fixed.** The migration initially dropped the verbatim-mandatory
+organic clause — *"Cleaning only — not a decontamination, sterilization, or health-safety
+determination."* — from all four specialty pages and the specialty hub, because the old bespoke
+pages carried it in copy the uniform layout replaced. This is precisely the failure mode
+`claims-check` warns about. Fixed by adding a `complianceClause` field to the data records and
+rendering it directly under the H1 on every page describing organic work, plus the hub.
+Re-verified present on all five rendered pages.
+
+**Claims sweep otherwise clean.** Every `licensed` / `remediation` / `pest` / `clearance` /
+`habitable` hit on the rodent, pigeon, and animal pages is a scope negation or the standard
+footer disclaimer — the copy actively refers pest control, extermination, exclusion, insulation
+and structural work OUT to other trades, which is the correct posture under §8550(a). Founder
+authority-limit disclaimer present on `/about/`. No fabricated proof on `/projects/` (its only
+"before-and-after" mention is the publication *standard* future case studies must meet). No
+`[OWNER INPUT:` on any new page.
+
+**Verification results.** `claims-check`: one violation found and fixed (above), otherwise
+clean. `type-law`: Rule 1 clean across all 13 created/changed files — zero `font-size` on any
+heading-resolving selector, zero inline styles on headings; H1 ratio inherited unchanged from
+the existing `CompactHero`. `route-audit`: no redirect-source collisions, no redirect chains,
+never-build list clean. `npm run build`: 39 pages, clean.
+
+**Known issues NOT fixed here, and why:**
+- `.standard-stages h2` and `.standard-relies h2` in `handoff-standard/index.astro` declare
+  `font-size` — a real type-law Rule 1 violation, but **pre-existing and byte-identical at
+  `e13c483`**, in a part of the file this pass did not touch. Fixing it correctly means moving
+  the clamp into a `--ac-text-*` token, which changes type sitewide — a token decision, not a
+  copy migration.
+- `/services/` and `/who-we-help/` are indexable and in the sitemap while linking into six
+  noindex drafts. Pre-existing, and the documented `route-audit` failure mode #2. Both routes
+  also still have no equivalent anywhere in `SITEMAP-MASTER.md` (flagged in the previous entry
+  and still unresolved). Left for an explicit owner call — deciding these is a launch decision.
+- `/request-assessment/` has a budget-range selector offering `$2,000–$3,499`, `$3,500–$5,999`,
+  `$6,000+`. AGENTS.md §4 forbids published price figures other than the $195 assessment fee.
+  Judged out of scope and low-risk: it asks the customer's budget rather than advertising an
+  Aseptaclean price, it is pre-existing, and editing the field risks the lead payload / HubSpot
+  mapping. Flagged for an owner call rather than changed.
+- Existing pages' noindex status was not flipped. Master's "index" column remains target
+  end-state per page, not a live-now directive — same reasoning as the previous entry.

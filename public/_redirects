@@ -77,5 +77,10 @@
 # WordPress builder junk page
 /elementor-page-5960/                         /              301
 
-# Splat rule — must sort after exact-match rules per Cloudflare Pages performance hints.
-/projects/*                             /  301
+# /projects/* splat rule REMOVED 2026-08-16. `/projects/` is now a real, built route
+# (docs/27-COPY-CANONICAL.md §17.2, docs/SITEMAP-MASTER.md Company row). Cloudflare Pages
+# applies _redirects unconditionally BEFORE checking for a real asset, so leaving this rule
+# would have 301'd the new page away and made it unreachable — the exact failure mode already
+# recorded for /estate-cleanout-san-jose/ and /hoarding-cleanup-san-jose/ in the header above.
+# No child routes exist under /projects/ yet; add per-path rules if old WordPress project URLs
+# turn up in GSC, never a splat that shadows the live parent.

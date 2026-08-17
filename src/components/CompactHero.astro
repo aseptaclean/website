@@ -52,10 +52,13 @@ const { eyebrow, headingId } = Astro.props;
     background: #8fb4de;
   }
 
+  /* No font-size here — docs/11 §1 forbids a component sizing a heading, and this override
+     was the single reason every inner page failed the H1:body ratio floor (2.10:1 at 390px
+     against a 2.5:1 floor, 2.90:1 at 1440px against a 4:1 floor). Size now comes from
+     .ac-type-h1 on the slotted heading, which reads --ac-text-h1. */
   .compact-hero :global(h1) {
     margin-bottom: 0;
     color: #fff;
-    font-size: clamp(2.1rem, 4vw, 2.9rem);
     line-height: 1.08;
     text-wrap: balance;
   }

@@ -461,6 +461,9 @@ const schema = [
 
   .residence-record__layout {
     display: grid;
+    /* Explicit minmax(0, …) so the single mobile column can shrink below its items'
+       min-content width instead of letting the record figure break out of the container. */
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--ac-space-8);
   }
 

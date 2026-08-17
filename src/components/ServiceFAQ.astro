@@ -23,7 +23,7 @@ const { heading, headingId, intro, items } = Astro.props;
 <section class="service-faq" id="faq" aria-labelledby={headingId}>
   <div class="ac-measure-wide">
     <p class="ac-eyebrow">Before you request a plan</p>
-    <h2 id={headingId} class="service-faq__title">{heading}</h2>
+    <h2 id={headingId} class="ac-type-h2 service-faq__title">{heading}</h2>
     <p class="service-faq__intro">{intro}</p>
 
     <div class="faq-list">
@@ -50,7 +50,6 @@ const { heading, headingId, intro, items } = Astro.props;
   .service-faq__title {
     max-width: 32ch;
     margin: var(--ac-space-3) 0 8px;
-    font-size: clamp(1.9rem, 3.2vw, 2.5rem);
   }
 
   .service-faq__intro {

@@ -1,0 +1,75 @@
+---
+// Shared "Related services" block — docs/27-COPY-CANONICAL.md §11 item 11, present on every
+// individual service page (§12–15). Entries whose target route isn't built yet render as plain
+// text rather than a dead link, matching the card-hub convention already used by the category
+// hub pages. Doc 27 §19's internal-linking rules govern which services relate to which.
+interface RelatedItem {
+  label: string;
+  href: string | null;
+}
+
+interface Props {
+  headingId: string;
+  items: readonly RelatedItem[];
+}
+
+const { headingId, items } = Astro.props;
+---
+
+<section class="related" aria-labelledby={headingId}>
+  <div class="ac-measure-wide">
+    <p class="ac-eyebrow">Related services</p>
+    <h2 id={headingId} class="ac-type-h2 related__heading">If the property needs something adjacent</h2>
+    <ul class="related__list">
+      {
+        items.map((item) => (
+          <li>
+            {item.href ? (
+              <a href={item.href}>{item.label} →</a>
+            ) : (
+              <span class="related__pending">{item.label}</span>
+            )}
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .related {
+    background: var(--ac-color-warm-white);
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .related__heading {
+    max-width: 32ch;
+    margin-top: var(--ac-space-3);
+  }
+
+  .related__list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--ac-space-3) var(--ac-space-5);
+    margin: var(--ac-space-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .related__list a {
+    color: var(--ac-color-navy-800);
+    font-weight: 600;
+    font-size: 0.94rem;
+    text-decoration: none;
+  }
+
+  .related__list a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .related__pending {
+    color: var(--ac-color-ink-400);
+    font-size: 0.94rem;
+  }
+</style>

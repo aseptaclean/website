@@ -1,0 +1,452 @@
+---
+// Phase 2 structural exploration — three candidate hero grids for src/components/Hero.astro.
+// Not a production route (noindex). Copy is verbatim docs/27-COPY-CANONICAL.md §9.1/§9.2 —
+// nothing invented. Structural references only (Charles Holland 12-col asymmetric spans,
+// Maurice Turnor Gardner ratio ceiling, Anderson Materials / BBS Property Consultants
+// image-minimal proof) — no color or spacing taken from those sites, no font-size on any
+// heading tag. All three variants reuse --ac- tokens exclusively.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { homepage, site } from "@data/site";
+
+const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
+
+const eyebrowText = "Property clearing · deep cleaning · documented closeout";
+const leadText =
+  "Hoarding, estate, and severe-condition properties — cleared, cleaned, and closed out under one signed scope, by one accountable operator.";
+const approvalText = "Nothing leaves the property without your written approval.";
+const recordLinkText = "Every project closes with a";
+
+const chips = ["Written scope before work", "No unapproved charges", "Documented closeout"];
+
+const showPanel = homepage.sampleRecord.rooms.length > 0;
+const panelRows = [
+  { label: "Scope", sub: "Room-by-room, signed", tag: "Defined", tagClass: "ac-tag--def" },
+  { label: "Set-aside items", sub: "Documents · valuables · keys", tag: "Held", tagClass: "ac-tag--review" },
+  { label: "Clearing", sub: "Approved contents", tag: "Complete", tagClass: "ac-tag--clear" },
+  { label: "Reset cleaning", sub: "Defined surfaces", tag: "Complete", tagClass: "ac-tag--clear" },
+  { label: "Closeout record", sub: "Photos + exceptions", tag: "Issued", tagClass: "ac-tag--def" }
+];
+
+const imageLabel = "[ South Bay exterior — pending, ATMOS ]";
+---
+
+<BaseLayout
+  title="Hero structural variants (dev)"
+  description="Three candidate hero grids for structural review. Not part of the public site."
+  canonicalPath="/dev/hero-variants/"
+  noindex={true}
+  showMobileCta={false}
+>
+  <div class="ac-measure-wide variants-intro">
+    <p class="ac-eyebrow">Internal / not indexed</p>
+    <h1 class="ac-type-h1">Hero — three structural variants</h1>
+    <p class="ac-type-body">
+      Same copy (<code>docs/27-COPY-CANONICAL.md</code> §9.1/§9.2), same tokens, three different
+      grid structures. Compare at 1440 and 390.
+    </p>
+  </div>
+
+  {/* ============================= VARIANT A ============================= */}
+  <section class="hv hv--a" aria-label="Variant A — asymmetric split 7:5, atmosphere image">
+    <div class="ac-measure-wide hv__tag"><span>Variant A — split 7:5 · atmosphere image + panel</span></div>
+    <div class="ac-measure-wide hv-a__grid">
+      <div class="hv-a__copy">
+        <p class="ac-eyebrow hv__eyebrow">{eyebrowText}</p>
+        <p class="ac-type-h1 hv__h1">
+          Complex properties returned to a <span class="hv__hl">controlled, documented</span> condition.
+        </p>
+        <p class="ac-type-lead hv__lead">{leadText}</p>
+        <div class="hv__approve">{approvalText}</div>
+        <div class="hv__actions">
+          <a href="#request" class="btn btn-on-light">Request an assessment →</a>
+          <a href={smsHref || phoneHref || "#request"} class="btn btn-ghost-dark">Text a photo</a>
+        </div>
+        <p class="hv__record-link">
+          {recordLinkText} <a href="#record">Property Handoff Record</a> — see a sample below.
+        </p>
+        <div class="hv__chips">
+          {chips.map((chip) => <span class="hv__chip">{chip}</span>)}
+        </div>
+      </div>
+      <div class="hv-a__rail">
+        <div class="hv-a__image" role="presentation"><span class="hv__image-label">{imageLabel}</span></div>
+        {showPanel && (
+          <div class="hv__panel">
+            <div class="hv__panel-head"><span>Handoff Status</span><span class="hv__panel-id">HR-1042 · SAMPLE</span></div>
+            {panelRows.map((row) => (
+              <div class="hv__prow">
+                <div><div class="hv__lb">{row.label}</div><div class="hv__sb">{row.sub}</div></div>
+                <span class={`ac-tag ${row.tagClass}`}>{row.tag}</span>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
+
+  {/* ============================= VARIANT B ============================= */}
+  <section class="hv hv--b" aria-label="Variant B — inverted split 5:7, image-minimal, panel-led">
+    <div class="ac-measure-wide hv__tag"><span>Variant B — inverted 5:7 · no image, panel-led</span></div>
+    <div class="ac-measure-wide hv-b__grid">
+      <div class="hv-b__copy">
+        <p class="ac-eyebrow hv__eyebrow">{eyebrowText}</p>
+        <p class="ac-type-h1 hv__h1">
+          Complex properties returned to a <span class="hv__hl">controlled, documented</span> condition.
+        </p>
+        <p class="ac-type-lead hv__lead">{leadText}</p>
+        <div class="hv__approve">{approvalText}</div>
+        <div class="hv__actions">
+          <a href="#request" class="btn btn-on-light">Request an assessment →</a>
+          <a href={smsHref || phoneHref || "#request"} class="btn btn-ghost-dark">Text a photo</a>
+        </div>
+        <p class="hv__record-link">
+          {recordLinkText} <a href="#record">Property Handoff Record</a> — see a sample below.
+        </p>
+        <div class="hv__chips">
+          {chips.map((chip) => <span class="hv__chip">{chip}</span>)}
+        </div>
+      </div>
+      {showPanel && (
+        <div class="hv__panel hv-b__panel">
+          <div class="hv__panel-head"><span>Handoff Status</span><span class="hv__panel-id">HR-1042 · SAMPLE</span></div>
+          {panelRows.map((row) => (
+            <div class="hv__prow">
+              <div><div class="hv__lb">{row.label}</div><div class="hv__sb">{row.sub}</div></div>
+              <span class={`ac-tag ${row.tagClass}`}>{row.tag}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+
+  {/* ============================= VARIANT C ============================= */}
+  <section class="hv hv--c" aria-label="Variant C — multi-row segmented 12-col grid">
+    <div class="ac-measure-wide hv__tag"><span>Variant C — multi-row segmented 12-col</span></div>
+    <div class="ac-measure-wide hv-c__grid">
+      <div class="hv-c__statement">
+        <p class="ac-eyebrow hv__eyebrow">{eyebrowText}</p>
+        <p class="ac-type-h1 hv__h1">
+          Complex properties returned to a <span class="hv__hl">controlled, documented</span> condition.
+        </p>
+        <p class="ac-type-lead hv__lead">{leadText}</p>
+      </div>
+      <div class="hv-c__actions">
+        <div class="hv__approve">{approvalText}</div>
+        <div class="hv__actions">
+          <a href="#request" class="btn btn-on-light">Request an assessment →</a>
+          <a href={smsHref || phoneHref || "#request"} class="btn btn-ghost-dark">Text a photo</a>
+        </div>
+      </div>
+      <div class="hv-c__image" role="presentation"><span class="hv__image-label">{imageLabel}</span></div>
+      {showPanel && (
+        <div class="hv__panel hv-c__panel">
+          <div class="hv__panel-head"><span>Handoff Status</span><span class="hv__panel-id">HR-1042 · SAMPLE</span></div>
+          {panelRows.map((row) => (
+            <div class="hv__prow">
+              <div><div class="hv__lb">{row.label}</div><div class="hv__sb">{row.sub}</div></div>
+              <span class={`ac-tag ${row.tagClass}`}>{row.tag}</span>
+            </div>
+          ))}
+        </div>
+      )}
+      <div class="hv-c__foot">
+        <p class="hv__record-link">
+          {recordLinkText} <a href="#record">Property Handoff Record</a> — see a sample below.
+        </p>
+        <div class="hv__chips">
+          {chips.map((chip) => <span class="hv__chip">{chip}</span>)}
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .variants-intro {
+    display: grid;
+    gap: var(--ac-space-3);
+    padding-block: var(--ac-space-7) var(--ac-space-6);
+  }
+
+  /* ---- shared hero-variant surface, ported from Hero.astro's own background ---- */
+  .hv {
+    position: relative;
+    overflow: hidden;
+    padding-top: var(--ac-space-6);
+    padding-bottom: var(--ac-rhythm-open);
+    background:
+      radial-gradient(1100px 500px at 85% -10%, rgba(74, 127, 193, 0.28), transparent 60%),
+      radial-gradient(700px 400px at -5% 110%, rgba(74, 127, 193, 0.15), transparent 55%),
+      linear-gradient(165deg, var(--ac-color-navy-900) 0%, var(--ac-color-navy-950) 70%);
+    color: #fff;
+  }
+
+  .hv__tag {
+    position: relative;
+    z-index: 1;
+    padding-bottom: var(--ac-space-4);
+  }
+
+  .hv__tag span {
+    display: inline-block;
+    border: 1px solid rgba(168, 192, 220, 0.35);
+    border-radius: var(--ac-radius-chip);
+    padding: 4px 10px;
+    color: #a8c0dc;
+    font-family: var(--ac-font-mono);
+    font-size: var(--ac-text-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ---- shared copy-element treatment (identical across all three variants) ---- */
+  .hv__eyebrow {
+    color: #8fb4de;
+  }
+
+  .hv__eyebrow::before {
+    background: #8fb4de;
+  }
+
+  .hv__h1 {
+    margin: 0 0 22px;
+    color: #fff;
+  }
+
+  .hv__hl {
+    color: #a8c8ec;
+  }
+
+  .hv__lead {
+    max-width: 46ch;
+    margin: 0 0 26px;
+    color: #b9c9dd;
+  }
+
+  .hv__approve {
+    margin-bottom: 30px;
+    border-left: 3px solid var(--ac-color-gold);
+    padding: 4px 0 4px 16px;
+    color: #fff;
+    font-size: var(--ac-text-body);
+    font-weight: 600;
+  }
+
+  .hv__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 22px;
+  }
+
+  .hv__record-link {
+    margin-bottom: 18px;
+    color: #8fb4de;
+    font-size: var(--ac-text-sm);
+  }
+
+  .hv__record-link a {
+    color: #cfe0f2;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .hv__chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .hv__chip {
+    border: 1px solid rgba(168, 192, 220, 0.35);
+    border-radius: 100px;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 6px 11px;
+    color: #a8c0dc;
+    font-family: var(--ac-font-mono);
+    font-size: 0.64rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* ---- shared panel (Handoff Status), identical content/skin across variants ---- */
+  .hv__panel {
+    box-shadow: var(--ac-shadow-pop);
+    border-radius: var(--ac-r);
+    background: var(--ac-color-paper);
+    padding: var(--ac-space-4);
+    color: var(--ac-color-ink-900);
+  }
+
+  .hv__panel-head {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: var(--ac-space-3);
+    font-family: var(--ac-font-mono);
+    font-size: var(--ac-text-xs);
+    color: var(--ac-color-ink-500);
+  }
+
+  .hv__panel-id {
+    letter-spacing: 0.04em;
+  }
+
+  .hv__prow {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-top: 1px solid var(--ac-color-line);
+    padding: var(--ac-space-3) 0;
+  }
+
+  .hv__lb {
+    font-size: var(--ac-text-sm);
+    font-weight: 600;
+  }
+
+  .hv__sb {
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-xs);
+  }
+
+  /* ---- shared square ATMOS image placeholder — same labeled-placeholder skin as
+     src/pages/about/index.astro .portrait, just square instead of 4:5 ---- */
+  .hv-a__image,
+  .hv-c__image {
+    position: relative;
+    display: grid;
+    aspect-ratio: 1 / 1;
+    place-items: center;
+    overflow: hidden;
+    border-radius: var(--ac-r);
+    background: linear-gradient(160deg, var(--ac-color-navy-700), var(--ac-color-navy-950));
+    box-shadow: var(--ac-shadow-card);
+  }
+
+  .hv__image-label {
+    position: relative;
+    z-index: 1;
+    color: #6d8bb0;
+    font-family: var(--ac-font-mono);
+    font-size: var(--ac-text-xs);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+    padding: 0 var(--ac-space-3);
+  }
+
+  /* ---- Variant A: 12-col, copy 1/8 (7 cols), image+panel rail 8/13 (5 cols) ---- */
+  .hv-a__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--ac-s5);
+  }
+
+  .hv-a__copy {
+    grid-column: 1 / -1;
+  }
+
+  .hv-a__rail {
+    grid-column: 1 / -1;
+    display: grid;
+    gap: var(--ac-space-4);
+  }
+
+  @media (min-width: 60rem) {
+    .hv-a__copy {
+      grid-column: 1 / 8;
+      align-self: center;
+    }
+
+    .hv-a__rail {
+      grid-column: 8 / 13;
+    }
+  }
+
+  /* ---- Variant B: 12-col inverted, copy 1/6 (5 cols), panel 6/13 (7 cols) ---- */
+  .hv-b__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--ac-s5);
+  }
+
+  .hv-b__copy {
+    grid-column: 1 / -1;
+  }
+
+  .hv-b__panel {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 60rem) {
+    .hv-b__copy {
+      grid-column: 1 / 6;
+      align-self: center;
+    }
+
+    .hv-b__panel {
+      grid-column: 6 / 13;
+      padding: var(--ac-space-5);
+    }
+  }
+
+  /* ---- Variant C: 12-col, multi-row — statement 1/9, actions 1/6, image 6/9,
+     panel 9/13, foot spans full width ---- */
+  .hv-c__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: var(--ac-space-5) var(--ac-s5);
+  }
+
+  .hv-c__statement,
+  .hv-c__actions,
+  .hv-c__image,
+  .hv-c__panel,
+  .hv-c__foot {
+    grid-column: 1 / -1;
+  }
+
+  @media (min-width: 60rem) {
+    .hv-c__statement {
+      grid-column: 1 / 9;
+    }
+
+    .hv-c__actions {
+      grid-column: 1 / 6;
+    }
+
+    .hv-c__image {
+      grid-column: 6 / 9;
+    }
+
+    .hv-c__panel {
+      grid-column: 9 / 13;
+    }
+
+    .hv-c__foot {
+      grid-column: 1 / 13;
+    }
+  }
+
+  .hv-c__actions .hv__approve,
+  .hv-c__actions .hv__actions {
+    margin-bottom: 0;
+  }
+
+  .hv-c__actions .hv__actions {
+    margin-top: 22px;
+  }
+
+  .hv-c__foot {
+    margin-top: var(--ac-space-4);
+  }
+</style>

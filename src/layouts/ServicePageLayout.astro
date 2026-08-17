@@ -1,0 +1,196 @@
+---
+// Shared individual-service-page layout implementing docs/27-COPY-CANONICAL.md §11's section
+// sequence, which is identical across all 14 service pages in §12–15. One layout instead of
+// fourteen near-identical route files: §11 defines a single structure, so the structure is a
+// component, and each route supplies only its Doc27ServicePage data record.
+//
+// Deviations from §11's literal list, both deliberate:
+//   - §11 item 5's trust strip is CredentialBar, the existing ported component, rather than a
+//     new one — same four claims, already claims-reviewed.
+//   - §11 item 9's four-step START process is NOT rendered as a second rail. These pages already
+//     carry ServiceMethodRail, the five-stage Scope → Protect → Clear → Reset → Verify sequence
+//     that AGENTS.md §7 mandates by name. Stacking a second process rail on every service page
+//     would be a layout change, which the 2026-08-16 owner instruction forbids ("do NOT change
+//     fonts or visual layout"). Doc 27's four-step describes the intake path, which the
+//     assessment section already walks the reader through.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import CompactHero from "@components/CompactHero.astro";
+import CredentialBar from "@components/CredentialBar.astro";
+import ServiceFitPanel from "@components/ServiceFitPanel.astro";
+import ServiceScope from "@components/ServiceScope.astro";
+import ServiceMethodRail from "@components/ServiceMethodRail.astro";
+import ServicePricing from "@components/ServicePricing.astro";
+import ServiceBoundaries from "@components/ServiceBoundaries.astro";
+import ServiceFAQ from "@components/ServiceFAQ.astro";
+import RelatedServices from "@components/RelatedServices.astro";
+import RequestForm from "@components/RequestForm.astro";
+import type { Doc27ServicePage } from "@data/doc27ServicePages";
+import { site } from "@data/site";
+
+interface Props {
+  page: Doc27ServicePage;
+  serviceType: string;
+  breadcrumbName: string;
+  idPrefix: string;
+}
+
+const { page, serviceType, breadcrumbName, idPrefix } = Astro.props;
+
+const schema = [
+  {
+    "@type": "Service",
+    serviceType,
+    provider: { "@id": new URL("/#organization", site.urls.site).href },
+    areaServed: site.location.cities.map((name) => ({ "@type": "City", name })),
+    name: breadcrumbName
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: page.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: breadcrumbName,
+        item: new URL(page.slug, site.urls.site).href
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title={page.seoTitle}
+  description={page.metaDescription}
+  canonicalPath={page.slug}
+  noindex={true}
+  schema={schema}
+>
+  {
+    page.gate && (
+      <section class="gate-note" aria-label="Internal launch gate — not visible copy guidance">
+        <div class="ac-measure-wide">
+          <p>
+            <strong>LAUNCH GATE — not for publication:</strong> {page.gate}
+          </p>
+        </div>
+      </section>
+    )
+  }
+
+  <CompactHero eyebrow={page.eyebrow} headingId={`${idPrefix}-title`}>
+    {/* .ac-type-h1 is required, not decorative: CompactHero no longer declares a font-size on
+        the slotted h1 (docs/11 §1 — a component may never size a heading), so the role class is
+        the only thing that gives this H1 its size and the only thing holding the H1:body ratio
+        floor. Removing it silently drops all fourteen service pages to browser-default 2em. */}
+    <h1 id={`${idPrefix}-title`} class="ac-type-h1">{page.h1}</h1>
+    <p class="compact-hero__lead">{page.lead}</p>
+  </CompactHero>
+
+  {
+    /* docs/21-CLAIMS-AND-COMPLIANCE-LAW.md / AGENTS.md §0.2 — verbatim-mandatory wherever animal
+       or organic work is described, and placed directly under the H1 so it is never below the
+       fold on a page whose subject is organic material. Never paraphrase or abbreviate it. */
+    page.complianceClause && (
+      <aside class="compliance-clause" aria-label="Scope limitation">
+        <div class="ac-measure-wide">
+          <p>{page.complianceClause}</p>
+        </div>
+      </aside>
+    )
+  }
+
+  <CredentialBar />
+
+  <ServiceFitPanel headingId={`${idPrefix}-fit-title`} items={page.fitWhen} />
+
+  <section class="outcome" aria-labelledby={`${idPrefix}-outcome-title`}>
+    <div class="ac-measure-intimate">
+      <p class="ac-eyebrow">The outcome</p>
+      <h2 id={`${idPrefix}-outcome-title`} class="ac-type-h2 outcome__heading">{page.outcomeHeading}</h2>
+      <p class="outcome__body">{page.outcomeBody}</p>
+    </div>
+  </section>
+
+  <ServiceScope
+    heading="Work can include"
+    headingId={`${idPrefix}-scope-title`}
+    included={page.workIncludes}
+    exclusionsNote="This list describes work the approved scope can include, not a fixed package. The signed scope controls the actual project."
+  />
+
+  <ServiceMethodRail
+    heading="One accountable operator, from first decision to final closeout"
+    headingId={`${idPrefix}-method-title`}
+  />
+
+  <ServicePricing
+    heading="What affects the price — no invented figures"
+    headingId={`${idPrefix}-pricing-title`}
+    drivers={page.quoteVariables}
+  />
+
+  <ServiceBoundaries headingId={`${idPrefix}-boundaries-title`} items={page.boundaries} />
+
+  <ServiceFAQ
+    heading="Questions asked before requesting a plan"
+    headingId={`${idPrefix}-faq-title`}
+    intro="These answers describe the assessment process. The signed scope controls the actual project."
+    items={page.faq}
+  />
+
+  <RelatedServices headingId={`${idPrefix}-related-title`} items={page.related} />
+
+  <RequestForm />
+</BaseLayout>
+
+<style>
+  .gate-note {
+    background: #fbeeec;
+    border-bottom: 1px solid #e0b6b0;
+    padding-block: 14px;
+  }
+
+  .gate-note p {
+    margin: 0;
+    color: #a3392f;
+    font-size: 0.85rem;
+  }
+
+  .compliance-clause {
+    border-bottom: 1px solid var(--ac-color-line);
+    background: var(--ac-color-warm-white);
+    padding-block: 14px;
+  }
+
+  .compliance-clause p {
+    margin: 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .outcome {
+    background: var(--ac-color-paper);
+  }
+
+  .outcome__heading {
+    max-width: 30ch;
+    margin-top: var(--ac-space-3);
+  }
+
+  .outcome__body {
+    max-width: 58ch;
+    margin-top: var(--ac-space-4);
+    color: var(--ac-color-ink-600);
+    font-size: 1.02rem;
+  }
+</style>

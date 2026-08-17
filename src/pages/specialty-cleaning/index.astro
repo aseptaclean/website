@@ -37,9 +37,18 @@ const schema = [
   schema={schema}
 >
   <CompactHero eyebrow={specialtyCleaningHub.eyebrow} headingId="specialty-title">
-    <h1 id="specialty-title">{specialtyCleaningHub.h1}</h1>
+    <h1 id="specialty-title" class="ac-type-h1">{specialtyCleaningHub.h1}</h1>
     <p class="compact-hero__lead">{specialtyCleaningHub.lead}</p>
   </CompactHero>
+
+  {/* docs/21-CLAIMS-AND-COMPLIANCE-LAW.md / AGENTS.md §0.2 — this hub names animal, rodent and
+      pigeon waste conditions in its cards, so it describes organic work and carries the same
+      verbatim-mandatory clause the individual specialty pages carry. Never paraphrase it. */}
+  <aside class="compliance-clause" aria-label="Scope limitation">
+    <div class="ac-measure-wide">
+      <p>Cleaning only — not a decontamination, sterilization, or health-safety determination.</p>
+    </div>
+  </aside>
 
   <section class="cards" aria-labelledby="cards-title">
     <div class="ac-measure-wide">
@@ -77,6 +86,19 @@ const schema = [
 </BaseLayout>
 
 <style>
+  .compliance-clause {
+    border-bottom: 1px solid var(--ac-color-line);
+    background: var(--ac-color-warm-white);
+    padding-block: 14px;
+  }
+
+  .compliance-clause p {
+    margin: 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
   .cards {
     background: var(--ac-color-paper);
   }

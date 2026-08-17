@@ -1,0 +1,86 @@
+---
+// Shared scope-boundary panel — docs/27-COPY-CANONICAL.md §11 item 8, present on every
+// individual service page (§12–15). These are the stated limits of the service. They are a
+// compliance surface, not marketing copy: doc 21 requires the boundary be visible on the page
+// that could otherwise imply the capability. Never soften an item into a "usually" or a "may."
+interface Props {
+  headingId: string;
+  items: readonly string[];
+}
+
+const { headingId, items } = Astro.props;
+---
+
+<section class="service-boundaries" aria-labelledby={headingId}>
+  <div class="ac-measure-wide">
+    <p class="ac-eyebrow">Scope boundaries</p>
+    <h2 id={headingId} class="ac-type-h2 service-boundaries__heading">What this scope does not include</h2>
+    <ul class="service-boundaries__list">
+      {items.map((item) => <li>{item}</li>)}
+    </ul>
+    <p class="service-boundaries__note">
+      Conditions outside this scope are documented and referred, not worked around.
+      <a href="/handoff-standard/#record">The Handoff Standard →</a>
+    </p>
+  </div>
+</section>
+
+<style>
+  .service-boundaries {
+    background: var(--ac-color-paper);
+  }
+
+  .service-boundaries__heading {
+    max-width: 34ch;
+    margin-top: var(--ac-space-3);
+  }
+
+  .service-boundaries__list {
+    display: grid;
+    gap: var(--ac-space-3);
+    max-width: 60rem;
+    margin: var(--ac-space-6) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .service-boundaries__list li {
+    position: relative;
+    padding-left: 1.6rem;
+    color: var(--ac-color-ink-600);
+    font-size: 0.96rem;
+  }
+
+  .service-boundaries__list li::before {
+    position: absolute;
+    left: 0;
+    color: var(--ac-color-ink-400);
+    font-weight: 700;
+    content: "—";
+  }
+
+  .service-boundaries__note {
+    max-width: 62ch;
+    margin-top: var(--ac-space-5);
+    color: var(--ac-color-ink-500);
+    font-size: 0.88rem;
+  }
+
+  .service-boundaries__note a {
+    color: var(--ac-color-navy-800);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .service-boundaries__note a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 40rem) {
+    .service-boundaries__list {
+      grid-template-columns: repeat(2, 1fr);
+      column-gap: var(--ac-space-6);
+    }
+  }
+</style>

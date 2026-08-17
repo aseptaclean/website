@@ -22,6 +22,7 @@ import CompactHero from "@components/CompactHero.astro";
 import AreasWeServe from "@components/AreasWeServe.astro";
 import RequestForm from "@components/RequestForm.astro";
 import { serviceAreasHub } from "@data/servicePages";
+import { serviceAreasPage } from "@data/doc27CompanyPages";
 import { site } from "@data/site";
 
 // Phase 3c gate (docs/19-SYSTEM-AND-SITEMAP.md §2.1): "one per city actually worked; hard
@@ -46,15 +47,15 @@ const schema = [
 ---
 
 <BaseLayout
-  title="Service Areas | San Jose & the South Bay & Peninsula | Aseptaclean"
-  description="Aseptaclean serves San Jose and the surrounding South Bay & Peninsula — property cleanouts, estate clearing, and deep cleaning under one written scope, wherever the property sits in the service area."
+  title={serviceAreasPage.seoTitle}
+  description={serviceAreasPage.metaDescription}
   canonicalPath={serviceAreasHub.slug}
   noindex={true}
   schema={schema}
 >
-  <CompactHero eyebrow="Service areas" headingId="areas-title">
-    <h1 id="areas-title">Where Aseptaclean works in the South Bay</h1>
-    <p class="compact-hero__lead">{serviceAreasHub.intro}</p>
+  <CompactHero eyebrow={serviceAreasPage.eyebrow} headingId="areas-title">
+    <h1 id="areas-title" class="ac-type-h1">{serviceAreasPage.h1}</h1>
+    <p class="compact-hero__lead">{serviceAreasPage.lead}</p>
   </CompactHero>
 
   <AreasWeServe />
@@ -62,7 +63,8 @@ const schema = [
   <section class="clusters" aria-labelledby="clusters-title">
     <div class="ac-measure-wide">
       <p class="ac-eyebrow">By area</p>
-      <h2 id="clusters-title" class="ac-type-h2 clusters__heading">Every property is different; the scope isn't, one written scope at a time</h2>
+      <h2 id="clusters-title" class="ac-type-h2 clusters__heading">{serviceAreasPage.h2}</h2>
+      <p class="clusters__body">{serviceAreasPage.body}</p>
       <div class="clusters__grid">
         {
           serviceAreasHub.clusters.map((cluster) => (
@@ -118,6 +120,12 @@ const schema = [
   .clusters__heading {
     max-width: 36ch;
     margin-top: var(--ac-space-3);
+  }
+
+  .clusters__body {
+    max-width: 58ch;
+    margin-top: var(--ac-space-4);
+    color: var(--ac-color-ink-600);
   }
 
   .clusters__grid {

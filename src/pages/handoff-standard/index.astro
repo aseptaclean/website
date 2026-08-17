@@ -10,9 +10,15 @@
 // only — this page adds no new stage claims, just the fuller phrasing already approved there).
 // Record annotations restate claims already approved elsewhere (homepage.assurance,
 // legal.documentationDisclaimer) rather than asserting anything new.
+//
+// Title, meta, eyebrow, H1, and lead migrated to docs/27-COPY-CANONICAL.md §17.1 ("Process")
+// on 2026-08-16. docs/SITEMAP-MASTER.md maps doc 27's bare /process route onto this existing
+// /handoff-standard/ URL ("Company | /handoff-standard/ (= Process)"), so the route is
+// unchanged and no redirect is needed. Layout below is unchanged.
 import BaseLayout from "@layouts/BaseLayout.astro";
 import CompactHero from "@components/CompactHero.astro";
 import RequestForm from "@components/RequestForm.astro";
+import { processPage } from "@data/doc27CompanyPages";
 import { homepage, legal, site } from "@data/site";
 
 const record = homepage.sampleRecord;
@@ -134,17 +140,14 @@ const schema = [
 ---
 
 <BaseLayout
-  title="The Aseptaclean Handoff Standard | Five Stages, One Record"
-  description="The Aseptaclean Handoff Standard in full: five stages, one accountable operator, and a documented Property Handoff Record at closeout."
-  canonicalPath="/handoff-standard/"
+  title={processPage.seoTitle}
+  description={processPage.metaDescription}
+  canonicalPath={processPage.slug}
   schema={schema}
 >
-  <CompactHero eyebrow="The Aseptaclean Handoff Standard" headingId="standard-title">
-    <h1 id="standard-title">The Aseptaclean Handoff Standard</h1>
-    <p class="compact-hero__lead">
-      One company stays accountable from the first decision to the final closeout — five
-      defined stages, one Property Handoff Record.
-    </p>
+  <CompactHero eyebrow={processPage.eyebrow} headingId="standard-title">
+    <h1 id="standard-title" class="ac-type-h1">{processPage.h1}</h1>
+    <p class="compact-hero__lead">{processPage.lead}</p>
   </CompactHero>
 
   <section class="standard-stages" aria-labelledby="stages-title">
@@ -171,7 +174,7 @@ const schema = [
   <section class="standard-record" id="record" aria-labelledby="record-title">
     <div class="ac-measure-wide">
       <p class="ac-eyebrow">The complete sample record</p>
-      <h2 id="record-title" class="standard-record__title">Property Handoff Record — annotated</h2>
+      <h2 id="record-title" class="ac-type-h2 standard-record__title">Property Handoff Record — annotated</h2>
       <p class="standard-record__intro">
         Every field below exists because it protects a specific decision. This is the sample
         used in letters and referrals; a real project's record follows the same structure.
@@ -262,7 +265,6 @@ const schema = [
   .standard-stages h2 {
     max-width: 34ch;
     margin: 12px 0 0;
-    font-size: clamp(1.9rem, 3.4vw, 2.6rem);
     line-height: 1.1;
   }
 
@@ -317,7 +319,6 @@ const schema = [
 
   .standard-record__title {
     margin: 10px 0 0;
-    font-size: clamp(1.9rem, 3.4vw, 2.6rem);
   }
 
   .standard-record__intro {
@@ -524,7 +525,6 @@ const schema = [
   .standard-relies h2 {
     max-width: 30ch;
     margin: 10px 0 0;
-    font-size: clamp(1.9rem, 3.4vw, 2.6rem);
   }
 
   .relies-grid {
@@ -565,11 +565,18 @@ const schema = [
 
   @media (max-width: 40rem) {
     .stage {
-      grid-template-columns: 44px 1fr;
+      /* minmax(0, 1fr) — a bare `1fr` is `minmax(auto, 1fr)`, and that `auto` floor is the
+         track's min-content width. .stage__rec is `white-space: nowrap`, so it floored this
+         track at ~302px and pushed the row past the 280px container at 320px viewports. */
+      grid-template-columns: 44px minmax(0, 1fr);
     }
 
     .stage__rec {
       grid-column: 2;
+      /* Paired with the track fix above: the track can now shrink, so the chip has to be
+         allowed to wrap or it re-creates the same overflow on its own. */
+      justify-self: start;
+      white-space: normal;
     }
 
     .rrow {

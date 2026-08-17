@@ -3,9 +3,12 @@
 // site.business.phone used everywhere else (footer, header, ribbon). No street address:
 // site.business.addressPolicy is "service-area business — no published street address",
 // so the map slot is a labeled placeholder rather than an embed built on a fabricated pin.
+// Title, meta, eyebrow, H1, and lead migrated to docs/27-COPY-CANONICAL.md §17.5 on
+// 2026-08-16. Layout and the contact-details/map-placeholder composition below are unchanged.
 import BaseLayout from "@layouts/BaseLayout.astro";
 import CompactHero from "@components/CompactHero.astro";
 import RequestForm from "@components/RequestForm.astro";
+import { contactPage } from "@data/doc27CompanyPages";
 import { site } from "@data/site";
 
 const phoneHref = site.business.phoneUri;
@@ -36,13 +39,14 @@ const schema = [
 ---
 
 <BaseLayout
-  title="Contact Aseptaclean | San Jose & South Bay Property Cleanouts"
-  description="Call, email, or send property details. Aseptaclean serves San Jose and the South Bay and responds within one business day."
-  canonicalPath="/contact/"
+  title={contactPage.seoTitle}
+  description={contactPage.metaDescription}
+  canonicalPath={contactPage.slug}
   schema={schema}
 >
-  <CompactHero eyebrow="Contact" headingId="contact-title">
-    <h1 id="contact-title">Contact Aseptaclean</h1>
+  <CompactHero eyebrow={contactPage.eyebrow} headingId="contact-title">
+    <h1 id="contact-title" class="ac-type-h1">{contactPage.h1}</h1>
+    <p class="compact-hero__lead">{contactPage.lead}</p>
   </CompactHero>
 
   <section class="contact-info" aria-labelledby="contact-info-title">
@@ -155,6 +159,9 @@ const schema = [
   .contact-info__details dd a {
     color: var(--ac-color-navy-900);
     text-decoration: none;
+    /* An email address has no default break opportunity, so its min-content width floored
+       the `1fr` value track and pushed the whole page 35px wider than a 320px viewport. */
+    overflow-wrap: anywhere;
   }
 
   .contact-info__details dd a:hover {
@@ -243,6 +250,15 @@ const schema = [
     max-width: none;
     color: var(--ac-color-ink-600);
     font-size: 0.9rem;
+  }
+
+  /* Below ~480px the fixed 8rem label column leaves too little room for the value, so the
+     label/value pairs stack instead of sitting side by side. */
+  @media (max-width: 30rem) {
+    .contact-info__details dl > div {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 4px;
+    }
   }
 
   @media (min-width: 60rem) {
