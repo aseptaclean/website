@@ -21,6 +21,10 @@ Where this file conflicts with a higher authority, the higher authority wins. Re
 Claims are governed by `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md`. It outranks this file on every
 question of what may be said publicly — read it before writing or reviewing any copy.
 
+`docs/27-COPY-CANONICAL.md` (rank 7) is the copy authority for the routes it covers; §18.1
+below promotes its §3 operating constraints and §30 "what should not be done next" into this
+file's release-blocking review.
+
 ---
 
 # 1. The hard truth
@@ -918,6 +922,53 @@ A page also fails immediately for any one of these critical signs:
 - animation blocking content
 - performance budget breach without approved exception
 - unverified regulated-service claim
+- a promise of complete odor removal from a damaged porous material
+- a claim that every property can be quoted from photographs
+
+## 18.1 Promoted from `docs/27-COPY-CANONICAL.md` (added 2026-08-16)
+
+Doc 27 (precedence rank 7 — see `AGENTS.md` §1) is the copy authority for the routes it
+covers. Its §3 "Operating constraints" and §30 "What should not be done next" are promoted
+into this release-blocking review, not left as text living only inside doc 27. The two
+critical signs added above are drawn directly from §3 — they are the two catches every
+prior guardrail pass missed.
+
+**From doc 27 §3 — check on every page before it ships:**
+
+- Does not present Aseptaclean as a licensed contractor
+- Does not claim structural repair, demolition, pest control, extermination, insulation
+  removal, environmental clearance, or regulated remediation
+- Does not claim that project documentation certifies a building safe, sanitary,
+  habitable, remediated, or regulator-approved
+- Does not promise complete odor removal from damaged porous materials (critical sign,
+  above)
+- Does not claim every property can be quoted from photographs (critical sign, above)
+- Does not publish package pricing that ignores condition, access, volume, disposal, or
+  deadline
+- Does not imply Aseptaclean can haul or dispose of materials through an unverified or
+  unlawful disposal path
+- Does not publish a city SEO page that merely swaps a place name
+- Does not publish animal, rodent, or pigeon-waste claims until the current compliance and
+  insurance gates are cleared for that page (marketing copy for these pages may exist
+  in draft per doc 27's own owner reconciliation; publish status is still governed by
+  `AGENTS.md` §2's noindex/sitemap rules)
+
+**From doc 27 §30 — check once per release, not just once per page:**
+
+- No site redesign before conversion and proof data exist
+- No stock photography added merely to fill space
+- No testimonial section added without real testimonials
+- No more than one thin city page published at a time
+- No claim broadened into regulated territory merely because the page already exists
+- No package-pricing table added just to inflate form volume
+- No presentation of founder experience as a license or certification
+- No description of project documentation as regulatory clearance
+- No broad paid traffic before lead delivery and tracking are verified
+- Page count is never treated as a proxy for topical authority
+
+Where either list conflicts with a higher-ranked document or an explicit owner decision,
+the higher authority wins and the conflict goes in `docs/05-DECISIONS-LOG.md` per
+`AGENTS.md` §1 — do not resolve it silently.
 
 ---
 

@@ -2763,6 +2763,133 @@ doc 27's own header assigns to doc 19 — left unchanged (they already match doc
   jose/`. No page exists to receive this copy; creating the pages is out of scope for a copy
   migration and not done here.
 
+## Governance install: doc 27/20 added to precedence chain; §3/§30 promoted; build stack and reconciliations confirmed (2026-08-16)
+
+Follow-up to the same-day "`docs/27-COPY-CANONICAL.md` adopted as homepage/service-page
+copy source" entry above, which used doc 27 as a copy source before it was ever added to
+`AGENTS.md`'s chain. This entry closes that gap and formally records decisions that
+existed only inside doc 27's own header.
+
+### 1. Build stack confirmed — Astro/Cloudflare is the sole live build; ChatGPT build abandoned
+
+Doc 27's provenance note says its copy was "harvested from a separate ChatGPT-hosted build
+(aseptaclean-rebuild...chatgpt.site). That build is NOT live and is NOT maintained. The
+live site is Astro on Cloudflare Pages." This is now confirmed and logged, not just a
+disclaimer inside one document's header: **the ChatGPT-hosted build is abandoned and
+carries no authority over anything.** Doc 27 §25 and every other platform/deployment/
+technical reference inside doc 27 describing that build are void — `AGENTS.md` §0.1 and
+doc 19 already govern the real stack (Astro, `output: "static"`, Cloudflare Pages,
+`functions/api/lead.ts`), and doc 27 was never meant to compete with them there. Doc 27's
+only live authority is the copy text in §9–18.
+
+### 2. Doc 27 and doc 20 added to `AGENTS.md`'s precedence chain
+
+Neither file was in the chain. Doc 27 was already governing shipped copy (commits
+`26bfc33`, `947dc1a`, same day) before this fix — an unranked document was governing
+production copy, which is exactly the failure mode `AGENTS.md`'s own preamble exists to
+prevent.
+
+Added: rank 7 `docs/27-COPY-CANONICAL.md` (copy authority for the routes it has finished
+copy for — §9–18; does not govern architecture, URLs, SEO waves, visual system, or claims,
+matching doc 27's own header disclaimer) and rank 8 `docs/20-COPY-VOICE.md` (Part 2's
+verbatim rewrites retired in favor of doc 27; Part 1's voice rules remain live for copy doc
+27 doesn't cover and as the QA standard doc 27's own copy must pass).
+
+Renumbered without content change: `aseptaclean-FINAL-v2.html` (7→9, note amended — see §3
+below), `06-APPROVED-HOMEPAGE-COPY.md` (8→10), `11-COMPOSITION-AND-TYPE.md` (9→11),
+`02-OWNER-INPUTS.md` (10→12), `07-ONE-PAGE-DIRECTIVE.md` (11→13),
+`08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` (12→14).
+
+**Type:** stale description → corrected doc (the chain didn't reflect a copy source
+already live in production code). **Changed:** `AGENTS.md` §1.
+
+### 3. Reconciliation — `aseptaclean-FINAL-v2.html`'s copy authority for `/`
+
+A: old rank-7 note — "The FINAL-v2 override applies to `/` and covers markup, CSS custom
+property values, section structure, **and copy**." (old rank 7, in the chain)
+
+B: doc 27 §9 is the copy actually shipped on `/` as of commit `26bfc33` (same day, this
+session) — Handoff Status sample, Why Aseptaclean, Five-Stage Standard, Property Handoff
+Record sample, pricing intro, founder body, 4 of 7 FAQ items, and the final CTA all now
+read doc 27's wording, not FINAL-v2's. (H1/lead/CTA/trust-chip text and the 3-card service
+section were deliberately kept from the existing build — see the doc 19/18 conflict
+resolutions logged above.)
+
+**Resolution:** doc 27 now governs copy for `/` (new rank 7, above FINAL-v2's new rank 9).
+FINAL-v2 keeps markup, CSS custom property values, and section structure for `/`; its copy
+authority there is revoked. The rank-9 note is rewritten to say so explicitly instead of
+leaving stale "and copy" language that already contradicted what commit `26bfc33` shipped.
+
+**Type:** violated rule → enforced going forward (the chain now matches what the copy
+migration already did, instead of the migration having silently outrun the chain).
+**Changed:** `AGENTS.md` §1 rank-9 note.
+
+### 4. Doc 27 §3 operating constraints and §30 "what should not be done next" promoted into `01-QUALITY-GUARDRAILS.md`
+
+Doc 27's own header asserted this promotion already happened: "Promoted to active
+guardrails: §3 operating constraints and §30 ... are pulled into the 01-guardrail review
+chain — including the two catches prior docs missed: no complete-odor-removal claims on
+porous materials, and no quote-from-photos guarantee." That claim was aspirational — doc
+01 contained neither list. The two missed catches had only been enforced once, ad hoc, in
+commit `947dc1a`'s animal-page FAQ additions; nothing in doc 01 required either check on
+any other page.
+
+**Fixed:** `01-QUALITY-GUARDRAILS.md` §18 (Anti-AI forensic audit) now adds both missed
+catches directly to the existing "critical signs" immediate-fail list, and a new §18.1
+reproduces doc 27 §3's full operating-constraints list (checked once per page) and §30's
+full "what should not be done next" list (checked once per release), with a pointer back
+to `AGENTS.md` §1 for logging any future conflict between these and a higher-ranked
+document. A one-line pointer was also added to doc 01's top-of-file Precedence section for
+discoverability.
+
+**Type:** violated rule → enforced (the checklist Codex is supposed to run on every page
+now actually contains the items doc 27 claimed it contained). **Changed:**
+`01-QUALITY-GUARDRAILS.md` (Precedence section, §18, new §18.1).
+
+### 5. Three owner reconciliations from doc 27's header, logged formally
+
+Doc 27's header records three 2026-08-09 owner reconciliations that override the rest of
+the document, but they were never entered in this log — they existed only inside doc 27
+itself, which itself wasn't in the chain until item 2 above.
+
+1. **Animal/rodent/pigeon marketing pages are ungated.** Doc 27's own "gated — do not
+   publish" status on §13.2–13.4 is superseded; marketing copy for these pages may exist
+   in draft. The remaining gate is operational only — confirm COI wording covers the
+   organic-pathogen endorsement and a written rodent PPE/respiratory protocol before the
+   first such job. Claims stay cleaning-only regardless of gate status. Only the animal
+   page (`animal-waste-cleanup-san-jose`) is built today; it stays exactly where
+   `AGENTS.md` §2 already puts it — noindex, excluded from the sitemap, unlinked from nav
+   and footer — until its own gate clears. Rodent and pigeon dropping-cleanup pages do not
+   exist in this repo yet; this reconciliation is forward-looking for when they're built,
+   not a route change today.
+2. **Slug convention: apply the city suffix to every service slug**
+   (`/estate-cleanout-san-jose/`, not `/estate-cleanouts`), including
+   `/extreme-condition-cleaning` → `/extreme-cleaning-san-jose/` (keyword-verified). This
+   matches doc 19's existing slug pattern; no conflict, confirmation only.
+3. **Publish timing follows doc 19's waves, not doc 27's own section order.** Doc 27
+   supplies the words; doc 19 supplies the when. No conflict — doc 27's own header already
+   deferred to doc 19 on this, and the rank-7 note added to `AGENTS.md` §1 (item 2, above)
+   says the same thing.
+
+**Type:** stale description → corrected doc (owner decisions that existed only in an
+unranked document's header are now in the log, where `AGENTS.md` says they belong).
+**Changed:** this entry only — no code or route changes; item 1 does not reopen or alter
+any route's index status.
+
+### 6. Not changed
+
+- No copy text changed in this session — this entry is a governance/documentation pass.
+  The homepage and estate/hoarding/animal service-page copy migrations already shipped in
+  commits `26bfc33` and `947dc1a`.
+- `06-APPROVED-HOMEPAGE-COPY.md` is not superseded outright — it still governs any route
+  doc 27 doesn't have finished copy for.
+- Doc 27 §25 and its other platform/deployment references describing the abandoned
+  ChatGPT build are not deleted from doc 27 — only reconfirmed void, per doc 27's own
+  instruction and item 1 above. Editing doc 27's own text is out of scope for a
+  governance-log pass.
+- `AGENTS.md` §2's built/noindex/sitemap route list is unchanged — item 5.1 above lifts a
+  marketing-copy gate, not a publish gate.
+
 ## CTA/offer "24-Hour" wording retired — closes the 2026-08-07 pending item (2026-08-16)
 
 **The conflict**, flagged but left unresolved on 2026-08-07 (see that entry above): the literal

@@ -56,21 +56,40 @@ every material conflict in `docs/05-DECISIONS-LOG.md`.
 | 4 | `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md` | Phase 4 canonical spec — architecture, acceptance |
 | 5 | `docs/18-VISUAL-DIRECTION.md` | Visual system, section map, imagery, accent discipline |
 | 6 | `docs/19-SYSTEM-AND-SITEMAP.md` | Route architecture, phased sitemap, growth |
-| 7 | `docs/aseptaclean-FINAL-v2.html` | `/` only — markup, tokens, structure, copy |
-| 8 | `docs/06-APPROVED-HOMEPAGE-COPY.md` | Copy for every route **except** `/` |
-| 9 | `docs/11-COMPOSITION-AND-TYPE.md` | Type scale, measure, rhythm (where 18 has not struck it) |
-| 10 | `docs/02-OWNER-INPUTS.md` | Business facts, where not contradicted by the decisions log |
-| 11 | `docs/07-ONE-PAGE-DIRECTIVE.md` | §3 conflicts, §6 guarantees, §7 forms, §11 QA only |
-| 12 | `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` | `/private-residence-reset/` only |
+| 7 | `docs/27-COPY-CANONICAL.md` | Copy authority — finished copy for the routes it covers (§9–18: homepage, service hubs, individual service pages, service areas, company pages) |
+| 8 | `docs/20-COPY-VOICE.md` | Voice rules for copy doc 27 doesn't cover yet; QA standard doc 27's own copy must pass |
+| 9 | `docs/aseptaclean-FINAL-v2.html` | `/` only — markup, tokens, structure (copy for `/` is now rank 7) |
+| 10 | `docs/06-APPROVED-HOMEPAGE-COPY.md` | Copy for routes doc 27 doesn't cover |
+| 11 | `docs/11-COMPOSITION-AND-TYPE.md` | Type scale, measure, rhythm (where 18 has not struck it) |
+| 12 | `docs/02-OWNER-INPUTS.md` | Business facts, where not contradicted by the decisions log |
+| 13 | `docs/07-ONE-PAGE-DIRECTIVE.md` | §3 conflicts, §6 guarantees, §7 forms, §11 QA only |
+| 14 | `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` | `/private-residence-reset/` only |
 
-**Rank 10 note.** `07` §10 says "if they disagree, `02-OWNER-INPUTS.md` wins." That is
+**Rank 12 note.** `07` §10 says "if they disagree, `02-OWNER-INPUTS.md` wins." That is
 **revoked**. `02` is demonstrably stale on the primary CTA, the city list, and the county
 label. The decisions log (rank 1) wins. `02` is being corrected — until it is, treat any
 `02` value contradicted by a dated log entry as void.
 
-**Rank 7 note.** The FINAL-v2 override applies to `/` and covers markup, CSS custom property
-values, section structure, **and copy**. It does **not** override ranks 2, 3, or 4. Where v2
-conflicts with a claims rule, the claims rule wins and v2 gets edited.
+**Rank 7 note.** Doc 27 governs copy text only — homepage §9, service-hub copy §10,
+individual service-page copy §12–15, service-areas copy §16, company-page copy §17,
+assessment-form copy §18. It does **not** govern architecture, URLs, SEO waves (`19` still
+owns those), or the visual system (`18` still owns that) — doc 27's own header disclaims
+those, and two conflicts have already been adjudicated on exactly that boundary: doc 19's
+"H1 in buyer's words" rule beat doc 27's literal service-name H1s, and doc 18's
+three-card homepage rule beat doc 27's four-card copy (both logged in
+`docs/05-DECISIONS-LOG.md`, 2026-08-16). Doc 27 §25 and every platform/deployment
+reference inside doc 27 describe an abandoned ChatGPT-hosted build that was never live —
+ignore them; the live stack is Astro on Cloudflare Pages per §0.1 above.
+
+**Rank 8 note.** Doc 20 Part 2's verbatim rewrites are retired — doc 27 superseded them.
+Part 1's rules (contractions, aphorism limits, rhythm, read-aloud gate, untouchable
+sentences) remain the standard for any new copy doc 27 doesn't cover, and are the QA
+standard doc 27's own copy must pass before publish.
+
+**Rank 9 note.** FINAL-v2's copy authority for `/` is revoked as of the doc-27 promotion
+above — it retains markup, CSS custom property values, and section structure for `/` only.
+It does **not** override ranks 2, 3, or 4. Where v2 conflicts with a claims rule, the claims
+rule wins and v2 gets edited.
 
 ### Reference only — do not build from
 `00-MASTER-BRIEF.md` · `03-BUILD-PLAN.md` · `12-SESSION-PROMPTS.md` (predates doc 18) ·
