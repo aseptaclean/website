@@ -114,10 +114,16 @@ issues an explicit supersession note. `site map` — superseded architecture, se
 ## 2. Current route architecture
 
 The site is **no longer one-page**. `19-SYSTEM-AND-SITEMAP.md` Part 2 supersedes `07` §2.
+**`docs/SITEMAP-MASTER.md` (2026-08-16) is now the single source of truth for the full
+route list and index status** — supersedes `19` §2.1 and `27` §7. The lists below are kept
+in sync with it for quick reference; if they drift, master wins.
 
 **Live and indexable**
 ```
 /                          homepage (FINAL-v2)
+/about/  /contact/  /handoff-standard/     corrected onto this list 2026-08-16 — all three
+                            ship no `noindex` prop (BaseLayout default is indexable) and were
+                            previously missing here / miscategorized below
 /request-assessment/       progressive form — a real canonical route, never redirect it
 /private-residence-reset/  campaign page, out of nav, one low-emphasis crawlable link
 /thank-you/                noindex
@@ -131,9 +137,11 @@ The site is **no longer one-page**. `19-SYSTEM-AND-SITEMAP.md` Part 2 supersedes
 ```
 /estate-cleanout-san-jose/          /hoarding-cleanup-san-jose/
 /animal-waste-cleanup-san-jose/     /senior-downsizing-san-jose/
-/deep-cleaning-san-jose/            /property-cleanouts-for-managers/
-/service-areas/  (cityPages = [])   /estate-cleanout-checklist/
-/contact/
+/deep-cleaning-san-jose/            /property-cleanouts-san-jose/ (renamed 2026-08-16,
+/service-areas/  (cityPages = [])                                was .../for-managers/)
+/estate-cleanout-checklist/
+/detailed-cleaning/  /specialty-cleaning/  /property-clearing/   (hub pages, added 2026-08-16)
+/commercial-cleaning-san-jose/                                   (gate: crew, added 2026-08-16)
 ```
 Each stays noindex until its own gate clears. Do not bulk-flip.
 

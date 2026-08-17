@@ -4,6 +4,10 @@
 **Repo location:** `docs/19-SYSTEM-AND-SITEMAP.md`
 **Relationship:** Below `01-QUALITY-GUARDRAILS.md` (claims) and `18-VISUAL-DIRECTION.md` /
 `aseptaclean-FINAL-v2.html` (visual). Where this doc names copy, `01` still outranks it.
+**Copy source:** page WORDS come from `27-COPY-CANONICAL.md` (§9–15). This doc
+owns architecture, URLs, SEO, and publish waves only. Where 27 restates
+architecture, THIS doc wins; where this doc implies copy, 27 wins.
+
 **Self-containment rule:** every future build session must be able to execute from this
 doc alone. If information needed to build a page lives only in a conversation, it goes
 in this doc first.
@@ -97,105 +101,68 @@ $800–1,000/mo (answering 250–350 · LSA 400–500 · letters/citations 50–
 one closed job/mo pays the stack ~4×. LSA buys cash flow now; SEO compounds CAC
 toward zero over 12 months.
 
-### 1.8 Inquiry capture — buyer research system
-
-Formalizes the six-field system referenced in §1.5 COMPOUND item 5 and extracted
-from `90-FUTURE-PHASE-BIOHAZARD-STRATEGY.md` §10 (active now, not gated — approved
-for immediate use across ALL service categories, current and future). This repo has
-no separate operations-authority file, so this section is that formalization.
-
-Do not invent customer psychology; capture it. For every inquiry, record six fields:
-
-| Field | Question |
-| --- | --- |
-| Trigger | Why are they looking now? |
-| Frustration | What have they already tried? |
-| Desired outcome | What does "done" look like to them? |
-| Fear | What are they afraid will go wrong? |
-| Objection | Why might they not hire Aseptaclean? |
-| Vocabulary | What exact words do they use for the condition? |
-
-Review quarterly. Recurring language feeds copy revisions through the normal
-governance process — captured vocabulary is raw material, not auto-approved copy.
-Everything passes the claims check (`01-QUALITY-GUARDRAILS.md`) before publication.
-
 ---
 
 ## PART 2 — SITEMAP + PER-PAGE SEO SPEC
 
-### 2.1 Phase map
+### 2.1 Site architecture & nav (owner tree adopted 2026-08-09)
+
+**Superseded by `docs/SITEMAP-MASTER.md` (2026-08-16), which is now the single source of
+truth for routes and index status.** The sitemap below is retained for the SEO-spec detail
+in §2.2 that master doesn't restate; where the two disagree on a route, slug, or index
+status, master wins.
+
+Nav = grouped dropdowns once Phase 3 pages publish; flat nav until then.
+Every page: keyword-slugged URL, one primary query, one h1.
 
 ```
-PHASE 1 — LIVE (reconciled 2026-08-11 — all seven built and shipped, not "this week")
-/                                    homepage (FINAL-v2)
-/thank-you/                          conversion confirmation
-/about/                              E-E-A-T + brand-search catcher
-/contact/                            NAP anchor + GBP landing
-/handoff-standard/                   fixes dead footer link; method + Record page
-/404                                 branded, post-cutover link-rot catcher
-/privacy/  /terms/                   Termly shells
+HOME  /
 
-PHASE 3 — MONTH 2 (value order)
-/estate-cleanout-san-jose/
-/hoarding-cleanup-san-jose/
-/animal-waste-cleanup-san-jose/
-/senior-downsizing-san-jose/         feeds the senior-move-manager referral ring
-/estate-cleanout-checklist/          ungated asset
-/service-areas/                      hub for city pages; "near me" catcher
+DETAILED CLEANING
+  /deep-cleaning-san-jose/              deep cleaning services san jose
+  /move-out-cleaning-san-jose/          move out cleaning san jose
+  /post-construction-cleaning-san-jose/ post construction cleaning san jose
+  /window-cleaning-san-jose/            window cleaning san jose
 
-PHASE 3b — AS GATES CLEAR
-/deep-cleaning-san-jose/             gate: B10 checklist finalized
-/property-cleanouts-for-managers/    gate: crew capacity confirmed
+SPECIALTY CLEANING
+  /extreme-cleaning-san-jose/            extreme cleaning san jose (verified query form)
+  /animal-waste-cleanup-san-jose/       animal waste cleanup san jose
+  /rodent-dropping-cleanup-san-jose/    rodent dropping cleanup san jose
+  (pigeon guano = H2 on animal page; split only if GSC shows volume)
 
-PHASE 3d — IA EXPANSION, CHUNK 3 (added 2026-08-11; live)
-/services/                          hub page — indexed, in sitemap, in nav + footer;
-                                     links out to servicesHub.pillars (servicePages.ts)
-/who-we-help/                       hub page — indexed, in sitemap, in nav + footer;
-                                     links out to whoWeHelpHub.segments (servicePages.ts)
+PROPERTY CLEARING
+  /property-cleanouts-san-jose/         property cleanout san jose (category hub)
+  /estate-cleanout-san-jose/            estate cleanout san jose  ← highest value
+  /hoarding-cleanup-san-jose/           hoarding cleanup san jose
+  /eviction-cleanout-san-jose/          eviction cleanout san jose (PM/turnover page)
+  /debris-removal-san-jose/             debris removal san jose (minimums framing)
+  /senior-downsizing-san-jose/          senior downsizing services san jose
 
-PHASE 3c — TRAILING REAL JOBS ONLY (nested under the hub)
-/service-areas/{city}/               one per city actually worked; hard content gate
+COMMERCIAL
+  /commercial-cleaning-san-jose/        commercial cleaning san jose (janitorial)
 
-PHASE 4 — VOLUME EXISTS
-/assessment/                         triage quiz
-/questions/estate-cleanout-cost/     FIRST question post — highest-volume query
-/questions/junk-removal-vs-estate-cleanout/   hauler-term interceptor
-/questions/{slug}/                   further posts as call language accumulates
+SERVICE AREAS
+  /service-areas/  → /service-areas/{city}/ (San Jose core in service pages;
+  Mountain View, Sunnyvale, Santa Clara, Campbell + Peninsula cities as earned)
 
-PHASE 5 — BIOHAZARD (GATED · TSWMP PENDING · DO NOT BUILD)
-Inert until ALL FOUR gates in 90-FUTURE-PHASE-BIOHAZARD-STRATEGY.md clear
-(TSWMP held · disposal arrangements · claims amendment · owner supersession).
-Future URL slate per doc 90 §9 (one URL per intent, anti-cannibalization):
-/biohazard-cleanup/          category head term
-/blood-cleanup/              absorbs bodily-fluid intent
-/unattended-death-cleanup/   absorbs decomposition intent
-/crime-scene-cleanup/        aftermath-only language, always
-/human-waste-cleanup/        distinct from animal scope; cross-link never merge
-/sharps-cleanup/             H1 carries "Needle & Sharps"
-Reserved pending own go/no-go: /encampment-cleanup/ /vehicle-biohazard-cleanup/
-No route, draft, stub, sitemap entry, or nav link exists before Gate 4.
-Keywords re-validated against live SERP at activation. Doc 90 governs
-vocabulary, guarantees (incl. the Discretion Guarantee), and page architecture.
-
-NEVER BUILD (hauler-bait, price-fight terms): garage cleanout, basement cleanout,
-furniture removal, mattress disposal pages. No reviews page until reviews exist.
+PROCESS    /handoff-standard/           (brand moat page)
+PROJECTS   /projects/                   (publishes when real job photos exist)
+ABOUT      /about/    FAQ /faq/ or homepage section    CONTACT /contact/
+RESOURCES (footer): /estate-cleanout-checklist/  /assessment/ (quiz, Phase 4)
 ```
+
+**Publish order (SEO value × readiness):**
+Wave 1 (live now): home, about, contact, handoff-standard, thank-you, legal, 404.
+Wave 2 (month 2): estate → hoarding → animal → rodent → senior downsizing →
+checklist → service-areas hub → property-cleanouts hub → debris (minimums copy).
+Wave 3 (as crew/scope confirms): deep cleaning, move-out, extreme cleaning,
+eviction/PM, post-construction, window, commercial.
+Wave 4: /projects/ (first job photos), city pages (first job per city), quiz.
+
+**Homepage nav until Wave 2:** Services (scrolls to cards) · Method · The
+Record · About · FAQ · phone · CTA — unchanged.
 
 ### 2.2 Per-page SEO spec (the part that must not live in chat)
-
-**The SEO correction — migrated from `07-ONE-PAGE-DIRECTIVE.md` §4, 2026-08-11.** The
-homepage title and meta target property cleanout and deep cleaning — that term competes
-against junk removal and maid services (high volume, low intent, a fight a zero-review
-business loses on proximity and budget). The higher-intent, weaker-incumbent query is hoarding
-and estate cleanout language, so the recognition movement and the FAQ carry the situational
-language a hoarding or estate searcher types — heavy accumulation, inherited property, estate
-cleanout, whole-house cleanout, a property nobody can get to — written as situations, never as
-a keyword block. Required homepage FAQ: *"Do you handle properties with heavy accumulation or
-hoarding conditions?"*, answered factually inside the lawful scope with the exclusion list
-attached. (Status: already shipped — `FAQ.astro` carries this question; see
-`docs/04-RELEASE-CHECKLIST.md` C16.) `hoarder` never appears as a noun and `gross filth` never
-appears at all anywhere on the site — see `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §2.2 for that as
-a standing claims rule, not just a homepage note.
 
 **HOMEPAGE `/`**
 - Primary: property cleanout san jose
@@ -237,8 +204,34 @@ a standing claims rule, not just a homepage note.
 - Meta: `Cleaning of animal-affected and heavy organic conditions under our organic
   pathogen endorsement. Cleaning only — documented, discreet, South Bay.`
 - Wording law: cleaning under endorsement. Never biohazard/remediation/decontaminate/
-  sanitize/sterilize. No hantavirus/rodent-specific naming until protocol confirmed.
+  sanitize/sterilize.
+- OWNER DECISION 2026-08-09: rodent-dropping and pigeon-dropping cleanup are IN
+  marketed scope (cleaning language only, no disease-risk claims). Operational
+  gate remains: written PPE/respiratory protocol required before first rodent
+  job — SOP task, not a marketing gate.
 - Schema: Service + FAQPage + Breadcrumb
+
+**RODENT DROPPINGS `/rodent-dropping-cleanup-san-jose/`** (owner-approved 2026-08-09)
+- Primary: rodent dropping cleanup san jose · Secondary: mouse droppings cleaning
+  attic, rat droppings removal house, rodent waste cleaning bay area
+- Near-zero local competition; strong candidate for fastest standalone ranking
+  after animal/organic. Cleaning language only — no disease/hantavirus risk
+  claims, no "decontamination." May launch as an H2 section on the animal page
+  and split out once it earns impressions.
+- Title: `Rodent Dropping Cleanup | San Jose & South Bay | Aseptaclean`
+
+**PIGEON DROPPINGS** — H2 section on the animal/organic page (pigeon guano
+cleanup san jose). Split to its own page only if GSC shows real query volume.
+
+**DEBRIS REMOVAL `/debris-removal-san-jose/`** (owner override; positioning-guarded)
+- Primary: debris removal san jose · Secondary: property debris removal, cleanout
+  debris hauling san jose
+- MANDATORY FRAMING: whole-property and project debris only, stated project
+  minimums above the fold, positioned as a component of documented cleanouts —
+  never single-item/curbside pricing, never hourly, never "cheap hauling"
+  language. This page exists to CAPTURE the query and educate upward into
+  cleanout scope, not to compete with junk haulers on price.
+- Title: `Property Debris Removal | San Jose & South Bay | Aseptaclean`
 
 **CHECKLIST `/estate-cleanout-checklist/`** — link magnet, letter destination
 - Primary: estate cleanout checklist
@@ -268,7 +261,8 @@ a standing claims rule, not just a homepage note.
   smoke — is a different licensed industry and NEVER appears on this page or in
   its schema. No sanitize/disinfect/sterilize claims (guardrails).
 
-**PM/TURNOVER `/property-cleanouts-for-managers/`** (gate: crew)
+**PM/TURNOVER `/property-cleanouts-san-jose/`** (renamed 2026-08-16 per docs/SITEMAP-MASTER.md;
+was `/property-cleanouts-for-managers/`) (gate: crew)
 - Primary: tenant abandonment cleanout · Secondary: eviction cleanout san jose,
   rental property cleanout, foreclosure cleanout, apartment turnover cleaning
 - Pure Track B: vacancy-cost framing, same-week availability messaging allowed only
@@ -371,17 +365,6 @@ discretion line in hero chips or Recognition — candidate copy:
 *"Unmarked assessment · no photographs shared without permission"* — VERIFY the
 vehicle is actually unmarked before shipping the word "unmarked."
 
-**Guarantee reconciliation — migrated from `07-ONE-PAGE-DIRECTIVE.md` §6, 2026-08-11.** The
-Handoff Assurance block (`06-APPROVED-HOMEPAGE-COPY.md`) requires discretion re-inserted as a
-sixth item — "someone will find out" is one of the three fears that block this sale, and it
-must be written operationally, not adjectivally: unmarked vehicles, plain clothing, no
-signage, no conversation with neighbors, scheduling around visibility. Ship only what is true
-today (see the VERIFY note above — this is the same open item, not a separate one). Keep the
-response commitment concrete ("within one business day") without attaching a financial penalty
-unless it will be held every week. "Handoff Assurance" replaces "the four named guarantees"
-repo-wide — purge old guarantee names from components, copy, footer, and schema wherever
-found.
-
 ### 3.2 Service page template
 ```
 [Ribbon / Nav — shared components]
@@ -465,109 +448,6 @@ Result logic (gated on name + phone):
 Result page = 3 lines: the likely path, what happens next, the one-business-day
 promise. No diagnosis language, no condition labels for people, no price quotes.
 `01` governs result copy. Lead arrives pre-qualified with all four answers attached.
-
----
-
-## PART 4B — ASSESSMENT FORM SPECIFICATION (current, `/request-assessment/`)
-
-### 4B.0 Form architecture — migrated from `07-ONE-PAGE-DIRECTIVE.md` §7, 2026-08-11
-
-**On `/`** — inline, short form (`QuickHandoffForm.astro`), no wizard, no progress bar. Name,
-phone, "What are you looking at?" textarea, consent line, honeypot, hidden context values. Its
-only job is to capture someone ready now, before qualification can scare them off. Note the
-current placement deviation from the original spec (which called for the short form to appear
-twice, hero and final movement): the v2 port removed it from the hero by owner confirmation.
-It now lives in a `#request` section, the final CTA, and the sticky bar — a deliberate,
-recorded deviation, not a regression. See `docs/23-BUILD-REQUIREMENTS-FROM-RESEARCH.md` §3.
-
-**On `/request-assessment/`** — the full three-step progressive-disclosure form in §4B.1
-below, uploads, visible progress, back/next, input preservation.
-
-Both post to `/api/lead` with `offer_type=handoff_reset`; `entry_route` distinguishes them.
-Photo upload is the highest-value field in the system — if upload handling threatens a launch
-date, ship the SMS photo path as a launch mechanism and add uploads immediately after, but
-never delay launch for it and never ship a broken upload control.
-
-### 4B.1 Field specification
-
-**Migrated from `00-MASTER-BRIEF.md` §9, 2026-08-11.** This governs the live long-form
-progressive-disclosure form (`AssessmentForm.astro`), distinct from Part 4's future triage
-quiz. Three-step form.
-
-### Step 1: Property fit
-
-Fields: property city · property type · is the property vacant? · what is happening with the
-property? · desired completion date · approximate square footage.
-
-Suggested "what is happening" options: inherited or estate property · preparing to sell ·
-landlord turnover · difficult move-out · accumulated contents · overwhelmed property · already
-empty but requires detailed cleaning · other.
-
-### Step 2: Scope and condition
-
-Fields: areas involved · unwanted contents removal required? · heavy cleaning required? ·
-garage or storage area included? · appliance interiors included? · cabinet interiors included?
-· known animal waste? · known human biological material? · known needles or sharps? · known
-sewage? · known mold? · known pest activity? · upload photos or video · access notes · what
-must remain? · what must be removed?
-
-Hazard questions must not imply service availability.
-
-### Step 3: Authority and contact
-
-Fields: full name · phone · email · relationship to property · are you authorized to approve
-the work? · property address · preferred contact method · best contact time · additional notes
-· privacy consent checkbox.
-
-### Form header microcopy
-
-> Takes approximately 3–5 minutes. Photos are strongly recommended. Your information and
-> property images are used only to evaluate the requested project.
-
-### Form completion message
-
-> Thank you. Your request has been received, and a confirmation email is on its way. During
-> business hours, Aseptaclean will call within 5 minutes to review the property and determine
-> the next step. Requests submitted outside business hours will be called during the next
-> business window. Submitting this form does not create a service agreement.
-
-**Published business hours:** Monday–Saturday, 7:00 AM–7:00 PM Pacific Time. Closed Sunday.
-
-### Form behavior
-
-- Autosave progress locally when practical; show progress indicator; support multiple image
-  uploads; validate file size and type; use clear inline error messages; preserve user input
-  after validation errors; do not require account creation.
-- Send form data to the configured form endpoint. Include spam protection and hidden
-  source/UTM fields.
-- Send an immediate confirmation email to the customer when a valid email address is provided.
-- Send an immediate SMS lead alert to the owner at the private server-side alert number,
-  including lead name, phone, city, situation summary, submission time, source URL, and a
-  direct callback link. Target SMS delivery within 60 seconds of successful submission; create
-  a fallback owner email alert if SMS delivery fails.
-- Redirect to `/thank-you/`. Never expose email-provider, SMS-provider, CRM, or notification
-  secrets in browser code.
-
-### Lead-response operating standard
-
-- During published business hours, the owner calls a successfully submitted lead within 5
-  minutes.
-- Outside published business hours, the confirmation email and success message state that the
-  lead will be called during the next business window.
-- The 5-minute standard is an operating commitment, not a claim of 24/7 availability.
-- Record submission time, first-contact time, and elapsed response time so the standard can be
-  audited later.
-
-### Analytics event names
-
-**Migrated from `00-MASTER-BRIEF.md` §13, 2026-08-11.** Recommended event names:
-`handoff_plan_click` · `phone_click` · `assessment_start` · `assessment_step_1_complete` ·
-`assessment_step_2_complete` · `assessment_submit` · `photo_upload` · `qualified_lead` ·
-`quote_issued` · `deposit_collected`.
-
-Also track: page views, scroll depth, primary CTA clicks, source/medium/campaign, thank-you
-page views, revenue, gross profit, time from inquiry to deposit. Do not optimize around raw
-form volume — optimize around qualified leads, deposits, and gross profit.
 
 ---
 

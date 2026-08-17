@@ -2924,3 +2924,130 @@ CTA, `Request an assessment`, matching the correction already recorded in `02` a
 
 **Not changed:** `docs/aseptaclean-FINAL-v2.html` and `docs/27-COPY-CANONICAL.md` — neither
 ever contained "24-Hour" or a `leadOffer`-equivalent field; no edit needed there.
+
+## Root `TOKEN-MAP.md` deleted — duplicate file, stale palette (2026-08-16)
+
+**The conflict.** Two files named `TOKEN-MAP.md` existed in the repo — root `/TOKEN-MAP.md`
+and `docs/TOKEN-MAP.md` — with substantively different contents and neither one named in
+`AGENTS.md`'s precedence chain. `diff` showed they disagreed on nearly everything: the color
+palette (root: Navy `#1C355E`, Deep Navy `#122840`, Slate Blue `#6A9BC3`, Steel `#A8B8C8` —
+the same values recorded in `11-COMPOSITION-AND-TYPE.md` §10.1; docs: `navy-950 #0b1830`,
+`navy-900 #10233f`, `navy-800 #1c355e`, `navy-700 #27436f`, plus a full measured contrast
+audit), the type scale (root: `--ac-text-h1` maxes at `3.8rem`; docs: `4.25rem`), and the
+rhythm tokens (root: `standard`/`open`/`vast` all collapsed to one identical clamp value;
+docs: same collapse, but documented as a known defect rather than left silent).
+
+**Which one is real, verified by grep against the live source of truth:**
+```
+$ grep -n "\-\-ac-color-navy\|\-\-ac-color-ink-400\|\-\-ac-color-steel-300" src/styles/tokens.css
+10:  --ac-color-navy-950: #0b1830;
+11:  --ac-color-navy-900: #10233f;
+12:  --ac-color-navy-800: #1c355e;
+13:  --ac-color-navy-700: #27436f;
+28:  --ac-color-ink-400: #617087;
+47:  --ac-color-steel-300: #8494a8;
+```
+Every value matches `docs/TOKEN-MAP.md` exactly. None match the root copy — the root copy
+documents the palette from before the FINAL-v2 port (also the palette still printed in
+`docs/11-COMPOSITION-AND-TYPE.md` §10.1, which that file's own header already marks as
+migrated/historical text, not a live token source).
+
+**Why this mattered beyond a stale file sitting unread:** the root copy was reportedly in
+active use as a reference by an external design session working from this repo — i.e., not
+just dead weight, but a document actually capable of steering a build toward the wrong,
+pre-port palette while looking equally authoritative as the correct one.
+
+**Reference check before deletion** — confirmed no file pointed at the root copy by path
+(everything either says `docs/TOKEN-MAP.md` explicitly or is a bare `TOKEN-MAP` mention in a
+docs-only context that already resolves to the docs copy):
+```
+$ grep -rn "TOKEN-MAP" --include="*.md" --include="*.astro" --include="*.ts" .
+DELETE-MANIFEST.md, docs/23-BUILD-REQUIREMENTS-FROM-RESEARCH.md, docs/REPO-STATE.md,
+docs/05-DECISIONS-LOG.md — all reference docs/TOKEN-MAP.md or an unqualified "TOKEN-MAP" in
+a docs-context sentence. Zero references to the root path specifically.
+```
+
+**Decision.** Root `/TOKEN-MAP.md` deleted. `docs/TOKEN-MAP.md` is canonical — it is the file
+`AGENTS.md`, this log, and every other document meant when they said "TOKEN-MAP.md" without
+a path. Post-deletion re-grep confirmed zero remaining references to the root file.
+
+**Type:** duplicate/stale file → deleted (source-of-truth conflict, not a precedence-chain
+conflict — the file was never ranked, so this is cleanup, not an `AGENTS.md` §1 resolution).
+
+**Changed:** deleted `/TOKEN-MAP.md`. No other file edited — every existing reference already
+pointed at `docs/TOKEN-MAP.md`.
+
+## SITEMAP-MASTER supersession + route reconciliation (2026-08-16)
+
+**The decision (owner-issued, rank 1 in `AGENTS.md` §1 — outranks doc 19 and doc 27
+directly).** `docs/SITEMAP-MASTER.md` is now the single source of truth for routes and index
+status. It supersedes the sitemaps in doc 19 §2.1 and doc 27 §7. One-line pointers were added
+at the top of both sections directing to master; neither section was rewritten wholesale —
+doc 19 §2.1's per-page SEO detail (§2.2) and doc 27 §7's copy-section grouping still resolve
+readers to the right spec, so both stay as reference material subordinate to master. `AGENTS.md`
+§2's route lists were also refreshed in the same pass, since they're a route inventory that
+would otherwise immediately go stale, and a pointer to master was added there too. While in that
+section, corrected a pre-existing, unrelated drift: `/about/`, `/contact/`, and
+`/handoff-standard/` ship no `noindex` prop (confirmed by grep) but were absent from the "Live
+and indexable" list, and `/contact/` was wrongly listed under "Built, noindex." Fixed in place
+since it's the same block being edited; not otherwise investigated further.
+
+**Copy-source correction inside master itself.** Master's table lists the three category hub
+rows' copy source as "27 §12 intro," "27 §13 intro," and "27 §14 intro." Doc 27 has no hub-level
+intro text at §12–14 — those sections are the individual service-page specs (12.1, 13.1, 14.1,
+etc.), not hub copy. The actual hub copy (Route/Eyebrow/H1/Lead/Cards for all four categories)
+lives at doc 27 §10.1–10.4, the section literally titled "Service hub copy." Built the three new
+hub pages from §10.1–10.3 on that basis. Not a precedence-chain conflict (master still wins on
+routes/index-status), just a copy-source pointer inside master that pointed at the wrong section
+number — flagged here rather than silently guessed past.
+
+**Route rename.** `/property-cleanouts-for-managers/` → `/property-cleanouts-san-jose/`
+(`src/pages/property-cleanouts-for-managers/` → `src/pages/property-cleanouts-san-jose/`,
+`propertyManagersPage.slug` in `servicePages.ts`), matching master's city-suffixed slug. 301
+added in `public/_redirects`. This was the only built route whose slug diverged from master —
+every other built service page (`estate-cleanout-san-jose`, `hoarding-cleanup-san-jose`,
+`animal-waste-cleanup-san-jose`, `deep-cleaning-san-jose`, `senior-downsizing-san-jose`) already
+matched. **What was not done:** the page's copy still frames the audience as "for managers"
+(Pure Track B, PM/turnover-specific), while master's copy source for this route is doc 27
+§14.1's audience-neutral "Property Cleanouts." This is a copy-framing gap, not a routing one —
+rewriting the page to match §14.1 would be a content change beyond "rename the route to its
+city-suffixed slug," so it was left as-is. Follow-up, not resolved here.
+
+**Four pages built** (all noindex, excluded from `sitemap.xml.ts`, unlinked from nav/footer —
+same pre-launch pattern as every other draft in this batch; see gate fields in
+`servicePages.ts`): `/detailed-cleaning/`, `/specialty-cleaning/`, `/property-clearing/` (card
+hubs, doc 27 §10.1–10.3 copy verbatim; cards link only to already-built sibling pages, the rest
+render as plain unlinked text rather than a dead link) and `/commercial-cleaning-san-jose/`
+(full service page, doc 27 §15 copy, gate: crew per master). Commercial's H1 was rewritten from
+doc 27's literal "Commercial & Janitorial Cleaning" to a buyer's-words H1 ("Commercial cleaning
+with a written operating scope") under the standing doc-19-beats-doc-27-on-H1s precedent already
+logged elsewhere in this file.
+
+**What was deliberately not done, and why:**
+- Existing pages' `noindex` status was **not** changed. Master's "index" column is target
+  end-state per page, not a live-now directive — every existing service page in this repo ships
+  `noindex={true}` pending its own individual launch gate (confirmed: `estate-cleanout-san-jose`
+  itself is marked "index ← highest value" in master yet still ships noindex today). Flipping any
+  of that here would be a launch decision, not a routing reconciliation.
+- Individual sub-service pages named in master but not yet built (`move-out-cleaning-san-jose`,
+  `post-construction-cleaning-san-jose`, `window-cleaning-san-jose`, `extreme-cleaning-san-jose`,
+  `rodent-dropping-cleanup-san-jose`, `pigeon-dropping-cleanup-san-jose`,
+  `debris-removal-san-jose`, `eviction-cleanout-san-jose`) were **not** built — out of the task's
+  explicit scope (four named hub/category pages only).
+- `/services/` and `/who-we-help/` — indexable, in nav/footer/sitemap, built under the
+  now-superseded Phase 3d IA — were **not** touched, removed, or redirected. Master's route tree
+  has no equivalent for either. This is a real, pre-existing discrepancy (also independently
+  visible in `AGENTS.md` §2's "do not build any `/services/*` route" line, which the code already
+  violates) that route-audit or a future session should resolve explicitly rather than have this
+  session guess at removing live, linked pages.
+- `senior-downsizing-san-jose` is grouped under Property Clearing in master but doesn't appear
+  in doc 27 §10.3's hub card list — omitted from the new `/property-clearing/` hub's cards to
+  stay verbatim to doc 27 hub copy, per the task's explicit instruction to build hubs "using doc
+  27 hub copy."
+
+**Verification run:** claims-check (clean — zero banned-vocabulary hits across all new/changed
+copy), type-law (clean — no new heading `font-size` declarations; H1 ratio inherited unchanged
+from the existing `CompactHero` component), route-audit (clean — no redirect collisions or
+chains, no accidental sitemap/nav inclusion, no other stale references to the old PM path),
+`npm run build` (29 pages generated, all four new routes + the renamed route present, all
+correctly `noindex`).

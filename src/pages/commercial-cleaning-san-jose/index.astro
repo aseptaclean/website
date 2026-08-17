@@ -1,0 +1,141 @@
+---
+// UNPUBLISHED DRAFT — added 2026-08-16 per docs/SITEMAP-MASTER.md ("Commercial | index (gate:
+// crew) | 27 §15"). Ships noindex, excluded from sitemap.xml.ts, not linked from nav/footer, plus
+// a permanent gate note (same pattern as deep-cleaning-san-jose and property-cleanouts-san-jose)
+// that this page must not launch until crew capacity for commercial/janitorial volume is
+// confirmed. Copy is doc 27 §15, H1 rewritten to doc 19's buyer's-words rule per the rank-7 note
+// in AGENTS.md §1 (same precedent already applied to the homepage H1).
+//
+// DIFFERENTIATION: single recognition block, no Track A/B, no fiduciary aside — same shape as
+// animal-waste-cleanup-san-jose/index.astro, the plainest pattern in this batch, matching a
+// B2B facilities audience that doesn't need a family/executor split.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import CompactHero from "@components/CompactHero.astro";
+import ServiceScope from "@components/ServiceScope.astro";
+import ServiceMethodRail from "@components/ServiceMethodRail.astro";
+import ServiceProof from "@components/ServiceProof.astro";
+import ServicePricing from "@components/ServicePricing.astro";
+import ServiceFAQ from "@components/ServiceFAQ.astro";
+import RequestForm from "@components/RequestForm.astro";
+import { commercialPage } from "@data/servicePages";
+import { site } from "@data/site";
+
+const schema = [
+  {
+    "@type": "Service",
+    serviceType: "Commercial and janitorial cleaning",
+    provider: { "@id": new URL("/#organization", site.urls.site).href },
+    areaServed: site.location.cities.map((name) => ({ "@type": "City", name })),
+    name: "Commercial & Janitorial Cleaning"
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: commercialPage.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Commercial Cleaning San Jose",
+        item: new URL(commercialPage.slug, site.urls.site).href
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title="Commercial & Janitorial Cleaning | San Jose | Aseptaclean"
+  description="Project-based and recurring commercial janitorial cleaning for small facilities across San Jose & the South Bay, under one written scope."
+  canonicalPath={commercialPage.slug}
+  noindex={true}
+  schema={schema}
+>
+  <section class="gate-note" aria-label="Internal launch gate — not visible copy guidance">
+    <div class="ac-measure-wide">
+      <p><strong>LAUNCH GATE — not for publication:</strong> {commercialPage.gate}</p>
+    </div>
+  </section>
+
+  <CompactHero eyebrow={commercialPage.hero.eyebrow} headingId="commercial-title">
+    <h1 id="commercial-title">{commercialPage.hero.h1}</h1>
+    <p class="compact-hero__lead">{commercialPage.hero.lead}</p>
+  </CompactHero>
+
+  <section class="recognition" aria-labelledby="recognition-title">
+    <div class="ac-measure-intimate">
+      <h2 id="recognition-title" class="ac-type-h2 recognition__heading">{commercialPage.recognition.heading}</h2>
+      {commercialPage.recognition.body.map((paragraph) => <p class="recognition__body">{paragraph}</p>)}
+    </div>
+  </section>
+
+  <ServiceScope
+    heading={commercialPage.scope.heading}
+    headingId="commercial-scope-title"
+    included={commercialPage.scope.included}
+    exclusionsNote={commercialPage.scope.exclusionsNote}
+  />
+
+  <ServiceMethodRail heading={commercialPage.method.heading} headingId="commercial-method-title" />
+
+  <ServiceProof
+    recordLabel={commercialPage.proof.recordLabel}
+    recordField={commercialPage.proof.recordField}
+    recordValue={commercialPage.proof.recordValue}
+    jobLine={commercialPage.proof.jobLine}
+    headingId="commercial-proof-title"
+  />
+
+  <ServicePricing
+    heading={commercialPage.pricing.heading}
+    headingId="commercial-pricing-title"
+    drivers={commercialPage.pricing.drivers}
+  />
+
+  <ServiceFAQ
+    heading="Questions facility managers ask before requesting a plan"
+    headingId="commercial-faq-title"
+    intro="These answers describe the assessment process. The signed scope controls the actual project."
+    items={commercialPage.faq}
+  />
+
+  <RequestForm />
+</BaseLayout>
+
+<style>
+  .gate-note {
+    background: #fbeeec;
+    border-bottom: 1px solid #e0b6b0;
+    padding-block: 14px;
+  }
+
+  .gate-note p {
+    margin: 0;
+    color: #a3392f;
+    font-size: 0.85rem;
+  }
+
+  .recognition {
+    background: var(--ac-color-warm-white);
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .recognition__heading {
+    max-width: 26ch;
+    margin-top: var(--ac-space-3);
+  }
+
+  .recognition__body {
+    max-width: 56ch;
+    margin-top: var(--ac-space-4);
+    color: var(--ac-color-ink-600);
+    font-size: 1.02rem;
+  }
+</style>

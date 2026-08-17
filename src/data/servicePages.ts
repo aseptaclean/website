@@ -563,8 +563,12 @@ export const deepCleaningPage = {
 // Gate: docs/19-SYSTEM-AND-SITEMAP.md §2.1 Phase 3b — "gate: crew capacity confirmed."
 // Same-week availability language is explicitly conditional on operational truth per §2.2;
 // none is published here without owner confirmation.
+// Route renamed 2026-08-16 from /property-cleanouts-for-managers/ to /property-cleanouts-san-jose/
+// per docs/SITEMAP-MASTER.md (city-suffixed slug). See docs/05-DECISIONS-LOG.md. The 301 lives
+// in public/_redirects; the export name and PM-framed copy are unchanged — content reconciliation
+// against doc 27 §14.1's generic "Property Cleanouts" framing is a follow-up, not done here.
 export const propertyManagersPage = {
-  slug: "/property-cleanouts-for-managers/",
+  slug: "/property-cleanouts-san-jose/",
   gate: "Crew capacity unconfirmed — page built as an unpublished draft; do not launch until crew capacity for PM/turnover volume is confirmed (docs/19-SYSTEM-AND-SITEMAP.md §2.1 Phase 3b).",
   hero: {
     eyebrow: "Property Cleanouts for Managers · San Jose & the South Bay",
@@ -754,6 +758,142 @@ export const whoWeHelpHub = {
         "Clearing and the post-move deep clean happen under one signed scope, so the property is ready for its next handoff."
       ],
       links: [{ label: "Senior downsizing", href: seniorDownsizingPage.slug }]
+    }
+  ]
+} as const;
+
+// Category hub pages added 2026-08-16 per docs/SITEMAP-MASTER.md, reconciling the built routes
+// against the master sitemap. Copy is doc 27 §10.1–10.3 (the only hub-copy section doc 27
+// actually has — the master's "27 §12/13/14 intro" copy-source column has no corresponding hub
+// text at those locations; §12–14 are the individual service-page specs. See
+// docs/05-DECISIONS-LOG.md for that correction). Route/eyebrow/H1/lead/card-title text is
+// verbatim doc 27; no new claim is introduced. Each card links to its built page only — the
+// majority of sibling service pages in each category don't exist yet (same "link only to what's
+// built" rule services/index.astro and who-we-help/index.astro already follow), so unbuilt
+// siblings render as plain text, not a dead link. Ships noindex, excluded from sitemap.xml.ts,
+// unlinked from nav/footer, same as every other pre-launch page in this file.
+export const detailedCleaningHub = {
+  slug: "/detailed-cleaning/",
+  gate: null as string | null,
+  eyebrow: "Detailed cleaning",
+  h1: "One-time cleaning for properties that need a real reset.",
+  lead: "Choose the page that matches the property's next event — not a generic package that hides the difference between a deep clean, turnover and construction cleanup.",
+  cards: [
+    { title: "One-Time Deep Cleaning", href: deepCleaningPage.slug as string | null },
+    { title: "Move-In & Move-Out Cleaning", href: null as string | null },
+    { title: "Post-Construction Cleaning", href: null as string | null },
+    { title: "Window Cleaning", href: null as string | null }
+  ]
+} as const;
+
+export const specialtyCleaningHub = {
+  slug: "/specialty-cleaning/",
+  gate: null as string | null,
+  eyebrow: "Specialty cleaning",
+  h1: "Condition-reviewed cleaning for difficult properties.",
+  lead: "These jobs require more screening and clearer boundaries. Photos can begin the review; complex conditions often need a walkthrough.",
+  cards: [
+    { title: "Extreme-Condition Cleaning", href: null as string | null },
+    { title: "Animal Waste Cleanup", href: animalPage.slug as string | null },
+    { title: "Rodent Dropping Cleanup", href: null as string | null },
+    { title: "Pigeon Dropping Cleanup", href: null as string | null }
+  ]
+} as const;
+
+export const propertyClearingHub = {
+  slug: "/property-clearing/",
+  gate: null as string | null,
+  eyebrow: "Property clearing",
+  h1: "Clear the contents. Recover access. Prepare the property.",
+  lead: "Property clearing is organized around authority, sorting rules, access and a legal disposal plan before cleaning begins.",
+  cards: [
+    { title: "Property Cleanouts", href: propertyManagersPage.slug as string | null },
+    { title: "Hoarding Cleanup", href: hoardingPage.slug as string | null },
+    { title: "Estate Cleanouts", href: estatePage.slug as string | null },
+    { title: "Debris Removal", href: null as string | null },
+    { title: "Eviction Cleanouts", href: null as string | null }
+  ]
+} as const;
+
+// Shared hub close (doc 27 §10, below 10.4) — same block on every category hub above.
+export const hubClose = {
+  label: "One rule across every service",
+  heading: "We define the work before we schedule it.",
+  body: "Photos can start the review. Larger, heavier or more complicated properties may require a walkthrough before a firm quote."
+} as const;
+
+// Commercial service page added 2026-08-16 per docs/SITEMAP-MASTER.md ("Commercial |
+// /commercial-cleaning-san-jose/ | Commercial & Janitorial | index (gate: crew) | 27 §15"). Doc
+// 27 has no separate hub route for Commercial (§10.4 lists a single card, "Commercial &
+// Janitorial Cleaning"), so this is the category's one terminal page, built with the shared
+// service-page components like every other individual service page in this file — not the
+// card-hub pattern used for the three multi-page categories above. H1 uses doc 19's
+// buyer's-words rule over doc 27's literal service-name H1 (docs/05-DECISIONS-LOG.md,
+// 2026-08-16 — same precedent already logged for the homepage/hero H1 conflict). Gated per
+// master: built as an unpublished draft pending crew-capacity confirmation, same pattern as
+// deepCleaningPage and propertyManagersPage above.
+export const commercialPage = {
+  slug: "/commercial-cleaning-san-jose/",
+  gate: "Crew capacity unconfirmed — page built as an unpublished draft; do not launch until crew capacity for commercial/janitorial volume is confirmed (docs/SITEMAP-MASTER.md reconciliation notes; docs/19-SYSTEM-AND-SITEMAP.md §2.1 Phase 3b gate pattern).",
+  hero: {
+    eyebrow: "Commercial & Janitorial Cleaning · San Jose & the South Bay",
+    h1: "Commercial cleaning with a written operating scope",
+    lead: "Defined cleaning programs for small commercial properties that need reliable scope, clear frequencies and direct owner communication."
+  },
+  recognition: {
+    heading: "A commercial scope that can actually be inspected",
+    body: [
+      "The agreement identifies frequencies, areas, and periodic tasks in writing — not just \"janitorial\" as a catch-all word that quietly excludes whatever isn't spelled out.",
+      "This tends to fit when a small facility needs a written cleaning scope, the current service is missing details, a one-time commercial deep clean is needed, or management wants one accountable point of contact."
+    ]
+  },
+  scope: {
+    heading: "What commercial cleaning covers",
+    included: [
+      "Restroom and break-area cleaning",
+      "Touchpoint and common-area cleaning",
+      "Floor care within the agreed method",
+      "Waste removal to onsite receptacles",
+      "Periodic detail tasks when scheduled"
+    ],
+    exclusionsNote:
+      "Some conditions sit outside our current scope — see the full exclusion list in the Handoff Standard."
+  },
+  method: {
+    heading: "One written scope, one documented closeout"
+  },
+  proof: {
+    recordLabel: "From a Property Handoff Record",
+    recordField: "Approved cleaning scope",
+    recordValue: "Restrooms, break areas, common-area touchpoints, floor care per agreed method",
+    jobLine: "[OWNER INPUT: one anonymized real-job specific from a completed commercial cleaning job — facility type, city, and what made the situation specific. Do not invent.]"
+  },
+  pricing: {
+    heading: "What affects the price — no invented figures",
+    drivers: [
+      "Facility type and square footage",
+      "Frequency and service window",
+      "Occupancy and security requirements",
+      "Consumables and onsite equipment",
+      "Floor types and periodic tasks"
+    ]
+  },
+  faq: [
+    {
+      question: "Do you offer nightly janitorial service?",
+      answer: "Select schedules may be available depending on location, facility type, service window, and current capacity."
+    },
+    {
+      question: "Do you provide supplies?",
+      answer: "Cleaning supplies can be included. Paper goods, liners, and client consumables are defined separately in the proposal."
+    },
+    {
+      question: "Do you handle clinical or industrial facilities?",
+      answer: "No. Clinical infection-control programs, industrial production cleaning, high-access exterior work, and repairs, pest control, or regulated waste sit outside our current scope."
+    },
+    {
+      question: "How much does commercial cleaning cost?",
+      answer: "It depends on facility type, square footage, frequency, and scope of work. A $195 on-site assessment, credited toward an approved project booked within 7 days, gives you a written price."
     }
   ]
 } as const;

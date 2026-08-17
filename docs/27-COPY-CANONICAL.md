@@ -297,6 +297,11 @@ The site should feel like a serious property-recovery and restoration-adjacent o
 
 ## 7. Complete sitemap and index status
 
+**Superseded by `docs/SITEMAP-MASTER.md` (2026-08-16), which is now the single source of
+truth for routes and index status.** The bare (non-city-suffixed) slugs below are
+historical — master's city-suffixed slugs are canonical. This section's grouping still
+identifies which doc-27 copy section backs each route.
+
 | Group | Route | Page | Search status |
 | --- | --- | --- | --- |
 | Home | `/` | Home | Index |
