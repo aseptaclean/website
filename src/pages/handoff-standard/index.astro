@@ -277,17 +277,24 @@ const schema = [
 
   .stage {
     display: grid;
-    grid-template-columns: 64px 1fr auto;
+    grid-template-columns: 64px minmax(0, 1fr) auto;
     align-items: start;
     gap: var(--ac-s3);
     border-bottom: 1px solid var(--ac-color-line);
     padding-block: var(--ac-s4);
+    /* Layout row, not prose — must span the container rather than the global 62ch li measure. */
+    max-width: none;
   }
 
+  /* Numbered step rail — matches HandoffStandard.astro so the homepage's condensed five stages
+     and this page's full version read as the same sequence. */
   .stage__n {
-    color: var(--ac-color-ink-400);
+    color: var(--ac-color-blue-deep);
     font-family: var(--ac-font-mono);
-    font-size: 1.05rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.25;
   }
 
   .stage h3 {

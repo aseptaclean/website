@@ -39,13 +39,22 @@ const routes = [
   "/move-out-cleaning-san-jose/",
   "/extreme-cleaning-san-jose/",
   "/debris-removal-san-jose/",
+  // Added 2026-08-17 after an audit against docs/SITEMAP-MASTER.md found both had been held
+  // back on gates the master does NOT impose (it lists each as a plain "index"). The gates were
+  // inherited from the pre-migration code: deep-cleaning's B10 gate existed because the OLD page
+  // carried unfinalized checklist placeholders, and property-cleanouts' crew gate belonged to the
+  // retired PM-framed page. Doc 27 §12.1/§14.1 supply complete copy — both verified at 0
+  // placeholders. property-cleanouts targets "property cleanout san jose", doc 19's primary
+  // homepage query, so holding it back was the single most costly error of that pass.
+  "/deep-cleaning-san-jose/",
+  "/property-cleanouts-san-jose/",
   // Company / areas.
   "/service-areas/",
   "/projects/",
   "/faq/"
   // NOT listed, each for a specific reason:
-  //   deep-cleaning (B10 gate) · post-construction, window, eviction, commercial,
-  //   property-cleanouts (crew capacity gate) · animal, rodent, pigeon (doc 27 §21) ·
+  //   post-construction, window, eviction, commercial (crew capacity gate, per master) ·
+  //   animal, rodent, pigeon (doc 27 §21 compliance release) ·
   //   senior-downsizing (carries an [OWNER INPUT] placeholder — fix the copy before indexing)
 ];
 if (site.urls.cookiePolicy) routes.push(site.urls.cookiePolicy);

@@ -59,6 +59,8 @@ import { homepage } from "@data/site";
     gap: var(--ac-s3);
     border-bottom: 1px solid var(--ac-color-line);
     padding-block: var(--ac-s3);
+    /* This <li> is a layout row, not prose — it must span the container, not the 62ch measure. */
+    max-width: none;
   }
 
   /* Numbered step rail — docs/RESTORATION-DESIGN-SCAN.md §4.8. The stage number is the

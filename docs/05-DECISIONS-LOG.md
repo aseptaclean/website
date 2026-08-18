@@ -3224,3 +3224,34 @@ to rodent or pigeon; no orphans among the pages this work created; build clean a
 **Still open:** `aseptaclean.com` serves WordPress — the DNS cutover has not happened, so none of
 this is being crawled at the real domain yet. That is the single largest remaining SEO blocker
 and it is an owner action, not a code change.
+
+### Correction, same day: two pages were held back on gates SITEMAP-MASTER does not impose
+
+Owner asked why pages were withheld. Auditing the hold list against `docs/SITEMAP-MASTER.md`
+— the source of truth the owner established for index status — found two were wrong:
+
+| Route | Master says | I shipped | Where my gate came from |
+| --- | --- | --- | --- |
+| `/deep-cleaning-san-jose/` | `index` | noindex, B10 gate | The **old** page's unfinalized-checklist `[OWNER INPUT]` placeholders |
+| `/property-cleanouts-san-jose/` | `index` | noindex, crew gate | The **retired** PM-framed `propertyManagersPage` |
+
+Both gates were inherited from pre-migration code and neither survives the migration: doc 27
+§12.1 and §14.1 supply complete copy, and both pages verify at **0 placeholders** (819 and 797
+words). `/property-cleanouts-san-jose/` targets `property cleanout san jose`, which doc 19 §2.2
+names as the **homepage's primary query** — so this was the costliest item in the SEO pass.
+
+Both are now indexable and in the sitemap. 24/36 indexable, 21 sitemap URLs, all verified
+`index, follow`, no mismatches.
+
+**The holds that stand, and their actual authority:**
+- post-construction, window, eviction, commercial — master's own `index (gate: crew)`.
+- animal, rodent, pigeon — owner decision 2026-08-16 taking doc 27 §13/§21 over master's
+  `index ✅ ungated`, on the B&P §8550(a) exposure.
+- senior-downsizing — a real `[OWNER INPUT]` placeholder in its copy.
+- `/specialty-cleaning/` — **my unilateral call, not in any document.** Master says `index`; I
+  set noindex because the hub's cards name rodent and pigeon dropping cleanup, so indexing it
+  advertises services §21 withholds. Flagged to the owner as overrulable.
+
+**Lesson for future passes:** when a page's copy source is replaced wholesale, re-derive its
+gate from the current authority instead of carrying the old record's gate string forward. A gate
+is a statement about the page that exists now, not the page that used to.

@@ -3,11 +3,12 @@
 // transcription. Slugs are docs/SITEMAP-MASTER.md's city-suffixed forms, not doc 27's bare
 // routes (doc 19/master own URLs; doc 27 owns words — AGENTS.md §1 rank 6 over rank 7).
 //
-// H1s are doc 27's, per the owner instruction of 2026-08-16 ("apply the §-copy exactly").
-// That instruction is a rank-1 owner decision and supersedes the earlier same-day log entry
-// which had let doc 19's "H1 in buyer's words" rule beat doc 27's literal service-name H1s.
-// See docs/05-DECISIONS-LOG.md. Reverting is a one-field change per page if the owner prefers
-// the buyer's-words H1s back.
+// H1s are NOT doc 27's — they are doc 19 §2.2's "target query + buyer's words", per the owner
+// decision of 2026-08-17 ("high converting SEO"), which reversed the 2026-08-16 instruction to
+// apply doc 27's literal service-name H1s. Doc 19 owns SEO and outranks doc 27 (AGENTS.md rank
+// 6 > 7), so this restores the chain rather than overriding it. Doc 27's literal H1 is retained
+// on every record as `doc27H1` — an audit field, deliberately never rendered, so the divergence
+// stays visible. See docs/05-DECISIONS-LOG.md, "SEO/conversion pass on the doc 27 pages".
 //
 // Every page here ships noindex pending its own gate — see each `gate` field, and the
 // noindex prop on the corresponding .astro route. The three specialty pages are gated on
@@ -41,9 +42,9 @@ export interface Doc27ServicePage {
 
 export const deepCleaningPage: Doc27ServicePage = {
   slug: "/deep-cleaning-san-jose/",
-  gate: "B10 checklist unfinalized — page built as an unpublished draft; do not launch until the B10 deep-cleaning checklist is finalized (docs/19-SYSTEM-AND-SITEMAP.md §2.1 Phase 3b).",
+  gate: null,
   complianceClause: null,
-  indexable: false,
+  indexable: true,
   doc27H1: "One-Time Deep Cleaning",
   section: {
     "fitHeading": "When a deep clean is the right scope",
@@ -105,10 +106,19 @@ export const moveOutCleaningPage: Doc27ServicePage = {
   complianceClause: null,
   indexable: true,
   doc27H1: "Move-In & Move-Out Cleaning",
-  section: null,
+  section: {
+    "fitHeading": "When a move-out clean is the right scope",
+    "scopeHeading": "What the move-out scope covers",
+    "scopeNote": "Written before the crew arrives, so the final walkthrough is checked against a list instead of an opinion. The signed scope controls the actual project.",
+    "methodHeading": "Five stages, closed out before the keys change hands",
+    "pricingHeading": "What moves a move-out cleaning price",
+    "boundariesHeading": "What move-out cleaning does not include",
+    "faqHeading": "Questions tenants, owners and agents ask before scheduling",
+    "relatedHeading": "If the unit still has contents in it"
+  },
   eyebrow: "Detailed Cleaning · San Jose & the South Bay",
   seoTitle: "Move-In & Move-Out Cleaning in San Jose | Aseptaclean",
-  metaDescription: "Vacant move-in, move-out and apartment cleaning across San Jose and Santa Clara County.",
+  metaDescription: "Move-out and move-in cleaning in San Jose and Santa Clara County, scoped in writing before the crew arrives and timed to your walkthrough date. Owner-operated.",
   h1: "Move-out cleaning in San Jose, timed to your walkthrough date",
   lead: "Vacant-property cleaning built around the handoff: keys, listing photos, a final walkthrough, a lease turnover or a clean start in a new home.",
   fitWhen: [
@@ -143,10 +153,15 @@ export const moveOutCleaningPage: Doc27ServicePage = {
     { question: "Does the home need to be empty?", answer: "Vacant properties are the best fit. Limited remaining contents can be discussed, but they affect access and price." },
     { question: "Can you work around a closing or lease deadline?", answer: "Sometimes. Availability depends on property size, condition and how soon the scope is approved." }
   ],
+  // Doc 27 §12.2 relates this page to deep-cleaning, window and post-construction. All three
+  // are noindex crew-gated drafts, which made this indexable page send 3 of 3 internal links
+  // into drafts — route-audit failure mode #2. Doc 19 owns internal linking (rank 6 > 7), same
+  // boundary as the H1 ruling, so the targets are the indexable clearing routes a vacating
+  // owner actually needs next. Restore doc 27's set when those three are promoted.
   related: [
-    { label: "One-Time Deep Cleaning", href: "/deep-cleaning-san-jose/" },
-    { label: "Window Cleaning", href: "/window-cleaning-san-jose/" },
-    { label: "Post-Construction Cleaning", href: "/post-construction-cleaning-san-jose/" }
+    { label: "Estate Cleanouts", href: "/estate-cleanout-san-jose/" },
+    { label: "Debris Removal", href: "/debris-removal-san-jose/" },
+    { label: "Property Clearing", href: "/property-clearing/" }
   ]
 } as const;
 
@@ -458,9 +473,9 @@ export const pigeonPage: Doc27ServicePage = {
 
 export const propertyCleanoutsPage: Doc27ServicePage = {
   slug: "/property-cleanouts-san-jose/",
-  gate: "Crew capacity unconfirmed — page built as an unpublished draft; do not launch until crew capacity for this service is confirmed (docs/SITEMAP-MASTER.md).",
+  gate: null,
   complianceClause: null,
-  indexable: false,
+  indexable: true,
   doc27H1: "Property Cleanouts",
   section: {
     "fitHeading": "When a property cleanout is the right scope",

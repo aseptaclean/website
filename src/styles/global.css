@@ -75,8 +75,11 @@ h4 {
   color: var(--ac-color-navy-900);
 }
 
-p,
-li {
+/* Prose measure. Wrapped in :where() so it carries zero specificity — a list item used as a
+   layout row (grid/flex) can opt out with a plain class selector instead of needing
+   `max-width: none`. Before this, every <li> on the site was hard-capped at 62ch, which
+   silently held .stage rows to 670px inside a 1200px container. */
+:where(p, li) {
   max-width: var(--ac-measure-read);
 }
 
