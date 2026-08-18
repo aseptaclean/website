@@ -25,3 +25,42 @@ id = "5e5faee201c34b36b76ecda6de34927f"
 # LEAD_ALERT_PHONE, ALLOWED_ORIGINS) are secrets, not config, and are
 # intentionally not set here. Production: `wrangler pages secret put <NAME>`.
 # Local dev: create a git-ignored .dev.vars file (see .dev.vars.example).
+
+# Build-time environment variables. These MUST live here, not in the Cloudflare dashboard.
+#
+# Why: this file sets `pages_build_output_dir`, which makes it the source of truth for Pages
+# configuration — Cloudflare's docs state you "cannot edit the same fields in the dashboard once
+# you are using this file." Every build before 2026-08-17 logged `Build environment variables:
+# (none found)` and then failed `npm run validate:env`, so five consecutive commits never
+# deployed and the live site silently served a stale build. Dashboard/API values are ignored.
+#
+# Only PUBLIC_* values belong here. Every one is compiled into the shipped HTML already, so
+# committing them exposes nothing that visiting the site would not. Real secrets
+# (TURNSTILE_SECRET_KEY, HUBSPOT_*, RESEND_API_KEY, EMAIL_FROM_ADDRESS, OWNER_ALERT_EMAIL,
+# TWILIO_*) are Cloudflare Pages Secrets and MUST NEVER be added to this file.
+#
+# Keep in sync with .env.production, which stays gitignored and drives local builds.
+[vars]
+PUBLIC_ASSESSMENT_FEE = "195"
+PUBLIC_BUSINESS_HOURS = "Monday–Saturday, 7:00 AM–7:00 PM Pacific Time; closed Sunday"
+PUBLIC_BUSINESS_NAME = "Aseptaclean"
+PUBLIC_DEPLOYMENT_ENV = "production"
+PUBLIC_EMAIL = "info@aseptaclean.com"
+PUBLIC_FORM_ENABLED = "true"
+PUBLIC_FORM_ENDPOINT = "/api/lead"
+PUBLIC_FOUNDER_NAME = "Matthew Ruiz"
+PUBLIC_INSURANCE_STATUS = "Insured. Certificate of Insurance available upon request."
+PUBLIC_LEGAL_NAME = "Aseptaclean, LLC"
+PUBLIC_PHONE = "(408) 785-7588"
+PUBLIC_PRIVACY_CONTACT = "info@aseptaclean.com"
+PUBLIC_RESPONSE_TIME = "within one business day"
+PUBLIC_SERVICE_AREA = "San Jose and the South Bay"
+PUBLIC_SITE_URL = "https://aseptaclean.com"
+PUBLIC_SMS_NUMBER = "(408) 785-7588"
+PUBLIC_TERMLY_CONSENT_ENABLED = "true"
+PUBLIC_TERMLY_COOKIE_POLICY_ID = "02262c90-99a5-446e-9bff-b0beb7b3d24a"
+PUBLIC_TERMLY_PRIVACY_POLICY_ID = "1f1dee92-08da-4cde-9c53-e7798ab17692"
+PUBLIC_TERMLY_TERMS_POLICY_ID = "5502eb89-1cb1-43ce-ae8a-b589abee0466"
+PUBLIC_TERMLY_WEBSITE_UUID = "f074d6a3-6dc0-47ff-a10c-b27c7922b1c7"
+PUBLIC_TSWMP_STATUS = "pending"
+PUBLIC_TURNSTILE_SITE_KEY = "0x4AAAAAAEFOe5MK47-pE4e-"
