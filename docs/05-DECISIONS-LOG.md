@@ -3255,3 +3255,95 @@ Both are now indexable and in the sitemap. 24/36 indexable, 21 sitemap URLs, all
 **Lesson for future passes:** when a page's copy source is replaced wholesale, re-derive its
 gate from the current authority instead of carrying the old record's gate string forward. A gate
 is a statement about the page that exists now, not the page that used to.
+
+## Internal-link and meta-description pass on the 7 indexable service pages (2026-08-17)
+
+**Why.** Owner: "fix it. make sure high converting seo." Two defects were live on the money
+pages after the earlier same-day passes.
+
+### 1. Stale comment: `doc27ServicePages.ts` claimed doc 27's H1s were shipping
+
+`src/data/doc27ServicePages.ts` lines 6–10 stated H1s were doc 27's per the 2026-08-16 owner
+instruction. That instruction was reversed the next day ("H1s reverted to buyer's-words + city",
+logged above) and the code has rendered doc 19 §2.2 H1s ever since. `doc27H1` is retained on
+every record and read nowhere in `src/`.
+
+**Type:** stale description → corrected the comment. No code change; the H1s were already right.
+The comment now states plainly that `doc27H1` is an audit field that is never rendered, so the
+next reader does not "fix" the code to match the comment.
+
+### 2. Indexable service pages spent their internal links on noindex drafts
+
+Doc 27 §12–15's `Related services` sets were transcribed verbatim, but they relate each page to
+siblings that are still crew-gated or §21-gated drafts. Measured before the fix:
+
+| Indexable page | Related links pointing into noindex drafts |
+| --- | --- |
+| move-out | 3 of 3 |
+| debris-removal | 2 of 3 |
+| extreme-cleaning | 2 of 3 |
+| hoarding | 1 of 3 |
+| estate | 1 of 3 |
+| deep-cleaning | 1 of 3 |
+
+That is documented `route-audit` failure mode #2, and on move-out it meant every internal link
+on an indexable revenue page was a dead end for both crawler and buyer.
+
+**Conflict:** doc 27 §12–15 (rank 7) names the related services; doc 19 (rank 6) owns route
+architecture and internal linking. **Doc 19 wins** — the identical boundary already adjudicated
+for H1s on 2026-08-16/17. Targets are now indexable routes only; where doc 27's relation had no
+indexable equivalent, the indexable category hub stands in.
+
+**Type:** violated rule → fixed code. Each swap carries an inline comment naming the doc 27
+section it departs from and the condition for restoring it (promotion of the gated target), so
+this reverses cleanly rather than becoming permanent drift.
+
+Verified: **0** links from any of the 7 indexable service pages into a noindex route.
+
+### 3. `extreme-cleaning` (indexable) linked to `animal-waste-cleanup` (§21-gated)
+
+Removed as part of the above. Called out separately because it is a compliance question, not a
+link-equity one: the 2026-08-17 decision kept `/specialty-cleaning/` noindex precisely because
+naming §21-gated services on an indexable surface advertises them. The same reasoning applies to
+an indexable service page linking to one. Removing was the conservative direction and needed no
+new boundary assertion — but see "Open" below, because the condition is not fully resolved.
+
+### 4. Meta descriptions rewritten on all 7 indexable pages
+
+Doc 27's metas are accurate and carry no differentiator or reason to click — they read as
+directory entries (87–107 chars, all descriptive). Rewritten to 153–164 chars leading with the
+service + city and closing on the operating promise already approved sitewide (written scope
+before work, nothing leaves without written approval, owner-operated). Same precedence basis as
+above: metas are an SEO surface, doc 19 rank 6 over doc 27 rank 7. Page copy is untouched — this
+changed `metaDescription` only.
+
+Claims check on every new string: no banned vocabulary, no price figure, no credential
+implication, no placeholder. Disposal is described only as "handled by a City-authorized hauler
+engaged for the project" on debris-removal.
+
+### 5. `section` overrides added for move-out, extreme-cleaning and debris-removal
+
+The 2026-08-17 entry above says "add an override before promoting any of them to indexable."
+Three indexable pages had none and were rendering `ServicePageLayout`'s shared default framing.
+All 7 indexable pages now carry per-page section headings.
+
+### Not changed
+
+- **Hub → gated child links** (`/detailed-cleaning/` → post-construction, window;
+  `/property-clearing/` → eviction). A hub listing its own children is doc 27 §19's explicit
+  rule and is what a visitor needs; stripping the cards would hide services the business
+  performs. A hub linking a `noindex, follow` child is acceptable where a service page's related
+  block is not.
+- **`/services/` and `/service-areas/` → `/animal-waste-cleanup-san-jose/`.** Two indexable
+  pages still link to a §21-gated service. Not resolved here: doc 27's header reconciliation #1
+  says animal/rodent/pigeon are "UNGATED for marketing per owner decision," while the 2026-08-16
+  decision made them noindex. Whether a gated service may be linked from an indexable
+  navigational surface is an owner/COI call, and `claims-check` requires escalation rather than
+  a copy edit. **Needs an owner decision.**
+- **`/services/`, `/service-areas/`, `/who-we-help/` → `senior-downsizing`** (real `[OWNER INPUT]`
+  placeholder) and `/who-we-help/` → `estate-cleanout-checklist`. Pre-existing, already flagged.
+- **Homepage metadata.** Doc 27 §19 specifies a different title than the one shipping. Doc 19
+  owns SEO and the shipped title front-loads the primary query; left alone deliberately.
+- **No noindex flag was flipped** in this pass.
+
+Build clean at 39 pages; 25 of 37 rendered pages indexable.
