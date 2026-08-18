@@ -10,16 +10,17 @@ interface RelatedItem {
 
 interface Props {
   headingId: string;
+  heading?: string;
   items: readonly RelatedItem[];
 }
 
-const { headingId, items } = Astro.props;
+const { headingId, heading = "If the property needs something adjacent", items } = Astro.props;
 ---
 
 <section class="related" aria-labelledby={headingId}>
   <div class="ac-measure-wide">
     <p class="ac-eyebrow">Related services</p>
-    <h2 id={headingId} class="ac-type-h2 related__heading">If the property needs something adjacent</h2>
+    <h2 id={headingId} class="ac-type-h2 related__heading">{heading}</h2>
     <ul class="related__list">
       {
         items.map((item) => (

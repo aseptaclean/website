@@ -78,6 +78,8 @@ const phoneHref = site.business.phoneUri;
 <style>
   /* docs/aseptaclean-FINAL-v2.html header / .nav / .logo — ported verbatim (05-DECISIONS-LOG.md) */
   .site-header {
+    --ac-header-cta-width: 14.5rem;
+
     position: sticky;
     z-index: 50;
     top: 0;
@@ -258,6 +260,30 @@ const phoneHref = site.business.phoneUri;
       display: flex;
       align-items: center;
       gap: var(--ac-space-5);
+    }
+
+    /* Primary CTA breaks the measure and sits flush to the right viewport edge at full header
+       height, square — docs/RESTORATION-DESIGN-SCAN.md §4.6. Absolute against .site-header
+       (sticky, so it is the containing block) rather than a 100vw negative margin, which would
+       overshoot by the scrollbar width and reintroduce horizontal overflow.
+       The inner's padding-right reserves exactly the CTA's width so nav links never run under it. */
+    .site-header__inner {
+      padding-right: var(--ac-header-cta-width);
+    }
+
+    .site-header .desktop-nav .btn {
+      position: absolute;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      width: var(--ac-header-cta-width);
+      border-radius: 0;
+      box-shadow: none;
+    }
+
+    .site-header .desktop-nav .btn:hover {
+      transform: none;
+      box-shadow: none;
     }
   }
 </style>

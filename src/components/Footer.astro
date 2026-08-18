@@ -18,13 +18,29 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
         </a>
         <p>{site.offer.category} for {site.location.serviceArea} and the Peninsula.</p>
       </div>
+      {/*
+        Footer is the crawl path for pages that are indexable but sit outside the primary nav.
+        Before 2026-08-17 the category hubs, /service-areas/, /projects/ and /faq/ were in the
+        XML sitemap with ZERO inbound internal links — orphans, which Google crawls rarely and
+        passes no internal signal to. Anything indexable belongs in a nav or here.
+        /specialty-cleaning/ is deliberately excluded: it is noindex until doc 27 §21 clears.
+      */}
+      {/* Kept as ONE nav on purpose: .fgrid is a 3-column grid (1.4fr 1fr 1fr) and a fourth
+          child would wrap to a second row, which is a layout change. New links are appended
+          here instead. */}
       <nav class="flinks" aria-label="Footer navigation">
         <a href="/#request">Request an assessment</a>
         <a href="/services/">Services</a>
+        <a href="/detailed-cleaning/">Detailed Cleaning</a>
+        <a href="/property-clearing/">Property Clearing</a>
         <a href="/who-we-help/">Who We Help</a>
+        <a href="/service-areas/">Service Areas</a>
         <a href="/handoff-standard/">Handoff Standard</a>
-        <a href="/#faq">FAQ</a>
+        <a href="/projects/">Projects</a>
         <a href="/about/">About</a>
+        {/* /faq/ is a real page as of 2026-08-17; the old /#faq anchor pointed at a homepage
+            section and left the standalone route orphaned. */}
+        <a href="/faq/">FAQ</a>
       </nav>
       <nav class="flinks" aria-label="Legal and contact">
         <a href="/contact/">Contact</a>

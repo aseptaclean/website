@@ -71,9 +71,17 @@ const jsonLd = JSON.stringify({
 <title>{title}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
+{/*
+  "noindex, follow" — NOT "noindex, nofollow". docs/27-COPY-CANONICAL.md §21 specifies
+  `noindex, follow` for gated pages, and the distinction matters: `nofollow` tells Google to
+  stop crawling OUTWARD from the page, so a pre-launch draft that links to live pages passes
+  no signal and its own outbound links are wasted. `follow` keeps the crawl graph intact while
+  still withholding the page itself from the index. Changed 2026-08-17; the previous value was
+  a defect against §21, not a decision.
+*/}
 <meta
   name="robots"
-  content={shouldNoindex ? "noindex, nofollow" : "index, follow"}
+  content={shouldNoindex ? "noindex, follow" : "index, follow"}
 />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content={site.business.name} />

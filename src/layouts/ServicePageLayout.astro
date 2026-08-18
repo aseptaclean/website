@@ -36,6 +36,22 @@ interface Props {
 
 const { page, serviceType, breadcrumbName, idPrefix } = Astro.props;
 
+// Shared section framing. Measured at 49% identical content across the fourteen service pages
+// when every page used these defaults, which is a near-duplicate risk at ~750 words per page.
+// Revenue pages override them via `page.section`; the rest still share, which is acceptable for
+// pages that are noindex or low-priority. Add an override before promoting any page to indexable.
+const s = page.section ?? {};
+const fitHeading = s.fitHeading ?? "This service may fit when";
+const scopeHeading = s.scopeHeading ?? "Work can include";
+const scopeNote =
+  s.scopeNote ??
+  "This list describes work the approved scope can include, not a fixed package. The signed scope controls the actual project.";
+const methodHeading = s.methodHeading ?? "One accountable operator, from first decision to final closeout";
+const pricingHeading = s.pricingHeading ?? "What affects the price — no invented figures";
+const boundariesHeading = s.boundariesHeading ?? "What this scope does not include";
+const faqHeading = s.faqHeading ?? "Questions asked before requesting a plan";
+const relatedHeading = s.relatedHeading ?? "If the property needs something adjacent";
+
 const schema = [
   {
     "@type": "Service",
@@ -71,7 +87,7 @@ const schema = [
   title={page.seoTitle}
   description={page.metaDescription}
   canonicalPath={page.slug}
-  noindex={true}
+  noindex={!page.indexable}
   schema={schema}
 >
   {
@@ -110,7 +126,7 @@ const schema = [
 
   <CredentialBar />
 
-  <ServiceFitPanel headingId={`${idPrefix}-fit-title`} items={page.fitWhen} />
+  <ServiceFitPanel headingId={`${idPrefix}-fit-title`} heading={fitHeading} items={page.fitWhen} />
 
   <section class="outcome" aria-labelledby={`${idPrefix}-outcome-title`}>
     <div class="ac-measure-intimate">
@@ -121,33 +137,33 @@ const schema = [
   </section>
 
   <ServiceScope
-    heading="Work can include"
+    heading={scopeHeading}
     headingId={`${idPrefix}-scope-title`}
     included={page.workIncludes}
-    exclusionsNote="This list describes work the approved scope can include, not a fixed package. The signed scope controls the actual project."
+    exclusionsNote={scopeNote}
   />
 
   <ServiceMethodRail
-    heading="One accountable operator, from first decision to final closeout"
+    heading={methodHeading}
     headingId={`${idPrefix}-method-title`}
   />
 
   <ServicePricing
-    heading="What affects the price — no invented figures"
+    heading={pricingHeading}
     headingId={`${idPrefix}-pricing-title`}
     drivers={page.quoteVariables}
   />
 
-  <ServiceBoundaries headingId={`${idPrefix}-boundaries-title`} items={page.boundaries} />
+  <ServiceBoundaries headingId={`${idPrefix}-boundaries-title`} heading={boundariesHeading} items={page.boundaries} />
 
   <ServiceFAQ
-    heading="Questions asked before requesting a plan"
+    heading={faqHeading}
     headingId={`${idPrefix}-faq-title`}
     intro="These answers describe the assessment process. The signed scope controls the actual project."
     items={page.faq}
   />
 
-  <RelatedServices headingId={`${idPrefix}-related-title`} items={page.related} />
+  <RelatedServices headingId={`${idPrefix}-related-title`} heading={relatedHeading} items={page.related} />
 
   <RequestForm />
 </BaseLayout>

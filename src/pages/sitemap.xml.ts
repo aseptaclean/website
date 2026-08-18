@@ -16,6 +16,9 @@ import { site } from "@data/site";
 // Do not add anything back as a group; add each route individually when its gate clears.
 // /services/ and /who-we-help/ shipped noindex in Chunks 1/2 but no longer fall in that
 // category as of Chunk 3 — they're now linked from primary nav and footer, so they're listed.
+// Every route here MUST render index,follow — a noindex page in the sitemap is a crawl-budget
+// waste and a Search Console error. Cross-check against the `indexable` field in
+// src/data/doc27ServicePages.ts and the `noindex` prop on each .astro route before adding.
 const routes = [
   "/",
   "/about/",
@@ -24,7 +27,26 @@ const routes = [
   "/privacy/",
   "/terms/",
   "/services/",
-  "/who-we-help/"
+  "/who-we-help/",
+  // Category hubs (2026-08-17). /specialty-cleaning/ is deliberately ABSENT: its cards name
+  // rodent and pigeon dropping cleanup, so indexing it advertises services still held behind
+  // doc 27 §21's compliance release and B&P §8550(a). It stays noindex with its children.
+  "/detailed-cleaning/",
+  "/property-clearing/",
+  // Ungated service pages — gate === null and no [OWNER INPUT] placeholder.
+  "/estate-cleanout-san-jose/",
+  "/hoarding-cleanup-san-jose/",
+  "/move-out-cleaning-san-jose/",
+  "/extreme-cleaning-san-jose/",
+  "/debris-removal-san-jose/",
+  // Company / areas.
+  "/service-areas/",
+  "/projects/",
+  "/faq/"
+  // NOT listed, each for a specific reason:
+  //   deep-cleaning (B10 gate) · post-construction, window, eviction, commercial,
+  //   property-cleanouts (crew capacity gate) · animal, rodent, pigeon (doc 27 §21) ·
+  //   senior-downsizing (carries an [OWNER INPUT] placeholder — fix the copy before indexing)
 ];
 if (site.urls.cookiePolicy) routes.push(site.urls.cookiePolicy);
 

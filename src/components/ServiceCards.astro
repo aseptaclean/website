@@ -16,11 +16,9 @@ const glyphs: Record<string, string> = {
   "Animal & organic condition cleaning": "❊"
 };
 
-const photoNotes: Record<string, string> = {
-  owned: "Photo slot · owned",
-  atmosphere: "Photo slot · atmos"
-};
-
+// The per-card shoot brief lives in the data, not on the rendered card:
+// homepage.serviceCards[].imageLabel / .imageStatus in src/data/site.ts drive the Phase 0
+// shot list (release checklist C20). It is not printed to visitors.
 const pills: Record<string, string> = {
   "Animal & organic condition cleaning": "Endorsed"
 };
@@ -43,7 +41,6 @@ const pills: Record<string, string> = {
             title={item.title}
             glyph={glyphs[item.title] ?? "▣"}
             gradient={gradients[item.title] ?? "v1"}
-            photoNote={photoNotes[item.imageStatus] ?? "Photo slot"}
             pill={pills[item.title]}
           >
             {item.detail}

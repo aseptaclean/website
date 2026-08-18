@@ -4,16 +4,17 @@
 // describes situations the service tends to suit, never an assurance the property qualifies.
 interface Props {
   headingId: string;
+  heading?: string;
   items: readonly string[];
 }
 
-const { headingId, items } = Astro.props;
+const { headingId, heading = "This service may fit when", items } = Astro.props;
 ---
 
 <section class="service-fit" aria-labelledby={headingId}>
   <div class="ac-measure-wide">
     <p class="ac-eyebrow">Screening</p>
-    <h2 id={headingId} class="ac-type-h2 service-fit__heading">This service may fit when</h2>
+    <h2 id={headingId} class="ac-type-h2 service-fit__heading">{heading}</h2>
     <ul class="service-fit__list">
       {items.map((item) => <li>{item}</li>)}
     </ul>

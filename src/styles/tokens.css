@@ -125,10 +125,14 @@
   /* ---------------------------------------------------------------------
      Radii and shadows — v2 --r / --r-sm / --shadow-card / --shadow-pop
      --------------------------------------------------------------------- */
+  /* Controls are squared to 2px; panels/cards stay at 12px. The restoration category runs
+     0-4px on controls (BELFOR 0, BluSky/Steri-Clean ~4) and reserves larger radii for whole
+     section panels — see docs/RESTORATION-DESIGN-SCAN.md §5. Squaring the controls carries
+     most of the industrial read without touching the palette. */
   --ac-r: 12px;
-  --ac-r-sm: 6px;
+  --ac-r-sm: 2px;
   --ac-radius-card: 12px;
-  --ac-radius-chip: 8px;
+  --ac-radius-chip: 2px;
   --ac-shadow-card: 0 1px 2px rgba(16, 35, 63, 0.05), 0 16px 40px -20px rgba(16, 35, 63, 0.22);
   --ac-shadow-pop: 0 2px 4px rgba(11, 24, 48, 0.08), 0 32px 64px -32px rgba(11, 24, 48, 0.35);
 

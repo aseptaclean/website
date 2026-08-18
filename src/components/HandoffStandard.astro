@@ -50,17 +50,27 @@ import { homepage } from "@data/site";
 
   .stage {
     display: grid;
-    grid-template-columns: 64px 1fr auto;
+    /* minmax(0, …) so the text track can shrink below its min-content width. .stage__rec is
+       nowrap and moves into this track at <=40rem; with a bare 1fr a longer record string
+       floors the track and pushes the page sideways (the same defect fixed on
+       /handoff-standard/). */
+    grid-template-columns: 64px minmax(0, 1fr) auto;
     align-items: start;
     gap: var(--ac-s3);
     border-bottom: 1px solid var(--ac-color-line);
     padding-block: var(--ac-s3);
   }
 
+  /* Numbered step rail — docs/RESTORATION-DESIGN-SCAN.md §4.8. The stage number is the
+     structural cue, so it reads as a sequence rather than a list: accent colour, tabular
+     figures so the column stays optically aligned. */
   .stage__n {
-    color: var(--ac-color-ink-400);
+    color: var(--ac-color-blue-deep);
     font-family: var(--ac-font-mono);
-    font-size: 1.05rem;
+    font-size: 1.15rem;
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    line-height: 1.25;
   }
 
   .stage h3 {
@@ -89,11 +99,13 @@ import { homepage } from "@data/site";
 
   @media (max-width: 40rem) {
     .stage {
-      grid-template-columns: 44px 1fr;
+      grid-template-columns: 44px minmax(0, 1fr);
     }
 
     .stage__rec {
       grid-column: 2;
+      justify-self: start;
+      white-space: normal;
     }
   }
 </style>

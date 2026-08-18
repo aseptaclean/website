@@ -3169,3 +3169,58 @@ never-build list clean. `npm run build`: 39 pages, clean.
   mapping. Flagged for an owner call rather than changed.
 - Existing pages' noindex status was not flipped. Master's "index" column remains target
   end-state per page, not a live-now directive — same reasoning as the previous entry.
+
+## SEO/conversion pass on the doc 27 pages (2026-08-17)
+
+**Why.** Owner: "this pages have to be high converting SEO." Measured against the shipped state,
+they could not rank at all. Findings, with numbers:
+
+| Problem | Measured |
+| --- | --- |
+| No revenue page was indexable | 12 of 36 pages indexable; zero were service pages |
+| `noindex, nofollow` instead of `noindex, follow` | `SeoHead.astro` hardcoded it — a defect against doc 27 §21 |
+| Sitemap listed no money pages | 9 URLs, all company/legal |
+| Near-duplicate service pages | 26 of 53 content blocks identical across all 14 (**49% boilerplate**) at ~750 words/page |
+| H1s carried neither keyword nor intent | "Estate Cleanouts" — no city, no buyer language |
+
+**H1s reverted to buyer's-words + city (owner decision 2026-08-17).** This reverses yesterday's
+supersession. Doc 19 §2.2 owns SEO and outranks doc 27 (AGENTS.md rank 6 > 7), so this restores
+the precedence chain rather than overriding it. Each H1 now leads with doc 19's target query and
+closes in the buyer's words — e.g. *"Estate cleanout in San Jose without deciding everything
+today"*. Doc 27's literal H1 is retained on every record as `doc27H1` so the divergence stays
+auditable rather than silently lost.
+
+**Indexing — ungated pages only.** Now indexable: estate, hoarding, move-out, extreme-cleaning,
+debris-removal, the detailed-cleaning and property-clearing hubs, service-areas, projects, faq.
+22 of 36 pages, 19 sitemap URLs. Deliberately still noindex:
+- **crew-gated** — deep-cleaning (B10), post-construction, window, eviction, commercial,
+  property-cleanouts. Capacity decision, not an SEO one.
+- **doc 27 §21 gated** — animal, rodent, pigeon.
+- **`/specialty-cleaning/` hub** — NEW decision. Its cards name rodent and pigeon dropping
+  cleanup, so indexing the hub advertises services held behind §21 and B&P §8550(a) even though
+  the hub itself is not a gated route. It stays noindex with its children. Verified afterward
+  that no indexable page links to rodent or pigeon.
+- **senior-downsizing** — carries an `[OWNER INPUT]` placeholder. Placeholders are tolerable on a
+  noindex draft and not on an indexable page. Fix the copy before indexing it.
+
+**`noindex, nofollow` → `noindex, follow`.** doc 27 §21 specifies `follow`; `nofollow` stopped
+Google crawling outward from every gated page, wasting their outbound links. Defect, not a choice.
+
+**Boilerplate reduced on the revenue pages: 49% → 36%.** `ServicePageLayout` now takes per-page
+overrides for its shared section framing, supplied for estate, hoarding, property-cleanouts and
+deep-cleaning. The other ten still share defaults, which is acceptable while they are noindex or
+low-priority — **add an override before promoting any of them to indexable.**
+
+**Orphan fix.** The category hubs, `/service-areas/`, `/projects/` and `/faq/` were in the XML
+sitemap with zero inbound internal links. Added to the footer. Kept as ONE `<nav>` because
+`.fgrid` is a 3-column grid and a fourth child would wrap — a layout change the standing
+instruction forbids. Footer child count re-verified at 3. `/faq/` also replaced the old `/#faq`
+homepage anchor, which had left the real route unreachable.
+
+**Verified after the pass:** zero placeholders on any indexable page; zero affirmative banned
+terms on any indexable page; every sitemap URL renders `index, follow`; no indexable page links
+to rodent or pigeon; no orphans among the pages this work created; build clean at 39 pages.
+
+**Still open:** `aseptaclean.com` serves WordPress — the DNS cutover has not happened, so none of
+this is being crawled at the real domain yet. That is the single largest remaining SEO blocker
+and it is an owner action, not a code change.
