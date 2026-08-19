@@ -65,6 +65,7 @@ function extract(path) {
   const rel = relative(ROOT, path);
   const lines = readFileSync(path, "utf8").split("\n");
   const found = [];
+  const struck = [];
   const unreachable = new Map();   // slot label -> count, for formats this parser will not read
   let heading = "";
   let header = null;
@@ -76,9 +77,16 @@ function extract(path) {
     for (const e of EXEMPT) if (e.match.test(t)) return e.reason;
     return null;
   };
-  const push = (text, lineNo) => {
+  // STRIKE CONVENTION. Copy the owner has adjudicated out of the canon is wrapped in ~~…~~ and
+  // followed by an inline reason, rather than deleted — the record of what was rejected is worth
+  // as much as the record of what was approved. Struck copy must never be reported as a missing
+  // string, and must never silently vanish either: it is counted and reported as `struck`.
+  const push = (raw, lineNo) => {
+    const isStruck = /~~/.test(raw);
+    const text = clean(raw.replace(/~~/g, ""));
     if (!isCopy(text)) return;
     if (META_HEADING.test(heading)) return;
+    if (isStruck) { struck.push({ text, src: `${rel}:${lineNo}`, heading }); return; }
     found.push({ text, src: `${rel}:${lineNo}`, heading, exempt: blockFlag ?? flagFor(text) });
   };
 
@@ -162,7 +170,7 @@ function extract(path) {
     }
     if (line.trim() === "") header = null;
   }
-  return { found, unreachable };
+  return { found, struck, unreachable };
 }
 
 function clean(s) {
@@ -231,7 +239,12 @@ const visible = (html) => html
   .replace(/&#39;|&rsquo;|&apos;/g, "'").replace(/&quot;|&ldquo;|&rdquo;/g, '"')
   .replace(/&middot;/g, "·").replace(/&copy;/g, "©").replace(/&mdash;/g, "-").replace(/&ndash;/g, "-")
   .replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/[–—]/g, "-")
-  .replace(/\s+/g, " ").trim();
+  .replace(/\s+/g, " ")
+  // Stripping an inline tag leaves a space before the punctuation that followed it —
+  // "read the <a>Privacy Policy</a>." becomes "read the Privacy Policy ." and stops matching.
+  // Tighten it, or every string ending in a linked phrase reads as a false absence.
+  .replace(/\s+([.,;:!?)])/g, "$1")
+  .trim();
 
 // Client-side strings live in bundled JS, not in rendered text, so each route is searched in
 // both its visible text and its raw source.
@@ -257,9 +270,11 @@ const routes = files.map((f) => ({
 // ---------------------------------------------------------------- trace
 const seen = new Set();
 const candidates = [];
+const struckAll = [];
 const unreachable = new Map();
 for (const src of SOURCES) {
-  const { found, unreachable: u } = extract(src);
+  const { found, struck, unreachable: u } = extract(src);
+  struckAll.push(...struck);
   for (const [label, n] of u) unreachable.set(label, (unreachable.get(label) ?? 0) + n);
   for (const c of found) {
     const key = c.text.toLowerCase();
@@ -305,6 +320,7 @@ console.log(`  present : ${present.length}`);
 console.log(`  partial : ${partial.length}  (joined slot labels — every part renders, the joined form does not)`);
 console.log(`  absent  : ${absent.length}`);
 console.log(`  exempt  : ${exempt.length}  (canon says they do not ship, or their route is gated)`);
+console.log(`  struck  : ${struckAll.length}  (adjudicated out of the canon — ~~struck~~ with an inline reason)`);
 
 // exempt must never read 0 by accident. If nothing was exempt, say whether the exemption rules
 // simply did not fire — an empty category and an unexercised category look identical otherwise.
@@ -338,6 +354,17 @@ if (VERBOSE) {
   console.log("### Present");
   for (const r of present.sort((a, b) => b.count - a.count)) {
     console.log(`  ${String(r.count).padStart(3)} route(s)  ${r.text.slice(0, 88)}${r.text.length > 88 ? "…" : ""}`);
+  }
+  console.log();
+}
+
+if (struckAll.length) {
+  console.log("### Struck — adjudicated out of the canon, must NOT be in the build");
+  for (const r of struckAll) {
+    const stillThere = hitsFor(r.text).length;
+    console.log(`  ${r.src}  [${r.heading}]`);
+    console.log(`     "${r.text.slice(0, 96)}${r.text.length > 96 ? "…" : ""}"`);
+    if (stillThere) console.log(`     WARNING: still present on ${stillThere} route(s) — the strike did not reach the build`);
   }
   console.log();
 }

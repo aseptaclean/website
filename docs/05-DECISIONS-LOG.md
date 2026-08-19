@@ -4123,6 +4123,8 @@ got lost.
 | P1 | `/senior-downsizing-san-jose/` | Held out of the port, left byte-identical. Sole surviving caller of `ServiceScope`, `ServicePricing`, `ServiceFAQ`, `ServiceMethodRail`, `ServiceProof`, `CompactHero`. Carries an `[OWNER INPUT]` placeholder; `noindex`. | Owner decides delete-or-write. Deleting it also retires six components; writing it means porting the page and resolving the placeholder. |
 | P2 | `/animal-waste-cleanup-san-jose/` index flip | `noindex`, but linked from indexable `/services/` and `/service-areas/`. §21-gated on the organic-pathogen wording law. | The COI check (release checklist C15) confirms the endorsement wording, and the crawl-path decision (C10) resolves whether indexable hubs may link to it. |
 | P3 | Server/client error-string divergence | `functions/_lib/lead.ts` returns the pre-port field messages (`"Consent is required."`); `QuickHandoffForm.astro` maps `phone` and `privacy_consent` to the §9.15.5 approved strings client-side. The visitor sees approved copy; every other consumer of that response — a future client, a log line, an integration test — sees the old strings. | `functions/` is legitimately open for other work. `PORT-PROMPT` §4 fences it, and no copy fix justifies breaching that fence on its own. Move the two strings server-side and delete the client map in the same change. |
+| P4 | doc 27 §18 form shape vs. the built form | §18 specifies a "Description placeholder" for the full assessment form. No such field exists: `AssessmentForm.astro` is a 3-step wizard with structured textareas (`priority_rooms`, `detail_priorities`, `important_finishes`). §18 describes a form superseded by what was built — not a string swap. | The documentation pass reconciles §18 to the code. Code is truth. The same section already carried the wrong endpoint (`/api/leads`), corrected in §9.15.5 — §18 is stale as a whole, not in one line. |
+| P5 | doc 27 §19 homepage title vs. the 2026-08-17 SEO pass | §19 specifies `Aseptaclean \| Deep Cleaning & Property Cleanup San Jose`. The build ships `Property Cleanout & Deep Cleaning \| San Jose \| Aseptaclean`, set deliberately by the 2026-08-17 SEO/meta pass, which §19 was never updated to record. | The documentation pass reconciles §19 to the code. Code is truth. |
 
 **None of these is a defect today.** Each is a deliberate hold with a named condition. The
 register exists so the condition is checked rather than remembered.
@@ -4317,3 +4319,87 @@ divergence worth naming: the homepage `<title>` ships
 `Aseptaclean | Deep Cleaning & Property Cleanup San Jose`. That one is a deliberate later
 decision (the 2026-08-17 SEO/meta pass) that doc 27 §19 was never updated to record — the same
 failure this entry's §3 rule exists to stop.
+
+---
+
+## Owner rulings on the 14 gate-6 absences; four canon strikes (2026-08-19)
+
+Six rulings, executed. Every strike carries an inline reason in the canon itself so the
+comparison cannot be re-opened by a future session reading only the document.
+
+### 1. Consent — merged, and 10DLC-relevant
+
+Neither wording won. `doc 27 §18` carried *"Consent is not a condition of purchase"*; the build
+carried the Privacy Policy link. Both were kept, and `email` was added to the channel list to
+match what the build already disclosed. **Shipping wording** (`QuickHandoffForm.astro`, 28
+routes, browser-verified):
+
+> I agree that Aseptaclean may call, text, or email me about this request. Consent is not a
+> condition of purchase. I have read the Privacy Policy.
+
+"Privacy Policy" remains an anchor to `/privacy/`. §18 amended to match.
+
+**This is consent language on a site cited in an active Twilio 10DLC campaign review (release
+checklist C9). Pending owner/counsel confirmation. It is not a copy preference and must not be
+edited on style grounds.**
+
+Not changed, and worth knowing if a carrier reviewer raises consent: **the full assessment
+form's consent is a different and broader string** (`AssessmentForm.astro:700-707`) covering
+property-media use and the Terms as well as contact. The ruling addressed §18's homepage compact
+form. The two now differ in scope by design rather than by drift, but they do differ.
+
+**A real defect was introduced and caught before commit.** Putting the anchor on its own source
+line made Astro trim the whitespace, rendering *"I have read thePrivacy Policy."* — no space.
+Fixed with an explicit `{" "}`, then verified by reading `textContent` out of a real browser
+rather than by reading the source. Byte-level inspection is what found it; the copy trace could
+not, because it normalises whitespace away.
+
+### 2–3. Phone helper and description placeholder — shipped wins, canon struck
+
+- §18 phone helper struck. Shipping: *"We call this number back — usually same business day."*
+  It states the commitment rather than the reason for the field.
+- §18 description placeholder struck. Shipping: *"A quick description of the property and what
+  needs to happen."*
+
+### 4. Submission clarification — genuine gap, canon string shipped
+
+*"This only starts the conversation. It does not book or authorize work."* now renders beneath
+the submit button on the homepage compact form (28 routes). It had never been built anywhere,
+in any wording — this was an absence, not a conflict.
+
+### 5–6. Register additions, and the footer statement
+
+**P4** (doc 27 §18 form shape) and **P5** (doc 27 §19 homepage title) added to the pending
+register. Both are documentation reconciliations where **code is truth**; neither is a code
+change.
+
+The **footer scope statement** was struck at **both** occurrences — §3 "Footer scope statement"
+(line 119) and §21 "Legal line" (line 2194) — in one change, because striking one and missing
+the other is precisely how the conflict would have re-entered. Shipping wording stays
+`src/data/site.ts` → `legal.scopeDisclaimer`. Reason recorded inline: the struck version
+enumerates excluded *work categories*, the shipped version uses
+`docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §2's **credentials-not-held** construction, which is more
+defensive and which doc 21 governs — and under `AGENTS.md` §1 doc 21 outranks doc 27 on every
+regulated-service boundary, so the shipped line was also the higher-ranked one all along.
+
+### 7. The strike convention is now machine-readable
+
+Struck copy is wrapped in `~~…~~` with an inline reason rather than deleted — the record of what
+was rejected is worth as much as the record of what was approved. `qa:gate6` reads the
+convention: struck strings are reported in their own **`struck`** category, never as absences,
+**and the script warns if a struck string is still present in the build** — a strike that never
+reached the code is now a visible failure rather than a silent contradiction.
+
+### 8. Gate 6 after these rulings
+
+`181 extracted · 152 present · 4 partial · 23 absent · 2 exempt · 4 struck`
+
+Down from 28 absent: four struck, one shipped (§4 above), one was a **guard false positive** now
+fixed — stripping an inline `<a>` left a space before the following punctuation, so any approved
+string ending in a linked phrase (the consent line among them) could never match. That class of
+false absence is the fastest way to make a gate untrustworthy, so it was fixed rather than
+exempted.
+
+**Gate 6 remains FAIL on 23**, all pre-existing canon-vs-build divergences awaiting the
+documentation pass, including P4 and P5. Gates 1, 3, 4, 5, 8 and type-law Rule 1 re-run clean;
+`/sms-notification-consent/` still hashes `e5280343…`. Gate 9 stays owner-deferred.

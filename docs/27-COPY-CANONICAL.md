@@ -116,7 +116,20 @@ The site contains no fake statistics, fake reviews, invented projects, borrowed 
 
 ### Footer scope statement
 
-> Aseptaclean performs services only within its current lawful and insured scope. Structural work, pest treatment, regulated materials and other specialist conditions are excluded or referred when required.
+> ~~Aseptaclean performs services only within its current lawful and insured scope. Structural work, pest treatment, regulated materials and other specialist conditions are excluded or referred when required.~~
+
+**Struck 2026-08-19 — owner ruling, claims-sensitive. The shipped wording wins:**
+
+> Aseptaclean performs property clearing and approved cleaning within its current lawful and insured scope. Aseptaclean is not a licensed general contractor, remediation contractor, pest-control operator, appraiser, or provider of medical or legal services.
+
+Source of truth is `src/data/site.ts` → `legal.scopeDisclaimer`; it renders in the footer on 36
+routes. **Reason:** the struck version enumerates *excluded work categories*; the shipped version
+uses the `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §2 **credentials-not-held** construction, which
+is the more defensive of the two and is the construction doc 21 governs. Under `AGENTS.md` §1 doc
+21 outranks this document on every regulated-service boundary, so the shipped line is also the
+higher-ranked one. **This statement appeared twice in this document (here and under "Legal
+line"); both were struck in the same change** so the conflict cannot re-enter from the copy that
+was missed. Do not restore either. See `docs/05-DECISIONS-LOG.md`, 2026-08-19.
 
 ---
 
@@ -1843,11 +1856,21 @@ Fields:
 
 Description placeholder:
 
-> Property city, condition, approximate size and deadline.
+> ~~Property city, condition, approximate size and deadline.~~
+
+**Struck 2026-08-19 — owner ruling. The shipped wording wins:** *"A quick description of the
+property and what needs to happen."* (`src/components/QuickHandoffForm.astro`). Do not restore
+this line or re-open the comparison; the conflict was adjudicated, not overlooked. See
+`docs/05-DECISIONS-LOG.md`, 2026-08-19.
 
 Phone helper:
 
-> So Matthew can follow up about the property.
+> ~~So Matthew can follow up about the property.~~
+
+**Struck 2026-08-19 — owner ruling. The shipped wording wins:** *"We call this number back —
+usually same business day."* (`src/components/QuickHandoffForm.astro`). It states the commitment
+rather than the reason for the field, which is the more useful thing at that point in the form.
+Do not restore. See `docs/05-DECISIONS-LOG.md`, 2026-08-19.
 
 Submit label:
 
@@ -1859,7 +1882,22 @@ Submission clarification:
 
 Consent:
 
-> I agree that Aseptaclean may call or text me about this request. Consent is not a condition of purchase.
+> I agree that Aseptaclean may call, text, or email me about this request. Consent is not a condition of purchase. I have read the Privacy Policy.
+
+**Amended 2026-08-19 — owner ruling. This is a merge, not a replacement.** The original §18
+consent read *"I agree that Aseptaclean may call or text me about this request. Consent is not a
+condition of purchase."*; the shipped consent read *"I agree to be contacted about this project
+by phone, text, or email. I have read the Privacy Policy."* Each carried something the other
+lacked — §18 the *"not a condition of purchase"* disclosure, the build the Privacy Policy link —
+so both were kept and `email` was added to the channel list to match what the build already
+disclosed. "Privacy Policy" ships as a link.
+
+**10DLC-relevant. Pending owner/counsel confirmation.** This is consent language on a site cited
+in an active Twilio 10DLC campaign review (release checklist C9). It is not a copy preference and
+must not be edited on style grounds. The full assessment form's consent
+(`AssessmentForm.astro`) is a **different and broader** string covering property-media use and
+the Terms — deliberately not changed by this ruling, and worth reading alongside this one if a
+carrier reviewer raises consent.
 
 Success message:
 
@@ -2166,7 +2204,12 @@ Detailed cleaning, specialty cleanup and property clearing across Santa Clara Co
 
 ### Legal line
 
-> Aseptaclean performs services only within its current lawful and insured scope. Structural work, pest treatment, regulated materials and other specialist conditions are excluded or referred when required.
+> ~~Aseptaclean performs services only within its current lawful and insured scope. Structural work, pest treatment, regulated materials and other specialist conditions are excluded or referred when required.~~
+
+**Struck 2026-08-19 — owner ruling, claims-sensitive. Second of two occurrences; see §3 "Footer
+scope statement" above for the full reasoning.** The shipped wording (`src/data/site.ts` →
+`legal.scopeDisclaimer`) wins because it uses doc 21 §2's credentials-not-held construction,
+which doc 21 governs and which outranks this document. Do not restore.
 
 Copyright:
 

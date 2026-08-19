@@ -88,9 +88,14 @@ const endpointAvailable = Boolean(
 
   <label class="quick-form__consent">
     <input type="checkbox" name="privacy_consent" value="yes" required />
+    {/* Owner ruling 2026-08-19: doc 27 §18's consent and the shipped consent were merged
+        rather than one replacing the other — §18 carried "Consent is not a condition of
+        purchase" (a TCPA-adjacent disclosure), the shipped string carried the Privacy Policy
+        link. Both are retained. 10DLC-relevant: pending owner/counsel confirmation. */}
     <span>
-      I agree to be contacted about this project by phone, text, or email. I
-      have read the <a class="quick-form__link" href={site.urls.privacyPolicy}>Privacy Policy</a>.
+      I agree that Aseptaclean may call, text, or email me about this request.
+      Consent is not a condition of purchase. I have read the{" "}
+      <a class="quick-form__link" href={site.urls.privacyPolicy}>Privacy Policy</a>.
     </span>
   </label>
 
@@ -130,6 +135,11 @@ const endpointAvailable = Boolean(
   >
     <span data-quick-form-submit-label>{site.offer.primaryCta}</span>
   </button>
+  {/* doc 27 §18 "Submission clarification" — approved, and previously not built anywhere.
+      Owner ruling 2026-08-19: genuine gap, ship the canon string. */}
+  <p class="quick-form__clarification ac-type-xs">
+    This only starts the conversation. It does not book or authorize work.
+  </p>
   <p
     class="quick-form__status"
     data-quick-form-status
@@ -516,6 +526,13 @@ const endpointAvailable = Boolean(
     margin: 0;
     color: var(--quick-form-muted-color);
     font-size: var(--ac-text-sm);
+  }
+
+  /* Size comes from the .ac-type-xs role class on the element, not from here. */
+  .quick-form__clarification {
+    margin: calc(var(--ac-space-3) * -1) 0 0;
+    color: var(--quick-form-muted-color);
+    text-align: center;
   }
 
   .quick-form__submit {
