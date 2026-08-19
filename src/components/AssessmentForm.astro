@@ -1840,6 +1840,7 @@ const yesNoUnsure = [
 
   .assessment__rail {
     border-bottom: 1px solid var(--ac-color-rule);
+    background: var(--ac-color-warm-white);
     padding-block: var(--ac-space-5);
   }
 
@@ -1854,9 +1855,14 @@ const yesNoUnsure = [
     font-size: var(--ac-text-sm);
   }
 
+  /* 2026-08-18 visual port. docs/mockups .rail — the 01/02/03 step rail: large steel numeral,
+     bold label, and a white cell with a 3px navy left edge marking the active step. This is
+     PORT-PROMPT §3's stepped form, and it ships here rather than on the homepage because these
+     three step labels are real approved copy in src/data/assessment.ts; the homepage mockup's
+     rail labels exist only in the mockup (see RequestForm.astro). */
   .assessment__steps {
     display: grid;
-    gap: var(--ac-space-3);
+    gap: 0;
     margin: var(--ac-space-5) 0 0;
     padding: 0;
     list-style: none;
@@ -1864,17 +1870,18 @@ const yesNoUnsure = [
 
   .assessment__steps li {
     display: grid;
-    grid-template-columns: 2.25rem minmax(0, 1fr);
-    gap: var(--ac-space-3);
-    border-top: 1px solid var(--ac-color-rule);
-    padding-top: var(--ac-space-3);
+    align-items: center;
+    padding: 13px 20px;
+    gap: 12px;
+    grid-template-columns: auto minmax(0, 1fr);
   }
 
   .assessment__step-number {
-    color: var(--ac-color-navy-800);
+    color: #c3cdd9;
     font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-sm);
+    font-size: var(--ac-text-rail-numeral);
     font-weight: 700;
+    line-height: 1;
   }
 
   .assessment__steps strong,
@@ -1887,13 +1894,17 @@ const yesNoUnsure = [
   }
 
   .assessment__steps strong {
-    color: var(--ac-color-navy-900);
+    color: var(--ac-color-ink-400);
     font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-sm);
+    font-weight: 700;
+    line-height: 1.25;
   }
 
   .assessment__steps small {
     margin-top: var(--ac-space-1);
-    color: var(--ac-color-ink-500);
+    color: var(--ac-color-ink-400);
+    font-size: 0.75rem;
     line-height: 1.45;
   }
 
@@ -2466,13 +2477,19 @@ const yesNoUnsure = [
     width: 100%;
   }
 
+  /* Mockup .rail div.on */
   .assessment__steps li[data-state="current"] {
-    border-top-color: var(--ac-color-navy-800);
+    border-left: 3px solid var(--ac-color-navy-800);
+    background: #fff;
+    padding-left: 17px;
   }
 
-  .assessment__steps li[data-state="current"] .assessment__step-number,
+  .assessment__steps li[data-state="current"] .assessment__step-number {
+    color: var(--ac-color-navy-800);
+  }
+
   .assessment__steps li[data-state="current"] strong {
-    color: var(--ac-color-navy-900);
+    color: var(--ac-color-ink-900);
   }
 
   .assessment__steps li[data-state="complete"] .assessment__step-number::after {

@@ -1,171 +1,224 @@
 ---
-// docs/aseptaclean-FINAL-v2.html HERO — ported verbatim (05-DECISIONS-LOG.md supersedes
-// docs/06-APPROVED-HOMEPAGE-COPY.md §8.2-8.6 for this section's copy). No inline form here —
-// the mockup's hero is two buttons + record link + chips only; the form lives at #request.
+// 2026-08-18 visual port. docs/mockups/aseptaclean-homepage-v3.html .hero — ported verbatim,
+// replacing the FINAL-v2 hero. Copy is doc 27 §9.1 (eyebrow, H1, lead, approval statement,
+// CTAs, trust chips) and §9.2 (Handoff Status sample), both verbatim. The FINAL-v2
+// "see a sample below" record link is gone: the mockup hero has no such element and the
+// string traces to neither §9.15 nor doc 27.
+//
+// The photo slot renders the labelled gray placeholder per PORT-PROMPT §5 — photographs
+// arrive later by filename swap and their absence does not block the port.
 import { homepage, site } from "@data/site";
 
-const phoneHref = site.business.phoneUri;
 const smsHref = site.business.smsUri;
+const phoneHref = site.business.phoneUri;
+
+// doc 27 §9.2. Labelled "Sample" in the bar — it must never read as a real customer record.
+// The mockup styles this column with its `.pill` class. Owner ruling 5 scopes the pill
+// treatment to SECTION LABELS ONLY — never badges — so these keep the pre-existing `.ac-tag`
+// status component, which global.css restyles to the mockup's `.pill--b/a/g` values.
+const statusRows = [
+  { item: "Scope", detail: "Room-by-room, signed", status: "Defined", tone: "def" },
+  { item: "Set-aside items", detail: "Documents · valuables · keys", status: "Held", tone: "review" },
+  { item: "Clearing", detail: "Approved contents", status: "Complete", tone: "clear" },
+  { item: "Reset cleaning", detail: "Defined surfaces", status: "Complete", tone: "clear" },
+  { item: "Closeout record", detail: "Photos + exceptions", status: "Issued", tone: "def" }
+] as const;
 ---
 
 <section class="hero" id="overview" aria-labelledby="hero-title">
-  <div class="ac-measure-wide hero__shell">
-    <div class="hero__main">
-      <p class="ac-eyebrow eyebrow">Property clearing &middot; deep cleaning &middot; documented closeout</p>
-      <h1 id="hero-title" class="ac-type-h1">Complex properties returned to a <span class="hl">controlled, documented</span> condition.</h1>
-      <p class="lead">Hoarding, estate, and severe-condition properties — cleared, cleaned, and closed out under one signed scope, by one accountable operator.</p>
-      <div class="approve">Nothing leaves the property without your written approval.</div>
-      <div class="actions">
-        <a href="#request" class="btn btn-on-light">Request an assessment →</a>
-        {
-          smsHref ? (
-            <a href={smsHref} class="btn btn-ghost-dark">Text a photo</a>
-          ) : (
-            <a href={phoneHref || "#request"} class="btn btn-ghost-dark">Text a photo</a>
-          )
-        }
-      </div>
-      <p class="hero__record-link">
-        Every project closes with a <a href="#record">Property Handoff Record</a> — see a sample below.
+  <div class="hero__bg" aria-hidden="true"></div>
+  <p class="hero__slot" aria-hidden="true">Photo slot<br />Cleared property · owner on site<br />2000 × 1100</p>
+
+  <div class="ac-shell hero__in">
+    <div>
+      <p class="ac-label ac-label--on-dark">Property clearing · Deep cleaning · Documented closeout</p>
+      <h1 id="hero-title" class="ac-type-h1">
+        Complex properties returned to a <em>controlled, documented</em> condition.
+      </h1>
+      <p class="hero__lede">
+        Hoarding, estate and severe-condition properties—cleared, cleaned and closed out under
+        one signed scope, by one accountable operator.
       </p>
-      <div class="chips">
-        <span class="chip">Written scope before work</span>
-        <span class="chip">No unapproved charges</span>
-        <span class="chip">Documented closeout</span>
+      <p class="pledge">Nothing leaves the property without your written approval.</p>
+
+      <div class="ac-btns">
+        <a class="btn btn--w" href="/request-assessment/">
+          {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
+        </a>
+        <a class="btn btn--o" href={smsHref || phoneHref || "/contact/"}>Text a photo</a>
+      </div>
+
+      <div class="trust">
+        <b>Written scope before work</b>
+        <b>No unapproved charges</b>
+        <b>Documented closeout</b>
       </div>
     </div>
 
-    <div class="panel">
-      <div class="panel-head"><span>Handoff Status</span><span class="id">HR-1042 &middot; SAMPLE</span></div>
-      {
-        homepage.sampleRecord.rooms.length > 0 && (
-          <>
-            <div class="prow"><div><div class="lb">Scope</div><div class="sb">Room-by-room, signed</div></div><span class="ac-tag ac-tag--def">Defined</span></div>
-            <div class="prow"><div><div class="lb">Set-aside items</div><div class="sb">Documents · valuables · keys</div></div><span class="ac-tag ac-tag--review">Held</span></div>
-            <div class="prow"><div><div class="lb">Clearing</div><div class="sb">Approved contents</div></div><span class="ac-tag ac-tag--clear">Complete</span></div>
-            <div class="prow"><div><div class="lb">Reset cleaning</div><div class="sb">Defined surfaces</div></div><span class="ac-tag ac-tag--clear">Complete</span></div>
-            <div class="prow"><div><div class="lb">Closeout record</div><div class="sb">Photos + exceptions</div></div><span class="ac-tag ac-tag--def">Issued</span></div>
-          </>
-        )
-      }
-    </div>
+    {homepage.sampleRecord.rooms.length > 0 && (
+      <div class="status">
+        <div class="status__bar">
+          <span>Handoff status</span>
+          <span>HR-1042 · Sample</span>
+        </div>
+        {statusRows.map((row) => (
+          <div class="status__row">
+            <div>
+              <h4 class="ac-type-h3-card">{row.item}</h4>
+              <p>{row.detail}</p>
+            </div>
+            <span class={`ac-tag ac-tag--${row.tone}`}>{row.status}</span>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+
+  <div class="ac-curve" aria-hidden="true">
+    <svg viewBox="0 0 1440 82" preserveAspectRatio="none">
+      <path d="M0,82 C300,26 640,0 900,14 C1130,26 1300,58 1440,72 L1440,82 Z"></path>
+    </svg>
   </div>
 </section>
 
 <style>
-  /* docs/aseptaclean-FINAL-v2.html .hero — ported verbatim */
   .hero {
     position: relative;
     overflow: hidden;
-    padding-top: clamp(2.25rem, 4.5vw, 3.5rem);
-    padding-bottom: clamp(3rem, 6vw, 4.5rem);
-    background:
-      radial-gradient(1100px 500px at 85% -10%, rgba(74, 127, 193, 0.28), transparent 60%),
-      radial-gradient(700px 400px at -5% 110%, rgba(74, 127, 193, 0.15), transparent 55%),
-      linear-gradient(165deg, var(--ac-color-navy-900) 0%, var(--ac-color-navy-950) 70%);
-    color: #fff;
+    background: var(--ac-color-navy-900);
+    padding-bottom: 36px;
   }
 
-  .hero::before {
+  .hero__bg {
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
-    background-size: 26px 26px;
-    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), transparent 80%);
-    content: "";
+    background:
+      linear-gradient(
+        100deg,
+        rgb(13 30 48 / 97%) 0%,
+        rgb(18 40 64 / 88%) 46%,
+        rgb(18 40 64 / 55%) 100%
+      ),
+      #1b3350;
   }
 
-  .hero__shell {
+  .hero__slot {
+    position: absolute;
+    right: 26px;
+    bottom: 20px;
+    color: rgb(255 255 255 / 30%);
+    font-family: var(--ac-font-sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    line-height: 1.7;
+    text-align: right;
+    text-transform: uppercase;
+  }
+
+  .hero__in {
     position: relative;
-    z-index: 1;
+    z-index: 2;
     display: grid;
-    gap: clamp(2.5rem, 5vw, 4.5rem);
     align-items: center;
-  }
-
-  .hero__main {
-    max-width: 49rem;
-  }
-
-  .hero .eyebrow {
-    color: #8fb4de;
-  }
-
-  .hero .eyebrow::before {
-    background: #8fb4de;
+    padding-block: 86px;
+    gap: 64px;
+    grid-template-columns: 1.12fr 0.88fr;
   }
 
   .hero h1 {
-    margin-bottom: 22px;
     color: #fff;
-    line-height: 1.05;
-    text-wrap: balance;
   }
 
-  .hero h1 .hl {
-    color: #a8c8ec;
+  .hero h1 em {
+    color: var(--ac-color-blue-500);
+    font-style: normal;
   }
 
-  .hero .lead {
-    max-width: 46ch;
-    margin: 0 0 26px;
-    color: #b9c9dd;
-    font-size: 1.12rem;
+  .hero__lede {
+    max-width: 48ch;
+    margin: 24px 0 0;
+    color: #b9c6d6;
+    font-size: var(--ac-text-lead);
+    line-height: 1.6;
   }
 
-  .hero .approve {
-    margin-bottom: 30px;
-    border-left: 3px solid var(--ac-color-gold);
-    padding: 4px 0 4px 16px;
+  .pledge {
+    border-left: 3px solid var(--ac-color-amber);
+    margin: 26px 0 0;
+    padding: 11px 0 11px 16px;
     color: #fff;
     font-size: 1rem;
-    font-weight: 600;
+    font-weight: 700;
   }
 
-  .hero .actions {
+  .trust {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
-    margin-bottom: 22px;
+    margin: 26px 0 0;
+    gap: 8px;
   }
 
-  .hero__record-link {
-    margin-bottom: 18px;
-    color: #8fb4de;
-    font-size: 0.85rem;
-  }
-
-  .hero__record-link a {
-    color: #cfe0f2;
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  .hero .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  .chip {
-    border: 1px solid rgba(168, 192, 220, 0.35);
-    border-radius: 100px;
-    background: rgba(255, 255, 255, 0.04);
-    padding: 6px 11px;
-    color: #a8c0dc;
+  .trust b {
+    border: 1px solid rgb(255 255 255 / 20%);
+    padding: 7px 11px;
+    color: #9db4ce;
     font-family: var(--ac-font-sans);
-    font-size: 0.64rem;
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .status {
+    overflow: hidden;
+    border-radius: 8px;
+    background: #fff;
+    box-shadow: 0 24px 56px -24px rgb(0 0 0 / 55%);
+  }
+
+  .status__bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--ac-color-navy-800);
+    padding: 13px 20px;
+    color: #fff;
+    font-family: var(--ac-font-sans);
+    font-size: 10.5px;
+    font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
-  .panel {
-    box-shadow: var(--ac-shadow-pop);
+  .status__bar span:last-child {
+    color: var(--ac-color-steel-300);
   }
 
-  @media (min-width: 60rem) {
-    .hero__shell {
-      grid-template-columns: 1.25fr 1fr;
+  .status__row {
+    display: flex;
+    align-items: center;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 15px 20px;
+    gap: 14px;
+  }
+
+  .status__row > div {
+    min-width: 0;
+    flex: 1;
+  }
+
+  .status__row p {
+    margin-top: 3px;
+    color: var(--ac-color-ink-400);
+    font-family: var(--ac-font-sans);
+    font-size: 12px;
+  }
+
+  @media (max-width: 1050px) {
+    .hero__in {
+      gap: 44px;
+      grid-template-columns: 1fr;
     }
   }
 </style>

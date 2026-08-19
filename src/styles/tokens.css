@@ -105,11 +105,19 @@
   --ac-text-h2-record: clamp(1.6rem, 2.7vw, 2.1rem);  /* .rec h2 — overlay record card */
   --ac-text-h2-final: clamp(2rem, 3.6vw, 2.9rem);     /* .final h2 — closing CTA */
 
+  /* Inner-page H1s. The mockups run three distinct H1 sizes, not one: the homepage hero
+     (--ac-text-h1 above), the hub / service-page header (.ph h1, weight 500) and the compact
+     redaction-mark band on company and legal pages (.pgh h1, weight 700). Ported verbatim. */
+  --ac-text-h1-hub: clamp(2.2rem, 4vw, 3.1rem);       /* .ph h1, .ph--split h1 */
+  --ac-text-h1-band: clamp(1.9rem, 3.4vw, 2.6rem);    /* .pgh h1 */
+
   /* H3/H4 are small and weight-led in this direction, not size-led. */
-  --ac-text-h3: 1.0625rem;                            /* .stage h3, .faq summary */
+  --ac-text-h3: 1.0625rem;                            /* .stage h3, .faq summary, .princ h3 */
   --ac-text-h3-card: 0.9375rem;                       /* .card h3, .it h3, .status__row h4 */
   --ac-text-h3-band: 1.25rem;                         /* .band h3 — deadline band */
   --ac-text-h4: 1rem;                                 /* .cred h4 */
+  --ac-text-h4-mega: 1.125rem;                        /* .mega__hub h4 */
+  --ac-text-h2-overlay: clamp(1.55rem, 2.6vw, 2.05rem); /* .ov h2 — service overlay card */
 
   /* Pill chips, rail numerals, table headers, footer headings. */
   --ac-text-label: 10.5px;

@@ -1,58 +1,62 @@
 ---
-// docs/aseptaclean-FINAL-v2.html SERVICES section — ported verbatim (05-DECISIONS-LOG.md).
-// docs/18-VISUAL-DIRECTION.md §6.1 (retained): three cards only at launch.
-import Card from "@components/Card.astro";
+// 2026-08-18 visual port. docs/mockups/aseptaclean-homepage-v3.html .tiles / .tile — the
+// SERVPRO photo tile with the hover-reveal overlay (PORT-PROMPT §3, "hover-reveal overlay
+// variant on homepage tiles"). Styling lives in global.css (.ac-tile*).
+//
+// STILL THREE CARDS, and still these three. The mockup draws four, but the mockup's four are
+// doc 27 §9.4–9.5 verbatim, which docs/27-COPY-CANONICAL.md itself annotates DOES NOT SHIP for
+// `/` on two independent grounds (docs/18-VISUAL-DIRECTION.md §6.1 photography gate, and §7 +
+// doc 27 §21 + B&P §8550(a) for the Specialty card that names rodent and pigeon waste). Owner
+// ruling 4 of 2026-08-18 rescinded D2 — the Why-field icon grid — and did not reach this
+// section. PORT-PROMPT §0 says report a wrong-looking mockup rather than fix it silently: the
+// tile TREATMENT is ported, the card SET is not. See docs/05-DECISIONS-LOG.md.
 import { homepage } from "@data/site";
 
-// 2026-08-18 visual port: the gradient and glyph maps are gone. Every image slot is now the
-// flat gray placeholder block from the mockups (PORT-PROMPT §5), and it prints
-// homepage.serviceCards[].imageLabel — until now a Phase 0 shot-list brief held back from
-// visitors (release checklist C20), now the placeholder's own label. Same strings, so no copy
-// was written for this; the shot list still reads them.
-const pills: Record<string, string> = {
-  "Animal & organic condition cleaning": "Endorsed"
-};
-
-// docs/19-SYSTEM-AND-SITEMAP.md "Linking rules" — homepage cards ↔ service pages. The hubs
-// existed only from 8c6908f, so until now every card still pointed at Card.astro's launch
-// placeholder (#included), and `/` passed no link equity to any money page.
+// docs/19-SYSTEM-AND-SITEMAP.md "Linking rules" — homepage cards ↔ service pages.
 //
 // "Animal & organic condition cleaning" is deliberately NOT linked to /specialty-cleaning/.
-// That hub ships noindex and is excluded from sitemap.xml.ts because its cards name rodent and
-// pigeon dropping cleanup — services held behind doc 27 §21's compliance release and B&P
-// §8550(a) (see 26b5278, which verified no indexable page links to them). `/` is indexable, so
-// wiring this card there would both create an indexable→noindex crawl path and re-advertise the
-// gated services from the most crawled page on the site. It keeps the on-page scope anchor until
-// §21's release inputs are on record. Do not "finish" this map without clearing that gate.
+// That hub ships noindex and is out of sitemap.xml.ts because its cards name rodent and pigeon
+// dropping cleanup — held behind doc 27 §21's compliance release and B&P §8550(a) (see
+// 26b5278, which verified no indexable page links to them). `/` is indexable, so wiring this
+// card there would create an indexable→noindex crawl path AND re-advertise the gated services
+// from the most crawled page on the site. Clearing §21 is the unblock, not editing the link.
 const links: Record<string, string> = {
   "Complex property clearing": "/property-clearing/",
   "Reset & restoration cleaning": "/detailed-cleaning/"
 };
 ---
 
-<section class="service-cards" id="service-cards" aria-labelledby="service-cards-title">
-  <div class="ac-measure-wide">
-    <div class="service-cards__head">
-      <div>
-        <p class="ac-eyebrow">Scope of work</p>
-        <h2 id="service-cards-title" class="ac-type-h2">Three ways properties reach this handoff</h2>
-      </div>
-      <p class="service-cards__intro">Every project runs under a signed scope with a documented closeout — whichever way it starts.</p>
+<section class="ac-sec service-cards" id="service-cards" aria-labelledby="service-cards-title">
+  <div class="ac-shell">
+    <div class="ac-sec__head">
+      <p class="ac-label">Scope of work</p>
+      <h2 id="service-cards-title" class="ac-type-h2">Three ways properties reach this handoff</h2>
+      <p>Every project runs under a signed scope with a documented closeout — whichever way it starts.</p>
     </div>
 
-    <div class="service-cards__grid">
-      {
-        homepage.serviceCards.map((item) => (
-          <Card
-            title={item.title}
-            imageLabel={item.imageLabel}
-            pill={pills[item.title]}
-            href={links[item.title]}
+    <div class="ac-tiles">
+      {homepage.serviceCards.map((item) => {
+        const href = links[item.title];
+        const Tag = href ? "a" : "div";
+        return (
+          <Tag
+            class="ac-tile"
+            href={href}
+            aria-label={href ? `${item.title} — what’s included` : undefined}
           >
-            {item.detail}
-          </Card>
-        ))
-      }
+            <div class="ac-tile__img" role="presentation">{item.imageLabel}</div>
+            <div class="ac-tile__bar">
+              <b>{item.title}</b>
+              {href && <i aria-hidden="true">&rarr;</i>}
+            </div>
+            <div class="ac-tile__over">
+              <b>{item.title}</b>
+              <p>{item.detail}</p>
+              {href && <span aria-hidden="true">What&rsquo;s included &rarr;</span>}
+            </div>
+          </Tag>
+        );
+      })}
     </div>
   </div>
 </section>
@@ -60,36 +64,5 @@ const links: Record<string, string> = {
 <style>
   .service-cards {
     background: var(--ac-color-warm-white);
-  }
-
-  .service-cards__head {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: end;
-    gap: var(--ac-s4);
-    margin-bottom: var(--ac-s5);
-  }
-
-  .service-cards__head h2 {
-    max-width: 18ch;
-    margin-top: var(--ac-space-3);
-    line-height: 1.08;
-  }
-
-  .service-cards__intro {
-    max-width: 38ch;
-    color: var(--ac-color-ink-600);
-    font-size: 0.98rem;
-  }
-
-  .service-cards__grid {
-    display: grid;
-    gap: var(--ac-s3);
-  }
-
-  @media (min-width: 56.25rem) {
-    .service-cards__grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
   }
 </style>

@@ -1,253 +1,67 @@
 ---
-// docs/aseptaclean-FINAL-v2.html RECORD section — ported verbatim (05-DECISIONS-LOG.md).
+// 2026-08-18 visual port. docs/mockups .photoband / .rec — the overlay-card-on-photo-band with
+// a flush bottom CTA bar (PORT-PROMPT §3). The card is pulled up over the photo band by a
+// negative margin; the band itself is the labelled gray/navy photo slot per §5.
+//
+// Copy: the section label, heading, lede and CTA are §9.15.1's Handoff Record slots verbatim,
+// which supersede the mockup's own wording ("The artifact" / "Every project closes with…") —
+// §9.15 is copy source 4 in PORT-PROMPT §1, the mockups are visual source 3. Record facts and
+// the room table are doc 27 §9.9; the closing note is §9.9's required disclaimer, read from
+// legal.documentationDisclaimer so it stays single-sourced (AGENTS.md §3).
+//
+// "Sample · not a client record" is §9.9's REQUIRED label. It must never read as a real
+// customer record (AGENTS.md §0.3).
 import { homepage, legal } from "@data/site";
 
 const record = homepage.sampleRecord;
-
-const statusMap: Record<string, { label: string; className: string }> = {
-  Keep: { label: "✓ Keep", className: "keep" },
-  Review: { label: "? Review", className: "rev" },
-  Remove: { label: "— Remove", className: "rem" }
-};
 ---
 
-<section class="record-sec" id="record" aria-labelledby="record-title">
-  <div class="ac-measure-wide">
-    <p class="ac-eyebrow">The record</p>
-    <h2 id="record-title" class="ac-type-h2 record-sec__title">Property Handoff Record</h2>
+<section class="ac-photoband" id="record" aria-labelledby="record-title">
+  <div class="ac-photoband__img">
+    <p class="ac-photoband__slot" aria-hidden="true">
+      Photo slot<br />Completed property · closeout day<br />2000 × 900
+    </p>
+  </div>
 
-    <div class="record" data-reveal>
-      <div class="rtop">
-        <div>
-          <div class="rtop__title">Property Handoff Record</div>
-          <div class="rtop__meta">Project {record.projectId}</div>
+  <div class="ac-shell">
+    <div class="ac-rec">
+      <div class="ac-rec__b">
+        <p class="ac-label">The record</p>
+        <h2 id="record-title" class="ac-type-h2-record">
+          Every project ends with a Property Handoff Record in your hands.
+        </h2>
+        <p class="ac-rec__lede">
+          A room-by-room account of what was decided, what left, what was cleaned, and what was
+          held back for you.
+        </p>
+
+        <div class="ac-rec__meta">
+          <span>Project <b>{record.projectId}</b></span>
+          <span>Sample · not a client record</span>
+          <span>Decision-maker <b>{record.decisionMaker}</b></span>
         </div>
-        <span class="rtop__sample">Sample / not a client record</span>
+
+        <table class="ac-table">
+          <thead>
+            <tr><th scope="col">Area</th><th scope="col">Decision</th><th scope="col">Note</th></tr>
+          </thead>
+          <tbody>
+            {record.rooms.map((room) => (
+              <tr>
+                <td>{room.area}</td>
+                <td>{room.disposition}</td>
+                <td>{room.note}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
 
-      <div class="rgrid">
-        <div class="rcell"><div class="rcell__k">Authorized decision-maker</div><div class="rcell__v">{record.decisionMaker}</div></div>
-        <div class="rcell"><div class="rcell__k">Approved clearing scope</div><div class="rcell__v">{record.clearingScope}</div></div>
-        <div class="rcell"><div class="rcell__k">Approved cleaning scope</div><div class="rcell__v">{record.cleaningScope}</div></div>
-        <div class="rcell"><div class="rcell__k">Excluded conditions</div><div class="rcell__v">{record.excludedConditions}</div></div>
-      </div>
+      <p class="ac-rec__note">{legal.documentationDisclaimer}</p>
 
-      <div class="rtable">
-        {
-          record.rooms.map((room) => {
-            const status = statusMap[room.disposition] ?? { label: room.disposition, className: "rem" };
-            return (
-              <div class="rrow">
-                <span class="rrow__a">{room.area}</span>
-                <span class={`rrow__st rrow__st--${status.className}`}>{status.label}</span>
-                <span class="rrow__note">{room.note}</span>
-              </div>
-            );
-          })
-        }
-      </div>
+      <a class="ac-rec__cta" href="/handoff-standard/">
+        See how a scope gets written <span aria-hidden="true">&rarr;</span>
+      </a>
     </div>
-    <p class="record-sec__cap">{legal.documentationDisclaimer}</p>
   </div>
 </section>
-
-<script>
-  const record = document.querySelector<HTMLElement>("[data-reveal]");
-
-  if (record) {
-    const prefersReducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    ).matches;
-
-    if (!prefersReducedMotion && "IntersectionObserver" in window) {
-      record.classList.add("record--pre-reveal");
-
-      const observer = new IntersectionObserver(
-        ([entry]) => {
-          if (entry?.isIntersecting) {
-            record.classList.add("record--visible");
-            observer.disconnect();
-          }
-        },
-        { threshold: 0.2 }
-      );
-
-      observer.observe(record);
-    }
-  }
-</script>
-
-<style>
-  /* docs/aseptaclean-FINAL-v2.html .record-sec / .record / .rtop / .rgrid / .rtable — ported verbatim */
-  .record-sec {
-    background: var(--ac-color-warm-white);
-  }
-
-  .record-sec__title {
-    margin-bottom: 34px;
-  }
-
-  .record {
-    overflow: hidden;
-    border-radius: var(--ac-r);
-    background: #fff;
-    box-shadow: var(--ac-shadow-pop);
-  }
-
-  .record--pre-reveal {
-    opacity: 0;
-    transform: translateY(28px);
-  }
-
-  .record--pre-reveal.record--visible {
-    opacity: 1;
-    transform: none;
-    transition:
-      opacity 640ms ease,
-      transform 640ms ease;
-  }
-
-  .rtop {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 12px;
-    border-bottom: 2px solid var(--ac-color-navy-900);
-    padding: 24px 28px;
-  }
-
-  .rtop__title {
-    color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-display);
-    font-size: 1.45rem;
-    font-weight: 600;
-  }
-
-  .rtop__meta {
-    margin-top: 3px;
-    color: var(--ac-color-ink-400);
-    font-family: var(--ac-font-sans);
-    font-size: 0.64rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .rtop__sample {
-    border: 1px solid #e0b6b0;
-    border-radius: 5px;
-    background: #fbeeec;
-    padding: 5px 9px;
-    color: #a3392f;
-    font-family: var(--ac-font-sans);
-    font-size: 0.6rem;
-    letter-spacing: 0.06em;
-  }
-
-  .rgrid {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-  }
-
-  .rcell {
-    border-right: 1px solid var(--ac-color-line);
-    border-bottom: 1px solid var(--ac-color-line);
-    padding: 20px 22px;
-  }
-
-  .rcell__k {
-    margin-bottom: 7px;
-    color: var(--ac-color-ink-400);
-    font-family: var(--ac-font-sans);
-    font-size: 0.6rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .rcell__v {
-    color: var(--ac-color-navy-900);
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-
-  .rtable {
-    padding: 8px 28px 20px;
-  }
-
-  .rrow {
-    display: grid;
-    grid-template-columns: 1fr auto 1.5fr;
-    align-items: center;
-    gap: 16px;
-    border-bottom: 1px solid var(--ac-color-line);
-    padding: 13px 0;
-    font-size: 0.9rem;
-  }
-
-  .rrow:last-child {
-    border-bottom: 0;
-  }
-
-  .rrow__a {
-    color: var(--ac-color-navy-900);
-    font-weight: 600;
-  }
-
-  .rrow__note {
-    color: var(--ac-color-ink-600);
-    font-size: 0.85rem;
-  }
-
-  .rrow__st {
-    border: 1px solid;
-    border-radius: 5px;
-    padding: 4px 9px;
-    font-family: var(--ac-font-sans);
-    font-size: 0.6rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  .rrow__st--keep {
-    border-color: #bde0cc;
-    background: var(--ac-color-clear-pale);
-    color: var(--ac-color-clear);
-  }
-
-  .rrow__st--rev {
-    border-color: #ecd6a8;
-    background: var(--ac-color-review-pale);
-    color: var(--ac-color-review);
-  }
-
-  .rrow__st--rem {
-    border-color: var(--ac-color-line-strong);
-    background: var(--ac-color-bg-soft);
-    color: var(--ac-color-ink-600);
-  }
-
-  .record-sec__cap {
-    max-width: 72ch;
-    margin-top: 18px;
-    color: var(--ac-color-ink-400);
-    font-size: 0.78rem;
-  }
-
-  @media (max-width: 62.5rem) {
-    .rgrid {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  @media (max-width: 62.5rem) {
-    .rrow {
-      grid-template-columns: 1fr auto;
-    }
-
-    .rrow__note {
-      grid-column: 1 / -1;
-      padding-top: 2px;
-    }
-  }
-</style>

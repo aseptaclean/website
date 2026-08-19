@@ -1,59 +1,24 @@
 ---
-// docs/aseptaclean-FINAL-v2.html .band — ported verbatim (05-DECISIONS-LOG.md).
-// docs/18-VISUAL-DIRECTION.md §4/§6 row 5 (retained): one accent band per page, maximum.
+// 2026-08-18 visual port. docs/mockups .band — the amber deadline band. Owner ruling D1
+// (§9.15.3): KEEP amber #C8912E as the site's sole warm accent, one rationed accent against
+// navy. Tokenised as --ac-color-amber; docs/18-VISUAL-DIRECTION.md §4/§6 row 5's "one accent
+// band per page, maximum" still holds.
+//
+// Copy is doc 27 §9.7 verbatim: heading, supporting line, CTA. The supporting line reads
+// site.offer.responseTime rather than hardcoding "within one business day" (AGENTS.md §3).
 import { site } from "@data/site";
 ---
 
-<div class="band">
-  <div class="ac-measure-wide band__inner">
-    <h2 class="ac-type-h2">Working against a listing, transfer, or family deadline?</h2>
-    <div class="band__right">
-      <span class="band__phone">Assessment response {site.offer.responseTime}</span>
-      <a href="#request" class="btn btn-on-light">Request an assessment →</a>
+<section class="ac-band" aria-labelledby="deadline-band-title">
+  <div class="ac-shell">
+    <div>
+      <h3 id="deadline-band-title" class="ac-type-h3-band">
+        Working against a listing, transfer or family deadline?
+      </h3>
+      <p>Assessment response {site.offer.responseTime}</p>
     </div>
+    <a href="/request-assessment/">
+      {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
+    </a>
   </div>
-</div>
-
-<style>
-  .band {
-    background: linear-gradient(135deg, var(--ac-color-blue-deep), var(--ac-color-navy-800));
-    color: #fff;
-    padding-block: clamp(2.5rem, 5vw, 3.5rem);
-  }
-
-  /* Grid, not flex, as of 2026-08-18. The heading moved to .ac-type-h2 (type law #1 — no
-     font-size on a heading selector), which is larger than the local clamp it replaced. Under
-     `flex-wrap: wrap` the wider heading pushed .band__right past the container and dropped the
-     CTA onto its own row at 1440. A two-track grid makes the split structural instead of a
-     consequence of measured text width: the heading is confined to track 1 and wraps inside
-     it, and the CTA holds track 2 at every width the band is two-up. */
-  .band__inner {
-    display: grid;
-    align-items: center;
-    gap: var(--ac-s4) var(--ac-s5);
-  }
-
-  @media (min-width: 56.25rem) {
-    .band__inner {
-      grid-template-columns: minmax(0, 1fr) auto;
-    }
-  }
-
-  .band h2 {
-    max-width: 26ch;
-    color: #fff;
-    line-height: 1.15;
-  }
-
-  .band__right {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 18px;
-  }
-
-  .band__phone {
-    color: #cfe0f2;
-    font-size: 0.95rem;
-  }
-</style>
+</section>

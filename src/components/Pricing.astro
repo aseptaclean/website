@@ -1,6 +1,11 @@
 ---
-// docs/aseptaclean-FINAL-v2.html PRICING section — ported verbatim (05-DECISIONS-LOG.md).
-// docs/18-VISUAL-DIRECTION.md §7 (retained): no pricing figure ships unverified.
+// 2026-08-18 visual port. docs/mockups .two + .deps — two columns, the right one a numbered
+// hairline-ruled list of cost drivers. Copy is doc 27 §9.10 (eyebrow, H2, body, six drivers).
+//
+// The $195 assessment-fee block has NO mockup counterpart and is kept anyway: AGENTS.md §4 is
+// an explicit owner decision (rank 1, above both the mockups and doc 27) and states "the $195
+// on-site assessment fee stays published … it is the only figure on the site." §4 also
+// mandates keeping the cost drivers rather than going silent on price. No other figure ships.
 import { homepage, site } from "@data/site";
 
 const currency = new Intl.NumberFormat("en-US", {
@@ -10,111 +15,85 @@ const currency = new Intl.NumberFormat("en-US", {
 });
 const assessmentFeeDisplay = Number.isFinite(site.offer.assessmentFee)
   ? currency.format(site.offer.assessmentFee)
-  : "[OWNER DECISION REQUIRED]";
+  : "";
 ---
 
-<section id="pricing" aria-labelledby="pricing-title">
-  <div class="ac-measure-wide pricing__shell">
-    <div>
-      <p class="ac-eyebrow">What it costs</p>
-      <h2 id="pricing-title" class="ac-type-h2 pricing__title">One number, in writing, after the property is reviewed.</h2>
-      <p class="pricing__intro">We do not force every property into a package. Photos may support an initial range. Complicated conditions may require a walkthrough before a firm scope and price.</p>
-      <div class="pricing__assessment">
-        <div class="pricing__assessment-label">When remote scoping is not reliable</div>
-        <div class="pricing__assessment-fee">{assessmentFeeDisplay} on-site assessment</div>
-        <div class="pricing__assessment-note">{site.offer.assessmentFeeTerms}</div>
+<section class="ac-sec ac-sec--tight" id="pricing" aria-labelledby="pricing-title">
+  <div class="ac-shell">
+    <div class="ac-two">
+      <div>
+        <p class="ac-label">What it costs</p>
+        <h2 id="pricing-title" class="ac-type-h2">
+          One number, in writing, after the property is reviewed.
+        </h2>
+        <p class="pricing__intro">
+          We do not force every property into a package. Photos may support an initial range.
+          Complicated conditions may require a walkthrough before a firm scope and price.
+        </p>
+
+        {/* Suppression rule (AGENTS.md §3): never render a placeholder in a production build.
+            If the fee is not a finite number the whole block is omitted rather than shown
+            with an empty or bracketed value. */}
+        {assessmentFeeDisplay && (
+          <div class="pricing__assessment">
+            <div class="pricing__assessment-label">When remote scoping is not reliable</div>
+            <div class="pricing__assessment-fee">{assessmentFeeDisplay} on-site assessment</div>
+            <div class="pricing__assessment-note">{site.offer.assessmentFeeTerms}</div>
+          </div>
+        )}
       </div>
-    </div>
-    <div>
-      <p class="pricing__drivers-label">Final pricing depends on</p>
-      <div class="pricing__drivers">
-        {homepage.pricingDrivers.map((driver) => <div class="pricing__driver">{driver}</div>)}
+
+      <div>
+        <p class="ac-label">Final pricing depends on</p>
+        <ul class="ac-deps">
+          {homepage.pricingDrivers.map((driver, index) => (
+            <li>
+              <b>{String(index + 1).padStart(2, "0")}</b>
+              {driver}
+            </li>
+          ))}
+        </ul>
       </div>
-      <p class="pricing__disclaimer">Not a flat package price. Ask about current project minimums.</p>
     </div>
   </div>
 </section>
 
 <style>
-  /* docs/aseptaclean-FINAL-v2.html #pricing — ported verbatim */
-  .pricing__shell {
-    display: grid;
-    grid-template-columns: 1fr;
-    align-items: start;
-    gap: clamp(2.5rem, 5vw, 4rem);
-  }
-
-  .pricing__title {
-    margin-bottom: 18px;
-    line-height: 1.08;
-  }
-
   .pricing__intro {
-    max-width: 50ch;
-    margin-bottom: 18px;
+    margin-top: 16px;
     color: var(--ac-color-ink-600);
-    font-size: 0.95rem;
+    font-size: var(--ac-text-lead);
+    line-height: 1.6;
   }
 
   .pricing__assessment {
-    border: 1px solid var(--ac-color-line);
-    border-left: 3px solid var(--ac-color-blue-500);
-    border-radius: var(--ac-r-sm);
-    background: var(--ac-color-blue-ghost);
+    border-left: 3px solid var(--ac-color-amber);
+    margin-top: 28px;
+    background: var(--ac-color-warm-white);
     padding: 18px 20px;
   }
 
   .pricing__assessment-label {
-    margin-bottom: 6px;
-    color: var(--ac-color-ink-400);
+    color: var(--ac-color-navy-800);
     font-family: var(--ac-font-sans);
-    font-size: 0.64rem;
-    letter-spacing: 0.08em;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
   .pricing__assessment-fee {
-    color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-display);
-    font-size: 1.3rem;
-    font-weight: 600;
+    margin-top: 8px;
+    color: var(--ac-color-ink-900);
+    font-size: 1.375rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
   }
 
   .pricing__assessment-note {
-    margin-top: 3px;
+    margin-top: 6px;
     color: var(--ac-color-ink-600);
-    font-size: 0.85rem;
-  }
-
-  .pricing__drivers-label {
-    margin-bottom: 14px;
-    color: var(--ac-color-ink-400);
-    font-family: var(--ac-font-sans);
-    font-size: 0.66rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .pricing__drivers {
-    border-top: 1px solid var(--ac-color-line);
-  }
-
-  .pricing__driver {
-    border-bottom: 1px solid var(--ac-color-line);
-    padding: 12px 0;
-    color: var(--ac-color-ink-900);
-    font-size: 0.94rem;
-  }
-
-  .pricing__disclaimer {
-    margin-top: 14px;
-    color: var(--ac-color-ink-400);
-    font-size: 0.8rem;
-  }
-
-  @media (min-width: 51.25rem) {
-    .pricing__shell {
-      grid-template-columns: 1fr 1fr;
-    }
+    font-size: var(--ac-text-sm);
+    line-height: 1.55;
   }
 </style>

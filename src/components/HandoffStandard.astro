@@ -1,113 +1,46 @@
 ---
-// docs/aseptaclean-FINAL-v2.html STAGES section — ported verbatim (05-DECISIONS-LOG.md).
+// 2026-08-18 visual port. docs/mockups .stages / .stage — five equal columns under a 2px navy
+// rule, numeral over heading over body over a ruled record caption. Replaces the FINAL-v2
+// stacked list rail. Copy is doc 27 §9.8 via homepage.handoffStages; stage 02 carries §9.15.2
+// amendment 2 (recorded at the data source, src/data/site.ts).
+//
+// The mechanism name is Scope → Protect → Clear → Reset → Verify. The retired
+// Assess → Define → Authorize → Clear → Document sequence is dead (AGENTS.md §7).
 import { homepage } from "@data/site";
 ---
 
-<section class="stage-section" id="standards" aria-labelledby="standard-title">
-  <div class="ac-measure-wide">
-    <div class="stage-head">
-      <p class="ac-eyebrow">Five-stage standard</p>
-      <h2 id="standard-title" class="ac-type-h2">One company stays accountable from the first decision to the final closeout</h2>
+<section class="ac-sec" id="standards" aria-labelledby="standard-title">
+  <div class="ac-shell">
+    <div class="ac-sec__head">
+      <p class="ac-label">Five-stage standard</p>
+      <h2 id="standard-title" class="ac-type-h2">
+        One company stays accountable from the first decision to final closeout.
+      </h2>
     </div>
-    <ol class="stages">
-      {
-        homepage.handoffStages.map((stage, index) => (
-          <li class="stage">
-            <span class="stage__n">{String(index + 1).padStart(2, "0")}</span>
-            <div>
-              <h3 class="ac-type-h3">{stage.name}</h3>
-              <p class="ac-type-body">{stage.detail}</p>
-            </div>
-            <span class="stage__rec">{stage.record}</span>
-          </li>
-        ))
-      }
+
+    <ol class="ac-stages">
+      {homepage.handoffStages.map((stage, index) => (
+        <li class="ac-stage">
+          <b>{String(index + 1).padStart(2, "0")}</b>
+          <h3 class="ac-type-h3">{stage.name}</h3>
+          <p>{stage.detail}</p>
+          <em>{stage.record}</em>
+        </li>
+      ))}
     </ol>
   </div>
 </section>
 
 <style>
-  .stage-section {
-    background: var(--ac-color-paper);
-  }
-
-  .stage-head {
-    margin-bottom: var(--ac-s5);
-  }
-
-  .stage-head h2 {
-    max-width: 24ch;
-    line-height: 1.08;
-  }
-
-  .stages {
-    border-top: 2px solid var(--ac-color-navy-900);
+  /* The mockup's .stages children are <div>s; these are <li>s inside an <ol> so the sequence
+     is in the markup, not only in the numerals. Both list affordances are reset here. */
+  .ac-stages {
     margin: 0;
     padding: 0;
     list-style: none;
-    counter-reset: st;
   }
 
-  .stage {
-    display: grid;
-    /* minmax(0, …) so the text track can shrink below its min-content width. .stage__rec is
-       nowrap and moves into this track at <=40rem; with a bare 1fr a longer record string
-       floors the track and pushes the page sideways (the same defect fixed on
-       /handoff-standard/). */
-    grid-template-columns: 64px minmax(0, 1fr) auto;
-    align-items: start;
-    gap: var(--ac-s3);
-    border-bottom: 1px solid var(--ac-color-line);
-    padding-block: var(--ac-s3);
-    /* This <li> is a layout row, not prose — it must span the container, not the 62ch measure. */
+  .ac-stage {
     max-width: none;
-  }
-
-  /* Numbered step rail — docs/RESTORATION-DESIGN-SCAN.md §4.8. The stage number is the
-     structural cue, so it reads as a sequence rather than a list: accent colour, tabular
-     figures so the column stays optically aligned. */
-  .stage__n {
-    color: var(--ac-color-blue-deep);
-    font-family: var(--ac-font-sans);
-    font-size: 1.15rem;
-    font-weight: 600;
-    font-variant-numeric: tabular-nums;
-    line-height: 1.25;
-  }
-
-  .stage h3 {
-    margin-bottom: 5px;
-  }
-
-  .stage p {
-    max-width: 62ch;
-    color: var(--ac-color-ink-600);
-    font-size: 0.92rem;
-  }
-
-  .stage__rec {
-    margin-top: 6px;
-    border: 1px solid var(--ac-color-line);
-    border-radius: 5px;
-    background: var(--ac-color-blue-ghost);
-    padding: 6px 10px;
-    color: var(--ac-color-blue-deep);
-    font-family: var(--ac-font-sans);
-    font-size: 0.64rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    white-space: nowrap;
-  }
-
-  @media (max-width: 40rem) {
-    .stage {
-      grid-template-columns: 44px minmax(0, 1fr);
-    }
-
-    .stage__rec {
-      grid-column: 2;
-      justify-self: start;
-      white-space: normal;
-    }
   }
 </style>

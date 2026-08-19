@@ -9,7 +9,7 @@
 // portrait-placeholder, and credentials composition below is doc 19 §3.5's and stays as built,
 // per the owner instruction not to change visual layout.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import CompactHero from "@components/CompactHero.astro";
+import PageHeader from "@components/PageHeader.astro";
 import RequestForm from "@components/RequestForm.astro";
 import { aboutPage } from "@data/doc27CompanyPages";
 import { legal, site } from "@data/site";
@@ -66,10 +66,13 @@ const schema = [
   canonicalPath={aboutPage.slug}
   schema={schema}
 >
-  <CompactHero eyebrow={aboutPage.eyebrow} headingId="about-title">
-    <h1 id="about-title" class="ac-type-h1">{aboutPage.h1}</h1>
-    <p class="compact-hero__lead">{aboutPage.lead}</p>
-  </CompactHero>
+  <PageHeader
+    headingId="about-title"
+    eyebrow={aboutPage.eyebrow}
+    h1={aboutPage.h1}
+    lede={aboutPage.lead}
+    crumb="About"
+  />
 
   <section class="founder-story" aria-labelledby="founder-story-title">
     <div class="ac-measure-wide founder-story__shell">

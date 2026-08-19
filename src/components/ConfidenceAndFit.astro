@@ -1,73 +1,95 @@
 ---
-// Pricing half of this section (assessment fee, drivers) is intentionally
-// dropped — it duplicates content already rendered in Pricing.astro's
-// #pricing section further down the homepage.
+// 2026-08-18 visual port. This section has NO counterpart in any of the 12 mockups — it is a
+// pre-port block that the doc 27 §9 section map never covered (recorded as "unaddressed, not
+// stale" in docs/05-DECISIONS-LOG.md, 2026-08-17). Owner ruling: unmapped surfaces inherit the
+// new shell via shared components rather than getting ad-hoc styling.
+//
+// So nothing here is redesigned and NOT ONE STRING CHANGED. The markup is re-expressed in the
+// mockups' own vocabulary, because the mockups already have a component for exactly this
+// content: the included/excluded pair is .ac-split + .ac-panel--in / .ac-panel--out, the same
+// pair the service-page template uses, and the assurance list is the .ac-deps rail. Before
+// this it was the last homepage block still rendering pre-port, and at ~3,500px it was the
+// tallest thing on the page.
+//
+// The pricing half of this section stays intentionally dropped — it duplicates Pricing.astro's
+// #pricing further down the homepage.
 import { homepage, legal } from "@data/site";
+
+const check = '<path d="m4 12 5 5L20 6"/>';
+const minus = '<path d="M5 12h14"/>';
 ---
 
-<section class="confidence" id="confidence-and-fit" aria-labelledby="confidence-title">
-  <div class="ac-measure-wide">
-    <header class="confidence__intro">
-      <p class="ac-eyebrow">Confidence and fit</p>
+<section class="ac-sec confidence" id="confidence-and-fit" aria-labelledby="confidence-title">
+  <div class="ac-shell">
+    <div class="ac-sec__head">
+      <p class="ac-label">Confidence and fit</p>
       <h2 id="confidence-title" class="ac-type-h2">The decisions stay yours</h2>
-      <p class="ac-type-body">
-        The emotional risk is not only the cost. It is the fear that something
-        important will disappear, the scope will change without warning, or the
-        property will still feel unfinished when the crew leaves. The
-        Aseptaclean Handoff Assurance addresses those risks directly.
+      <p>
+        The emotional risk is not only the cost. It is the fear that something important will
+        disappear, the scope will change without warning, or the property will still feel
+        unfinished when the crew leaves. The Aseptaclean Handoff Assurance addresses those risks
+        directly.
       </p>
-      <p class="ac-type-body">
-        Routine housekeeping, single-item pickup, and low-cost hauling are not
-        the primary fit.
-      </p>
-    </header>
+      <p>Routine housekeeping, single-item pickup, and low-cost hauling are not the primary fit.</p>
+    </div>
 
-    <div class="confidence__blocks">
-      <div class="confidence__block confidence__block--scope" id="included">
-        <p class="confidence__block-label ac-type-h3">A defined finish, not an open-ended cleanup</p>
-        <p class="ac-type-body">
-          Before work begins, the written scope identifies what remains, what
-          leaves, what gets cleaned, and what is outside the job. That is how both
-          sides know what finished means.
-        </p>
-
-        <div class="confidence__scope-columns">
-          <section aria-labelledby="included-title">
-            <h3 id="included-title" class="ac-type-h3">Work that may be included</h3>
-            <ul>
-              {homepage.includedScope.map((item) => <li>{item}</li>)}
-            </ul>
-          </section>
-
-          <aside aria-labelledby="excluded-title">
-            <p class="scope__stop">Stop / notify / refer</p>
-            <h3 id="excluded-title" class="ac-type-h3">What we do not quietly absorb into the job</h3>
-            <ul>
-              {homepage.excludedScope.map((item) => <li>{item}</li>)}
-            </ul>
-            <p class="scope__disclaimer">{legal.scopeDisclaimer}</p>
-            <p class="scope__disclaimer">
-              You will hear the boundaries before work begins, not halfway through
-              the job.
-            </p>
-          </aside>
+    <div class="ac-split" id="included">
+      <div class="ac-panel ac-panel--in" aria-labelledby="included-title">
+        <div class="ac-panel__h">
+          <span id="included-title">Work that may be included</span>
+          <span>Per approved scope</span>
         </div>
-
-        <ul class="confidence__assurance">
-          {
-            homepage.assurance.map((item) => (
-              <li>
-                <h3 class="ac-type-h3">{item.title}</h3>
-                <p class="ac-type-body">{item.detail}</p>
-              </li>
-            ))
-          }
+        <ul>
+          {homepage.includedScope.map((item) => (
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true" set:html={check} />
+              {item}
+            </li>
+          ))}
         </ul>
-        <p class="assurance__note ac-type-sm">
-          Scope-completion correction applies to items specifically included in the
-          signed scope. It does not guarantee results outside that scope.
+        <p class="ac-panel__f">
+          Before work begins, the written scope identifies what remains, what leaves, what gets
+          cleaned, and what is outside the job. That is how both sides know what finished means.
         </p>
       </div>
+
+      <div class="ac-panel ac-panel--out" aria-labelledby="excluded-title">
+        <div class="ac-panel__h">
+          <span id="excluded-title">Stop / notify / refer</span>
+          <span>Outside this scope</span>
+        </div>
+        <ul>
+          {homepage.excludedScope.map((item) => (
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true" set:html={minus} />
+              {item}
+            </li>
+          ))}
+        </ul>
+        <p class="ac-panel__f">
+          {legal.scopeDisclaimer} You will hear the boundaries before work begins, not halfway
+          through the job.
+        </p>
+      </div>
+    </div>
+
+    <div class="assurance">
+      <h3 class="ac-hdr-lite ac-type-label-head">The Handoff Assurance</h3>
+      <ul class="ac-deps">
+        {homepage.assurance.map((item, index) => (
+          <li>
+            <b>{String(index + 1).padStart(2, "0")}</b>
+            <span>
+              <strong>{item.title}</strong>
+              {item.detail}
+            </span>
+          </li>
+        ))}
+      </ul>
+      <p class="assurance__note">
+        Scope-completion correction applies to items specifically included in the signed scope.
+        It does not guarantee results outside that scope.
+      </p>
     </div>
   </div>
 </section>
@@ -75,150 +97,34 @@ import { homepage, legal } from "@data/site";
 <style>
   .confidence {
     background: var(--ac-color-warm-white);
-    padding-top: var(--ac-rhythm-standard);
-    padding-bottom: 0;
   }
 
-  .confidence__intro {
-    display: grid;
-    gap: var(--ac-space-4);
-    max-width: 48rem;
+  .assurance {
+    margin-top: 56px;
   }
 
-  h2 {
-    max-width: 22ch;
+  .assurance .ac-deps {
+    margin-top: 22px;
   }
 
-  .confidence__blocks {
-    display: grid;
-    gap: var(--ac-space-8);
-    margin-top: var(--ac-space-8);
-    border-top: 2px solid var(--ac-color-navy-900);
-    padding-top: var(--ac-space-7);
-  }
-
-  .confidence__block-label {
-    max-width: 24ch;
-    margin: 0;
-  }
-
-  .confidence__block > p.ac-type-body {
-    margin-top: var(--ac-space-3);
-  }
-
-  /* Scope block */
-  .confidence__scope-columns {
-    display: grid;
-    gap: var(--ac-space-6);
-    margin-top: var(--ac-space-6);
-  }
-
-  .confidence__scope-columns h3 {
-    max-width: 21ch;
-    margin: 0;
-  }
-
-  .confidence__scope-columns ul {
-    display: grid;
-    gap: 0;
-    margin: var(--ac-space-4) 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .confidence__scope-columns li {
-    position: relative;
-    max-width: none;
-    border-top: 1px solid var(--ac-color-rule);
-    padding: var(--ac-space-3) 0 var(--ac-space-3) 1.75rem;
-  }
-
-  .confidence__scope-columns section li::before {
-    position: absolute;
-    left: 0;
-    color: var(--ac-color-success);
+  .assurance .ac-deps strong {
+    display: block;
+    color: var(--ac-color-ink-900);
     font-weight: 700;
-    content: "✓";
   }
 
-  .confidence__scope-columns aside {
-    border-left: 3px solid var(--ac-color-error);
-    padding: var(--ac-space-5);
-    background: #f5efed;
-  }
-
-  .confidence__scope-columns aside li::before {
-    position: absolute;
-    left: 0;
-    color: var(--ac-color-error);
-    font-weight: 700;
-    content: "—";
-  }
-
-  .scope__stop {
-    margin: 0;
-    color: var(--ac-color-error);
-    font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-xs);
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .confidence__scope-columns aside h3 {
-    margin-top: var(--ac-space-3);
-  }
-
-  .scope__disclaimer {
-    margin: var(--ac-space-5) 0 0;
-    border-top: 1px solid rgb(161 38 34 / 0.25);
-    padding-top: var(--ac-space-4);
-    color: var(--ac-color-ink-500);
-    font-size: var(--ac-text-xs);
+  .assurance .ac-deps span {
+    color: var(--ac-color-ink-600);
+    font-size: 0.875rem;
     line-height: 1.55;
   }
 
-  /* Assurance ledger, folded into the scope block */
-  .confidence__assurance {
-    margin: var(--ac-space-7) 0 0;
-    border-top: 1px solid var(--ac-color-rule);
-    padding: 0;
-    list-style: none;
-    display: grid;
-    gap: var(--ac-space-5);
-  }
-
-  .confidence__assurance li {
-    border-bottom: 1px solid var(--ac-color-rule);
-    padding-block: var(--ac-space-4);
-  }
-
-  .confidence__assurance h3,
-  .confidence__assurance p {
-    margin: 0;
-  }
-
-  .confidence__assurance p {
-    margin-top: var(--ac-space-2);
-    color: var(--ac-color-ink-500);
-  }
-
   .assurance__note {
-    max-width: 48rem;
-    margin: var(--ac-space-5) 0 0;
-    border-left: 2px solid var(--ac-color-blue-500);
-    padding-left: var(--ac-space-4);
-    color: var(--ac-color-navy-900);
-    font-weight: 600;
-  }
-
-  @media (min-width: 70rem) {
-    .confidence__block--scope {
-      max-width: 64%;
-    }
-
-    .confidence__scope-columns {
-      grid-template-columns: repeat(2, 1fr);
-    }
+    border-left: 2px solid var(--ac-color-steel-300);
+    margin-top: 22px;
+    padding-left: 14px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.75rem;
+    line-height: 1.6;
   }
 </style>

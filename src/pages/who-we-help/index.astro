@@ -27,7 +27,7 @@
 // /who-we-help/property-managers/ segment slugs referenced in copy below (no child pages built
 // yet). No collision. Re-checked against the full rule set at build time of this page.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import CompactHero from "@components/CompactHero.astro";
+import PageHeader from "@components/PageHeader.astro";
 import RequestForm from "@components/RequestForm.astro";
 import { whoWeHelpHub } from "@data/servicePages";
 import { site } from "@data/site";
@@ -55,10 +55,13 @@ const schema = [
   noindex={false}
   schema={schema}
 >
-  <CompactHero eyebrow="Who we help" headingId="who-we-help-title">
-    <h1 id="who-we-help-title" class="ac-type-h1">Whoever is responsible for the property</h1>
-    <p class="compact-hero__lead">{whoWeHelpHub.intro}</p>
-  </CompactHero>
+  <PageHeader
+    headingId="who-we-help-title"
+    eyebrow="Who we help"
+    h1={"Whoever is responsible for the property"}
+    lede={whoWeHelpHub.intro}
+    crumb="Who We Help"
+  />
 
   <section class="segments" aria-labelledby="segments-title">
     <div class="ac-measure-wide">

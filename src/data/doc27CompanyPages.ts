@@ -183,6 +183,8 @@ export const contactPage = {
   h1: "Start with the property details.",
   lead: "Share the city, approximate size, current condition, access and deadline. Clear photos help us decide whether a walkthrough is needed.",
   callNote: "For immediate questions about fit and timing.",
-  textNote: "Send wide views and close details of the affected areas.",
+  // doc 27 §9.15.2 amendment 5 (approved 2026-08-18) — replaces "Send wide views and close
+  // details of the affected areas."
+  textNote: "Stand in the doorway and get the whole room, then step in close on the worst spots.",
   serviceAreaNote: "Availability depends on the address, scope and schedule."
 } as const;

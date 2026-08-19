@@ -68,7 +68,9 @@ export const deepCleaningPage: Doc27ServicePage = {
     "You want the scope defined before the crew arrives"
   ],
   outcomeHeading: "A deeper reset with the details written down.",
-  outcomeBody: "We do not rely on a vague label like “deep clean.” The quote identifies the rooms, surfaces and detail level so both sides know what completion means.",
+  // doc 27 §9.15.2 amendment 4 (approved 2026-08-18) — replaces "The quote identifies the
+  // rooms, surfaces and detail level so both sides know what completion means."
+  outcomeBody: "We do not rely on a vague label like “deep clean.” The quote lists the rooms, the surfaces, and the detail level — so when we say finished, you and we are reading the same page.",
   workIncludes: [
     "Detailed kitchen and bathroom cleaning",
     "Baseboards, reachable trim, doors and fixtures",

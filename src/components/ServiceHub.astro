@@ -1,0 +1,136 @@
+---
+// 2026-08-18 visual port. docs/mockups/template-service-hub.html — the whole hub template, in
+// one component so the three hubs cannot drift apart. Order is the mockup's: .ph header with
+// sweep marks → .cred strip → hub card grid → navy field section with the shared four-step
+// grid → amber deadline band. The assessment form is appended by each page.
+//
+// Owner ruling 3 (2026-08-18): THREE hubs. /commercial-cleaning-san-jose/ is a service page
+// reached by a direct nav link, not a fourth hub, and no new route was created for it.
+//
+// Copy: h1/lead/eyebrow from doc 27 §10 via src/data/servicePages.ts; the cards' section label
+// and heading from §9.15.1 ("[N] services in this group" / "Pick the page that matches the
+// property's next event."); the field block from doc 27 §10's shared hub close and §11's
+// shared four-step process. Card descriptors are §9.15.1 one-liners — see the slot-reassignment
+// note on serviceOneLiners in src/data/servicePages.ts.
+import AccentBand from "@components/AccentBand.astro";
+import CredentialBar from "@components/CredentialBar.astro";
+import { hubClose, serviceOneLiners, sharedFourStep } from "@data/servicePages";
+import { site } from "@data/site";
+
+interface HubCard {
+  readonly title: string;
+  readonly href: string | null;
+}
+
+interface Props {
+  eyebrow: string;
+  h1: string;
+  lead: string;
+  cards: readonly HubCard[];
+  /** Breadcrumb leaf — the group name as it reads in the nav. */
+  crumb: string;
+  /**
+   * Verbatim-mandatory organic-work clause (docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §2.3), passed
+   * by any hub whose cards name animal or organic conditions. Never paraphrase it; it renders
+   * immediately under the header, above the fold on the pages that carry it.
+   */
+  complianceClause?: string;
+}
+
+const { h1, lead, cards, crumb, complianceClause } = Astro.props;
+const phoneHref = site.business.phoneUri;
+const count = cards.length;
+---
+
+<header class="ac-ph" aria-labelledby="hub-title">
+  <div class="ac-ph__bg" aria-hidden="true"></div>
+  <div class="ac-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <p class="ac-slot-label" aria-hidden="true">Photo slot<br />1800 × 700</p>
+
+  <div class="ac-shell">
+    <p class="ac-crumb"><a href="/">Home</a> / {crumb}</p>
+    <h1 id="hub-title" class="ac-type-h1-hub">{h1}</h1>
+    <p class="ac-ph__lede">{lead}</p>
+    <div class="ac-btns">
+      <a class="btn btn--w" href="/request-assessment/">
+        {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
+      </a>
+      {phoneHref && <a class="btn btn--o" href={phoneHref}>Call {site.business.phone}</a>}
+    </div>
+  </div>
+</header>
+
+{complianceClause && (
+  <aside class="compliance-clause" aria-label="Scope limitation">
+    <div class="ac-shell">
+      <p class="ac-note-strip">{complianceClause}</p>
+    </div>
+  </aside>
+)}
+
+<CredentialBar />
+
+<section class="ac-sec" aria-labelledby="hub-cards-title">
+  <div class="ac-shell">
+    <div class="ac-sec__head">
+      <p class="ac-label">{count} services in this group</p>
+      <h2 id="hub-cards-title" class="ac-type-h2">
+        Pick the page that matches the property&rsquo;s next event.
+      </h2>
+    </div>
+
+    <div class="ac-hubcards">
+      {cards.map((card) => (
+        <article class="ac-card">
+          <div class="ac-card__image" role="presentation">Photo · {card.title.toLowerCase()}</div>
+          <div class="ac-card__body">
+            <h3 class="ac-type-h3-card">{card.title}</h3>
+            {card.href && serviceOneLiners[card.href] && <p>{serviceOneLiners[card.href]}</p>}
+          </div>
+          {card.href ? (
+            <a class="ac-card__cta" href={card.href}>
+              <span class="visually-hidden">{card.title} — what’s included</span>
+              <span aria-hidden="true">What&rsquo;s included</span>
+              <span aria-hidden="true">&rarr;</span>
+            </a>
+          ) : (
+            <p class="ac-card__cta ac-card__cta--pending">Page in development</p>
+          )}
+        </article>
+      ))}
+    </div>
+  </div>
+</section>
+
+<div class="ac-fieldwrap">
+  <div class="ac-shell">
+    <div class="ac-field" aria-labelledby="hub-close-title">
+      <span class="ac-chip">{hubClose.label}</span>
+      <h2 id="hub-close-title" class="ac-type-h2-field">{hubClose.heading}</h2>
+      <p class="ac-field__lede">{hubClose.body}</p>
+
+      <div class="ac-grid4">
+        {sharedFourStep.map((step) => (
+          <div class="ac-it">
+            <svg viewBox="0 0 24 24" aria-hidden="true" set:html={step.icon} />
+            <div>
+              <h3 class="ac-type-h3-card">{step.title}</h3>
+              <p>{step.detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</div>
+
+<AccentBand />
+
+<style>
+  /* Unlinked cards keep the bar's shape so the grid stays even, but read as inert. */
+  .ac-card__cta--pending {
+    background: var(--ac-color-bg-soft);
+    color: var(--ac-color-ink-400);
+    font-weight: 600;
+  }
+</style>

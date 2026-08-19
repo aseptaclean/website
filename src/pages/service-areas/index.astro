@@ -18,7 +18,7 @@
 // paragraph plus the pill grid, structurally distinct from every recognition/scope pattern
 // used elsewhere in this batch.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import CompactHero from "@components/CompactHero.astro";
+import PageHeader from "@components/PageHeader.astro";
 import AreasWeServe from "@components/AreasWeServe.astro";
 import RequestForm from "@components/RequestForm.astro";
 import { serviceAreasHub } from "@data/servicePages";
@@ -52,10 +52,13 @@ const schema = [
   canonicalPath={serviceAreasHub.slug}
   schema={schema}
 >
-  <CompactHero eyebrow={serviceAreasPage.eyebrow} headingId="areas-title">
-    <h1 id="areas-title" class="ac-type-h1">{serviceAreasPage.h1}</h1>
-    <p class="compact-hero__lead">{serviceAreasPage.lead}</p>
-  </CompactHero>
+  <PageHeader
+    headingId="areas-title"
+    eyebrow={serviceAreasPage.eyebrow}
+    h1={serviceAreasPage.h1}
+    lede={serviceAreasPage.lead}
+    crumb="Service Areas"
+  />
 
   <AreasWeServe />
 

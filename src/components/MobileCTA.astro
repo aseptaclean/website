@@ -1,115 +1,56 @@
 ---
-// docs/aseptaclean-FINAL-v2.html .sticky-bar — ported verbatim (05-DECISIONS-LOG.md).
+// 2026-08-18 visual port. docs/mockups .mbar — the bottom mobile action bar: navy "Request an
+// assessment" beside an amber "Call now", fixed to the viewport bottom below 760px, always
+// visible rather than scroll-revealed. That replaces the FINAL-v2 .sticky-bar and its
+// IntersectionObserver, which the mockup has no equivalent for; the CSS-only version has no
+// script at all, so it cannot fail to appear before hydration.
+//
+// The amber half is the second and last use of --ac-color-amber on any page, alongside the
+// deadline band (owner ruling D1's "one rationed accent").
 import { site } from "@data/site";
 
 const phoneHref = site.business.phoneUri;
 ---
 
-<aside class="sticky-bar" aria-label="Request an assessment" hidden>
-  <a class={`btn btn-light${phoneHref ? "" : " sticky-bar__call--disabled"}`} href={phoneHref || "#request"} aria-label={phoneHref ? `Call ${site.business.phone}` : undefined}>Call</a>
-  <a class="btn btn-primary" href="#request">Request an assessment</a>
-</aside>
-
-<script>
-  const stickyCta = document.querySelector<HTMLElement>(".sticky-bar");
-  const heroActions = document.querySelector<HTMLElement>(".hero .actions");
-  const finalCta = document.querySelector<HTMLElement>(".cta");
-  const footer = document.querySelector<HTMLElement>(".site-footer");
-  const scrollThreshold = 400;
-  let heroActionsVisible = Boolean(heroActions);
-  let finalCtaVisible = false;
-  let footerVisible = false;
-  let pastScrollThreshold = window.scrollY > scrollThreshold;
-
-  const updateStickyCta = () => {
-    if (!stickyCta) return;
-    stickyCta.hidden =
-      !pastScrollThreshold || heroActionsVisible || finalCtaVisible || footerVisible;
-  };
-
-  if (stickyCta) {
-    if (heroActions) {
-      const heroObserver = new IntersectionObserver(
-        ([entry]) => {
-          if (!entry) return;
-          heroActionsVisible = entry.isIntersecting;
-          updateStickyCta();
-        },
-        { threshold: 0.15 }
-      );
-      heroObserver.observe(heroActions);
-    }
-
-    if (footer) {
-      const footerObserver = new IntersectionObserver(
-        ([entry]) => {
-          if (!entry) return;
-          footerVisible = entry.isIntersecting;
-          updateStickyCta();
-        },
-        { threshold: 0.01 }
-      );
-      footerObserver.observe(footer);
-    }
-
-    if (finalCta) {
-      const finalCtaObserver = new IntersectionObserver(
-        ([entry]) => {
-          if (!entry) return;
-          finalCtaVisible = entry.isIntersecting;
-          updateStickyCta();
-        },
-        { threshold: 0.01 }
-      );
-      finalCtaObserver.observe(finalCta);
-    }
-
-    window.addEventListener(
-      "scroll",
-      () => {
-        pastScrollThreshold = window.scrollY > scrollThreshold;
-        updateStickyCta();
-      },
-      { passive: true }
-    );
-
-    updateStickyCta();
-  }
-</script>
+<div class="mbar">
+  <a href="/request-assessment/">{site.offer.primaryCta}</a>
+  {/* Suppression rule (AGENTS.md §3): never render an empty phone link. */}
+  {phoneHref && <a href={phoneHref}>Call now</a>}
+</div>
 
 <style>
-  .sticky-bar {
-    position: fixed;
-    z-index: 60;
-    inset: auto 0 0;
-    display: flex;
-    gap: 10px;
-    padding: 10px 14px calc(10px + env(safe-area-inset-bottom));
-    background: rgba(255, 255, 255, 0.96);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid var(--ac-color-line);
-    box-shadow: 0 -8px 24px -12px rgba(16, 35, 63, 0.2);
-  }
-
-  .sticky-bar .btn {
-    flex: 1;
-    justify-content: center;
-    padding: 13px 10px;
-    font-size: 0.86rem;
-  }
-
-  .sticky-bar__call--disabled {
-    pointer-events: none;
-    opacity: 0.5;
-  }
-
-  .sticky-bar[hidden] {
+  .mbar {
     display: none;
   }
 
-  @media (min-width: 48rem) {
-    .sticky-bar {
-      display: none;
+  @media (max-width: 760px) {
+    .mbar {
+      position: fixed;
+      z-index: 80;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: flex;
+      border-top: 1px solid rgb(255 255 255 / 15%);
+    }
+
+    .mbar a {
+      flex: 1;
+      padding: 15px 8px;
+      font-size: 0.875rem;
+      font-weight: 700;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .mbar a:first-child {
+      background: var(--ac-color-navy-800);
+      color: #fff;
+    }
+
+    .mbar a:last-child {
+      background: var(--ac-color-amber);
+      color: #2a1d02;
     }
   }
 </style>

@@ -1,143 +1,81 @@
 ---
-// docs/aseptaclean-FINAL-v2.html FOUNDER section — ported verbatim (05-DECISIONS-LOG.md
-// supersedes docs/06-APPROVED-HOMEPAGE-COPY.md for this section's copy and structure).
+// 2026-08-18 visual port. docs/mockups .founder / .portrait / .creds / .disc — warm-white
+// band, 4:5 portrait slot on the left, credentials as a hairline-ruled label/value list.
+// Copy is doc 27 §9.11 (eyebrow, H2, body, three credentials, required disclaimer).
+//
+// The portrait is an image slot, so it renders the flat gray placeholder with its own label
+// per PORT-PROMPT §5 — not a stand-in graphic, and never an AI-generated person (AGENTS.md
+// §0.3). The founder-authority limit is verbatim-mandatory wherever this background appears
+// (docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §2.4) and is read from legal.founderAuthorityLimit.
 import { legal, site } from "@data/site";
 
+// doc 27 §9.11 lists three. The fourth row ("On project") is the FINAL-v2 port's addition and
+// restates site.founder's role rather than claiming anything new; kept, and flagged in the
+// gate-6 trace table as having no doc 27 counterpart.
 const credentials = [
   { k: "Education", v: "B.S. Biochemistry, UC Riverside" },
   { k: "Background", v: "Pharmaceutical manufacturing" },
-  { k: "Background", v: "Histology & surgical pathology" },
+  { k: "Background", v: "Histology and surgical pathology" },
   { k: "On project", v: "Scope, planning, operating oversight" }
 ] as const;
 ---
 
-<section class="founder" id="about" aria-labelledby="founder-title">
-  <div class="ac-measure-wide founder__shell">
-    <div class="portrait" role="presentation">
-      <span class="portrait__label">[ Founder portrait — pending ]</span>
-    </div>
-    <div>
-      <p class="ac-eyebrow">The operator, not a call center</p>
-      <h2 id="founder-title" class="ac-type-h2">The person defining the work stays accountable for how it&rsquo;s carried out.</h2>
-      <p class="founder__lead">
-        {site.founder.name} is directly involved in scope review, project planning and operating
-        oversight — a controlled-process background applied to properties that require more than
-        a truck and a guess.
-      </p>
-      <div class="creds">
-        {
-          credentials.map((item) => (
-            <div class="cr">
-              <span class="cr__k">{item.k}</span>
-              <span class="cr__v">{item.v}</span>
-            </div>
-          ))
-        }
+<section class="ac-sec founder" id="about" aria-labelledby="founder-title">
+  <div class="ac-shell">
+    <div class="ac-two founder__two">
+      <div class="ac-portrait" role="presentation">
+        Photo slot<br />Founder portrait<br />1200 × 1500
       </div>
-      <p class="fnote">{legal.founderAuthorityLimit}</p>
-      <a class="founder__more" href="/about/">More about the operator →</a>
+
+      <div>
+        {/* doc 27 §9.11's homepage eyebrow. §9.15.1's shorter "The operator" is the ABOUT
+            page's founder label, not this one — different slot, different source line. */}
+        <p class="ac-label">The operator, not a call center</p>
+        <h2 id="founder-title" class="ac-type-h2-record">
+          The person defining the work stays accountable for how it is carried out.
+        </h2>
+        <p class="founder__lead">
+          {site.founder.name} is directly involved in scope review, project planning and operating
+          oversight—a controlled-process background applied to properties that require more than
+          a truck and a guess.
+        </p>
+
+        <ul class="ac-creds">
+          {credentials.map((item) => (
+            <li>
+              <b>{item.k}</b>
+              <span>{item.v}</span>
+            </li>
+          ))}
+        </ul>
+
+        <p class="ac-disc">{legal.founderAuthorityLimit}</p>
+      </div>
     </div>
   </div>
 </section>
 
 <style>
-  /* docs/aseptaclean-FINAL-v2.html .founder / .portrait / .creds / .cr / .fnote — ported verbatim */
   .founder {
-    background: var(--ac-color-paper);
+    background: var(--ac-color-warm-white);
   }
 
-  .founder__shell {
-    display: grid;
-    gap: clamp(2.5rem, 5vw, 4rem);
+  .founder__two {
     align-items: center;
-  }
-
-  /* 2026-08-18 visual port. This is an image slot, so PORT-PROMPT §5 replaces the navy
-     gradient-and-dot-grid stand-in with the mockups' flat gray placeholder block carrying its
-     own label. The photograph lands later by filename swap. Same fill and label treatment as
-     .ac-card__image in global.css, including the ink-400 label for AA contrast. */
-  .portrait {
-    display: flex;
-    align-items: flex-end;
-    aspect-ratio: 4 / 5;
-    overflow: hidden;
-    border: 1px solid var(--ac-color-line);
-    border-radius: var(--ac-radius-card);
-    background: var(--ac-color-line);
-    padding: 10px 12px;
-  }
-
-  .portrait__label {
-    color: var(--ac-color-ink-400);
-    font-size: 9.5px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .founder h2 {
-    margin-bottom: 18px;
-    line-height: 1.1;
+    gap: 56px;
+    grid-template-columns: 0.82fr 1.18fr;
   }
 
   .founder__lead {
-    max-width: 54ch;
-    margin-bottom: 24px;
-    color: var(--ac-color-ink-600);
-    font-size: 0.98rem;
-  }
-
-  .creds {
-    border-top: 1px solid var(--ac-color-line);
-  }
-
-  .cr {
-    display: grid;
-    grid-template-columns: 110px 1fr;
-    align-items: baseline;
-    gap: 16px;
-    border-bottom: 1px solid var(--ac-color-line);
-    padding: 13px 0;
-  }
-
-  .cr__k {
-    color: var(--ac-color-ink-400);
-    font-size: 0.64rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .cr__v {
-    color: var(--ac-color-navy-900);
-    font-size: 0.95rem;
-    font-weight: 500;
-  }
-
-  .fnote {
-    max-width: 52ch;
     margin-top: 16px;
-    border-left: 2px solid var(--ac-color-line-strong);
-    padding-left: 14px;
-    color: var(--ac-color-ink-400);
-    font-size: 0.78rem;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-lead);
+    line-height: 1.6;
   }
 
-  .founder__more {
-    display: inline-block;
-    margin-top: 18px;
-    color: var(--ac-color-navy-800);
-    font-weight: 600;
-    text-decoration: none;
-  }
-
-  .founder__more:hover {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  @media (min-width: 54rem) {
-    .founder__shell {
-      grid-template-columns: 0.85fr 1.35fr;
+  @media (max-width: 760px) {
+    .founder__two {
+      grid-template-columns: 1fr;
     }
   }
 </style>

@@ -1,58 +1,76 @@
 ---
+// 2026-08-18 visual port. docs/mockups .ribbon — ported verbatim. Content is doc 27 §8's
+// "Utility ribbon" list, which is four items ending in the phone number; the mockup pushes
+// that last item to the right edge with `margin-left:auto`.
+//
+// The previous ribbon carried "Organic Pathogen Endorsed" as a fourth cell. That belongs to
+// docs/18-VISUAL-DIRECTION.md §7's CREDENTIAL BAR, which is a different component
+// (CredentialBar.astro) and still renders it verbatim — §7 is not weakened by this change.
+// Doc 27 §8 owns the ribbon and does not list it. Never "licensed" here; no job count, no
+// years figure (docs/18-VISUAL-DIRECTION.md §7, retained).
 import { site } from "@data/site";
 
-// docs/aseptaclean-FINAL-v2.html .ribbon — ported verbatim (05-DECISIONS-LOG.md). Fixed
-// wording per docs/18-VISUAL-DIRECTION.md §7 (retained): never "licensed," no job count or
-// years figure. Region phrase updated per docs/19-SYSTEM-AND-SITEMAP.md Part 5 / 05-DECISIONS-LOG.md
-// "Service-area decision — 10-city South Bay & Peninsula footprint" (supersedes v2's literal
-// "San Jose & the South Bay" — Atherton and Palo Alto/Los Altos Hills sit outside the South Bay).
+const phoneHref = site.business.phoneUri;
 ---
 
-<div class="status-ribbon" aria-label="Operating standards">
-  <div class="status-ribbon__inner ac-measure-wide">
-    <span><span class="status-ribbon__dot" aria-hidden="true"></span><b>Insured</b> — COI on request</span>
-    <span><b>Organic Pathogen Endorsed</b></span>
-    <span><b>Owner-operated</b> assessments</span>
+<div class="ribbon">
+  <div class="ribbon__in ac-measure-wide">
+    <span><span class="ribbon__dot" aria-hidden="true"></span>Insured — COI on request</span>
+    <span>Owner-operated assessments</span>
     <span>{site.location.regionLabel}</span>
+    {phoneHref && <b><a href={phoneHref}>{site.business.phone}</a></b>}
   </div>
 </div>
 
 <style>
-  .status-ribbon {
+  .ribbon {
     background: var(--ac-color-navy-950);
-    color: #9fb2ca;
-  }
-
-  .status-ribbon__inner {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-    overflow-x: auto;
-    height: 32px;
+    color: #8fa6bf;
     font-family: var(--ac-font-sans);
-    font-size: 0.64rem;
-    letter-spacing: 0.05em;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
     text-transform: uppercase;
-    white-space: nowrap;
-    scrollbar-width: none;
   }
 
-  .status-ribbon__inner::-webkit-scrollbar {
-    display: none;
+  .ribbon__in {
+    display: flex;
+    height: 34px;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 26px;
   }
 
-  .status-ribbon b {
+  .ribbon b {
+    margin-left: auto;
     color: #fff;
     font-weight: 500;
   }
 
-  .status-ribbon__dot {
+  .ribbon b a {
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .ribbon__dot {
     display: inline-block;
     width: 6px;
     height: 6px;
     margin-right: 8px;
     border-radius: 50%;
-    background: #37b57e;
+    background: var(--ac-color-status-green);
     vertical-align: middle;
+  }
+
+  @media (max-width: 760px) {
+    .ribbon__in {
+      height: auto;
+      padding-block: 8px;
+      gap: 14px;
+    }
+
+    .ribbon b {
+      margin-left: 0;
+    }
   }
 </style>

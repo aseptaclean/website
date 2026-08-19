@@ -1,289 +1,573 @@
 ---
-import { navigation, site } from "@data/site";
+// 2026-08-18 visual port. Structure is docs/mockups/*.html .nav / .mega / .drawer, which is
+// identical across all 12 mockups: utility ribbon (StatusRibbon, rendered by BaseLayout) →
+// main nav with full-width mega panels → flush right-edge full-height CTA. Mobile ≤1050px is
+// the mockups' checkbox + <details> drawer with a bottom action bar — no JS in the open/close
+// path, so the drawer works before hydration and with scripting off.
+//
+// Group shape, and the three §8 items held out of it, are documented on `megaNav` in
+// src/data/site.ts. Nothing about which routes appear is decided in this file.
+import { megaNav, site } from "@data/site";
 
 const phoneHref = site.business.phoneUri;
+const wordmarkUrl = site.business.logoUrl;
+
+// Mockup .mega__list svg paths, verbatim. Keyed by the `icon` field on each megaNav child so
+// the data file names an icon without carrying markup. Presentation only — every one is
+// aria-hidden and the link text beside it carries the meaning.
+const icons: Record<string, string> = {
+  home: '<path d="M4 20h16M7 20V9l5-5 5 5v11M10 20v-5h4v5"/>',
+  truck:
+    '<rect x="3" y="7" width="14" height="12" rx="1.5"/><path d="M17 11h4v8h-4M7 7V5h6v2"/>',
+  build: '<path d="M3 20h18M6 20V10l6-5 6 5v10"/><path d="M9 20v-6h6v6"/>',
+  window: '<rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M12 4v16M4 12h16"/>',
+  shield: '<path d="M12 3 5 6v6c0 4.2 2.9 7.9 7 9 4.1-1.1 7-4.8 7-9V6z"/>',
+  paw: '<circle cx="12" cy="12" r="8"/><path d="M9 10h.01M15 10h.01M9 15c1.8 1.2 4.2 1.2 6 0"/>',
+  box: '<rect x="4" y="7" width="16" height="13" rx="1.5"/><path d="M9 7V4h6v3M4 12h16"/>',
+  layers: '<path d="M3 20h18M5 20V12h4v8M10 20V8h4v12M15 20v-6h4v6"/>',
+  doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>',
+  haul: '<path d="M3 18h18M6 18l2-9h8l2 9M9 9V6h6v3"/>',
+  clock: '<rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M9 9l6 6M15 9l-6 6"/>',
+  person: '<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/>',
+  list: '<path d="M4 6h16M4 12h16M4 18h10"/>',
+  help:
+    '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.2 2.4c-.6.2-.7.6-.7 1.1v.4M12 16.5h.01"/>',
+  mail: '<path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/>',
+  form:
+    '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6"/>'
+};
 ---
 
-<header class="site-header">
-  <div class="site-header__inner ac-measure-wide nav">
+<input type="checkbox" id="ac-mnav" class="mnav-toggle" aria-hidden="true" tabindex="-1" />
+
+<nav class="nav" aria-label="Primary navigation">
+  <div class="nav__in">
     <a class="logo" href="/">
-      <span class="mark" aria-hidden="true">A</span>Asepta<span class="sept">clean</span>
-      <span class="visually-hidden">— home</span>
+      <img src={wordmarkUrl} alt={`${site.business.name} — home`} width="180" height="28" />
     </a>
 
-    <nav class="desktop-nav" aria-label="Primary navigation">
-      <ul class="nav-links">
-        {navigation.map((item) => (
-          <li><a href={item.href}>{item.label}</a></li>
-        ))}
-      </ul>
-      {
-        phoneHref && (
-          <a class="site-header__tel" href={phoneHref}>{site.business.phone}</a>
+    <div class="menu">
+      {megaNav.map((group) =>
+        group.children && group.hub ? (
+          <div class="mi">
+            <button type="button" class="mi__trigger" aria-expanded="false">
+              {group.label}
+            </button>
+            <div class="mega">
+              <div class="mega__in">
+                <div class="mega__hub">
+                  <b>Hub</b>
+                  <h4 class="ac-type-h4">{group.hub.label}</h4>
+                  <p>{group.hub.blurb}</p>
+                  <a href={group.hub.href}>{group.hub.cta} <span aria-hidden="true">&rarr;</span></a>
+                </div>
+                <div class="mega__list">
+                  {group.children.map((child) => (
+                    <a href={child.href}>
+                      <svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[child.icon]} />
+                      <div>
+                        <strong>{child.label}</strong>
+                        <em>{child.note}</em>
+                      </div>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div class="mi mi--plain">
+            <a class="mi__trigger" href={group.href}>{group.label}</a>
+          </div>
         )
-      }
-      <a class="btn btn-primary" href="#request">Request an assessment</a>
-    </nav>
-
-    <div class="site-header__mobile-actions">
-      {
-        phoneHref && (
-          <a
-            class="site-header__tel site-header__tel--compact"
-            href={phoneHref}
-            aria-label={`Call ${site.business.phone}`}
-          >
-            {site.business.phone}
-          </a>
-        )
-      }
-
-      <details class="mobile-nav">
-        <summary>
-          <span>Menu</span>
-          <span class="visually-hidden"> navigation</span>
-          <span class="mobile-nav__mark" aria-hidden="true"></span>
-        </summary>
-        <nav aria-label="Mobile navigation">
-          <ul>
-            {navigation.map((item) => (
-              <li><a href={item.href}>{item.label}</a></li>
-            ))}
-          </ul>
-        </nav>
-      </details>
+      )}
     </div>
+
+    <label for="ac-mnav" class="burger">
+      <span aria-hidden="true"></span>
+      <span class="visually-hidden">Open menu</span>
+    </label>
+
+    <a class="nav__cta" href="/request-assessment/">
+      {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
+    </a>
   </div>
-</header>
+</nav>
+
+<div class="drawer" id="ac-drawer">
+  <div class="drawer__top">
+    <a class="logo" href="/">
+      <img src={wordmarkUrl} alt={`${site.business.name} — home`} width="160" height="25" />
+    </a>
+    <label for="ac-mnav" class="drawer__close">
+      <span aria-hidden="true">&times;</span>
+      <span class="visually-hidden">Close menu</span>
+    </label>
+  </div>
+
+  {megaNav.map((group) =>
+    group.children && group.hub ? (
+      <details>
+        <summary>{group.label}</summary>
+        <a href={group.hub.href}>{group.hub.label} hub</a>
+        {group.children.map((child) => <a href={child.href}>{child.label}</a>)}
+      </details>
+    ) : (
+      <a class="flat" href={group.href}>{group.label}</a>
+    )
+  )}
+
+  <a class="drawer__cta" href="/request-assessment/">
+    {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
+  </a>
+  {phoneHref && (
+    <a class="drawer__call" href={phoneHref}>Call {site.business.phone}</a>
+  )}
+</div>
 
 <script>
-  const mobileNavigation = document.querySelector<HTMLDetailsElement>(".mobile-nav");
-  const mobileNavigationSummary =
-    mobileNavigation?.querySelector<HTMLElement>("summary");
+  // The drawer is pure CSS (checkbox + <details>). This script adds only what CSS cannot:
+  // Escape-to-close, and keyboard/touch operation of the desktop mega panels, which open on
+  // hover via CSS alone. Everything degrades to a working menu with JS off.
+  const toggle = document.querySelector<HTMLInputElement>("#ac-mnav");
+
+  toggle?.addEventListener("change", () => {
+    document.body.style.overflow = toggle.checked ? "hidden" : "";
+  });
+
+  const closeAllPanels = () => {
+    document
+      .querySelectorAll<HTMLElement>(".mi__trigger[aria-expanded='true']")
+      .forEach((trigger) => {
+        trigger.setAttribute("aria-expanded", "false");
+        trigger.parentElement?.classList.remove("is-open");
+      });
+  };
+
+  document.querySelectorAll<HTMLButtonElement>(".mi__trigger").forEach((trigger) => {
+    if (trigger.tagName !== "BUTTON") return;
+
+    trigger.addEventListener("click", () => {
+      const wasOpen = trigger.getAttribute("aria-expanded") === "true";
+      closeAllPanels();
+      if (!wasOpen) {
+        trigger.setAttribute("aria-expanded", "true");
+        trigger.parentElement?.classList.add("is-open");
+      }
+    });
+  });
 
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" && mobileNavigation?.open) {
-      mobileNavigation.open = false;
-      mobileNavigationSummary?.focus();
+    if (event.key !== "Escape") return;
+    closeAllPanels();
+    if (toggle?.checked) {
+      toggle.checked = false;
+      document.body.style.overflow = "";
     }
   });
 
-  mobileNavigation?.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      mobileNavigation.open = false;
-    });
+  document.addEventListener("click", (event) => {
+    const target = event.target as HTMLElement | null;
+    if (!target?.closest(".mi")) closeAllPanels();
   });
 </script>
 
 <style>
-  /* docs/aseptaclean-FINAL-v2.html header / .nav / .logo — ported verbatim (05-DECISIONS-LOG.md) */
-  .site-header {
-    --ac-header-cta-width: 14.5rem;
-
+  /* docs/mockups .nav / .nav__in / .logo / .menu / .nav__cta — ported verbatim. */
+  .nav {
     position: sticky;
-    z-index: 50;
+    z-index: 40;
     top: 0;
     border-bottom: 1px solid var(--ac-color-line);
-    background: rgba(255, 255, 255, 0.94);
-    backdrop-filter: blur(12px);
+    background: #fff;
   }
 
-  .site-header__inner {
+  .nav__in {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    height: 60px;
+    max-width: var(--ac-measure-wide);
+    height: 66px;
+    align-items: stretch;
+    margin: 0 auto;
+    padding-left: 24px;
   }
 
   .logo {
     display: flex;
     align-items: center;
-    gap: 11px;
-    color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-sans);
-    font-size: 1.15rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
     text-decoration: none;
   }
 
-  .logo .mark {
-    display: grid;
-    width: 34px;
-    height: 34px;
-    place-items: center;
-    border-radius: 8px;
-    background: linear-gradient(135deg, var(--ac-color-navy-800), var(--ac-color-navy-950));
-    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.15);
-    color: #fff;
-    font-family: var(--ac-font-sans);
-    font-weight: 600;
+  .logo img {
+    width: auto;
+    height: 28px;
+    object-fit: contain;
   }
 
-  .logo .sept {
-    /* v2's literal --blue (#4a7fc1) measures 4.12:1 on white — fails WCAG AA 4.5:1 for this
-       18px bold text (confirmed via Lighthouse). --ac-color-blue-deep clears 6.69:1 while
-       staying the same hue family; blue-500 is unchanged everywhere else (icon chips,
-       borders, non-text uses) where it still matches the mockup exactly. */
-    color: var(--ac-color-blue-deep);
-  }
-
-  .desktop-nav {
-    display: none;
-  }
-
-  .nav-links {
+  .menu {
+    position: static;
     display: flex;
+    align-items: center;
+    margin-left: 44px;
     gap: 26px;
-    margin: 0;
+  }
+
+  .mi {
+    position: static;
+  }
+
+  /* Mockup `.mi>span`. A <button> here rather than the mockup's tabindex'd <span> so the
+     panel is reachable by keyboard and announced as a control; the visual box is identical. */
+  .mi__trigger {
+    display: flex;
+    height: 66px;
+    align-items: center;
+    border: 0;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
     padding: 0;
-    list-style: none;
-    color: var(--ac-color-ink-600);
-    font-size: 0.86rem;
-    font-weight: 500;
-  }
-
-  .nav-links a {
-    color: inherit;
-    text-decoration: none;
-    transition: 0.15s;
-  }
-
-  .nav-links a:hover {
-    color: var(--ac-color-navy-900);
-  }
-
-  .site-header__tel {
-    flex-shrink: 0;
-    color: var(--ac-color-navy-900);
-    font-weight: 700;
-    text-decoration: none;
+    background: none;
+    color: #2a3b52;
+    font-family: var(--ac-font-sans);
+    font-size: 13.5px;
+    font-weight: 600;
     white-space: nowrap;
-  }
-
-  .site-header .btn {
-    padding: 9px 16px;
-    font-size: 0.82rem;
-  }
-
-  .site-header__mobile-actions {
-    display: flex;
-    align-items: center;
-    gap: var(--ac-space-2);
-    min-width: 0;
-  }
-
-  .site-header__tel--compact {
-    flex-shrink: 1;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-size: clamp(0.62rem, 3vw, 0.82rem);
-  }
-
-  .mobile-nav {
-    position: relative;
-  }
-
-  .mobile-nav summary {
-    display: flex;
-    flex-shrink: 0;
-    min-height: 3rem;
-    padding-inline: var(--ac-space-2);
     cursor: pointer;
-    list-style: none;
-    align-items: center;
-    justify-content: flex-end;
-    gap: var(--ac-space-2);
-    color: var(--ac-color-navy-900);
-    font-weight: 700;
+    text-decoration: none;
   }
 
-  .mobile-nav summary::-webkit-details-marker {
+  .mi:not(.mi--plain) .mi__trigger::after {
+    margin-left: 4px;
+    color: var(--ac-color-steel-300);
+    content: "⌄";
+    font-size: 11px;
+  }
+
+  .mi:hover > .mi__trigger,
+  .mi:focus-within > .mi__trigger,
+  .mi.is-open > .mi__trigger {
+    border-bottom-color: var(--ac-color-navy-800);
+    color: var(--ac-color-navy-800);
+  }
+
+  .nav__cta {
+    display: flex;
+    align-items: center;
+    margin-left: auto;
+    padding: 0 30px;
+    background: var(--ac-color-navy-800);
+    color: #fff;
+    font-size: 13.5px;
+    font-weight: 700;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+
+  .nav__cta:hover {
+    background: #16294a;
+    color: #fff;
+  }
+
+  /* ---- mega panel ---- */
+  .mega {
+    position: absolute;
+    z-index: 60;
+    right: 0;
+    left: 0;
+    top: 100%;
+    border-top: 1px solid var(--ac-color-line);
+    border-bottom: 1px solid var(--ac-color-line);
+    background: #fff;
+    box-shadow: var(--ac-shadow-pop);
+    padding: 34px 0 36px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition: opacity 0.14s ease, transform 0.14s ease, visibility 0.14s;
+  }
+
+  .mi:hover .mega,
+  .mi:focus-within .mega,
+  .mi.is-open .mega {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+  }
+
+  .mega__in {
+    display: grid;
+    max-width: var(--ac-measure-wide);
+    margin: 0 auto;
+    padding: 0 24px;
+    gap: 52px;
+    grid-template-columns: 250px 1fr;
+  }
+
+  .mega__hub {
+    border-right: 1px solid var(--ac-color-line);
+    padding-right: 40px;
+  }
+
+  .mega__hub b {
+    display: block;
+    margin-bottom: 10px;
+    color: var(--ac-color-blue-500);
+    font-family: var(--ac-font-sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .mega__hub h4 {
+    margin-bottom: 8px;
+  }
+
+  .mega__hub p {
+    color: var(--ac-color-ink-600);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+
+  .mega__hub a {
+    display: inline-flex;
+    gap: 7px;
+    margin-top: 14px;
+    color: var(--ac-color-navy-800);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .mega__list {
+    display: grid;
+    align-content: start;
+    gap: 4px 40px;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mega__list a {
+    display: grid;
+    border-radius: 4px;
+    padding: 10px 12px 10px 0;
+    gap: 12px;
+    grid-template-columns: 20px 1fr;
+    text-decoration: none;
+  }
+
+  .mega__list a:hover {
+    background: var(--ac-color-warm-white);
+  }
+
+  .mega__list svg {
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+    fill: none;
+    stroke: var(--ac-color-blue-500);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .mega__list strong {
+    display: block;
+    color: var(--ac-color-ink-900);
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.3;
+  }
+
+  .mega__list em {
+    display: block;
+    margin-top: 2px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.75rem;
+    font-style: normal;
+    line-height: 1.45;
+  }
+
+  /* ---- mobile drawer ---- */
+  .mnav-toggle {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  .burger {
+    display: none;
+    width: 56px;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+
+  .burger span[aria-hidden] {
+    position: relative;
+    display: block;
+    width: 22px;
+    height: 2px;
+    background: var(--ac-color-navy-900);
+  }
+
+  .burger span[aria-hidden]::before,
+  .burger span[aria-hidden]::after {
+    position: absolute;
+    left: 0;
+    width: 22px;
+    height: 2px;
+    background: var(--ac-color-navy-900);
+    content: "";
+  }
+
+  .burger span[aria-hidden]::before {
+    top: -7px;
+  }
+
+  .burger span[aria-hidden]::after {
+    top: 7px;
+  }
+
+  .drawer {
+    position: fixed;
+    z-index: 120;
+    inset: 0;
+    overflow-y: auto;
+    background: #fff;
+    padding: 0 0 40px;
+    transform: translateX(100%);
+    transition: transform 0.22s ease;
+    visibility: hidden;
+  }
+
+  .mnav-toggle:checked ~ .drawer {
+    transform: none;
+    visibility: visible;
+  }
+
+  .drawer__top {
+    position: sticky;
+    top: 0;
+    display: flex;
+    height: 64px;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--ac-color-line);
+    background: #fff;
+    padding: 0 20px;
+  }
+
+  .drawer__close {
+    padding: 8px 10px;
+    color: var(--ac-color-navy-900);
+    font-size: 1.6rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+
+  .drawer details {
+    border-bottom: 1px solid var(--ac-color-line);
+  }
+
+  .drawer summary {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    color: var(--ac-color-ink-900);
+    font-size: 1rem;
+    font-weight: 700;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .drawer summary::-webkit-details-marker {
     display: none;
   }
 
-  .mobile-nav__mark,
-  .mobile-nav__mark::before {
+  .drawer summary::after {
+    color: var(--ac-color-blue-500);
+    content: "+";
+    font-size: 1.2rem;
+    font-weight: 400;
+  }
+
+  .drawer details[open] summary::after {
+    content: "–";
+  }
+
+  .drawer details a {
     display: block;
-    width: 1.15rem;
-    height: 2px;
-    background: currentColor;
-    content: "";
-    transition: transform var(--ac-transition-fast);
-  }
-
-  .mobile-nav__mark::before {
-    transform: translateY(0.35rem);
-  }
-
-  .mobile-nav[open] .mobile-nav__mark {
-    transform: rotate(45deg);
-  }
-
-  .mobile-nav[open] .mobile-nav__mark::before {
-    transform: rotate(90deg);
-  }
-
-  .mobile-nav nav {
-    position: fixed;
-    inset: 60px 0 auto;
-    border-bottom: 1px solid var(--ac-color-line);
-    padding: var(--ac-space-3) var(--ac-gutter) var(--ac-space-5);
-    background: #fff;
-    box-shadow: 0 1rem 2rem rgb(16 35 63 / 0.08);
-  }
-
-  .mobile-nav ul {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .mobile-nav a {
-    display: flex;
-    min-height: 3rem;
-    align-items: center;
-    border-bottom: 1px solid var(--ac-color-line);
-    font-family: var(--ac-font-sans);
-    font-weight: 600;
+    border-top: 1px solid #f0f3f7;
+    padding: 11px 20px 11px 32px;
+    color: #41526b;
+    font-size: 0.9375rem;
     text-decoration: none;
-    color: var(--ac-color-ink-900);
   }
 
-  @media (min-width: 60rem) {
-    .site-header__mobile-actions {
+  .drawer > a.flat {
+    display: block;
+    border-bottom: 1px solid var(--ac-color-line);
+    padding: 16px 20px;
+    color: var(--ac-color-ink-900);
+    font-size: 1rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .drawer__cta {
+    display: block;
+    border-radius: 4px;
+    margin: 20px;
+    background: var(--ac-color-navy-800);
+    padding: 16px;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  .drawer__call {
+    display: block;
+    border-radius: 4px;
+    margin: 0 20px;
+    background: var(--ac-color-blue-pale);
+    padding: 15px;
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  @media (max-width: 1050px) {
+    .menu {
       display: none;
     }
 
-    .desktop-nav {
+    .mega {
+      display: none;
+    }
+
+    .burger {
       display: flex;
-      align-items: center;
-      gap: var(--ac-space-5);
     }
 
-    /* Primary CTA breaks the measure and sits flush to the right viewport edge at full header
-       height, square — docs/RESTORATION-DESIGN-SCAN.md §4.6. Absolute against .site-header
-       (sticky, so it is the containing block) rather than a 100vw negative margin, which would
-       overshoot by the scrollbar width and reintroduce horizontal overflow.
-       The inner's padding-right reserves exactly the CTA's width so nav links never run under it. */
-    .site-header__inner {
-      padding-right: var(--ac-header-cta-width);
+    .nav__cta {
+      display: none;
     }
+  }
 
-    .site-header .desktop-nav .btn {
-      position: absolute;
-      top: 0;
-      right: 0;
-      bottom: 0;
-      width: var(--ac-header-cta-width);
-      border-radius: 0;
-      box-shadow: none;
+  @media (min-width: 1051px) {
+    .drawer {
+      display: none;
     }
+  }
 
-    .site-header .desktop-nav .btn:hover {
-      transform: none;
-      box-shadow: none;
+  @media (max-width: 760px) {
+    .nav__in {
+      padding-left: 20px;
     }
   }
 </style>

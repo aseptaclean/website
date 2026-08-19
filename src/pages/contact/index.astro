@@ -6,12 +6,15 @@
 // Title, meta, eyebrow, H1, and lead migrated to docs/27-COPY-CANONICAL.md §17.5 on
 // 2026-08-16. Layout and the contact-details/map-placeholder composition below are unchanged.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import CompactHero from "@components/CompactHero.astro";
+import PageHeader from "@components/PageHeader.astro";
 import RequestForm from "@components/RequestForm.astro";
 import { contactPage } from "@data/doc27CompanyPages";
 import { site } from "@data/site";
 
 const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
+const pin =
+  '<path d="M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>';
 
 const schema = [
   {
@@ -44,75 +47,68 @@ const schema = [
   canonicalPath={contactPage.slug}
   schema={schema}
 >
-  <CompactHero eyebrow={contactPage.eyebrow} headingId="contact-title">
-    <h1 id="contact-title" class="ac-type-h1">{contactPage.h1}</h1>
-    <p class="compact-hero__lead">{contactPage.lead}</p>
-  </CompactHero>
+  <PageHeader
+    headingId="contact-title"
+    eyebrow={contactPage.eyebrow}
+    h1={contactPage.h1}
+    lede={contactPage.lead}
+    crumb="Contact"
+  />
 
-  <section class="contact-info" aria-labelledby="contact-info-title">
-    <div class="ac-measure-wide contact-info__shell">
-      <div class="contact-info__details">
-        <h2 id="contact-info-title" class="visually-hidden">Contact details</h2>
-        <dl>
-          {
-            phoneHref && (
-              <div>
-                <dt>Phone</dt>
-                <dd><a href={phoneHref}>{site.business.phone}</a></dd>
-              </div>
-            )
-          }
-          <div>
-            <dt>Email</dt>
-            <dd><a href={`mailto:${site.business.email}`}>{site.business.email}</a></dd>
-          </div>
-          <div>
-            <dt>Hours</dt>
-            <dd>{site.business.hours}</dd>
-          </div>
-          <div>
-            <dt>Response time</dt>
-            <dd>Assessment requests are reviewed {site.offer.responseTime}.</dd>
-          </div>
-        </dl>
+  {/* 2026-08-18 visual port. docs/mockups/page-contact.html .contactgrid / .cbox — the three
+      contact cards are doc 27 §17.5's Call / Text photos / Service area set, and rendering them
+      is what finally lands `callNote`, `textNote` and `serviceAreaNote`, which existed in
+      src/data/doc27CompanyPages.ts but had no render site. `textNote` carries §9.15.2
+      amendment 5 ("Stand in the doorway…"), so that amendment ships with this section.
 
-        <div class="contact-info__area">
-          <p class="ac-eyebrow">Service area</p>
-          <ul class="contact-info__pills">
-            {site.location.cities.map((city) => <li>{city}</li>)}
-          </ul>
-          <p class="contact-info__area-note ac-type-sm">
-            And surrounding {site.location.regionLabel} communities.
-          </p>
+      The city list below was a pill list. Owner ruling 5 scopes the pill treatment to section
+      labels and forbids it as a LIST MARKER, so it is now the mockup's .ac-iconrow, matching
+      the homepage's where-we-work row. */}
+  <section class="ac-sec ac-sec--tight contact-info" aria-labelledby="contact-info-title">
+    <div class="ac-shell">
+      <h2 id="contact-info-title" class="visually-hidden">Contact details</h2>
+
+      <div class="ac-contactgrid">
+        {phoneHref && (
+          <div class="ac-cbox">
+            <b>Call</b>
+            <strong><a href={phoneHref}>{site.business.phone}</a></strong>
+            <p>{contactPage.callNote}</p>
+            <p class="cbox__hours">{site.business.hours}</p>
+          </div>
+        )}
+
+        {smsHref && (
+          <div class="ac-cbox">
+            <b>Text photos</b>
+            <strong><a href={smsHref}>{site.business.phone}</a></strong>
+            <p>{contactPage.textNote}</p>
+          </div>
+        )}
+
+        <div class="ac-cbox">
+          <b>Email</b>
+          <strong class="cbox__email">
+            <a href={`mailto:${site.business.email}`}>{site.business.email}</a>
+          </strong>
+          <p>Assessment requests are reviewed {site.offer.responseTime}.</p>
         </div>
       </div>
 
-      <div class="panel contact-info__panel">
-        <div class="panel-head"><span>Assessment request</span><span class="id">1 business day</span></div>
-        <div class="contact-info__panel-body">
-          <p>
-            Send photos and property details and Aseptaclean will review fit and the likely
-            next step {site.offer.responseTime}.
-          </p>
-          <a class="button" href="/#request">Request an assessment →</a>
-        </div>
+      <div class="contact-area">
+        <h3 class="ac-hdr-lite ac-type-label-head">Service area</h3>
+        <ul class="ac-iconrow">
+          {site.location.cities.map((city) => (
+            <li>
+              <svg viewBox="0 0 24 24" aria-hidden="true" set:html={pin} />
+              {city}
+            </li>
+          ))}
+        </ul>
+        <p class="ac-note-strip contact-area__note">
+          {contactPage.serviceAreaNote} {site.business.addressPolicy}.
+        </p>
       </div>
-    </div>
-
-    <div class="ac-measure-wide contact-info__map" aria-label="Service area">
-      <div class="map-slot" role="presentation">
-        <span>[ Service-area map — pending ]</span>
-      </div>
-      <p class="contact-info__map-note ac-type-sm">
-        {site.business.addressPolicy}. {site.location.serviceArea}.
-      </p>
-    </div>
-
-    <div class="ac-measure-wide contact-info__nap">
-      <p>
-        <strong>{site.business.legalName}</strong> · {phoneHref ? site.business.phone : site.business.email} ·
-        {site.location.serviceArea}
-      </p>
     </div>
   </section>
 
@@ -124,146 +120,37 @@ const schema = [
     background: var(--ac-color-paper);
   }
 
-  .contact-info__shell {
-    display: grid;
-    gap: clamp(2.5rem, 5vw, 4rem);
-  }
-
-  .contact-info__details dl {
-    margin: 0;
-    border-top: 2px solid var(--ac-color-navy-900);
-  }
-
-  .contact-info__details dl > div {
-    display: grid;
-    grid-template-columns: 8rem 1fr;
-    gap: 16px;
-    border-bottom: 1px solid var(--ac-color-line);
-    padding-block: 16px;
-  }
-
-  .contact-info__details dt {
-    color: var(--ac-color-ink-400);
-    font-family: var(--ac-font-sans);
-    font-size: 0.64rem;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .contact-info__details dd {
-    margin: 0;
-    color: var(--ac-color-navy-900);
-    font-weight: 600;
-  }
-
-  .contact-info__details dd a {
-    color: var(--ac-color-navy-900);
+  .ac-cbox strong a {
+    color: inherit;
     text-decoration: none;
-    /* An email address has no default break opportunity, so its min-content width floored
-       the `1fr` value track and pushed the whole page 35px wider than a 320px viewport. */
-    overflow-wrap: anywhere;
   }
 
-  .contact-info__details dd a:hover {
-    text-decoration: underline;
-    text-underline-offset: 3px;
+  .cbox__email {
+    font-size: 1rem;
+    word-break: break-word;
   }
 
-  .contact-info__area {
-    margin-top: 32px;
+  .cbox__hours {
+    margin-top: 8px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.8125rem;
   }
 
-  .contact-info__pills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin: 16px 0 0;
+  .contact-area {
+    margin-top: 56px;
+  }
+
+  .contact-area .ac-iconrow {
+    margin: 22px 0 0;
     padding: 0;
     list-style: none;
   }
 
-  .contact-info__pills li {
+  .contact-area .ac-iconrow li {
     max-width: none;
-    border: 1px solid var(--ac-color-blue-500);
-    border-radius: 999px;
-    padding: 0.4rem 0.9rem;
-    color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-sm);
-    font-weight: 600;
   }
 
-  .contact-info__area-note {
-    margin: 14px 0 0;
-    color: var(--ac-color-ink-500);
-  }
-
-  .contact-info__panel {
-    align-self: start;
-    box-shadow: var(--ac-shadow-card);
-  }
-
-  .contact-info__panel-body {
-    padding: 26px 24px;
-  }
-
-  .contact-info__panel-body p {
-    max-width: 42ch;
-    margin: 0 0 20px;
-    color: var(--ac-color-ink-600);
-  }
-
-  .contact-info__map {
-    margin-top: clamp(3rem, 6vw, 4.5rem);
-  }
-
-  .map-slot {
-    display: grid;
-    aspect-ratio: 16 / 6;
-    place-items: center;
-    border: 1px dashed var(--ac-color-line-strong);
-    border-radius: var(--ac-r);
-    background: var(--ac-color-warm-white);
-  }
-
-  .map-slot span {
-    color: var(--ac-color-ink-400);
-    font-family: var(--ac-font-sans);
-    font-size: 0.7rem;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .contact-info__map-note {
-    max-width: 60ch;
-    margin: 12px 0 0;
-    color: var(--ac-color-ink-500);
-  }
-
-  .contact-info__nap {
-    margin-top: clamp(2rem, 4vw, 3rem);
-    border-top: 1px solid var(--ac-color-rule);
-    padding-top: 20px;
-  }
-
-  .contact-info__nap p {
-    max-width: none;
-    color: var(--ac-color-ink-600);
-    font-size: 0.9rem;
-  }
-
-  /* Below ~480px the fixed 8rem label column leaves too little room for the value, so the
-     label/value pairs stack instead of sitting side by side. */
-  @media (max-width: 30rem) {
-    .contact-info__details dl > div {
-      grid-template-columns: minmax(0, 1fr);
-      gap: 4px;
-    }
-  }
-
-  @media (min-width: 60rem) {
-    .contact-info__shell {
-      grid-template-columns: 1fr 1fr;
-    }
+  .contact-area__note {
+    margin-top: 24px;
   }
 </style>

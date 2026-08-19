@@ -1,60 +1,58 @@
 ---
-// docs/18-VISUAL-DIRECTION.md §6 row 8 — "Areas we serve," pill list, [NONE] image.
-// docs/19-SYSTEM-AND-SITEMAP.md Part 5 + docs/05-DECISIONS-LOG.md "Service-area decision —
-// 10-city South Bay & Peninsula footprint": 10-city set, "South Bay & Peninsula" framing
-// (not county-only — Atherton sits in San Mateo County, not Santa Clara County).
+// 2026-08-18 visual port. docs/mockups .iconrow — the compact five-across city row, replacing
+// this section's pill list. That list was also the one surviving breach of owner ruling 5,
+// which scopes the pill treatment to section labels and forbids it as a LIST MARKER; the
+// icon row removes it rather than restyling it.
+//
+// Copy: §9.15.1's "Where we work" label and "South Bay & Peninsula, one address at a time."
+// heading, which supersede the mockup's own "South Bay & Peninsula coverage." (§9.15 is copy
+// source 4, the mockups are visual source 3).
+//
+// The mockup's city entries are links to /service-areas/{city}/. Those routes do not exist and
+// owner ruling 3 forbids new routes, so each city renders as a plain <li>. No "see full
+// coverage" link was added under it either — that string is in neither §9.15 nor doc 27, and
+// PORT-PROMPT §1 forbids writing copy to fill a slot. /service-areas/ already has a nav link
+// and a footer link. City pages arrive only with a completed job in that city plus original
+// content that could only be about it (AGENTS.md §2).
 import { site } from "@data/site";
+
+const pin =
+  '<path d="M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>';
 ---
 
-<section class="areas-served" aria-labelledby="areas-served-title">
-  <div class="ac-measure-intimate">
-    <p class="ac-eyebrow">Areas we serve</p>
-    <h2 id="areas-served-title" class="ac-type-h2">{site.location.regionLabel}</h2>
+<section class="ac-sec ac-sec--tight areas" aria-labelledby="areas-served-title">
+  <div class="ac-shell">
+    <div class="ac-sec__head areas__head">
+      <p class="ac-label">Where we work</p>
+      <h2 id="areas-served-title" class="ac-type-h2-record">
+        South Bay &amp; Peninsula, one address at a time.
+      </h2>
+    </div>
 
-    <ul class="areas-served__pills">
-      {site.location.cities.map((city) => <li>{city}</li>)}
+    <ul class="ac-iconrow">
+      {site.location.cities.map((city) => (
+        <li>
+          <svg viewBox="0 0 24 24" aria-hidden="true" set:html={pin} />
+          {city}
+        </li>
+      ))}
     </ul>
-    <p class="areas-served__note ac-type-sm">
-      And surrounding {site.location.regionLabel} communities.
-    </p>
+
   </div>
 </section>
 
 <style>
-  .areas-served {
-    background: var(--ac-color-warm-white);
-    padding-top: var(--ac-rhythm-tight);
-    padding-bottom: 0;
-    text-align: center;
+  .areas__head {
+    margin-bottom: 26px;
   }
 
-  h2 {
-    margin-top: var(--ac-space-3);
-  }
-
-  .areas-served__pills {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: var(--ac-space-3);
-    margin: var(--ac-space-6) 0 0;
+  .ac-iconrow {
+    margin: 0;
     padding: 0;
     list-style: none;
   }
 
-  .areas-served__pills li {
+  .ac-iconrow li {
     max-width: none;
-    border: 1px solid var(--ac-color-blue-500);
-    border-radius: 999px;
-    padding: 0.5rem 1.1rem;
-    color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-sm);
-    font-weight: 600;
-  }
-
-  .areas-served__note {
-    margin: var(--ac-space-5) 0 0;
-    color: var(--ac-color-ink-500);
   }
 </style>

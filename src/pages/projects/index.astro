@@ -18,7 +18,7 @@
 // public/_redirects — Cloudflare Pages applies _redirects before checking for a real asset, so
 // leaving it would have 301'd this page away. See docs/05-DECISIONS-LOG.md.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import CompactHero from "@components/CompactHero.astro";
+import PageHeader from "@components/PageHeader.astro";
 import RequestForm from "@components/RequestForm.astro";
 import { projectsPage } from "@data/doc27CompanyPages";
 import { site } from "@data/site";
@@ -46,10 +46,13 @@ const schema = [
   noindex={true}
   schema={schema}
 >
-  <CompactHero eyebrow={projectsPage.eyebrow} headingId="projects-title">
-    <h1 id="projects-title" class="ac-type-h1">{projectsPage.h1}</h1>
-    <p class="compact-hero__lead">{projectsPage.lead}</p>
-  </CompactHero>
+  <PageHeader
+    headingId="projects-title"
+    eyebrow={projectsPage.eyebrow}
+    h1={projectsPage.h1}
+    lede={projectsPage.lead}
+    crumb="Projects"
+  />
 
   <section class="types" aria-labelledby="types-title">
     <div class="ac-measure-wide">

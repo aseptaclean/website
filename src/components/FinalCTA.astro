@@ -1,87 +1,36 @@
 ---
-// docs/aseptaclean-FINAL-v2.html .cta section — ported verbatim (05-DECISIONS-LOG.md).
-// Secondary CTA updated to "Call {phone}" per docs/27-COPY-CANONICAL.md §9.14 (Hero and this
+// 2026-08-18 visual port. docs/mockups .final — flat navy-950 band, left-aligned, no gradient
+// or radial wash. Copy is doc 27 §9.14 verbatim (eyebrow, H2, body, both CTAs). Hero and this
 // section intentionally offer different secondary actions — Hero = text a photo, Final CTA =
-// call — see docs/05-DECISIONS-LOG.md).
+// call — see docs/05-DECISIONS-LOG.md.
 import { site } from "@data/site";
 
 const phoneHref = site.business.phoneUri;
 ---
 
-<section class="cta" aria-labelledby="final-cta-title">
-  <div class="ac-measure-wide">
-    <p class="ac-eyebrow">Final decision</p>
-    <h2 id="final-cta-title" class="ac-type-h2">Start with what you know. We will help define the rest.</h2>
-    <p class="cta__body">Tell us what you are looking at, what must remain and when the property needs to be ready.</p>
-    <div class="cta__actions">
-      <a href="#request" class="btn btn-on-light">Request an assessment →</a>
-      {
-        phoneHref && (
-          <a href={phoneHref} class="btn btn-ghost-dark">Call {site.business.phone}</a>
-        )
-      }
+<section class="ac-sec ac-final" aria-labelledby="final-cta-title">
+  <div class="ac-shell">
+    <p class="ac-label ac-label--on-dark">Final decision</p>
+    <h2 id="final-cta-title" class="ac-type-h2-final">
+      Start with what you know. We will help define the rest.
+    </h2>
+    <p>Tell us what you are looking at, what must remain and when the property needs to be ready.</p>
+    <div class="ac-btns">
+      <a href="/request-assessment/" class="btn btn--w">
+        {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
+      </a>
+      {phoneHref && (
+        <a href={phoneHref} class="btn btn--o">Call {site.business.phone}</a>
+      )}
     </div>
     <p class="cta__sub">Submitting a request does not authorize work or create a service agreement.</p>
   </div>
 </section>
 
 <style>
-  /* docs/aseptaclean-FINAL-v2.html .cta — ported verbatim */
-  .cta {
-    position: relative;
-    overflow: hidden;
-    background:
-      radial-gradient(900px 400px at 15% -20%, rgba(74, 127, 193, 0.3), transparent 60%),
-      linear-gradient(160deg, var(--ac-color-navy-900), var(--ac-color-navy-950));
-    color: #fff;
-    text-align: center;
-  }
-
-  .cta::before {
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
-    background-size: 26px 26px;
-    content: "";
-  }
-
-  .cta .ac-measure-wide {
-    position: relative;
-  }
-
-  .cta :global(.ac-eyebrow) {
-    justify-content: center;
-    color: #8fb4de;
-  }
-
-  .cta :global(.ac-eyebrow)::before {
-    background: #8fb4de;
-  }
-
-  .cta h2 {
-    max-width: 22ch;
-    margin: 0 auto 18px;
-    color: #fff;
-    line-height: 1.08;
-  }
-
-  .cta__body {
-    max-width: 50ch;
-    margin: 0 auto 30px;
-    color: #b9c9dd;
-    font-size: 1rem;
-  }
-
-  .cta__actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 12px;
-  }
-
   .cta__sub {
     margin-top: 22px;
-    color: #7d92ad;
-    font-size: 0.8rem;
+    color: #7f96b4;
+    font-size: 0.75rem;
   }
 </style>

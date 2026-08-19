@@ -23,8 +23,15 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+/* Room for the fixed .mbar action bar, which only exists below 760px (MobileCTA.astro). */
 body.has-mobile-cta {
-  padding-bottom: var(--ac-sticky-cta-height);
+  padding-bottom: 0;
+}
+
+@media (max-width: 760px) {
+  body.has-mobile-cta {
+    padding-bottom: 54px;
+  }
 }
 
 a {
@@ -124,14 +131,59 @@ textarea {
   text-wrap: pretty;
 }
 
-/* Inner-page band H1 — heavier per PORT-PROMPT §3, same size token. */
+/* Hub and service-page header H1 — mockup .ph h1 / .ph--split h1. Same 500 weight as the
+   homepage hero, one step down in size. */
+.ac-type-h1-hub {
+  font-family: var(--ac-font-display);
+  font-size: var(--ac-text-h1-hub);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.12;
+  max-width: 20ch;
+  text-wrap: pretty;
+}
+
+/* Inner-page band H1 — mockup .pgh h1, the compact redaction-mark header on company and
+   legal pages. Heavier per PORT-PROMPT §3, and its own size token. */
 .ac-type-h1-band {
   font-family: var(--ac-font-display);
-  font-size: var(--ac-text-h1);
+  font-size: var(--ac-text-h1-band);
   font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  max-width: 24ch;
+  text-wrap: pretty;
+}
+
+/* Service-page overlay card — mockup .ov h2. */
+.ac-type-h2-overlay {
+  font-family: var(--ac-font-display);
+  font-size: var(--ac-text-h2-overlay);
+  font-weight: 600;
   letter-spacing: -0.015em;
   line-height: 1.14;
   text-wrap: pretty;
+}
+
+/* Mega-panel hub heading — mockup .mega__hub h4. */
+.ac-type-h4-mega {
+  font-family: var(--ac-font-display);
+  font-size: var(--ac-text-h4-mega);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+}
+
+/* Small uppercase heading used where the mockups put a heading TAG in a label slot
+   (.fit h3, .hdr-lite, .foot h5). Type law #1 forbids sizing those tags directly, so the
+   label treatment is a role class like every other size on the site. */
+.ac-type-label-head {
+  font-family: var(--ac-font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.4;
+  text-transform: uppercase;
 }
 
 .ac-type-h2 {
@@ -543,39 +595,42 @@ textarea {
   color: var(--ac-color-navy-900);
 }
 
-/* Tag / status chip — docs/aseptaclean-FINAL-v2.html .tag / .st */
+/* Tag / status chip. 2026-08-18 visual port: restyled to the mockups' `.pill` — borderless,
+   3px radius, 10px uppercase, semantic fill. The mockup calls this element a pill, but owner
+   ruling 5 scopes the PILL SECTION-LABEL treatment (.ac-label) to section labels only, never
+   badges, so this stays its own status component under its existing name and call sites. */
 .ac-tag {
   display: inline-block;
-  border: 1px solid;
-  border-radius: 5px;
+  border: 0;
+  border-radius: 3px;
   padding: 5px 9px;
   font-family: var(--ac-font-sans);
-  font-size: 0.62rem;
-  font-weight: 500;
+  font-size: 10px;
+  font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
+  white-space: nowrap;
 }
 
+/* mockup .pill--g */
 .ac-tag--clear {
-  border-color: #bde0cc;
-  background: var(--ac-color-clear-pale);
-  color: var(--ac-color-clear);
+  background: var(--ac-color-status-green-pale);
+  color: var(--ac-color-status-green);
 }
 
+/* mockup .pill--a */
 .ac-tag--review {
-  border-color: #ecd6a8;
-  background: var(--ac-color-review-pale);
-  color: var(--ac-color-review);
+  background: var(--ac-color-amber-pale);
+  color: var(--ac-color-amber-ink);
 }
 
+/* mockup .pill--b */
 .ac-tag--def {
-  border-color: #c2d7ef;
   background: var(--ac-color-blue-pale);
-  color: var(--ac-color-blue-deep);
+  color: var(--ac-color-navy-800);
 }
 
 .ac-tag--rem {
-  border-color: var(--ac-color-line-strong);
   background: var(--ac-color-bg-soft);
   color: var(--ac-color-ink-600);
 }
@@ -638,7 +693,11 @@ textarea {
 
 @media print {
   .site-header,
+  .nav,
+  .ribbon,
   .mobile-cta,
+  .mbar,
+  .drawer,
   .skip-link {
     display: none;
   }
@@ -646,5 +705,1636 @@ textarea {
   body {
     background: white;
     color: black;
+  }
+}
+
+/* =====================================================================
+   2026-08-18 VISUAL PORT — shared component layer
+   ---------------------------------------------------------------------
+   Ported from docs/mockups/*.html. All nine inner-page mockups plus the two templates ship
+   one identical 35,399-byte stylesheet; this is that stylesheet, mapped onto the --ac- token
+   system. Mockup var → token: --navy → navy-800, --navy-deep → navy-900, --navy-black →
+   navy-950, --slate → blue-500, --steel → steel-300, --warm → warm-white, --line → line,
+   --ink-dk → ink-900, --amber → amber, --green → status-green. Where a mockup navy differs
+   from the existing system by a few points, PORT-PROMPT §3's "existing --ac- navy system
+   only" means the token wins (recorded in tokens.css).
+   NOT ported: every `h1..h4 { font-size }` rule in the source. Type law #1 is absolute, so
+   each of those became a .ac-type-* role class applied in markup instead. Grep gate 2 checks
+   this. The classes are global rather than component-scoped because the same card, panel and
+   band appear across a dozen components.
+   ===================================================================== */
+
+/* ---- shell + section rhythm ---- */
+.ac-shell {
+  width: min(100% - 48px, var(--ac-measure-wide));
+  margin-inline: auto;
+}
+
+.ac-sec {
+  padding-block: 68px;
+}
+
+.ac-sec--tight {
+  padding-block: 48px;
+}
+
+.ac-sec__head {
+  max-width: 52ch;
+  margin: 0 0 44px;
+}
+
+.ac-sec__head p {
+  margin-top: 16px;
+  color: var(--ac-color-ink-600);
+  font-size: var(--ac-text-lead);
+  line-height: 1.6;
+}
+
+/* Chip on navy — mockup .chip. The light-background section label is .ac-label above. */
+.ac-chip {
+  display: inline-block;
+  margin: 0 0 16px;
+  border-radius: 4px;
+  background: rgb(255 255 255 / 12%);
+  padding: 7px 12px;
+  color: #cbd9e8;
+  font-family: var(--ac-font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---- page headers ---- */
+
+/* Hub / service-page header — mockup .ph */
+.ac-ph {
+  position: relative;
+  overflow: hidden;
+  background: var(--ac-color-navy-900);
+}
+
+.ac-ph__bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      100deg,
+      rgb(13 30 48 / 96%) 0%,
+      rgb(18 40 64 / 80%) 52%,
+      rgb(18 40 64 / 45%) 100%
+    ),
+    #1b3350;
+}
+
+.ac-ph > .ac-shell {
+  position: relative;
+  z-index: 2;
+  padding-block: 66px 62px;
+}
+
+.ac-ph h1 {
+  color: #fff;
+}
+
+.ac-ph__lede {
+  margin-top: 20px;
+  max-width: 56ch;
+  color: #b9c6d6;
+  font-size: var(--ac-text-lead);
+  line-height: 1.6;
+}
+
+/* Photo slot label, absolutely placed — mockup .ph__slot / .hero__slot / .ob__slot */
+.ac-slot-label {
+  position: absolute;
+  z-index: 2;
+  right: 24px;
+  bottom: 16px;
+  color: rgb(255 255 255 / 28%);
+  font-family: var(--ac-font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.7;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+/* Company / legal page header with the redaction-mark sweep — mockup .pgh */
+.ac-pgh {
+  position: relative;
+  overflow: hidden;
+  background: var(--ac-color-navy-900);
+}
+
+.ac-pgh > .ac-shell {
+  position: relative;
+  z-index: 2;
+  padding-block: 42px 44px;
+}
+
+.ac-pgh h1 {
+  color: #fff;
+}
+
+.ac-pgh__lede {
+  margin-top: 18px;
+  max-width: 56ch;
+  color: #b9c6d6;
+  font-size: var(--ac-text-lead);
+  line-height: 1.6;
+}
+
+/* Steri-Clean-geometry sweep bands — mockup .marks. PORT-PROMPT §3 requires these in every
+   inner-page header. Owner ruling D4: keep for launch. */
+.ac-marks {
+  position: absolute;
+  z-index: 1;
+  right: -70px;
+  top: 50%;
+  display: grid;
+  justify-items: end;
+  gap: 14px;
+  opacity: 0.95;
+  transform: translateY(-50%) rotate(-16deg);
+  pointer-events: none;
+}
+
+.ac-marks i {
+  display: block;
+  height: 24px;
+  border-radius: 24px 0 0 24px;
+  background: rgb(106 155 195 / 22%);
+}
+
+.ac-marks i:nth-child(1) {
+  width: 430px;
+}
+
+.ac-marks i:nth-child(2) {
+  width: 330px;
+}
+
+.ac-marks i:nth-child(3) {
+  width: 240px;
+  background: rgb(106 155 195 / 34%);
+}
+
+.ac-marks i:nth-child(4) {
+  width: 150px;
+  background: rgb(106 155 195 / 44%);
+}
+
+.ac-crumb {
+  margin-bottom: 20px;
+  color: #7d95b2;
+  font-family: var(--ac-font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ac-crumb a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.ac-crumb a:hover {
+  color: #fff;
+}
+
+.ac-pgh .ac-crumb {
+  margin-bottom: 16px;
+}
+
+/* Angled photo mask — mockup .cut / .cut-l */
+.ac-cut {
+  clip-path: polygon(0 0, 100% 0, calc(100% - 46px) 50%, 100% 100%, 0 100%);
+}
+
+.ac-cut-l {
+  clip-path: polygon(46px 0, 100% 0, 100% 100%, 46px 100%, 0 50%);
+}
+
+/* ---- buttons on navy ---- */
+.ac-btns {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 30px 0 0;
+}
+
+.btn--w {
+  border-radius: 4px;
+  background: #fff;
+  color: var(--ac-color-navy-900);
+  box-shadow: none;
+}
+
+.btn--w:hover {
+  background: #e9eff6;
+  color: var(--ac-color-navy-900);
+  transform: none;
+  box-shadow: none;
+}
+
+.btn--o {
+  border-radius: 4px;
+  background: transparent;
+  color: #fff;
+  box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 36%);
+}
+
+.btn--o:hover {
+  background: rgb(255 255 255 / 9%);
+  color: #fff;
+  transform: none;
+  box-shadow: inset 0 0 0 1.5px rgb(255 255 255 / 36%);
+}
+
+/* ---- credibility strip ---- */
+.ac-cred {
+  border-bottom: 1px solid var(--ac-color-line);
+  background: #fff;
+}
+
+.ac-cred > .ac-shell {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.ac-cred > .ac-shell > div {
+  border-left: 1px solid var(--ac-color-line);
+  padding: 24px 26px;
+}
+
+.ac-cred > .ac-shell > div:first-child {
+  border-left: none;
+  padding-left: 0;
+}
+
+.ac-cred p {
+  margin-top: 5px;
+  color: var(--ac-color-ink-600);
+  font-size: var(--ac-text-sm);
+  line-height: 1.5;
+}
+
+/* ---- homepage photo tiles (hover-reveal overlay) — mockup .tiles / .tile ---- */
+.ac-tiles {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.ac-tile {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--ac-color-line);
+  border-radius: var(--ac-radius-card);
+  background: #fff;
+  box-shadow: var(--ac-shadow-card);
+  text-decoration: none;
+}
+
+.ac-tile__img {
+  display: flex;
+  height: 186px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 24px), 50% 100%, 0 calc(100% - 24px));
+  background: var(--ac-color-line);
+  color: var(--ac-color-ink-400);
+  font-family: var(--ac-font-sans);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ac-tile__bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--ac-color-line);
+  padding: 15px 18px;
+  gap: 10px;
+}
+
+.ac-tile__bar b {
+  color: var(--ac-color-ink-900);
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.ac-tile__bar i {
+  color: var(--ac-color-blue-500);
+  font-style: normal;
+  font-weight: 700;
+  transition: transform 0.16s ease;
+}
+
+.ac-tile__over {
+  position: absolute;
+  display: flex;
+  inset: 0;
+  flex-direction: column;
+  justify-content: flex-end;
+  background: rgb(18 40 64 / 94%);
+  padding: 24px 22px;
+  color: #fff;
+  opacity: 0;
+  transition: opacity 0.18s ease;
+}
+
+.ac-tile:hover .ac-tile__over,
+.ac-tile:focus-visible .ac-tile__over {
+  opacity: 1;
+}
+
+.ac-tile:hover .ac-tile__bar i {
+  transform: translateX(4px);
+}
+
+.ac-tile__over b {
+  display: block;
+  margin-bottom: 9px;
+  font-size: var(--ac-text-lead);
+  font-weight: 800;
+}
+
+.ac-tile__over p {
+  color: #b9c6d6;
+  font-size: var(--ac-text-sm);
+  line-height: 1.55;
+}
+
+.ac-tile__over span {
+  margin-top: 14px;
+  color: var(--ac-color-blue-500);
+  font-family: var(--ac-font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* ---- card grids ---- */
+.ac-cards,
+.ac-hubcards {
+  display: grid;
+  gap: 22px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.ac-card p {
+  color: var(--ac-color-ink-600);
+  font-size: 0.84375rem;
+  line-height: 1.55;
+}
+
+.ac-card__meta {
+  display: block;
+  margin-bottom: 10px;
+  color: var(--ac-color-ink-400);
+  font-family: var(--ac-font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ac-card__cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 18px;
+  background: var(--ac-color-navy-800);
+  padding: 14px 20px;
+  color: #fff;
+  font-size: var(--ac-text-sm);
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.ac-card__cta:hover {
+  background: #16294a;
+  color: #fff;
+}
+
+/* ---- saturated navy rounded field section — mockup .fieldwrap / .field ---- */
+.ac-fieldwrap {
+  padding: 0 0 68px;
+}
+
+.ac-field {
+  border-radius: 30px;
+  background: linear-gradient(135deg, #1c355e 0%, #122840 55%, #0d1e30 100%);
+  padding: 56px 48px 58px;
+  color: #fff;
+}
+
+.ac-field h2 {
+  color: #fff;
+}
+
+.ac-field__lede {
+  margin-top: 14px;
+  max-width: 58ch;
+  color: #a9bdd3;
+  font-size: var(--ac-text-body);
+  line-height: 1.6;
+}
+
+.ac-grid4 {
+  display: grid;
+  margin-top: 44px;
+  gap: 34px 38px;
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.ac-it {
+  display: grid;
+  gap: 13px;
+  grid-template-columns: 22px 1fr;
+}
+
+.ac-it svg {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  fill: none;
+  stroke: var(--ac-color-blue-500);
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ac-it h3 {
+  margin-bottom: 6px;
+  color: #fff;
+}
+
+.ac-it p {
+  color: #93a9c2;
+  font-size: var(--ac-text-sm);
+  line-height: 1.55;
+}
+
+/* ---- amber deadline band — owner ruling D1: keep as sole warm accent ---- */
+.ac-band {
+  background: var(--ac-color-amber);
+}
+
+.ac-band > .ac-shell {
+  display: flex;
+  min-height: 96px;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 28px;
+}
+
+.ac-band h3 {
+  color: #2a1d02;
+}
+
+.ac-band p {
+  margin-top: 7px;
+  color: #5c4308;
+  font-family: var(--ac-font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.ac-band a {
+  margin-left: auto;
+  background: var(--ac-color-navy-900);
+  padding: 15px 26px;
+  color: #fff;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-decoration: none;
+}
+
+.ac-band a:hover {
+  background: #0a1725;
+  color: #fff;
+}
+
+/* ---- stage rails — mockup .stages (5-up) and .steps4 (4-up) ---- */
+.ac-stages {
+  display: grid;
+  border-top: 2px solid var(--ac-color-navy-900);
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.ac-steps4 {
+  display: grid;
+  border-top: 2px solid var(--ac-color-navy-900);
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.ac-stage {
+  border-right: 1px solid var(--ac-color-line);
+  padding: 24px 22px 26px;
+}
+
+.ac-stage:last-child {
+  border-right: none;
+}
+
+.ac-stage b {
+  display: block;
+  color: var(--ac-color-steel-300);
+  font-family: var(--ac-font-sans);
+  font-size: 1.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ac-stage h3 {
+  margin: 12px 0 9px;
+}
+
+.ac-stage p {
+  color: var(--ac-color-ink-600);
+  font-size: var(--ac-text-sm);
+  line-height: 1.55;
+}
+
+.ac-stage em {
+  display: block;
+  border-top: 1px solid var(--ac-color-line);
+  margin-top: 14px;
+  padding-top: 10px;
+  color: var(--ac-color-navy-800);
+  font-family: var(--ac-font-sans);
+  font-size: 10px;
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* ---- overlay-card-on-photo-band — mockup .photoband/.rec and .ob/.ov ---- */
+.ac-photoband {
+  position: relative;
+  background: var(--ac-color-navy-900);
+}
+
+.ac-photoband__img {
+  display: flex;
+  height: 420px;
+  align-items: flex-end;
+  justify-content: flex-end;
+  background:
+    linear-gradient(
+      105deg,
+      rgb(18 40 64 / 90%) 0%,
+      rgb(18 40 64 / 35%) 60%,
+      rgb(18 40 64 / 14%) 100%
+    ),
+    #1b3350;
+}
+
+.ac-photoband__img--short {
+  height: 400px;
+}
+
+.ac-photoband__slot {
+  padding: 0 26px 18px;
+  color: rgb(255 255 255 / 32%);
+  font-family: var(--ac-font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  line-height: 1.7;
+  text-align: right;
+  text-transform: uppercase;
+}
+
+.ac-rec {
+  position: relative;
+  width: min(620px, 100%);
+  margin-top: -300px;
+  margin-bottom: 74px;
+  background: #fff;
+  box-shadow: 0 30px 70px -28px rgb(0 0 0 / 55%);
+}
+
+.ac-rec--narrow {
+  width: min(600px, 100%);
+  margin-top: -286px;
+  margin-bottom: 72px;
+}
+
+.ac-rec__b {
+  padding: 34px 36px 28px;
+}
+
+.ac-rec h2 {
+  margin-bottom: 14px;
+}
+
+.ac-rec__lede {
+  color: var(--ac-color-ink-600);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.ac-rec__meta {
+  display: flex;
+  flex-wrap: wrap;
+  border-top: 1px solid var(--ac-color-line);
+  margin-top: 20px;
+  padding-top: 18px;
+  gap: 22px;
+  color: var(--ac-color-ink-400);
+  font-family: var(--ac-font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ac-rec__meta b {
+  color: var(--ac-color-navy-800);
+  font-weight: 600;
+}
+
+.ac-rec__note {
+  border-top: 1px solid var(--ac-color-line);
+  background: #f4f6f9;
+  padding: 16px 36px 18px;
+  color: var(--ac-color-ink-600);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.ac-rec__cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--ac-color-navy-800);
+  padding: 18px 36px;
+  color: #fff;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.ac-rec__cta:hover {
+  background: #16294a;
+  color: #fff;
+}
+
+/* Record table — mockup bare `table`/`th`/`td`, scoped to a class so it cannot restyle the
+   Termly-controlled legal pages. */
+.ac-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.ac-table th {
+  border-bottom: 1px solid var(--ac-color-line);
+  padding: 0 0 9px;
+  color: var(--ac-color-ink-400);
+  font-family: var(--ac-font-sans);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+  text-align: left;
+  text-transform: uppercase;
+}
+
+.ac-table td {
+  border-bottom: 1px solid var(--ac-color-line);
+  padding: 11px 12px 11px 0;
+  font-size: 0.875rem;
+  vertical-align: top;
+}
+
+.ac-table td:first-child {
+  color: var(--ac-color-ink-900);
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ac-table td:last-child {
+  padding-right: 0;
+  color: var(--ac-color-ink-600);
+  font-size: var(--ac-text-sm);
+}
+
+/* ---- two-column layouts ---- */
+.ac-two {
+  display: grid;
+  align-items: start;
+  gap: 70px;
+  grid-template-columns: 1fr 1fr;
+}
+
+.ac-split {
+  display: grid;
+  align-items: start;
+  gap: 56px;
+  grid-template-columns: 1.05fr 0.95fr;
+}
+
+.ac-dual {
+  display: grid;
+  align-items: start;
+  gap: 56px;
+  grid-template-columns: 1.15fr 0.85fr;
+}
+
+/* Quote-variable list — mockup .deps */
+.ac-deps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.ac-deps li {
+  display: flex;
+  max-width: none;
+  border-bottom: 1px solid var(--ac-color-line);
+  padding: 13px 0;
+  gap: 14px;
+  font-size: 0.9375rem;
+}
+
+.ac-deps li:first-child {
+  border-top: 1px solid var(--ac-color-line);
+}
+
+.ac-deps b {
+  padding-top: 3px;
+  color: var(--ac-color-steel-300);
+  font-family: var(--ac-font-sans);
+  font-size: 11px;
+  font-weight: 700;
+}
+
+/* ---- screening / scope panels — mockup .fit, .panel ---- */
+.ac-fit {
+  border-bottom: 1px solid var(--ac-color-line);
+  background: var(--ac-color-warm-white);
+}
+
+.ac-fit > .ac-shell {
+  padding-block: 34px 36px;
+}
+
+.ac-fit h3 {
+  margin-bottom: 18px;
+  color: var(--ac-color-navy-800);
+}
+
+.ac-fit ul {
+  display: grid;
+  margin: 0;
+  padding: 0;
+  gap: 14px 32px;
+  grid-template-columns: repeat(4, 1fr);
+  list-style: none;
+}
+
+.ac-fit li {
+  display: grid;
+  max-width: none;
+  gap: 11px;
+  grid-template-columns: 16px 1fr;
+  color: var(--ac-color-ink-900);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.ac-fit svg {
+  width: 16px;
+  height: 16px;
+  margin-top: 4px;
+  fill: none;
+  stroke: var(--ac-color-status-green);
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ac-panel {
+  border: 1px solid var(--ac-color-line);
+}
+
+.ac-panel__h {
+  display: flex;
+  justify-content: space-between;
+  background: var(--ac-color-navy-800);
+  padding: 14px 22px;
+  gap: 14px;
+  color: #fff;
+  font-family: var(--ac-font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ac-panel__h span:last-child {
+  color: var(--ac-color-steel-300);
+}
+
+.ac-panel ul {
+  margin: 0;
+  padding: 6px 22px 18px;
+  list-style: none;
+}
+
+.ac-panel li {
+  display: grid;
+  max-width: none;
+  border-bottom: 1px solid var(--ac-color-line);
+  padding: 12px 0;
+  gap: 12px;
+  grid-template-columns: 16px 1fr;
+  font-size: 0.9375rem;
+  line-height: 1.5;
+}
+
+.ac-panel li:last-child {
+  border-bottom: none;
+}
+
+.ac-panel svg {
+  width: 16px;
+  height: 16px;
+  margin-top: 3px;
+  fill: none;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ac-panel--in svg {
+  stroke: var(--ac-color-status-green);
+}
+
+.ac-panel--out {
+  border-color: #ebd9d6;
+  background: #fdf7f6;
+}
+
+.ac-panel--out .ac-panel__h {
+  background: var(--ac-color-exclusion-red);
+}
+
+.ac-panel--out li {
+  border-bottom-color: #eedfdc;
+}
+
+.ac-panel--out svg {
+  stroke: #b5544a;
+}
+
+.ac-panel__f {
+  border-top: 1px solid var(--ac-color-line);
+  padding: 14px 22px 18px;
+  color: var(--ac-color-ink-600);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.ac-panel--out .ac-panel__f {
+  border-top-color: #eedfdc;
+}
+
+/* ---- related-service links — mockup .rel, .relcol ---- */
+.ac-rel {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.ac-rel a {
+  display: block;
+  border: 1px solid var(--ac-color-line);
+  padding: 20px 22px;
+  text-decoration: none;
+}
+
+.ac-rel a:hover {
+  border-color: var(--ac-color-navy-800);
+  background: var(--ac-color-warm-white);
+}
+
+.ac-rel b {
+  display: block;
+  margin-bottom: 6px;
+  color: var(--ac-color-ink-900);
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.ac-rel span {
+  color: var(--ac-color-blue-500);
+  font-family: var(--ac-font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ac-relcol a {
+  display: block;
+  border: 1px solid var(--ac-color-line);
+  margin-bottom: 12px;
+  padding: 17px 20px;
+  text-decoration: none;
+}
+
+.ac-relcol a:hover {
+  border-color: var(--ac-color-navy-800);
+  background: var(--ac-color-warm-white);
+}
+
+.ac-relcol b {
+  display: block;
+  color: var(--ac-color-ink-900);
+  font-size: 0.9375rem;
+  font-weight: 800;
+}
+
+.ac-relcol span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--ac-color-blue-500);
+  font-family: var(--ac-font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+/* Section rule-heading — mockup .hdr-lite */
+.ac-hdr-lite {
+  border-bottom: 2px solid var(--ac-color-navy-900);
+  margin-bottom: 0;
+  padding-bottom: 14px;
+  color: var(--ac-color-navy-800);
+}
+
+/* ---- FAQ — mockup .faq ---- */
+.ac-faq {
+  border-top: 2px solid var(--ac-color-navy-900);
+}
+
+.ac-faq details {
+  border-bottom: 1px solid var(--ac-color-line);
+}
+
+.ac-faq summary {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 0;
+  gap: 20px;
+  color: var(--ac-color-ink-900);
+  font-size: var(--ac-text-h3);
+  font-weight: 700;
+  list-style: none;
+  cursor: pointer;
+}
+
+.ac-faq summary::-webkit-details-marker {
+  display: none;
+}
+
+.ac-faq summary::after {
+  color: var(--ac-color-blue-500);
+  content: "+";
+  font-size: 1.25rem;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.ac-faq details[open] summary::after {
+  content: "–";
+}
+
+.ac-faq p {
+  max-width: 78ch;
+  padding: 0 0 20px;
+  color: var(--ac-color-ink-600);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+
+/* ---- navy form section + stepped form — mockup .formsec / .stepform / .rail ---- */
+.ac-formsec {
+  background: var(--ac-color-navy-900);
+  color: #fff;
+}
+
+.ac-formsec h2 {
+  color: #fff;
+}
+
+.ac-formsec__lede {
+  margin-top: 16px;
+  max-width: 44ch;
+  color: #a9bdd3;
+  font-size: var(--ac-text-lead);
+  line-height: 1.6;
+}
+
+.ac-callout {
+  border-left: 3px solid var(--ac-color-amber);
+  margin-top: 28px;
+  background: rgb(255 255 255 / 6%);
+  padding: 18px 20px;
+}
+
+.ac-callout b {
+  display: block;
+  margin-bottom: 5px;
+  color: #fff;
+  font-size: 0.9375rem;
+}
+
+.ac-callout span {
+  color: #a9bdd3;
+  font-size: var(--ac-text-sm);
+  line-height: 1.55;
+}
+
+.ac-stepform {
+  display: grid;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 18px 44px -20px rgb(0 0 0 / 45%);
+  color: var(--ac-color-ink-600);
+  grid-template-columns: 186px 1fr;
+}
+
+.ac-rail {
+  border-right: 1px solid var(--ac-color-line);
+  background: var(--ac-color-warm-white);
+  padding: 26px 0;
+}
+
+.ac-rail div {
+  display: grid;
+  align-items: center;
+  padding: 13px 20px;
+  gap: 12px;
+  grid-template-columns: auto 1fr;
+}
+
+.ac-rail b {
+  color: #c3cdd9;
+  font-family: var(--ac-font-sans);
+  font-size: var(--ac-text-rail-numeral);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.ac-rail span {
+  color: var(--ac-color-ink-400);
+  font-size: var(--ac-text-sm);
+  font-weight: 700;
+  line-height: 1.25;
+}
+
+.ac-rail div.on {
+  border-left: 3px solid var(--ac-color-navy-800);
+  background: #fff;
+  padding-left: 17px;
+}
+
+.ac-rail div.on b {
+  color: var(--ac-color-navy-800);
+}
+
+.ac-rail div.on span {
+  color: var(--ac-color-ink-900);
+}
+
+/* The form itself sits in the second track. Mockup `.stepform .form{padding:28px 30px 30px}`.
+   Targeted by element rather than by class so it applies to whichever form component is
+   dropped in (QuickHandoffForm on `/`, AssessmentForm on /request-assessment/) without either
+   needing to know it is inside a step card. */
+.ac-stepform > form {
+  padding: 28px 30px 30px;
+}
+
+/* Field labels inside a step card. Owner ruling 5 is explicit that pills are section labels
+   only and NEVER form labels, so this is the mockup's small-caps navy label, not a chip.
+   `:not()` keeps it off the consent control — see the note below. */
+.ac-stepform label:not(.quick-form__consent):not(.consent) {
+  color: var(--ac-color-navy-800);
+  font-family: var(--ac-font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+/* DELIBERATE DEVIATION FROM THE MOCKUP, reported rather than applied silently. In the mockups
+   the consent control is also a <label>, and `.form label{text-transform:uppercase}` reaches
+   it, so the mockup renders a full two-line consent sentence — including its Privacy Policy
+   link — in letter-spaced uppercase. That is a readability and accessibility failure (doc 27
+   §24), not a style choice, and it is the one place where the mockup's own cascade produced a
+   result its author is unlikely to have intended. The consent text stays sentence case. */
+.ac-stepform label.quick-form__consent,
+.ac-stepform label.consent {
+  color: var(--ac-color-ink-600);
+  font-size: 0.75rem;
+  font-weight: 400;
+  letter-spacing: normal;
+  line-height: 1.55;
+  text-transform: none;
+}
+
+.ac-stepform input[type="text"],
+.ac-stepform input[type="tel"],
+.ac-stepform input[type="email"],
+.ac-stepform select,
+.ac-stepform textarea {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 2px;
+  padding: 12px 13px;
+  color: var(--ac-color-ink-600);
+  font-family: inherit;
+  font-size: 0.9375rem;
+}
+
+.ac-stepform input:focus,
+.ac-stepform select:focus,
+.ac-stepform textarea:focus {
+  border-color: var(--ac-color-blue-500);
+  outline: 2px solid var(--ac-color-blue-500);
+  outline-offset: 1px;
+}
+
+.ac-stepform textarea {
+  min-height: 92px;
+  resize: vertical;
+}
+
+.ac-stepform button[type="submit"] {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+  margin-top: 18px;
+  background: var(--ac-color-navy-800);
+  padding: 16px;
+  color: #fff;
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.ac-stepform button[type="submit"]:hover {
+  background: #16294a;
+  transform: none;
+}
+
+/* ---- final CTA — mockup .final ---- */
+.ac-final {
+  background: var(--ac-color-navy-950);
+  color: #fff;
+  text-align: left;
+}
+
+.ac-final h2 {
+  color: #fff;
+}
+
+.ac-final p {
+  margin-top: 18px;
+  max-width: 52ch;
+  color: #a9bdd3;
+  font-size: var(--ac-text-lead);
+  line-height: 1.6;
+}
+
+/* ---- page bits: principles, bio, cities, contact boxes, note strip ---- */
+.ac-princ {
+  display: grid;
+  border-top: 2px solid var(--ac-color-navy-900);
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.ac-princ > div {
+  border-right: 1px solid var(--ac-color-line);
+  padding: 24px 26px 26px;
+}
+
+.ac-princ > div:last-child {
+  border-right: none;
+}
+
+.ac-princ h3 {
+  margin-bottom: 9px;
+}
+
+.ac-princ p {
+  color: var(--ac-color-ink-600);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.ac-bio {
+  display: grid;
+  align-items: start;
+  gap: 52px;
+  grid-template-columns: 0.8fr 1.2fr;
+}
+
+/* Flat gray image placeholder — PORT-PROMPT §5. Shared by .portrait / .bio__img slots. */
+.ac-portrait {
+  display: flex;
+  align-items: flex-end;
+  aspect-ratio: 4 / 5;
+  background: #e1e7ee;
+  padding: 16px;
+  color: var(--ac-color-ink-400);
+  font-family: var(--ac-font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  line-height: 1.7;
+  text-transform: uppercase;
+}
+
+.ac-creds {
+  display: grid;
+  margin: 24px 0 0;
+  padding: 0;
+  gap: 0;
+  list-style: none;
+}
+
+.ac-creds li {
+  display: grid;
+  max-width: none;
+  border-top: 1px solid var(--ac-color-line);
+  padding: 12px 0;
+  gap: 18px;
+  grid-template-columns: 132px 1fr;
+  font-size: 0.9375rem;
+}
+
+.ac-creds b {
+  padding-top: 3px;
+  color: var(--ac-color-navy-800);
+  font-family: var(--ac-font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ac-disc {
+  border-left: 2px solid var(--ac-color-steel-300);
+  margin-top: 22px;
+  padding-left: 14px;
+  color: var(--ac-color-ink-600);
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+.ac-citylist {
+  display: grid;
+  gap: 0 44px;
+  grid-template-columns: repeat(2, 1fr);
+}
+
+.ac-citylist > * {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--ac-color-line);
+  padding: 15px 0;
+  gap: 16px;
+  text-decoration: none;
+}
+
+.ac-citylist b {
+  color: var(--ac-color-ink-900);
+  font-size: var(--ac-text-h3);
+  font-weight: 800;
+}
+
+.ac-citylist span {
+  color: var(--ac-color-status-green);
+  font-family: var(--ac-font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.ac-citylist span.grey {
+  color: var(--ac-color-ink-400);
+}
+
+.ac-contactgrid {
+  display: grid;
+  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.ac-cbox {
+  border: 1px solid var(--ac-color-line);
+  padding: 24px 24px 26px;
+}
+
+.ac-cbox b {
+  display: block;
+  margin-bottom: 12px;
+  color: var(--ac-color-navy-800);
+  font-family: var(--ac-font-sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.ac-cbox strong {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--ac-color-ink-900);
+  font-size: 1.375rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.ac-cbox p {
+  color: var(--ac-color-ink-600);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+.ac-note-strip {
+  max-width: 76ch;
+  border-left: 3px solid var(--ac-color-blue-500);
+  background: var(--ac-color-warm-white);
+  padding: 20px 24px;
+  color: var(--ac-color-ink-600);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+/* Compact icon row — mockup .iconrow */
+.ac-iconrow {
+  display: grid;
+  border-top: 1px solid var(--ac-color-line);
+  border-left: 1px solid var(--ac-color-line);
+  grid-template-columns: repeat(5, 1fr);
+}
+
+.ac-iconrow > * {
+  display: flex;
+  align-items: center;
+  border-right: 1px solid var(--ac-color-line);
+  border-bottom: 1px solid var(--ac-color-line);
+  padding: 17px 18px;
+  gap: 11px;
+  color: var(--ac-color-ink-900);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.ac-iconrow a:hover {
+  background: var(--ac-color-warm-white);
+  color: var(--ac-color-navy-800);
+}
+
+.ac-iconrow svg {
+  width: 17px;
+  height: 17px;
+  flex: none;
+  fill: none;
+  stroke: var(--ac-color-blue-500);
+  stroke-width: 1.7;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Curved hero divider — homepage only, per PORT-PROMPT §3. */
+.ac-curve {
+  position: absolute;
+  z-index: 3;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  line-height: 0;
+  pointer-events: none;
+}
+
+.ac-curve svg {
+  display: block;
+  width: 100%;
+  height: 82px;
+}
+
+.ac-curve path {
+  fill: #fff;
+}
+
+/* ---- responsive — mockup breakpoints verbatim (1050px, 760px) ---- */
+@media (max-width: 1050px) {
+  .ac-cards,
+  .ac-hubcards,
+  .ac-grid4,
+  .ac-stages,
+  .ac-steps4,
+  .ac-tiles,
+  .ac-iconrow {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ac-stage {
+    border-bottom: 1px solid var(--ac-color-line);
+  }
+
+  .ac-fit ul {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ac-rel,
+  .ac-dual {
+    grid-template-columns: 1fr;
+  }
+
+  .ac-dual {
+    gap: 34px;
+  }
+
+  .ac-marks {
+    opacity: 0.35;
+  }
+
+  .ac-princ,
+  .ac-contactgrid {
+    grid-template-columns: 1fr;
+  }
+
+  .ac-princ > div {
+    border-right: none;
+    border-bottom: 1px solid var(--ac-color-line);
+  }
+
+  .ac-bio {
+    gap: 30px;
+    grid-template-columns: 1fr;
+  }
+
+  .ac-citylist {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 760px) {
+  .ac-sec {
+    padding-block: 60px;
+  }
+
+  .ac-cred > .ac-shell {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ac-cred > .ac-shell > div {
+    border-top: 1px solid var(--ac-color-line);
+    border-left: none;
+    padding: 18px 0;
+  }
+
+  .ac-cards,
+  .ac-hubcards,
+  .ac-grid4,
+  .ac-stages,
+  .ac-steps4,
+  .ac-tiles,
+  .ac-two,
+  .ac-split,
+  .ac-iconrow {
+    gap: 30px;
+    grid-template-columns: 1fr;
+  }
+
+  .ac-split {
+    gap: 26px;
+  }
+
+  .ac-field {
+    border-radius: 20px;
+    padding: 36px 22px 40px;
+  }
+
+  .ac-fit ul {
+    grid-template-columns: 1fr;
+  }
+
+  .ac-photoband__img {
+    height: 280px;
+  }
+
+  .ac-photoband__img--short {
+    height: 270px;
+  }
+
+  .ac-rec {
+    width: 100%;
+    margin-top: -140px;
+  }
+
+  .ac-rec--narrow {
+    margin-bottom: 48px;
+  }
+
+  .ac-rec__b {
+    padding: 26px 22px 22px;
+  }
+
+  .ac-rec__note,
+  .ac-rec__cta {
+    padding-right: 22px;
+    padding-left: 22px;
+  }
+
+  .ac-band > .ac-shell {
+    padding-block: 22px;
+  }
+
+  .ac-band a {
+    margin-left: 0;
+  }
+
+  .ac-creds li {
+    gap: 4px;
+    grid-template-columns: 1fr;
+  }
+
+  .ac-ph > .ac-shell {
+    padding-block: 44px;
+  }
+
+  .ac-curve svg {
+    height: 44px;
+  }
+
+  .ac-tile__over {
+    position: static;
+    background: var(--ac-color-navy-900);
+    padding: 18px;
+    opacity: 1;
+  }
+
+  .ac-tile__bar {
+    display: none;
+  }
+
+  .ac-stepform {
+    grid-template-columns: 1fr;
+  }
+
+  .ac-rail {
+    display: flex;
+    overflow-x: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--ac-color-line);
+    padding: 12px 0;
+  }
+
+  .ac-rail div {
+    padding: 8px 16px;
+    white-space: nowrap;
+  }
+
+  .ac-rail div.on {
+    border-bottom: 3px solid var(--ac-color-navy-800);
+    border-left: none;
+  }
+
+  .ac-marks {
+    display: none;
+  }
+
+  .ac-cut,
+  .ac-cut-l {
+    clip-path: none;
   }
 }

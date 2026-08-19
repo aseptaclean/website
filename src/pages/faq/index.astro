@@ -8,7 +8,7 @@
 // objection-handling pass doc 27 §9.12 specifies, this is the fuller §17.4 set. Both are doc 27
 // copy. If they ever need to converge, doc 27 is the place to reconcile them, not the components.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import CompactHero from "@components/CompactHero.astro";
+import PageHeader from "@components/PageHeader.astro";
 import ServiceFAQ from "@components/ServiceFAQ.astro";
 import RequestForm from "@components/RequestForm.astro";
 import { faqPage } from "@data/doc27CompanyPages";
@@ -44,10 +44,13 @@ const schema = [
   canonicalPath={faqPage.slug}
   schema={schema}
 >
-  <CompactHero eyebrow={faqPage.eyebrow} headingId="faq-page-title">
-    <h1 id="faq-page-title" class="ac-type-h1">{faqPage.h1}</h1>
-    <p class="compact-hero__lead">{faqPage.lead}</p>
-  </CompactHero>
+  <PageHeader
+    headingId="faq-page-title"
+    eyebrow={faqPage.eyebrow}
+    h1={faqPage.h1}
+    lede={faqPage.lead}
+    crumb="FAQ"
+  />
 
   <ServiceFAQ
     heading="Questions we answer before scheduling"

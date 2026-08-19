@@ -379,3 +379,58 @@ export const hubClose = {
   heading: "We define the work before we schedule it.",
   body: "Photos can start the review. Larger, heavier or more complicated properties may require a walkthrough before a firm quote."
 } as const;
+
+// doc 27 §11 "Shared four-step process" — verbatim. Added 2026-08-18 for the visual port: the
+// hub and service-page mockups both render this as the four-up grid inside the navy field
+// section, and it had no data home. Icons are the mockups' own .it svg paths.
+export const sharedFourStep = [
+  {
+    title: "01 — Initial review",
+    detail: "Send the city, approximate size, condition, deadline and clear photos.",
+    icon:
+      '<rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="12.5" r="3.2"/>'
+  },
+  {
+    title: "02 — Walkthrough if needed",
+    detail: "Complex access, contents or conditions are checked before a firm quote.",
+    icon:
+      '<path d="M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>'
+  },
+  {
+    title: "03 — Written scope",
+    detail: "Price, inclusions, exclusions and assumptions are approved before scheduling.",
+    icon:
+      '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6"/>'
+  },
+  {
+    title: "04 — Completion",
+    detail: "The work is performed against the agreed scope and priorities.",
+    icon: '<circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/>'
+  }
+] as const;
+
+// §9.15.1's "Navigation dropdown one-liners", keyed by service-page slug so the hub card grid
+// can print a one-line descriptor under each card title.
+//
+// SLOT REASSIGNMENT, flagged deliberately: §9.15.1 approved these strings for the nav
+// dropdown, and the hub mockup's card blurbs ("Kitchens, bathrooms, fixtures, edges and the
+// areas that are usually skipped.") are mockup-only — they appear in neither §9.15 nor doc 27,
+// whose §10 lists card TITLES only. PORT-PROMPT §1 forbids writing copy for an unfilled slot,
+// so rather than invent a blurb this reuses an already-approved string describing the same
+// service. Reported for owner confirmation; swap here if §10 gains real card copy.
+export const serviceOneLiners: Record<string, string> = {
+  "/deep-cleaning-san-jose/": "Kitchens, baths, fixtures, and the edges that get skipped",
+  "/move-out-cleaning-san-jose/": "Vacant turnover, keys-and-photos ready",
+  "/post-construction-cleaning-san-jose/": "Settled dust once the trades are out",
+  "/window-cleaning-san-jose/": "Glass, tracks, and frames within safe reach",
+  "/extreme-cleaning-san-jose/": "Severely neglected property, reviewed first",
+  "/animal-waste-cleanup-san-jose/": "After the animals are gone",
+  "/rodent-dropping-cleanup-san-jose/": "Contained interior areas",
+  "/pigeon-dropping-cleanup-san-jose/": "Accessible exterior surfaces",
+  "/property-cleanouts-san-jose/": "Full-contents clearing under one scope",
+  "/hoarding-cleanup-san-jose/": "Sorted, approved, documented",
+  "/estate-cleanout-san-jose/": "Heirs, executors, real deadlines",
+  "/debris-removal-san-jose/": "Approved, lawful disposal",
+  "/eviction-cleanout-san-jose/": "Turnover on a clock",
+  "/commercial-cleaning-san-jose/": "Project and recurring programs"
+};

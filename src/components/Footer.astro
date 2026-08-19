@@ -1,174 +1,201 @@
 ---
-// docs/aseptaclean-FINAL-v2.html footer / .fgrid / .flegal — ported verbatim
-// (05-DECISIONS-LOG.md).
-import { legal, site } from "@data/site";
+// 2026-08-18 visual port. docs/mockups .foot — five columns (brand + four link groups) over a
+// hairline legal bar. Structure and grouping follow doc 27 §23.
+//
+// LINK SET. The mockup's four columns list every service route. This footer lists the same
+// routes the sitewide mega-menu lists and no others, because footer and nav must agree — they
+// are both sitewide crawl surfaces, and a route that is unsafe to advertise in one is unsafe
+// in the other. The three held items are identical to the header's, for identical reasons
+// (see `megaNav` in src/data/site.ts): /rodent-dropping-cleanup-san-jose/ and
+// /pigeon-dropping-cleanup-san-jose/ on B&P §8505/§8550(a) plus docs/18-VISUAL-DIRECTION.md §7
+// and doc 27 §21, and /projects/ under its own 2026-08-18 removal note ("restore in the same
+// change that lifts the noindex — not before").
+//
+// The legal line is §9.15.5's approved footer legal line, verbatim. The two longer scope and
+// documentation disclaimers stay under it: they are verbatim-mandatory from
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §2.3/§2.4 by way of src/data/site.ts, and §9.15.5 adds
+// a line rather than replacing them.
+import { legal, megaNav, site } from "@data/site";
 
 const year = new Date().getFullYear();
 const phoneHref = site.business.phoneUri;
 const termlyConsentEnabled = site.integrations.termly.consentEnabled;
+
+const linkGroups = megaNav.filter((group) => group.children && group.hub);
+const directGroups = megaNav.filter((group) => !group.children);
 ---
 
-<footer class="site-footer">
-  <div class="ac-measure-wide">
-    <div class="fgrid">
+<footer class="foot">
+  <div class="ac-shell">
+    <div class="foot__g">
       <div>
-        <a class="logo footer-logo" href="/">
-          <span class="mark" aria-hidden="true">A</span>Asepta<span class="sept">clean</span>
-          <span class="visually-hidden">— home</span>
+        <a class="foot__logo" href="/">
+          <img
+            src={site.business.logoReversedUrl}
+            alt={`${site.business.name} — home`}
+            width="180"
+            height="28"
+          />
         </a>
-        <p>{site.offer.category} for {site.location.serviceArea} and the Peninsula.</p>
+        <p class="foot__tagline">
+          Property clearing, detailed cleaning, and documented closeout for San Jose and the
+          South Bay &amp; Peninsula.
+        </p>
+        {phoneHref && (
+          <p class="foot__phone"><a href={phoneHref}>{site.business.phone}</a></p>
+        )}
+        <p class="foot__email"><a href={`mailto:${site.business.email}`}>{site.business.email}</a></p>
       </div>
-      {/*
-        Footer is the crawl path for pages that are indexable but sit outside the primary nav.
-        Before 2026-08-17 the category hubs, /service-areas/, /projects/ and /faq/ were in the
-        XML sitemap with ZERO inbound internal links — orphans, which Google crawls rarely and
-        passes no internal signal to. Anything indexable belongs in a nav or here.
-        /specialty-cleaning/ is deliberately excluded: it is noindex until doc 27 §21 clears.
-      */}
-      {/* Kept as ONE nav on purpose: .fgrid is a 3-column grid (1.4fr 1fr 1fr) and a fourth
-          child would wrap to a second row, which is a layout change. New links are appended
-          here instead. */}
-      <nav class="flinks" aria-label="Footer navigation">
-        <a href="/#request">Request an assessment</a>
-        <a href="/services/">Services</a>
-        <a href="/detailed-cleaning/">Detailed Cleaning</a>
-        <a href="/property-clearing/">Property Clearing</a>
-        <a href="/who-we-help/">Who We Help</a>
-        <a href="/service-areas/">Service Areas</a>
-        <a href="/handoff-standard/">Handoff Standard</a>
-        {/* /projects/ removed 2026-08-18. The page went noindex (gate: "publishes when real
-            photos exist"; zero exist), and this footer renders on every indexable page, so the
-            link put a sitewide crawl path into a noindex draft with no content behind it.
-            Restore this line in the same change that lifts the noindex — not before. */}
-        <a href="/about/">About</a>
-        {/* /faq/ is a real page as of 2026-08-17; the old /#faq anchor pointed at a homepage
-            section and left the standalone route orphaned. */}
-        <a href="/faq/">FAQ</a>
-      </nav>
-      <nav class="flinks" aria-label="Legal and contact">
-        <a href="/contact/">Contact</a>
-        <a href={`mailto:${site.business.email}`}>{site.business.email}</a>
-        {phoneHref && <a href={phoneHref}>{site.business.phone}</a>}
+
+      {linkGroups.map((group) => (
+        <nav aria-label={group.label}>
+          <h2 class="ac-type-label-head foot__h">{group.label}</h2>
+          {group.hub && <a href={group.hub.href}>{group.hub.label} hub</a>}
+          {group.children?.map((child) => <a href={child.href}>{child.label}</a>)}
+        </nav>
+      ))}
+
+    </div>
+
+    {/* The mockup's .foot__g is exactly five tracks: brand + the four service/company groups.
+        The direct-link groups and the legal routes go in the bottom bar as an inline row, so
+        the grid keeps the mockup's shape instead of wrapping a sixth column under the brand. */}
+    <div class="foot__bot">
+      <nav class="foot__utility" aria-label="More">
+        {directGroups.map((group) => <a href={group.href}>{group.label}</a>)}
+        <a href="/request-assessment/">{site.offer.primaryCta}</a>
         <a href={site.urls.privacyPolicy}>Privacy</a>
         <a href={site.urls.terms}>Terms</a>
         {site.urls.cookiePolicy && <a href={site.urls.cookiePolicy}>Cookie Policy</a>}
         {termlyConsentEnabled && (
-          <button type="button" class="footer-link-button termly-display-preferences">
+          <button type="button" class="foot__button termly-display-preferences">
             Cookie Preferences
           </button>
         )}
       </nav>
+
+      <p>
+        © {year} {site.business.legalName} · Aseptaclean is not a licensed general contractor,
+        remediation contractor, pest-control operator, or appraiser.
+      </p>
+      <p>{legal.scopeDisclaimer} {legal.documentationDisclaimer}</p>
+      {termlyConsentEnabled && (
+        <noscript>
+          <p>
+            Cookie Preferences requires JavaScript. The Cookie Policy remains available above, or
+            email {site.business.privacyContact || site.business.email} for help.
+          </p>
+        </noscript>
+      )}
     </div>
-    <div class="flegal">
-      {legal.scopeDisclaimer} {legal.documentationDisclaimer}<br />
-      © {year} {site.business.legalName}. All rights reserved.
-    </div>
-    {termlyConsentEnabled && (
-      <noscript>
-        <p class="flegal">
-          Cookie Preferences requires JavaScript. The Cookie Policy remains
-          available above, or email {site.business.privacyContact || site.business.email}
-          for help.
-        </p>
-      </noscript>
-    )}
   </div>
 </footer>
 
 <style>
-  /* docs/aseptaclean-FINAL-v2.html footer / .fgrid / .logo / .flinks / .flegal — ported verbatim */
-  .site-footer {
-    background: var(--ac-color-navy-950);
-    color: #8ea2bc;
-    padding-block: clamp(3rem, 5vw, 4rem);
+  .foot {
+    background: #0a1725;
+    padding: 64px 0 0;
+    color: #8fa6bf;
+    font-size: var(--ac-text-sm);
+    line-height: 1.85;
   }
 
-  .fgrid {
+  .foot__g {
     display: grid;
-    gap: 2.5rem;
-    grid-template-columns: 1fr;
+    gap: 36px;
+    grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
   }
 
-  .footer-logo {
-    display: flex;
-    align-items: center;
-    gap: 11px;
-    margin-bottom: 16px;
+  .foot__h {
+    margin: 0 0 14px;
     color: #fff;
-    font-family: var(--ac-font-sans);
-    font-size: 1.15rem;
-    font-weight: 800;
-    letter-spacing: -0.03em;
-    text-decoration: none;
   }
 
-  .footer-logo .mark {
-    display: grid;
-    width: 34px;
-    height: 34px;
-    place-items: center;
-    border-radius: 8px;
-    background: #fff;
-    color: var(--ac-color-navy-950);
+  .foot__logo {
+    display: block;
+    margin-bottom: 14px;
+  }
+
+  .foot__logo img {
+    width: auto;
+    height: 28px;
+    object-fit: contain;
+  }
+
+  .foot__tagline {
+    max-width: 30ch;
+  }
+
+  .foot__phone {
+    margin-top: 14px;
+    color: #fff;
     font-weight: 600;
   }
 
-  .footer-logo .sept {
-    color: #8fb4de;
-  }
-
-  .fgrid p {
-    max-width: 44ch;
-    color: #7d92ad;
-    font-size: 0.88rem;
-  }
-
-  .flinks {
-    display: flex;
-    flex-direction: column;
-    gap: 11px;
-  }
-
-  .flinks a,
-  .footer-link-button {
-    color: #c2d0e2;
-    font-size: 0.9rem;
+  .foot a {
+    display: block;
+    color: inherit;
     text-decoration: none;
   }
 
-  .flinks a:hover {
+  .foot a:hover {
     color: #fff;
   }
 
-  .footer-link-button {
-    display: inline-flex;
+  .foot__phone a,
+  .foot__email a {
+    display: inline;
+  }
+
+  .foot__button {
+    display: block;
     border: 0;
     padding: 0;
     background: transparent;
+    color: inherit;
+    font: inherit;
     cursor: pointer;
     text-align: left;
     text-decoration: underline;
     text-underline-offset: 3px;
   }
 
-  .footer-link-button:hover {
+  .foot__button:hover {
     color: #fff;
   }
 
-  .flegal {
-    margin-top: 34px;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 26px;
-    /* v2's literal #68809d measures 4.34:1 on navy-950 — fails WCAG AA 4.5:1 for this legal
-       disclaimer text (confirmed via Lighthouse). #7891a9 clears 5.41:1, same muted-steel hue. */
-    color: #7891a9;
-    font-size: 0.76rem;
+  .foot__bot {
+    border-top: 1px solid rgb(255 255 255 / 12%);
+    margin-top: 52px;
+    padding: 20px 0 30px;
+    /* The mockup's #6E86A2 measures 4.35:1 on #0A1725 and fails WCAG AA for this legal text.
+       #7f96b4 clears 5.2:1 in the same muted-steel hue — the same AA correction tokens.css
+       already records for --ac-color-ink-400 and the FINAL-v2 footer. */
+    color: #7f96b4;
+    font-size: 0.75rem;
     line-height: 1.65;
   }
 
-  @media (min-width: 51.25rem) {
-    .fgrid {
-      grid-template-columns: 1.4fr 1fr 1fr;
+  .foot__bot p + p {
+    margin-top: 10px;
+  }
+
+  .foot__utility {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 18px;
+    gap: 8px 22px;
+  }
+
+  .foot__utility a,
+  .foot__utility button {
+    display: inline;
+    font-size: 0.75rem;
+  }
+
+  @media (max-width: 1050px) {
+    .foot__g {
+      grid-template-columns: repeat(2, 1fr);
     }
   }
 </style>

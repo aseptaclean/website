@@ -1,4 +1,9 @@
 ---
+// 2026-08-18 visual port. docs/mockups/template-legal.html — the .pgh band header supplies the
+// H1 and lede (rendered by each route via PageHeader.astro), and the document body sits in the
+// mockup's narrow 820px shell. The mockup is explicit that "no connective copy is added to
+// legal pages": nothing here writes legal language, and the Termly embed stays the only source
+// of the policy text.
 import { site } from "@data/site";
 
 interface Props {
@@ -13,16 +18,7 @@ const contactEmail = site.business.privacyContact || site.business.email;
 const hasProviderPolicy = Boolean(policyId || hostedUrl);
 ---
 
-<article class="legal-policy">
-  <header class="legal-policy__header">
-    <p class="ac-type-xs">Legal record · Managed by Termly</p>
-    <h1 class="ac-type-h1">{title}</h1>
-    <p class="ac-type-lead">
-      This page is an integration surface for Aseptaclean’s
-      provider-controlled {label.toLowerCase()}. Aseptaclean does not replace
-      the provider’s published policy with locally drafted legal text.
-    </p>
-  </header>
+<article class="legal-policy ac-shell">
 
   {policyId ? (
     <section class="legal-policy__document" aria-label={`${label} document`}>

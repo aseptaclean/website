@@ -1,21 +1,45 @@
 ---
-// docs/aseptaclean-FINAL-v2.html FORM section — ported verbatim (05-DECISIONS-LOG.md).
-// Presentation-only port: wires into the existing QuickHandoffForm (lead endpoint, Turnstile
-// consent, honeypot) rather than the static markup shown in the mockup.
+// 2026-08-18 visual port. docs/mockups .formsec + .stepform — navy band, copy column left,
+// white 8px-radius form card right. Presentation-only: it still wires the existing
+// QuickHandoffForm (lead endpoint, Turnstile, consent, honeypot). PORT-PROMPT §4 — the
+// endpoint and its plumbing are untouched.
+//
+// Copy: doc 27 §9.13 eyebrow, H2 and body — the body carries §9.15.2 amendment 3, which
+// replaces "Include the city, approximate size, current condition and deadline." with the
+// phone-photos sentence. The callout is §9.15.1's Form callout heading and body, which
+// supersede the mockup's own "Need the full intake instead?" wording.
+//
+// NO 01/02/03 RAIL HERE, deliberately. PORT-PROMPT §3 asks for the stepped rail "on every form
+// instance", and the mockup draws one with the labels "Your details / The property / Photos &
+// deadline". Those three strings exist only in the mockup — not in §9.15, not in doc 27 — and
+// §1 forbids writing copy to fill a slot. They would also misdescribe this form, which doc 27
+// §18 defines as a single four-field compact form, not a three-step one. The white 8px card
+// ships; the rail ships on /request-assessment/, where the three step labels are real,
+// already-approved copy in src/data/assessment.ts. Reported as an unfilled slot, not written.
 import QuickHandoffForm from "@components/QuickHandoffForm.astro";
 ---
 
-<section id="request" aria-labelledby="request-title">
-  <div class="ac-measure-wide request__shell">
-    <div>
-      <p class="ac-eyebrow">Request an assessment</p>
-      <h2 id="request-title" class="ac-type-h2 request__title">Tell us about the property.</h2>
-      <p class="request__intro">Include the city, approximate size, current condition and deadline. You can text property photos after submitting the form.</p>
-      <p class="request__note">No vague promise that every property is the same. No pressure to authorize work before the scope is clear.</p>
-    </div>
-    <div class="request__panel">
-      <div class="panel-head"><span>Assessment request</span><span class="id">1 business day</span></div>
-      <div class="request__panel-body">
+<section class="ac-sec ac-formsec" id="request" aria-labelledby="request-title">
+  <div class="ac-shell">
+    <div class="ac-two request__two">
+      <div>
+        <p class="ac-label ac-label--on-dark">Request an assessment</p>
+        <h2 id="request-title" class="ac-type-h2">Tell us about the property.</h2>
+        <p class="ac-formsec__lede">
+          Tell us the city, roughly how big it is, what shape it&rsquo;s in, and when it has to be
+          done. Two or three phone photos are more useful than a long description.
+        </p>
+
+        <div class="ac-callout">
+          <b>Have a bigger or more complicated property?</b>
+          <span>
+            The full assessment form captures access, decision authority, deadline, and disposal
+            detail — useful when more than one person is involved in the decision.
+          </span>
+        </div>
+      </div>
+
+      <div class="ac-stepform request__card">
         <QuickHandoffForm formId="request-quick-form" entryRoute="/#request" />
       </div>
     </div>
@@ -23,45 +47,13 @@ import QuickHandoffForm from "@components/QuickHandoffForm.astro";
 </section>
 
 <style>
-  .request__shell {
-    display: grid;
+  .request__two {
+    align-items: start;
+    gap: 60px;
+  }
+
+  /* Single-column .ac-stepform: no rail track, so the form card fills the whole grid. */
+  .request__card {
     grid-template-columns: 1fr;
-    align-items: center;
-    gap: clamp(2.5rem, 5vw, 4rem);
-  }
-
-  .request__title {
-    margin-bottom: 16px;
-    line-height: 1.08;
-  }
-
-  .request__intro {
-    max-width: 48ch;
-    margin-bottom: 18px;
-    color: var(--ac-color-ink-600);
-    font-size: 0.95rem;
-  }
-
-  .request__note {
-    max-width: 48ch;
-    color: var(--ac-color-ink-400);
-    font-size: 0.85rem;
-  }
-
-  .request__panel {
-    overflow: hidden;
-    border-radius: var(--ac-r);
-    background: #fff;
-    box-shadow: var(--ac-shadow-card);
-  }
-
-  .request__panel-body {
-    padding: 26px 24px;
-  }
-
-  @media (min-width: 56.25rem) {
-    .request__shell {
-      grid-template-columns: 1fr 1fr;
-    }
   }
 </style>

@@ -1,109 +1,67 @@
 ---
-// docs/aseptaclean-FINAL-v2.html WHY section — ported verbatim, including copy
-// (05-DECISIONS-LOG.md supersedes docs/06-APPROVED-HOMEPAGE-COPY.md for this section).
-const icons: Record<string, string> = {
-  "One accountable company": "M12 3l7 3v6c0 5-3 8-7 9-4-1-7-4-7-9V6l7-3z M9 12l2 2 4-4",
-  "Written scope":
-    "M7 3h7l4 4v14H7z M14 3v4h4 M9 12h6 M9 15h6 M9 9h2",
-  "Approval controls": "M12 21a9 9 0 100-18 9 9 0 000 18z M8 12l3 3 5-6",
-  "Documented closeout": "M4 8h3l2-2h6l2 2h3v11H4z M12 13.5m-3.5 0a3.5 3.5 0 107 0 3.5 3.5 0 10-7 0"
-};
-
+// 2026-08-18 visual port. docs/mockups .fieldwrap / .field / .grid4 / .it — the saturated navy
+// rounded field section with a 4-up icon grid.
+//
+// The 4-up grid is KEPT. §9.15.3 D2 recommended replacing it with a single statement; owner
+// RESCINDED D2 on 2026-08-18 and ruled the mockup's .grid4 stays. The blacklist citation
+// behind D2 was inaccurate anyway — docs/01-QUALITY-GUARDRAILS.md §5.2 forbids that pattern
+// "repeated 6–12 times", and this is ×4. Mockup is pixel authority. See 05-DECISIONS-LOG.md.
+//
+// Copy: doc 27 §9.6 (eyebrow, H2, four items) plus §9.15.1's Why-field lede. The Approval
+// controls item carries §9.15.2 amendment 1, which replaces "Uncertain items are held for
+// review." with the labeled-clear-bag sentence — an approved amendment to doc 27, not a
+// conflict with it, so the §9.15.2 wording governs.
 const items = [
   {
     title: "One accountable company",
-    detail:
-      "Clearing, cleaning and closeout documentation stay under one written scope."
+    detail: "Clearing, cleaning and closeout documentation stay under one written scope.",
+    icon: '<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M9 14h6"/>'
   },
   {
     title: "Written scope",
     detail:
-      "What stays, what leaves, what gets cleaned and what is excluded are written down first."
+      "What stays, what leaves, what gets cleaned and what is excluded are written down first.",
+    icon:
+      '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 16h4"/>'
   },
   {
     title: "Approval controls",
     detail:
-      "Uncertain items are held for review. Added work requires documented authorization."
+      "Anything we’re not sure about goes into a labeled clear bag and waits for your decision. Added work requires documented authorization.",
+    icon:
+      '<path d="M12 3 5 6v6c0 4.2 2.9 7.9 7 9 4.1-1.1 7-4.8 7-9V6z"/><path d="m9.5 12 1.8 1.8 3.4-3.4"/>'
   },
   {
     title: "Documented closeout",
-    detail:
-      "Completion photographs and noted exceptions show how the approved scope closed."
+    detail: "Completion photographs and noted exceptions show how the approved scope closed.",
+    icon:
+      '<rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="12" cy="12.5" r="3.2"/><path d="M8 6l1.4-2h5.2L16 6"/>'
   }
 ] as const;
 ---
 
-<section class="why-aseptaclean" aria-labelledby="why-aseptaclean-title">
-  <div class="ac-measure-wide">
-    <p class="ac-eyebrow">Why Aseptaclean</p>
-    <h2 id="why-aseptaclean-title" class="ac-type-h2">The difference is what happens before and after the work itself</h2>
+<div class="ac-fieldwrap">
+  <div class="ac-shell">
+    <div class="ac-field" aria-labelledby="why-aseptaclean-title">
+      <span class="ac-chip">Why Aseptaclean</span>
+      <h2 id="why-aseptaclean-title" class="ac-type-h2-field">
+        The difference is what happens before and after the work itself.
+      </h2>
+      <p class="ac-field__lede">
+        Most of what goes wrong on these projects gets decided before anyone picks anything up.
+      </p>
 
-    <div class="why-grid">
-      {
-        items.map((item) => (
-          <div class="why">
-            <span class="ac-icon-chip" aria-hidden="true">
-              <svg viewBox="0 0 24 24">
-                <path d={icons[item.title]} />
-              </svg>
-            </span>
-            <h3 class="ac-type-h3">{item.title}</h3>
-            <p class="ac-type-body">{item.detail}</p>
+      <div class="ac-grid4">
+        {items.map((item) => (
+          <div class="ac-it">
+            <svg viewBox="0 0 24 24" aria-hidden="true" set:html={item.icon} />
+            <div>
+              <h3 class="ac-type-h3-card">{item.title}</h3>
+              <p>{item.detail}</p>
+            </div>
           </div>
-        ))
-      }
+        ))}
+      </div>
     </div>
   </div>
-</section>
-
-<style>
-  /* docs/aseptaclean-FINAL-v2.html .why-grid / .why — ported verbatim */
-  .why-aseptaclean {
-    background: var(--ac-color-paper);
-  }
-
-  h2 {
-    max-width: 24ch;
-    margin-top: var(--ac-space-3);
-  }
-
-  .why-grid {
-    display: grid;
-    gap: var(--ac-s3);
-    margin-top: var(--ac-s5);
-  }
-
-  .why {
-    border: 1px solid var(--ac-color-line);
-    border-radius: var(--ac-r);
-    background: #fff;
-    padding: 28px 24px;
-    transition: 0.2s;
-  }
-
-  .why:hover {
-    border-color: var(--ac-color-blue-500);
-    box-shadow: var(--ac-shadow-card);
-  }
-
-  .why h3 {
-    margin-bottom: 8px;
-  }
-
-  .why p {
-    max-width: none;
-    color: var(--ac-color-ink-600);
-  }
-
-  @media (min-width: 56.25rem) {
-    .why-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-  }
-
-  @media (min-width: 60rem) {
-    .why-grid {
-      grid-template-columns: repeat(4, 1fr);
-    }
-  }
-</style>
+</div>

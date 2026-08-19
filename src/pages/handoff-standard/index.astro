@@ -16,7 +16,7 @@
 // /handoff-standard/ URL ("Company | /handoff-standard/ (= Process)"), so the route is
 // unchanged and no redirect is needed. Layout below is unchanged.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import CompactHero from "@components/CompactHero.astro";
+import PageHeader from "@components/PageHeader.astro";
 import RequestForm from "@components/RequestForm.astro";
 import { processPage } from "@data/doc27CompanyPages";
 import { homepage, legal, site } from "@data/site";
@@ -145,10 +145,13 @@ const schema = [
   canonicalPath={processPage.slug}
   schema={schema}
 >
-  <CompactHero eyebrow={processPage.eyebrow} headingId="standard-title">
-    <h1 id="standard-title" class="ac-type-h1">{processPage.h1}</h1>
-    <p class="compact-hero__lead">{processPage.lead}</p>
-  </CompactHero>
+  <PageHeader
+    headingId="standard-title"
+    eyebrow={processPage.eyebrow}
+    h1={processPage.h1}
+    lede={processPage.lead}
+    crumb="The Handoff Standard"
+  />
 
   <section class="standard-stages" aria-labelledby="stages-title">
     <div class="ac-measure-wide">

@@ -3656,3 +3656,195 @@ the service template, the sweep bands, the overlay-card-on-photo-band, the navy 
 the stepped form rail and the curved homepage divider are all unported. **Gate 6 (copy trace)
 was not run** — it is downstream of the three blockers above, since the strings it would trace
 are the ones those blockers govern. Nothing here was reported done because it compiles.
+
+## Visual port session 3 — port executed across all 36 routes (2026-08-18)
+
+Owner ruled on all six outstanding conflicts and directed full execution. The port below the
+token/card layer is now done: shared shell, homepage, hub template, service template, company
+pages, legal shell, footer and mobile bar.
+
+> 2026-08-18 — Owner approved the PDF-derived visual direction (12 mockups in docs/mockups/)
+> as port target, superseding aseptaclean-FINAL-v2.html. Doc 27 §9.15 adopted as connective
+> copy canon with humanization amendments 1–6. Rulings D1–D5 per §9.15.3. Doc 27 §18 endpoint
+> corrected to /api/lead. Doc 27 §30 re-armed against the new direction: no further redesign
+> before conversion and proof data.
+
+### 1. The six owner rulings, and where each landed
+
+1. **Doc 27 = `docs/27-COPY-CANONICAL.md`, committed state only.** Read at `db1b5c5`. The §9.4
+   DOES NOT SHIP annotation is present in that state and was honoured — see §3 below.
+2. **`page-process.html` → `/handoff-standard/`.** Applied; no `/process/` route created.
+3. **No new routes. Three hubs; Commercial a direct nav/drawer link to
+   `/commercial-cleaning-san-jose/`.** Applied. `ServiceHub.astro` serves the three hubs;
+   Commercial renders through `ServicePageLayout` as one of the 14 service routes and appears
+   in nav and footer as a plain link with no panel. Service Areas is likewise a direct link —
+   doc 27 §8 lists five per-city anchors but `/service-areas/{city}/` routes do not exist and
+   the same ruling forbids creating them.
+4. **D2 rescinded — homepage 4-up icon grid kept.** `WhyAseptaclean.astro` renders the mockup's
+   `.grid4` unchanged. Recorded here as directed: D2's blacklist citation was inaccurate to
+   begin with — doc 01 §5.2 forbids that pattern "repeated 6–12 times", and this is ×4.
+5. **Pill section labels ratified as an explicit visual-direction override of doc 01**, scoped
+   hard: pills are section labels only — never form labels, badges, or list markers. Recorded
+   as directed. Implemented as `.ac-label`/`.ac-eyebrow`. Enforcing the scope removed three
+   pre-existing breaches this session: the homepage areas list and the contact-page city list
+   were pill LIST MARKERS (both now the mockup's `.ac-iconrow`), and `Card.astro`'s
+   `.ac-card__pill` badge left the build with the homepage tile port. The hero status column
+   and form field labels use `.ac-tag` and a small-caps label respectively, not pills.
+6. **§9.15 approved; status line set.** The line already read "Approved 2026-08-18, rulings per
+   port session" — it was set in `db1b5c5`, so no edit was needed and none was made. Route math
+   is 36 routes + `/404` = 37 built HTML files; `dist/` is truth and the built list is
+   byte-identical pre- and post-port.
+
+Copy precedence was applied as directed: where §9.15.2 supplies an approved "after" version of
+a doc 27 passage, the §9.15.2 version was built. All six amendments now ship — 1 in
+`WhyAseptaclean` and the homepage FAQ, 2 at `site.ts handoffStages`, 3 in `RequestForm`, 4 at
+`doc27ServicePages.deepCleaningPage`, 5 at `doc27CompanyPages.contactPage` (see §4), 6 was a
+no-change flag. `docs/27-COPY-CANONICAL.md` was not edited this session.
+
+### 2. The mega-menu, and the three routes held out of it
+
+Sessions 1 and 2 stopped here. It is built now. Group shape is doc 27 §8's tree in the mockups'
+full-width panel form, mirrored verbatim by the mobile drawer per §9.15.5, with one-liners
+verbatim from §9.15.1. **Three §8 items are deliberately absent, and this is the one part of
+the port that is a hold rather than a completion:**
+
+- **`/rodent-dropping-cleanup-san-jose/` and `/pigeon-dropping-cleanup-san-jose/`.** Cal. B&P
+  §8505 expressly includes rodents; §8550(a) makes it unlawful to "advertise, to engage in, or
+  offer to engage in" that practice unlicensed, and a sitewide header advertises on all 36
+  routes. `docs/18-VISUAL-DIRECTION.md` §7 (rank 5, unrescinded) says rodent-specific handling
+  is "not named anywhere" until written crew PPE and protocol exist, and doc 27 §21's
+  compliance release is unmet. **Ruling 3 set the menu's shape; it did not reach this**, and no
+  ruling has ever addressed it directly. Verified: zero occurrences of either slug in the nav,
+  drawer or footer of all 37 built pages.
+- **`/projects/`.** Removed from the sitewide footer on 2026-08-18 with an explicit "restore in
+  the same change that lifts the noindex — not before." Putting it in the header instead would
+  reverse that decision from inside the same port effort.
+
+**Everything else in §8 that exists IS linked, including the crew-gated noindex routes**
+(post-construction, window, eviction, animal waste, commercial, the specialty hub). Ruling 3
+put a noindex route into the nav by name, which settles noindex-in-nav as a trade the owner has
+taken. It does not settle the statute. One consequence handled: `/extreme-cleaning-san-jose/`
+is indexable while its hub is noindex, so it renders its breadcrumb group as text rather than a
+link — its three noindex siblings still link the hub.
+
+### 3. Mockup content NOT built, and why
+
+- **Homepage `.tiles` stays three cards, not the mockup's four.** The mockup's four tiles are
+  doc 27 §9.4–9.5 verbatim, which doc 27 itself annotates DOES NOT SHIP for `/` on two
+  independent grounds. Ruling 4 rescinded D2 (the Why-field grid) and did not reach this
+  section. The tile TREATMENT — chevron-clipped image slot, bar, hover-reveal overlay — is
+  ported; the card SET is not.
+- **Service-page `.ph--split` scope-excerpt card.** §9.15.1 approves that card's header and
+  footer strings, but no source supplies the per-service table rows for any of the 14 services.
+  Inventing a sample scope table is a fabricated record under AGENTS.md §0.3. The header
+  renders as the full-width `.ph` instead. Unfilled slot, per PORT-PROMPT §1.
+- **Homepage form rail labels.** "Your details / The property / Photos & deadline" exist only
+  in the mockup, and doc 27 §18 defines that form as a single four-field compact form, not a
+  three-step one. The white 8px card ships without the rail. **The rail itself is no longer
+  blocked** — it ships on `/request-assessment/`, where the three step labels are real approved
+  copy already in `src/data/assessment.ts` ("Property fit / Scope and condition / Authority and
+  contact"). Sessions 1 and 2 reported this as blocked sitewide; that was too broad.
+- **Hub card descriptors are a SLOT REASSIGNMENT, flagged for confirmation.** Doc 27 §10 lists
+  card titles only, and the mockup's card blurbs are mockup-only. Rather than write copy, each
+  card prints its §9.15.1 nav one-liner — an already-approved string describing the same
+  service. See `serviceOneLiners` in `src/data/servicePages.ts`.
+- **One deliberate deviation from a mockup.** In the mockups `.form label{text-transform:
+  uppercase}` also reaches the consent control, rendering a two-line consent sentence and its
+  Privacy Policy link in letter-spaced uppercase. That is a readability/accessibility failure
+  (doc 27 §24), not a style choice, and it is the one place the mockup's own cascade produced a
+  result its author is unlikely to have intended. Consent text stays sentence case.
+
+### 4. Type law #2 — the deviation is now WIDER than the recorded one
+
+Measured on computed styles, 390px / 1440px, floors 2.5 and 4.0:
+
+| route | 390 | 1440 |
+| --- | --- | --- |
+| `/` | 2.50 PASS | 3.70 below |
+| `/request-assessment/` | 2.50 PASS | 3.70 below |
+| `/detailed-cleaning/` (hub) | **2.20 below** | **3.10 below** |
+| `/deep-cleaning-san-jose/` (service) | **2.20 below** | **3.10 below** |
+| `/about/` (company band) | **1.90 below** | **2.60 below** |
+
+The owner's accepted deviation covers `--ac-text-h1` `clamp(2.5rem,4.6vw,3.7rem)` — the `/`
+figures, unchanged. **The hub, service and company-band rows are new.** The mockups run three
+distinct H1 sizes, not one: `.ph h1` `clamp(2.2rem,4vw,3.1rem)` and `.pgh h1`
+`clamp(1.9rem,3.4vw,2.6rem)`. Ported verbatim as rank-3 pixel authority and tokenised as
+`--ac-text-h1-hub` and `--ac-text-h1-band`. The owner was shown the hero measurement and chose
+the mockup value; **the owner has not seen these two, and `/about/` at 1.90:1 is the furthest
+any H1 on the site has been from the floor.** Not "fixed" upward without a ruling — flagged.
+
+### 5. `/senior-downsizing-san-jose/` — byte-identical was not achievable
+
+Ruling 3 asks for byte-identical; ruling 7 says unmapped routes inherit the new shell via
+shared components. Those cannot both hold, because the shell renders on every page. **No
+page-specific edit was made** — `git status` shows zero changes under
+`src/pages/senior-downsizing-san-jose/`. Its `<main>` differs in exactly two regions, both
+shared: the §9.15.2 amendment-2 sentence reaching it through `ServiceMethodRail` →
+`site.ts handoffStages`, and the shared `RequestForm` section. Isolating it would have required
+forking those components, which is worse than the diff. Reported, not resolved.
+
+`/sms-notification-consent/` IS byte-identical — SHA-256 `e5280343…31cdf5`, unchanged. It does
+not use BaseLayout, which is why the shell change cannot reach it.
+
+### 6. Landed
+
+- **`src/data/site.ts`** — `megaNav`: group tree, hub blurbs (doc 27 §10 H1s), §9.15.1
+  one-liners, and the held-route rationale in-file. §9.15.2 amendment 2 on the Protect stage.
+- **`Header.astro`** — rebuilt: mega panels with keyboard/click operation and hover CSS, real
+  owner wordmark (D3) replacing the mockup's text logotype, flush full-height right-edge CTA,
+  checkbox + `<details>` drawer with no JS in the open/close path, Escape-to-close.
+- **`StatusRibbon`** → doc 27 §8's four items, phone flush right. `MobileCTA` → the mockup's
+  `.mbar` (navy + amber), replacing the IntersectionObserver sticky bar. `Footer` → five-column
+  `.foot` with §9.15.5's legal line; link set matches the mega-menu exactly, including the
+  three holds, because nav and footer are the same sitewide crawl surface.
+- **`global.css`** — the mockups' full component layer as `.ac-*` globals (~1,400 lines):
+  page headers, `.ac-marks` sweep bands (D4), tiles, cards, navy field sections, amber band
+  (D1), stage rails, overlay-card-on-photo-band, panels, FAQ, stepped form, final CTA, footer,
+  plus the mockups' 1050/760 breakpoints. **Not ported: every `h1..h4{font-size}` rule in the
+  source** — each became an `.ac-type-*` role class instead. Type law #1 holds.
+- **`tokens.css`** — `--ac-text-h1-hub`, `--ac-text-h1-band`, `--ac-text-h2-overlay`,
+  `--ac-text-h4-mega`.
+- **New: `ServiceHub.astro`** (hub template, 3 routes), **`PageHeader.astro`** (`.pgh` band with
+  sweep marks, 13 routes). `PageHeader` is a new component rather than a `CompactHero` restyle
+  precisely because `CompactHero` is a `/senior-downsizing-san-jose/` caller and ruling 3 holds
+  that page back; `CompactHero` now survives for that route alone and should be retired with it.
+- **`ServicePageLayout`** rebuilt to the mockup for all 14 service routes.
+- **`ConfidenceAndFit`** — the last homepage block still rendering pre-port, and at ~3,500px the
+  tallest thing on the page. Re-expressed in the mockups' own vocabulary (`.ac-split` panel
+  pair, `.ac-deps` rail). **Not one string changed.** Homepage height 13,048px → 11,139px.
+- **`contact/index.astro`** — ported to the mockup's `.contactgrid`/`.cbox`, which is what
+  finally renders `callNote`/`textNote`/`serviceAreaNote`. Those fields existed in
+  `doc27CompanyPages.ts` with **no render site at all**, so §9.15.2 amendment 5 had nowhere to
+  land until this section was built.
+- **`scripts/port-shots.mjs`** — gate-7 evidence capture, kept as a QA script.
+
+### 7. Gate results — all nine
+
+Pass: **1** (build clean; 37 built HTML files, list byte-identical to the `db1b5c5` baseline
+built in a throwaway worktree; noindex set identical at 13; sitemap.xml, `_redirects` and
+robots.txt byte-identical), **2** (70 heading rules examined, 0 declaring font-size), **3**,
+**4**, **5**, **6** (every §9.15.1/.2/.5 string verified present in `dist/`; trace table in the
+session report), **7** (11 screenshots at 390/1440 plus the drawer open and expanded; zero
+horizontal overflow, zero JS errors on all ten route/width combinations), **8** (SHA-256
+identical), **9** (both forms post to `/api/lead`; `functions/` untouched; all nine
+`qa:phase3:endpoint` assertions pass).
+
+Gate 7 carries the type-ratio finding in §4 above — screenshots and overflow pass, the measured
+ratios are the reported deviation.
+
+### 8. Not done
+
+- `/thank-you/` keeps its confirmed/unconfirmed state machine and did **not** receive §9.15.5's
+  "While you wait" section. The state machine is a suppression-rule surface (AGENTS.md §3,
+  never show a success state against a non-working endpoint) and restyling around it needs its
+  own pass. `/data-request/` likewise still carries its own header rather than `PageHeader`.
+- `about`, `faq`, `service-areas`, `projects`, `handoff-standard`, `services`, `who-we-help`,
+  `estate-cleanout-checklist`, `404` have the new band header, shell, type and footer, but
+  their section BODIES are not individually ported to `page-about.html` etc. They render
+  coherently — no route rendered broken — but they are shell-ported, not template-ported.
+- `ServiceFitPanel`, `ServiceBoundaries` and `RelatedServices` are now unreferenced;
+  `ServiceScope`, `ServicePricing`, `ServiceFAQ`, `ServiceMethodRail`, `ServiceProof` and
+  `CompactHero` survive only for `/senior-downsizing-san-jose/`. Nothing was deleted — that is a
+  DELETE-MANIFEST decision, not a visual-port one.
+- Nothing here was reported done because it compiles.

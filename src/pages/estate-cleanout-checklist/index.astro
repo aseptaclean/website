@@ -11,7 +11,7 @@
 // list, not a Track A/B split, recognition block, or fiduciary block — no other page in this
 // batch opens this way. No Handoff Record excerpt (a link only), no full Handoff Record.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import CompactHero from "@components/CompactHero.astro";
+import PageHeader from "@components/PageHeader.astro";
 import RequestForm from "@components/RequestForm.astro";
 import { checklist } from "@data/servicePages";
 import { site } from "@data/site";
@@ -42,10 +42,13 @@ const schema = [
   noindex={true}
   schema={schema}
 >
-  <CompactHero eyebrow="Free resource · No vendor required" headingId="checklist-title">
-    <h1 id="checklist-title" class="ac-type-h1">{checklist.title}</h1>
-    <p class="compact-hero__lead">{checklist.intro}</p>
-  </CompactHero>
+  <PageHeader
+    headingId="checklist-title"
+    eyebrow="Free resource · No vendor required"
+    h1={checklist.title}
+    lede={checklist.intro}
+    crumb="Estate Cleanout Checklist"
+  />
 
   <section class="checklist-print-actions no-print" aria-label="Print this checklist">
     <div class="ac-measure-wide">

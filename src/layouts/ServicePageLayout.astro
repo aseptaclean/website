@@ -1,56 +1,58 @@
 ---
-// Shared individual-service-page layout implementing docs/27-COPY-CANONICAL.md §11's section
-// sequence, which is identical across all 14 service pages in §12–15. One layout instead of
-// fourteen near-identical route files: §11 defines a single structure, so the structure is a
-// component, and each route supplies only its Doc27ServicePage data record.
+// Shared individual-service-page layout. Section sequence is docs/27-COPY-CANONICAL.md §11,
+// which is identical across all 14 service pages in §12–15 — one layout, each route supplying
+// only its Doc27ServicePage record.
 //
-// Deviations from §11's literal list, both deliberate:
-//   - §11 item 5's trust strip is CredentialBar, the existing ported component, rather than a
-//     new one — same four claims, already claims-reviewed.
-//   - §11 item 9's four-step START process is NOT rendered as a second rail. These pages already
-//     carry ServiceMethodRail, the five-stage Scope → Protect → Clear → Reset → Verify sequence
-//     that AGENTS.md §7 mandates by name. Stacking a second process rail on every service page
-//     would be a layout change, which the 2026-08-16 owner instruction forbids ("do NOT change
-//     fonts or visual layout"). Doc 27's four-step describes the intake path, which the
-//     assessment section already walks the reader through.
+// 2026-08-18 visual port. The body is now docs/mockups/template-service-page-v2.html rendered
+// directly against that record: .ph header with sweep marks → screening band → credibility
+// strip → outcome + included/excluded panel pair → quote variables on an overlay card over a
+// photo band → four-step rail → FAQ and related in two columns → assessment form.
+//
+// The per-section components this layout used to compose (ServiceFitPanel, ServiceScope,
+// ServiceBoundaries, ServicePricing, ServiceFAQ, RelatedServices, ServiceMethodRail) are no
+// longer called from here: the mockup merges several of those sections into single panels, and
+// restyling the components in place would have changed /senior-downsizing-san-jose/, which
+// owner ruling 3 excludes from this port. Those components stay untouched for that page.
+//
+// TWO DELIBERATE DEVIATIONS FROM THE MOCKUP, both reported rather than guessed:
+//   1. The header renders as .ph, not .ph--split. The split variant's right column is a
+//      per-property "Scope excerpt" table (rooms × detail level). §9.15.1 approves that card's
+//      HEADER and FOOTER strings but no source — not §9.15, not doc 27 §12–15 — supplies the
+//      rows for any of the fourteen services. Inventing a sample scope table would be a
+//      fabricated record under AGENTS.md §0.3. Unfilled slot, per PORT-PROMPT §1.
+//   2. §11 item 9's four-step START process ships here as the mockup's .steps4 rail. It does
+//      NOT replace the five-stage Scope → Protect → Clear → Reset → Verify sequence AGENTS.md
+//      §7 mandates by name; that lives on `/` and /handoff-standard/. The four-step describes
+//      the intake path and is what the mockup puts on this template.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import CompactHero from "@components/CompactHero.astro";
 import CredentialBar from "@components/CredentialBar.astro";
-import ServiceFitPanel from "@components/ServiceFitPanel.astro";
-import ServiceScope from "@components/ServiceScope.astro";
-import ServiceMethodRail from "@components/ServiceMethodRail.astro";
-import ServicePricing from "@components/ServicePricing.astro";
-import ServiceBoundaries from "@components/ServiceBoundaries.astro";
-import ServiceFAQ from "@components/ServiceFAQ.astro";
-import RelatedServices from "@components/RelatedServices.astro";
 import RequestForm from "@components/RequestForm.astro";
 import type { Doc27ServicePage } from "@data/doc27ServicePages";
-import { site } from "@data/site";
+import { sharedFourStep } from "@data/servicePages";
+import { legal, site } from "@data/site";
 
 interface Props {
   page: Doc27ServicePage;
   serviceType: string;
   breadcrumbName: string;
   idPrefix: string;
+  /** Parent group for the breadcrumb — "Detailed Cleaning", "Specialty Cleaning", … */
+  groupName?: string;
+  groupHref?: string;
 }
 
-const { page, serviceType, breadcrumbName, idPrefix } = Astro.props;
+const { page, serviceType, breadcrumbName, idPrefix, groupName, groupHref } = Astro.props;
 
-// Shared section framing. Measured at 49% identical content across the fourteen service pages
-// when every page used these defaults, which is a near-duplicate risk at ~750 words per page.
-// Revenue pages override them via `page.section`; the rest still share, which is acceptable for
-// pages that are noindex or low-priority. Add an override before promoting any page to indexable.
 const s = page.section ?? {};
 const fitHeading = s.fitHeading ?? "This service may fit when";
-const scopeHeading = s.scopeHeading ?? "Work can include";
-const scopeNote =
-  s.scopeNote ??
-  "This list describes work the approved scope can include, not a fixed package. The signed scope controls the actual project.";
-const methodHeading = s.methodHeading ?? "One accountable operator, from first decision to final closeout";
-const pricingHeading = s.pricingHeading ?? "What affects the price — no invented figures";
+const outcomeHeading = page.outcomeHeading;
 const boundariesHeading = s.boundariesHeading ?? "What this scope does not include";
-const faqHeading = s.faqHeading ?? "Questions asked before requesting a plan";
-const relatedHeading = s.relatedHeading ?? "If the property needs something adjacent";
+
+const phoneHref = site.business.phoneUri;
+
+// Mockup .fit svg / .panel--in svg (check) and .panel--out svg (minus).
+const check = '<path d="m4 12 5 5L20 6"/>';
+const minus = '<path d="M5 12h14"/>';
 
 const schema = [
   {
@@ -72,9 +74,19 @@ const schema = [
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      ...(groupName && groupHref
+        ? [
+            {
+              "@type": "ListItem",
+              position: 2,
+              name: groupName,
+              item: new URL(groupHref, site.urls.site).href
+            }
+          ]
+        : []),
       {
         "@type": "ListItem",
-        position: 2,
+        position: groupName && groupHref ? 3 : 2,
         name: breadcrumbName,
         item: new URL(page.slug, site.urls.site).href
       }
@@ -90,94 +102,210 @@ const schema = [
   noindex={!page.indexable}
   schema={schema}
 >
-  {
-    page.gate && (
-      <section class="gate-note" aria-label="Internal launch gate — not visible copy guidance">
-        <div class="ac-measure-wide">
-          <p>
-            <strong>LAUNCH GATE — not for publication:</strong> {page.gate}
-          </p>
-        </div>
-      </section>
-    )
-  }
+  {page.gate && (
+    <section class="gate-note" aria-label="Internal launch gate — not visible copy guidance">
+      <div class="ac-shell">
+        <p><strong>LAUNCH GATE — not for publication:</strong> {page.gate}</p>
+      </div>
+    </section>
+  )}
 
-  <CompactHero eyebrow={page.eyebrow} headingId={`${idPrefix}-title`}>
-    {/* .ac-type-h1 is required, not decorative: CompactHero no longer declares a font-size on
-        the slotted h1 (docs/11 §1 — a component may never size a heading), so the role class is
-        the only thing that gives this H1 its size and the only thing holding the H1:body ratio
-        floor. Removing it silently drops all fourteen service pages to browser-default 2em. */}
-    <h1 id={`${idPrefix}-title`} class="ac-type-h1">{page.h1}</h1>
-    <p class="compact-hero__lead">{page.lead}</p>
-  </CompactHero>
+  <header class="ac-ph" aria-labelledby={`${idPrefix}-title`}>
+    <div class="ac-ph__bg" aria-hidden="true"></div>
+    <div class="ac-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+    <p class="ac-slot-label" aria-hidden="true">Photo slot<br />2000 × 1100</p>
 
-  {
-    /* docs/21-CLAIMS-AND-COMPLIANCE-LAW.md / AGENTS.md §0.2 — verbatim-mandatory wherever animal
-       or organic work is described, and placed directly under the H1 so it is never below the
-       fold on a page whose subject is organic material. Never paraphrase or abbreviate it. */
-    page.complianceClause && (
-      <aside class="compliance-clause" aria-label="Scope limitation">
-        <div class="ac-measure-wide">
-          <p>{page.complianceClause}</p>
-        </div>
-      </aside>
-    )
-  }
+    <div class="ac-shell">
+      {/* The group segment renders as plain text when no groupHref is passed. That is how a
+          page whose hub is still noindex avoids opening an indexable → noindex crawl path
+          while keeping the breadcrumb readable — see extreme-cleaning-san-jose. */}
+      <p class="ac-crumb">
+        <a href="/">Home</a> /
+        {groupName && (
+          <>{groupHref ? <a href={groupHref}>{groupName}</a> : groupName} / </>
+        )}
+        {breadcrumbName}
+      </p>
+      <p class="geo">{page.eyebrow}</p>
+      <h1 id={`${idPrefix}-title`} class="ac-type-h1-hub">{page.h1}</h1>
+      <p class="ac-ph__lede">{page.lead}</p>
+      {/* §9.15.1 service-page hero pledge line. */}
+      <p class="pledge">The scope names the rooms and the detail level before anyone arrives.</p>
+      <div class="ac-btns">
+        <a class="btn btn--w" href="#request">
+          {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
+        </a>
+        {phoneHref && <a class="btn btn--o" href={phoneHref}>Call {site.business.phone}</a>}
+      </div>
+    </div>
+  </header>
 
-  <CredentialBar />
+  {/* docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §2.3 / AGENTS.md §0.2 — verbatim-mandatory wherever
+      animal or organic work is described, and placed directly under the H1 so it is never
+      below the fold on a page whose subject is organic material. Never paraphrase it. */}
+  {page.complianceClause && (
+    <aside class="compliance-clause" aria-label="Scope limitation">
+      <div class="ac-shell">
+        <p>{page.complianceClause}</p>
+      </div>
+    </aside>
+  )}
 
-  <ServiceFitPanel headingId={`${idPrefix}-fit-title`} heading={fitHeading} items={page.fitWhen} />
-
-  <section class="outcome" aria-labelledby={`${idPrefix}-outcome-title`}>
-    <div class="ac-measure-intimate">
-      <p class="ac-eyebrow">The outcome</p>
-      <h2 id={`${idPrefix}-outcome-title`} class="ac-type-h2 outcome__heading">{page.outcomeHeading}</h2>
-      <p class="outcome__body">{page.outcomeBody}</p>
+  <section class="ac-fit" aria-labelledby={`${idPrefix}-fit-title`}>
+    <div class="ac-shell">
+      <h3 id={`${idPrefix}-fit-title`} class="ac-type-label-head">{fitHeading}</h3>
+      <ul>
+        {page.fitWhen.map((item) => (
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true" set:html={check} />
+            {item}
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 
-  <ServiceScope
-    heading={scopeHeading}
-    headingId={`${idPrefix}-scope-title`}
-    included={page.workIncludes}
-    exclusionsNote={scopeNote}
-  />
+  <CredentialBar />
 
-  <ServiceMethodRail
-    heading={methodHeading}
-    headingId={`${idPrefix}-method-title`}
-  />
+  <section class="ac-sec" aria-labelledby={`${idPrefix}-outcome-title`}>
+    <div class="ac-shell">
+      <div class="ac-sec__head">
+        <p class="ac-label">The outcome</p>
+        <h2 id={`${idPrefix}-outcome-title`} class="ac-type-h2">{outcomeHeading}</h2>
+        <p>{page.outcomeBody}</p>
+      </div>
 
-  <ServicePricing
-    heading={pricingHeading}
-    headingId={`${idPrefix}-pricing-title`}
-    drivers={page.quoteVariables}
-  />
+      <div class="ac-split">
+        <div class="ac-panel ac-panel--in">
+          <div class="ac-panel__h"><span>Work can include</span><span>Per approved scope</span></div>
+          <ul>
+            {page.workIncludes.map((item) => (
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true" set:html={check} />
+                {item}
+              </li>
+            ))}
+          </ul>
+          <p class="ac-panel__f">The signed scope is the definition of finished for this project.</p>
+        </div>
 
-  <ServiceBoundaries headingId={`${idPrefix}-boundaries-title`} heading={boundariesHeading} items={page.boundaries} />
+        <div class="ac-panel ac-panel--out" aria-labelledby={`${idPrefix}-boundaries-title`}>
+          <div class="ac-panel__h">
+            <span id={`${idPrefix}-boundaries-title`}>Stop / notify / refer</span>
+            <span>Outside this scope</span>
+          </div>
+          <ul>
+            {page.boundaries.map((item) => (
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true" set:html={minus} />
+                {item}
+              </li>
+            ))}
+          </ul>
+          <p class="ac-panel__f">
+            <span class="visually-hidden">{boundariesHeading}. </span>{legal.scopeDisclaimer}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-  <ServiceFAQ
-    heading={faqHeading}
-    headingId={`${idPrefix}-faq-title`}
-    intro="These answers describe the assessment process. The signed scope controls the actual project."
-    items={page.faq}
-  />
+  <section class="ac-photoband" aria-labelledby={`${idPrefix}-quote-title`}>
+    <div class="ac-photoband__img ac-photoband__img--short">
+      <p class="ac-photoband__slot" aria-hidden="true">Photo slot<br />Mid-project detail<br />2000 × 900</p>
+    </div>
+    <div class="ac-shell">
+      <div class="ac-rec ac-rec--narrow">
+        <div class="ac-rec__b">
+          <p class="ac-label">What moves the number</p>
+          <h2 id={`${idPrefix}-quote-title`} class="ac-type-h2-overlay">
+            The quote comes from the property, not a package.
+          </h2>
+          <p class="ac-rec__lede">
+            Photos may support an initial range. Complicated conditions may require a walkthrough
+            before a firm scope and price.
+          </p>
+          <ul class="ac-deps">
+            {page.quoteVariables.map((item, index) => (
+              <li>
+                <b>{String(index + 1).padStart(2, "0")}</b>
+                {item}
+              </li>
+            ))}
+          </ul>
+        </div>
+        <a class="ac-rec__cta" href="#request">
+          Send photos, get a straight answer <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
 
-  <RelatedServices headingId={`${idPrefix}-related-title`} heading={relatedHeading} items={page.related} />
+  <section class="ac-sec ac-sec--tight" aria-labelledby={`${idPrefix}-steps-title`}>
+    <div class="ac-shell">
+      <h2 id={`${idPrefix}-steps-title`} class="ac-hdr-lite ac-type-label-head">How this starts</h2>
+      <ol class="ac-steps4 steps--flush">
+        {sharedFourStep.map((step) => (
+          <li class="ac-stage">
+            <b>{step.title.slice(0, 2)}</b>
+            <h3 class="ac-type-h3">{step.title.slice(5)}</h3>
+            <p>{step.detail}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="ac-sec ac-sec--tight service-tail">
+    <div class="ac-shell">
+      <div class="ac-dual">
+        <div>
+          <h2 id={`${idPrefix}-faq-title`} class="ac-hdr-lite ac-type-label-head faq-head">
+            Questions we get on {breadcrumbName.toLowerCase()}.
+          </h2>
+          <div class="ac-faq faq--flush">
+            {page.faq.map((item) => (
+              <details>
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        {page.related.length > 0 && (
+          <div class="ac-relcol" aria-labelledby={`${idPrefix}-related-title`}>
+            <h2 id={`${idPrefix}-related-title`} class="ac-hdr-lite ac-type-label-head rel-head">
+              Often booked alongside
+            </h2>
+            {page.related.map((item) =>
+              item.href ? (
+                <a href={item.href}>
+                  <b>{item.label}</b>
+                </a>
+              ) : (
+                <p class="ac-relcol__pending"><b>{item.label}</b></p>
+              )
+            )}
+          </div>
+        )}
+      </div>
+    </div>
+  </section>
 
   <RequestForm />
 </BaseLayout>
 
 <style>
   .gate-note {
-    background: #fbeeec;
     border-bottom: 1px solid #e0b6b0;
+    background: #fbeeec;
     padding-block: 14px;
   }
 
   .gate-note p {
     margin: 0;
-    color: #a3392f;
+    color: var(--ac-color-error);
     font-size: 0.85rem;
   }
 
@@ -194,19 +322,48 @@ const schema = [
     font-weight: 600;
   }
 
-  .outcome {
-    background: var(--ac-color-paper);
+  /* Mockup .geo — the category + geography line above the service H1. */
+  .geo {
+    margin-bottom: 14px;
+    color: var(--ac-color-blue-500);
+    font-family: var(--ac-font-sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
-  .outcome__heading {
-    max-width: 30ch;
-    margin-top: var(--ac-space-3);
+  .service-tail {
+    background: var(--ac-color-warm-white);
   }
 
-  .outcome__body {
-    max-width: 58ch;
-    margin-top: var(--ac-space-4);
-    color: var(--ac-color-ink-600);
-    font-size: 1.02rem;
+  /* The mockup carries these as inline overrides on .steps4 / .hdr-lite. */
+  .steps--flush {
+    border-top: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .faq-head {
+    border-bottom: none;
+    padding-bottom: 10px;
+  }
+
+  .rel-head {
+    margin-bottom: 16px;
+  }
+
+  .faq--flush {
+    border-top: 2px solid var(--ac-color-navy-900);
+  }
+
+  .ac-relcol__pending b {
+    display: block;
+    border: 1px solid var(--ac-color-line);
+    padding: 17px 20px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.9375rem;
+    font-weight: 800;
   }
 </style>

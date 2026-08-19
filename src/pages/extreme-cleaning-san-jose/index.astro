@@ -8,6 +8,11 @@
 // Ships noindex pending this page's own gate (see the record's `gate` field) and is excluded
 // from src/pages/sitemap.xml.ts. Do not bulk-flip.
 import ServicePageLayout from "@layouts/ServicePageLayout.astro";
+// groupHref is deliberately NOT passed. This page is INDEXABLE while its /specialty-cleaning/
+// hub is noindex until doc 27 §21's compliance release clears, so a breadcrumb link would open
+// an indexable → noindex crawl path (route-audit failure mode #2). The three sibling specialty
+// pages are themselves noindex, so they do link the hub. Restore the href in the same change
+// that lifts the hub's noindex, not before.
 import { extremeCleaningPage } from "@data/doc27ServicePages";
 ---
 
@@ -16,4 +21,5 @@ import { extremeCleaningPage } from "@data/doc27ServicePages";
   serviceType="Extreme-condition cleaning"
   breadcrumbName="Extreme-Condition Cleaning"
   idPrefix="extreme"
+  groupName="Specialty Cleaning"
 />

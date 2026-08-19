@@ -15,7 +15,7 @@
 // three pillar cards reuse copy verbatim from site.ts's already-approved homepage.serviceCards
 // (docs/18-VISUAL-DIRECTION.md §6 row 3) so no new claim is introduced by this page.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import CompactHero from "@components/CompactHero.astro";
+import PageHeader from "@components/PageHeader.astro";
 import RequestForm from "@components/RequestForm.astro";
 import { servicesHub } from "@data/servicePages";
 import { site } from "@data/site";
@@ -43,10 +43,13 @@ const schema = [
   noindex={false}
   schema={schema}
 >
-  <CompactHero eyebrow="Services" headingId="services-title">
-    <h1 id="services-title" class="ac-type-h1">What Aseptaclean handles</h1>
-    <p class="compact-hero__lead">{servicesHub.intro}</p>
-  </CompactHero>
+  <PageHeader
+    headingId="services-title"
+    eyebrow="Services"
+    h1={"What Aseptaclean handles"}
+    lede={servicesHub.intro}
+    crumb="Services"
+  />
 
   <section class="pillars" aria-labelledby="pillars-title">
     <div class="ac-measure-wide">

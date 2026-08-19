@@ -1,0 +1,46 @@
+---
+// 2026-08-18 visual port. docs/mockups .pgh — the compact page-header band carrying the
+// Steri-Clean-geometry sweep marks (PORT-PROMPT §3: "sweep bands in every inner-page header";
+// owner ruling D4 keeps them for launch). Used by every company, resource and legal route.
+//
+// This is a NEW component rather than a restyle of CompactHero, and deliberately so: owner
+// ruling 3 excludes /senior-downsizing-san-jose/ from this port, and that page is a CompactHero
+// caller. Restyling CompactHero in place would have ported the one page the ruling holds back.
+// CompactHero now survives for that route alone — flagged in the report for cleanup once the
+// senior-downsizing decision lands.
+interface Props {
+  h1: string;
+  headingId: string;
+  lede?: string;
+  /** Breadcrumb trail leaf; "Home / {crumb}". Omit for pages with no parent context. */
+  crumb?: string;
+  /** Mockup .geo — the category line above the H1. Carries each page's existing eyebrow. */
+  eyebrow?: string;
+}
+
+const { h1, headingId, lede, crumb, eyebrow } = Astro.props;
+---
+
+<header class="ac-pgh" aria-labelledby={headingId}>
+  <div class="ac-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+  <div class="ac-shell">
+    {crumb && <p class="ac-crumb"><a href="/">Home</a> / {crumb}</p>}
+    {eyebrow && <p class="geo">{eyebrow}</p>}
+    <h1 id={headingId} class="ac-type-h1-band">{h1}</h1>
+    {lede && <p class="ac-pgh__lede">{lede}</p>}
+    <slot />
+  </div>
+</header>
+
+<style>
+  /* Mockup .geo */
+  .geo {
+    margin-bottom: 14px;
+    color: var(--ac-color-blue-500);
+    font-family: var(--ac-font-sans);
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+</style>

@@ -1,6 +1,19 @@
 ---
+// 2026-08-18 visual port. docs/mockups/page-request-assessment.html. The form itself is
+// untouched plumbing (PORT-PROMPT §4) — AssessmentForm keeps its endpoint, Turnstile, consent
+// and honeypot wiring, and its 01/02/03 rail is now the mockup's .rail treatment.
+//
+// The "What happens next" band below is §9.15.5's Request-assessment page connective, verbatim:
+// section label, heading, and steps 01–03. Nothing on this page was written for it.
 import AssessmentForm from "@components/AssessmentForm.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
+import CredentialBar from "@components/CredentialBar.astro";
+
+const nextSteps = [
+  "Send the details below — two or three phone photos help more than a long description.",
+  "If the property is complicated, we’ll say whether a walkthrough is needed before a firm number.",
+  "The scope and price come to you in writing before anything is scheduled."
+];
 ---
 
 <BaseLayout
@@ -10,4 +23,47 @@ import BaseLayout from "@layouts/BaseLayout.astro";
   showMobileCta={false}
 >
   <AssessmentForm />
+
+  <CredentialBar />
+
+  <section class="ac-sec ac-sec--tight next" aria-labelledby="next-title">
+    <div class="ac-shell">
+      <div class="ac-sec__head">
+        <p class="ac-label">What happens next</p>
+        <h2 id="next-title" class="ac-type-h2-record">Matthew reads every request himself.</h2>
+      </div>
+
+      <ol class="ac-steps4 next__steps">
+        {nextSteps.map((step, index) => (
+          <li class="ac-stage">
+            <b>{String(index + 1).padStart(2, "0")}</b>
+            <p>{step}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
 </BaseLayout>
+
+<style>
+  .next {
+    background: var(--ac-color-warm-white);
+  }
+
+  .next__steps {
+    margin: 0;
+    padding: 0;
+    grid-template-columns: repeat(3, 1fr);
+    list-style: none;
+  }
+
+  .next__steps p {
+    margin-top: 12px;
+  }
+
+  @media (max-width: 760px) {
+    .next__steps {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
