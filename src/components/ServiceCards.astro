@@ -22,6 +22,22 @@ const glyphs: Record<string, string> = {
 const pills: Record<string, string> = {
   "Animal & organic condition cleaning": "Endorsed"
 };
+
+// docs/19-SYSTEM-AND-SITEMAP.md "Linking rules" — homepage cards ↔ service pages. The hubs
+// existed only from 8c6908f, so until now every card still pointed at Card.astro's launch
+// placeholder (#included), and `/` passed no link equity to any money page.
+//
+// "Animal & organic condition cleaning" is deliberately NOT linked to /specialty-cleaning/.
+// That hub ships noindex and is excluded from sitemap.xml.ts because its cards name rodent and
+// pigeon dropping cleanup — services held behind doc 27 §21's compliance release and B&P
+// §8550(a) (see 26b5278, which verified no indexable page links to them). `/` is indexable, so
+// wiring this card there would both create an indexable→noindex crawl path and re-advertise the
+// gated services from the most crawled page on the site. It keeps the on-page scope anchor until
+// §21's release inputs are on record. Do not "finish" this map without clearing that gate.
+const links: Record<string, string> = {
+  "Complex property clearing": "/property-clearing/",
+  "Reset & restoration cleaning": "/detailed-cleaning/"
+};
 ---
 
 <section class="service-cards" id="service-cards" aria-labelledby="service-cards-title">
@@ -42,6 +58,7 @@ const pills: Record<string, string> = {
             glyph={glyphs[item.title] ?? "▣"}
             gradient={gradients[item.title] ?? "v1"}
             pill={pills[item.title]}
+            href={links[item.title]}
           >
             {item.detail}
           </Card>

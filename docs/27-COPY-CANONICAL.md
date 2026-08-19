@@ -458,6 +458,22 @@ Label the panel **Sample**. It must never be presented as a real customer record
 
 ### 9.4 Service-group introduction
 
+> **DOES NOT SHIP — §9.4 and §9.5 are overruled for `/`.** Re-examined 2026-08-17 and upheld
+> against this document a second time; see `docs/05-DECISIONS-LOG.md`, "Homepage four-card
+> section — doc 27 §9.4–9.5 blocked on two independent grounds." Two rank-5 rules in
+> `docs/18-VISUAL-DIRECTION.md` beat this section, and one of them is a claims constraint:
+>
+> 1. **§6.1** gates card count on owned photography — "add cards only as completed jobs
+>    generate owned photography." The repo ships zero photographs, so the gate is unmet.
+> 2. **§7** states "hantavirus and rodent-specific handling are not named anywhere until crew
+>    PPE and protocol are confirmed in writing." §9.5's Specialty Cleaning card names rodent
+>    and pigeon waste. `/` is the site's most indexable page, and doc 27's own **§21** holds
+>    those routes behind a compliance release (B&P §8550(a)).
+>
+> The shipped section is three cards — see `src/components/ServiceCards.astro`. Do not apply
+> §9.4–9.5 to `/` without clearing **both** gates; clearing only the photography one still
+> leaves the §9.5 Specialty card unlawful to publish.
+
 **Eyebrow**  
 Scope of work
 

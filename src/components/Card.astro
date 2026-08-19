@@ -7,9 +7,14 @@ interface Props {
   glyph: string;
   gradient: "v1" | "v2" | "v3";
   pill?: string;
+  // Published service page for this card (docs/19-SYSTEM-AND-SITEMAP.md "Linking rules" —
+  // homepage cards ↔ service pages). Falls back to the on-page scope section for any card
+  // whose destination is not indexable; see ServiceCards.astro for why one card still does.
+  href?: string;
 }
 
-const { title, glyph, gradient, pill } = Astro.props;
+const { title, glyph, gradient, pill, href = "#included" } = Astro.props;
+const linkLabel = href.startsWith("#") ? "What’s included" : `${title} — what’s included`;
 ---
 
 <article class="ac-card">
@@ -22,15 +27,10 @@ const { title, glyph, gradient, pill } = Astro.props;
     <p class="ac-type-body">
       <slot />
     </p>
-    {
-      /*
-        Placeholder target: homepage's own "what may be included" scope
-        section (ConfidenceAndFit.astro #included). Swap each card's href to
-        its published service page at launch (docs/19-SYSTEM-AND-SITEMAP.md
-        §"Linking rules" — homepage cards ↔ service pages).
-      */
-    }
-    <a class="ac-card__link" href="#included">What&rsquo;s included →</a>
+    <a class="ac-card__link" href={href}>
+      <span class="visually-hidden">{linkLabel}</span>
+      <span aria-hidden="true">What&rsquo;s included →</span>
+    </a>
   </div>
 </article>
 
