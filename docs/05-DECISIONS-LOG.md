@@ -3976,3 +3976,111 @@ because the widget never got far enough to throw. **Do not chase this as a regre
 not "fix" it by touching the endpoint or the widget config.** If a future gate-7 run reports
 JS errors, read the messages before treating the count as meaningful — the script records a
 count only, which is how this nearly passed unexamined.
+
+---
+
+## Gate 6 closed on evidence; two PORT-PROMPT defects corrected at source (2026-08-19)
+
+Gate re-verification run against `7816b97` with fresh evidence for all nine
+`PORT-PROMPT.md` §6 gates — no gate accepted on a prior session's summary. Seven passed. Gate 6
+failed. Gate 9 is owner-deferred. The failure and both document defects share one root cause,
+recorded below because it will recur otherwise.
+
+### 1. Gate 6 failed — seven approved strings were never applied
+
+`docs/27-SECTION-9-15-CONNECTIVE-COPY.md` §9.15.5 (the "close-out batch") supplies four form-state
+strings and three `/thank-you/` connective strings. **None of the seven were in the build.** Not a
+matching artifact — they were absent from `src/` entirely, confirmed by direct grep.
+
+`src/pages/thank-you.astro` had not been touched by the port at all (`git diff db1b5c5..HEAD` on
+that path was empty) despite §2 mapping `page-thank-you.html` to it. The page still shipped
+`What happens now` and a 01/02/03 rail. Its rendered output *had* changed (16,761 → 29,783 bytes)
+because the shared header, footer and `global.css` were ported, so the route looked done from the
+outside while its page-specific copy gate was still open. **A route whose bytes changed is not a
+route that was ported.**
+
+Applied this session, verbatim from §9.15.5:
+
+| String | Landed in |
+| --- | --- |
+| While you wait / Photos speed everything up. / Stand in the doorway… | `src/pages/thank-you.astro` connective aside |
+| Got it. I'll review the details and contact you about the next step. | `thank-you.astro` confirmed state |
+| Something went wrong on our end and the form didn't send… | `AssessmentForm.astro`, `QuickHandoffForm.astro` |
+| Add a phone number so Matthew can reach you about the property. | `AssessmentForm.astro`, `QuickHandoffForm.astro` |
+| Check the consent box so we're allowed to call or text you back. | `AssessmentForm.astro`, `QuickHandoffForm.astro` |
+
+Three implementation notes, none of them silent:
+
+- **The two field messages originate server-side.** `functions/_lib/lead.ts` returns
+  `privacy_consent: "Consent is required."`; `QuickHandoffForm.astro` has no client-side field
+  validation and renders whatever the endpoint sends. `PORT-PROMPT` §4 forbids touching
+  `functions/`. Resolved by mapping the two keys to the approved strings in the component's
+  `renderErrors`, so the visitor sees approved wording and the endpoint is untouched. **The
+  server still returns the old strings** — anything else reading that response (a future
+  client, a log, a test) still sees `Consent is required.` Worth closing properly when
+  `functions/` is next legitimately open.
+- **The 01/02/03 rail on `/thank-you/` was removed, not rewritten.** §9.15.5 gives this slot one
+  body paragraph and no step strings. Writing three would have violated §1. The rail's CSS was
+  removed with it.
+- **`RequestForm.astro` carries no state strings.** It is a presentational wrapper around
+  `QuickHandoffForm`. The four strings live in the two components that actually own them; there
+  was no third slot to fill.
+
+**Conflict recorded, not resolved silently:** the approved submission-error string hardcodes
+`408-785-7588`. `AGENTS.md` §3 says business facts live in `src/data/site.ts` and are never
+hardcoded in a component. The two cannot both be honoured — `site.business.phone` renders
+`(408) 785-7588`, a different string. Owner instruction this session was "copy verbatim from
+§9.15.5", and §9.15.5 is rank-7 copy authority, so verbatim won. **If the phone number ever
+changes, these two strings will not follow `site.ts` and must be edited by hand.**
+
+### 2. Two PORT-PROMPT defects, corrected in the file itself
+
+- **§1 item 5 named `docs/27-ASEPTACLEAN-COMPLETE-WEBSITE-BUILD.md`, which has never existed.**
+  The real copy authority is `docs/27-COPY-CANONICAL.md`. Under `AGENTS.md` §1 a document
+  pointing at a non-existent file is a stop-condition. Corrected in place.
+- **§2 mapped `page-process.html` to `/process/`, which is not a built route.** Corrected to
+  `/handoff-standard/`, the route that actually carries that template.
+
+### 3. Gate 2's method was wrong in the gate text, and had already been amended in the law
+
+Gate 2 read: `grep -ri "font-size" src/ …` → zero hits on h1–h6 selectors. **That command cannot
+answer the question.** It returns 256 hits on a clean tree, and the violation class that matters —
+a plain class that sets a size and lands on a heading — is invisible to it. `AGENTS.md` §6 law 1
+was amended on 2026-08-18, after exactly that method passed a live violation, to require
+resolving computed styles on heading elements in the built output. **The gate text was never
+updated to match.** Corrected in `PORT-PROMPT.md` §6 to specify the cross-reference method.
+
+Run under the correct method this session: 0 bare heading-tag declarations, 0 inline
+`style="font-size"` on headings, and every one of the 17 sizing classes landing on an `<h1>`–`<h6>`
+is an `.ac-type-*` role class. Rule 2 re-measured across all 37 routes × 9 widths: zero below
+1.9:1, with 13 band-header routes at exactly 1.900:1 — the documented zero-margin condition,
+independently reproduced.
+
+### 4. Root cause — rulings that never reached the repository
+
+All three defects are the same failure. Each was a decision made correctly in conversation and
+then never written back into the file that governs the next session:
+
+- The doc-27 filename was known-correct in discussion; `PORT-PROMPT.md` kept the wrong name.
+- The type-law method was amended in `AGENTS.md` on 2026-08-18; the gate that enforces it kept
+  the superseded command.
+- §9.15.5 was approved as canon; the port session that consumed it did not apply seven of its
+  strings, and the gate-verification session that followed accepted gate 6 while explicitly
+  recording that "string-by-string provenance against §9.15 was not re-derived" (this log,
+  2026-08-18 §4). A summary was carried forward in place of a check.
+
+**A ruling issued in conversation and not written into the repository does not exist.** The next
+session inherits the file, not the discussion. Two of these had already been "decided" before the
+session that got them wrong. Where a ruling amends a rule, the gate that enforces that rule is
+part of the amendment and must be edited in the same change.
+
+### 5. Gate 9 — owner-deferred, not failed
+
+Recorded as **PARTIAL, owner-deferred pending the stable-alias test**, per owner decision this
+session. The server path is verified as far as it can be locally: `405` on GET, `400` on wrong
+content type, `422` with real field-level validation, and `400` "Security verification expired or
+failed" on a fabricated token — i.e. the endpoint fails closed at Turnstile, correctly.
+`qa:phase3:endpoint` passes 9/9. A browser submission cannot complete on `localhost`, which
+throws `110200` on every route; per doc 04 §F only a hostname registered in Turnstile Hostname
+Management issues tokens. This gate belongs on the stable alias and cannot be closed from here.
+`functions/` was not touched.

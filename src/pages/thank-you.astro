@@ -22,6 +22,12 @@ const phoneHref = site.business.phoneUri;
         <h1 class="ac-type-h1" data-confirmation-title>This page does not confirm that a request was received.</h1>
         <div data-confirmed hidden>
           <p class="confirmation__status">Received</p>
+          <!-- §9.15.5 approved success string (doc 27 §18, verbatim). The email-delivery
+               paragraph below it stays: it reports which delivery states actually occurred,
+               which this line does not claim. -->
+          <p class="confirmation__success ac-type-lead">
+            Got it. I'll review the details and contact you about the next step.
+          </p>
           <p class="confirmation__lead" data-confirmation-email>
             A confirmation email is on its way. Aseptaclean will review the
             property details and send your Handoff Plan—fit decision,
@@ -55,13 +61,12 @@ const phoneHref = site.business.phoneUri;
       </section>
 
       <aside class="confirmation__next" aria-labelledby="next-title">
-        <p>Next record</p>
-        <h2 id="next-title" class="ac-type-h3">What happens now</h2>
-        <ol>
-          <li><span>01</span> Request details and media are reviewed.</li>
-          <li><span>02</span> Aseptaclean confirms fit and the likely path.</li>
-          <li><span>03</span> An on-site assessment is arranged if needed.</li>
-        </ol>
+        <p class="confirmation__next-label">While you wait</p>
+        <h2 id="next-title" class="ac-type-h3">Photos speed everything up.</h2>
+        <p class="confirmation__next-body">
+          Stand in the doorway and get the whole room, then step in close on the
+          worst spots. Text them to the number below and mention your name.
+        </p>
         {
           phoneHref && (
             <a href={phoneHref}>
@@ -162,7 +167,7 @@ const phoneHref = site.business.phoneUri;
   }
 
   .confirmation__eyebrow,
-  .confirmation__next > p,
+  .confirmation__next-label,
   .confirmation__status {
     margin: 0;
     color: var(--ac-color-navy-800);
@@ -197,6 +202,14 @@ const phoneHref = site.business.phoneUri;
     font-size: var(--ac-text-lead);
   }
 
+  /* Size comes from the .ac-type-lead role class on the element, not from here. */
+  .confirmation__success {
+    max-width: 43rem;
+    margin: var(--ac-space-5) 0 0;
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+  }
+
   .confirmation__callback,
   .confirmation__reference {
     max-width: 43rem;
@@ -229,25 +242,12 @@ const phoneHref = site.business.phoneUri;
     margin: var(--ac-space-3) 0 0;
   }
 
-  .confirmation__next ol {
-    margin: var(--ac-space-5) 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .confirmation__next li {
-    display: grid;
-    grid-template-columns: 2rem 1fr;
-    gap: var(--ac-space-3);
+  /* Replaced the 01/02/03 rail: §9.15.5 supplies a single connective body paragraph for
+     this slot, and no approved copy exists for the three step strings. */
+  .confirmation__next-body {
+    margin: var(--ac-space-4) 0 0;
     border-top: 1px solid var(--ac-color-rule);
-    padding-block: var(--ac-space-3);
-  }
-
-  .confirmation__next li span {
-    color: var(--ac-color-navy-800);
-    font-family: var(--ac-font-sans);
-    font-size: 0.75rem;
-    font-weight: 700;
+    padding-top: var(--ac-space-4);
   }
 
   .confirmation__next a,

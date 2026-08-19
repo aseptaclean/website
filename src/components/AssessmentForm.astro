@@ -1357,9 +1357,20 @@ const yesNoUnsure = [
       return legend?.textContent?.replace("*", "").trim() ?? "Field";
     };
 
+    // docs/27-SECTION-9-15-CONNECTIVE-COPY.md §9.15.5 approved form-state strings. Keyed on
+    // control name rather than label text so a label edit cannot silently drop them back to
+    // the generic message. Everything else keeps the generic "<label> is required."
+    const approvedMissingMessage: Record<string, string> = {
+      phone: "Add a phone number so Matthew can reach you about the property.",
+      privacy_consent:
+        "Check the consent box so we're allowed to call or text you back."
+    };
+
     const validationMessage = (control: FormControl) => {
       const label = labelForControl(control);
-      if (control.validity.valueMissing) return `${label} is required.`;
+      if (control.validity.valueMissing) {
+        return approvedMissingMessage[control.name] ?? `${label} is required.`;
+      }
       if (control.validity.typeMismatch) {
         return `Enter a valid ${label.toLowerCase()}.`;
       }
@@ -1750,16 +1761,18 @@ const yesNoUnsure = [
           return;
         }
 
+        // §9.15.5 approved submission-error string. The server's own message still wins when
+        // it sends one — it describes the specific failure, this is the fallback.
         const message =
           typeof payload.message === "string"
             ? payload.message
-            : "We could not send the request. Your answers remain here. Please try again or call Aseptaclean.";
+            : "Something went wrong on our end and the form didn't send. Call or text 408-785-7588 and we'll take it from there.";
         setSubmitting(false, message);
         resetTurnstile();
       } catch {
         setSubmitting(
           false,
-          "The request could not be sent. Your answers remain here. Check your connection and try again, or call Aseptaclean."
+          "Something went wrong on our end and the form didn't send. Call or text 408-785-7588 and we'll take it from there."
         );
         resetTurnstile();
       }

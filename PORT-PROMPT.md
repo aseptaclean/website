@@ -22,8 +22,12 @@ STOP and report; do not fix it silently.
 3. `docs/mockups/*.html` — pixel authority for all visual decisions
 4. `docs/27-SECTION-9-15-CONNECTIVE-COPY.md` — sole source for connective copy (eyebrows,
    section labels, card blurbs, CTA strings, nav one-liners, form states, footer legal line)
-5. `docs/27-ASEPTACLEAN-COMPLETE-WEBSITE-BUILD.md` — sole source for all body copy, H1s, leads,
+5. `docs/27-COPY-CANONICAL.md` — sole source for all body copy, H1s, leads,
    FAQs, boundaries, disclaimers, SEO titles/metas
+   *(Corrected 2026-08-19. This entry previously named `docs/27-ASEPTACLEAN-COMPLETE-WEBSITE-BUILD.md`,
+   which has never existed in this repository. Under `AGENTS.md` §1 "Files that do not exist"
+   that is a stop-condition, and it is the probable root of the §9.15.5 copy gap — see
+   `docs/05-DECISIONS-LOG.md`, 2026-08-19.)*
 6. Everything else in `docs/` — reference only this session
 
 Copy rule: every visible string on the built site must trace to source 4 or 5. If a slot exists
@@ -37,7 +41,7 @@ in a mockup with no matching approved string, STOP and report the slot. Do not w
 | `template-service-hub.html` | Hub template | `/detailed-cleaning/`, `/specialty-cleaning/`, `/property-clearing/`, `/commercial/` |
 | `template-service-page-v2.html` | Service template | all 14 city-suffixed service routes |
 | `page-about.html` | About | `/about/` |
-| `page-process.html` | Process | `/process/` |
+| `page-process.html` | Process | `/handoff-standard/` |
 | `page-service-areas.html` | Service areas | `/service-areas/` |
 | `page-contact.html` | Contact | `/contact/` |
 | `page-request-assessment.html` | Full-form page | `/request-assessment/` |
@@ -103,8 +107,20 @@ exclusion red `#8C3B32`. Add as `--ac-` tokens; no other new color.
 ## 6. Evidence gates — all required before reporting done
 
 1. `npm run build:local` passes; route count unchanged from current build.
-2. `grep -ri "font-size" src/ --include="*.astro" --include="*.css"` → zero hits on h1–h6
-   selectors.
+2. **No `font-size` reaches a heading — verified by cross-reference against the built output,
+   never by grepping selector text.** Build, then: collect every class that declares a
+   `font-size` in `src/` (strip CSS comments first, or mockup references like `/* .hero h1 */`
+   produce false positives), collect every class actually applied to an `<h1>`–`<h6>` in
+   `dist/`, and intersect. Anything in the intersection that is not an `.ac-type-*` role class
+   is a violation, as is any bare `h1`–`h6` selector declaring a size or any inline
+   `style="font-size"` on a heading. Zero violations required.
+   *(Corrected 2026-08-19. This gate previously read
+   `grep -ri "font-size" src/ --include="*.astro" --include="*.css"` → zero hits on h1–h6
+   selectors. That command cannot answer the question: it returns 256 hits on a clean tree, and
+   a plain class that sets a size and lands on a heading — `.referral-note__heading` on an
+   `<h2>` — is invisible to it. Exactly that method passed a live violation on 2026-08-18, which
+   is why `AGENTS.md` §6 law 1 was amended the same day to require computed-style resolution.
+   The gate text was never updated to match the amended law.)*
 3. `grep -ri "font-family.*mono\|JetBrains\|ui-monospace" src/` → zero hits.
 4. `grep -ri "Newsreader" src/` → zero hits.
 5. `grep -ri "OWNER INPUT\|TODO\|FIXME\|lorem" dist/` → zero hits.
