@@ -4207,3 +4207,113 @@ The seven §9.15.5 strings this session applied all report present. Whether the 
 re-approved, or exempted is an owner decision — several are copy choices, and the footer one is
 a claims-adjacent supersession question. The gate now states the position instead of implying
 there isn't one.
+
+---
+
+## Connective strings wired; gate-6 guard extended; the gate-reporting rule (2026-08-19)
+
+Owner rulings on the 14 absences the new guard found. Items 2 and 3 (canon-vs-build wording
+conflicts) are held for an owner decision and deliberately not changed.
+
+### 1. Eight §9.15 connective strings wired; two refused with reason
+
+Of the nine the ruling covered, **six were wired, one already shipped, and two were refused.**
+The "form helper" in the ruling turned out not to be a §9.15 slot — the five form helper/consent
+strings trace to doc 27 §18/§9.13, so they fall under ruling 2, not ruling 1.
+
+**Wired:**
+
+- **Service-page form callout** (§9.15.1 "Service pages (all 14)"): heading *Matthew reads every
+  request himself.* + body *You'll hear back within one business day…* — now on all 14 service
+  pages. §9.15.1 defines **two** callouts, one under "Homepage" and one under "Service pages",
+  and `RequestForm.astro` shipped the homepage pair everywhere. Parameterised with props whose
+  defaults are the homepage strings, so `/`, the four hubs, `/about/`, `/faq/` and
+  `/service-areas/` are unchanged — **no approved callout exists for hubs or company pages, so
+  none was invented for them.**
+- **Service-areas band** (§9.15.1 "Company pages"): *Not sure the address is in range?* +
+  *Send the property details →*, on `/service-areas/`.
+- **FAQ band and sidebar label** (§9.15.5): *Didn't find your question?* + *Still deciding?*, on
+  `/faq/`.
+  **Layout deviation, reported not hidden:** `page-faq.html:607-615` places *Still deciding?* in
+  a `.relcol` **sidebar** beside the question list, in a two-column `.dual`. It ships here as a
+  full-width band *below* the list instead. `ServiceFAQ.astro` renders a single column and has no
+  sidebar slot; converting it is a layout change to a component shared with the service pages,
+  which is more than wiring a string and would have altered 14 other routes. The approved string
+  ships in the approved order; its column position does not match the mockup. Worth a follow-up
+  pass if the two-column FAQ is wanted.
+
+`AccentBand.astro` was **parameterised rather than duplicated** — PORT-PROMPT §3 forbids a
+parallel file where one exists. Its supporting line already reads `site.offer.responseTime`
+rather than hardcoding the response time, and both new callers inherit that. Doc 18 §4/§6 row 5
+("one accent band per page, maximum") still holds: neither page carried one before.
+
+Two companion strings in those mockup slots were **not** written, per PORT-PROMPT §1:
+
+- The FAQ sidebar's three link labels in `page-faq.html` ("How the five-stage process works",
+  "About Matthew and Aseptaclean") are mockup-only wording, approved nowhere. The existing
+  shipping nav labels are used instead. Only the *label* `Still deciding?` is approved copy.
+- The band subline *Assessment response within one business day* was checked before use and
+  **is** approved (doc 27:534), so it ships via `site.offer.responseTime`.
+
+**Refused, reported rather than forced:**
+
+- `Scope excerpt · Sample` and `Sample only — not a client record…` (§9.15.1). These are the
+  header and footer of the service-page **scope-excerpt card**, which is not built. The reason
+  is already recorded at `ServicePageLayout.astro:17-22`: §9.15.1 approves the card's header and
+  footer strings but **no source — not §9.15, not doc 27 §12–15 — supplies the table rows for
+  any of the fourteen services.** Shipping the header and footer around an empty card would
+  either render a labelled empty box or require inventing a sample scope table, which is a
+  fabricated record under `AGENTS.md` §0.3. The slot stays unfilled until a source supplies rows.
+  (The `Sample only` string that greps as present in `dist/` is a *different* string —
+  `ResidenceBaselineRecord.astro:84`, on `/private-residence-reset/`.)
+
+**Already shipping, was a guard artifact:** `Stop / notify / refer · Outside this scope` renders
+correctly as two spans on 15 routes (`ServicePageLayout.astro:193-196`). The guard split it on
+`/` and looked for three fragments. Fixed — see §2.
+
+### 2. Guard extended to doc 27's bold-label format; unreachable slots now listed
+
+The blind spot is closed. The extractor now reads doc 27's `**Slot label**` + bare-paragraph
+form, and the bare paragraph under a `####` card heading.
+
+**Coverage went from 57 approved strings to 183.** `exempt` moved from 0 to 2 — the §9.4/§9.5
+DOES-NOT-SHIP block is now extracted *and* correctly exempted, which is the first evidence that
+the exemption rule fires at all rather than merely never matching.
+
+Two further guard defects found by its own output and fixed:
+
+- **Separator handling.** `·` is always a slot boundary; `/` is one only between whole sentences
+  and is literal text inside a label. Splitting on both turned `Stop / notify / refer` into three
+  fragments and reported a shipping string as absent.
+- **Entity decoding.** The raw-source search did not decode `&amp;`, so any approved string
+  containing `&` — including the homepage `<title>` — could never match.
+
+**`exempt` can no longer read 0 by accident.** When no exemption fires the script says so
+explicitly, and an *unreachable manifest* now reports every slot label the parser will not read
+(**131 occurrences across 63 label types** — list-valued slots like `Work can include`,
+`Boundaries`, `FAQ`, `Quote variables`, and the per-service FAQ questions). Those are **listed,
+not counted as passing.** Copy inside them is ungated; marking it as a blockquote or a
+String-column cell brings it in scope.
+
+### 3. Standing rule — a deferral and its gate are reconciled in the same session
+
+Recorded in `.claude/skills/type-law/SKILL.md` so it binds every verification pass, not gate 6:
+
+> **A deferral and the gate that tests it must be reconciled in the same session.
+> FAIL-with-reason or DEFERRED — never PASS.**
+
+With the corollaries: the reason belongs in the gate line, not only in a "Not done" section; an
+inherited PASS you did not re-derive is **unverified**, not passed; and a gate that cannot close
+locally is DEFERRED **with the named condition that would close it**.
+
+### 4. Gate 6 after this work: FAIL — 28 absent, none introduced here
+
+149 present, 4 partial, 28 absent, 2 exempt, of 183 extracted. All eight strings from §1 report
+present. The 28 are pre-existing canon-vs-build divergences, 21 of them newly visible only
+because the extractor now reads doc 27's bold-label format — they were always there, nothing
+had ever looked. They are **not** wired, pending owner rulings 2 and 3, and include a further
+divergence worth naming: the homepage `<title>` ships
+`Property Cleanout & Deep Cleaning | San Jose | Aseptaclean` against doc 27 §19's
+`Aseptaclean | Deep Cleaning & Property Cleanup San Jose`. That one is a deliberate later
+decision (the 2026-08-17 SEO/meta pass) that doc 27 §19 was never updated to record — the same
+failure this entry's §3 rule exists to stop.

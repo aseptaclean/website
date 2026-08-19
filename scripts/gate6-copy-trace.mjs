@@ -49,6 +49,13 @@ const EXEMPT = [
 const COPY_COLUMN = /^(string|copy|text|line|heading|body|label|slot value)$/i;
 const NOT_COPY_ROW = /^[-\s|]*$/;
 
+// Doc 27 writes much of its copy as a bold slot label on its own line followed by a bare
+// paragraph:  **Eyebrow**  /  Scope of work
+// Only prose-valued slots are read. List-valued slots (Work can include, Boundaries, FAQ, …)
+// enumerate content rather than state a string; they are counted in the unreachable manifest
+// below instead of being extracted, so they are listed rather than silently uncounted.
+const PROSE_SLOT = /^(lead|h1|h2|h3|h4|eyebrow|body|title|heading|outcome heading|outcome body|supporting copy|supporting line|section label|secondary cta|required label|required disclaimer|record heading|record body|publishing note|intro|note|scope|verify|reset|text photos|service area|sample room status)$/i;
+
 // Headings whose content is meta — a log entry to paste, a flagged correction — not site copy.
 const META_HEADING = /decisions-log entry|paste on approval|correction \(flag|needs owner|amendment|addendum note/i;
 // A blockquote that cites a file, a section number or a ruling is commentary, not copy.
@@ -58,10 +65,12 @@ function extract(path) {
   const rel = relative(ROOT, path);
   const lines = readFileSync(path, "utf8").split("\n");
   const found = [];
+  const unreachable = new Map();   // slot label -> count, for formats this parser will not read
   let heading = "";
   let header = null;
   let copyCol = -1;
   let blockFlag = null;
+  let afterSubHeading = false;     // a #### heading's following paragraph is card copy
 
   const flagFor = (t) => {
     for (const e of EXEMPT) if (e.match.test(t)) return e.reason;
@@ -79,8 +88,47 @@ function extract(path) {
     if (/^#{1,6}\s/.test(line)) {
       heading = line.replace(/^#+\s*/, "").trim();
       header = null; copyCol = -1; blockFlag = null;
+      afterSubHeading = /^#{4,6}\s/.test(line);
       continue;
     }
+
+    // **Slot label** on its own line, value in the paragraph beneath it
+    const bold = line.match(/^\*\*([^*]+)\*\*\s*$/);
+    if (bold) {
+      const label = bold[1].trim().replace(/[:：]$/, "");
+      let j = i + 1;
+      while (j < lines.length && lines[j].trim() === "") j++;
+      const isProse = j < lines.length && lines[j].trim() !== ""
+        && !/^[-*+|>#]/.test(lines[j].trim()) && !/^\d+\.\s/.test(lines[j].trim());
+      if (PROSE_SLOT.test(label) && isProse) {
+        const buf = [];
+        while (j < lines.length && lines[j].trim() !== "" && !/^[-*+|>#]/.test(lines[j].trim())) {
+          buf.push(lines[j].trim()); j++;
+        }
+        const text = clean(buf.join(" "));
+        if (!COMMENTARY.test(text)) push(text, i + 1);
+        i = j - 1;
+      } else {
+        unreachable.set(label, (unreachable.get(label) ?? 0) + 1);
+      }
+      afterSubHeading = false;
+      continue;
+    }
+
+    // bare paragraph directly under a #### heading — doc 27 §9.5's service-card bodies
+    if (afterSubHeading && line.trim() !== "" && !/^[-*+|>#]/.test(line.trim())) {
+      const buf = [];
+      let j = i;
+      while (j < lines.length && lines[j].trim() !== "" && !/^[-*+|>#]/.test(lines[j].trim())) {
+        buf.push(lines[j].trim()); j++;
+      }
+      const text = clean(buf.join(" "));
+      if (!COMMENTARY.test(text)) push(text, i + 1);
+      afterSubHeading = false;
+      i = j - 1;
+      continue;
+    }
+    if (line.trim() !== "") afterSubHeading = false;
     if (/DOES NOT SHIP|is \*\*void\*\*|superseded and must not|retired/i.test(line)) {
       blockFlag = blockFlag ?? "canon marks this block superseded or not shipping";
     }
@@ -114,7 +162,7 @@ function extract(path) {
     }
     if (line.trim() === "") header = null;
   }
-  return found;
+  return { found, unreachable };
 }
 
 function clean(s) {
@@ -138,9 +186,18 @@ const toRegex = (t) => new RegExp(
     .map((p) => p.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))
     .join("[^<]{0,40}"), "i");
 
-// Some table cells hold two slot labels joined by · or / ("Scope excerpt · Sample"). They render
-// as separate elements, so the joined form never appears. Checked as parts, reported as such.
-const partsOf = (t) => t.split(/\s+[·/]\s+/).map((p) => p.trim()).filter((p) => p.length >= 12);
+// Some cells hold several slot strings in one row. Two separators, with different meanings:
+//   ·  always a slot boundary        "Scope excerpt · Sample"
+//   /  a boundary only between whole sentences; inside a label it is literal text and must not
+//      be split ("Stop / notify / refer" is one rendered string, not three)
+// Split accordingly, then check each part. Reported as `partial`, never as a silent pass.
+const partsOf = (t) => {
+  const byDot = t.split(/\s+·\s+/).map((p) => p.trim()).filter(Boolean);
+  if (byDot.length > 1) return byDot.filter((p) => p.length >= 12);
+  const bySlash = t.split(/\s+\/\s+/).map((p) => p.trim()).filter(Boolean);
+  if (bySlash.length > 1 && bySlash.every((p) => p.length >= 40)) return bySlash;
+  return [];
+};
 
 // Copy, as opposed to a spec fragment: real prose, not a bare identifier, path, or hex value.
 function isCopy(t) {
@@ -179,7 +236,9 @@ const visible = (html) => html
 // Client-side strings live in bundled JS, not in rendered text, so each route is searched in
 // both its visible text and its raw source.
 const rawNorm = (s) => s
-  .replace(/\\u0026#39;|&#39;/g, "'")
+  .replace(/\\u0026#39;|&#39;|&rsquo;|&apos;/g, "'")
+  .replace(/&amp;/g, "&").replace(/&quot;|&ldquo;|&rdquo;/g, '"')
+  .replace(/&mdash;|&ndash;/g, "-").replace(/&middot;/g, "·").replace(/&nbsp;/g, " ")
   .replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/[–—]/g, "-")
   .replace(/\s+/g, " ");
 
@@ -198,8 +257,11 @@ const routes = files.map((f) => ({
 // ---------------------------------------------------------------- trace
 const seen = new Set();
 const candidates = [];
+const unreachable = new Map();
 for (const src of SOURCES) {
-  for (const c of extract(src)) {
+  const { found, unreachable: u } = extract(src);
+  for (const [label, n] of u) unreachable.set(label, (unreachable.get(label) ?? 0) + n);
+  for (const c of found) {
     const key = c.text.toLowerCase();
     if (seen.has(key)) continue;        // same string approved in two places is one string
     seen.add(key);
@@ -242,7 +304,26 @@ console.log(`Approved strings extracted: ${results.length}`);
 console.log(`  present : ${present.length}`);
 console.log(`  partial : ${partial.length}  (joined slot labels — every part renders, the joined form does not)`);
 console.log(`  absent  : ${absent.length}`);
-console.log(`  exempt  : ${exempt.length}  (canon says they do not ship, or their route is gated)\n`);
+console.log(`  exempt  : ${exempt.length}  (canon says they do not ship, or their route is gated)`);
+
+// exempt must never read 0 by accident. If nothing was exempt, say whether the exemption rules
+// simply did not fire — an empty category and an unexercised category look identical otherwise.
+if (exempt.length === 0) {
+  console.log("           ^ zero exemptions fired this run — no extracted string matched a");
+  console.log("             DOES-NOT-SHIP block or a gated-route rule. Not a default: the");
+  console.log("             rules ran and matched nothing.");
+}
+
+const unreachTotal = [...unreachable.values()].reduce((a, b) => a + b, 0);
+console.log(`\nUnreachable slots: ${unreachTotal} across ${unreachable.size} label type(s) — ` +
+            `list-valued or non-prose formats this parser does not read.`);
+if (unreachable.size) {
+  const rows = [...unreachable.entries()].sort((a, b) => b[1] - a[1]);
+  console.log("  " + rows.map(([l, n]) => `${l} ×${n}`).join(" · "));
+  console.log("  These are LISTED, not counted as passing. Copy inside them is ungated;");
+  console.log("  mark it as a blockquote or a String-column table cell to bring it in scope.");
+}
+console.log();
 
 if (partial.length) {
   console.log("### Partial — slot labels that render as separate elements");

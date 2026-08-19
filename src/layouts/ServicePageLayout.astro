@@ -293,7 +293,12 @@ const schema = [
     </div>
   </section>
 
-  <RequestForm />
+  {/* §9.15.1 "Service pages (all 14)" Form callout heading + body — distinct from the
+      homepage pair RequestForm defaults to. */}
+  <RequestForm
+    calloutHeading="Matthew reads every request himself."
+    calloutBody="You'll hear back within one business day — a real answer about fit and next steps, not an autoresponder."
+  />
 </BaseLayout>
 
 <style>

@@ -109,6 +109,34 @@ actually compares the headline against — but it is **not** a gate and nothing 
 <any widow or short final line found, at which width>
 ```
 
+## Reporting a gate — the rule that applies to every gate, not just these two
+
+**A deferral and the gate that tests it must be reconciled in the same session.
+FAIL-with-reason or DEFERRED — never PASS.**
+
+Established 2026-08-19 after this exact failure. The visual-port session recorded, correctly and
+in writing, that `/thank-you/` had not received §9.15.5's approved copy, with a sound reason.
+Eight lines earlier in the same log entry it marked gate 6 **PASS** — "every §9.15.1/.2/.5
+string verified present in `dist/`". One entry asserted both. The next session inherited the
+PASS, noted that string provenance "was not re-derived", and nothing looked again until a
+mechanical check found seven approved strings missing from the build.
+
+The prose deferral was true and useless. **The gate verdict is what the next session reads.**
+
+So, when you defer work a gate covers:
+
+- Mark that gate **FAIL (reason)** or **DEFERRED (reason)**. Never PASS with a caveat elsewhere.
+- Put the reason in the gate line itself, not only in a "Not done" section further down.
+- If you inherit a PASS you did not personally re-derive, it is **unverified**, not passed.
+  Re-run it or restate it as unverified. Carrying a summary forward is not evidence.
+- A gate that cannot be closed locally (an external dependency, a credential, a hostname) is
+  **DEFERRED with the named condition that would close it** — not PASS, and not FAIL.
+
+This generalises past typography. Any verification pass in this repo — claims, routes, gates
+1–9 — fails the same way: the check and the record of the check drift apart, and the record is
+what survives. Where a ruling amends a rule, the gate that enforces that rule is part of the
+amendment and must be edited in the same change.
+
 ## One thing worth knowing about this codebase
 
 `Hero.astro:38-51` renders a hardcoded five-row "Handoff Status" panel that is *not* driven by

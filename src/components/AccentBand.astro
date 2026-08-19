@@ -4,21 +4,38 @@
 // navy. Tokenised as --ac-color-amber; docs/18-VISUAL-DIRECTION.md §4/§6 row 5's "one accent
 // band per page, maximum" still holds.
 //
-// Copy is doc 27 §9.7 verbatim: heading, supporting line, CTA. The supporting line reads
-// site.offer.responseTime rather than hardcoding "within one business day" (AGENTS.md §3).
+// Copy defaults are doc 27 §9.7 verbatim: heading, supporting line, CTA. The supporting line
+// reads site.offer.responseTime rather than hardcoding "within one business day" (AGENTS.md §3).
+//
+// Parameterised 2026-08-19. §9.15.1 "Company pages" and §9.15.5 "FAQ / Projects connective"
+// approve two further bands on this same mockup pattern (.band) — /service-areas/ and /faq/.
+// Props rather than a second component: PORT-PROMPT §3 forbids a parallel file where one
+// exists. Doc 18 §4/§6 row 5's "one accent band per page, maximum" still governs the callers.
 import { site } from "@data/site";
+
+interface Props {
+  heading?: string;
+  headingId?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+}
+
+const {
+  heading = "Working against a listing, transfer or family deadline?",
+  headingId = "deadline-band-title",
+  ctaLabel = site.offer.primaryCta,
+  ctaHref = "/request-assessment/"
+} = Astro.props;
 ---
 
-<section class="ac-band" aria-labelledby="deadline-band-title">
+<section class="ac-band" aria-labelledby={headingId}>
   <div class="ac-shell">
     <div>
-      <h3 id="deadline-band-title" class="ac-type-h3-band">
-        Working against a listing, transfer or family deadline?
-      </h3>
+      <h3 id={headingId} class="ac-type-h3-band">{heading}</h3>
       <p>Assessment response {site.offer.responseTime}</p>
     </div>
-    <a href="/request-assessment/">
-      {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
+    <a href={ctaHref}>
+      {ctaLabel} <span aria-hidden="true">&rarr;</span>
     </a>
   </div>
 </section>

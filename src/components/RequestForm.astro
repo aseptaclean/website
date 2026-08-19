@@ -16,7 +16,23 @@
 // §18 defines as a single four-field compact form, not a three-step one. The white 8px card
 // ships; the rail ships on /request-assessment/, where the three step labels are real,
 // already-approved copy in src/data/assessment.ts. Reported as an unfilled slot, not written.
+// §9.15.1 defines TWO form callouts, not one: the Homepage table (§9.15.1 "Homepage") and the
+// Service pages table (§9.15.1 "Service pages (all 14)"). This component is shared by `/`,
+// the four hubs, /about/, /faq/, /service-areas/ and all 14 service pages, and shipped the
+// homepage pair everywhere. The props below let a caller pass the service-page pair; the
+// defaults remain the homepage strings, which is what every other caller should keep — no
+// approved callout exists for hubs or company pages, so those must not be given one.
 import QuickHandoffForm from "@components/QuickHandoffForm.astro";
+
+interface Props {
+  calloutHeading?: string;
+  calloutBody?: string;
+}
+
+const {
+  calloutHeading = "Have a bigger or more complicated property?",
+  calloutBody = "The full assessment form captures access, decision authority, deadline, and disposal detail — useful when more than one person is involved in the decision."
+} = Astro.props;
 ---
 
 <section class="ac-sec ac-formsec" id="request" aria-labelledby="request-title">
@@ -31,11 +47,8 @@ import QuickHandoffForm from "@components/QuickHandoffForm.astro";
         </p>
 
         <div class="ac-callout">
-          <b>Have a bigger or more complicated property?</b>
-          <span>
-            The full assessment form captures access, decision authority, deadline, and disposal
-            detail — useful when more than one person is involved in the decision.
-          </span>
+          <b>{calloutHeading}</b>
+          <span>{calloutBody}</span>
         </div>
       </div>
 
