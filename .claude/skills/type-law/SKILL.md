@@ -137,6 +137,39 @@ This generalises past typography. Any verification pass in this repo — claims,
 what survives. Where a ruling amends a rule, the gate that enforces that rule is part of the
 amendment and must be edited in the same change.
 
+## A presence gate proves copy arrived, not that it rendered
+
+`npm run qa:gate6` searches the built HTML for each approved string after normalising
+whitespace. That normalisation is what makes it work across wrapped source lines — and it is
+exactly what blinds it to a malformed render.
+
+**A string that renders as `I have read thePrivacy Policy.` is reported PRESENT.** That happened
+on 2026-08-19: an anchor moved onto its own source line, Astro trimmed the line-ending space,
+and the two text nodes fused. The trace could not see it; byte inspection did.
+
+**So: any approved string containing an inline element — a link, `<b>`, `<em>`, an icon — is not
+verified by the copy trace.** Check it one of two ways:
+
+- **Bytes.** Read the built HTML around the string and look for the space:
+  `python3 -c "h=open('dist/index.html').read(); i=h.find('I have read'); print(repr(h[i:i+120]))"`
+  The `repr` matters — that is what makes a missing space visible.
+- **Browser.** Read `textContent` off the live element and compare to the approved string.
+
+Prefer the browser check when the string is legally sensitive, because it also confirms the link
+is a real anchor with the right `href` rather than styled text.
+
+Two related traps in Astro specifically:
+
+- A space before an inline element at the **end of a source line** is trimmed. Write `{" "}`
+  explicitly. It is load-bearing, not formatting — do not let a formatter remove it.
+- Splitting a sentence across lines is safe *inside* a text run; it is only the boundary with an
+  element that fuses.
+
+The general rule, which applies to every gate here: **a gate tells you its own question was
+answered, not that the thing is correct.** Gate 5 proves no placeholder token survives, not that
+the copy is right. Gate 2 proves no class sizes a heading, not that the hierarchy reads. Know
+which question each gate actually asks before you report it as passed.
+
 ## One thing worth knowing about this codebase
 
 `Hero.astro:38-51` renders a hardcoded five-row "Handoff Status" panel that is *not* driven by

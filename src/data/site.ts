@@ -370,6 +370,32 @@ export const megaNav: readonly MegaNavGroup[] = [
 ];
 
 export const legal = {
+  // Base contact-consent statement. Owner ruling 2026-08-19: BOTH forms carry this wording
+  // identically, and a form needing wider scope appends a separate sentence after it rather than
+  // restating contact consent in different words. Single source so the two cannot drift again —
+  // they already had, and the divergence was only found by a mechanical copy trace.
+  //
+  // 10DLC-RELEVANT. This is consent language on a site cited in an active Twilio 10DLC campaign
+  // review (release checklist C9). Pending owner/counsel confirmation. Do not edit on style
+  // grounds, and do not re-type it into a component — reference it.
+  //
+  // Split into fragments because "Privacy Policy" ships as a link: one flat string cannot carry
+  // the anchor, and the moment a component re-types the surrounding text the drift is back.
+  consentBase: {
+    lead: "I agree that Aseptaclean may call, text, or email me about this request. Consent is not a condition of purchase. I have read the",
+    privacyLabel: "Privacy Policy",
+    tail: "."
+  },
+  // Appended after consentBase on the full assessment form only (owner ruling 2026-08-19,
+  // option B). It adds the two scopes the long form needs beyond contact consent — property-media
+  // use, and the Terms — as separate sentences, rather than restating contact consent in
+  // different words as the previous string did. Same `privacy_consent` checkbox, so it remains
+  // one consent act. 10DLC-relevant on the same terms as consentBase; do not re-type either.
+  consentAssessmentAppendix: {
+    lead: "I understand that my information and property media will be used to evaluate the requested project. I have also read the",
+    termsLabel: "Terms and Conditions",
+    tail: "."
+  },
   scopeDisclaimer:
     "Aseptaclean performs property clearing and approved cleaning within its current lawful and insured scope. Aseptaclean is not a licensed general contractor, remediation contractor, pest-control operator, appraiser, or provider of medical or legal services.",
   documentationDisclaimer:

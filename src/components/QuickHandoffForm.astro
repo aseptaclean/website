@@ -2,7 +2,7 @@
 // docs/07-ONE-PAGE-DIRECTIVE.md §7 — inline, 3 fields, no wizard, no progress bar.
 // Appears in the hero (movement 1) and the final movement. One shared component so
 // both instances stay identical instead of drifting.
-import { site } from "@data/site";
+import { legal, site } from "@data/site";
 
 interface Props {
   formId: string;
@@ -88,14 +88,14 @@ const endpointAvailable = Boolean(
 
   <label class="quick-form__consent">
     <input type="checkbox" name="privacy_consent" value="yes" required />
-    {/* Owner ruling 2026-08-19: doc 27 §18's consent and the shipped consent were merged
-        rather than one replacing the other — §18 carried "Consent is not a condition of
-        purchase" (a TCPA-adjacent disclosure), the shipped string carried the Privacy Policy
-        link. Both are retained. 10DLC-relevant: pending owner/counsel confirmation. */}
+    {/* legal.consentBase — the shared base statement, not a local copy. See src/data/site.ts:
+        10DLC-relevant, pending owner/counsel. The explicit {" "} before the anchor is load-
+        bearing: Astro trims a line-ending space, which renders "read thePrivacy Policy". */}
     <span>
-      I agree that Aseptaclean may call, text, or email me about this request.
-      Consent is not a condition of purchase. I have read the{" "}
-      <a class="quick-form__link" href={site.urls.privacyPolicy}>Privacy Policy</a>.
+      {legal.consentBase.lead}{" "}
+      <a class="quick-form__link" href={site.urls.privacyPolicy}>
+        {legal.consentBase.privacyLabel}
+      </a>{legal.consentBase.tail}
     </span>
   </label>
 

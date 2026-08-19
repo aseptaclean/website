@@ -4403,3 +4403,116 @@ exempted.
 **Gate 6 remains FAIL on 23**, all pre-existing canon-vs-build divergences awaiting the
 documentation pass, including P4 and P5. Gates 1, 3, 4, 5, 8 and type-law Rule 1 re-run clean;
 `/sms-notification-consent/` still hashes `e5280343…`. Gate 9 stays owner-deferred.
+
+---
+
+## Consent reconciled to a shared base; the render-vs-presence rule (2026-08-19)
+
+### 1. `legal.consentBase` — one source, two forms
+
+Owner ruling: the two consents are **base + additions**, not two independent statements. The base
+now lives once, in `src/data/site.ts` → `legal.consentBase`, and is referenced rather than
+re-typed:
+
+> I agree that Aseptaclean may call, text, or email me about this request. Consent is not a
+> condition of purchase. I have read the Privacy Policy.
+
+**10DLC-relevant, pending owner/counsel confirmation together with the homepage version.** This
+is consent language on a site cited in an active Twilio 10DLC campaign review (release checklist
+C9). Not a copy preference; do not edit on style grounds and do not re-type it into a component.
+
+Stored as three fragments (`lead` / `privacyLabel` / `tail`) rather than one string, because
+"Privacy Policy" ships as an anchor. A flat string cannot carry the link, and the moment a
+component re-types the surrounding text the drift is back — which is exactly how these two
+statements diverged in the first place. Verified: `I agree that Aseptaclean may call` now appears
+in `src/data/site.ts` and **nowhere else in `src/`**.
+
+`QuickHandoffForm.astro` migrated to it. **The rendered homepage consent is character-identical
+before and after the refactor** — confirmed by diffing the built output, not assumed from the
+fact that it compiled.
+
+### 2. `AssessmentForm.astro` — migrated in the same change, option B approved
+
+The appended wording was reported before shipping and ruled on. The full form now renders
+`legal.consentBase` + `legal.consentAssessmentAppendix`:
+
+> I agree that Aseptaclean may call, text, or email me about this request. Consent is not a
+> condition of purchase. I have read the **Privacy Policy**. I understand that my information and
+> property media will be used to evaluate the requested project. I have also read the **Terms and
+> Conditions**.
+
+It replaces:
+
+> I authorize Aseptaclean to contact me about this request and understand that my information and
+> property media will be used to evaluate the requested project. I have read the Privacy Policy
+> and Terms and Conditions.
+
+**Nothing was dropped and one disclosure was gained.** Property-media use and the Terms link are
+both preserved; the base adds *"Consent is not a condition of purchase,"* which the full form did
+not previously carry, and makes the channel list explicit ("call, text, or email") where the old
+string said only "contact me". Both policy names remain anchors — `/privacy/` and `/terms/`.
+
+The base and the appendix landed **in the same change** deliberately. Shipping the base alone
+would have dropped the media-use and Terms disclosures for the interval between commits, which is
+a coverage regression on a legally-relevant surface even if brief.
+
+Both statements live in `src/data/site.ts` and are referenced, never re-typed. Verified: neither
+*"I agree that Aseptaclean may call"* nor *"I understand that my information and property media"*
+appears anywhere in `src/` except `site.ts`, and the old wording is gone from `src/` and `dist/`.
+
+**Appendix stored as fragments** (`lead` / `termsLabel` / `tail`) for the same reason as the base:
+it carries an inline anchor, and a flat string cannot.
+
+### 3. Standing rule — a presence gate proves copy arrived, not that it rendered
+
+Added to `.claude/skills/type-law/SKILL.md`, generalised past gate 6.
+
+`qa:gate6` normalises whitespace before searching. That normalisation is what lets it match
+across wrapped source lines, and it is exactly what blinds it to a malformed render: a string
+rendering as `I have read thePrivacy Policy.` is reported **PRESENT**. That is not hypothetical —
+it happened earlier the same day, when an anchor moved onto its own source line and Astro trimmed
+the line-ending space. The trace could not see it; `repr()` on the built bytes did.
+
+**Any approved string containing an inline element — a link, `<b>`, `<em>`, an icon — is not
+verified by the copy trace.** It needs byte inspection or a browser `textContent` read, and the
+browser read is preferred when the string is legally sensitive because it also confirms the link
+is a real anchor with the right `href`.
+
+The general form, recorded because it applies to every gate in this repo: **a gate tells you its
+own question was answered, not that the thing is correct.** Gate 5 proves no placeholder token
+survives, not that the copy is right. Gate 2 proves no class sizes a heading, not that the
+hierarchy reads. Know which question a gate actually asks before reporting it as passed.
+
+### 4. Gate 6 unchanged by this work
+
+`181 extracted · 152 present · 4 partial · 23 absent · 2 exempt · 4 struck` — identical to the
+previous entry, as expected: this was a single-sourcing refactor with no copy change.
+
+### 5. 10DLC review note — three consent-adjacent surfaces, all pending owner/counsel
+
+Recorded together because a carrier reviewer opening this site sees all three, and reviewing any
+one in isolation misses what the page actually says. **All three are pending owner/counsel review.
+None may be edited on style grounds.** Release checklist C9 (`/sms-notification-consent/`,
+byte-preserved under the same review) is the fourth surface and is already fenced.
+
+| # | Surface | Where | What it says |
+| --- | --- | --- | --- |
+| 1 | Homepage compact form consent | `legal.consentBase`, rendered by `QuickHandoffForm.astro` on 28 routes, `privacy_consent` checkbox (required) | Contact consent across call/text/email; "Consent is not a condition of purchase"; Privacy Policy link |
+| 2 | Full assessment form consent | `legal.consentBase` + `legal.consentAssessmentAppendix`, rendered by `AssessmentForm.astro` on `/request-assessment/`, same `privacy_consent` checkbox (required) | Surface 1 verbatim, plus property-media use for project evaluation and the Terms and Conditions link |
+| 3 | Scope acknowledgment | `AssessmentForm.astro`, `scope_acknowledgment` checkbox (required), `/request-assessment/` | *"I understand that this request begins a fit review and does not authorize work, create a service agreement, or reserve a project date."* |
+
+Surfaces 1 and 2 are **one statement plus additions**, not two statements — that is the point of
+the shared source, and it is the answer to "do your two forms say different things about
+consent?" They no longer can without an edit to `site.ts`.
+
+Surface 3 is **not consent to contact.** It is a separate required checkbox with its own field
+name, acknowledging that submission does not authorize work. It was not part of the consent
+reconciliation and is unchanged. It is listed here because it sits directly beneath surface 2 on
+the same page and a reviewer will read them as a group. The same page also carries a plain
+sentence beneath both — *"Submitting this form authorizes Aseptaclean to contact you. It does not
+authorize work or create a service agreement."* — which restates both in prose.
+
+**Verified by browser, not by the copy trace**, per §3 below: each statement's `textContent` was
+read from a live render and compared character-for-character against the approved wording, and
+every policy name confirmed to be a real `<a>` with the correct `href`. Both statements contain
+inline links, which is exactly the case a presence gate cannot verify — the full form's has two.
