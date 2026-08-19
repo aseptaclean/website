@@ -255,8 +255,15 @@ byte-preserved under carrier review and loads Montserrat/Open Sans from Google. 
 
 1. **No `font-size` declaration on any heading tag. Zero exceptions.** Not in a component
    `<style>` block, not inline. Headings get size from their `.ac-type-*` role class.
-2. **H1:body ratio floor — ≥2.5:1 at 390px, ≥4:1 at 1440px.** Measured on computed styles,
-   not on token values. This is the fix for "the page looks flat"; it is not negotiable.
+   **This is verified by resolving computed styles on heading elements in the built output —
+   not by grepping selector text.** A class that sets a size and lands on an `<h1>`–`<h6>`
+   violates this law exactly as a bare `h2 { font-size }` does, and a selector-text grep
+   cannot see it. Amended 2026-08-18 after a grep-based check passed a live violation.
+2. **H1:body ratio floor — ≥1.9:1 at every width.** Measured on computed styles, not on token
+   values. Amended by owner ruling 2026-08-18: the previous split floor (≥2.5:1 at 390px,
+   ≥4:1 at 1440px) is **superseded and no longer enforced**. In the approved direction
+   contrast is carried by surface and colour variation, which the old floors predate. Do not
+   re-raise a heading token to chase the retired numbers.
 
 ---
 

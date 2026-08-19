@@ -210,6 +210,11 @@ mark done, move on.
       **4.25:1** (floor 4:1, pass). Measured live with a Playwright `getComputedStyle` probe
       against the deployed preview at 320/390/1440px, not estimated from source — see §F's
       Lighthouse note for the URL this ran against.
+      **Superseded 2026-08-18 — retained as the record of what was true when it was written.**
+      Both the floor and the token above are historical: the visual port reset `--ac-text-h1`
+      to `clamp(2.5rem, 4.6vw, 3.7rem)`, and owner ruling 2026-08-18 replaced the 2.5:1/4:1
+      split floor with a single **≥1.9:1 at every width**. Re-run against that floor; do not
+      restore the token value quoted here. See `docs/05-DECISIONS-LOG.md`.
 - [ ] **C19. `--ac-color-steel-300` contrast — smaller and more precise than previously stated.**
       `docs/05-DECISIONS-LOG.md` §10 already ran the real computation this pass needed: grep
       confirms `steel-300` is used **exclusively as a border color** in `src/` (never as text),

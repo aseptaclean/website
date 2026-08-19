@@ -48,7 +48,12 @@ for (const [name, path] of routes) {
     const page = await ctx.newPage();
     const errors = [];
     page.on("pageerror", e => errors.push(String(e)));
-    await page.goto(`http://localhost:4321${path}`, { waitUntil: "networkidle" });
+    // NOT networkidle: the Turnstile widget holds open blob: requests to
+    // challenges.cloudflare.com for the life of the page, so network never goes idle and every
+    // capture times out. Wait for load + webfonts instead — fonts are what actually has to
+    // settle before a screenshot is meaningful.
+    await page.goto(`http://localhost:4321${path}`, { waitUntil: "load" });
+    await page.evaluate(() => document.fonts.ready);
     await page.evaluate(async () => {
       const step = window.innerHeight;
       for (let y = 0; y < document.documentElement.scrollHeight; y += step) {
@@ -81,7 +86,8 @@ for (const [name, path] of routes) {
 // the document instead of the drawer.
 const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2 });
 const page = await ctx.newPage();
-await page.goto("http://localhost:4321/", { waitUntil: "networkidle" });
+await page.goto("http://localhost:4321/", { waitUntil: "load" });  // see note above re Turnstile
+await page.evaluate(() => document.fonts.ready);
 await page.click("label.burger");
 await page.waitForTimeout(400);
 await page.screenshot({ path: join(OUT, "drawer-open-390.png") });          // as it opens

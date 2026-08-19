@@ -16,8 +16,11 @@ precedence chain immediately after `10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md`.
 **Explicitly retained from `11-COMPOSITION-AND-TYPE.md`** (these are why the good
 sections work — do not discard them):
 - §1 headings styled by role, never by tag. No `font-size` on any heading tag. Ever.
-- §1/§2 the H1-to-body ratio floor: **≥2.5:1 at 390px, ≥4:1 at 1440px.** This is the
-  actual fix for "the page looks flat." A font change does not fix a ratio.
+- §1/§2 the H1-to-body ratio floor: **≥1.9:1 at every width.** Amended by owner ruling
+  2026-08-18 — the previous **≥2.5:1 at 390px, ≥4:1 at 1440px** split floor is superseded
+  and no longer enforced. The approved direction carries contrast through surface and colour
+  variation rather than headline scale alone; the old floors predate it. The ratio still
+  exists as a floor, not a target — a heading may not collapse toward body size.
 - §3 measure variation — no two consecutive sections share a container width
 - §4 rhythm ratios — adjacent sections differ by ≥1.5x or are exactly 1.0x
 - §7 spend boldness once — the Property Handoff Record remains the single dramatic moment
@@ -247,8 +250,10 @@ data or rendered as a text fallback. `$NaN` or any placeholder is a release bloc
 
 Screenshot `/` at 390px and 1440px, then answer in writing:
 
-- [ ] Is any `font-size` declared on a heading tag anywhere in the codebase? → fail
-- [ ] Is the H1-to-body ratio below 2.5:1 at 390px or 4:1 at 1440px? → fail
+- [ ] Does any selector that resolves to a heading element declare a `font-size`? → fail
+      (resolve computed styles on `<h1>`–`<h6>` in the built output, not a selector grep)
+- [ ] ~~Is the H1-to-body ratio below 2.5:1 at 390px or 4:1 at 1440px?~~ **Struck — superseded
+      by owner ruling 2026-08-18.** Replaced by: is the ratio below **1.9:1 at any width**? → fail
 - [ ] Do any two adjacent sections share container width *and* vertical padding? → fail
 - [ ] Three consecutive text elements within 15% on size, weight, and colour? → fail
 - [ ] More than one dramatic moment competing with the Handoff Record? → fail

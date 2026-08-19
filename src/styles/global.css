@@ -225,6 +225,14 @@ textarea {
   text-wrap: pretty;
 }
 
+/* Size only, deliberately. Unlike the role classes above, this one is applied ALONGSIDE
+   `.referral-note__heading`, which still supplies family, line-height, colour and measure.
+   Declaring weight or letter-spacing here would land on an element that never had them and
+   change the rendering — the opposite of why this class exists. */
+.ac-type-h2-referral {
+  font-size: var(--ac-text-h2-referral);
+}
+
 .ac-type-h3 {
   font-family: var(--ac-font-display);
   font-size: var(--ac-text-h3);

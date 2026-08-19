@@ -3848,3 +3848,131 @@ ratios are the reported deviation.
   `CompactHero` survive only for `/senior-downsizing-san-jose/`. Nothing was deleted — that is a
   DELETE-MANIFEST decision, not a visual-port one.
 - Nothing here was reported done because it compiles.
+
+## Gate re-verification, type-law amendment and the referral token (2026-08-18)
+
+Independent re-run of all nine PORT-PROMPT §6 gates against fresh evidence, at owner request
+("no fresh evidence — only a summary"). Eight gates reproduced clean. **Gate 2 did not.**
+
+### 1. Gate 2 failed, and the method that passed it was the defect
+
+`src/pages/senior-downsizing-san-jose/index.astro:152` declared
+`font-size: clamp(1.5rem, 2.6vw, 1.9rem)` on `.referral-note__heading`, a class applied to the
+`<h2>` at line 87. That is a type law #1 violation — a selector resolving to a heading, setting
+a size.
+
+Session 3 reported gate 2 as pass on "70 heading rules examined, 0 declaring font-size." That
+method examines heading **tag** rules and structurally cannot see a class that lands on a
+heading. The first re-verification pass this session made the same error and also reported a
+false pass; a comment-stripping bug additionally produced ten false positives from mockup
+references like `/* .hero h1 */`. The violation surfaced only when a stray `clamp()` in the
+flat grep failed to match any `.ac-type-*` role class.
+
+**Method upgrade, ratified by owner as the standard.** Type-law checks now verify by resolving
+computed styles on heading elements in the built output, never by grepping selector text. The
+required procedure — collect classes declaring `font-size` in `src/`, collect classes applied
+to `<h1>`–`<h6>` in built HTML, intersect, subtract `.ac-type-*` — is written into
+`.claude/skills/type-law/SKILL.md`, `AGENTS.md` §6 law 1, and the `11`/`18` checklists.
+Comments must be stripped before selectors are matched.
+
+### 2. The fix: a token, not a restyle
+
+Owner ruled option B — preserve the clamp exactly, move it into the scale, leave the page
+alone. `/senior-downsizing-san-jose/` remains on the pending delete-or-write register and was
+not restyled.
+
+- `tokens.css` — added `--ac-text-h2-referral: clamp(1.5rem, 2.6vw, 1.9rem)`, the page's own
+  value lifted verbatim.
+- `global.css` — added `.ac-type-h2-referral`, declaring **font-size only**. Deliberate: it is
+  applied *alongside* `.referral-note__heading`, which still supplies family, line-height,
+  colour and measure. Declaring weight or letter-spacing there would land on an element that
+  never had them and change the rendering.
+- the page — role class added to the `<h2>`; the local `font-size` line removed.
+
+**Zero visual change, verified rather than asserted.** Computed `font-size` and `line-height`
+on `#referral-title` are identical before and after at 320/360/390/414/768/1024/1280/1440/1920px
+(24px → 26.624px → 30.4px across the clamp). A full-site sweep diffs identical except the class
+attribute itself. Gate 2 now returns 0 violations under the computed-style method; gates 3, 4,
+5 and 8 re-run clean after the CSS change, and `/sms-notification-consent/` still hashes
+`e5280343b300eeff1fb0bd0b3452baad55ac3bb6a7c6e3b3cedfb3fcbe31cdf5`.
+
+### 3. Type law #2 amended — the law moved, not the type
+
+**Conflict.** `AGENTS.md` §6 law 2, `18` §preamble and the `11`/`18`/`04` checklists required
+H1:body ≥2.5:1 at 390px and ≥4:1 at 1440px. Measured against the shipped port, **every route
+missed 4:1 at 1440px** (best 3.70:1) and the hub, service and band routes also missed 2.5:1 at
+390px (2.20:1 and 1.90:1). The `ac-type-h1-hub` and `ac-type-h1-band` variants are port-
+introduced, so the port widened a failure the homepage already had.
+
+**Resolution — owner ruling, precedence rank 1, superseding `18` (rank 5) and `11` (rank 9).**
+The approved visual direction supersedes both floors. New single floor: **no H1 renders below
+1.9:1 at any width.** Rationale as given: contrast in the new direction is carried by surface
+and colour variation per the approved reference specs, which the old floors predate. The old
+numbers are retired, not merely unmet — they must not be restored or chased by raising a
+heading token.
+
+Type: **rule repealed by owner decision**, not a stale description and not a violated rule.
+Recorded here explicitly because this document set has a history of a lower-ranked document
+overriding higher-ranked ones through a log entry alone. The losing documents were amended, so
+no contradictory statement is left live:
+
+- `AGENTS.md:258` — law 2 rewritten to the 1.9:1 floor; law 1 given the computed-style method.
+- `docs/18-VISUAL-DIRECTION.md` §preamble and release checklist — floor rewritten; old item struck.
+- `docs/11-COMPOSITION-AND-TYPE.md` §checklist — old item struck, replaced.
+- `docs/04-RELEASE-CHECKLIST.md` C18 — annotated superseded; its historical measurement and the
+  `clamp(2.75rem, 5vw, 4.25rem)` token value it quotes are both stale and must not be restored.
+- `.claude/skills/type-law/SKILL.md` — Rule 2 rewritten, Rule 1 method rewritten, the stale
+  "known violations" pointers (`Hero.astro:101`, `AssessmentForm.astro:2014` — now unrelated
+  code) cleared.
+
+Left as historical fact, not amended: `docs/REPO-STATE.md:507` and
+`docs/20-ALIGNMENT-AUDIT-2026-08-11.md:134` record measurements true when written.
+
+**Verification — all 37 built routes, 9 widths each: zero below 1.9:1.**
+
+> **Standing risk.** Thirteen band-header routes pass at *exactly* 1.900:1 at 320px
+> (30.4px / 16px), driven by `--ac-text-h1-band`'s `1.9rem` minimum. Zero margin: any
+> reduction of that token, or any increase to body size, breaks the floor on 13 routes
+> simultaneously. 320px is the binding width, not 390px.
+
+### 4. Gates 6 and 9 — accepted as evidenced
+
+Gate 6 re-verified on the claims-law dimension: zero hits for every affirmative-claim term;
+all 36 hits for `licensed`/`remediation`/`clearance`/`habitable` are footer-disclaimer
+negations; both mandatory verbatim clauses present character-exact (cleaning-only on all 7
+animal/organic routes, founder-background on 2); every "review" is the verb, no testimonials or
+ratings. The `$2,000–$3,499` budget bands are customer self-reported ranges, already ruled a
+non-violation twice — not re-litigated. String-by-string provenance against §9.15 was not
+re-derived; the session-3 trace table stands.
+
+Gate 9 is wiring-verified, not browser-verified, and that is the ceiling locally: both forms
+POST to `/api/lead`, `qa:phase3:endpoint` passes 9/9, and a live `wrangler pages dev` returned
+HTTP 200 with correct 422/400 validation. A real submission cannot complete locally because
+Turnstile requires a live Cloudflare challenge — `scripts/phase3-endpoint-check.mjs:27` stubs
+siteverify for exactly this reason. Not a defect; `functions/` was not touched.
+
+Owner accepted both. Port approved for merge on this evidence.
+
+### 5. Addendum — gate-7 evidence script repaired, and a JS error that is not one
+
+Re-running gate 7 after the token change failed outright: `scripts/port-shots.mjs` timed out on
+every capture. Cause is not the site. The Turnstile widget holds open `blob:` requests to
+`challenges.cloudflare.com` for the life of the page, so `waitUntil: "networkidle"` can never
+settle. It had passed earlier in the session only because the widget was loading slowly enough
+to lose the race — i.e. the script was always flaky, not newly broken.
+
+Repaired: both `goto` calls now use `waitUntil: "load"` followed by `document.fonts.ready`.
+Fonts are what actually has to settle before a screenshot means anything; network idle never
+does on a page carrying a third-party challenge widget. The scroll-settle before `fullPage`
+capture is unchanged and still required. Gate 7 re-captures clean — 12 images, zero horizontal
+overflow across all ten route/width combinations.
+
+**The 10 "JS errors" that capture now reports are one artifact, not ten defects.** Every one is
+`Uncaught TurnstileError: [Cloudflare Turnstile] Error: 110200` — unknown-domain — thrown once
+per page load because the production build is being served from `localhost:4321`, which is not
+on the widget's allowed-domain list. Verified identical on all five gate-7 routes, with no other
+page error present. It cannot occur on the real hostname. Earlier runs reported zero only
+because the widget never got far enough to throw. **Do not chase this as a regression, and do
+not "fix" it by touching the endpoint or the widget config.** If a future gate-7 run reports
+JS errors, read the messages before treating the count as meaningful — the script records a
+count only, which is how this nearly passed unexamined.

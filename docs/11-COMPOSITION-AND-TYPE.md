@@ -286,8 +286,12 @@ ceiling — and it is a high one.
 Screenshot `/` at 390px and 1440px, then answer each in writing:
 
 - [ ] Do any two adjacent sections share container width *and* vertical padding? → fail
-- [ ] Is any font-size declared on a heading tag anywhere in the codebase? → fail
-- [ ] Is the H1-to-body ratio below 2.5:1 at 390px or 4:1 at 1440px? → fail
+- [ ] Does any selector that resolves to a heading element declare a font-size? → fail
+      (resolve computed styles on `<h1>`–`<h6>` in the built output; a selector-text grep
+      misses a class that sets a size and lands on a heading)
+- [ ] ~~Is the H1-to-body ratio below 2.5:1 at 390px or 4:1 at 1440px?~~ **Struck — superseded
+      by owner ruling 2026-08-18, recorded in `docs/05-DECISIONS-LOG.md`.** Replaced by a
+      single floor: is the H1-to-body ratio below **1.9:1 at any width**? → fail
 - [ ] ~~Does Newsreader appear more than nine times on the page?~~ **Struck — superseded by
       `docs/18-VISUAL-DIRECTION.md` §preamble.** No Newsreader count check applies.
 - [ ] Three consecutive text elements within 15% on size, weight, and color? → fail

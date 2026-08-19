@@ -105,6 +105,13 @@
   --ac-text-h2-record: clamp(1.6rem, 2.7vw, 2.1rem);  /* .rec h2 — overlay record card */
   --ac-text-h2-final: clamp(2rem, 3.6vw, 2.9rem);     /* .final h2 — closing CTA */
 
+  /* Referral-note H2 on /senior-downsizing-san-jose/. Lifted verbatim from that page's own
+     rule, which declared the clamp locally on an h2 and so violated type law #1. The value is
+     unchanged — this token exists to hold the size in the scale, not to restyle the page.
+     That route is on the pending delete-or-write register; if it is written, re-derive this
+     against the approved direction rather than preserving it by default. */
+  --ac-text-h2-referral: clamp(1.5rem, 2.6vw, 1.9rem); /* .referral-note__heading */
+
   /* Inner-page H1s. The mockups run three distinct H1 sizes, not one: the homepage hero
      (--ac-text-h1 above), the hub / service-page header (.ph h1, weight 500) and the compact
      redaction-mark band on company and legal pages (.pgh h1, weight 700). Ported verbatim. */

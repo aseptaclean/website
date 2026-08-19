@@ -84,7 +84,7 @@ const schema = [
   <section class="referral-note" aria-labelledby="referral-title">
     <div class="ac-measure-wide referral-note__shell">
       <p class="ac-eyebrow referral-note__eyebrow">Referral partners</p>
-      <h2 id="referral-title" class="referral-note__heading">{seniorDownsizingPage.referralNote.heading}</h2>
+      <h2 id="referral-title" class="referral-note__heading ac-type-h2-referral">{seniorDownsizingPage.referralNote.heading}</h2>
       <p class="referral-note__body">{seniorDownsizingPage.referralNote.body}</p>
     </div>
   </section>
@@ -144,12 +144,13 @@ const schema = [
     color: var(--ac-color-blue-deep);
   }
 
+  /* Size lives in --ac-text-h2-referral, applied via .ac-type-h2-referral on the element.
+     Type law #1: a component may not declare a font-size on a heading tag. */
   .referral-note__heading {
     max-width: 30ch;
     margin: var(--ac-space-3) 0 0;
     color: var(--ac-color-navy-900);
     font-family: var(--ac-font-display);
-    font-size: clamp(1.5rem, 2.6vw, 1.9rem);
     line-height: 1.2;
   }
 
