@@ -4084,3 +4084,126 @@ failed" on a fabricated token — i.e. the endpoint fails closed at Turnstile, c
 throws `110200` on every route; per doc 04 §F only a hostname registered in Turnstile Hostname
 Management issues tokens. This gate belongs on the stable alias and cannot be closed from here.
 `functions/` was not touched.
+
+### 6. Correction to §4 above — the deferral was recorded; the gate was not reconciled to it
+
+§4 framed the seven missing strings as rulings that never reached the repository. That is right
+for the two `PORT-PROMPT` defects and wrong in one detail for gate 6, and the detail changes the
+lesson.
+
+The port session **did** record the `/thank-you/` deferral. Session 3's §8 "Not done" states
+plainly that the page "did **not** receive §9.15.5's 'While you wait' section," with a real
+rationale: the confirmed/unconfirmed state machine is a suppression-rule surface under
+`AGENTS.md` §3 (never show a success state against a non-working endpoint) and restyling around
+it needed its own pass. That is a defensible deferral, properly written down.
+
+**The defect is that §7 of the same entry marked gate 6 PASS — "every §9.15.1/.2/.5 string
+verified present in `dist/`" — eight lines above §8 saying three of those strings were not
+applied.** One entry asserts both. The 2026-08-18 re-verification then inherited the PASS and
+recorded that string provenance "was not re-derived," so nothing downstream ever looked again.
+
+The sharper rule: **a "not done" item and a gate that tests it must be reconciled in the same
+session.** A deferral recorded in prose does not survive contact with a gate marked pass; the
+gate is what the next session reads. Where a session defers work a gate covers, the gate is
+FAIL-with-reason or DEFERRED — never PASS.
+
+The original §9.15.5 concern is satisfied by how the strings landed: the state machine is
+untouched, the approved success line sits **inside** the `data-confirmed` block so it renders
+only against a confirmed submission, and the connective aside is outside the machine entirely.
+The four form-state strings were not mentioned in any prior entry — those were a genuine gap.
+
+### 7. Pending decisions register
+
+Referenced as "the pending delete-or-write register" since 2026-08-18 but never actually
+written. Written now, because a register that exists only as a phrase is how the items above
+got lost.
+
+| # | Item | State | Closes when |
+| --- | --- | --- | --- |
+| P1 | `/senior-downsizing-san-jose/` | Held out of the port, left byte-identical. Sole surviving caller of `ServiceScope`, `ServicePricing`, `ServiceFAQ`, `ServiceMethodRail`, `ServiceProof`, `CompactHero`. Carries an `[OWNER INPUT]` placeholder; `noindex`. | Owner decides delete-or-write. Deleting it also retires six components; writing it means porting the page and resolving the placeholder. |
+| P2 | `/animal-waste-cleanup-san-jose/` index flip | `noindex`, but linked from indexable `/services/` and `/service-areas/`. §21-gated on the organic-pathogen wording law. | The COI check (release checklist C15) confirms the endorsement wording, and the crawl-path decision (C10) resolves whether indexable hubs may link to it. |
+| P3 | Server/client error-string divergence | `functions/_lib/lead.ts` returns the pre-port field messages (`"Consent is required."`); `QuickHandoffForm.astro` maps `phone` and `privacy_consent` to the §9.15.5 approved strings client-side. The visitor sees approved copy; every other consumer of that response — a future client, a log line, an integration test — sees the old strings. | `functions/` is legitimately open for other work. `PORT-PROMPT` §4 fences it, and no copy fix justifies breaching that fence on its own. Move the two strings server-side and delete the client map in the same change. |
+
+**None of these is a defect today.** Each is a deliberate hold with a named condition. The
+register exists so the condition is checked rather than remembered.
+
+### 8. §9.15.5 submission-error string amended to a token
+
+The approved string carried the literal `408-785-7588`. Amended 2026-08-19 to
+`{site.business.phone}`, in `docs/27-SECTION-9-15-CONNECTIVE-COPY.md` §9.15.5 itself, not only
+in the components.
+
+The literal was an error in the copy document on two counts. `AGENTS.md` §3 makes
+`src/data/site.ts` the single source of truth for business facts and forbids hardcoding them in
+a component; `AGENTS.md` outranks doc 27 on business facts, so the conflict resolves up. And the
+literal's format (`408-785-7588`) differs from the one the site renders everywhere else
+(`(408) 785-7588`), so shipping it verbatim would have put two spellings of the same number on
+the same page as the footer. A token is not copy — it interpolates at render and follows the env
+value.
+
+Implementation note: both form scripts are bundled and cannot read frontmatter, so the value
+arrives on a `data-contact-phone` attribute on each `<form>`. If that attribute is ever absent
+the sentence drops the number rather than rendering an empty string or a stale one.
+
+Verified functionally, not by reading source: `/api/lead` was mocked into a message-less failure
+so each component's own fallback rendered, and both forms produced *"Something went wrong on our
+end and the form didn't send. Call or text (408) 785-7588 and we'll take it from there."* Zero
+occurrences of the literal `408-785-7588` remain in `src/` or `dist/`.
+
+### 9. Gate 6 made mechanical — `npm run qa:gate6`
+
+`scripts/gate6-copy-trace.mjs` added and cited in `PORT-PROMPT.md` §6 gate 6, replacing "every
+visible string diffs clean against §9.15 or doc 27". That wording was satisfied by reading, and
+reading recorded PASS twice over seven absent strings.
+
+**What it does.** Extracts every approved string from `docs/27-SECTION-9-15-CONNECTIVE-COPY.md`
+and `docs/27-COPY-CANONICAL.md`, searches all 37 rendered routes (visible text *and* raw source,
+since form-state strings live in bundled JS), and reports each as present / partial / absent /
+exempt with route counts. Exits non-zero on any unexplained absence.
+
+**What it deliberately does not do.** It checks one direction: that approved copy reached the
+build. It cannot prove an arbitrary rendered string traces back to an approved source — that
+requires judgement about what counts as a string, and asserting otherwise would make the gate
+feel stronger than it is. Absence is mechanically checkable; provenance is not.
+
+**Extraction contract, and its blind spot.** The script reads copy marked as a blockquote or as
+a table cell under a String/Copy/Text column. Prose paragraphs in those documents are
+commentary, not copy, and are skipped — otherwise every sentence of specification registers as a
+missing string. **Consequence: doc 27 §9.4–9.5's copy, written as bold-label + bare paragraph
+(`**Eyebrow**` / `Scope of work`), is invisible to the guard.** That block does not ship today,
+so nothing is currently missed, but the format is the blind spot, not the block. New copy must
+be marked as a blockquote or it will not be gated. This is stated in the script header and in
+the gate text.
+
+**First full run: FAIL — 14 approved strings absent.** Not a regression from this session's
+work; these predate it and were never caught because nothing looked. 57 strings extracted, 41
+present, 2 partial, 14 absent, 0 exempt.
+
+- **§9.15.1 service-page connective (4)** — `Sample only — not a client record…`,
+  `You'll hear back within one business day…`, and the two joined slot headers
+  `Scope excerpt · Sample` and `Stop / notify / refer · Outside this scope`.
+- **§9.15.1 company-page connective (2)** — `Not sure the address is in range?` and
+  `Send the property details →`, the service-areas band heading and CTA.
+- **§9.15.5 FAQ/Projects connective (2)** — `Still deciding?` and `Didn't find your question?`.
+  Confirmed absent from `/faq/` by direct grep, not inferred.
+- **Doc 27 form copy (5)** — the homepage compact-form and full-form helper and consent strings.
+  The consent label ships in different wording (`I agree to be contacted about this project by
+  phone, text, or email…`) rather than doc 27's `I agree that Aseptaclean may call or text me…`.
+- **Doc 27 §3 footer scope statement (1)** — ships in materially different wording. Canon:
+  `Aseptaclean performs services only within its current lawful and insured scope. Structural
+  work, pest treatment…`. Shipped: `Aseptaclean performs property clearing and approved cleaning
+  within its current lawful and insured scope…`. Both are scope-narrowing and neither is a
+  claims violation, but **two approved wordings exist for one legally-sensitive statement and
+  the canon does not record which supersedes.** This one needs an owner call, not a code fix.
+
+**Partial (2), reported rather than passed or failed.** `Work can include · Per approved scope`
+and the request-assessment steps row: the canon joins several slot strings in one table cell
+with `·` or `/`, and they render as separate elements. Every part is present; the joined form
+never appears and never should. Reported as its own category so it is neither a false failure
+nor silently counted as a pass.
+
+**Gate 6 is therefore FAIL as of this commit**, on 14 pre-existing items, none introduced here.
+The seven §9.15.5 strings this session applied all report present. Whether the 14 are fixed,
+re-approved, or exempted is an owner decision — several are copy choices, and the footer one is
+a claims-adjacent supersession question. The gate now states the position instead of implying
+there isn't one.

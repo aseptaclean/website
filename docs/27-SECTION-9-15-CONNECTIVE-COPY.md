@@ -155,9 +155,17 @@ the read-aloud gate. Flagged so it isn't "improved" later.
 | State | String |
 | --- | --- |
 | Success (doc 27 §18, verbatim) | Got it. I'll review the details and contact you about the next step. |
-| Submission error | Something went wrong on our end and the form didn't send. Call or text 408-785-7588 and we'll take it from there. |
+| Submission error | Something went wrong on our end and the form didn't send. Call or text {site.business.phone} and we'll take it from there. |
 | Missing phone | Add a phone number so Matthew can reach you about the property. |
 | Missing consent | Check the consent box so we're allowed to call or text you back. |
+
+**Amended 2026-08-19 — the submission-error string.** It previously carried the literal
+`408-785-7588`. That was an error in this document: `AGENTS.md` §3 makes `src/data/site.ts` the
+single source of truth for business facts and forbids hardcoding them in a component, and
+`AGENTS.md` outranks this document on business facts. The literal also used a different format
+from the one the site renders everywhere else (`(408) 785-7588`), so it would have shipped two
+spellings of the same number. `{site.business.phone}` is a token, not copy — it interpolates at
+render and follows the env value. Logged in `docs/05-DECISIONS-LOG.md`, 2026-08-19.
 
 ### Thank-you page connective
 | Slot | String |

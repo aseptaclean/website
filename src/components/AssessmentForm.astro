@@ -102,6 +102,7 @@ const yesNoUnsure = [
         method="post"
         enctype="multipart/form-data"
         data-assessment-form
+        data-contact-phone={site.business.phone}
       >
         <input type="hidden" name="form_version" value={assessment.version} />
         <input type="hidden" name="offer_type" value="handoff_reset" />
@@ -1366,6 +1367,16 @@ const yesNoUnsure = [
         "Check the consent box so we're allowed to call or text you back."
     };
 
+    // §9.15.5's submission-error string interpolates {site.business.phone} rather than a
+    // literal (amended 2026-08-19; AGENTS.md §3 forbids hardcoding business facts). This
+    // script is bundled and cannot read frontmatter, so the value arrives on the form's data
+    // attribute. If the attribute is ever missing, the sentence drops the number rather than
+    // printing a stale or empty one.
+    const contactPhone = form.dataset.contactPhone ?? "";
+    const submissionErrorMessage = contactPhone
+      ? `Something went wrong on our end and the form didn't send. Call or text ${contactPhone} and we'll take it from there.`
+      : "Something went wrong on our end and the form didn't send. Call or text us and we'll take it from there.";
+
     const validationMessage = (control: FormControl) => {
       const label = labelForControl(control);
       if (control.validity.valueMissing) {
@@ -1766,14 +1777,11 @@ const yesNoUnsure = [
         const message =
           typeof payload.message === "string"
             ? payload.message
-            : "Something went wrong on our end and the form didn't send. Call or text 408-785-7588 and we'll take it from there.";
+            : submissionErrorMessage;
         setSubmitting(false, message);
         resetTurnstile();
       } catch {
-        setSubmitting(
-          false,
-          "Something went wrong on our end and the form didn't send. Call or text 408-785-7588 and we'll take it from there."
-        );
+        setSubmitting(false, submissionErrorMessage);
         resetTurnstile();
       }
     });

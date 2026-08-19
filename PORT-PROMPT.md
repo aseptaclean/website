@@ -124,8 +124,21 @@ exclusion red `#8C3B32`. Add as `--ac-` tokens; no other new color.
 3. `grep -ri "font-family.*mono\|JetBrains\|ui-monospace" src/` → zero hits.
 4. `grep -ri "Newsreader" src/` → zero hits.
 5. `grep -ri "OWNER INPUT\|TODO\|FIXME\|lorem" dist/` → zero hits.
-6. Every visible string diffs clean against §9.15 or doc 27. Produce the trace table for any
-   string you were unsure about.
+6. `npm run qa:gate6` passes — zero approved strings absent from the build. The script
+   (`scripts/gate6-copy-trace.mjs`) extracts every approved string from
+   `docs/27-SECTION-9-15-CONNECTIVE-COPY.md` and `docs/27-COPY-CANONICAL.md`, searches the
+   rendered `dist/`, and reports present / partial / absent / exempt per string with route
+   counts. Run it after `npm run build:local`; it exits non-zero on any unexplained absence.
+   **It checks one direction only** — that approved copy reached the build. It cannot prove an
+   arbitrary rendered string traces back to an approved source; that still needs a reading, and
+   a trace table for anything you were unsure about.
+   **It reads only copy marked as a blockquote or as a table cell under a String/Copy/Text
+   column.** Copy written as a bare paragraph — doc 27 §9.4–9.5's bold-label style — is
+   invisible to it. Mark new copy as a blockquote or it will not be gated.
+   *(Added 2026-08-19. This gate previously read "every visible string diffs clean against §9.15
+   or doc 27", which was satisfied by reading and was recorded PASS twice while seven approved
+   §9.15.5 strings were absent from the build — see `docs/05-DECISIONS-LOG.md`, 2026-08-18 §7
+   against §8, and 2026-08-19.)*
 7. Screenshots: `/`, one hub, one service page, `/request-assessment/`, `/about/` — each at
    390px and 1440px — plus the mobile drawer OPEN at 390px.
 8. `/sms-notification-consent/` rendered output byte-identical to pre-port.
