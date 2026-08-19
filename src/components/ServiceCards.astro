@@ -4,21 +4,11 @@
 import Card from "@components/Card.astro";
 import { homepage } from "@data/site";
 
-const gradients: Record<string, "v1" | "v2" | "v3"> = {
-  "Complex property clearing": "v1",
-  "Reset & restoration cleaning": "v2",
-  "Animal & organic condition cleaning": "v3"
-};
-
-const glyphs: Record<string, string> = {
-  "Complex property clearing": "▣",
-  "Reset & restoration cleaning": "✦",
-  "Animal & organic condition cleaning": "❊"
-};
-
-// The per-card shoot brief lives in the data, not on the rendered card:
-// homepage.serviceCards[].imageLabel / .imageStatus in src/data/site.ts drive the Phase 0
-// shot list (release checklist C20). It is not printed to visitors.
+// 2026-08-18 visual port: the gradient and glyph maps are gone. Every image slot is now the
+// flat gray placeholder block from the mockups (PORT-PROMPT §5), and it prints
+// homepage.serviceCards[].imageLabel — until now a Phase 0 shot-list brief held back from
+// visitors (release checklist C20), now the placeholder's own label. Same strings, so no copy
+// was written for this; the shot list still reads them.
 const pills: Record<string, string> = {
   "Animal & organic condition cleaning": "Endorsed"
 };
@@ -55,8 +45,7 @@ const links: Record<string, string> = {
         homepage.serviceCards.map((item) => (
           <Card
             title={item.title}
-            glyph={glyphs[item.title] ?? "▣"}
-            gradient={gradients[item.title] ?? "v1"}
+            imageLabel={item.imageLabel}
             pill={pills[item.title]}
             href={links[item.title]}
           >

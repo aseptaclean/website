@@ -8,9 +8,9 @@ import StatusRibbon from "@components/StatusRibbon.astro";
 import { site } from "@data/site";
 import "@styles/fonts.css";
 import "@styles/global.css";
-import newsreaderFontUrl from "../../node_modules/@fontsource-variable/newsreader/files/newsreader-latin-wght-normal.woff2?url";
+// One face as of the 2026-08-18 visual port. The display-serif and monospace preloads were
+// removed with their @font-face rules — see src/styles/fonts.css.
 import interFontUrl from "../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
-import plexMonoFontUrl from "../../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2?url";
 
 interface Props {
   title: string;
@@ -58,21 +58,7 @@ const termlyConsent = site.integrations.termly;
       rel="preload"
       as="font"
       type="font/woff2"
-      href={newsreaderFontUrl}
-      crossorigin
-    />
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
       href={interFontUrl}
-      crossorigin
-    />
-    <link
-      rel="preload"
-      as="font"
-      type="font/woff2"
-      href={plexMonoFontUrl}
       crossorigin
     />
     <SeoHead

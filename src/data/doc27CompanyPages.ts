@@ -173,7 +173,10 @@ export const faqPage = {
 
 export const contactPage = {
   slug: "/contact/",
-  seoTitle: "Request a Property Assessment | Aseptaclean",
+  // Retitled 2026-08-18. The old "Request a Property Assessment | Aseptaclean" duplicated the
+  // intent of /request-assessment/ and gave the two routes near-identical titles in the SERP,
+  // so neither read as the contact page.
+  seoTitle: "Contact Aseptaclean | San Jose Property Clearing",
   metaDescription:
     "Request an Aseptaclean cleaning or property clearing assessment in the South Bay and Peninsula.",
   eyebrow: "Contact",

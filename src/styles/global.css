@@ -101,40 +101,114 @@ textarea {
    One class per role. Apply directly to whatever tag is semantically
    correct in context (h1-h4, p, span, li) — never infer size from tag.
    --------------------------------------------------------------------- */
+/* 2026-08-18 visual port. Display character now comes from weight, not from a second
+   family — the display serif is retired (owner ruling D5). Weights follow the mockups:
+   500 hero/hub H1, 700 inner-band H1, 600 section H2, 700-800 on the small role headings.
+   Sizes live in --ac-text-*; nothing here may move to a heading tag (type law #1). */
 .ac-type-display {
   font-family: var(--ac-font-display);
   font-size: var(--ac-text-display);
-  font-weight: 520;
-  letter-spacing: -0.03em;
-  line-height: 1;
+  font-weight: 500;
+  letter-spacing: -0.018em;
+  line-height: 1.1;
   text-wrap: pretty;
 }
 
+/* Hero and hub H1 — mockup .hero h1 */
 .ac-type-h1 {
   font-family: var(--ac-font-display);
   font-size: var(--ac-text-h1);
-  font-weight: 520;
-  letter-spacing: -0.035em;
-  line-height: 1.02;
+  font-weight: 500;
+  letter-spacing: -0.018em;
+  line-height: 1.1;
+  text-wrap: pretty;
+}
+
+/* Inner-page band H1 — heavier per PORT-PROMPT §3, same size token. */
+.ac-type-h1-band {
+  font-family: var(--ac-font-display);
+  font-size: var(--ac-text-h1);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.14;
   text-wrap: pretty;
 }
 
 .ac-type-h2 {
   font-family: var(--ac-font-display);
   font-size: var(--ac-text-h2);
-  font-weight: 520;
-  letter-spacing: -0.03em;
-  line-height: 1.06;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.14;
   text-wrap: pretty;
 }
 
-/* docs/18-VISUAL-DIRECTION.md §2: serif is now the heading system, used on every H1-H3 —
-   H3's face moves from Instrument Sans (docs/11 §2) to the display serif. */
+/* H2 variants — the mockups size H2 by section role, not one global value. */
+.ac-type-h2-field {
+  font-family: var(--ac-font-display);
+  font-size: var(--ac-text-h2-field);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.14;
+  max-width: 22ch;
+  text-wrap: pretty;
+}
+
+.ac-type-h2-record {
+  font-family: var(--ac-font-display);
+  font-size: var(--ac-text-h2-record);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.14;
+  text-wrap: pretty;
+}
+
+.ac-type-h2-final {
+  font-family: var(--ac-font-display);
+  font-size: var(--ac-text-h2-final);
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  line-height: 1.14;
+  max-width: 20ch;
+  text-wrap: pretty;
+}
+
 .ac-type-h3 {
   font-family: var(--ac-font-display);
   font-size: var(--ac-text-h3);
-  font-weight: 560;
+  font-weight: 800;
+  letter-spacing: -0.015em;
   line-height: 1.2;
+  text-wrap: pretty;
+}
+
+/* Card and field-item headings — small, heavy, navy. Mockup .card h3 / .it h3 */
+.ac-type-h3-card {
+  font-family: var(--ac-font-display);
+  font-size: var(--ac-text-h3-card);
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  line-height: 1.3;
+  text-wrap: pretty;
+}
+
+/* Deadline-band heading — mockup .band h3 */
+.ac-type-h3-band {
+  font-family: var(--ac-font-display);
+  font-size: var(--ac-text-h3-band);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
+  max-width: 34ch;
+  text-wrap: pretty;
+}
+
+.ac-type-h4 {
+  font-family: var(--ac-font-display);
+  font-size: var(--ac-text-h4);
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  line-height: 1.14;
   text-wrap: pretty;
 }
 
@@ -164,27 +238,31 @@ textarea {
   letter-spacing: 0.02em;
 }
 
-/* Eyebrow — docs/aseptaclean-FINAL-v2.html .eyebrow */
+/* Section label — pill chip. 2026-08-18 visual port: replaces the FINAL-v2 mono eyebrow
+   with its 24px rule (mockup .kick). Ratified as an explicit visual-direction override of
+   doc 01 §5.2's pill caution, owner ruling 2026-08-18, scoped hard: pills are SECTION
+   LABELS ONLY — never form labels, badges, or list markers. The class name is kept so the
+   ~20 existing call sites port without edits; the rule ::before is gone with the mono face. */
+.ac-label,
 .ac-eyebrow {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  margin: 0 0 18px;
-  color: var(--ac-color-blue-deep);
-  font-family: var(--ac-font-mono);
-  font-size: 0.7rem;
-  font-weight: 400;
-  letter-spacing: 0.14em;
+  display: inline-block;
+  margin: 0 0 14px;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background: var(--ac-color-blue-pale);
+  color: var(--ac-color-navy-800);
+  font-family: var(--ac-font-sans);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
   text-transform: uppercase;
 }
 
-.ac-eyebrow::before {
-  flex-shrink: 0;
-  width: 24px;
-  height: 2px;
-  margin-top: 0.45em;
-  background: var(--ac-color-blue-500);
-  content: "";
+/* On navy — hero, field sections, form section, final CTA. */
+.ac-label--on-dark,
+.ac-eyebrow--on-dark {
+  background: rgb(255 255 255 / 12%);
+  color: #cbd9e8;
 }
 
 /* The Mark — v2 has no boxed-word mark; headline emphasis uses the
@@ -235,64 +313,56 @@ textarea {
   background: rgba(255, 255, 255, 0.04);
   padding: 6px 11px;
   color: #a8c0dc;
-  font-family: var(--ac-font-mono);
+  font-family: var(--ac-font-sans);
   font-size: 0.64rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
 }
 
-/* Card container — docs/aseptaclean-FINAL-v2.html .card / .card-img / .card-body */
+/* Card container — docs/mockups .card (2026-08-18 visual port, supersedes the FINAL-v2
+   .card / .card-img / .card-body port). The mockup card carries a hairline border and a flat
+   soft shadow, and has no hover state of its own — only its CTA bar reacts — so the previous
+   translateY lift and shadow swap are gone. */
 .ac-card {
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  border: 1px solid var(--ac-color-line);
   border-radius: var(--ac-radius-card);
   background: var(--ac-color-paper);
   box-shadow: var(--ac-shadow-card);
-  transition: 0.2s;
 }
 
-.ac-card:hover {
-  box-shadow: var(--ac-shadow-pop);
-  transform: translateY(-4px);
-}
-
+/* Image slot — flat gray block with its label, per PORT-PROMPT §5. Photographs arrive later
+   by filename swap. The chevron clip is the mockup's polygon verbatim. Fill uses
+   --ac-color-line (#e3e9f0) rather than the mockup's #E7EBF1: a 4/2/1 delta, and §3 allows no
+   new colour, so the nearest existing token wins. The label uses --ac-color-ink-400 rather
+   than the mockup's #93A3B8, which measures 2.4:1 on that fill — the same AA correction this
+   file's own ink-400 note already records for the credential bar. */
 .ac-card__image {
   position: relative;
-  display: grid;
-  aspect-ratio: 16 / 10;
-  place-items: center;
+  display: flex;
+  align-items: flex-end;
+  height: 172px;
+  padding: 10px 12px;
+  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 24px), 50% 100%, 0 calc(100% - 24px));
+  background: var(--ac-color-line);
+  color: var(--ac-color-ink-400);
+  font-family: var(--ac-font-sans);
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
 }
 
-.ac-card__image::after {
-  position: absolute;
-  inset: 0;
-  background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.08) 1px, transparent 0);
-  background-size: 20px 20px;
-  content: "";
-}
-
-.ac-card__image span {
-  position: relative;
-  z-index: 1;
-  display: grid;
-  width: 64px;
-  height: 64px;
-  place-items: center;
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  border-radius: 14px;
-  background: rgba(255, 255, 255, 0.12);
-  backdrop-filter: blur(4px);
-  color: #fff;
-  font-size: 1.6rem;
-}
-
+/* Mockup .card__b — the body is padded on three sides only; the CTA bar below it is flush to
+   the card edge, so it supplies its own padding and the bottom gap. */
 .ac-card__body {
   display: flex;
   flex: 1;
   flex-direction: column;
-  gap: 10px;
-  padding: 26px 26px 28px;
+  gap: 8px;
+  padding: 20px 20px 0;
 }
 
 /* Status panel — docs/aseptaclean-FINAL-v2.html .panel / .panel-head / .prow. Shared by
@@ -310,7 +380,7 @@ textarea {
   background: linear-gradient(135deg, var(--ac-color-navy-800), var(--ac-color-navy-950));
   padding: 15px 18px;
   color: #fff;
-  font-family: var(--ac-font-mono);
+  font-family: var(--ac-font-sans);
   font-size: 0.68rem;
   letter-spacing: 0.09em;
   text-transform: uppercase;
@@ -341,7 +411,7 @@ textarea {
 
 .prow .sb {
   color: var(--ac-color-ink-400);
-  font-family: var(--ac-font-mono);
+  font-family: var(--ac-font-sans);
   font-size: 0.76rem;
 }
 
@@ -479,7 +549,7 @@ textarea {
   border: 1px solid;
   border-radius: 5px;
   padding: 5px 9px;
-  font-family: var(--ac-font-mono);
+  font-family: var(--ac-font-sans);
   font-size: 0.62rem;
   font-weight: 500;
   letter-spacing: 0.05em;

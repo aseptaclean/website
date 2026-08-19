@@ -2,21 +2,28 @@
 // Shared PROOF section for Phase 3/3b draft service pages (docs/19-SYSTEM-AND-SITEMAP.md
 // §3.2: "PROOF — Handoff Record excerpt + ONE anonymized real-job line"). The record excerpt
 // is real, published data already approved for homepage.sampleRecord; the real-job line is an
-// [OWNER INPUT] placeholder on every page here, since none of these pages may invent one
-// (directive: "insert clearly labeled [OWNER INPUT: description] placeholders — never invent").
+// was an [OWNER INPUT] placeholder, since none of these pages may invent one.
+//
+// `jobLine` is optional as of 2026-08-18. Zero completed jobs are documented, so no page can
+// supply a real line yet; when it is absent the job half is not rendered at all. Rendering the
+// "From a completed project" label above an empty string would be an exposed empty slot, which
+// reads as broken rather than as restraint — AGENTS.md §0.3 says the slot ships empty, and §3
+// says never expose a placeholder in a production build. Omitting the labeled half satisfies
+// both. Pass `jobLine` to bring it back.
 interface Props {
   recordLabel: string;
   recordField: string;
   recordValue: string;
-  jobLine: string;
+  jobLine?: string;
   headingId: string;
 }
 
 const { recordLabel, recordField, recordValue, jobLine, headingId } = Astro.props;
+const hasJobLine = Boolean(jobLine && jobLine.trim());
 ---
 
 <section class="service-proof" aria-labelledby={headingId}>
-  <div class="ac-measure-wide service-proof__shell">
+  <div class:list={["ac-measure-wide", "service-proof__shell", { "service-proof__shell--split": hasJobLine }]}>
     <div class="service-proof__record">
       <p class="ac-eyebrow">{recordLabel}</p>
       <h2 id={headingId} class="visually-hidden">Documented proof</h2>
@@ -26,10 +33,12 @@ const { recordLabel, recordField, recordValue, jobLine, headingId } = Astro.prop
       </div>
       <a class="service-proof__link" href="/handoff-standard/">See the full annotated record →</a>
     </div>
-    <div class="service-proof__job">
-      <p class="service-proof__job-label">From a completed project</p>
-      <p class="service-proof__job-line">{jobLine}</p>
-    </div>
+    {hasJobLine && (
+      <div class="service-proof__job">
+        <p class="service-proof__job-label">From a completed project</p>
+        <p class="service-proof__job-line">{jobLine}</p>
+      </div>
+    )}
   </div>
 </section>
 
@@ -57,7 +66,6 @@ const { recordLabel, recordField, recordValue, jobLine, headingId } = Astro.prop
 
   .service-proof__k {
     color: var(--ac-color-ink-400);
-    font-family: var(--ac-font-mono);
     font-size: 0.62rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -88,7 +96,6 @@ const { recordLabel, recordField, recordValue, jobLine, headingId } = Astro.prop
   .service-proof__job-label {
     margin: 0 0 var(--ac-space-2);
     color: var(--ac-color-ink-400);
-    font-family: var(--ac-font-mono);
     font-size: 0.62rem;
     letter-spacing: 0.06em;
     text-transform: uppercase;
@@ -102,7 +109,7 @@ const { recordLabel, recordField, recordValue, jobLine, headingId } = Astro.prop
   }
 
   @media (min-width: 56.25rem) {
-    .service-proof__shell {
+    .service-proof__shell--split {
       grid-template-columns: 1fr 1fr;
     }
   }

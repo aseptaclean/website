@@ -28,9 +28,10 @@ import {
 // until its own launch gate clears — see docs/05-DECISIONS-LOG.md for the biohazard exclusion
 // and each page's own gate note below. Sentences here are held to the same
 // docs/01-QUALITY-GUARDRAILS.md bar as any live page; nothing here is placeholder-quality
-// copy waiting to be rewritten later. [OWNER INPUT: …] markers are the only intentionally
-// unfinished spots — real-call language, real-job proof lines, and gated operational facts
-// doc 19 explicitly says must not be invented.
+// copy waiting to be rewritten later. As of 2026-08-18 this file carries ZERO [OWNER INPUT: …]
+// markers — the last one (seniorDownsizingPage.proof.jobLine) was deleted rather than filled,
+// because no approved copy exists for it and doc 19 forbids inventing one. Keep it that way:
+// a slot with no real asset gets deleted or left unrendered, never stubbed.
 
 export const checklist = {
   title: "The Executor's Estate Cleanout Checklist",
@@ -128,8 +129,16 @@ export const seniorDownsizingPage = {
   proof: {
     recordLabel: "From a Property Handoff Record",
     recordField: "Room-by-room disposition",
-    recordValue: "Entry + living — Keep — Furnishings remain; included in the cleaning pass",
-    jobLine: "[OWNER INPUT: one anonymized real-job specific from a completed senior downsizing job — property type, city, and what made the situation specific, per docs/19-SYSTEM-AND-SITEMAP.md §1.5 job-close checklist. Do not invent.]"
+    recordValue: "Entry + living — Keep — Furnishings remain; included in the cleaning pass"
+    // `jobLine` deleted 2026-08-18, not replaced. It held the last [OWNER INPUT: …] string in
+    // src/. docs/27-COPY-CANONICAL.md has no approved copy for this slot — the doc covers no
+    // senior-downsizing page at all (§12–15 name 14 service pages, none of them this one) and
+    // its §11 shared service-page structure has no proof/real-job step in the sequence. The
+    // slot came from doc 19 §3.2, which also forbids inventing its content. Zero completed
+    // jobs are documented (AGENTS.md §5), so there is no real line to write and writing one
+    // would violate §0.3. ServiceProof now omits the job half when no line is supplied —
+    // an empty slot ships, an empty *labeled* slot does not. Restore by passing `jobLine`
+    // once a real anonymized line clears the doc 19 §1.5 job-close checklist.
   },
   pricing: {
     heading: "What affects the price — no invented figures",

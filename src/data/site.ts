@@ -162,8 +162,13 @@ export const navigation = [
   { label: "Who We Help", href: "/who-we-help/" },
   { label: "Method", href: "/#standards" },
   { label: "The Record", href: "/#record" },
-  { label: "About", href: "/#about" },
-  { label: "FAQ", href: "/#faq" }
+  // Repointed 2026-08-18: /about/ and /faq/ are real, indexable routes, so the homepage
+  // anchors were sending every nav click on every non-home page back to `/` and stranding the
+  // two pages with nav-level internal links from nowhere. /contact/ added for the same reason —
+  // it was indexable and footer-linked but absent from primary nav. Nav and footer now agree.
+  { label: "About", href: "/about/" },
+  { label: "FAQ", href: "/faq/" },
+  { label: "Contact", href: "/contact/" }
 ] as const;
 
 export const legal = {

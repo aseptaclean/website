@@ -23,6 +23,7 @@ const routes = [
   "/",
   "/about/",
   "/contact/",
+  "/request-assessment/",
   "/handoff-standard/",
   "/privacy/",
   "/terms/",
@@ -50,12 +51,15 @@ const routes = [
   "/property-cleanouts-san-jose/",
   // Company / areas.
   "/service-areas/",
-  "/projects/",
   "/faq/"
   // NOT listed, each for a specific reason:
   //   post-construction, window, eviction, commercial (crew capacity gate, per master) ·
   //   animal, rodent, pigeon (doc 27 §21 compliance release) ·
-  //   senior-downsizing (carries an [OWNER INPUT] placeholder — fix the copy before indexing)
+  //   senior-downsizing (its own launch gate; still noindex) ·
+  //   /projects/ (2026-08-18) — the gate is "publishes when real photos exist" and zero
+  //     photographed jobs exist. Indexing an empty proof page is the "never invent" rule
+  //     (AGENTS.md §0.3) failing in the other direction: an empty slot that ships is fine,
+  //     an empty slot that ranks is not. Re-add the route AND drop its noindex together.
 ];
 if (site.urls.cookiePolicy) routes.push(site.urls.cookiePolicy);
 

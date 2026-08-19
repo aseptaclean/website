@@ -8,6 +8,12 @@
 // and states the publication standard a future case study must meet. When real, permissioned
 // photography exists, doc 27 §22 governs what a published project record must contain.
 //
+// noindex, follow + excluded from sitemap.xml.ts as of 2026-08-18. SITEMAP-MASTER's gate for
+// this row is "publishes when real photos exist"; zero photographed jobs exist, so the gate has
+// not cleared and the page was indexable in error. `follow` is deliberate — its outbound links
+// to the service pages stay in the crawl graph. Flip `noindex` and re-add the sitemap entry in
+// the same change once real, permissioned photography lands.
+//
 // Building this route required removing the `/projects/* / 301` splat rule from
 // public/_redirects — Cloudflare Pages applies _redirects before checking for a real asset, so
 // leaving it would have 301'd this page away. See docs/05-DECISIONS-LOG.md.
@@ -37,6 +43,7 @@ const schema = [
   title={projectsPage.seoTitle}
   description={projectsPage.metaDescription}
   canonicalPath={projectsPage.slug}
+  noindex={true}
   schema={schema}
 >
   <CompactHero eyebrow={projectsPage.eyebrow} headingId="projects-title">

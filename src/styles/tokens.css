@@ -41,6 +41,22 @@
   --ac-color-review: #9a6414;
   --ac-color-review-pale: #fbf3e4;
 
+  /* ---------------------------------------------------------------------
+     2026-08-18 visual port — the three functional additions PORT-PROMPT §3 authorises,
+     and the only new colour on the site. Everything else in the port maps onto the
+     existing --ac- navy system above; where a mockup's navy differs by a few points
+     (mockup --navy-deep #122840 vs --ac-color-navy-900 #10233f, --navy-black #0D1E30 vs
+     --ac-color-navy-950 #0b1830, --slate #6A9BC3 vs --ac-color-blue-500 #4a7fc1) the
+     existing token wins per §3's "existing --ac- navy system only; no other new colour."
+     Mockup --navy #1C355E already equals --ac-color-navy-800 exactly.
+     --------------------------------------------------------------------- */
+  --ac-color-amber: #c8912e;          /* deadline band — owner ruling D1: keep as sole warm accent */
+  --ac-color-amber-pale: #fbf0da;     /* amber pill fill, mockup .pill--a */
+  --ac-color-amber-ink: #8a6210;      /* amber pill text, mockup .pill--a */
+  --ac-color-status-green: #2f7d5b;   /* status green */
+  --ac-color-status-green-pale: #e3f1ea; /* mockup .pill--g */
+  --ac-color-exclusion-red: #8c3b32;  /* exclusion / stop-notify-refer panels */
+
   /* Legacy steel/navy aliases kept for components not yet ported to the v2
      system; mapped to the closest v2 equivalents so nothing left unstyled
      resolves to an undefined custom property. */
@@ -54,10 +70,14 @@
 
   /* ---------------------------------------------------------------------
      Fonts — self-hosted, see src/styles/fonts.css for @font-face rules.
+     2026-08-18 visual port: Inter only. The display serif is retired sitewide (owner ruling
+     D5); the monospace face went with it when section labels became pill chips. --ac-font-display
+     is kept as a name so components need no edit, but now resolves to Inter — display
+     character comes from weight (500 hero/hub H1, 700 inner-band H1, 600 H2-H4) rather
+     than from a second family.
      --------------------------------------------------------------------- */
-  --ac-font-display: "Newsreader Variable", Georgia, serif;
   --ac-font-sans: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --ac-font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", "Cascadia Mono", Menlo, Consolas, monospace;
+  --ac-font-display: var(--ac-font-sans);
 
   /* ---------------------------------------------------------------------
      Type scale — v2 uses fixed clamp() sizes per selector rather than a
@@ -67,14 +87,36 @@
      need v2's exact clamp string (hero h1, h2 headings, etc.) declare it
      inline per docs/aseptaclean-FINAL-v2.html, matching the source file.
      --------------------------------------------------------------------- */
-  --ac-text-xs: 0.7rem;
-  --ac-text-sm: 0.86rem;
+  --ac-text-xs: 0.75rem;
+  --ac-text-sm: 0.8125rem;
   --ac-text-body: 1rem;
-  --ac-text-lead: 1.12rem;
-  --ac-text-h3: 1.35rem;
-  --ac-text-h2: clamp(1.9rem, 3.4vw, 2.6rem);
-  --ac-text-h1: clamp(2.75rem, 5vw, 4.25rem);
-  --ac-text-display: clamp(2.5rem, 5vw, 3.8rem);
+  --ac-text-lead: 1.0625rem;
+
+  /* H1. Ported verbatim from the mockups per owner ruling 2026-08-18. This value yields
+     3.70:1 against the 16px body at 1440px, BELOW type law #2's 4:1 floor — the owner was
+     shown the measurement and the 4rem alternative and chose the mockup value. Recorded in
+     docs/05-DECISIONS-LOG.md. Do not "fix" this token back up without a new owner ruling;
+     it is a known, accepted deviation, not a regression. */
+  --ac-text-h1: clamp(2.5rem, 4.6vw, 3.7rem);
+
+  /* H2 has four distinct roles in the mockups rather than one size. */
+  --ac-text-h2: clamp(1.85rem, 3.2vw, 2.5rem);        /* .sec__head h2, .formsec h2 */
+  --ac-text-h2-field: clamp(1.7rem, 3vw, 2.25rem);    /* .field h2 — navy field sections */
+  --ac-text-h2-record: clamp(1.6rem, 2.7vw, 2.1rem);  /* .rec h2 — overlay record card */
+  --ac-text-h2-final: clamp(2rem, 3.6vw, 2.9rem);     /* .final h2 — closing CTA */
+
+  /* H3/H4 are small and weight-led in this direction, not size-led. */
+  --ac-text-h3: 1.0625rem;                            /* .stage h3, .faq summary */
+  --ac-text-h3-card: 0.9375rem;                       /* .card h3, .it h3, .status__row h4 */
+  --ac-text-h3-band: 1.25rem;                         /* .band h3 — deadline band */
+  --ac-text-h4: 1rem;                                 /* .cred h4 */
+
+  /* Pill chips, rail numerals, table headers, footer headings. */
+  --ac-text-label: 10.5px;
+  --ac-text-label-sm: 10px;
+  --ac-text-rail-numeral: 1.375rem;
+
+  --ac-text-display: var(--ac-text-h1);
 
   /* ---------------------------------------------------------------------
      Measure
@@ -131,10 +173,14 @@
      most of the industrial read without touching the palette. */
   --ac-r: 12px;
   --ac-r-sm: 2px;
-  --ac-radius-card: 12px;
+  /* 2026-08-18 visual port. Cards are 6px in every mockup (PORT-PROMPT §3); the token had one
+     consumer (.ac-card) so this moves nothing else. The two shadows below are the mockups'
+     own values — `0 2px 10px rgba(18,40,64,.06)` is used 22 times across all 12 files and is
+     the standard card/panel elevation; the pop value is its 11-use hover counterpart. */
+  --ac-radius-card: 6px;
   --ac-radius-chip: 2px;
-  --ac-shadow-card: 0 1px 2px rgba(16, 35, 63, 0.05), 0 16px 40px -20px rgba(16, 35, 63, 0.22);
-  --ac-shadow-pop: 0 2px 4px rgba(11, 24, 48, 0.08), 0 32px 64px -32px rgba(11, 24, 48, 0.35);
+  --ac-shadow-card: 0 2px 10px rgba(18, 40, 64, 0.06);
+  --ac-shadow-pop: 0 22px 40px -24px rgba(18, 40, 64, 0.35);
 
   --ac-color-accent-tint: var(--ac-color-blue-pale);
   --ac-color-accent-text: var(--ac-color-blue-deep);

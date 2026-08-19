@@ -36,7 +36,10 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
         <a href="/who-we-help/">Who We Help</a>
         <a href="/service-areas/">Service Areas</a>
         <a href="/handoff-standard/">Handoff Standard</a>
-        <a href="/projects/">Projects</a>
+        {/* /projects/ removed 2026-08-18. The page went noindex (gate: "publishes when real
+            photos exist"; zero exist), and this footer renders on every indexable page, so the
+            link put a sitewide crawl path into a noindex draft with no content behind it.
+            Restore this line in the same change that lifts the noindex — not before. */}
         <a href="/about/">About</a>
         {/* /faq/ is a real page as of 2026-08-17; the old /#faq anchor pointed at a homepage
             section and left the standalone route orphaned. */}
@@ -107,7 +110,6 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
     border-radius: 8px;
     background: #fff;
     color: var(--ac-color-navy-950);
-    font-family: var(--ac-font-mono);
     font-weight: 600;
   }
 

@@ -3347,3 +3347,312 @@ All 7 indexable pages now carry per-page section headings.
 - **No noindex flag was flipped** in this pass.
 
 Build clean at 39 pages; 25 of 37 rendered pages indexable.
+
+---
+
+## Homepage four-card section — doc 27 §9.4–9.5 blocked on two independent grounds (2026-08-17)
+
+### 0. Why this was reopened
+
+The 2026-08-16 entry ("`docs/27-COPY-CANONICAL.md` adopted as homepage/service-page copy
+source," §2) resolved the card-count conflict for doc 18 on rank alone, at a moment when doc 27
+was not yet in the precedence chain. Doc 27 has since been added at rank 7 (`97caa44`), and
+`8c6908f` built all four service hubs — so the ruling was re-tested this session on the theory
+that doc 18 had been protecting a three-group architecture that no longer existed.
+
+**That theory was wrong, and the ruling holds on stronger grounds than were recorded.**
+
+### 1. Conflict
+
+A: `docs/18-VISUAL-DIRECTION.md` §6.1 — "Three cards filled honestly beat six padded with
+atmosphere... **Add cards only as completed jobs generate owned photography.**" (rank 5)
+
+B: `docs/27-COPY-CANONICAL.md` §9.4–9.5 — "Four ways a property reaches its next handoff,"
+four cards (Detailed / Specialty / Property Clearing / Commercial). (rank 7)
+
+**Resolution: doc 18 wins. Three cards stay.** Two independent reasons, either one sufficient:
+
+**1.2 §6.1 is a photography gate, not a service-group count.** Its rule is conditional on owned
+photography, and `public/assets/` holds three brand files and zero photographs — every card
+still renders a CSS gradient and a glyph. The condition to add a fourth card has never been
+met. The hub count is irrelevant to it. Card count is not the reason `/` looks stale.
+
+**1.3 §9.5's Specialty Cleaning card cannot lawfully ship on `/` at any card count.** Its text
+is "Extreme-condition cleaning and accepted animal, rodent and pigeon-waste conditions."
+`docs/18-VISUAL-DIRECTION.md` §7 — a claims constraint that "overrides all design intent" —
+says hantavirus and rodent-specific handling "are not named anywhere until crew PPE and
+protocol are confirmed in writing." Doc 27's own §21 gates those routes pending a compliance
+release, and `26b5278` kept `/specialty-cleaning/` noindex and out of the sitemap for exactly
+this reason, having verified no indexable page links to rodent or pigeon. `/` is the most
+indexable page on the site. Applying §9.5 verbatim would advertise unlicensed structural pest
+control (B&P §8550(a)) from the homepage and reverse that containment.
+
+**Type:** violated rule → enforced (doc 18 §6.1 and §7 both stand; doc 27 §9.4–9.5 is annotated
+DOES NOT SHIP in the document itself so this is not adjudicated a third time).
+
+### 2. The actual defect behind "the homepage shows old copy"
+
+Reopening this surfaced a real, unrelated bug that no rank conflict was hiding. `Card.astro`
+carried a launch placeholder — every homepage service card linked to `#included`, an anchor on
+the same page — with an explicit code comment to "swap each card's href to its published
+service page at launch." The service pages shipped in `8c6908f`; the swap never happened. `/`
+was passing zero internal link equity to any money page, in violation of
+`docs/19-SYSTEM-AND-SITEMAP.md`'s "Linking rules" (homepage cards ↔ service pages, rank 6).
+
+### 3. Changed
+
+- `src/components/Card.astro` — added optional `href` (defaults to the `#included` placeholder,
+  so no caller changes behaviour implicitly). The three cards previously rendered three
+  identical "What's included →" links; each now carries a `visually-hidden` label naming its
+  destination, since ambiguous repeated link text is an `docs/18-VISUAL-DIRECTION.md` §8 /
+  doc 27 §24 accessibility failure.
+- `src/components/ServiceCards.astro` — "Complex property clearing" → `/property-clearing/`,
+  "Reset & restoration cleaning" → `/detailed-cleaning/`. Both destinations verified indexable
+  and present in `sitemap.xml.ts`.
+- `docs/27-COPY-CANONICAL.md` §9.4 — DOES NOT SHIP annotation with both gates named.
+
+### 4. Not changed, deliberately
+
+- **"Animal & organic condition cleaning" is still unlinked** (`#included`). Its only
+  destination is `/specialty-cleaning/`, which is noindex and out of the sitemap under §21. A
+  link from indexable `/` would create an indexable→noindex crawl path *and* re-advertise the
+  gated services. The reasoning is duplicated as a comment in `ServiceCards.astro` so the next
+  session does not "complete" the map. **Clearing §21 is the unblock, not editing the link.**
+- **`CredentialBar.astro`** — flagged mid-session as stale against doc 27 §9.3, which drops the
+  "Endorsed / Organic pathogen endorsement" cell. That was a misread: doc 18 §7 mandates the
+  bar verbatim as "Insured · Organic Pathogen Endorsed · Owner-Operated · <region>" and
+  outranks doc 27. The shipped bar is correct. Only the *supporting* line under "Owner-operated"
+  ("Founder on every scope" vs doc 27's "Founder reviews the scope") is doc 27's to set, and
+  the difference is not material enough to spend a change on.
+- **`ConfidenceAndFit` / `AreasWeServe`** — doc 27 §9 has no counterpart for either, so the
+  migration had nothing to compare them against and never revisited them. They are not stale;
+  they are unaddressed. Both are named merge candidates in `docs/RESTORATION-DESIGN-SCAN.md`
+  §7.1, which is a section-order change requiring its own adjudication (that doc's §8.4).
+- **Three of seven homepage FAQ items** — no doc 27 counterpart, per the 2026-08-16 entry.
+- **No noindex flag was flipped in this pass.**
+
+## Visual port session 1 — token layer landed, header stopped on a statutory boundary (2026-08-18)
+
+Owner approved the PDF-derived visual direction (12 mockups in `docs/mockups/`) as the port
+target, superseding `aseptaclean-FINAL-v2.html`. Doc 27 §9.15 adopted as connective-copy canon
+with humanization amendments 1–6. Rulings D1–D5 per §9.15.3. Doc 27 §18 endpoint corrected to
+`/api/lead`. Doc 27 §30 re-armed against the new direction: no further redesign before
+conversion and proof data.
+
+### Conflicts adjudicated this session
+
+**Doc 27's filename.** `PORT-PROMPT.md` §1 named `docs/27-ASEPTACLEAN-COMPLETE-WEBSITE-BUILD.md`
+as sole body-copy source. That file has never existed. Owner ruled it is
+`docs/27-COPY-CANONICAL.md` (rank 7). Copy work is held until the owner's pending working-tree
+changes to that file are committed — committed state only, per ruling.
+
+**`/process/` and `/commercial/`.** `PORT-PROMPT.md` §2 mapped mockups to two routes that are
+not built. Owner ruled: `page-process.html` → `/handoff-standard/` (which
+`SITEMAP-MASTER.md` line 28 already labels "= Process"); **no new routes** — Commercial is three
+hubs plus a single direct nav link to `/commercial-cleaning-san-jose/`, with no hub panel.
+
+**14 vs 15 service routes.** §2 says "all 14 city-suffixed service routes"; 15 exist. The 15th
+is `/senior-downsizing-san-jose/`, absent from §9.15.1's 14 nav one-liners and marked "not in 27
+— write to voice" in `SITEMAP-MASTER.md` line 24. Owner ruled it **excluded from this port
+entirely, left byte-identical**; its fate is a pending decision recorded here and not resolved.
+
+**D2 rescinded.** §9.15.3 D2 recommended replacing the homepage Why-field 4-up icon grid with a
+single statement, citing the doc 01 blacklist. Owner rescinded: the mockup's `.grid4` stays.
+Note for the record — doc 01 §5.2 forbids that pattern "repeated 6–12 times"; this instance is
+×4, so the blacklist citation in D2 was not accurate to begin with. Mockup is pixel authority.
+
+**Pill section labels ratified.** `PORT-PROMPT.md` §3 mandates pill-chip section labels; doc 01
+§5.2 forbids "every label rendered as a pill." Ratified as an explicit visual-direction override
+of doc 01, scoped hard by owner ruling: **pills are section labels only — never form labels,
+badges, or list markers.** Implemented in `global.css` as `.ac-label` / `.ac-eyebrow`; the
+FINAL-v2 mono eyebrow and its 24px rule are gone.
+
+**H1 ratio — type law #2 knowingly broken.** The mockups declare `h1` at
+`clamp(2.5rem,4.6vw,3.7rem)` on a 16px body. Measured on computed styles across five routes:
+**2.50:1 at 390px (passes the 2.5 floor at zero margin) and 3.70:1 at 1440px, below the 4:1
+floor** AGENTS.md §6 calls "not negotiable." Against the hero lead the figures are worse —
+2.23–2.50:1 and 3.30–3.52:1. The owner was shown the measurement and a hybrid
+`clamp(2.5rem,4.6vw,4rem)` that would have matched the mockup at every width below ~1391px while
+clearing the floor, and **chose the mockup value verbatim.** `--ac-text-h1` is therefore
+`clamp(2.5rem,4.6vw,3.7rem)`. This is an accepted deviation, not a regression — do not "fix" it
+upward without a new owner ruling. Note the previous token, `clamp(2.75rem,5vw,4.25rem)`, did
+clear both floors; the 3.80:1 failure recorded against it came from a component override in
+`Hero.astro`, not from the token.
+
+**Route math.** `PORT-PROMPT.md` and §9.15.4 both say 37 routes. The build produces **36**;
+`SITEMAP-MASTER.md` lists 32. Owner ruled `dist/` is truth; both documents corrected to 36.
+
+### Stopped, not resolved — the header mega-menu
+
+**The mega-menu was not built, and this is the session's most consequential finding.** Porting
+it as drawn would place links to eight `noindex` routes in the sitewide header — including
+`/rodent-dropping-cleanup-san-jose/` and `/pigeon-dropping-cleanup-san-jose/`.
+
+`docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §3: **Cal. B&P §8505 expressly includes rodents** in the
+definition of structural pest control, and **§8550(a) makes it unlawful to "advertise, to engage
+in, or offer to engage in"** that work unlicensed. Sitewide navigation is advertising on all 36
+pages. That is precisely why those pages were made `noindex` and why the 2026-08-17 entry above
+records "verified afterward that no indexable page links to rodent or pigeon."
+
+Verified baseline before touching anything: `Header.astro`, `Footer.astro` and `site.ts` contain
+**zero** references to any gated service route. The port would take that from zero to eight.
+
+Owner ruling 3 compounds it — the directed direct nav link to `/commercial-cleaning-san-jose/`
+targets a route that is itself `noindex` (crew gate).
+
+Per `PORT-PROMPT.md`'s own preamble, claims and regulated-service boundaries stay with AGENTS.md
+and doc 21 regardless of this prompt, and §8 requires a stop rather than a silent resolution.
+**No nav change was made. The header still carries its pre-port links.** This needs an owner
+decision on which of the three options applies: omit gated routes from the mega-menu (groups
+render short — Specialty would show one child and its own hub is `noindex`), clear the gates
+first, or accept the exposure explicitly.
+
+### Landed this session
+
+- `src/styles/fonts.css` — display serif and mono `@font-face` blocks removed; Inter only.
+  `size-adjust: 107%` dropped (it existed to metric-match the retired serif; with Inter alone it
+  only inflated every absolute size away from the mockups).
+- `src/styles/tokens.css` — `--ac-font-display` now resolves to Inter; `--ac-font-mono` deleted.
+  Added `--ac-color-amber` `#C8912E`, `--ac-color-status-green` `#2F7D5B`,
+  `--ac-color-exclusion-red` `#8C3B32` plus amber/green pill tints — the only new colour, per §3.
+  Mockup navies that differ slightly from the existing system (`--navy-deep` `#122840`,
+  `--navy-black` `#0D1E30`, `--slate` `#6A9BC3`) were **not** added; §3 says existing `--ac-`
+  navy only, so the nearest existing token wins and the port is a few points off the mockup on
+  those three. Mockup `--navy` `#1C355E` already equals `--ac-color-navy-800` exactly.
+  Type scale remapped to mockup values, with new role tokens for the four H2 roles and the
+  small H3/H4 roles the mockups size separately.
+- `src/styles/global.css` — display weights now 500 hero/hub H1, 700 inner-band H1, 600 H2;
+  new `.ac-type-h1-band`, `.ac-type-h2-field`, `.ac-type-h2-record`, `.ac-type-h2-final`,
+  `.ac-type-h3-card`, `.ac-type-h3-band`, `.ac-type-h4`. Mono eyebrow → pill chip.
+- `src/layouts/BaseLayout.astro` — serif and mono preloads removed.
+- Mono swept from 16 further components and pages.
+
+### Not done, and why
+
+- **`Card.astro`** (chevron clip, 6px radius, hover overlay) — deferred. It is in the owner's
+  uncommitted working tree and named for their pending commit; editing it now would sweep port
+  changes into that commit. First item after the commit lands.
+- **Mono in `AccentBand`, `Footer`, `ServiceProof`, `OperatorAccountability`** — same reason.
+  Seven references remain, so **gate 3 does not yet pass**. Those four files are uncommitted-
+  modified. Until then `--ac-font-mono` is undefined, so those declarations fall back to the
+  inherited Inter — visually the intended end state, but the grep gate still reports them.
+- **Form rail (01/02/03)** — blocked on copy, not on code. The rail's step labels ("Your
+  details", "The property", "Photos & deadline", "Description & consent") appear only in the
+  mockups. Mockups are pixel authority, not copy authority (§1), and these strings are in
+  neither §9.15 nor any approved source available this session. Reported as an unfilled slot per
+  §1 rather than written.
+- **Unmapped live routes** — `/services/`, `/who-we-help/`, `/cookie-policy/`,
+  `/estate-cleanout-checklist/`, `/private-residence-reset/`, `/404` get no mockup from §2. Per
+  owner ruling they inherit the new shell via shared components; none rendered broken under the
+  token changes. No bespoke templates were written.
+- **`PORT-PROMPT.md` §7's AGENTS.md amendments** — already satisfied before this session.
+  §2 already states the site is no longer one-page and names `SITEMAP-MASTER.md` as route truth;
+  §0.1 already names `functions/api/lead.ts` as the one canonical endpoint. No edit needed.
+- **Gates 6, 7 (partial), 9** — see the session report. Nothing was reported done on the basis
+  that it compiles.
+
+## Visual port session 2 — card component landed, gates 1–5/8/9 pass, three blockers stand (2026-08-18)
+
+### 0. The premise this session opened on was false
+
+The session opened with "`docs/27-COPY-CANONICAL.md`, `Card.astro` and `ServiceCards.astro` are
+now at committed state — read committed only." **They were not committed.** `HEAD` was still
+`e920e1c`; `git reflog` showed no commit after it; nothing was staged; and `git show --stat
+e920e1c` contained none of the three files. All 41 files were uncommitted working-tree
+modifications.
+
+This mattered on claims grounds, not bookkeeping ones. The working-tree copy of doc 27 carried
+the §9.4 **DOES NOT SHIP** annotation from the 2026-08-17 entry above; the committed copy did
+not. Reading "committed only" literally would have rebuilt the homepage service section from
+§9.4–9.5 — four cards including the Specialty card naming rodent and pigeon waste — on the most
+indexable page on the site, which is exactly what that entry and `26b5278` prevent. Owner was
+asked and ruled **working tree governs**; the three files were committed as `6f62e7f` before any
+port work, so owner edits and port edits stay in separate commits.
+
+### 1. Owner rulings this session
+
+- **Doc 27's filename** — reconfirmed as `docs/27-COPY-CANONICAL.md`. `PORT-PROMPT.md` §1's
+  `docs/27-ASEPTACLEAN-COMPLETE-WEBSITE-BUILD.md` has never existed.
+- **`/commercial/`** — no new route. The hub template is applied to the existing
+  `/commercial-cleaning-san-jose/`. Note this sits alongside session 1's ruling that Commercial
+  gets a direct nav link and no hub panel; the two are about the page and the nav respectively,
+  but a reader should not have to infer that.
+- **Unmapped live routes** — assign each the nearest mockup template and list the assignments
+  for review, rather than session 1's "inherit the shell, no bespoke templates."
+
+### 2. Landed
+
+- `src/styles/tokens.css` — `--ac-radius-card` 12px → **6px** (PORT-PROMPT §3; the token had a
+  single consumer so nothing else moved). `--ac-shadow-card` and `--ac-shadow-pop` replaced with
+  the mockups' own values: `0 2px 10px rgba(18,40,64,.06)` appears 22 times across all 12
+  mockups and is the standard card/panel elevation, `0 22px 40px -24px rgba(18,40,64,.35)` is its
+  11-use hover counterpart.
+- `src/styles/global.css` — `.ac-card` gains the mockup's hairline border and loses its
+  translateY lift and shadow swap (mockup `.card` has no hover state; only its CTA bar reacts).
+  `.ac-card__image` is now the flat gray placeholder with the chevron clip
+  `polygon(0 0,100% 0,100% calc(100% - 24px),50% 100%,0 calc(100% - 24px))` verbatim.
+  `.ac-card__image span` (the glyph badge) deleted. `.ac-card__body` padded three sides only so
+  the CTA bar sits flush.
+- `src/components/Card.astro` — gradient and glyph props retired for the §5 placeholder, which
+  prints `homepage.serviceCards[].imageLabel`. Those strings already existed in `site.ts` as the
+  Phase 0 shot-list brief, so **no copy was written**; §5 exempts placeholder labels from the
+  placeholder gate. Inline link replaced by the mockup's full-bleed navy `.ac-card__cta` bar.
+- `src/components/ServiceCards.astro` — gradient/glyph maps deleted, `imageLabel` passed through.
+  The specialty-card link gate from `6f62e7f` is untouched.
+- `src/components/OperatorAccountability.astro` — the founder portrait is an image slot, so its
+  navy gradient and dot-grid stand-in became the same §5 flat gray placeholder.
+- **Mono fully swept.** The last seven `var(--ac-font-mono)` declarations removed from
+  `Card`, `Footer`, `ServiceProof` (×2), `OperatorAccountability` (×2) and `AccentBand`. The
+  token was already deleted, so these had been falling back to Inter — visually a no-op, but
+  **gate 3 now passes**, which it did not at the end of session 1.
+
+Two colour substitutions, both following session 1's recorded "nearest existing token wins"
+rule since §3 permits no new colour: the placeholder fill uses `--ac-color-line` `#e3e9f0` for
+the mockup's `#E7EBF1` (a 4/2/1 delta), and its label uses `--ac-color-ink-400` rather than the
+mockup's `#93A3B8`, which measures ~2.4:1 on that fill — the same AA correction `tokens.css`
+already records for the credential bar.
+
+### 3. Gate results
+
+Pass: **1** (build clean, 37 routes, list byte-identical to the pre-port baseline built from
+`e920e1c` in a throwaway worktree), **2** (every `font-size` sits on an `.ac-type-*` role class,
+zero on heading tags), **3**, **4**, **5**, **8** (`/sms-notification-consent/` SHA-256
+`e5280343…31cdf5` identical pre- and post-port), **9** (both forms `action="/api/lead"`; all
+nine `qa:phase3:endpoint` assertions pass; endpoint untouched).
+
+H1:body on computed styles across all five gate-7 routes: **2.50:1 at 390px, 3.70:1 at 1440px** —
+matching session 1's measurement exactly, i.e. the accepted owner deviation from type law #2,
+not a new regression.
+
+### 4. Blocked — three items, none silently resolved
+
+1. **Header mega-menu / mobile drawer.** Unchanged from session 1 and still the blocking item.
+   Verified this session against the built output: porting the mockup's menu verbatim puts
+   **nine `noindex` routes** into the sitewide header — `/post-construction-cleaning-san-jose/`,
+   `/window-cleaning-san-jose/`, `/specialty-cleaning/`, `/animal-waste-cleanup-san-jose/`,
+   `/rodent-dropping-cleanup-san-jose/`, `/pigeon-dropping-cleanup-san-jose/`,
+   `/eviction-cleanout-san-jose/`, `/commercial-cleaning-san-jose/`, `/projects/`. Rodent and
+   pigeon are the statutory ones (B&P §8505 includes rodents; §8550(a) makes it unlawful to
+   advertise that work unlicensed). `Header.astro` still carries its pre-port
+   `<details class="mobile-nav">` and two links. **Gate 7's "drawer OPEN at 390px" therefore
+   photographs the pre-port drawer, not the ported one.**
+2. **Homepage `.tiles` section — new this session.** The homepage mockup's four-tile service
+   group is *itself* the doc 27 §9.4–9.5 content annotated DOES NOT SHIP hours earlier in
+   `6f62e7f`: tile 2 reads "Extreme-condition cleaning and accepted animal, rodent and
+   pigeon-waste conditions" and links to the `noindex` `/specialty-cleaning/`; tile 4 links to
+   the `noindex` `/commercial-cleaning-san-jose/`. The mockup is rank-3 pixel authority but
+   claims sit at rank 1, and `PORT-PROMPT.md` §0 says report a wrong-looking mockup rather than
+   fix it silently. The shipped three-card section was left as-is; only its card *styling* was
+   ported.
+3. **Form rail 01/02/03 step labels.** Unchanged from session 1 — the strings exist only in the
+   mockups, which are not copy authority, and in neither §9.15 nor doc 27. Still an unfilled
+   slot, still not written.
+
+### 5. Not done
+
+The port below the token and card layer is **incomplete and was not represented otherwise**.
+The hub template still renders a plain text list where the mockup specifies a four-card grid;
+the service template, the sweep bands, the overlay-card-on-photo-band, the navy field sections,
+the stepped form rail and the curved homepage divider are all unported. **Gate 6 (copy trace)
+was not run** — it is downstream of the three blockers above, since the strings it would trace
+are the ones those blockers govern. Nothing here was reported done because it compiles.

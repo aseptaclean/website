@@ -1,11 +1,14 @@
 ---
-// docs/aseptaclean-FINAL-v2.html .card / .card-img / .card-body — ported verbatim
-// (05-DECISIONS-LOG.md). Gradient slot stands in for a photograph until Phase 0 assets land
-// (docs/18-VISUAL-DIRECTION.md §10, retained); role="presentation" per the porting brief.
+// docs/mockups .card — 2026-08-18 visual port, supersedes the FINAL-v2 .card port.
+// The gradient-and-glyph image stand-in is retired: PORT-PROMPT §5 puts a flat gray
+// placeholder block carrying its own label in every image slot, and photographs land later by
+// filename swap. Container, chevron clip and body live in global.css (.ac-card*).
 interface Props {
   title: string;
-  glyph: string;
-  gradient: "v1" | "v2" | "v3";
+  // Label printed inside the gray placeholder. Sourced from homepage.serviceCards[].imageLabel
+  // in src/data/site.ts — the existing shoot brief for this exact slot, so the port invents no
+  // string. §5 exempts these labels from the placeholder gate.
+  imageLabel: string;
   pill?: string;
   // Published service page for this card (docs/19-SYSTEM-AND-SITEMAP.md "Linking rules" —
   // homepage cards ↔ service pages). Falls back to the on-page scope section for any card
@@ -13,49 +16,35 @@ interface Props {
   href?: string;
 }
 
-const { title, glyph, gradient, pill, href = "#included" } = Astro.props;
+const { title, imageLabel, pill, href = "#included" } = Astro.props;
 const linkLabel = href.startsWith("#") ? "What’s included" : `${title} — what’s included`;
 ---
 
 <article class="ac-card">
-  <div class={`ac-card__image ac-card__image--${gradient}`} role="presentation">
-    <span class="ac-card__glyph" aria-hidden="true">{glyph}</span>
-  </div>
+  <div class="ac-card__image" role="presentation">{imageLabel}</div>
   <div class="ac-card__body">
     {pill && <span class="ac-card__pill">{pill}</span>}
-    <h3 class="ac-type-h3">{title}</h3>
+    <h3 class="ac-type-h3-card">{title}</h3>
     <p class="ac-type-body">
       <slot />
     </p>
-    <a class="ac-card__link" href={href}>
-      <span class="visually-hidden">{linkLabel}</span>
-      <span aria-hidden="true">What&rsquo;s included →</span>
-    </a>
   </div>
+  <a class="ac-card__cta" href={href}>
+    <span class="visually-hidden">{linkLabel}</span>
+    <span aria-hidden="true">What&rsquo;s included</span>
+    <span aria-hidden="true">&rarr;</span>
+  </a>
 </article>
 
 <style>
-  .ac-card__image--v1 {
-    background: linear-gradient(150deg, #27436f, #10233f);
-  }
-
-  .ac-card__image--v2 {
-    background: linear-gradient(150deg, #4a7fc1, #1c355e);
-  }
-
-  .ac-card__image--v3 {
-    background: linear-gradient(150deg, #7a9cc6, #2e5c9e);
-  }
-
   .ac-card__pill {
     align-self: flex-start;
     border-radius: 100px;
     background: var(--ac-color-blue-pale);
     padding: 4px 9px;
     color: var(--ac-color-blue-deep);
-    font-family: var(--ac-font-mono);
     font-size: 0.6rem;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
@@ -63,21 +52,27 @@ const linkLabel = href.startsWith("#") ? "What’s included" : `${title} — wha
   .ac-card__body p {
     max-width: none;
     color: var(--ac-color-ink-600);
-    font-size: 0.92rem;
+    font-size: 0.84375rem;
+    line-height: 1.55;
   }
 
-  .ac-card__link {
-    display: inline-flex;
+  /* Mockup .card__cta — full-bleed navy bar flush to the card's bottom edge. .ac-card__body
+     carries flex:1, so the bar already sits at the bottom when cards of unequal copy length
+     share a row; the 18px is the mockup's gap above it, not the mechanism. */
+  .ac-card__cta {
+    display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 6px;
-    margin-top: auto;
-    color: var(--ac-color-blue-deep);
-    font-size: 0.85rem;
-    font-weight: 600;
+    margin-top: 18px;
+    background: var(--ac-color-navy-800);
+    padding: 14px 20px;
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 700;
     text-decoration: none;
   }
 
-  .ac-card__link:hover {
-    color: var(--ac-color-navy-900);
+  .ac-card__cta:hover {
+    background: var(--ac-color-navy-900);
   }
 </style>

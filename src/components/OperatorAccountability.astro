@@ -18,7 +18,7 @@ const credentials = [
     </div>
     <div>
       <p class="ac-eyebrow">The operator, not a call center</p>
-      <h2 id="founder-title">The person defining the work stays accountable for how it&rsquo;s carried out.</h2>
+      <h2 id="founder-title" class="ac-type-h2">The person defining the work stays accountable for how it&rsquo;s carried out.</h2>
       <p class="founder__lead">
         {site.founder.name} is directly involved in scope review, project planning and operating
         oversight — a controlled-process background applied to properties that require more than
@@ -52,38 +52,31 @@ const credentials = [
     align-items: center;
   }
 
+  /* 2026-08-18 visual port. This is an image slot, so PORT-PROMPT §5 replaces the navy
+     gradient-and-dot-grid stand-in with the mockups' flat gray placeholder block carrying its
+     own label. The photograph lands later by filename swap. Same fill and label treatment as
+     .ac-card__image in global.css, including the ink-400 label for AA contrast. */
   .portrait {
-    position: relative;
-    display: grid;
+    display: flex;
+    align-items: flex-end;
     aspect-ratio: 4 / 5;
-    place-items: center;
     overflow: hidden;
-    border-radius: var(--ac-r);
-    background: linear-gradient(160deg, #27436f, #0b1830);
-    box-shadow: var(--ac-shadow-card);
-  }
-
-  .portrait::after {
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.06) 1px, transparent 0);
-    background-size: 22px 22px;
-    content: "";
+    border: 1px solid var(--ac-color-line);
+    border-radius: var(--ac-radius-card);
+    background: var(--ac-color-line);
+    padding: 10px 12px;
   }
 
   .portrait__label {
-    position: relative;
-    z-index: 1;
-    color: #6d8bb0;
-    font-family: var(--ac-font-mono);
-    font-size: 0.66rem;
-    letter-spacing: 0.1em;
+    color: var(--ac-color-ink-400);
+    font-size: 9.5px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
   }
 
   .founder h2 {
     margin-bottom: 18px;
-    font-size: clamp(1.8rem, 3vw, 2.4rem);
     line-height: 1.1;
   }
 
@@ -109,7 +102,6 @@ const credentials = [
 
   .cr__k {
     color: var(--ac-color-ink-400);
-    font-family: var(--ac-font-mono);
     font-size: 0.64rem;
     letter-spacing: 0.05em;
     text-transform: uppercase;

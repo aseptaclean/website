@@ -1,7 +1,7 @@
-# Doc 27 — §9.15 Connective & Humanized Copy (DRAFT for owner approval)
+# Doc 27 — §9.15 Connective & Humanized Copy (APPROVED 2026-08-18)
 
-**Status:** Draft. Nothing below is live until Matthew approves. Strike anything; approved
-remainder merges into `docs/27` as §9.15 and becomes the only source for these slots.
+**Status:** Approved 2026-08-18, rulings per port session. This is the only source for the
+slots below. See `docs/05-DECISIONS-LOG.md` for the rulings, including D2's rescission.
 
 **Rules applied while writing:** doc 20 humanization (contractions, one concrete physical
 detail where it earns its place, read-aloud gate); doc 27 claims boundaries (no
@@ -126,7 +126,7 @@ the read-aloud gate. Flagged so it isn't "improved" later.
 | # | Decision | Options | Recommendation |
 | --- | --- | --- | --- |
 | D1 | Amber `#C8912E` deadline band | Keep as sole warm accent / recolor navy | **Keep.** One rationed accent against navy matches how the reference brands spend color. |
-| D2 | Why-field icon grid | Keep icon-heading-paragraph ×4 / replace with one plain large statement | **Replace.** Pattern is on the doc 01 blacklist; the statement version breaks the page's evenness. Proposed statement: **"The difference is what happens before and after the work itself — the scope you sign and the record you keep."** |
+| D2 | Why-field icon grid | Keep icon-heading-paragraph ×4 / replace with one plain large statement | ~~**Replace.**~~ **RESCINDED by owner 2026-08-18 — keep the mockup's 4-up icon grid.** The blacklist citation was inaccurate: doc 01 §5.2 forbids that pattern "repeated 6–12 times"; this is ×4. Mockup is pixel authority. |
 | D3 | Header wordmark | Mockup logotype / owner's real horizontal wordmark | **Real wordmark** (asset manifest, 2026-07-30) at port. |
 | D4 | Header-band sweep signature | Keep navy sweep (Steri-Clean geometry, our palette) / develop original mark later | **Keep for launch;** revisit only after real proof assets exist. |
 | D5 | Newsreader | Retired from display type in this direction | **Confirm retirement** — record so type doesn't drift back. |
@@ -138,7 +138,7 @@ the read-aloud gate. Flagged so it isn't "improved" later.
 > **2026-08-18 — Design direction and copy canon updated.** `aseptaclean-FINAL-v2.html`
 > superseded as port target by the PDF-derived direction (SERVPRO/Steri-Clean structural specs,
 > Aseptaclean palette), owner-approved in mockup form: homepage, service hub, service page,
-> About, Process, Service Areas, Contact — seven templates covering all 37 routes. Doc 27
+> About, Process, Service Areas, Contact — seven templates covering all 36 routes. Doc 27
 > §9.15 adopted for all connective copy and the six humanization amendments. Rulings: D1–D5
 > per §9.15.3. Doc 27 §30 (no further redesign before conversion/proof data) re-armed against
 > the new direction. Port to Claude Code proceeds with validation gates: class-coverage check,

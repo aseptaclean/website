@@ -52,20 +52,14 @@
 /campbell/                                     /service-areas/   301
 /milpitas/                                     /service-areas/   301
 
-# interim — target is /about/, currently noindex pending launch gate
-/families-estate-representatives/             /              301
-# interim — target is /hoarding-cleanup-san-jose/, currently noindex pending launch gate
-/hoarding-cleanup/                            /              301
-# interim — target is /estate-cleanout-san-jose/, currently noindex pending launch gate
-/hoarding-estate-clearouts/                   /              301
-# interim — target is /hoarding-cleanup-san-jose/; term also under docs/90 §13 retirement (separate workstream)
-/gross-filth-cleaning/                        /              301
+/families-estate-representatives/             /about/                        301
+/hoarding-cleanup/                            /hoarding-cleanup-san-jose/    301
+/hoarding-estate-clearouts/                   /estate-cleanout-san-jose/     301
+/gross-filth-cleaning/                        /hoarding-cleanup-san-jose/    301
 # interim — target is /animal-waste-cleanup-san-jose/, currently noindex pending launch gate
 /animal-waste-abatement/                      /              301
-# interim — target is /estate-cleanout-san-jose/, currently noindex pending launch gate
-/residential-property-clearing/               /              301
-# interim — target is /property-cleanouts-san-jose/, currently noindex pending launch gate
-/eviction-difficult-turnaround-clearing/      /              301
+/residential-property-clearing/               /estate-cleanout-san-jose/     301
+/eviction-difficult-turnaround-clearing/      /property-cleanouts-san-jose/  301
 /future-services/                             /              301
 /launching-soon/                              /              301
 # WordPress builder junk page

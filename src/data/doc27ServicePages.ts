@@ -57,8 +57,8 @@ export const deepCleaningPage: Doc27ServicePage = {
     "relatedHeading": "If the property needs clearing first"
   },
   eyebrow: "Detailed Cleaning · San Jose & the South Bay",
-  seoTitle: "Deep Cleaning Services in San Jose & the South Bay | Aseptaclean",
-  metaDescription: "One-time deep cleaning for kitchens, bathrooms and whole homes in San Jose and Santa Clara County — quoted room by room from a written checklist, not a package.",
+  seoTitle: "Deep Cleaning Services in San Jose | Aseptaclean",
+  metaDescription: "One-time deep cleaning for kitchens, bathrooms and whole homes in San Jose and the South Bay — quoted room by room from a written checklist, not a package.",
   h1: "Deep cleaning in San Jose, defined room by room before anyone starts",
   lead: "For homes that need substantially more detail than routine housekeeping—especially kitchens, bathrooms, fixtures, edges and the areas that are usually skipped.",
   fitWhen: [
@@ -692,7 +692,11 @@ export const debrisRemovalPage: Doc27ServicePage = {
   },
   eyebrow: "Property Clearing · San Jose & the South Bay",
   seoTitle: "Property Debris Removal in San Jose | Aseptaclean",
-  metaDescription: "Property debris removal in San Jose and Santa Clara County. Written scope, staged loading, and disposal handled by a City-authorized hauler engaged for the project.",
+  // Length trimmed 2026-08-18 by dropping the "and" before "disposal" and swapping the region
+  // label — NOT by shortening the hauler clause. "engaged for the project" is doc 21 §4.2
+  // permitted copy verbatim; without it the sentence reads as a standing disposal chain, which
+  // is the "we handle disposal" self-performed phrasing §4.3 prohibits outright.
+  metaDescription: "Property debris removal in San Jose and the South Bay. Written scope, staged loading, disposal handled by a City-authorized hauler engaged for the project.",
   h1: "Debris removal in San Jose for whole-property projects",
   lead: "Removal planning for loose, non-hazardous property debris that must be cleared before cleaning, turnover or the next phase of work.",
   fitWhen: [

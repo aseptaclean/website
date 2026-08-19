@@ -8,7 +8,7 @@ and `docs/01-QUALITY-GUARDRAILS.md` still win.
 ## 0. What this session is
 
 A verbatim visual port. The owner has approved 12 HTML mockups in `docs/mockups/` as the pixel
-target for the entire 37-route site. Your job is to make the built site match them — structure,
+target for the entire 36-route site. Your job is to make the built site match them — structure,
 type, spacing, color, components — while changing **no plumbing and no copy sources**.
 
 This is not a redesign session. Do not improve, reinterpret, or "modernize" the mockups. Where a
@@ -122,7 +122,7 @@ Do not report done because it compiles.
 
 ## 7. AGENTS.md amendment (same session, last step)
 
-Replace the Scope section's one-page restriction with the 37-route architecture per
+Replace the Scope section's one-page restriction with the 36-route architecture per
 `docs/SITEMAP-MASTER.md`, and correct the endpoint rule to name `functions/api/lead.ts` as the
 one canonical endpoint. Append to `docs/05-DECISIONS-LOG.md`:
 
