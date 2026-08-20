@@ -159,7 +159,7 @@ disagrees with the lists below, the build wins and the disagreement is flagged i
 **37 built routes** = 36 pages + `/404`. `/api/lead` is a Cloudflare Pages Function, not an
 Astro route, and never appears in `sitemap.xml`.
 
-**Indexable, in `sitemap.xml` (21)**
+**Indexable, in `sitemap.xml` (22)**
 ```
 /                                   /faq/
 /about/                             /handoff-standard/
@@ -171,7 +171,7 @@ Astro route, and never appears in `sitemap.xml`.
 /deep-cleaning-san-jose/            /move-out-cleaning-san-jose/
 /debris-removal-san-jose/           /extreme-cleaning-san-jose/
 /estate-cleanout-san-jose/          /hoarding-cleanup-san-jose/
-/property-cleanouts-san-jose/
+/property-cleanouts-san-jose/       /estate-cleanout-checklist/    (launched 2026-08-20)
 ```
 
 **Indexable, deliberately absent from `sitemap.xml` (3)**
@@ -181,10 +181,10 @@ Astro route, and never appears in `sitemap.xml`.
 /sms-notification-consent/ byte-preserved, under Twilio 10DLC carrier review — DO NOT EDIT
 ```
 
-**`noindex`, excluded from `sitemap.xml` (13)**
+**`noindex`, excluded from `sitemap.xml` (12)**
 ```
 /404                                /projects/
-/thank-you/                         /estate-cleanout-checklist/
+/thank-you/
 /specialty-cleaning/                (hub — noindex while its group is gated)
 /animal-waste-cleanup-san-jose/     /rodent-dropping-cleanup-san-jose/
 /pigeon-dropping-cleanup-san-jose/  /commercial-cleaning-san-jose/
@@ -192,6 +192,11 @@ Astro route, and never appears in `sitemap.xml`.
 /window-cleaning-san-jose/          /senior-downsizing-san-jose/   (P1 — delete-or-write)
 ```
 Each stays noindex until its own gate clears. Do not bulk-flip.
+
+**`/estate-cleanout-checklist/` left this list on 2026-08-20** — the first of P9's ten gated
+rows to clear. Its gate was an owner copy review, not an operational or compliance fact, which
+is why it could close inside the repository when the other nine cannot. **This sets no
+precedent for the remaining nine**; see `docs/05-DECISIONS-LOG.md` for their conditions.
 
 **Crawl-path note — open, recorded 2026-08-19.** The global nav and footer link every service
 page from every page, so **all 21 indexable routes link into the 11 noindex service routes.**

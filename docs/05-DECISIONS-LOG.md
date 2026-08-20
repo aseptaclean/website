@@ -5057,3 +5057,147 @@ reported `PASS — 0 absent`. All three were annotations *about* copy corrupting
 reads it; none was a copy error. The third is the one the rule exists for: the first two made the
 gate noisier, which self-corrects. The third made it quieter and green, and was caught only by
 noticing `extracted` had fallen by eleven when two strikes could explain two.
+
+---
+
+## P9 row 10 closed — `/estate-cleanout-checklist/` launched (2026-08-20)
+
+Owner cleared the copy review that was this route's only gate, with **one strike**. The page is
+now indexable, in `sitemap.xml`, and carries three inbound links instead of one. Shipped as
+`src/` commit `201ea50`, separate from this documentation pass.
+
+**This is the first of P9's ten rows to clear, and it sets no precedent for the other nine.**
+Row 10 was always the odd one: its gate was a copy review, which is a decision the owner can
+make by reading. The remaining nine are held on an operational fact (crew capacity) or a
+compliance fact (doc 27 §21's five inputs), and neither can be satisfied by anything done inside
+this repository. A future session finding nine gated rows where the log records ten should not
+read this as momentum.
+
+### The strike, and why it could not be applied verbatim
+
+The owner's instruction named this sentence:
+
+> This is also the section of the checklist Aseptaclean is named in, if you're reading it that way.
+
+**That text is the first clause of a longer sentence, not a sentence.** What was in the build:
+
+> ~~This is also the section of the checklist Aseptaclean is named in, if you're reading it that way~~ — but it's written to hold up regardless of who you hire.
+
+Striking the named text and nothing else would have shipped `— but it's written to hold up
+regardless of who you hire.` as the section's entire body: a fragment opening on a dangling
+conjunction, under a heading it no longer connects to. The instruction to verify the strike
+left no dangling transition is what surfaced this, and it is the reason that check was asked
+for rather than assumed.
+
+**Resolution: the surviving clause was given back a subject, and nothing else changed.** Every
+surviving word is unmodified.
+
+> The checklist is written to hold up regardless of who you hire.
+
+The alternative — deleting the body outright — was considered and rejected. It would have left
+the H2 *"Whoever you hire, ask for something like this at the end"* with only a CTA link beneath
+it, which is a thinner section than the ruling asked for, and it would have removed the neutral
+statement the ruling's own reasoning wants preserved.
+
+**One observation for the owner, not actioned.** The shipped sentence repeats *"who you hire"*
+from the H2 directly above it. Preserving the approved words exactly was judged more defensible
+than substituting them to avoid the echo, but the echo is real and a one-word change would
+remove it. Flagged rather than taken.
+
+**A wording discrepancy in the instruction, recorded so it is not re-litigated.** The strike was
+described as being in *section 04*. Section 04 of the checklist is *Choosing a vendor*; this
+sentence is in the record section further down, the one headed *"Whoever you hire, ask for
+something like this at the end"*. The quoted string was exact and appears exactly once in the
+repository, so there was no ambiguity about the target and the edit proceeded. Worth noting only
+because doc 19 Part 6 calls section 4 *"(neutral — this section earns the links)"*, which is the
+same reasoning the ruling gives — the label was applied to the right idea and the wrong section.
+
+### Index flip and sitemap
+
+`noindex` prop removed from `src/pages/estate-cleanout-checklist/index.astro`; route added to
+`src/pages/sitemap.xml.ts`. Both the page's header comment and the sitemap comment block are
+rewritten — each said in its own words that this route was a gated draft, and a stale comment
+asserting a gate that has cleared is exactly the class of defect this log exists to prevent.
+
+The page's own comment predicted publishing would be *"a flip of `noindex`, not a rebuild."*
+That held: no markup, no copy, and no schema changed to launch it.
+
+### Two contextual inbound links, and the anchor-text question
+
+`docs/19-SYSTEM-AND-SITEMAP.md` §2's linking rules already specified one of these:
+*"Checklist ← estate page + footer + every letter."* **The estate-page link was specified and
+never built.** Hoarding cleanup is added on the same reasoning — its readers face the same
+sorting and vendor-selection decisions the checklist covers.
+
+**No approved anchor string for this target exists in any canon document.** Doc 27 does not
+cover this route at all (its copy is doc 19 Part 6, method-derived), and doc 19 supplies section
+contents rather than link text. The governing instruction is doc 19 §2's rule: *"Anchor text =
+target page's primary term or a natural sentence; never 'click here.'"* The anchor used is the
+target's own H1, **The Executor's Estate Cleanout Checklist**, which contains doc 19 §2.2's
+primary term for the route (`estate cleanout checklist`). Reported rather than assumed, per the
+instruction to report if no approved text exists.
+
+**The links do not go in the `related` array.** That block renders under *"Often booked
+alongside"*, and a free document nobody books does not belong under that heading. A new optional
+`resource` field on `Doc27ServicePage` carries it instead, rendered as its own block. The other
+twelve service pages set no `resource` and are byte-unchanged in the DOM.
+
+### Verification
+
+| Check | Result |
+| --- | --- |
+| Gate 6 | **PASS**, output byte-identical to the pre-change baseline |
+| Extracted | **174 → 174**, delta 0 |
+| Struck clause anywhere in `dist/` | 0 files |
+| Record section after the strike | eyebrow + H2 + body + CTA — no orphaned heading, no fragment |
+| Routes | 37, unchanged |
+| Index / noindex | **25 / 12** (was 24 / 13) |
+| `sitemap.xml` entries | **22** (was 21) |
+| Inbound links to the checklist | **3** (was 1) |
+| Outbound links from the checklist's own copy | `/`, `/handoff-standard/`, `/privacy/` — all indexable |
+| `_redirects` source or destination collision | none |
+| Never-build list | clean |
+| `/sms-notification-consent/` | still `e5280343…` |
+
+**On the extraction count.** The standing rule added to `.claude/skills/type-law/SKILL.md`
+requires reconciling `extracted` before believing a `PASS`. **Predicted delta: zero**, because
+gate 6 extracts only from `docs/27-COPY-CANONICAL.md` and
+`docs/27-SECTION-9-15-CONNECTIVE-COPY.md`, and this change edits neither — the checklist's copy
+has never been in the gate's corpus at all. Actual delta: zero, with the full output diffing
+byte-identical against a baseline captured from a clean tree. Prediction matched, so the `PASS`
+is worth what it says.
+
+**Worth stating plainly, because it is a limit of the gate and not a result:** gate 6 could not
+have caught a defect in this change either way. The struck string, the surviving sentence, and
+both new link strings are all outside its corpus. The strike was verified by grepping `dist/`
+directly and by reading the rendered section, not by the gate.
+
+### One crawl-path consequence, reported not fixed
+
+The indexable set is now 25 routes rather than 24, and the global nav links every one of them
+into the 11 gated service routes. That is register item **P2**, unchanged in nature and one
+source larger in scope. Narrowing it still means changing the navigation architecture, which is
+not something to do inside a launch commit.
+
+### `docs/REPO-STATE.md` row 10 — deliberately not spot-fixed
+
+That file's route table now records this page as `noindex` with one inbound link, which is
+wrong in a new way. **It is left alone.** Sections 2–10 of that document are already logged as
+stale under **P8**, and hand-correcting one row of a table declared stale produces something
+worse than either state: a table that is partly current with no way to tell which rows are
+which. It regenerates from a build when P8 is worked, per the precedent set on 2026-08-19.
+
+### Register after this ruling
+
+| # | State |
+| --- | --- |
+| P1 | Open — delete-or-write on `/senior-downsizing-san-jose/`. Also carries row 9's index status. Retires five components. |
+| P2 | Open — structural crawl path; now 25 indexable sources rather than 24. Needs its own session on nav architecture. |
+| P3 | Open — server/client error-string divergence. |
+| P4 | ✅ Closed 2026-08-19. |
+| P5 | ✅ Closed 2026-08-19. |
+| P6 | Open — homepage states the uncertain-items commitment two ways. |
+| P7 | Open — doc 27 §16 city presentation vs built grouping. |
+| P8 | Open — `REPO-STATE.md` sections 2–10 stale; row 10 of its route table newly so, deliberately. |
+| P9 | Open, **now two conditions**: **A** owner confirms crew capacity per service (rows 1–4) · **B** five §21 inputs on record, row 8 after 5–7 (rows 5–8). Row 9 folded into P1. **Row 10 ✅ closed 2026-08-20 — launched.** |
+| P10 | Open — dead `navigation` export, deliberately left in place. |

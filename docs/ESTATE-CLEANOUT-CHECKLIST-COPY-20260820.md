@@ -1,5 +1,12 @@
 # `/estate-cleanout-checklist/` — full rendered copy for owner review
 
+> **RULED 2026-08-20 — CLEARED WITH ONE STRIKE. This document is now a record, not a pending
+> review.** The owner cleared the page and struck the self-reference flagged as observation 2
+> below. Everything under "Current shipped state" and "If cleared" describes the pre-launch
+> state and is preserved as written — the page is now indexable, in `sitemap.xml`, and carries
+> three inbound links. See `docs/05-DECISIONS-LOG.md` for the ruling and the shipped diff.
+> Observations 1 and 3 were read and left as intended tone; neither was actioned.
+
 **Dumped 2026-08-20 from `dist/estate-cleanout-checklist/index.html`** after
 `npm run build:local`. This is register item **P9 row 10** — the only launch-eligible row of the
 ten planned-index / shipped-noindex routes. Owner clears or holds directly.
@@ -111,8 +118,15 @@ copy, in document order.
 **H2**
 > Whoever you hire, ask for something like this at the end
 
-**Body**
-> This is also the section of the checklist Aseptaclean is named in, if you're reading it that way — but it's written to hold up regardless of who you hire.
+**Body** — struck and replaced 2026-08-20, owner ruling
+> ~~This is also the section of the checklist Aseptaclean is named in, if you're reading it that way — but it's written to hold up regardless of who you hire.~~
+
+Struck because the neutral frame is what makes the asset forwardable by a third party, and the
+section does its work without pointing at itself. The struck text was the first clause of the
+sentence, not a whole sentence, so the surviving clause was given back a subject and nothing
+else. What ships now, from `src/data/servicePages.ts`:
+
+> The checklist is written to hold up regardless of who you hire.
 
 **CTA**
 > See the annotated sample Handoff Record →

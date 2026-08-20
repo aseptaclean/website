@@ -42,7 +42,7 @@
 | | `/about/` | About | index | ✅ index | 27 §17 |
 | | `/faq/` | FAQ | index | ✅ index | 27 §17 |
 | | `/contact/` | Contact | index | ✅ index | 27 §17 |
-| **Resources** | `/estate-cleanout-checklist/` | Ungated checklist asset | index | ⚠️ **noindex** | doc 19 Part 6 |
+| **Resources** | `/estate-cleanout-checklist/` | Ungated checklist asset | index | ✅ index, in `sitemap.xml`, 3 inbound links | doc 19 Part 6 |
 | | ~~`/assessment/`~~ | ~~Triage quiz~~ | ~~Phase 4~~ | ~~not built~~ — **CANCELLED 2026-08-20, owner ruling** | ~~doc 19 Part 4~~ |
 | **Legal** | `/privacy/` `/terms/` `/cookie-policy/` | | as configured | ✅ index, in `sitemap.xml` | existing |
 | | `/data-request/` `/sms-notification-consent/` | | as configured | ✅ index, **deliberately not in `sitemap.xml`** | existing |
