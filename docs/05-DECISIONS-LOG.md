@@ -4882,3 +4882,47 @@ which touches every route and interacts with rulings 3 and 4 above. Register upd
 | P7 | Open — doc 27 §16 city presentation vs built grouping. |
 | P8 | Open — `REPO-STATE.md` sections 2–10 stale, confirmed to stand by ruling 6. |
 | P9 | **New.** Ten planned-index rows shipping `noindex` (ruling 4). Closes when the crew-capacity fact, the §21 compliance inputs, and the two individual reviews land — three independent conditions, tracked as one register row because the owner rules on them as a group. |
+
+---
+
+## Ruling 3 shipped — `/services/` and `/who-we-help/` linked from the footer (2026-08-20)
+
+Separate commit from the documentation pass, per the ruling. One file: `src/data/site.ts`.
+
+**Both routes now carry 36 inbound links**, up from zero. Route count unchanged at 37;
+index/noindex split unchanged at 21/3/13; `qa:gate6` still PASS; `/sms-notification-consent/`
+still hashes `e5280343…`.
+
+### How they were orphaned — worth recording, because nothing was ever deleted
+
+Chunk 3 of the IA expansion (2026-08-11) added `/services/` and `/who-we-help/` to the
+`navigation` array in `src/data/site.ts`, with a comment explaining that the new `/services/`
+page replaces the old `/#service-cards` anchor. That was done correctly.
+
+The 2026-08-18 visual port then repointed `Header.astro` and `Footer.astro` at the new `megaNav`
+structure. **`navigation` is not referenced by either file, or by anything else in `src/`.** It
+is a dead export. No link was removed and no decision was reversed — the array holding the links
+simply stopped being read, and both pages kept building, kept their `index` status, and kept
+their `sitemap.xml` entries while becoming unreachable to any visitor.
+
+**This is why the crawl-path audit found them and a copy gate never would.** Every string on
+both pages was present and correct. The defect was entirely in what pointed at them.
+
+**`navigation` is left in place and flagged, not deleted.** Removing a dead export is cleanup,
+not this ruling, and doing it inside a link fix would put an unrelated deletion in a commit whose
+message says it adds two links. Recorded as register item **P10**.
+
+### Shared structure, stated plainly
+
+`megaNav` feeds both the footer columns and the header mega-panel, so these two entries also
+appear in the header Company dropdown. That is a consequence of the shared data, not a second
+decision taken quietly: the ruling named the footer Company column, and in this codebase there
+is no footer-only path into that column that does not also duplicate the group. Building one
+would re-split header and footer, which `src/data/site.ts:168` records as a defect that was
+deliberately fixed on 2026-08-18.
+
+### Register addition
+
+| # | Item | State | Closes when |
+| --- | --- | --- | --- |
+| P10 | `navigation` export in `src/data/site.ts` is dead | No consumer in `src/` since the 2026-08-18 port. Its content is now duplicated in `megaNav`. Left in place so this commit stays a link fix. | Deleted in a cleanup commit, after confirming no consumer was added; or repurposed if a flat nav returns. |

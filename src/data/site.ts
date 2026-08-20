@@ -341,6 +341,32 @@ export const megaNav: readonly MegaNavGroup[] = [
         note: "Founder and background",
         icon: "person"
       },
+      // Added 2026-08-20, owner ruling. Both pages ship indexable and in sitemap.xml but had
+      // ZERO inbound links anywhere in the build — reachable by a crawler through the sitemap
+      // and by a visitor not at all.
+      //
+      // How they were orphaned: Chunk 3 of the IA expansion (2026-08-11) added them to the
+      // `navigation` array above, and the 2026-08-18 visual port repointed Header and Footer to
+      // `megaNav`. Nothing removed the links; the array holding them stopped being read.
+      // `navigation` is now a dead export with no consumer — left in place, flagged, not
+      // deleted in this commit because that is cleanup, not the ruling.
+      //
+      // megaNav feeds BOTH the footer columns and the header mega-panel, so these also appear in
+      // the header Company dropdown. That is a consequence of the shared structure, not a second
+      // decision — and it is the behaviour site.ts:168 already established when nav and footer
+      // were deliberately brought into agreement.
+      {
+        label: "Services",
+        href: "/services/",
+        note: "Everything we handle",
+        icon: "layers"
+      },
+      {
+        label: "Who We Help",
+        href: "/who-we-help/",
+        note: "Executors, agents, managers",
+        icon: "person"
+      },
       {
         label: "The Handoff Standard",
         href: "/handoff-standard/",
