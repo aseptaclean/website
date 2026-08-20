@@ -38,6 +38,17 @@ export interface Doc27ServicePage {
   readonly boundaries: readonly string[];
   readonly faq: readonly { readonly question: string; readonly answer: string }[];
   readonly related: readonly { readonly label: string; readonly href: string | null }[];
+  /**
+   * Optional link to an ungated resource asset. Deliberately NOT part of `related`: that block
+   * renders under "Often booked alongside", and the checklist is not booked — it is a free
+   * document a reader can print or forward without contacting anyone. Only set where doc 19 §2's
+   * linking rules put the asset. Added 2026-08-20 with the checklist launch (P9 row 10).
+   */
+  readonly resource?: {
+    readonly label: string;
+    readonly href: string;
+    readonly note: string;
+  };
 }
 
 export const deepCleaningPage: Doc27ServicePage = {
@@ -610,7 +621,17 @@ export const hoardingPage: Doc27ServicePage = {
     { label: "Estate Cleanouts", href: "/estate-cleanout-san-jose/" },
     { label: "Extreme-Condition Cleaning", href: "/extreme-cleaning-san-jose/" },
     { label: "Move-In & Move-Out Cleaning", href: "/move-out-cleaning-san-jose/" }
-  ]
+  ],
+  // Anchor text is the target's own H1, which carries doc 19 §2.2's primary term for that route
+  // ("estate cleanout checklist"). No canon document supplies a verbatim anchor string for it;
+  // doc 19 §2's rule — "Anchor text = target page's primary term or a natural sentence" — is the
+  // governing instruction, and this satisfies it. The note says why a hoarding reader wants an
+  // executor's document, which is the whole reason this link is contextual and not nav furniture.
+  resource: {
+    label: "The Executor's Estate Cleanout Checklist",
+    href: "/estate-cleanout-checklist/",
+    note: "Written for executors clearing an estate, but the sorting and vendor-selection sections apply to any heavy-contents property."
+  }
 } as const;
 
 export const estatePage: Doc27ServicePage = {
@@ -673,7 +694,16 @@ export const estatePage: Doc27ServicePage = {
     { label: "Debris Removal", href: "/debris-removal-san-jose/" },
     { label: "Move-In & Move-Out Cleaning", href: "/move-out-cleaning-san-jose/" },
     { label: "Hoarding Cleanup", href: "/hoarding-cleanup-san-jose/" }
-  ]
+  ],
+  // docs/19-SYSTEM-AND-SITEMAP.md §2 linking rules name this link explicitly: "Checklist ←
+  // estate page + footer + every letter." It was the one specified inbound link the build never
+  // had. Anchor text is the target's own H1, carrying its primary term — see the note on
+  // hoardingPage.resource for why no canon anchor string exists.
+  resource: {
+    label: "The Executor's Estate Cleanout Checklist",
+    href: "/estate-cleanout-checklist/",
+    note: "Five sections, in the order most executors face them. Free to print and to pass on."
+  }
 } as const;
 
 export const debrisRemovalPage: Doc27ServicePage = {

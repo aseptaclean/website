@@ -1,11 +1,12 @@
 ---
-// UNPUBLISHED DRAFT — docs/19-SYSTEM-AND-SITEMAP.md §2.1 Phase 3, §2.2 CHECKLIST spec, §3
+// PUBLISHED 2026-08-20 — docs/19-SYSTEM-AND-SITEMAP.md §2.1 Phase 3, §2.2 CHECKLIST spec, §3
 // (no dedicated wireframe row; built as the standalone ungated asset the spec describes: "Fully
 // ungated. Print stylesheet. Contents in Part 6.") and Part 6 (full section/item contents).
-// This is the one launch-eligible page in this batch — content is method-derived from Part 6,
-// not call-derived, so it needed no [OWNER INPUT] placeholders. It still ships noindex and out
-// of the sitemap/nav/footer with the other seven until the owner reviews and explicitly
-// approves launch (directive: "flag all its copy for owner review").
+// This was the one launch-eligible page in its batch — content is method-derived from Part 6,
+// not call-derived, so it needed no [OWNER INPUT] placeholders. Its only gate was an owner copy
+// review; the owner cleared it (docs/05-DECISIONS-LOG.md, P9 row 10) with one strike to the
+// record-section body in src/data/servicePages.ts. It is now indexable and in sitemap.xml.
+// The other nine rows of P9 stay gated — do not read this flip as covering any of them.
 //
 // DIFFERENTIATION: this page's first section after the hero is a document-style checklist
 // list, not a Track A/B split, recognition block, or fiduciary block — no other page in this
@@ -29,9 +30,8 @@ const schema = [
       }
     ]
   }
-  // Ships when this page publishes, not before (docs/19-SYSTEM-AND-SITEMAP.md self-containment
-  // rule + this session's noindex/sitemap-exclusion directive). Kept in the component now so
-  // publishing later is a flip of `noindex`, not a rebuild.
+  // Live as of the 2026-08-20 launch. It was written ahead of publication so launching would be
+  // a flip of `noindex`, not a rebuild — which is exactly how it went.
 ];
 ---
 
@@ -39,7 +39,6 @@ const schema = [
   title="The Executor's Estate Cleanout Checklist (Free) | Aseptaclean"
   description="A free, neutral checklist for executors and families clearing an estate: authority, legal steps, sorting, choosing a vendor, and closeout — five sections, print-ready."
   canonicalPath="/estate-cleanout-checklist/"
-  noindex={true}
   schema={schema}
 >
   <PageHeader

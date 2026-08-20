@@ -85,8 +85,14 @@ export const checklist = {
       ]
     }
   ],
+  // Owner ruling 2026-08-20 (P9 row 10): the self-reference — "This is also the section of the
+  // checklist Aseptaclean is named in, if you're reading it that way" — is struck. The neutral
+  // frame is what makes the asset forwardable by a third party, and the section does its work
+  // without pointing at the brand. The struck clause was the FIRST HALF of this sentence, not a
+  // sentence of its own, so the surviving clause was given back its subject; every surviving
+  // word is unchanged. Do not restore the self-reference.
   vendorCta:
-    "This is also the section of the checklist Aseptaclean is named in, if you're reading it that way — but it's written to hold up regardless of who you hire.",
+    "The checklist is written to hold up regardless of who you hire.",
   footerNote:
     "This checklist is a neutral reference for executors and families. It does not require using Aseptaclean or any specific vendor."
 } as const;

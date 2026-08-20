@@ -2,10 +2,11 @@ import type { APIRoute } from "astro";
 
 import { site } from "@data/site";
 
-// Every service page, category hub, /projects/, /faq/, /service-areas/, and the estate checklist
-// is intentionally NOT listed here. All ship noindex={true} pending their own launch gate — see
-// the `gate` field on each record in src/data/doc27ServicePages.ts. As of the 2026-08-16 doc 27
-// copy migration that is 14 service pages, 3 category hubs, and the 5 company/areas routes.
+// Every service page, category hub, /projects/, /faq/, and /service-areas/ that is absent from
+// this list is absent deliberately. Those ship noindex={true} pending their own launch gate —
+// see the `gate` field on each record in src/data/doc27ServicePages.ts. As of the 2026-08-16
+// doc 27 copy migration that is 14 service pages, 3 category hubs, and the 5 company/areas
+// routes. The estate checklist was in that group until 2026-08-20; it is now listed below.
 //
 // The three specialty pages (animal / rodent / pigeon) are gated specifically on
 // docs/27-COPY-CANONICAL.md §21's compliance-release inputs — licensing-boundary confirmation,
@@ -51,7 +52,12 @@ const routes = [
   "/property-cleanouts-san-jose/",
   // Company / areas.
   "/service-areas/",
-  "/faq/"
+  "/faq/",
+  // Resource asset. Added 2026-08-20 when the owner cleared its copy review — the only gate it
+  // ever carried (docs/05-DECISIONS-LOG.md, P9 row 10). doc 19 §2.2 always specified it "fully
+  // ungated"; it shipped noindex only pending that review. Added together with its noindex flip
+  // and two contextual inbound links, so it never sits in this file as a noindex entry.
+  "/estate-cleanout-checklist/"
   // NOT listed, each for a specific reason:
   //   post-construction, window, eviction, commercial (crew capacity gate, per master) ·
   //   animal, rodent, pigeon (doc 27 §21 compliance release) ·

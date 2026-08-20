@@ -287,6 +287,19 @@ const schema = [
                 <p class="ac-relcol__pending"><b>{item.label}</b></p>
               )
             )}
+
+            {/* Resource asset, kept visually and semantically separate from the booked-alongside
+                services above it — see the `resource` field's note in src/data/doc27ServicePages.ts.
+                Renders on the two records that set it; the other twelve are unchanged. */}
+            {page.resource && (
+              <div class="ac-relcol__resource">
+                <h3 class="ac-hdr-lite ac-type-label-head rel-head">Free resource</h3>
+                <a href={page.resource.href}>
+                  <b>{page.resource.label}</b>
+                </a>
+                <p class="ac-relcol__note">{page.resource.note}</p>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -361,6 +374,19 @@ const schema = [
 
   .faq--flush {
     border-top: 2px solid var(--ac-color-navy-900);
+  }
+
+  /* Separates the resource asset from the service links above it. No font-size lands on the
+     heading tag inside — it takes its size from .ac-type-label-head, per type law #1. */
+  .ac-relcol__resource {
+    margin-top: var(--ac-space-6);
+  }
+
+  .ac-relcol__note {
+    margin: 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.85rem;
+    line-height: 1.5;
   }
 
   .ac-relcol__pending b {
