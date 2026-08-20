@@ -85,14 +85,23 @@ export const checklist = {
       ]
     }
   ],
-  // Owner ruling 2026-08-20 (P9 row 10): the self-reference — "This is also the section of the
-  // checklist Aseptaclean is named in, if you're reading it that way" — is struck. The neutral
-  // frame is what makes the asset forwardable by a third party, and the section does its work
-  // without pointing at the brand. The struck clause was the FIRST HALF of this sentence, not a
-  // sentence of its own, so the surviving clause was given back its subject; every surviving
-  // word is unchanged. Do not restore the self-reference.
+  // Owner ruling 2026-08-20 (P9 row 10), in two passes. Pass 1 struck the self-reference —
+  // "This is also the section of the checklist Aseptaclean is named in, if you're reading it
+  // that way" — because the neutral frame is what makes the asset forwardable by a third party
+  // and the section does its work without pointing at the brand. Do not restore it.
+  //
+  // Pass 2 is the line below, owner-supplied verbatim. The struck clause had been the only thing
+  // separating the surviving text from the H2 above it ("Whoever you hire, ask for something
+  // like this at the end"), so removing it left the body restating its own heading. This ties
+  // the sentence to the section's subject — the artifact — instead. Do not "simplify" it back
+  // toward the heading's wording.
+  //
+  // NO AUTOMATED COPY VERIFICATION COVERS THIS STRING. See the header comment on
+  // src/pages/estate-cleanout-checklist/index.astro: this route's copy has no doc 27 source and
+  // is outside qa:gate6's corpus entirely. Changes here are verified by reading the rendered
+  // section in dist/ and grepping it, never by a green gate run.
   vendorCta:
-    "The checklist is written to hold up regardless of who you hire.",
+    "The record it produces should stand on its own, regardless of who you hire.",
   footerNote:
     "This checklist is a neutral reference for executors and families. It does not require using Aseptaclean or any specific vendor."
 } as const;
