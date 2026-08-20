@@ -1,23 +1,82 @@
 # Repository State Report
 
-Generated 2026-08-11. Read-only audit — ground truth only, no recommendations. All facts verified against the working tree at the time of generation (branch `main`, with uncommitted changes noted explicitly where relevant).
+Originally generated 2026-08-11. Read-only audit — ground truth only, no recommendations.
+
+> ## ⚠️ Read this before trusting any number below
+>
+> **Partially regenerated 2026-08-19.** Between the two dates the visual port rewrote
+> **39 files** across `src/` — every component, all three data modules, and `BaseLayout` — so
+> most of the deep sections in this report describe a build that no longer exists.
+>
+> Regenerating those sections faithfully means re-auditing tokens, every component, the
+> rendered homepage, and the claims greps. That is its own pass. Rather than leave stale
+> figures reading as current, or delete an audit trail that is still the only record of the
+> pre-port state, each section is dated. **A section marked STALE is a historical record of
+> 2026-08-11, not a description of the repository today.**
+>
+> | Section | State |
+> | --- | --- |
+> | 1. Repo basics | ✅ **Regenerated 2026-08-19** |
+> | 2. Routes | ⚠️ **STALE** — superseded by `AGENTS.md` §2, regenerated from `dist/` the same day. Use that. |
+> | 3. Lead pipeline | ⚠️ STALE (endpoint unchanged and correct; env/secret detail unverified) |
+> | 4. Components | ⚠️ STALE — orphan list re-checked 2026-08-19, see the note in §1 |
+> | 5. Homepage as rendered | ⚠️ **STALE** — describes the pre-port homepage |
+> | 6. Specific checks | ⚠️ STALE |
+> | 7. Claims greps | ⚠️ STALE — re-run `claims-check` rather than reading these |
+> | 8. Design system | ⚠️ **STALE** — `tokens.css` changed in 4 commits since |
+> | 9. Assets and placeholders | ⚠️ STALE — marker counts re-checked 2026-08-19, see §1 |
+> | 10. Business facts as rendered | ⚠️ STALE |
+> | 11. Docs on disk | ✅ **Regenerated 2026-08-19** |
+> | 12. Anything surprising | ✅ **Regenerated 2026-08-19** — four of the original items are resolved |
+> | Summary | ✅ **Regenerated 2026-08-19** |
 
 ---
 
 ## 1. Repo basics
 
+**Regenerated 2026-08-19.**
+
 **Branch:** `main`
 
-**Working tree:** NOT clean. `git status --porcelain`:
+**Working tree:** clean at the start of this pass; the documentation reconciliation then
+modified five files, all documentation or tooling — **no `src/`, `public/`, or `functions/`
+change**:
 ```
- M src/components/Footer.astro
- M src/data/servicePages.ts
- M src/data/site.ts
- M src/pages/sitemap.xml.ts
-?? src/pages/services/
-?? src/pages/who-we-help/
+ M .claude/skills/doc-precedence/SKILL.md
+ M AGENTS.md
+ M docs/27-COPY-CANONICAL.md
+ M docs/SITEMAP-MASTER.md
+ M scripts/gate6-copy-trace.mjs
 ```
-Four modified, tracked files and two untracked new page directories (`src/pages/services/index.astro`, `src/pages/who-we-help/index.astro`). This report treats the working tree as-is (uncommitted changes included) since that is the current state of the repository.
+
+**Commits:** 51 total, up from 24 on 2026-08-11.
+
+**Resolved since the original report.** The two untracked page directories it flagged as at
+risk of being lost — `src/pages/services/index.astro` and `src/pages/who-we-help/index.astro` —
+were committed in `db1b5c5` ("Commit pending working-tree state before port"). Both now build,
+are indexable, and appear in `sitemap.xml`. Neither, however, is reachable by any internal
+link; see §12.
+
+**Build:** `npm run build:local` passes. 37 routes (36 pages + `/404`), 39 build artifacts
+including `sitemap.xml` and `robots.txt`.
+
+**Placeholder markers, re-checked 2026-08-19** — `OWNER INPUT` appears in **4 `src/` files**
+(`sitemap.xml.ts`, `estate-cleanout-checklist/index.astro`, `ServiceProof.astro`,
+`servicePages.ts`) and in **zero** built HTML. `TODO`, `FIXME`, `lorem`, and `REPLACE_WITH` are
+absent from both. `Newsreader` and mono-font references are absent from `src/` (0 hits each),
+consistent with owner ruling D5.
+
+**Orphan components, re-checked 2026-08-19** — exactly one component is imported by nothing:
+`src/components/ServiceChecklist.astro`.
+
+**Correction to pending-register item P1.** P1 states that `/senior-downsizing-san-jose/` is the
+"sole surviving caller" of six components, and that deleting the page would retire all six.
+That is true of **five** — `ServiceScope`, `ServicePricing`, `ServiceMethodRail`,
+`ServiceProof`, `CompactHero`. It is **not** true of `ServiceFAQ`, which
+`src/pages/faq/index.astro:12` imports and renders independently. Deleting the page retires
+five components; `ServiceFAQ` survives. (`ServicePageLayout.astro` names four of these in a
+comment at lines 11–12 explaining it no longer composes them — a grep for caller counts that
+does not exclude comments will read that as a live import and get the wrong answer.)
 
 **Last 15 commits** (hash | date | first line):
 ```
@@ -840,7 +899,36 @@ Note: `docs/` also contains non-markdown files not covered by the table above: `
 
 ### Dangling doc-to-doc references
 
-Searched every `docs/*.md` and `docs/archive/*.md` file (plus `README.md`, `AGENTS.md`, `START-CODEX-PROMPT.md`) for `docs/*.md`-shaped references, and cross-checked each referenced filename against the actual files on disk. **9 referenced filenames do not exist in `docs/`:**
+**Regenerated 2026-08-19.** Scanned every `docs/*.md` plus `AGENTS.md`, `PORT-PROMPT.md`, and
+`README.md` for `docs/*.md`-shaped references and cross-checked each against disk. **27
+referenced filenames do not exist** — up from 9, because the 2026-08-11 consolidation deleted
+files that other documents kept citing.
+
+**The distinction that matters, and the reason the raw count is misleading:** a *pointer* tells
+a reader to go read a file, and a dangling pointer is a stop-condition under `AGENTS.md` §1. A
+*record* says a file used to exist and what happened to it, and it is supposed to name a file
+that is gone. **25 of the 27 are records** — almost all of them in `05-DECISIONS-LOG.md`, which
+is a historical log and correctly names deleted files in dated entries. Those are not defects
+and must not be "cleaned up"; deleting them would destroy the provenance the log exists for.
+
+**Operative pointers, both closed this pass:**
+
+| Missing target | Was referenced as authority from | Status |
+|---|---|---|
+| `docs/07-ONE-PAGE-DIRECTIVE.md` | `AGENTS.md` §1 precedence table, **rank 13**; `.claude/skills/doc-precedence/SKILL.md` rank 11 | ✅ Removed from both 2026-08-19; added to the files-that-do-not-exist list |
+| `docs/27-ASEPTACLEAN-COMPLETE-WEBSITE-BUILD.md` | `PORT-PROMPT.md` §1, named as a copy source | ✅ Corrected 2026-08-19 to `docs/27-COPY-CANONICAL.md`; never existed at all |
+
+**Near-miss filenames still cited in the log** — these are records, but each is one character
+away from a real file and will mislead a fast reader: `21CLAIMSANDCOMPLIANCELAW.md` (real:
+`21-CLAIMS-AND-COMPLIANCE-LAW.md`), `20ALIGNMENTAUDIT20260811.md` (real:
+`20-ALIGNMENT-AUDIT-2026-08-11.md`), `22-DOC-DISPOSITION.md` and `22DOCDISPOSITION.md` (both
+deleted), `ASSET-MANIFEST.md` (real: `06-ASSET-MANIFEST.md`), `DECISION-LOG.md` (real:
+`05-DECISIONS-LOG.md`, plural).
+
+`docs/FILENAME.md` is referenced from this report itself and is a documentation placeholder in
+prose, not a real reference.
+
+**The original 9, for comparison:**
 
 | Missing target | Referenced from |
 |---|---|
@@ -860,7 +948,43 @@ Several of these (the last two rows especially) are files whose own header state
 
 ## 12. Anything surprising
 
-- **`.env.production` is committed to git despite being listed in `.gitignore`.** `git ls-files | grep '^\.env'` shows both `.env.example` and `.env.production` tracked. `.gitignore` lists `.env.production` as ignored. It has been actively edited across 5 separate commits (`9729ae1`, `e8f97cb`, `10b1b8f`, `88ab2a6`, `0f0cacf`), most recently "Add OWNER_ALERT_EMAIL to .env.production". It contains real, live business configuration (phone number, owner email, Termly UUIDs, Turnstile site key) committed directly to source control — none of it is a server secret (those are correctly excluded), but it is nonetheless real production configuration living in git history despite the ignore rule, meaning `git rm --cached` was never run after the ignore rule was added, or it was force-added at some point.
+**Regenerated 2026-08-19.** Four items from the original list are resolved and are marked
+below rather than deleted — an audit finding that was fixed is worth as much as one that stands.
+
+### Resolved since 2026-08-11
+
+- ✅ **`.env.production` is no longer tracked.** `git ls-files` now returns only `.env.example`.
+  The real production configuration is out of source control.
+- ✅ **The two uncommitted page directories were committed** in `db1b5c5`.
+  `src/pages/services/` and `src/pages/who-we-help/` are no longer at risk of being lost. They
+  did, however, arrive without any document recording them — see the new finding below.
+- ✅ **`/service-areas/` is no longer an orphan.** It is indexable, in `sitemap.xml`, and linked
+  from **36 routes** via global nav. The 7 `_redirects` rules pointing at it now land on an
+  indexable, linked page.
+- ✅ **A local production build is reproducible.** `npm run build:local` passes and emits 37
+  routes. `npm run build` still fails at `validate:env` without the 6 Cloudflare secrets, which
+  is by design, but the "no way to build locally from committed state" finding no longer holds.
+
+### Still open, and one new
+
+- 🆕 **Two indexable, sitemap-listed routes are reachable by no internal link.** `/services/`
+  and `/who-we-help/` have **zero** inbound `href`s anywhere in `dist/`. A crawler finds them
+  through `sitemap.xml`; a visitor cannot find them at all. `/services/` additionally links
+  *out* to 25 routes, so it is a hub nothing points at. Recorded in `AGENTS.md` §2 and as an
+  unresolvable row in `docs/SITEMAP-MASTER.md`.
+- 🆕 **`/services/` exists despite a standing prohibition naming `/services/*`.** See
+  `AGENTS.md` §2; the narrow reading is applied, an owner confirmation is still wanted.
+- 🆕 **Every indexable route links into the `noindex` ones.** Global nav renders all 14 service
+  links on all 37 routes, so all 21 indexable routes link into the 11 `noindex` service pages.
+  Register item P2 describes this as affecting two pages; it affects the whole indexable set.
+- ⚠️ **The 80MB/75MB payload-limit discrepancy was not re-verified this pass.** The original
+  finding cited `functions/api/lead.ts`; a grep for `75 MB` there returns nothing now, but
+  `functions/` was out of scope for this documentation pass and the check was not chased into
+  `functions/_lib/`. Treat as unverified, not as fixed.
+
+### Carried forward from 2026-08-11 — not re-verified
+
+- **`.env.production` was committed to git despite being listed in `.gitignore`.** `git ls-files | grep '^\.env'` shows both `.env.example` and `.env.production` tracked. `.gitignore` lists `.env.production` as ignored. It has been actively edited across 5 separate commits (`9729ae1`, `e8f97cb`, `10b1b8f`, `88ab2a6`, `0f0cacf`), most recently "Add OWNER_ALERT_EMAIL to .env.production". It contains real, live business configuration (phone number, owner email, Termly UUIDs, Turnstile site key) committed directly to source control — none of it is a server secret (those are correctly excluded), but it is nonetheless real production configuration living in git history despite the ignore rule, meaning `git rm --cached` was never run after the ignore rule was added, or it was force-added at some point.
 
 - **`npm run build` cannot currently succeed end-to-end.** The full pipeline (`validate:env` → `astro build` → `prune-dev-routes`) fails at the first step because 6 server secrets are absent from `.env.production` by design (deferred to Cloudflare Pages secrets). This means there is no way to reproduce a real production build locally from the committed repo state alone — the Astro compile itself is clean (verified separately), but the documented `npm run build` command, as committed, always exits 1 in this repo's current state.
 
@@ -883,5 +1007,27 @@ Several of these (the last two rows especially) are files whose own header state
 ---
 
 ## Summary
+
+**Regenerated 2026-08-19.** The repository holds a complete Astro static marketing site for a
+South Bay property-clearing and cleaning business, deployed to Cloudflare Pages with a Pages
+Function (`functions/api/lead.ts`) handling lead submissions from two forms through one shared
+backend (R2, HubSpot, Resend, Turnstile; Twilio gated off pending 10DLC approval).
+
+`npm run build:local` passes and emits **37 routes** — 21 indexable and in `sitemap.xml`, 3
+indexable and deliberately excluded, 13 `noindex`. The two findings that dominated the original
+summary are both closed: the working tree no longer carries uncommitted pages, and production
+configuration is out of git. `npm run build` still requires the 6 Cloudflare secrets, by design.
+
+What now stands between this repo and launch is decisions rather than code. Ten routes are
+planned `index` and ship `noindex` on gates nobody has recorded as open or closed — including
+three explicitly ungated by owner override on 2026-08-09 that never flipped. Two indexable
+pages are reachable only through the sitemap. Every indexable page links into the noindex set
+through global nav. And the consent language on four surfaces sits inside an active Twilio 10DLC
+review. None of those is a bug to fix; each is a call to make. They are enumerated with closing
+conditions in the pending register in `docs/05-DECISIONS-LOG.md`.
+
+---
+
+### Original 2026-08-11 summary, superseded — kept for the record
 
 This repository holds a mostly-complete Astro 7 static marketing site for a South Bay property-clearing and cleaning business, paired with a separately-deployed Cloudflare Pages Function that handles lead submissions from two different forms through one shared, well-instrumented backend (R2 storage, HubSpot, Resend, Twilio-gated-off, Turnstile). The Astro compile itself is clean with zero warnings, and the copy is unusually disciplined about avoiding regulated/overreaching claims. But the repository cannot currently produce a deployable production build through its own documented `npm run build` command, because 6 required server secrets are deliberately absent from the committed `.env.production` (by design — they belong in Cloudflare Pages secrets, not git) — and separately, the working tree carries two new, live, uncommitted pages plus edits to four tracked files that have never been committed, meaning the actual deployed state of this site, whatever it currently is, cannot be reconstructed from git history alone. The single biggest thing standing between this repo and being deployable is operational, not technical: someone with access to the real Cloudflare Pages project needs to set the missing Turnstile/HubSpot/Resend secrets via `wrangler pages secret put`, and someone needs to commit the working tree's `services`/`who-we-help` page additions before they're at risk of being lost.

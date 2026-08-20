@@ -10,8 +10,9 @@ risk. The controls below exist because of specific incidents, not hypotheticals.
 
 ## The chain
 
-The operative chain lives in the repository root `AGENTS.md`. Read it there rather than
-memorizing it — it is the one file kept current. In summary, conflicts resolve up:
+The operative chain lives in the repository root `AGENTS.md`. **Read it there.** The summary
+below is a convenience copy and has already drifted once — treat any disagreement between it
+and `AGENTS.md` as `AGENTS.md` winning, and fix this list when you find one.
 
 1. Current law, active insurance, verified business facts, explicit owner decisions
 2. `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md`
@@ -19,12 +20,21 @@ memorizing it — it is the one file kept current. In summary, conflicts resolve
 4. `docs/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md`
 5. `docs/18-VISUAL-DIRECTION.md`
 6. `docs/19-SYSTEM-AND-SITEMAP.md`
-7. `docs/aseptaclean-FINAL-v2.html` — for `/` only, including copy
-8. `docs/06-APPROVED-HOMEPAGE-COPY.md` — every route except `/`
-9. `docs/11-COMPOSITION-AND-TYPE.md`
-10. `docs/02-OWNER-INPUTS.md`
-11. `docs/07-ONE-PAGE-DIRECTIVE.md` — §3, §6, §7, §11 only
-12. `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` — its own route only
+7. `docs/27-COPY-CANONICAL.md` — copy authority for the routes it covers (§9–18)
+8. `docs/20-COPY-VOICE.md` — voice rules where 27 is silent; QA standard for 27's own copy
+9. `docs/aseptaclean-FINAL-v2.html` — `/` only, **markup/tokens/structure — not copy**
+10. `docs/06-APPROVED-HOMEPAGE-COPY.md` — copy for routes doc 27 doesn't cover
+11. `docs/11-COMPOSITION-AND-TYPE.md`
+12. `docs/02-OWNER-INPUTS.md`
+13. `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` — its own route only
+
+**Corrected 2026-08-19, and worth knowing how it was wrong**, because this file is what an
+agent reads when it wants to know who wins. The old list (a) omitted docs 27 and 20 entirely
+— the current copy authority was simply not in the chain; (b) ranked `FINAL-v2.html` as
+authority for `/` "including copy", which `AGENTS.md` revoked when doc 27 was promoted, so
+following this file would have restored copy the owner had superseded; and (c) ranked
+`docs/07-ONE-PAGE-DIRECTIVE.md`, deleted on 2026-08-11. A skill whose job is resolving
+precedence was itself citing a deleted file and a revoked rule.
 
 ## Four things that make this set unusual
 
@@ -33,9 +43,10 @@ changed fonts, section structure, and copy through a log entry without amending 
 is why rank 7 exists explicitly in the chain — the override was ratified rather than left
 implicit. When you find yourself about to do the same thing, amend the document instead.
 
-**`02-OWNER-INPUTS.md` used to claim it wins over the decisions log.** `07` §10 said "if they
-disagree, `02` wins." That is revoked — `02` is demonstrably stale on the primary CTA, the
-city list, and the region label. The log is rank 1. If you see `07` §10 cited, it is wrong.
+**`02-OWNER-INPUTS.md` used to claim it wins over the decisions log.** The deleted one-page
+directive §10 said "if they disagree, `02` wins." That is revoked, and the file carrying it no
+longer exists — `02` is demonstrably stale on the primary CTA, the city list, and the region
+label. The log is rank 1. If you see that rule cited anywhere, it is wrong.
 
 **Several documents point at files that do not exist.** `01-QUALITY-GUARDRAILS.md`'s own
 precedence block ranks itself 7th below four nonexistent files, with `04-CLAIMS-GUARDRAILS.md`

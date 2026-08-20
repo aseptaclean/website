@@ -20,11 +20,21 @@ Three rules have caused, or nearly caused, production damage. They are absolute.
 - Do **not** create `src/pages/api/lead.ts`. It has never existed.
 - Do **not** install `@astrojs/cloudflare`. The adapter emits `_worker.js`, which causes
   Cloudflare Pages to ignore `functions/` entirely and silently kills lead delivery.
-- The public URL contract is `/api/lead`. That is preserved by Pages routing, not by Astro.
+- The public URL contract is `/api/lead`, **singular**. That is preserved by Pages routing,
+  not by Astro.
 - Deploy target is **Cloudflare Pages**. `output: "static"` plus a `functions/` directory.
+
+`functions/api/lead.ts` is the **single canonical endpoint**. There is no second one, no
+planned one, and no unimplemented one.
 
 The previous version of this file said the opposite. If you find a document that still says
 "one endpoint: `src/pages/api/lead.ts`," it is wrong — flag it, do not act on it.
+
+**Two stale spellings, both corrected 2026-08-19.** `docs/27-COPY-CANONICAL.md` §18 named
+`/api/leads` (plural) and called it an unimplemented release blocker; that section is
+reconciled and the blocker struck. `PORT-PROMPT.md` §4 already recorded the correction.
+Any remaining `/api/leads` in the document set is stale by definition — the plural route has
+never existed.
 
 ### 0.2 Claims
 
@@ -62,13 +72,22 @@ every material conflict in `docs/05-DECISIONS-LOG.md`.
 | 10 | `docs/06-APPROVED-HOMEPAGE-COPY.md` | Copy for routes doc 27 doesn't cover |
 | 11 | `docs/11-COMPOSITION-AND-TYPE.md` | Type scale, measure, rhythm (where 18 has not struck it) |
 | 12 | `docs/02-OWNER-INPUTS.md` | Business facts, where not contradicted by the decisions log |
-| 13 | `docs/07-ONE-PAGE-DIRECTIVE.md` | §3 conflicts, §6 guarantees, §7 forms, §11 QA only |
-| 14 | `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` | `/private-residence-reset/` only |
+| 13 | `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` | `/private-residence-reset/` only |
 
-**Rank 12 note.** `07` §10 says "if they disagree, `02-OWNER-INPUTS.md` wins." That is
-**revoked**. `02` is demonstrably stale on the primary CTA, the city list, and the county
-label. The decisions log (rank 1) wins. `02` is being corrected — until it is, treat any
-`02` value contradicted by a dated log entry as void.
+**Rank 13 was `docs/07-ONE-PAGE-DIRECTIVE.md`. Removed 2026-08-19 — the file does not exist.**
+It was deleted in the 2026-08-11 consolidation while this table kept ranking it, so the chain
+pointed at a missing file for eight days, which is a stop-condition under "Files that do not
+exist" below. Its still-operative content was migrated before deletion and lives elsewhere:
+§3's fourteen pre-resolved conflict rows are in `docs/05-DECISIONS-LOG.md` (2026-08-11 entry),
+§5 is closed by §4 of this file, §11 QA is superseded by `docs/04-RELEASE-CHECKLIST.md` §C.
+Nothing is inherited from it. If a document cites `07` as authority, that citation is void —
+historical mentions in dated audit entries are records, not pointers, and stay as written.
+
+**Rank 12 note.** `07` §10 said "if they disagree, `02-OWNER-INPUTS.md` wins." That is
+**revoked**, and the file carrying it is now deleted, so the instruction has no source left.
+`02` is demonstrably stale on the primary CTA, the city list, and the county label. The
+decisions log (rank 1) wins. `02` is being corrected — until it is, treat any `02` value
+contradicted by a dated log entry as void.
 
 **Rank 7 note.** Doc 27 governs copy text only — homepage §9, service-hub copy §10,
 individual service-page copy §12–15, service-areas copy §16, company-page copy §17,
@@ -107,43 +126,93 @@ issues an explicit supersession note. `site map` — superseded architecture, se
 ### Files that do not exist — stop if a document points you at one
 `02-BUILD-SPEC.md` · `03-VOICE.md` · `04-CLAIMS-GUARDRAILS.md` · `05-OPERATIONS.md` ·
 `01-STRATEGY.md` · `B01-home.md` · `07-PRIVATE-RESIDENCE-RESET-STRATEGY.md` ·
-`09-PREMIUM-VISUAL-AND-TYPOGRAPHY-SPEC.md` (archived)
+`09-PREMIUM-VISUAL-AND-TYPOGRAPHY-SPEC.md` (archived) ·
+`07-ONE-PAGE-DIRECTIVE.md` (deleted 2026-08-11; added here 2026-08-19) ·
+`22DOCDISPOSITION.md` (deleted 2026-08-11; added here 2026-08-19) ·
+`27-ASEPTACLEAN-COMPLETE-WEBSITE-BUILD.md` (never existed — `PORT-PROMPT.md` §1 named it as a
+copy source until corrected 2026-08-19; the real source is `docs/27-COPY-CANONICAL.md`)
+
+Both 2026-08-11 deletions were cited by later documents as if live. Those citations are
+records of what happened, not instructions — a dated audit entry saying "deleted per
+`22DOCDISPOSITION.md`" is fine and stays. A precedence row or a "read this for values"
+pointer is not, and every one of those is now removed.
 
 ---
 
 ## 2. Current route architecture
 
-The site is **no longer one-page**. `19-SYSTEM-AND-SITEMAP.md` Part 2 supersedes `07` §2.
-**`docs/SITEMAP-MASTER.md` (2026-08-16) is now the single source of truth for the full
-route list and index status** — supersedes `19` §2.1 and `27` §7. The lists below are kept
-in sync with it for quick reference; if they drift, master wins.
+The site is **no longer one-page.** `19-SYSTEM-AND-SITEMAP.md` Part 2 supersedes the deleted
+one-page directive (see §1 "Files that do not exist").
 
-**Live and indexable**
-```
-/                          homepage (FINAL-v2)
-/about/  /contact/  /handoff-standard/     corrected onto this list 2026-08-16 — all three
-                            ship no `noindex` prop (BaseLayout default is indexable) and were
-                            previously missing here / miscategorized below
-/request-assessment/       progressive form — a real canonical route, never redirect it
-/private-residence-reset/  campaign page, out of nav, one low-emphasis crawlable link
-/thank-you/                noindex
-/privacy/  /terms/  /cookie-policy/        Termly-controlled
-/data-request/             live compliance surface — must resolve before DNS cutover
-/sms-notification-consent/ byte-preserved, under Twilio 10DLC carrier review — DO NOT EDIT
-/api/lead                  Cloudflare Pages Function
-```
+**Regenerated 2026-08-19 by reading `dist/` after `npm run build:local`. Code is truth.**
+The previous version of this section was stale on **eleven** index-status rows — it listed
+`/detailed-cleaning/`, `/property-clearing/`, `/deep-cleaning-san-jose/`,
+`/property-cleanouts-san-jose/`, `/estate-cleanout-san-jose/`, `/hoarding-cleanup-san-jose/`
+and `/service-areas/` as noindex when all seven ship indexable and in `sitemap.xml`, and it
+omitted eight built routes entirely. Do not hand-edit these lists; regenerate them from a
+fresh build.
 
-**Built, `noindex`, excluded from `sitemap.xml.ts`, unlinked from nav and footer**
+`docs/SITEMAP-MASTER.md` remains the **planning** authority — publish waves, gates, and copy
+sources per route. It is not the authority on what the current build actually emits. Where it
+disagrees with the lists below, the build wins and the disagreement is flagged in that file.
+
+**37 built routes** = 36 pages + `/404`. `/api/lead` is a Cloudflare Pages Function, not an
+Astro route, and never appears in `sitemap.xml`.
+
+**Indexable, in `sitemap.xml` (21)**
 ```
+/                                   /faq/
+/about/                             /handoff-standard/
+/contact/                           /request-assessment/
+/cookie-policy/                     /service-areas/    (cityPages = [])
+/privacy/                           /services/         see note below
+/terms/                             /who-we-help/
+/detailed-cleaning/                 /property-clearing/            (hubs)
+/deep-cleaning-san-jose/            /move-out-cleaning-san-jose/
+/debris-removal-san-jose/           /extreme-cleaning-san-jose/
 /estate-cleanout-san-jose/          /hoarding-cleanup-san-jose/
-/animal-waste-cleanup-san-jose/     /senior-downsizing-san-jose/
-/deep-cleaning-san-jose/            /property-cleanouts-san-jose/ (renamed 2026-08-16,
-/service-areas/  (cityPages = [])                                was .../for-managers/)
-/estate-cleanout-checklist/
-/detailed-cleaning/  /specialty-cleaning/  /property-clearing/   (hub pages, added 2026-08-16)
-/commercial-cleaning-san-jose/                                   (gate: crew, added 2026-08-16)
+/property-cleanouts-san-jose/
+```
+
+**Indexable, deliberately absent from `sitemap.xml` (3)**
+```
+/data-request/             live compliance surface — must resolve before DNS cutover
+/private-residence-reset/  campaign page, out of nav; currently zero inbound links
+/sms-notification-consent/ byte-preserved, under Twilio 10DLC carrier review — DO NOT EDIT
+```
+
+**`noindex`, excluded from `sitemap.xml` (13)**
+```
+/404                                /projects/
+/thank-you/                         /estate-cleanout-checklist/
+/specialty-cleaning/                (hub — noindex while its group is gated)
+/animal-waste-cleanup-san-jose/     /rodent-dropping-cleanup-san-jose/
+/pigeon-dropping-cleanup-san-jose/  /commercial-cleaning-san-jose/
+/eviction-cleanout-san-jose/        /post-construction-cleaning-san-jose/
+/window-cleaning-san-jose/          /senior-downsizing-san-jose/   (P1 — delete-or-write)
 ```
 Each stays noindex until its own gate clears. Do not bulk-flip.
+
+**Crawl-path note — open, recorded 2026-08-19.** The global nav and footer link every service
+page from every page, so **all 21 indexable routes link into the 11 noindex service routes.**
+Register item P2 describes this as `/animal-waste-cleanup-san-jose/` being "linked from
+indexable `/services/` and `/service-areas/`"; the real scope is the whole indexable set, via
+global nav rather than per-page links. This is release-checklist C10, not a defect to fix
+casually — narrowing it means changing the nav.
+
+**`/services/` — resolved 2026-08-20, owner ruling.** The prohibition below previously forbade
+"any `/services/*` route" as the superseded `site map` architecture, while `/services/` shipped
+built, indexable, and in `sitemap.xml`: a single index hub titled *"What Aseptaclean handles"*
+linking to the three group hubs. **The narrow reading is confirmed** — the rule targets the
+superseded `/services/{slug}` detail tree, and this hub is outside it. The prohibition text has
+been amended to name `/services/{slug}` explicitly so this does not recur. The route is legitimate
+and stays indexable.
+
+**`/services/` and `/who-we-help/` were orphans — being fixed separately.** Both are indexable
+and in `sitemap.xml` but had **zero inbound links**, reachable by crawlers through the sitemap
+and by visitors not at all. Owner ruling 2026-08-20: **add both to the footer Company column.**
+That is a `src/` change and ships in its own commit, separate from the documentation pass that
+recorded the problem.
 
 **Do not build, in any form — no route, draft, stub, sitemap entry, or nav link**
 ```
@@ -152,8 +221,22 @@ Each stays noindex until its own gate clears. Do not bulk-flip.
 /encampment-cleanup/  /vehicle-biohazard-cleanup/
 garage-cleanout · basement-cleanout · furniture-removal · mattress-disposal
 any reviews page, until reviews exist
-any /services/* or /locations/* route (that is the superseded `site map` architecture)
+/services/{slug}  and  /locations/{city}    (the superseded `site map` architecture)
 ```
+
+**The `/services/*` prohibition was narrowed 2026-08-20 by owner ruling.** It previously read
+"any `/services/*` or `/locations/*` route", which on its face forbade `/services/` itself —
+a route that is built, indexable, and in `sitemap.xml`. The rule was always aimed at the
+superseded per-service and per-city **detail trees**, not at a single index hub. It now names
+`/services/{slug}` and `/locations/{city}` explicitly so the point does not need re-litigating
+every time someone greps the prohibition list and finds a live route matching it.
+
+**Still forbidden:** any child route under `/services/` — `/services/deep-cleaning/`,
+`/services/hoarding/`, and so on. Service detail pages live at city-suffixed top-level slugs
+(`/deep-cleaning-san-jose/`), which is where `docs/19-SYSTEM-AND-SITEMAP.md` put them and where
+every internal link and redirect already points. **Any `/locations/*` route remains forbidden
+in full**, including a bare `/locations/` index — that narrowing applies to `/services/` only,
+because only `/services/` has a built hub the owner has confirmed.
 `19` §2.1 Phase 3b's single-gate `/biohazard-cleanup-san-jose/` line is **void** — Phase 5's
 four-gate rule governs. If you find that Phase 3b line, delete it.
 
@@ -196,7 +279,8 @@ production build. Never infer a physical office from service-area coverage.
 
 **No price figure is published anywhere on the site.** Owner rationale: with zero reviews and
 zero completed-project proof, a published floor invites price shoppers and undercuts the
-positioning. This closes `07` §5.
+positioning. This closed the open pricing question in the since-deleted one-page directive
+§5; that decision is inherited here and needs no other source.
 
 Implementation:
 - Remove `PUBLIC_STARTING_PRICE` from every rendered surface. Keep the env var and the

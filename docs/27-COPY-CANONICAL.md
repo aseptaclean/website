@@ -498,6 +498,19 @@ Choose the service group that matches the condition. The exact work is still def
 
 ### 9.5 Homepage service cards
 
+> **DOES NOT SHIP — §9.5 is overruled for `/` on the same two grounds as §9.4 above.**
+> Repeated here rather than inherited from §9.4, deliberately: the annotation in §9.4 already
+> said "§9.4 **and §9.5**", but `qa:gate6` clears its block flag at every heading, so the four
+> card bodies below were reported as **absent** — as if approved copy had gone missing from the
+> build — through four consecutive gate runs. They were never missing; they are not supposed to
+> ship. An exemption that depends on a parser's block scope is not an exemption.
+>
+> This is the same failure as the footer scope statement on 2026-08-19: annotate one of two
+> places and the conflict re-enters through the other. The shipped section is three cards —
+> `src/components/ServiceCards.astro`. Do not apply §9.5 to `/` without clearing **both** gates
+> in §9.4; clearing only the photography gate still leaves the Specialty card unlawful to
+> publish.
+
 #### Detailed Cleaning
 
 Deep cleaning, move-in and move-out work, post-construction cleaning and window detailing.
@@ -532,7 +545,12 @@ What stays, what leaves, what gets cleaned and what is excluded are written down
 
 #### Approval controls
 
-Uncertain items are held for review. Added work requires documented authorization.
+Anything we’re not sure about goes into a labeled clear bag and waits for your decision. Added work requires documented authorization.
+
+> **Amended 2026-08-19 — §9.15.2 humanization amendment 1, applied.** Was: *"Uncertain items
+> are held for review."* "Held for review" is category language; a labeled clear bag is a
+> picture, and a commitment that can actually be operated. Second sentence unchanged. Verified
+> present in `dist/index.html`.
 
 #### Documented closeout
 
@@ -559,13 +577,30 @@ One company stays accountable from the first decision to final closeout.
 
 #### 01 — Scope
 
-We write down what stays, what goes, what gets cleaned, what is excluded and what the project requires.
+We write down what stays, what goes, what gets cleaned, what is excluded, and what the project requires.
+
+> **Reconciled 2026-08-19 — code is truth. One comma.** Canon omitted the serial comma before
+> *"and what the project requires"*; `dist/index.html` ships it. That single character is the
+> entire divergence, and it held gate 6 at FAIL for the string. Recorded rather than fixed
+> silently because a punctuation-only absence looks like a gate defect and gets dismissed as
+> one — this one was real, and the gate was right.
+>
+> **A third variant exists.** `/handoff-standard/` renders *"…and what the project **will**
+> require."* Same sentence, different tense, on a page whose copy comes from §17.1. Not
+> reconciled here: §17.1 is its own section and is handled below. Flagged so the next editor
+> does not "fix" one and leave the other.
 
 Record: Room-by-room plan
 
 #### 02 — Protect
 
-Keep areas are identified. Uncertain and important items are separated and reported.
+Keep areas get marked before work starts. Documents, keys, photos, and anything valuable come out first, set aside in one place, and get reported to you.
+
+> **Amended 2026-08-19 — §9.15.2 humanization amendment 2, applied.** Was: *"Keep areas are
+> identified. Uncertain and important items are separated and reported."* Verified present in
+> `dist/index.html`. This governs the **homepage** five-stage rail only; §17.1's Protect stage
+> on `/handoff-standard/` is separate copy and was not in scope for this amendment — see the
+> note there.
 
 Record: Keep and review controls
 
@@ -646,6 +681,11 @@ The person defining the work stays accountable for how it is carried out.
 **Body**  
 Matthew Ruiz is directly involved in scope review, project planning and operating oversight—a controlled-process background applied to properties that require more than a truck and a guess.
 
+> **§9.15.2 humanization amendment 6 — reviewed 2026-08-19, deliberately no change.**
+> *"More than a truck and a guess"* already passes the read-aloud gate in
+> `docs/20-COPY-VOICE.md` Part 1. Recorded so a later pass does not "improve" it. Do not
+> soften or replace this line without an owner ruling.
+
 **Credentials**
 
 - Education: B.S. Biochemistry, UC Riverside
@@ -664,7 +704,19 @@ Yes, when access and decision authority are clear. Scope review, approvals, upda
 
 #### Will you throw anything away without asking?
 
-No. The scope identifies keep, remove and review areas. Uncertain items are not automatically discarded.
+No. The scope identifies keep, remove and review areas. Anything we’re not sure about goes into a labeled clear bag and waits for your decision.
+
+> **Amended 2026-08-19 — §9.15.2 humanization amendment 1, second half, applied.** Was:
+> *"Uncertain items are not automatically discarded."* Same substitution as §9.6, so the two
+> homepage surfaces stay identical rather than drifting. Verified in `dist/index.html`, both
+> in the visible FAQ and in the `FAQPage` JSON-LD.
+>
+> **Open, not a defect in this section.** The homepage *Handoff Assurance* block still renders
+> *"The scope identifies keep, remove, and review areas. Uncertain items are not automatically
+> discarded."* — a third surface carrying the pre-amendment wording. It was never named by
+> amendment 1 and is not canon text in this document, so this pass leaves it alone. It is
+> logged as register item **P6**: the same page now says the uncertain-items commitment two
+> different ways.
 
 #### What happens if a specialist condition is discovered?
 
@@ -683,7 +735,12 @@ Request an assessment
 Tell us about the property.
 
 **Body**  
-Include the city, approximate size, current condition and deadline. You can text property photos after submitting the form.
+Tell us the city, roughly how big it is, what shape it’s in, and when it has to be done. Two or three phone photos are more useful than a long description.
+
+> **Amended 2026-08-19 — §9.15.2 humanization amendment 3, applied.** Was: *"Include the city,
+> approximate size, current condition and deadline. You can text property photos after
+> submitting the form."* Verified present on **28 routes** — every route rendering
+> `src/components/QuickHandoffForm.astro`, not only `/`.
 
 ### 9.14 Final call to action
 
@@ -828,7 +885,11 @@ For homes that need substantially more detail than routine housekeeping—especi
 A deeper reset with the details written down.
 
 **Outcome body**  
-We do not rely on a vague label like “deep clean.” The quote identifies the rooms, surfaces and detail level so both sides know what completion means.
+We do not rely on a vague label like “deep clean.” The quote lists the rooms, the surfaces, and the detail level — so when we say finished, you and we are reading the same page.
+
+> **Amended 2026-08-19 — §9.15.2 humanization amendment 4, applied.** Was: *"The quote
+> identifies the rooms, surfaces and detail level so both sides know what completion means."*
+> Verified present in `dist/deep-cleaning-san-jose/index.html`.
 
 **Work can include**
 
@@ -1624,10 +1685,20 @@ South Bay and Peninsula properties, reviewed one address at a time.
 Travel, access, parking, building rules and the project condition are considered before a scope is scheduled.
 
 **Section label**  
-Primary service area
+By area
 
-**H2**  
-Start with the property—not a city-page promise.
+> **Reconciled 2026-08-19 — code is truth.** Was: ~~*Primary service area*~~. The port ships
+> *"By area"* in this slot (`dist/service-areas/index.html`). The H2 and the body below it
+> match the build exactly and were never in question.
+>
+> **The city presentation also changed and is not reconciled here.** This section specifies two
+> flat lists, *Primary cities* (5, each "Assessment requests accepted") and *Also reviewed* (5).
+> The build groups the same nine cities as prose under **West Valley**, **Peninsula edge**, and
+> **South County**, each with a sentence about what shapes access there. Every city named in
+> this section appears on the page, so nothing is missing — but the structure this section
+> describes is not the structure that ships. Recorded as register item **P7**; reconciling it
+> means rewriting the list into the built grouping, which is a copy rewrite and wants an owner
+> read, not a documentation pass.
 
 **Body**  
 We currently review work in the cities below. Availability depends on the service, property condition, access and schedule.
@@ -1648,8 +1719,19 @@ We currently review work in the cities below. Availability depends on the servic
 - Palo Alto
 - Atherton
 
-**Publishing note**  
+**Publishing note — internal policy, DOES NOT SHIP**  
 Individual city guides will be published only after each page has verified local operating details and real project proof. That keeps the site useful and avoids thin location pages.
+
+> **Marked non-shipping 2026-08-19.** This was reported as a gate-6 absence, which was the
+> gate working correctly on a mislabelled input: it is a **policy statement about when to
+> publish**, not copy any visitor reads. It was never built because it was never meant to be.
+> Marking it here stops it being re-reported every run and stops a future session "fixing" the
+> absence by rendering an internal note onto a public page.
+>
+> **The policy itself stands and is load-bearing** — it is the city-page gate that
+> `docs/SITEMAP-MASTER.md` refers to as "as earned (real job + original content)", and
+> `cityPages` is currently `[]` in the build, which is consistent with it. Do not read
+> "does not ship" as "no longer applies".
 
 ---
 
@@ -1657,9 +1739,14 @@ Individual city guides will be published only after each page has verified local
 
 ### 17.1 Process
 
-**Route:** `/process`  
+**Route:** `/handoff-standard/`  
 **SEO title:** Our Process | Aseptaclean  
 **Meta description:** How Aseptaclean scopes, protects, clears, resets and documents property work.
+
+> **Route corrected 2026-08-19 — code is truth.** Was `/process`, which has never been built
+> and does not resolve. The page ships at `/handoff-standard/`; `docs/SITEMAP-MASTER.md`
+> already recorded it as "`/handoff-standard/` (= Process)". Title and meta match the build
+> exactly and are unchanged.
 
 **Eyebrow**  
 The five-stage handoff standard
@@ -1671,25 +1758,60 @@ Decisions first. Work second. Proof at closeout.
 The operating system is designed for properties where vague instructions create expensive mistakes.
 
 **Scope**  
-We document decision authority, the rooms involved, what stays, what may leave, what gets cleaned and what is excluded.
+We write down what stays, what goes, what gets cleaned, what is excluded, and what the project will require.
 
 **Protect**  
-Keep areas and uncertain items are marked. Documents, keys and valuables are separated for review.
+Keep areas are identified. Uncertain and important discovered items are separated and reported. We do not decide what mattered to your family.
 
 **Clear**  
-Only approved nonhazardous contents are consolidated, staged or coordinated for lawful disposal.
+Approved unwanted contents are consolidated, removed, or coordinated for disposal within the signed scope.
 
 **Reset**  
-The defined rooms and surfaces receive the approved detailed cleaning work.
+The property receives the detailed cleaning included for its next handoff, including animal and organic conditions within lawful scope.
 
 **Verify**  
-Completion photographs, documented exceptions and the Property Handoff Record close the scope.
+You receive completion photographs, documented exceptions, and a Property Handoff Record showing how the approved scope was closed.
 
 **Record heading**  
-A clear end point for the approved work.
+Property Handoff Record — annotated
 
 **Record body**  
-The Property Handoff Record summarizes the approved scope, completion status and documented exceptions. It is a project record—not a regulatory clearance, inspection approval, environmental certification or determination that a property is safe or habitable.
+Project records document the work performed. They are not regulatory clearance, inspection approval, environmental certification, or a determination that a property is safe or habitable.
+
+> **Reconciled to the build 2026-08-19 — code is truth. All five stages, plus the record
+> block.** Read out of `dist/handoff-standard/index.html`. Superseded wording, kept for the
+> record:
+>
+> | Slot | Was |
+> | --- | --- |
+> | Scope | ~~We document decision authority, the rooms involved, what stays, what may leave, what gets cleaned and what is excluded.~~ |
+> | Protect | ~~Keep areas and uncertain items are marked. Documents, keys and valuables are separated for review.~~ |
+> | Clear | ~~Only approved nonhazardous contents are consolidated, staged or coordinated for lawful disposal.~~ |
+> | Reset | ~~The defined rooms and surfaces receive the approved detailed cleaning work.~~ |
+> | Verify | ~~Completion photographs, documented exceptions and the Property Handoff Record close the scope.~~ |
+> | Record heading | ~~A clear end point for the approved work.~~ |
+> | Record body | ~~The Property Handoff Record summarizes the approved scope, completion status and documented exceptions. It is a project record—not a regulatory clearance…~~ |
+>
+> This is the same class of staleness as register item P4: the visual port rewrote the page and
+> this section was never updated, so it described a page that no longer existed. Five of the
+> seven absences gate 6 was reporting against `27` §17.1 were this one cause.
+>
+> **Two things checked before accepting the build's wording, because "code is truth" does not
+> extend to claims.**
+>
+> 1. **The record disclaimer survived the rewrite.** The old Record body carried the
+> regulatory-clearance disclaimer inline. The build carries it as its own sentence pair — a
+> different construction, the same four denials (regulatory clearance / inspection approval /
+> environmental certification / safe-or-habitable), and it renders on **36 of 37 routes**, not
+> just this page. Nothing was lost; coverage widened. Had it been dropped, the correct action
+> would have been to fix the code, not the document.
+> 2. **Reset now names organic conditions.** *"…including animal and organic conditions within
+> lawful scope"* is new in the build. It is cleaning language bounded by "within lawful scope",
+> which is the construction `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` permits, and it does not use
+> any prohibited term. Recorded explicitly because a claims-relevant phrase entering canon by
+> way of a documentation pass is exactly the kind of change that should never happen quietly.
+> **This is a documentation reconciliation, not a claims approval** — if the phrase is to be
+> re-examined, that is a doc-21 review, and this note is the pointer to it.
 
 ### 17.2 Projects
 
@@ -1827,16 +1949,33 @@ Start with the property details.
 Share the city, approximate size, current condition, access and deadline. Clear photos help us decide whether a walkthrough is needed.
 
 **Call**  
-408-785-7588  
+{site.business.phone}  
 For immediate questions about fit and timing.
 
 **Text photos**  
-408-785-7588  
-Send wide views and close details of the affected areas.
+{site.business.phone}  
+Stand in the doorway and get the whole room, then step in close on the worst spots.
 
 **Service area**  
-South Bay & Peninsula  
+{site.business.region}  
 Availability depends on the address, scope and schedule.
+
+> **Amended 2026-08-19 — two changes to this block, both in `docs/27-COPY-CANONICAL.md`.**
+>
+> **1. §9.15.2 humanization amendment 5, applied.** Text-photos line was: *"Send wide views and
+> close details of the affected areas."* Verified present on `/contact/` and `/thank-you/`.
+>
+> **2. Three hardcoded business facts replaced with tokens.** This block carried the literal
+> `408-785-7588` twice and `South Bay & Peninsula` once. `AGENTS.md` §3 makes
+> `src/data/site.ts` the single source for both, and `AGENTS.md` outranks this document on
+> business facts. The literal also used a different format from the one the site renders
+> everywhere else (`(408) 785-7588`), so the canon specified a spelling the build does not
+> use — the identical defect corrected in §9.15.5's submission-error string on 2026-08-19.
+>
+> This also removes a **false gate-6 absence**. `qa:gate6` joins the lines under one bold
+> label, so it searched the build for *"408-785-7588 Stand in the doorway…"* as a single string
+> and never found it, while the sentence itself was present on two routes. A literal fact
+> stapled to a copy line is unmatchable by construction; a token is not.
 
 ---
 
@@ -1905,52 +2044,80 @@ Success message:
 
 ### Full assessment form
 
-Fields:
+**Reconciled to the build 2026-08-19 (register item P4). Code is truth.** This section
+previously specified a single-step, eleven-field form with a `Service needed` dropdown and one
+free-text `Property description`. `src/components/AssessmentForm.astro` is a **three-step
+wizard with 47 named fields**. That is not a string swap — the form described here was
+superseded by what was built, and the section was never updated. What follows is read out of
+`dist/request-assessment/index.html`.
 
-- Name — required
-- Phone — required
-- Email — optional
-- Property city — required
-- Service needed — required
-- Property type — optional
-- Deadline — optional
-- Property description — required
-- Consent checkbox — required
-- Hidden anti-spam field
-- Automatically captured source data
+**Step 1 of 3 — Property fit**
 
-Service options:
+| Field | Type | Required |
+| --- | --- | --- |
+| `property_city` | text | required |
+| `property_type` | select | required |
+| `vacant_status` | radio | required |
+| `property_situation` | select | required |
+| `desired_completion_date` | date | required |
+| `approximate_square_footage` | select | required |
 
-- Detailed deep cleaning
-- Kitchen, bathroom or shower glass
-- Move-out or listing-ready reset
-- Post-renovation cleaning
-- Estate or property clearing
-- Severe-condition cleanup
-- Animal-waste-affected area
-- Not sure
+**Step 2 of 3 — Scope and condition**
 
-Property types:
+| Field | Type | Required |
+| --- | --- | --- |
+| `areas_involved[]` | checkbox | optional |
+| `contents_removal`, `heavy_cleaning`, `garage_storage`, `appliance_interiors`, `cabinet_interiors` | radio | required |
+| `animal_waste`, `human_biological_material`, `needles_sharps`, `sewage`, `mold`, `pest_activity` | radio | required |
+| `number_of_levels`, `occupancy_status`, `safety_routing` | select | required |
+| `priority_rooms`, `detail_priorities` | textarea | required |
+| `must_remain`, `must_remove` | textarea | required |
+| `important_finishes`, `access_notes` | textarea | optional |
+| `pets`, `someone_present`, `investment_range` | mixed | optional |
+| `property_media[]` | file | optional |
 
-- House
-- Apartment or condominium
-- Commercial space
-- Other
+The six condition radios (`animal_waste` … `pest_activity`) are a **fit-review screen, not a
+service menu.** They exist so a project that falls outside lawful scope is caught before a
+scope is written. Do not restyle them as selling points and do not remove one without reading
+`docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §3.
 
-Deadline options:
+**Step 3 of 3 — Authority and contact**
 
-- As soon as possible
-- Within 7 days
-- Within 30 days
-- Planning ahead
+| Field | Type | Required |
+| --- | --- | --- |
+| `full_name`, `phone`, `email` | text / tel / email | **all required** |
+| `relationship_to_property` | select | required |
+| `authority_to_approve` | radio | required |
+| `property_address` | textarea | required |
+| `preferred_contact_method` | radio | required |
+| `property_zip`, `best_contact_time`, `additional_notes` | mixed | optional |
+| `privacy_consent` | checkbox | required |
+| `scope_acknowledgment` | checkbox | required |
+
+**Email is required here.** This section previously called it optional; the build requires it.
+Noted because it is the one field where the old text would have caused a real behavioural
+change if someone "fixed" the code to match the doc.
+
+Hidden/captured: `form_version`, `offer_type`, `entry_route`, `submitted_from`, `utm_*`,
+`gclid`, `landing_page`, `referrer`, `submission_timestamp`, `idempotency_key`, and
+`company_website` (honeypot).
+
+Consent and acknowledgment wording for this form is **not** restated here — it lives in
+`src/data/site.ts` (`legal.consentBase` + `legal.consentAssessmentAppendix`) and is
+10DLC-relevant. See `docs/05-DECISIONS-LOG.md`, 2026-08-19.
 
 Description placeholder:
 
-> Describe the rooms, condition, approximate size and anything that may affect access or scope.
+> ~~Describe the rooms, condition, approximate size and anything that may affect access or scope.~~
+
+**Struck 2026-08-19 — the field it describes does not exist.** The build has no single
+description textarea; that intent is carried by four structured fields (`priority_rooms`,
+`detail_priorities`, `must_remain`, `must_remove`), each with its own placeholder. Restoring
+this line would re-specify a superseded form. Closes gate-6 absence `27:1949`.
 
 ### Intended form behavior
 
-- Forms are configured to submit to `/api/leads`.
+- Forms submit to **`/api/lead`** (singular), implemented at `functions/api/lead.ts`.
 - The request sends JSON.
 - The current page path and available UTM source/campaign values are captured.
 - Successful submission resets the form and displays a confirmation.
@@ -1958,20 +2125,34 @@ Description placeholder:
 - Form submission does not represent a booking, approval, or service agreement.
 - All forms remain single-column to reduce mobile friction.
 
-### Current critical blocker
+**Endpoint corrected 2026-08-19.** This list previously read `/api/leads`, plural. That route
+has never existed in this repository. Flagged in `docs/27-SECTION-9-15-CONNECTIVE-COPY.md`
+§9.15.5 and fenced in `PORT-PROMPT.md` §4; corrected here at the source. See `AGENTS.md` §0.1.
 
-The current website source does **not** contain an implemented `/api/leads` route. The forms render correctly, but a live submission cannot complete successfully until a lead endpoint and delivery destination are added.
+### ~~Current critical blocker~~ — struck 2026-08-19, the blocker does not exist
 
-This must be treated as a release blocker before paid traffic or broad promotion. The implementation must define:
+> ~~The current website source does **not** contain an implemented `/api/leads` route. The forms render correctly, but a live submission cannot complete successfully until a lead endpoint and delivery destination are added.~~
+>
+> ~~This must be treated as a release blocker before paid traffic or broad promotion.~~
 
-- Where leads are stored
-- Who receives the notification
-- Required environment variables or bindings
-- Spam and rate-limit controls
-- Server-side validation
-- Error logging
-- Privacy-policy disclosure
-- End-to-end success testing
+**Struck because it is factually false and dangerous to act on.** `functions/api/lead.ts` is
+implemented, wired to HubSpot + Resend + Turnstile, and verified end-to-end. An agent reading
+this section as live would have concluded the endpoint was missing and built one — and the
+standing rule in `AGENTS.md` §0.1 exists precisely because a previous version of that
+instruction would have deleted the only working lead endpoint in the repository.
+
+The implementation checklist this section demanded is satisfied, not outstanding:
+
+| Requirement | Where it is met |
+| --- | --- |
+| Where leads are stored | HubSpot CRM via `functions/api/lead.ts` |
+| Who receives the notification | Resend email to the owner; SMS gated behind 10DLC approval |
+| Environment variables / bindings | `.dev.vars.example`, `.env.example`, `wrangler.toml [vars]` |
+| Spam and rate-limit controls | Cloudflare Turnstile + hidden honeypot field |
+| Server-side validation | `functions/_lib/lead.ts` |
+| Error logging | Endpoint returns structured failure; see register item P3 |
+| Privacy-policy disclosure | Consent line links `/privacy/` on both forms |
+| End-to-end success testing | `npm run qa:phase3:endpoint`; PORT-PROMPT gate 9 |
 
 ### Required operational test
 
@@ -1990,10 +2171,25 @@ Verify the destination, notification, stored fields, source data, and customer-f
 ### Homepage metadata
 
 **Title**  
-Aseptaclean | Deep Cleaning & Property Cleanup San Jose
+Property Cleanout & Deep Cleaning | San Jose | Aseptaclean
 
 **Description**  
-Detailed deep cleaning, move-out cleaning, post-construction cleaning and difficult-property cleanup in San Jose and the South Bay.
+Whole-property cleanout and deep cleaning in San Jose & the South Bay. Written scope before work, nothing removed without approval, documented closeout.
+
+> **Reconciled to the build 2026-08-19 (register item P5). Code is truth.**
+>
+> Title was: ~~*Aseptaclean | Deep Cleaning & Property Cleanup San Jose*~~
+> Description was: ~~*Detailed deep cleaning, move-out cleaning, post-construction cleaning and
+> difficult-property cleanup in San Jose and the South Bay.*~~
+>
+> Both were replaced by the 2026-08-17 SEO/meta pass, which this section was never updated to
+> record. The shipped title leads with the primary term instead of the brand and keeps the
+> brand last, which is the pattern the rest of the site follows. The shipped description
+> carries the three scope commitments rather than a service list. Read out of
+> `dist/index.html`. Closes gate-6 absence `27:1992`.
+>
+> **The description was also stale and is corrected here** — P5 named only the title. Anyone
+> checking P5 against the build would have found a second divergence in the same block.
 
 ### Technical SEO requirements
 

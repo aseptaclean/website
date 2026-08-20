@@ -38,8 +38,8 @@ untouched.
 | Slot | String |
 | --- | --- |
 | Hero pledge line (pattern) | The scope names the rooms and the detail level before anyone arrives. |
-| Scope-excerpt card header | Scope excerpt · Sample |
-| Scope-excerpt card footer | Sample only — not a client record. Your scope gets written against your property before anything is scheduled. |
+| Scope-excerpt card header | ~~Scope excerpt · Sample~~ |
+| Scope-excerpt card footer | ~~Sample only — not a client record. Your scope gets written against your property before anything is scheduled.~~ |
 | Included panel header | Work can include · Per approved scope |
 | Included panel footer | The signed scope is the definition of finished for this project. |
 | Exclusions panel header | Stop / notify / refer · Outside this scope |
@@ -51,6 +51,31 @@ untouched.
 | Related label | Often booked alongside |
 | Form callout heading | Matthew reads every request himself. |
 | Form callout body | You'll hear back within one business day — a real answer about fit and next steps, not an autoresponder. |
+
+**Scope-excerpt card struck 2026-08-20 — owner ruling. Both strings, together.**
+
+The card was never built, and the reason it was never built is that **no source supplies the
+table rows.** Doc 27 has no sample scope-excerpt content for any of the 14 services, and no real
+project record exists to redact into one. That leaves only two ways to ship the header, and both
+are prohibited: invent plausible-looking scope rows, which `AGENTS.md` §0.3 forbids outright
+("no fabricated … case study"; "empty beats fake, always"), or render a labelled empty box,
+which is a placeholder in a production build and forbidden by §7.
+
+**The header never ships without the footer.** The footer is the disclaimer that stops a sample
+scope being read as a real client record. They were approved as one unit and are struck as one
+unit; do not restore either alone.
+
+**Re-approval condition:** a real, owner-supplied, redacted Property Handoff Record artifact
+exists to derive rows from. Until then this is not a gap to close — the absence is correct.
+Recorded so the comparison is not re-opened by a future session reading only the approved
+bundle. See `docs/05-DECISIONS-LOG.md`, 2026-08-20.
+
+> **Placement note, learned the hard way.** This annotation was first written directly beneath
+> the struck rows, **inside** the table. `scripts/gate6-copy-trace.mjs` reads a String-column
+> table in `docs/27-SECTION-9-15-CONNECTIVE-COPY.md` by tracking its header row, so prose in the
+> middle of a table ends it: the ten rows below the break stopped being extracted and silently
+> left the gate's scope, and the run still reported PASS. Keep annotations **after** the table
+> they discuss, never between its rows.
 
 ### Hubs (all 4)
 

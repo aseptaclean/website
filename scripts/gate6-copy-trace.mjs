@@ -71,6 +71,8 @@ function extract(path) {
   let header = null;
   let copyCol = -1;
   let blockFlag = null;
+  let blockFlagLevel = 0;          // heading depth the active block flag was declared at
+  let headingLevel = 0;
   let afterSubHeading = false;     // a #### heading's following paragraph is card copy
 
   const flagFor = (t) => {
@@ -94,8 +96,17 @@ function extract(path) {
     const line = lines[i];
 
     if (/^#{1,6}\s/.test(line)) {
+      headingLevel = line.match(/^#+/)[0].length;
       heading = line.replace(/^#+\s*/, "").trim();
-      header = null; copyCol = -1; blockFlag = null;
+      header = null; copyCol = -1;
+      // A "does not ship" note scopes to its own section AND everything nested beneath it.
+      // Clear it only on a sibling or shallower heading — never on a subsection.
+      // Before 2026-08-19 this reset unconditionally, so doc 27 §9.4's annotation (which says
+      // in its own text "§9.4 and §9.5 are overruled") stopped applying at the §9.5 heading and
+      // again at each #### card heading. The four card bodies were reported `absent` — as if
+      // approved copy had gone missing — through five consecutive runs. They are not supposed
+      // to ship. An exemption whose reach depends on heading depth is not an exemption.
+      if (blockFlag && headingLevel <= blockFlagLevel) { blockFlag = null; blockFlagLevel = 0; }
       afterSubHeading = /^#{4,6}\s/.test(line);
       continue;
     }
@@ -138,7 +149,10 @@ function extract(path) {
     }
     if (line.trim() !== "") afterSubHeading = false;
     if (/DOES NOT SHIP|is \*\*void\*\*|superseded and must not|retired/i.test(line)) {
-      blockFlag = blockFlag ?? "canon marks this block superseded or not shipping";
+      if (!blockFlag) {
+        blockFlag = "canon marks this block superseded or not shipping";
+        blockFlagLevel = headingLevel;
+      }
     }
 
     // Blockquote: join consecutive `>` lines — a wrapped quote is one string, not four.

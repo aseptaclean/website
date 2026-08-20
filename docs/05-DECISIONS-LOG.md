@@ -4516,3 +4516,369 @@ authorize work or create a service agreement."* — which restates both in prose
 read from a live render and compared character-for-character against the approved wording, and
 every policy name confirmed to be a real `<a>` with the correct `href`. Both statements contain
 inline links, which is exactly the case a presence gate cannot verify — the full form's has two.
+
+---
+
+## Documentation reconciliation pass — code is truth (2026-08-19)
+
+**Scope: documentation and tooling only.** `src/`, `public/`, and `functions/` were not
+modified. Five files changed: `AGENTS.md`, `docs/27-COPY-CANONICAL.md`,
+`docs/SITEMAP-MASTER.md`, `docs/REPO-STATE.md`, `.claude/skills/doc-precedence/SKILL.md`, plus
+`scripts/gate6-copy-trace.mjs` (one scope fix, §6 below).
+
+**Gate 6: 23 absent → 2 absent.** `181 extracted · 152 present · 23 absent · 2 exempt · 4
+struck` became `176 extracted · 164 present · 4 partial · 2 absent · 6 exempt · 6 struck`. The
+two survivors are a genuine owner call, not a documentation gap — §5.
+
+**A rebuild was required before anything could be reconciled.** `dist/` was older than
+`src/data/site.ts` and the three form components, so it predated the consent commit `76eeb1e`.
+Reconciling documentation against a stale build would have written yesterday's render into the
+canon as today's truth. Every fact below is read from a `dist/` built at the start of this pass.
+
+### 1. `AGENTS.md` §2 — rewritten from `dist/`, and it was badly wrong
+
+The route architecture section was stale on **eleven index-status rows** and omitted **eight
+built routes**. It listed `/detailed-cleaning/`, `/property-clearing/`, `/deep-cleaning-san-jose/`,
+`/property-cleanouts-san-jose/`, `/estate-cleanout-san-jose/`, `/hoarding-cleanup-san-jose/` and
+`/service-areas/` as `noindex`; all seven ship indexable and in `sitemap.xml`, most of them since
+the 2026-08-17 SEO pass. Anyone reading §2 to decide whether a page was crawlable got the wrong
+answer on a third of the site.
+
+Now recorded as three explicit lists — 21 indexable in `sitemap.xml`, 3 indexable and
+deliberately excluded, 13 `noindex` — totalling the 37 built routes. **`SITEMAP-MASTER.md` is
+demoted from "single source of truth for the route list and index status" to the planning
+authority** (waves, gates, copy sources). It never described build state accurately and was not
+written to; `AGENTS.md` §2 now carries build state and says where it came from.
+
+### 2. Two deleted files were still being cited as authority
+
+`docs/07-ONE-PAGE-DIRECTIVE.md` and `docs/22DOCDISPOSITION.md` were both deleted on 2026-08-11.
+
+**`07` was still rank 13 in the `AGENTS.md` precedence chain for eight days** — a live row in
+the operative chain pointing at a file that does not exist, which `AGENTS.md`'s own
+"Files that do not exist" rule makes a stop-condition. Removed; rank 14 (doc 08) becomes 13. Its
+migrated content is inventoried in the removal note so nothing is inherited by accident.
+
+**A distinction was applied rather than a blanket purge.** The instruction was to remove both
+from all references. Executed for *pointers* — precedence rows, "read this for values"
+instructions. **Not** executed for *records*: dated entries in this log and in the alignment
+audit that say "deleted per `22DOCDISPOSITION.md`" are the provenance of the deletion, and
+stripping them would destroy the audit trail that makes this log worth keeping. 25 of the 27
+dangling references in the repo are records of this kind. Both operative pointers are closed.
+
+### 3. `.claude/skills/doc-precedence/SKILL.md` — the worst find of the pass
+
+The skill whose entire job is resolving precedence carried a summary chain that:
+
+1. **omitted `docs/27-COPY-CANONICAL.md` and `docs/20-COPY-VOICE.md` entirely** — the current
+   copy authority was not in the chain at all;
+2. **ranked `aseptaclean-FINAL-v2.html` as authority for `/` "including copy"** — the exact rule
+   `AGENTS.md` revoked when doc 27 was promoted on 2026-08-16; and
+3. ranked the deleted `07`.
+
+An agent invoking this skill to settle a homepage copy question would have been told to use
+FINAL-v2 — restoring copy the owner had already superseded, with the authority of the
+conflict-resolution skill behind it. This is the failure mode named in the skill's own
+description: *one document silently overriding higher-ranked ones.* Corrected to match
+`AGENTS.md`, with the drift documented in place and the summary explicitly subordinated to
+`AGENTS.md`.
+
+### 4. Doc 27 §18 and §19 — registers P4 and P5 closed
+
+**§18 endpoint** corrected to `/api/lead` (singular). **The "Current critical blocker" section
+is struck.** It asserted that no lead endpoint was implemented and that this was a release
+blocker. `functions/api/lead.ts` has been live and verified end-to-end for weeks. An agent
+reading that section as current would have concluded the endpoint was missing and built one —
+and `AGENTS.md` §0.1 exists precisely because an earlier version of that instruction would have
+deleted the only working lead endpoint in the repository. The eight-item implementation
+checklist it demanded is replaced with a table showing where each item is already satisfied.
+
+**§18 full-form shape (P4)** reconciled. §18 specified a single-step, eleven-field form with a
+`Service needed` dropdown and one free-text description. `AssessmentForm.astro` is a
+**three-step wizard with 47 named fields**, read out of the build and now documented step by
+step. The `Description placeholder` string is struck — the field does not exist; four
+structured fields carry that intent. **Email is required in the build and was documented as
+optional** — the one field where "fixing" the code to match the doc would have changed
+behaviour. The six condition radios are annotated as a fit-review screen, not a service menu.
+
+**§19 homepage title (P5)** reconciled to the shipped `Property Cleanout & Deep Cleaning |
+San Jose | Aseptaclean`. **The meta description was also stale and is corrected** — P5 named
+only the title, so anyone closing P5 against the build would have hit a second divergence in
+the same block.
+
+### 5. The 23 gate-6 absences — ruled
+
+Not one of the 23 was "approved copy that failed to reach the build." They fell into five
+causes, four of which were the documentation being wrong about the code.
+
+| # | Cause | Ruling | Authority |
+| --- | --- | --- | --- |
+| 6 | Canon predated the §9.15.2 humanization amendments | Canon updated to the shipped wording | Amendments approved 2026-08-18; build verified |
+| 5 | §17.1 described a page the visual port rewrote | Canon reconciled to build; old wording kept struck | Code is truth (this pass) |
+| 4 | §9.5 cards — exempt, misreported by the gate | Exempt. Gate fixed, canon annotated | Already adjudicated 2026-08-17 |
+| 2 | §18 form shape / §19 title (P4, P5) | Canon reconciled to build | Code is truth (this pass) |
+| 2 | §16 label drift + an internal policy note | Label reconciled; note marked non-shipping | Code is truth (this pass) |
+| 1 | §9.8 stage 01 — one serial comma | Canon updated | Code is truth (this pass) |
+| 1 | §17.5 — literal phone stapled to a copy line | Tokenised to `{site.business.phone}` | `AGENTS.md` §3 outranks doc 27 on business facts |
+| **2** | **Approved copy for a component that was never built** | **OWNER CALL — see below** | — |
+
+**Rank lookups applied.** Only one absence needed the chain rather than the build: §17.5's
+hardcoded `408-785-7588` (twice) and `South Bay & Peninsula`. `AGENTS.md` §3 makes
+`src/data/site.ts` the single source for business facts and **`AGENTS.md` outranks doc 27
+(rank 7) on business facts**, so the tokens win. This is the identical defect corrected in
+§9.15.5's submission-error string on 2026-08-19, and the canon was still specifying a phone
+format (`408-785-7588`) the site does not render anywhere (`(408) 785-7588`).
+
+**A claims check gated one ruling.** "Code is truth" does not extend to claims, so §17.1's
+build wording was checked against doc 21 before being accepted, not after. Two findings: the
+regulatory-clearance disclaimer **survived** the port in a different construction, with all four
+denials intact, and now renders on 36 of 37 routes — coverage widened rather than narrowed. And
+the build's Reset stage introduces *"including animal and organic conditions within lawful
+scope"*, which is permitted cleaning language, bounded, and uses no prohibited term. Recorded
+explicitly: **this is a documentation reconciliation, not a claims approval.** Had the
+disclaimer been dropped, the correct action would have been to fix the code, not the document.
+
+#### The two that need an owner, with both wordings
+
+`docs/27-SECTION-9-15-CONNECTIVE-COPY.md` §9.15.1, "Service pages (all 14)":
+
+| Line | Slot | Approved string |
+| --- | --- | --- |
+| `27-SECTION-9-15-CONNECTIVE-COPY.md:41` | Scope-excerpt card header | *Scope excerpt · Sample* |
+| `27-SECTION-9-15-CONNECTIVE-COPY.md:42` | Scope-excerpt card footer | *Sample only — not a client record. Your scope gets written against your property before anything is scheduled.* |
+
+**There is no shipped counterpart to compare against.** The scope-excerpt card was never built
+— no service page renders any sample-scope block, under this or any other label. So this is not
+a canon-vs-build conflict with two wordings; it is approved copy with no slot. Neither available
+action is mine: building the component is a `src/` change this pass excludes, and striking
+owner-approved copy needs the owner.
+
+**Do not ship the header without the footer.** The footer is the disclaimer that stops a sample
+scope being read as a real client record — `AGENTS.md` §0.3 forbids fabricated project records,
+and a realistic-looking sample scope with no "not a client record" line is exactly that. They
+are one unit. There is no exposure today because neither is built.
+
+### 6. `scripts/gate6-copy-trace.mjs` — one scope fix, reported not silent
+
+Doc 27 §9.4 carries an annotation whose own text reads *"§9.4 **and §9.5** are overruled for
+`/`."* The gate cleared its block flag at **every** heading, so the exemption stopped at the
+§9.5 heading and again at each `####` card heading. The four §9.5 card bodies were reported
+`absent` — indistinguishable from approved copy going missing — through five consecutive runs,
+while §9.4's two strings sitting above them were correctly exempt.
+
+The flag now clears only on a **sibling or shallower** heading, never on a subsection. Four
+false absences became exemptions (2 exempt → 6). Annotating §9.5 in the canon as well, which
+was the first attempt, does not fix it: a `####` heading resets the flag regardless. An
+exemption whose reach depends on heading depth is not an exemption.
+
+**A second gate lesson, learned the same way.** Three annotations written during this pass were
+themselves extracted as approved strings and reported absent, because the parser's commentary
+filter keys on a file reference and those three notes happened not to contain one. Editing the
+canon changes what the gate reads — the gate does not distinguish an approved string from a note
+about an approved string except by that heuristic. Fixed by giving each note a real file
+reference. Anyone annotating this canon in future should expect the same and re-run the gate.
+
+### 7. `SITEMAP-MASTER.md` and `REPO-STATE.md`
+
+**`SITEMAP-MASTER.md`** now carries **Planned** and **As built** columns. They disagree on
+**ten rows, every one a page planned `index` that ships `noindex`.** Four unresolvable rows are
+flagged: `/assessment/` (planned Phase 4, never built, never cancelled — code cannot distinguish
+*not yet* from *abandoned*); `/services/` and `/who-we-help/` indexable but link-unreachable;
+`/services/` versus the standing prohibition; and the ten status rows themselves. The
+2026-08-09 owner override that ungated animal/rodent/pigeon is contradicted by the build — all
+three still ship `noindex`, and that is the most likely genuine drift in the table.
+
+**`REPO-STATE.md` is partially regenerated, and says so per section.** 39 `src/` files changed
+between its 2026-08-11 generation and today, so most of its deep sections describe a build that
+no longer exists. Sections 1, 11, 12 and the summary are regenerated; the rest carry an explicit
+STALE marker with a pointer to what supersedes them. Faithfully regenerating the token,
+component, homepage-render and claims-grep sections is a full audit and is **not** done — this
+is recorded as an outstanding item rather than presented as complete. Four of its original
+findings are resolved and marked as such; deleting them would lose the record that they were fixed.
+
+### 8. Pending register — P1–P5 reviewed, two corrected, P6–P7 added
+
+Supersedes the register in the 2026-08-19 "Connective strings wired" entry §7. Every row has a
+closing condition.
+
+| # | Item | State | Closes when |
+| --- | --- | --- | --- |
+| P1 | `/senior-downsizing-san-jose/` delete-or-write | `noindex`, held out of the port, byte-identical. **Corrected:** sole caller of **five** components (`ServiceScope`, `ServicePricing`, `ServiceMethodRail`, `ServiceProof`, `CompactHero`) — **not six.** `ServiceFAQ` is imported independently by `src/pages/faq/index.astro:12` and survives the page's deletion. | Owner decides delete-or-write. Deleting retires five components; writing means porting the page and resolving its `[OWNER INPUT]` placeholder. |
+| P2 | Crawl path into `noindex` service pages | **Corrected — scope was understated.** Not `/animal-waste-cleanup-san-jose/` from two pages: global nav and footer render all 14 service links on all 37 routes, so **all 21 indexable routes link into all 11 `noindex` service routes.** | COI check (C15) confirms endorsement wording, and the crawl-path decision (C10) resolves whether indexable pages may link into gated ones. Narrowing it means changing the nav, not a link. |
+| P3 | Server/client error-string divergence | Unchanged. `functions/_lib/lead.ts` returns pre-port field messages; `QuickHandoffForm.astro` maps them to approved strings client-side. Visitor sees approved copy; every other consumer sees the old strings. | Move the strings server-side and delete the client map in one change, when `functions/` is legitimately open. |
+| P4 | doc 27 §18 form shape | ✅ **CLOSED this pass.** §18 reconciled to the built 3-step wizard; endpoint corrected; blocker struck. | — |
+| P5 | doc 27 §19 homepage title | ✅ **CLOSED this pass.** Title *and* the meta description, which P5 did not mention, both reconciled. | — |
+| P6 | Homepage states the uncertain-items commitment two ways | The *Handoff Assurance* block renders *"Uncertain items are not automatically discarded"* while §9.6 and the §9.12 FAQ on the same page render the amended *"labeled clear bag"* wording. Amendment 1 never named the Assurance block, so this pass left it alone. Not a defect — a consistency question on one page. | Owner decides whether the Assurance block adopts the amended wording. `src/` change. |
+| P7 | doc 27 §16 city presentation | §16 specifies two flat lists (*Primary cities* / *Also reviewed*). The build groups the same nine cities as prose under *West Valley*, *Peninsula edge*, *South County*. Every city appears; the structure differs. | Rewriting the section into the built grouping is a copy rewrite wanting an owner read, not a documentation pass. |
+| P8 | `REPO-STATE.md` deep sections | Sections 2–10 describe the pre-port build and are marked STALE in place. | A full audit pass regenerates tokens, components, homepage render, claims greps, business facts. |
+
+**None of P1, P2, P3, P6, P7, P8 is a defect today.** Each is a deliberate hold with a named
+condition.
+
+### 9. What this pass did not do
+
+- **No `src/`, `public/`, or `functions/` change.** Every ruling that resolves toward "the code
+  should change" (P6, and the scope-excerpt card if the owner says build it) is recorded, not
+  executed.
+- **`docs/19-SYSTEM-AND-SITEMAP.md` and `docs/18-VISUAL-DIRECTION.md` were not audited.** Both
+  outrank doc 27 and both predate the port. They were out of scope; neither is confirmed current.
+- **Gate 6 still exits non-zero**, correctly, on the two owner-call strings. It should stay
+  failing until the owner rules — an exemption here would hide a real open question.
+- **The four `partial` results are unchanged** and are parser artifacts of joined slot labels,
+  not divergences. Every part renders.
+
+---
+
+## Owner rulings on the reconciliation pass — seven, all executed (2026-08-20)
+
+Rulings on the open items from the 2026-08-19 documentation reconciliation. Documentation and
+tooling only; the one `src/` change (ruling 3) ships in its own commit and is recorded here as
+directed, not executed inside the doc pass.
+
+### 1. Scope-excerpt card — both strings struck
+
+`docs/27-SECTION-9-15-CONNECTIVE-COPY.md` §9.15.1 lines 41–42, struck with an inline reason.
+
+**Reason recorded, and it is not "we decided not to build it."** No source supplies the table
+rows. Doc 27 has no sample scope-excerpt content for any of the 14 services, and no real project
+record exists to redact into one. That leaves exactly two ways to ship the header, and the
+repository forbids both: **fabricate plausible scope rows**, which `AGENTS.md` §0.3 forbids
+outright ("empty beats fake, always"), or **render a labelled empty box**, which is a
+placeholder in a production build under §7. The card was unbuildable, not overlooked.
+
+**The header never ships without the footer** — the footer is the disclaimer that stops a sample
+scope being read as a real client record. Approved as a unit, struck as a unit.
+
+**Re-approval condition:** a real owner-supplied, redacted Property Handoff Record artifact
+exists to derive rows from. Until then the absence is correct, not a gap.
+
+**Gate 6 now passes: `174 extracted · 164 present · 4 partial · 0 absent · 6 exempt · 8 struck`.**
+First clean run since the gate was written. The two survivors were the only genuine owner call
+in the original 23, and striking them closed the last of it. Extraction drops from 176 to 174
+exactly as the two strikes predict.
+
+**A near-miss worth recording, because the gate reported PASS while it was happening.** The
+strike annotation was first written directly beneath the struck rows — **inside** the
+§9.15.1 "Service pages" table. `scripts/gate6-copy-trace.mjs` tracks a String-column table by
+its header row, so prose between rows terminates the table: the **ten rows below the break
+stopped being extracted at all**, silently leaving the gate's scope. The run still said
+`PASS — 0 absent`, because strings that are never extracted cannot be reported absent.
+
+It was caught by arithmetic, not by the gate: extraction fell 176 → 165, a drop of eleven that
+two strikes cannot explain. Fixed by moving the annotation below the table, and a placement note
+now sits in the document itself.
+
+**This is the third distinct way this canon's own annotations have corrupted the gate that reads
+it** — after the §9.4 block flag dying at a subsection heading (2026-08-19 §6) and three notes
+being extracted as approved strings for lacking a file reference. The general rule, now stated
+plainly: **editing the canon changes what the gate reads, so a gate run after a canon edit is
+not evidence until the extraction count is reconciled against the edit.** A falling `extracted`
+figure is the signal; `PASS` is not.
+
+### 2. `/services/` — narrow reading confirmed, prohibition amended
+
+`AGENTS.md` §2's prohibition read "any `/services/*` or `/locations/*` route", which on its face
+forbade a route that ships built, indexable, and in `sitemap.xml`. It now reads
+**`/services/{slug}` and `/locations/{city}`** — the superseded detail trees it was always aimed
+at. Amended at the rule text rather than annotated around, so a future grep of the prohibition
+list does not surface a live route and re-open this.
+
+**Deliberately not widened.** Child routes under `/services/` stay forbidden, and **every**
+`/locations/*` route stays forbidden including a bare `/locations/` index. The narrowing applies
+to `/services/` alone, because only `/services/` has a built hub the owner has confirmed.
+
+### 3. `/services/` and `/who-we-help/` — footer Company column
+
+Both are indexable and in `sitemap.xml` with zero inbound links: reachable by crawlers through
+the sitemap, by visitors not at all. **Ruling: add both to the footer Company column.** They stay
+indexable; the defect was the missing inbound link, not the index status.
+
+`src/` change, **shipped in a separate commit from the documentation pass** per the ruling.
+Recorded in `AGENTS.md` §2 and `docs/SITEMAP-MASTER.md` as the resolution of what those files
+had logged as an open orphan.
+
+### 4. Ten planned-index / shipped-noindex rows — enumerated, owner rules as a group
+
+Reported only; no status changed. Every one is an explicit `noindex={true}` prop with a stated
+gate — **none is an accidental default**, and none is the `PUBLIC_DEPLOYMENT_ENV` env-gate
+firing. They fall into three groups.
+
+| # | Route | Planned | Shipped | Gate holding it | 2026-08-09 override? |
+| --- | --- | --- | --- | --- | --- |
+| 1 | `/post-construction-cleaning-san-jose/` | index (gate: crew) | `noindex` | Crew capacity unconfirmed | No |
+| 2 | `/window-cleaning-san-jose/` | index (gate: crew) | `noindex` | Crew capacity unconfirmed | No |
+| 3 | `/eviction-cleanout-san-jose/` | index (gate: crew) | `noindex` | Crew capacity unconfirmed | No |
+| 4 | `/commercial-cleaning-san-jose/` | index (gate: crew) | `noindex` | Crew capacity unconfirmed | No |
+| 5 | `/animal-waste-cleanup-san-jose/` | **index ✅ ungated** | `noindex` | Doc 27 §21 compliance release | **Yes — superseded 2026-08-16** |
+| 6 | `/rodent-dropping-cleanup-san-jose/` | **index ✅ ungated** (PPE SOP before 1st job) | `noindex` | Doc 27 §21 compliance release | **Yes — superseded 2026-08-16** |
+| 7 | `/pigeon-dropping-cleanup-san-jose/` | **index ✅ ungated** | `noindex` | Doc 27 §21 compliance release | **Yes — superseded 2026-08-16** |
+| 8 | `/specialty-cleaning/` (hub) | index | `noindex` | Doc 27 §21 compliance release — hub of rows 5–7 | No, but same gate |
+| 9 | `/senior-downsizing-san-jose/` | index | `noindex` | Unpublished draft; own launch gate; carries `[OWNER INPUT]` | No — register P1 |
+| 10 | `/estate-cleanout-checklist/` | index | `noindex` | Owner copy review before launch | No |
+
+**Group A — crew capacity (rows 1–4).** One shared gate: *"Crew capacity unconfirmed — page
+built as an unpublished draft; do not launch until crew capacity for this service is
+confirmed."* These four move together on one operational fact.
+
+**Group B — doc 27 §21 compliance release (rows 5–8).** **Only three of the ten are covered by
+the 2026-08-09 owner override, and that override no longer stands.**
+`src/data/doc27ServicePages.ts` records the reason in each route's `gate` field: *"Ships noindex
+per §21 'Current status' and §13 'gated'; **owner decision 2026-08-16 chose the gated path over
+SITEMAP-MASTER's ungated column**."*
+
+**This reverses the finding reported on 2026-08-19.** That entry called these three "the most
+likely genuine drift in the table" — reading the build as having failed to implement the
+override. The opposite is true: the build is correct, the override was superseded seven days
+later by a second owner decision, and `SITEMAP-MASTER.md`'s "ungated ✅" column is the stale
+side. That note is now struck there. The open §21 inputs are insurance wording for the specific
+terminology, the pest-control/cleanup licensing boundary, disposal procedure, PPE and work-zone
+limits, and final claims review — none on record. Row 8 is the hub for rows 5–7 and cannot
+sensibly flip before them.
+
+**Group C — individual (rows 9–10).** Row 9 is register item P1, unchanged. Row 10 is the one
+launch-eligible page in its batch — content is method-derived rather than call-derived, so it
+carries no `[OWNER INPUT]` placeholder and is held only on an owner copy review.
+
+**Nothing here is drift.** Every row is a gate that has not cleared, each with a named condition.
+The only thing that was wrong was a planning document describing three of them as ungated.
+
+### 5. `/assessment/` — cancelled
+
+Struck from `docs/SITEMAP-MASTER.md`. `/request-assessment/` is the built and canonical route for
+this intent — indexable, in the sitemap, linked. No triage quiz will be built. This closes the
+*not yet* vs *abandoned* ambiguity that code alone could not resolve, which is exactly the class
+of question a build cannot answer and an owner can.
+
+### 6. Both scope calls approved as made
+
+The two judgment calls in the 2026-08-19 pass stand as executed: **references purged as pointers
+but preserved as records** (25 of 27 dangling references are dated log entries whose provenance
+would be destroyed by "cleaning them up"), and **`REPO-STATE.md` partially regenerated with
+per-section dating** rather than either silently stale or deleted. **P8 stands as logged** — the
+full audit of its sections 2–10 remains outstanding and is not represented as done.
+
+### 7. P2 — true scope recorded as structural
+
+P2 was written as a page-level item: `/animal-waste-cleanup-san-jose/` "linked from indexable
+`/services/` and `/service-areas/`". **That understates it by an order of magnitude.** The global
+nav and footer render all 14 service links on all 37 routes, so **every one of the 21 indexable
+routes links into every one of the 11 `noindex` routes.** There is no per-page fix; the links are
+not on the pages, they are in the nav.
+
+**This needs its own session, not a link edit.** Narrowing it means changing the navigation
+architecture — deciding whether gated services appear in nav at all before their gate clears —
+which touches every route and interacts with rulings 3 and 4 above. Register updated.
+
+### Register after these rulings
+
+| # | State |
+| --- | --- |
+| P1 | Open — unchanged. Delete-or-write on `/senior-downsizing-san-jose/`; retires **five** components, not six. |
+| P2 | Open — **rescoped to structural.** Needs its own session on nav architecture. |
+| P3 | Open — unchanged. Server/client error-string divergence. |
+| P4 | ✅ Closed 2026-08-19. |
+| P5 | ✅ Closed 2026-08-19. |
+| P6 | Open — homepage states the uncertain-items commitment two ways. |
+| P7 | Open — doc 27 §16 city presentation vs built grouping. |
+| P8 | Open — `REPO-STATE.md` sections 2–10 stale, confirmed to stand by ruling 6. |
+| P9 | **New.** Ten planned-index rows shipping `noindex` (ruling 4). Closes when the crew-capacity fact, the §21 compliance inputs, and the two individual reviews land — three independent conditions, tracked as one register row because the owner rules on them as a group. |
