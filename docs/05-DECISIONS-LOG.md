@@ -5201,3 +5201,97 @@ which. It regenerates from a build when P8 is worked, per the precedent set on 2
 | P8 | Open — `REPO-STATE.md` sections 2–10 stale; row 10 of its route table newly so, deliberately. |
 | P9 | Open, **now two conditions**: **A** owner confirms crew capacity per service (rows 1–4) · **B** five §21 inputs on record, row 8 after 5–7 (rows 5–8). Row 9 folded into P1. **Row 10 ✅ closed 2026-08-20 — launched.** |
 | P10 | Open — dead `navigation` export, deliberately left in place. |
+
+---
+
+## Row 10 second pass, coverage note, and P9 condition C closed (2026-08-20)
+
+Second and final edit to the record section, plus a standing coverage note. Shipped as `src/`
+commit `8a463dc`; this entry is the record.
+
+### The echo was mine, and the fix is the owner's
+
+Pass 1 struck the self-reference and I flagged a residual echo — the surviving line repeated
+*"who you hire"* from the H2 above it — as an observation, having judged that preserving the
+approved words exactly was worth more than substituting them.
+
+**That reading was incomplete.** The struck clause was not merely adjacent to the H2; it was the
+only thing separating the body from it. Removing it left the body restating its own heading, and
+that restatement was introduced by the strike rather than surviving it. The owner's replacement,
+verbatim:
+
+> The record it produces should stand on its own, regardless of who you hire.
+
+This ties the sentence to the section's subject — the artifact — rather than to the heading.
+Read in document order the pronoun binds cleanly: *"Whoever you hire"* → *"the record **it**
+produces"*. The vendor produces the record. The section now reads eyebrow → H2 → body → CTA with
+no orphaned heading, no fragment, and no restatement.
+
+**Recorded because the sequence matters more than the sentence.** A strike that is correct in
+isolation can still create a defect in what surrounds it. Flagging the symptom as an observation
+and shipping was the wrong call; the echo was evidence the strike was not finished, not a
+stylistic footnote.
+
+### Coverage note — `/estate-cleanout-checklist/` has no automated copy verification
+
+**Standing note. This route's copy is outside `qa:gate6`'s corpus entirely, in both directions.**
+
+`scripts/gate6-copy-trace.mjs` extracts its approved-string corpus from exactly two files:
+`docs/27-COPY-CANONICAL.md` and `docs/27-SECTION-9-15-CONNECTIVE-COPY.md`. This page's copy is
+method-derived from `docs/19-SYSTEM-AND-SITEMAP.md` Part 6 and appears in **neither**. Doc 27 has
+no section covering this route and never has.
+
+The consequence is not a gap in one direction but in both:
+
+| | |
+| --- | --- |
+| Gate 6 cannot report a string on this route **absent** | It was never extracted, so it cannot go missing |
+| Gate 6 cannot confirm a string on this route **present** | Presence is only checked for extracted strings |
+| A `PASS` therefore says | **nothing whatsoever about this page** |
+
+**This is not a defect in the gate.** Gate 6's stated contract is one-directional — *"for every
+approved string in the copy canon, is it present in the rendered build?"* — and its own header
+says it cannot prove the converse. A route with no canon source simply has no approved strings to
+check. The gap is in coverage, not correctness, and closing it means bringing the copy into the
+canon, not changing the script.
+
+**If this copy is ever migrated into doc 27, it enters gate 6's corpus with it** — automatically,
+with no change to the script — and that migration is the moment this note stops applying. Until
+then, every change to this route is verified by reading the rendered section in `dist/` and
+grepping it. Both edits in this ruling were verified that way.
+
+**Recorded at both points of use, not only here**, because a future session reading the code will
+not have this entry in front of it: the header comment on
+`src/pages/estate-cleanout-checklist/index.astro` and the comment above `checklist.vendorCta` in
+`src/data/servicePages.ts` both carry it.
+
+**Scope of the note.** It is about this route. Whether other method-derived routes sit outside
+the corpus the same way is a real question and is not answered here — answering it means
+enumerating every built route against doc 27's section coverage, which is its own pass.
+
+### P9 condition C — closed
+
+Condition C was *"row 9 folded into P1; row 10 with the owner."* Both halves are now resolved:
+row 9's index status travels with P1's delete-or-write decision and is tracked there, and row 10
+launched. **Condition C is closed.** Row 10 was already recorded closed in the previous entry;
+this makes the condition's closure explicit rather than leaving it implied by a count.
+
+**P9 now has exactly two open conditions, A and B, covering eight of the original ten rows.**
+Neither can be satisfied by work inside this repository — A is a hiring fact, B is five
+compliance inputs from outside. **A future session should not open P9 looking for something to
+do.**
+
+### Register
+
+| # | State |
+| --- | --- |
+| P1 | Open — delete-or-write on `/senior-downsizing-san-jose/`. Also carries row 9's index status. Retires five components. |
+| P2 | Open — structural crawl path, 25 indexable sources. Needs its own session on nav architecture. |
+| P3 | Open — server/client error-string divergence. |
+| P4 | ✅ Closed 2026-08-19. |
+| P5 | ✅ Closed 2026-08-19. |
+| P6 | Open — homepage states the uncertain-items commitment two ways. |
+| P7 | Open — doc 27 §16 city presentation vs built grouping. |
+| P8 | Open — `REPO-STATE.md` sections 2–10 stale; row 10 of its route table newly so, deliberately. |
+| P9 | Open on **two** conditions: **A** owner confirms crew capacity per service (rows 1–4) · **B** five §21 inputs on record, row 8 after 5–7 (rows 5–8). **C ✅ closed 2026-08-20** — row 9 folded into P1, row 10 launched. |
+| P10 | Open — dead `navigation` export, deliberately left in place. |

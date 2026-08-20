@@ -124,9 +124,11 @@ copy, in document order.
 Struck because the neutral frame is what makes the asset forwardable by a third party, and the
 section does its work without pointing at itself. The struck text was the first clause of the
 sentence, not a whole sentence, so the surviving clause was given back a subject and nothing
-else. What ships now, from `src/data/servicePages.ts`:
+else. That interim line — ~~The checklist is written to hold up regardless of who you hire.~~ —
+restated the H2 above it, because the struck clause had been the only thing separating the two.
+Replaced the same day by the owner. What ships now, from `src/data/servicePages.ts`:
 
-> The checklist is written to hold up regardless of who you hire.
+> The record it produces should stand on its own, regardless of who you hire.
 
 **CTA**
 > See the annotated sample Handoff Record →
