@@ -4926,3 +4926,134 @@ deliberately fixed on 2026-08-18.
 | # | Item | State | Closes when |
 | --- | --- | --- | --- |
 | P10 | `navigation` export in `src/data/site.ts` is dead | No consumer in `src/` since the 2026-08-18 port. Its content is now duplicated in `megaNav`. Left in place so this commit stays a link fix. | Deleted in a cleanup commit, after confirming no consumer was added; or repurposed if a flat nav returns. |
+
+---
+
+## P9 ruled — the ten gated rows resolved into three closing conditions (2026-08-20)
+
+Owner ruling on the ten planned-index / shipped-`noindex` routes enumerated earlier today. **All
+ten remain gated. No index status changed.** P9 is not closed; it is now three tracked conditions
+instead of one undifferentiated group, and every row has a named condition rather than an
+assumption.
+
+### Group A — rows 1–4, crew capacity
+
+`/post-construction-cleaning-san-jose/` · `/window-cleaning-san-jose/` ·
+`/eviction-cleanout-san-jose/` · `/commercial-cleaning-san-jose/`
+
+**Remain gated.** Owner ruling: *"Crew capacity unconfirmed" is an operational fact; these flip
+on hiring, not on documentation.*
+
+**Closing condition, recorded verbatim: owner confirms crew capacity for this service.**
+
+This is worth stating plainly because it is the one condition in the register that **no amount of
+work inside this repository can satisfy.** There is no document to write, no gate to re-run, and
+no audit that moves it. A future session finding these four `noindex` should not investigate
+them, reconcile them, or treat the gap between planned and shipped as drift. The four move
+together, per-service, when the hiring happens.
+
+### Group B — rows 5–8, doc 27 §21 compliance release
+
+`/animal-waste-cleanup-san-jose/` · `/rodent-dropping-cleanup-san-jose/` ·
+`/pigeon-dropping-cleanup-san-jose/` · `/specialty-cleaning/` (hub)
+
+**Remain gated.** Closing condition is **all five open §21 inputs on record:**
+
+1. Insurance wording for the specific terminology
+2. Pest-control / cleanup licensing boundary confirmation
+3. Disposal procedure
+4. PPE and work-zone limits
+5. Final claims review
+
+**Row 8 flips only after rows 5–7.** `/specialty-cleaning/` is the hub for the three service
+pages beneath it; an indexable hub pointing at three gated children is the crawl-path problem
+this repo already tracks as P2, created deliberately.
+
+#### The 2026-08-09 ungated override was superseded — recorded explicitly so this is not re-litigated
+
+**`docs/SITEMAP-MASTER.md` marks rows 5–7 as `index ✅ ungated (owner override 2026-08-09)`. That
+column is stale. It does not describe the current decision and must not be acted on.**
+
+The override was superseded by an **owner decision on 2026-08-16**, seven days later, which chose
+the gated path. That decision is recorded in the code, in each route's `gate` field in
+`src/data/doc27ServicePages.ts`:
+
+> *"Ships noindex per §21 'Current status' and §13 'gated'; **owner decision 2026-08-16 chose the
+> gated path over SITEMAP-MASTER's ungated column**."*
+
+**The order of events, since a future session will otherwise reconstruct it wrongly:**
+
+| Date | Event | Effect on rows 5–7 |
+| --- | --- | --- |
+| 2026-08-09 | Owner override — ungate animal/rodent/pigeon | Planned `index`. Recorded in `SITEMAP-MASTER.md`. |
+| 2026-08-16 | Owner decision — take the gated path pending §21 | **Supersedes the above.** Recorded in code, not in the master. |
+| 2026-08-19 | Reconciliation pass reads master vs build | Reported the divergence as *"the most likely genuine drift"* — wrong; it read the stale side as authoritative. |
+| 2026-08-20 | This ruling | Supersession confirmed. Master note struck. Build was correct throughout. |
+
+**The build has been right the whole time.** The only defect was a planning document that was
+never updated when the decision it recorded was reversed, and a reconciliation pass that then
+trusted it. `AGENTS.md` §1 puts explicit owner decisions at rank 1 and `SITEMAP-MASTER.md`
+nowhere near it — the 2026-08-16 decision outranked the file the moment it was made.
+
+**Do not flip rows 5–7 to `index` on the strength of the 2026-08-09 override.** It no longer
+stands. Only the five §21 inputs above close this group. The struck note in
+`docs/SITEMAP-MASTER.md` now says so at the point of use.
+
+### Row 9 — `/senior-downsizing-san-jose/`
+
+**Closes with P1. No separate condition.** The row is deleted from P9's scope rather than
+duplicated: P1 is the delete-or-write decision, and the index status is downstream of it —
+deleting the page makes the question moot, writing it resolves the `[OWNER INPUT]` placeholder
+and the gate together. Tracking the same decision in two register rows is how a condition gets
+satisfied in one place and missed in the other.
+
+### Row 10 — `/estate-cleanout-checklist/`, with the owner
+
+**Full rendered copy dumped for direct owner review:
+`docs/ESTATE-CLEANOUT-CHECKLIST-COPY-20260820.md`.** The only launch-eligible row of the ten.
+Owner clears or holds directly; no further agent action.
+
+Mechanical checks run before the dump, all clean: **zero placeholders** in the rendered page;
+**no prohibited term in a claiming construction** — `licensed` and `remediation` appear four
+times between them, every one inside the footer's permitted negative disclaimer; no proof claim,
+no price figure. Those checks confirm nothing unlawful or unfinished ships. They are not the
+review.
+
+If cleared, launching is the two changes the page was built to expect: flip `noindex` and add the
+route to `src/pages/sitemap.xml.ts`. Its **single inbound link** should be reviewed at the same
+time — one link is thin for a page intended as a referral asset.
+
+### P10 — no action
+
+Owner ruling: **leave the dead `navigation` export in `src/data/site.ts` in place as logged.**
+The row stays open in the register as a known-dead export rather than being deleted or closed.
+
+### Register after these rulings
+
+| # | State |
+| --- | --- |
+| P1 | Open — delete-or-write on `/senior-downsizing-san-jose/`. **Now also carries row 9's index status.** Retires five components, not six. |
+| P2 | Open — structural crawl path; needs its own session on nav architecture. |
+| P3 | Open — server/client error-string divergence. |
+| P4 | ✅ Closed 2026-08-19. |
+| P5 | ✅ Closed 2026-08-19. |
+| P6 | Open — homepage states the uncertain-items commitment two ways. |
+| P7 | Open — doc 27 §16 city presentation vs built grouping. |
+| P8 | Open — `REPO-STATE.md` sections 2–10 stale. |
+| P9 | Open, **now three conditions**: **A** owner confirms crew capacity per service (rows 1–4) · **B** five §21 inputs on record, row 8 after 5–7 (rows 5–8) · **C** row 9 folded into P1; row 10 with the owner. |
+| P10 | Open — dead `navigation` export, deliberately left in place. |
+
+### Standing rule added to `.claude/skills/type-law/SKILL.md`
+
+Owner-directed: **after any canon edit, PASS is not evidence until the extraction count
+reconciles.** `qa:gate6` extracts its corpus from the canon documents on every run, so editing
+them changes what the gate can check; a string that stops being extracted cannot be reported
+absent, and the run goes green.
+
+The three annotation-format corruptions from this week are cited as precedent — the §9.4 block
+flag dying at a subsection heading, three notes extracted as approved strings for lacking a file
+reference, and the strike note splitting a table so ten rows left the gate's scope while it
+reported `PASS — 0 absent`. All three were annotations *about* copy corrupting the gate that
+reads it; none was a copy error. The third is the one the rule exists for: the first two made the
+gate noisier, which self-corrects. The third made it quieter and green, and was caught only by
+noticing `extracted` had fallen by eleven when two strikes could explain two.

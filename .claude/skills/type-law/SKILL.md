@@ -170,6 +170,51 @@ answered, not that the thing is correct.** Gate 5 proves no placeholder token su
 the copy is right. Gate 2 proves no class sizes a heading, not that the hierarchy reads. Know
 which question each gate actually asks before you report it as passed.
 
+## After a canon edit, PASS is not evidence until the extraction count reconciles
+
+**Standing rule, owner-directed 2026-08-20.** `qa:gate6` does not read a fixed list of approved
+strings — it *extracts* them from `docs/27-COPY-CANONICAL.md` and
+`docs/27-SECTION-9-15-CONNECTIVE-COPY.md` every run, by parsing markdown structure. **So editing
+those documents changes what the gate is capable of checking.** A string that stops being
+extracted cannot be reported absent. It leaves the gate's scope silently, and the run says PASS.
+
+**Whenever you edit either canon document, reconcile the `extracted` count before believing the
+verdict:**
+
+1. Note `extracted` before the edit.
+2. Make the edit. Re-run.
+3. Predict the delta from the edit alone — a strike moves one string from `extracted` to
+   `struck`; new approved copy adds one; an annotation should move it by **zero**.
+4. **If the actual delta does not match the prediction, the parse changed. Find out why before
+   reading anything else in the output.**
+
+A falling `extracted` figure is the signal. `PASS` is not. `absent: 0` against a shrunken corpus
+means less than `absent: 3` against a whole one.
+
+### Three precedents, all annotation formatting, all inside eight days
+
+Every one of these was an annotation *about* approved copy corrupting the gate that reads it.
+None was a copy error, and none would have been caught by reading the copy.
+
+| Date | Format | Effect | How it was caught |
+| --- | --- | --- | --- |
+| 2026-08-19 | `DOES NOT SHIP` note placed in §9.4, covering §9.5 by its own text | Block flag cleared at the next heading; **four exempt strings reported `absent`** for five runs | Reading the annotation and disbelieving the gate |
+| 2026-08-19 | Three notes written without any file reference | Parser's commentary filter keys on a file path, so the **notes themselves were extracted as approved strings** and reported absent | Their text appeared in the absent list |
+| 2026-08-20 | Strike note placed *between rows* of a String-column table | Table ended at the prose; **ten rows below it stopped being extracted entirely.** Run reported `PASS — 0 absent` | Arithmetic — `extracted` fell 176 → 165, and two strikes cannot explain eleven |
+
+**The third is the dangerous one** and the reason this rule exists: the first two made the gate
+noisier, which is self-correcting. The third made it quieter and green.
+
+**Practical rules that follow:**
+
+- Put annotations **after** the table or block they discuss, never between a table's rows.
+- Give every annotation a real file reference (`docs/…`, `src/…`, `*.astro`, `*.html`) so the
+  commentary filter recognises it as commentary.
+- A `DOES NOT SHIP` marker scopes to its section and everything nested beneath it — that is now
+  the parser's behaviour, but write the marker where the copy is rather than relying on it.
+- Struck copy stays in the document wrapped in `~~…~~` with an inline reason. Never delete it;
+  the record of what was rejected is worth as much as the record of what was approved.
+
 ## One thing worth knowing about this codebase
 
 `Hero.astro:38-51` renders a hardcoded five-row "Handoff Status" panel that is *not* driven by
