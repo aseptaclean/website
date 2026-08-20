@@ -82,11 +82,14 @@ const statusRows = [
 </section>
 
 <style>
+  /* Mockup `.hero` has no top padding — the 86px lives on `.hero .shell` (.hero__in below),
+     and the 36px bottom is the curved-divider allowance. The explicit 0 stops the
+     `main > section` default reaching the hero, which added a second 96px above the eyebrow. */
   .hero {
     position: relative;
     overflow: hidden;
     background: var(--ac-color-navy-900);
-    padding-bottom: 36px;
+    padding-block: 0 36px;
   }
 
   .hero__bg {

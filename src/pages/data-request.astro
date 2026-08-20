@@ -46,11 +46,21 @@ const contactEmail = site.business.privacyContact || site.business.email;
 </BaseLayout>
 
 <style>
+  /* Mirrors LegalPolicy.astro — this route has no section wrapper of its own, so the article
+     carries the mockup `.sec` rhythm (68px/60px) directly instead of the pre-port 96px/72px.
+     Internal gap drops from 96px to 48px so it stays inside the section rhythm, and the
+     viewport-coupled 55vh floor becomes a fixed 480px on the 8px scale. */
   .data-request {
     display: grid;
-    gap: var(--ac-space-7);
-    min-height: 55vh;
-    padding-block: var(--ac-space-7) var(--ac-space-8);
+    gap: var(--ac-space-5);
+    min-height: 480px;
+    padding-block: 68px;
+  }
+
+  @media (max-width: 760px) {
+    .data-request {
+      padding-block: 60px;
+    }
   }
 
   .data-request__header {

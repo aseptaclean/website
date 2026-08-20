@@ -126,9 +126,11 @@ const schema = [
     background: var(--ac-color-paper);
   }
 
+  /* 96px between checklist groups exceeded the 68px section rhythm around them — internal
+     spacing must not outrun the gap between sections. */
   .checklist-sections {
     display: grid;
-    gap: var(--ac-space-7);
+    gap: var(--ac-space-5);
     margin: 0;
     padding: 0;
     list-style: none;

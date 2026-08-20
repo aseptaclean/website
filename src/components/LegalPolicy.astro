@@ -78,11 +78,19 @@ const hasProviderPolicy = Boolean(policyId || hostedUrl);
 </article>
 
 <style>
+  /* The route wrapper (.legal-body) already supplies the mockup `.sec` rhythm of 68px/60px.
+     This article previously added 96px/72px of its own inside that, and separated its two
+     children by another 96px — internal padding larger than the gap between sections, and
+     over the 80px layout cap. Padding is now the wrapper's job; the internal gap drops to
+     48px, which is inside both the cap and the section rhythm.
+     `min-height` reserves the Termly embed slot so the page does not collapse to a stub and
+     reflow when the provider script lands; the old 55vh was viewport-coupled (495px at 900,
+     464px at 844) and off the 8px scale, so it is now a fixed 480px. */
   .legal-policy {
     display: grid;
-    gap: var(--ac-space-7);
-    min-height: 55vh;
-    padding-block: var(--ac-space-7) var(--ac-space-8);
+    gap: var(--ac-space-5);
+    min-height: 480px;
+    padding-block: 0;
   }
 
   .legal-policy__header {

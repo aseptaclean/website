@@ -54,11 +54,24 @@ a:active {
   outline-offset: 4px;
 }
 
-/* Default section rhythm — docs/aseptaclean-FINAL-v2.html `section{padding-block:...}`.
-   Individual homepage section components override where the source file overrides
-   (hero, ribbon, credential bar, accent band, final CTA). */
+/* Default section rhythm. Was `clamp(3.5rem, 7vw, 6rem)` (96px desktop / 56px mobile),
+   inherited from docs/aseptaclean-FINAL-v2.html. The 2026-08-18 mockup port moved the
+   section rhythm to `.sec` = 68px/60px but left this blanket rule in place, so every
+   section that does NOT carry `.ac-sec` kept the pre-port 96px — including the wrappers
+   the mockups give zero section padding (`.hero`, `.ac-cred`, `.ac-band`,
+   `.ac-photoband`, `.ac-fit`, which each carry their own inner-shell rhythm instead).
+   Corrected 2026-08-20 to the mockup `.sec` value; the zero-padding wrappers now say so
+   explicitly below rather than relying on this rule not reaching them.
+   Authority: docs/mockups/*.html `.sec{padding:68px 0}` / `@media(max-width:760px)
+   .sec{padding:60px 0}`. See docs/05-DECISIONS-LOG.md 2026-08-20. */
 main > section {
-  padding-block: clamp(3.5rem, 7vw, 6rem);
+  padding-block: 68px;
+}
+
+@media (max-width: 760px) {
+  main > section {
+    padding-block: 60px;
+  }
 }
 
 /* ---------------------------------------------------------------------
@@ -963,8 +976,12 @@ textarea {
 }
 
 /* ---- credibility strip ---- */
+/* Mockup `.cred` has no section padding of its own — its 24px/18px comes from `.cred div`,
+   which in the mockup also matches the `.shell` wrapper. Declared here directly so the
+   measured band height matches the mockup without relying on a descendant-selector reach. */
 .ac-cred {
   border-bottom: 1px solid var(--ac-color-line);
+  padding-block: 24px;
   background: #fff;
 }
 
@@ -1194,7 +1211,10 @@ textarea {
 }
 
 /* ---- amber deadline band — owner ruling D1: keep as sole warm accent ---- */
+/* Mockup `.band` carries no section padding: the band's height is the 96px min-height on
+   its shell (22px padding below 760px). */
 .ac-band {
+  padding-block: 0;
   background: var(--ac-color-amber);
 }
 
@@ -1292,8 +1312,11 @@ textarea {
 }
 
 /* ---- overlay-card-on-photo-band — mockup .photoband/.rec and .ob/.ov ---- */
+/* Mockup `.photoband` carries no section padding: the image sets the band height and the
+   record card overlaps it with a negative top margin. */
 .ac-photoband {
   position: relative;
+  padding-block: 0;
   background: var(--ac-color-navy-900);
 }
 
@@ -1493,8 +1516,10 @@ textarea {
 }
 
 /* ---- screening / scope panels — mockup .fit, .panel ---- */
+/* Mockup `.fit` carries no section padding — the 34px/36px lives on `.fit .shell` below. */
 .ac-fit {
   border-bottom: 1px solid var(--ac-color-line);
+  padding-block: 0;
   background: var(--ac-color-warm-white);
 }
 
@@ -2218,6 +2243,10 @@ textarea {
 @media (max-width: 760px) {
   .ac-sec {
     padding-block: 60px;
+  }
+
+  .ac-cred {
+    padding-block: 18px;
   }
 
   .ac-cred > .ac-shell {

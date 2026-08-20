@@ -274,17 +274,23 @@ const schema = [
     text-transform: uppercase;
   }
 
+  /* The hero rhythm lives on the section, not the inner layout: this hero has a second
+     child (.residence-trust) outside .residence-hero__layout, so padding on the layout
+     alone left the trust strip flush against the section's bottom edge. 86px matches the
+     mockup `.hero .shell`. */
   .residence-hero {
     overflow: hidden;
+    padding-block: 86px;
     background:
       linear-gradient(90deg, transparent 0 72%, rgb(168 184 200 / 0.12) 72%),
       var(--ac-color-warm-white);
   }
 
+  /* Rhythm is on .residence-hero above. Was clamp(4rem,10vw,8rem) (128px at 1440) plus a
+     96px internal gap, neither of which exists in any mockup. */
   .residence-hero__layout {
     display: grid;
-    gap: var(--ac-space-7);
-    padding-block: clamp(4rem, 10vw, 8rem) var(--ac-space-7);
+    gap: var(--ac-space-5);
   }
 
   h1 {
@@ -351,13 +357,15 @@ const schema = [
     font-weight: 650;
   }
 
+  /* Mockup `.sec` rhythm. These ran clamp(4.5rem,9vw,8rem) — 128px at 1440, 72px at 390 —
+     a pre-port scale that this route alone still used, and 48px over the 80px layout cap. */
   .residence-intro,
   .residence-method,
   .residence-record,
   .residence-scope,
   .residence-confidence,
   .residence-fit {
-    padding-block: clamp(4.5rem, 9vw, 8rem);
+    padding-block: 68px;
   }
 
   .residence-intro {
@@ -387,8 +395,10 @@ const schema = [
     margin-top: var(--ac-space-5);
   }
 
+  /* Was clamp(5rem,13vw,11rem) — 176px at 1440, the single largest section padding on the
+     site and more than double the 80px cap. */
   .residence-outcome {
-    padding-block: clamp(5rem, 13vw, 11rem);
+    padding-block: 68px;
     background: var(--ac-color-warm-white);
   }
 
@@ -400,7 +410,7 @@ const schema = [
   .residence-outcome__copy {
     display: grid;
     gap: var(--ac-space-4);
-    margin-top: var(--ac-space-7);
+    margin-top: var(--ac-space-5);
   }
 
   .residence-outcome__copy p {
@@ -423,7 +433,7 @@ const schema = [
   }
 
   .residence-method ol {
-    margin: var(--ac-space-7) 0 0;
+    margin: var(--ac-space-5) 0 0;
     border-top: 1px solid rgb(168 184 200 / 0.45);
     padding: 0;
     list-style: none;
@@ -464,7 +474,7 @@ const schema = [
     /* Explicit minmax(0, …) so the single mobile column can shrink below its items'
        min-content width instead of letting the record figure break out of the container. */
     grid-template-columns: minmax(0, 1fr);
-    gap: var(--ac-space-8);
+    gap: var(--ac-space-5);
   }
 
   .residence-record header > p:last-child {
@@ -482,7 +492,7 @@ const schema = [
 
   .residence-scope__columns {
     display: grid;
-    gap: var(--ac-space-7);
+    gap: var(--ac-space-5);
   }
 
   .residence-scope__columns section {
@@ -510,7 +520,7 @@ const schema = [
   }
 
   .residence-scope__disclaimer {
-    margin: var(--ac-space-7) 0 0;
+    margin: var(--ac-space-5) 0 0;
     border-left: 3px solid var(--ac-color-blue-500);
     padding-left: var(--ac-space-4);
     color: var(--ac-color-ink-500);
@@ -523,7 +533,7 @@ const schema = [
 
   .residence-confidence__layout {
     display: grid;
-    gap: var(--ac-space-7);
+    gap: var(--ac-space-5);
   }
 
   .residence-confidence dl {
@@ -553,7 +563,7 @@ const schema = [
 
   .residence-fit__layout {
     display: grid;
-    gap: var(--ac-space-7);
+    gap: var(--ac-space-5);
   }
 
   .residence-fit aside {
@@ -570,7 +580,7 @@ const schema = [
   }
 
   .residence-decision {
-    padding-block: clamp(4.5rem, 9vw, 8rem);
+    padding-block: 68px;
     background: var(--ac-color-navy-900);
     color: var(--ac-color-warm-white);
   }
@@ -652,6 +662,21 @@ const schema = [
 
     .residence-decision__layout {
       grid-template-columns: minmax(0, 7fr) max-content;
+    }
+  }
+  /* Mockup `@media(max-width:760px) .sec{padding:60px 0}`. Last in the block on purpose:
+     every rule it overrides has the same specificity, so source order decides. */
+  @media (max-width: 760px) {
+    .residence-hero,
+    .residence-intro,
+    .residence-outcome,
+    .residence-method,
+    .residence-record,
+    .residence-scope,
+    .residence-confidence,
+    .residence-fit,
+    .residence-decision {
+      padding-block: 60px;
     }
   }
 </style>

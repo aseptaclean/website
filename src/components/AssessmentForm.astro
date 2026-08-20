@@ -1798,10 +1798,13 @@ const yesNoUnsure = [
     background: var(--ac-color-warm-white);
   }
 
+  /* Capped at 64px: this sits inside a 68px section, and internal padding must not exceed
+     the gap between sections. Was 96px top, which stacked with the section rhythm into a
+     164px band above the eyebrow. */
   .assessment__masthead {
     display: grid;
     gap: var(--ac-space-6);
-    padding-block: var(--ac-space-7) var(--ac-space-6);
+    padding-block: var(--ac-space-6) var(--ac-space-5);
   }
 
   .assessment__intro {
@@ -2018,11 +2021,13 @@ const yesNoUnsure = [
     font-weight: 700;
   }
 
+  /* 48px, not 96px: two adjacent steps each contributed 96px, opening a 192px empty band
+     between step content — over the 130px band ceiling and over the section rhythm. */
   .intake-step {
     min-width: 0;
     border: 0;
     margin: 0;
-    padding: var(--ac-space-7) 0;
+    padding: var(--ac-space-5) 0;
   }
 
   .intake-step + .intake-step {
@@ -2570,7 +2575,7 @@ const yesNoUnsure = [
     .assessment__masthead {
       grid-template-columns: minmax(0, 1.55fr) minmax(19rem, 0.75fr);
       align-items: end;
-      padding-block: var(--ac-space-8) var(--ac-space-7);
+      padding-block: var(--ac-space-6) var(--ac-space-5);
     }
 
     .assessment__facts {
@@ -2594,7 +2599,7 @@ const yesNoUnsure = [
     .assessment__rail {
       border-right: 1px solid var(--ac-color-rule);
       border-bottom: 0;
-      padding-block: var(--ac-space-7);
+      padding-block: var(--ac-space-6);
       padding-right: clamp(2rem, 4vw, 4rem);
     }
 
@@ -2604,11 +2609,11 @@ const yesNoUnsure = [
     }
 
     .assessment__form-column {
-      padding-block: var(--ac-space-7) var(--ac-space-8);
+      padding-block: var(--ac-space-6) var(--ac-space-5);
     }
 
     .intake-step {
-      padding-block: var(--ac-space-8);
+      padding-block: var(--ac-space-5);
     }
   }
 

@@ -43,6 +43,13 @@ const cookiePolicyPublished = site.integrations.termly.consentEnabled;
     padding-block: 68px;
   }
 
+  /* `.legal-body` is a div, so the `main > section` mobile step does not reach it. */
+  @media (max-width: 760px) {
+    .legal-body {
+      padding-block: 60px;
+    }
+  }
+
   .legal-body :global(.legal-policy) {
     max-width: 820px;
   }
