@@ -3,7 +3,12 @@ const env = import.meta.env;
 const value = (key: keyof ImportMetaEnv, fallback = "") =>
   env[key]?.trim() || fallback;
 
-const rawPhone = value("PUBLIC_PHONE");
+// The single service-area string. Bound to two property names below (`serviceArea` for prose
+// and schema, `regionLabel` for the credential bar and status ribbon) so existing consumers keep
+// working, but there is exactly one literal — see the note on `location` for why.
+const serviceAreaLabel = value("PUBLIC_SERVICE_AREA", "South Bay & Peninsula");
+
+const rawPhone = value("PUBLIC_PHONE", "(408) 785-7588");
 const phoneUri = rawPhone ? `tel:${rawPhone.replace(/[^\d+]/g, "")}` : "";
 const smsUri = rawPhone ? `sms:${rawPhone.replace(/[^\d+]/g, "")}` : "";
 
@@ -32,10 +37,16 @@ export const site = {
       "PUBLIC_BUSINESS_HOURS",
       "Monday–Saturday, 7:00 AM–7:00 PM Pacific Time; closed Sunday"
     ),
-    insuranceStatus: value(
-      "PUBLIC_INSURANCE_STATUS",
-      "Insured. Certificate of Insurance available upon request."
-    ),
+    // Machine-readable form of `hours` above, for schema.org `openingHours`. Same owner fact
+    // (AGENTS.md §3 "Mon–Sat 7:00 AM – 7:00 PM PT, closed Sunday"), expressed in the compact
+    // format the property requires — the prose string is not a valid `openingHours` value.
+    // Kept here rather than built in SeoHead because AGENTS.md §3 forbids hardcoding any
+    // business fact in a component. Change both together or they drift.
+    hoursSchema: "Mo-Sa 07:00-19:00",
+    // No fallback. AGENTS.md §3 / doc 21 §2.5: no current COI is verified in this repository,
+    // so this trust statement stays release-gated — suppressed, not defaulted to the recorded
+    // wording — until the owner or broker verifies it against current documentation.
+    insuranceStatus: value("PUBLIC_INSURANCE_STATUS"),
     addressPolicy: "service-area business — no published street address",
     googleBusinessProfileUrl: value("PUBLIC_GBP_URL"),
     yelpUrl: value("PUBLIC_YELP_URL"),
@@ -59,8 +70,15 @@ export const site = {
   },
   offer: {
     name: "Aseptaclean Handoff Reset",
-    category:
-      "Whole-property clearing, deep cleaning, and documented closeout",
+    // 2026-08-21 positioning pass. Was "Whole-property clearing, deep cleaning, and documented
+    // closeout", which described the clearing lane as if it were the whole business and put the
+    // closeout document on the same footing as the work. The umbrella of record is specialty
+    // property cleaning and complex cleanup — see docs/city-pages-part2-UPDATED.md, whose three
+    // owner-approved city hubs are titled "Property Cleaning & Complex Cleanup in {city}".
+    // This field has no consumer in src/ today; corrected anyway so it cannot seed the old
+    // framing if one is added.
+    category: "Specialty property cleaning and complex property cleanup",
+    utilityLabel: "Specialty Property Cleaning + Complex Cleanup",
     leadOffer: "Property Handoff Plan",
     responseTime: value(
       "PUBLIC_RESPONSE_TIME",
@@ -68,9 +86,34 @@ export const site = {
     ),
     assessmentFee: Number(value("PUBLIC_ASSESSMENT_FEE", "195")),
     assessmentFeeTerms: "Credited toward an approved project booked within 7 days.",
-    // docs/aseptaclean-FINAL-v2.html — every CTA reads "Request an assessment" and anchors to
-    // #request (05-DECISIONS-LOG.md supersedes docs/06-APPROVED-HOMEPAGE-COPY.md §8.4 for `/`).
-    primaryCta: "Request an assessment"
+    // Owner-approved 2026-08-25 visible CTA. The technical route remains
+    // /request-assessment/; changing what the button says does not change form or endpoint
+    // behavior. Protected consent, privacy, SMS and carrier-reviewed wording is untouched.
+    primaryCta: "Tell Us About the Property",
+    // AGENTS.md §3 lists "secondary CTA — Text a photo" as a business fact, but it had no field
+    // here and was hardcoded in Hero.astro, which §3 forbids ("Never hardcode any of it in a
+    // component"). Doc 27 §8 (owner-approved 2026-08-20) puts it everywhere the primary appears,
+    // so it needed a single source before it could be rendered from more than one file.
+    secondaryCta: "Text a photo",
+    // Doc 27 §7 — the assessment-fee framing, owner-approved verbatim 2026-08-20 with the
+    // ruling "photo review is free; the $195 applies only when an on-site walkthrough is
+    // required". Ships as ONE paragraph at every fee surface, replacing four different
+    // in-component wordings of the same fact.
+    //
+    // The ruling is not new. docs/05-DECISIONS-LOG.md, row 3 of the migrated `07` §3 table,
+    // already records "Photo review free; on-site $195, credited within 7 days" as ADOPTED,
+    // with the phrases "free assessment" / "free consultation" purged. §7 states that same
+    // fact and reaches for neither banned phrase, so AGENTS.md §7's prohibition is intact and
+    // this is not a new claim — it is the adopted one, finally written down on the page.
+    //
+    // A function, not a literal, so the figure interpolates from `assessmentFee` above:
+    // AGENTS.md §3 makes the number a business fact that must never be retyped in a component.
+    // The words around it are owner-approved copy and must not be re-worded at a call site.
+    assessmentFraming: (fee: number) =>
+      "Photos are often enough to start, and reviewing them costs nothing. When a property " +
+      `needs an on-site walkthrough, the assessment is $${fee} — and you keep what it ` +
+      "produces: a written, room-by-room scope with inclusions, exclusions, and a firm price. " +
+      "It's yours whether or not you hire us."
     // remediationLaunchLabel removed — docs/18-VISUAL-DIRECTION.md §7: environmental/human
     // biohazard remediation does not appear on the live site at all (not even a "coming soon"
     // tag) until the credential is held. See docs/05-DECISIONS-LOG.md.
@@ -83,18 +126,18 @@ export const site = {
       "/request-assessment/?offer=private-residence-reset"
   },
   location: {
-    serviceArea: value(
-      "PUBLIC_SERVICE_AREA",
-      "San Jose and the South Bay"
-    ),
-    // docs/18-VISUAL-DIRECTION.md §7 credential bar reads "... · Santa Clara County" —
-    // a distinct, more specific fact than the metro-area serviceArea phrase above.
-    county: value("PUBLIC_SERVICE_COUNTY", "Santa Clara County"),
-    // docs/19-SYSTEM-AND-SITEMAP.md Part 5 + docs/05-DECISIONS-LOG.md "Service-area decision —
-    // 10-city South Bay & Peninsula footprint": Atherton (and, to a lesser degree, Palo Alto /
-    // Los Altos Hills) sit in San Mateo County, not Santa Clara County, so this footprint reads
-    // "South Bay & Peninsula" rather than a county-only label anywhere it appears.
-    regionLabel: "South Bay & Peninsula",
+    // ONE service-area string, sitewide — owner ruling 2026-08-20 (B2). This is the NAP wording
+    // of record and must match GBP and Yelp character for character: "South Bay & Peninsula",
+    // ampersand, never "and". `regionLabel` is bound to the same value below rather than being a
+    // second literal, so the two names cannot drift apart the way `serviceArea` and `county` did.
+    //
+    // `county` is DELETED, not renamed. It defaulted to "Santa Clara County" — a claim the
+    // 10-city footprint contradicts, because Atherton is in San Mateo County. It had zero
+    // consumers in src/ when it was removed, so nothing rendered it; the value survived only in
+    // docs/18-VISUAL-DIRECTION.md §7's credential-bar description, which is struck in the same
+    // pass. `PUBLIC_SERVICE_COUNTY` is removed from .env.example and src/env.d.ts with it.
+    serviceArea: serviceAreaLabel,
+    regionLabel: serviceAreaLabel,
     cities: [
       "San Jose",
       "Mountain View",
@@ -106,10 +149,21 @@ export const site = {
       "Los Gatos",
       "Palo Alto",
       "Atherton"
-    ]
+    ],
+    // Service-area centroid for schema.org `geo`, per docs/19-SYSTEM-AND-SITEMAP.md §2.2
+    // ("geo San Jose"). This is the coordinate of the city named in the service area — it is
+    // NOT an office, and the LocalBusiness node deliberately carries no `address` alongside it
+    // (AGENTS.md §3: "service-area business — no published street address, ever", and "never
+    // infer a physical office from service-area coverage").
+    geo: { latitude: 37.3382, longitude: -121.8863 }
   },
   urls: {
     site: value("PUBLIC_SITE_URL", "https://aseptaclean.com"),
+    // Canonical homepage URL, WITH the trailing slash. `site` above is an origin and has none,
+    // so every BreadcrumbList that used it for the "Home" item advertised
+    // `https://aseptaclean.com` while the homepage canonical said `https://aseptaclean.com/` —
+    // two URLs for one page, on 28 routes. Use this for the Home crumb, never `site`.
+    home: new URL("/", value("PUBLIC_SITE_URL", "https://aseptaclean.com")).href,
     formEndpoint: value("PUBLIC_FORM_ENDPOINT"),
     privacyPolicy: "/privacy/",
     terms: "/terms/",
@@ -259,7 +313,7 @@ export const megaNav: readonly MegaNavGroup[] = [
     hub: {
       label: "Specialty Cleaning",
       href: "/specialty-cleaning/",
-      blurb: "Condition-reviewed cleaning for difficult properties.",
+      blurb: "Cleaning for properties that need a walkthrough first.",
       cta: "View the hub"
     },
     children: [
@@ -277,12 +331,20 @@ export const megaNav: readonly MegaNavGroup[] = [
       }
     ]
   },
+  // LABEL CHANGED 2026-08-21, ROUTE UNCHANGED. The customer-facing category was "Property
+  // Clearing"; it is now "Complex Property Cleanup". `/property-clearing/` and every link,
+  // redirect and canonical pointing at it are untouched — this is a copy change, not a route
+  // change. Reason: "clearing" names one step of the work and reads as hauling to a buyer, while
+  // the three owner-approved city hubs in docs/city-pages-part2-UPDATED.md are all titled
+  // "Property Cleaning & Complex Cleanup", making "complex cleanup" the umbrella of record.
+  // Property clearing survives as a CONCEPT throughout the body copy and in the verbatim scope
+  // disclaimer below — only the category label moved.
   {
-    label: "Property Clearing",
+    label: "Complex Property Cleanup",
     hub: {
-      label: "Property Clearing",
+      label: "Complex Property Cleanup",
       href: "/property-clearing/",
-      blurb: "Clear the contents. Recover access. Prepare the property.",
+      blurb: "When the contents have to come out before anything else can happen.",
       cta: "View the hub"
     },
     children: [
@@ -307,7 +369,8 @@ export const megaNav: readonly MegaNavGroup[] = [
       {
         label: "Debris Removal",
         href: "/debris-removal-san-jose/",
-        note: "Approved, lawful disposal",
+        // Was "Approved, lawful disposal", which reads as a disposal service we perform.
+        note: "Bagged, staged, loaded; container coordinated",
         icon: "haul"
       },
       {
@@ -335,12 +398,17 @@ export const megaNav: readonly MegaNavGroup[] = [
       cta: "Read the story"
     },
     children: [
-      {
-        label: "About",
-        href: "/about/",
-        note: "Founder and background",
-        icon: "person"
-      },
+      // "About" → /about/ REMOVED 2026-08-26, for the same reason and under the same rule as
+      // "Request an assessment" below: docs/30-WEBSITE-MASTER-SPEC.md §10 forbids a "repeated
+      // primary destination under multiple labels" in the footer. This group's `hub` is already
+      // /about/, and Footer.astro renders the hub as "About Aseptaclean hub" immediately above
+      // its children — so /about/ shipped twice, a line apart, under two different names, on all
+      // 45 routes. The hub link is the one that survives because it is the labelled head of the
+      // column; the child was the second spelling of it.
+      //
+      // The ROUTE IS NOT ORPHANED. /about/ keeps the footer hub link, the header "About" nav
+      // item, and its inbound links from the homepage evidence section's sibling routes.
+      //
       // Added 2026-08-20, owner ruling. Both pages ship indexable and in sitemap.xml but had
       // ZERO inbound links anywhere in the build — reachable by a crawler through the sitemap
       // and by a visitor not at all.
@@ -384,13 +452,20 @@ export const megaNav: readonly MegaNavGroup[] = [
         href: "/contact/",
         note: "Phone, email, hours",
         icon: "mail"
-      },
-      {
-        label: "Request an assessment",
-        href: "/request-assessment/",
-        note: "Full intake form",
-        icon: "form"
       }
+      // "Request an assessment" → /request-assessment/ REMOVED 2026-08-25.
+      // docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md §17: "Do not list the
+      // assessment route twice under different names." megaNav feeds BOTH the footer link grid
+      // and the header Company dropdown, so this one entry produced the duplicate in both places
+      // on all 45 routes — in the footer beside the utility row's "Tell Us About the Property",
+      // and in the header directly beneath the navy CTA button pointing at the same href.
+      //
+      // The ROUTE IS NOT ORPHANED and this is not a nav-reduction ruling. /request-assessment/
+      // remains the primary conversion destination and is linked from the header CTA, the hero,
+      // the closing CTA, the footer utility row, the mobile bar and every service page.
+      // site.offer.primaryCta ("Tell Us About the Property") is the single owner-approved visible
+      // label for it as of the 2026-08-25 ruling; "Request an assessment" was the older spelling
+      // that survived here after the button was renamed.
     ]
   }
 ];
@@ -502,8 +577,13 @@ export const homepage = {
     },
     {
       name: "Clear",
+      // 2026-08-21. Was "Approved unwanted contents are consolidated, staged or coordinated for
+      // lawful disposal within the signed scope." — accurate but vague about who does what, and
+      // "coordinated for lawful disposal" is the kind of phrasing doc 21 §4.3 warns reads as
+      // self-performed. This names the on-site work Aseptaclean actually does and puts the
+      // container next to it as coordination.
       detail:
-        "Approved unwanted contents are consolidated, staged or coordinated for lawful disposal within the signed scope.",
+        "Approved contents are sorted, bagged, and cleared out of the rooms in the scope. When the job needs a container, we arrange it with the provider the city authorizes.",
       record: "Clearing status",
       status: "Complete"
     },
@@ -566,20 +646,28 @@ export const homepage = {
   // just relabeled. `imageStatus` records which imagery policy (§5) governs the slot until a
   // real photo lands: "owned" = must be owner-shot or the slot stays empty; "atmosphere" =
   // licensed/self-shot atmosphere permitted.
+  //
+  // 2026-08-21 positioning pass. Still three cards, still the same three imagery slots, and the
+  // animal card is unchanged including its verbatim-mandatory §2.3 clause. What changed is the
+  // FRAMING: card 1 was "Complex property clearing" and led the row, which read the business as
+  // a cleanout company with cleaning attached. Detailed cleaning now leads and the clearing lane
+  // is named "Complex property cleanup" to match the umbrella. The image label and status travel
+  // with their own card — the flat-lay was always the clearing card's slot, the kitchen detail
+  // the cleaning card's.
   serviceCards: [
     {
-      title: "Complex property clearing",
+      title: "Detailed cleaning",
       detail:
-        "Whole-property clearing for heavy accumulation, estate, and abandoned-contents conditions — nonhazardous contents, within a signed scope.",
-      imageLabel: "Process kit, flat-lay",
-      imageStatus: "owned"
-    },
-    {
-      title: "Reset & restoration cleaning",
-      detail:
-        "Deep reset cleaning after clearing — kitchens, baths, cabinet and appliance interiors, floors and accessible surfaces — for the next handoff.",
+        "Deep cleaning, move-out and move-in turnovers, and post-construction work. Kitchens, baths, cabinet and appliance interiors, floors, and the edges most cleaners skip.",
       imageLabel: "Clean kitchen or bath detail",
       imageStatus: "atmosphere"
+    },
+    {
+      title: "Complex property cleanup",
+      detail:
+        "Hoarding conditions, estate contents, and whole-property cleanouts. We sort, bag, stage, and clear what you approve, and coordinate the container and disposal route when one is needed.",
+      imageLabel: "Process kit, flat-lay",
+      imageStatus: "owned"
     },
     {
       title: "Animal & organic condition cleaning",
@@ -587,6 +675,55 @@ export const homepage = {
         "Heavy organic conditions and animal waste, cleaned under our organic pathogen endorsement. Cleaning only — not a decontamination, sterilization, or health-safety determination.",
       imageLabel: "Completed job photo",
       imageStatus: "owned"
+    }
+  ],
+  // Doc 27 §1 routing block — "Start where you are". Owner-approved verbatim 2026-08-20.
+  //
+  // Six doors in the buyer's own words, one per segment. This is the §0.1 principle ("name
+  // their situation before naming your service") applied to `/`, whose job §1 defines as
+  // ROUTING, not selling — which is why it sits above the service tiles and carries no claim
+  // of its own. Every string here is doc 27 §1's table verbatim; nothing was written for it.
+  //
+  // `slug` is a route, not a link. Whether a door RENDERS as a link is decided at the call
+  // site by reading each page's own `indexable` flag out of doc27ServicePages.ts — the same
+  // mechanism ServiceCards.astro already uses. That is deliberate: it makes an
+  // indexable→noindex crawl path (register P2 / release-checklist C10) impossible to create by
+  // editing this file, and it means each door starts linking on its own the day its route's
+  // gate clears, with no copy change.
+  //
+  // The commercial door is the live case. /commercial-cleaning-san-jose/ ships `indexable:
+  // false`, so it fails the filter and does not render. Reported to the owner 2026-08-20
+  // rather than linked. See docs/05-DECISIONS-LOG.md.
+  routingDoors: [
+    {
+      label: "I'm settling an estate",
+      detail: "A parent or relative has died and the property has to be dealt with.",
+      slug: "/estate-cleanout-san-jose/"
+    },
+    {
+      label: "A family member is hoarding",
+      detail: "Someone I love needs help and this has to be handled carefully.",
+      slug: "/hoarding-cleanup-san-jose/"
+    },
+    {
+      label: "I manage or own rental property",
+      detail: "A unit needs to turn over, or a tenant left belongings behind.",
+      slug: "/property-cleanouts-san-jose/"
+    },
+    {
+      label: "I'm listing a property",
+      detail: "It has to be photo-ready by a date I can't move.",
+      slug: "/move-out-cleaning-san-jose/"
+    },
+    {
+      label: "My home needs a real reset",
+      detail: "I want a deep clean where someone actually names what's included.",
+      slug: "/deep-cleaning-san-jose/"
+    },
+    {
+      label: "I manage a commercial space",
+      detail: "A project or turnover that needs a defined scope.",
+      slug: "/commercial-cleaning-san-jose/"
     }
   ],
   // docs/18-VISUAL-DIRECTION.md §6 row 4 — "Why Aseptaclean," a four-item icon grid, [NONE]
@@ -614,19 +751,30 @@ export const homepage = {
         "Completion photographs, noted exceptions, and a Property Handoff Record show how the approved scope was closed."
     }
   ],
+  // 2026-08-21. The included list was ordered clearing-first and named cleaning as four lines at
+  // the bottom, which understated the larger half of the business. Reordered so the cleaning work
+  // reads first, and split the old single "Nonhazardous contents clearing" line into the steps
+  // Aseptaclean actually performs on site — sorting, bagging, staging, clearing, and loading an
+  // approved container — because "clearing" alone is what left readers assuming a truck.
   includedScope: [
-    "Nonhazardous contents clearing",
-    "Bagging and consolidation",
-    "Light non-structural disassembly",
-    "Garage and storage-area clearing",
     "Kitchen and bathroom deep cleaning",
     "Cabinet and appliance interiors when included",
     "Floors, baseboards, doors, and accessible surfaces",
+    "Move-out, move-in, and post-construction detail work",
+    "Sorting, bagging, and staging of approved contents",
+    "Clearing approved contents out of rooms, garages, and storage areas",
+    "Light non-structural disassembly",
+    "Loading an approved container when that is part of the job",
+    "Container placement and disposal coordination",
     "Heavy organic conditions and animal waste, cleaned under our organic pathogen endorsement",
-    "Approved disposal coordination",
     "Completion photographs and remote closeout"
   ],
+  // The off-site transport line is new (2026-08-21) and is the plainest statement of the
+  // operating boundary in docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §4.1 anywhere on `/`. It belongs
+  // in the exclusion column rather than in a disclaimer bar: a reader comparing us to a junk
+  // hauler is reading this list, and that is where the difference matters.
   excludedScope: [
+    "Hauling debris off the property — an authorized provider does that",
     "Human blood, bodily fluids, or regulated medical waste",
     "Needles or sharps requiring regulated handling",
     "Sewage or active mold remediation",

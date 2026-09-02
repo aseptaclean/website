@@ -16,20 +16,15 @@ const smsHref = site.business.smsUri;
 const pin =
   '<path d="M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>';
 
+// The page-level LocalBusiness node is removed — see src/components/SeoHead.astro, which now
+// emits the single business entity (telephone included) on every route. This page's copy had
+// telephone but no geo; `/`'s had geo but no telephone. That split is what the consolidation
+// fixed, so do not re-add a local copy here to "make sure contact has the phone number."
 const schema = [
-  {
-    "@type": "LocalBusiness",
-    "@id": new URL("/#business", site.urls.site).href,
-    name: site.business.name,
-    url: site.urls.site,
-    email: site.business.email,
-    ...(site.business.phone ? { telephone: site.business.phone } : {}),
-    areaServed: site.location.cities.map((name) => ({ "@type": "City", name }))
-  },
   {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
       {
         "@type": "ListItem",
         position: 2,

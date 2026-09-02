@@ -76,8 +76,8 @@ described only as "handled by a City-authorized hauler engaged for the project."
 figure other than the $195 assessment fee.
 
 **6. Check for placeholders reaching a public surface.** `[OWNER INPUT:`, `REPLACE_WITH`,
-`$NaN`, empty required values. On a noindex draft these are acceptable and documented; on
-anything indexable or linked from an indexable hub they are not.
+`$NaN`, empty required values. They are not acceptable on any built public route, including a
+`noindex` route. A gated record may remain absent from the build; a visible placeholder may not.
 
 ## Report format
 
@@ -110,7 +110,7 @@ Four things require external confirmation and must not be resolved by editing co
   unconfirmed
 - Anything asserting the SPCB boundary in a new way
 - Any household hazardous waste removal promise
-- Any insurance or endorsement wording not already matched to the current COI
+- Any insurance or endorsement wording not verified against the current COI
 
 Flag these and stop. Guessing at a legal boundary in copy is the failure this whole document
 set exists to prevent.

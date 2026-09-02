@@ -1,21 +1,1442 @@
 ---
-// Route generated 2026-08-16 from docs/27-COPY-CANONICAL.md via src/data/doc27ServicePages.ts.
-// All page copy lives in that data record; all structure lives in ServicePageLayout, which
-// implements doc 27 §11's shared service-page sequence. Nothing page-specific belongs in this
-// file beyond the four identity values below — if a sentence needs to change, change doc 27
-// and regenerate the data, do not hand-edit copy here.
+// ANIMAL WASTE CLEANUP — `/animal-waste-cleanup-san-jose/`. Rebuilt as the seventh gold-standard
+// individual service page (docs/30-WEBSITE-MASTER-SPEC.md §20, §20A, §21), same approach as
+// /hoarding-cleanup-san-jose/, /estate-cleanout-san-jose/, /property-cleanouts-san-jose/,
+// /deep-cleaning-san-jose/, /move-out-cleaning-san-jose/, /extreme-cleaning-san-jose/ and
+// /rodent-dropping-cleanup-san-jose/: copy reconciled from
+// docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md §40 under §20A.1's order — landing copy → map
+// to current route → check active/gated state → check claims, pricing and scope → check current
+// copy authority → then implement.
 //
-// Ships noindex pending this page's own gate (see the record's `gate` field) and is excluded
-// from src/pages/sitemap.xml.ts. Do not bulk-flip.
-import ServicePageLayout from "@layouts/ServicePageLayout.astro";
-import { animalPage } from "@data/doc27ServicePages";
+//   01 SERVICE HERO             flat navy field, no photograph — see the image note below
+//   02 VISIBLE WASTE VS MATERIAL this page's signature educational movement — the waste you can
+//                                 see and the material underneath may be two different problems
+//   03 WHERE DID IT REACH?      editorial assessment: area, frequency, surface, edges, contents,
+//                                 odor, access, extent — how scope gets decided, not seven cards
+//   04 CLEANABLE VS DAMAGED     surface cleaning vs material condition; porous materials; carpet
+//                                 and flooring boundary; odor as a clue, not a guarantee
+//   05 HOW THE CLEANUP IS SCOPED eight-step field sequence + new-condition/new-decision rule +
+//                                 the animal/human-waste boundary
+//   06 FIT + PRICE               the honest proof gap, qualification, price-driver logic
+//   07 QUESTIONS                 seven, the ones that decide the purchase
+//   08 CLOSE                     "Animal waste in the property?"
+//
+// THE SPECIALIST THESIS IS doc 30 §20A.5's, unchanged: **the visible waste and the affected
+// material underneath may be different problems.** Every movement reinforces it without
+// repeating the sentence — the hero states it, 02 makes the reframe explicit (visible waste vs
+// affected material, conditional language, not "your whole home is contaminated"), 03 is how
+// that reframe becomes a scoping method, 04 is the cleanable-surface-vs-damaged-material
+// distinction the task brief calls the strongest trust section, 05 is the field sequence plus
+// the access/contents and animal-vs-human-waste boundary, 06 is the honest evidence gap plus fit
+// and price, 07 answers the objections that decide whether this is the right service at all.
+//
+// WHAT THIS REPLACES. The previous build rendered through the generic `ServicePageLayout` +
+// `doc27ServicePages.animalPage` record — the same "one template, swap the noun" pattern
+// §20A.5 and §20A.25 Q14 rule out, and the same pattern the six prior rebuilds already replaced.
+// `animalPage` ITSELF IS NOT REMOVED — `ServiceDirectory.astro` and `ServiceProblemChooser.astro`
+// still read `animalPage.slug` and `animalPage.complianceClause` off that record (the directory's
+// `alwaysList` exception and the chooser's `showCondition` block), so the export stays exactly as
+// it is; only this page's rendering is replaced. Old record's `gate` field cited "docs/27-COPY-
+// CANONICAL.md §21 release inputs... not on record" as the reason this route ships noindex — that
+// gate is about SEO PUBLICATION readiness (insurance wording, pest-boundary confirmation,
+// disposal procedure, PPE limits, final claims review), not about whether the service is
+// operationally available. See the route-state note below.
+//
+// ROUTE STATE IS UNCHANGED AND DELIBERATELY SO. Same slug, same canonical, still `noindex,
+// follow`, still excluded from sitemap.xml.ts. Unlike rodent/pigeon droppings, this route IS
+// present in `megaNav` (src/data/site.ts's Specialty Cleaning group, "Animal Waste") and IS an
+// `alwaysList` exception in `ServiceDirectory.astro` and `ServiceProblemChooser.astro` — those
+// three components already treat it as a real, linked, operationally-available service, which is
+// what AGENTS.md §2's 2026-08-26 owner clarification says it is. No route was created, renamed,
+// redirected or re-indexed. This file does not flip `noindex`, and this comment does not
+// recommend flipping it — see the final report for what would need to clear first (doc 27 §21's
+// release inputs, unrelated to this rebuild).
+//
+// OPERATIONAL SERVICE STATE — NOT INFERRED FROM INDEXATION. Per doc 30 §20A.4 and AGENTS.md §2's
+// 2026-08-26 owner clarification, animal-waste cleanup is NOT operationally gated. It is not
+// TSWMP-dependent work. The page below describes it as a real, current service — reviewed,
+// scoped and performed within Aseptaclean's current lawful and insured scope — at no point
+// implying "coming soon," "future service," or "pending launch."
+//
+// THE DISINFECT/DECONTAMINATION RECONCILIATION — THE MOST IMPORTANT CONFLICT THIS PAGE RESOLVES.
+// docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md §40 (rank 6) contains a "CLEANING AND
+// DISINFECTING ARE NOT THE SAME THING" section and a process step that says "When disinfecting is
+// appropriate for the material and scope, products are used according to their label." Doc 21
+// §2.2 (rank 3, above the landing-page file) bans `disinfect` "as an outcome claim" outright — no
+// permitted-negation carve-out covers it the way §2.3 carves out the animal/organic clause. That
+// section and that process-step sentence are DROPPED from this page in full; they appear nowhere.
+// The task brief independently rules out "we sanitize everything," "hospital-grade... decontam-
+// ination," and any disinfectant/product-method claim not in current approved operating
+// documentation, which the landing-page source's enzyme-cleaner FAQ answer also fails on close
+// reading (it names "enzyme cleaners" as a category Aseptaclean selects among) — that FAQ entry is
+// also dropped rather than kept in its hedged form, because naming a product category at all is a
+// method claim this page has no approved documentation for. Recorded in docs/05-DECISIONS-LOG.md.
+//
+// DOC 21 §2.3's ANIMAL/ORGANIC LIMITING CLAUSE — verbatim, mandatory wherever animal or organic
+// condition work is described. Animal waste cleanup is exactly that, so the clause is required
+// here the same way it is on Rodent Droppings, Extreme Cleaning and Specialty Cleaning. Appears
+// in movement 04 immediately after the porous-materials boundary. `legal.scopeDisclaimer` appears
+// in movement 05, same as the six prior rebuilds.
+//
+// SPCB / PEST BOUNDARY — ADAPTED, NOT COPIED FROM RODENT. Doc 21 §3's structural-pest-control
+// exposure is written around rodents and pigeons specifically (Cal. B&P §8505's express
+// inclusion, §8555(g)'s express exclusion of mice/rats/pigeons). This page is domestic pet waste
+// — dog and cat urine/feces — which is not itself structural pest control, so the rodent page's
+// "Pest Control vs Cleanup" movement is not reproduced wholesale. What IS carried over: this page
+// never claims to identify, exclude, trap, or treat any pest or wild animal, and "Wildlife" is
+// deliberately NOT offered as an animal-type option (§40's source FAQ intake form listed it; this
+// page routes wildlife-caused conditions to a phone conversation rather than presenting it as a
+// selectable, pre-scoped path — see movement 03's access note). If a job turns out to involve a
+// rodent or a still-active pest presence, movement 05's routing note sends it to Rodent Droppings
+// Cleanup or a licensed pest operator rather than absorbing it here.
+//
+// HUMAN-WASTE / TSWMP BOUNDARY — EXPLICIT, PER THE TASK BRIEF'S STRONGEST WARNING. This page
+// never says "urine or feces of any kind" or otherwise generalizes beyond non-human animal waste.
+// Movement 05 states directly that human waste, blood, and human biological material are outside
+// this service and route to the TSWMP-gated boundary doc 21 §5 sets — no automatic acceptance is
+// implied if one is discovered mid-job. Doc 30 §20A.4's three-part separation (operational
+// availability / TSWMP gate / SEO state) governs animal waste; TSWMP gate is untouched by this
+// page and nothing here narrows or widens it.
+//
+// CARPET / FLOORING / SUBFLOOR — RESTRAINED, PER THE TASK BRIEF. §40's own approved language
+// already declines to promise carpet/pad restoration or flooring replacement ("Do you replace
+// carpet or padding? No.") and this page preserves that restraint rather than expanding it. No
+// extraction, subfloor treatment, or guaranteed-odor-removal claim appears. Flooring/subfloor
+// questions route to "another qualified provider," matching Rodent Droppings' and Extreme
+// Cleaning's identical restraint on structural materials.
+//
+// PRICING — AGENTS.md §4 IS ABSOLUTE. No price figure appears. Cost drivers replace a number,
+// same seven-prior-page pattern. No odor-treatment "packages" or tiers — the task brief bars
+// them explicitly and nothing in current pricing data supports them.
+//
+// NO CredentialBar ON THIS ROUTE. Same reasoning as the six prior rebuilds — both gated
+// credential-bar claims are release-gated by AGENTS.md §3 pending a current COI match.
+//
+// MOBILE STICKY CTA — TWO ACTIONS, PER §20A.10. MobileCTA.astro's `isTwoAction` flag now
+// includes this route (ninth to opt in), rendering "Call | {primaryCta}" instead of the
+// three-action default. Same reasoning as the eight prior opt-ins — the visible primary label is
+// a single owner-approved string in site data (AGENTS.md §3), not a route-specific relabel.
+//
+// NO EMBEDDED FORM. CTAs link to /request-assessment/?service=animal-waste, which
+// AssessmentForm.astro now recognizes (added alongside this page) and maps to the "Other"
+// `property_situation` option — same reasoning as rodent-droppings: animal waste is a condition,
+// not a transition, and none of the existing options describe it truthfully.
+//
+// IMAGES — SAME HONEST PROOF GAP AS RODENT DROPPINGS, EXTREME CLEANUP AND DETAILED DEEP CLEANING.
+// docs/06-ASSET-MANIFEST.md §4's atmosphere-image cap (three) is already knowingly exceeded by
+// one, with an explicit "do not add a fifth without a new owner decision," and §6 permanently
+// prohibits "hazmat or PPE theatre" and "any image implying a regulated service." The task brief
+// independently rules out cute-pet stock, sad-pet imagery, cartoon smell lines, fake before/after
+// and AI-generated pet mess. No real Aseptaclean animal-waste-cleanup photography exists yet.
+// Rather than force a mismatched or risky asset into the role, this page ships with no
+// photograph, the same precedent the three pages above already set. Movement 06 states the gap in
+// the page's own voice. Replace with real property-condition photography (wide room shot +
+// affected-surface detail, same-area before/during/after) once it exists.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { legal, site } from "@data/site";
+
+const canonicalPath = "/animal-waste-cleanup-san-jose/";
+
+const title = "Animal Waste Cleanup in San Jose | Aseptaclean";
+const description =
+  "Dog or cat urine and feces affecting a home or property in San Jose or the South Bay & Peninsula? Send photos and we will review the affected area and surfaces before setting a cleanup scope.";
+
+// §20A.8's destination rule + §20A.9's service branch. `?service=animal-waste` is read by
+// AssessmentForm.astro (see that component's service-context block, added alongside this page).
+const assessmentHref = "/request-assessment/?service=animal-waste";
+const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
+
+// §40's "WHAT ARE YOU DEALING WITH?" categories, reframed as condition recognition rather than a
+// four-card grid — the specifics that tell a visitor this page is talking about their property.
+const recognition = [
+  "repeated urine on a floor, carpet, or baseboard",
+  "feces across a room, closet, or storage area",
+  "accidents that keep happening in the same spot",
+  "a property left with waste after a tenant, pet, or long-term neglect",
+  "waste mixed with general clutter or buildup",
+  "a normal house cleaner has turned down the job"
+] as const;
+
+// §20A.6's editorial field-assessment composition — the factors that determine scope, not eight
+// equal SaaS cards. Combines the brief's AREA / FREQUENCY / SURFACE / EDGE CONDITIONS / CONTENTS
+// / ODOR LOCATION / ACCESS / EXTENT variables into one composition.
+const scopeFactors = [
+  {
+    label: "Area",
+    detail: "Where is the visible waste — one spot, one room, or more than one area?"
+  },
+  {
+    label: "Frequency",
+    detail: "Is this one event, or has the same spot been used repeatedly?"
+  },
+  {
+    label: "Surface",
+    detail: "Hard and sealed, or a porous material like carpet, wood, or drywall?"
+  },
+  {
+    label: "Edge conditions",
+    detail: "Did waste reach baseboards, seams, wall edges, or cabinet toe-kicks?"
+  },
+  {
+    label: "Contents",
+    detail: "Is furniture or stored material covering the affected area?"
+  },
+  {
+    label: "Odor",
+    detail: "Does a smell remain after visible waste is removed?"
+  },
+  {
+    label: "Access",
+    detail: "Can the affected area actually be reached right now?"
+  },
+  {
+    label: "Extent",
+    detail: "Localized to one area, or spread across the property?"
+  }
+] as const;
+
+// Hard, cleanable surfaces vs porous/absorbent materials — §40's "HARD SURFACE OR SOAKED
+// MATERIAL?" pairing, kept as the page's central distinction.
+const hardSurfaces = ["Tile", "Sealed counters", "Metal", "Glass", "Some sealed floors"] as const;
+
+const porousMaterials = [
+  "Carpet and carpet padding",
+  "Upholstery",
+  "Unfinished wood",
+  "Grout",
+  "Drywall",
+  "Concrete"
+] as const;
+
+// §20A.14's field-procedure sequence, built from §40's "WHAT DOES CLEANUP LOOK LIKE?" six steps
+// plus the brief's "stop if a new condition changes the scope" and "review the completed work"
+// steps, which §40 states elsewhere on the page but not inside its own numbered sequence.
+const process = [
+  {
+    title: "Show us the affected area",
+    detail:
+      "Send photos — a wide shot of the room, closer photos of the waste, nearby surfaces, and anything blocking access. Tell us what animal was involved and how long this has been happening."
+  },
+  {
+    title: "We identify the surface and material",
+    detail: "Tile, wood, carpet, concrete, cabinets, walls — what was affected changes what happens next."
+  },
+  {
+    title: "We determine how much area is involved",
+    detail: "One spot, one room, or several areas — the scope follows the condition, not a guess from one photo."
+  },
+  {
+    title: "We define what can be cleaned",
+    detail: "Before work starts, you know exactly which surfaces and areas are included."
+  },
+  {
+    title: "We tell you if something needs another solution",
+    detail: "If a material looks damaged rather than dirty, we say so rather than clean over it."
+  },
+  {
+    title: "We remove waste and clean the approved surfaces",
+    detail: "Solid waste and included material are removed, then approved surfaces are cleaned for their type and condition."
+  },
+  {
+    title: "We stop if a new condition changes the scope",
+    detail: "If something changes once work is underway — a material turns out to be more affected than it looked, or a new condition appears — we stop and tell you before going further."
+  },
+  {
+    title: "We review the completed work",
+    detail: "When the job is done, we review the cleaned area against the agreed scope."
+  }
+] as const;
+
+// Doc 21 §2.3's animal/organic limiting clause — verbatim, mandatory wherever animal or organic
+// condition work is described. Word-for-word from the source; do not paraphrase.
+const complianceClause =
+  "Cleaning only — not a decontamination, sterilization, or health-safety determination.";
+
+// §40's "WHAT WE DO NOT HANDLE ON THIS PAGE" list, trimmed to what this page needs to state and
+// reconciled against doc 21 — no pest-identification or trapping claim implied by omission.
+const notHandled = [
+  "Human waste or human biological material",
+  "Live animal handling, trapping, or pest control",
+  "Flooring, subfloor, or drywall removal",
+  "Insulation removal or repair",
+  "Structural repair or demolition"
+] as const;
+
+const goodFit = [
+  "waste affects more than one small, open spot",
+  "accidents have happened repeatedly in the same area",
+  "you are not sure whether the material underneath was affected",
+  "a normal house cleaner has turned down the job",
+  "waste is mixed with clutter or general buildup",
+  "you want the scope defined, including what may not be cleanable, before work starts"
+] as const;
+
+const poorFit = [
+  "one fresh, small accident on an easy-to-clean surface",
+  "routine litter-box or yard pickup",
+  "the main need is carpet replacement or flooring repair",
+  "the main need is pest control, trapping, or exclusion"
+] as const;
+
+const priceDrivers = [
+  "size of the affected area",
+  "how many rooms or surfaces are involved",
+  "surface and material type",
+  "how long the condition has been present",
+  "amount of waste and material to be removed",
+  "access and items in the way"
+] as const;
+
+// §20A.18: 4–7 highest-value, service-specific questions. Reconciled from §40's FAQ set with the
+// disinfect/enzyme-product sentence dropped per the top-of-file reconciliation note.
+const faq = [
+  [
+    "Can you remove the smell?",
+    [
+      "We clean the odor source when it is inside the approved scope. We do not promise that every odor can be removed through surface cleaning — if urine has reached padding, wood, drywall, or another absorbent material, deeper work may be needed, and we will tell you if that is what we are seeing."
+    ]
+  ],
+  [
+    "What if urine went through the carpet?",
+    [
+      "Urine can move through carpet into the padding and material below it. That is often a different job from a surface-level spot, and it is why we look at the material, not just the visible stain."
+    ]
+  ],
+  [
+    "Do you replace carpet or flooring?",
+    ["No. We do not perform flooring or subfloor removal or replacement. If a material looks damaged rather than cleanable, we tell you and the next step may need a different provider."]
+  ],
+  [
+    "What if the waste reached the baseboard or wall edge?",
+    ["Edge conditions matter — waste that reached a seam, baseboard, or wall edge can be a different job from waste that stayed on an open surface. Photos of the edge help us tell early."]
+  ],
+  [
+    "What if multiple rooms or the whole property is affected?",
+    ["Send photos of each area. A property with waste in several rooms is scoped differently from one localized spot, and we will tell you what that means for the job."]
+  ],
+  [
+    "What if the room is full of belongings?",
+    [
+      "If furniture or stored items are blocking an affected area, access may have to be solved first. Depending on the property, that can fit under property cleanouts or hoarding cleanup — we will tell you which makes sense."
+    ]
+  ],
+  [
+    "Can you tell from photos whether the floor needs replacement?",
+    [
+      "Sometimes photos are enough to see clear damage. Often we cannot confirm what is happening beneath a finished surface without a closer look, and we will say so rather than guess."
+    ]
+  ]
+] as const;
+
+const schema = [
+  {
+    "@type": "Service",
+    name: "Animal Waste Cleanup in San Jose",
+    serviceType: "Animal waste affected-area cleanup",
+    provider: { "@id": new URL("/#business", site.urls.site).href },
+    areaServed: { "@type": "City", name: "San Jose" }
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Animal Waste Cleanup",
+        item: new URL(canonicalPath, site.urls.site).href
+      }
+    ]
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: faq.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer.join("\n\n") }
+    }))
+  }
+];
 ---
 
-<ServicePageLayout
-  page={animalPage}
-  serviceType="Animal waste and organic condition cleaning"
-  breadcrumbName="Animal Waste Cleanup"
-  idPrefix="animal"
-  groupName="Specialty Cleaning"
-  groupHref="/specialty-cleaning/"
-/>
+<BaseLayout title={title} description={description} canonicalPath={canonicalPath} noindex={true} schema={schema}>
+  {/* ══ 01 · SERVICE HERO ═══════════════════════════════════════════════════════════════════
+      §20A.7: location context → unmistakable service H1 → specialist thesis → service CTA →
+      phone as secondary. NO IMAGE — see the top-of-file note on the honest proof gap. */}
+  <section class="aw-hero" aria-labelledby="aw-title">
+    <div class="aw-hero__shell">
+      <div class="aw-hero__content">
+        <p class="aw-hero__eyebrow">
+          Animal Waste Cleanup · San Jose · {site.location.serviceArea}
+        </p>
+        <h1 id="aw-title" class="ac-type-h1-hub">Animal Waste Cleanup</h1>
+        <p class="aw-hero__lede">
+          Pet urine and feces can be a surface-cleaning problem, or they can affect the material
+          underneath. We review what was affected before setting the cleanup scope.
+        </p>
+        <p class="aw-hero__thesis">
+          The waste you can see and the material underneath it may be two different problems.
+        </p>
+
+        <div class="aw-hero__actions">
+          <a class="aw-btn aw-btn--light" href={assessmentHref}>Send Photos of the Area</a>
+          {/* Suppression rule (AGENTS.md §3): never render an empty phone link. */}
+          {phoneHref && <a class="aw-hero__call" href={phoneHref}>Call {site.business.phone}</a>}
+        </div>
+        <p class="aw-hero__note">
+          Dog or cat waste, repeated accidents, or long-term buildup — send photos first and we
+          will tell you the right next step.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 02 · VISIBLE WASTE VS AFFECTED MATERIAL ═════════════════════════════════════════════
+      This page's signature movement. §40's "THE MESS YOU SEE MAY NOT BE THE WHOLE PROBLEM"
+      reframe, combined with condition recognition per §20A.6 — one composition, not a nine-card
+      grid. Conditional language throughout: this is not "if you see a stain, your home is
+      contaminated." */}
+  <section class="aw-reframe" aria-labelledby="reframe-title">
+    <div class="aw-reframe__inner">
+      <p class="aw-label">Start here</p>
+      <h2 id="reframe-title" class="ac-type-h2-home-feature">
+        What you can see is only the first question.
+      </h2>
+      <p class="aw-lede">
+        A visible accident may sit on sealed hard flooring, tile, wood, laminate, carpet, a
+        baseboard, or a cabinet edge. Animal waste does not always stay on top of what it lands
+        on — depending on the surface and how long it has been there, it may reach the material
+        underneath.
+      </p>
+
+      <ul class="aw-check-list aw-check-list--grid">
+        {recognition.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <p class="aw-statement">
+        A single recent accident on a sealed hard surface can be a very different job from
+        repeated accidents in the same spot, waste that reached a baseboard or seam, or a room
+        where the same area has been used again and again.
+      </p>
+
+      <div class="aw-question">
+        <h3 class="ac-type-h3-home-route">The useful question</h3>
+        <p>
+          “There is a stain on the floor” is a starting point, not an answer. The question that
+          actually sets the scope is:
+          <span class="aw-question__strong">Did the waste stay on the surface, or did it reach into the material?</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 03 · WHERE DID IT REACH? ═════════════════════════════════════════════════════════════
+      §20A.6's editorial field-assessment composition — the factors that determine scope, not
+      eight equal SaaS cards. */}
+  <section class="aw-scope" aria-labelledby="scope-title">
+    <div class="aw-scope__inner">
+      <p class="aw-scope__label">How scope gets decided</p>
+      <h2 id="scope-title" class="ac-type-h2-home-feature">Where did it reach?</h2>
+      <p class="aw-scope__lede">
+        We do not price a job from one photo of a stain. Before anything is cleaned, we work
+        through the same factors on every job:
+      </p>
+
+      <dl class="aw-factors">
+        {scopeFactors.map((factor) => (
+          <div class="aw-factors__row">
+            <dt>{factor.label}</dt>
+            <dd>{factor.detail}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div class="aw-photos">
+        <h3 class="ac-type-h3-home-route">Photos help. You do not need to disturb anything first.</h3>
+        <p>
+          Useful photos: a wide shot of the affected room, closer photos of the waste, the
+          flooring or surface, nearby wall and baseboard edges, and any other affected rooms. You
+          do not need to move furniture, pull up flooring, or touch the material just to
+          photograph it — send what you can see.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 04 · CLEANABLE SURFACE VS DAMAGED MATERIAL ══════════════════════════════════════════
+      One of the strongest trust sections per the task brief. Hard/cleanable vs porous/absorbent,
+      odor as a clue rather than a guarantee, and the doc 21 §2.3 clause. */}
+  <section class="aw-material" aria-labelledby="material-title">
+    <div class="aw-material__inner">
+      <p class="aw-label">Cleanable vs damaged</p>
+      <h2 id="material-title" class="ac-type-h2-home-feature">Cleaning cannot fix every material.</h2>
+      <p class="aw-lede">
+        Cleaning may be appropriate for certain accessible, cleanable surfaces. A cleanable
+        surface and a damaged material are not the same problem, and we will tell you which one
+        we are looking at.
+      </p>
+
+      <div class="aw-material__pair">
+        <div class="aw-note">
+          <h3 class="ac-type-h3-home-route">Hard, cleanable surfaces</h3>
+          <p>Depending on condition, we may be able to clean affected:</p>
+          <ul class="aw-check-list">
+            {hardSurfaces.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+
+        <div class="aw-note aw-note--stop">
+          <h3 class="ac-type-h3-home-route">Porous or absorbent materials</h3>
+          <p>Waste may soak deeper into:</p>
+          <ul class="aw-minus-list">
+            {porousMaterials.map((item) => <li>{item}</li>)}
+          </ul>
+          <p>
+            Cleaning the top does not always fix what is underneath. If the material itself has
+            been deeply affected — stained, swollen, delaminated, or otherwise damaged — cleanup
+            alone may not be enough, and further assessment, specialty treatment, or replacement
+            by another provider may be the right next step. We will tell you when we see that.
+          </p>
+        </div>
+      </div>
+
+      <div class="aw-odor">
+        <h3 class="ac-type-h3-home-feature">Odor can be a clue that the affected material extends beyond what is visible.</h3>
+        <p>
+          But odor can have more than one cause. We do not promise that every odor can be removed,
+          and we do not promise a specific method before we know what surface and condition we are
+          working with.
+        </p>
+      </div>
+
+      <p class="aw-clause">{complianceClause}</p>
+    </div>
+  </section>
+
+  {/* ══ 05 · HOW THE CLEANUP IS SCOPED ═══════════════════════════════════════════════════════
+      §20A.14: vertical numbered sequence, not eight cards. The access/contents boundary, the
+      new-condition rule, and the animal-vs-human-waste boundary — this page's most important
+      guardrail per the task brief. */}
+  <section class="aw-plan" aria-labelledby="plan-title">
+    <div class="aw-plan__inner">
+      <p class="aw-plan__label">How the cleanup is scoped</p>
+      <h2 id="plan-title" class="ac-type-h2-home-feature">The exact steps depend on the property.</h2>
+      <p class="aw-plan__lede">
+        A small bathroom with a hard tile floor is not the same job as several rooms, carpet,
+        heavy waste, or waste mixed with belongings. The work is built around the condition we
+        find.
+      </p>
+
+      <ol class="aw-steps">
+        {process.map((step, index) => (
+          <li class="aw-step">
+            <span class="aw-step__index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            <div class="aw-step__body">
+              <h3 class="ac-type-h3-home-route">{step.title}</h3>
+              <p>{step.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div class="aw-access">
+        <h3 class="ac-type-h3-home-feature">If we cannot reach the affected material, access may have to be solved first.</h3>
+        <p>
+          If furniture, stored items, or clutter are blocking an affected area, the first step may
+          not be cleaning. Depending on the property, that can fit better under
+          <a href="/property-cleanouts-san-jose/"> property cleanouts</a>,
+          <a href="/hoarding-cleanup-san-jose/"> hoarding cleanup</a>, or
+          <a href="/extreme-cleaning-san-jose/"> extreme property cleanup</a> — we will tell you
+          which one makes sense before work starts.
+        </p>
+      </div>
+
+      <div class="aw-boundary">
+        <h3 class="ac-type-h3-home-feature">This service is for non-human animal waste.</h3>
+        <p>
+          It does not include human waste, blood, or human biological material — that falls under
+          a different, regulated scope and does not ship as a service on this site. If a job
+          uncovers rodent activity, a still-active pest issue, or a condition outside what is
+          listed here, we stop and tell you rather than quietly expanding the work.
+        </p>
+        <ul class="aw-minus-list aw-minus-list--grid">
+          {notHandled.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="aw-statement aw-statement--wide">
+          If a job turns out to involve rodent droppings, <a href="/rodent-dropping-cleanup-san-jose/">that has its own cleanup process</a>. If you are not sure what caused the waste, tell us — we will tell you whether it fits this page's scope.
+        </p>
+      </div>
+
+      <p class="aw-disclaimer">{legal.scopeDisclaimer}</p>
+    </div>
+  </section>
+
+  {/* ══ 06 · EVIDENCE + FIT + PRICE ══════════════════════════════════════════════════════════
+      §20A.15's honest evidence gap, §20A.16's qualification without a wall of rejection, and
+      §20A.17's price-driver logic instead of a published figure. */}
+  <section class="aw-fit" aria-labelledby="fit-title">
+    <div class="aw-fit__inner">
+      <div class="aw-evidence">
+        <p class="aw-label">What we can show you today</p>
+        <p class="aw-evidence__body">
+          There is no before/during/after gallery on this page yet. Aseptaclean has no
+          photographed animal-waste project to show, and a stock accident photo would tell you
+          nothing true about how this company works. What does exist is the review process
+          itself — the same-area assessment above, applied to your actual property.
+        </p>
+      </div>
+
+      <h2 id="fit-title" class="ac-type-h2-home-feature">
+        Two rooms with the same visible stain can be very different jobs.
+      </h2>
+
+      <div class="aw-fit__columns">
+        <div class="aw-fit__col">
+          <h3 class="ac-type-h3-home-route">Usually a fit</h3>
+          <ul class="aw-check-list">
+            {goodFit.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div class="aw-fit__col aw-fit__col--out">
+          <h3 class="ac-type-h3-home-route">Probably not a fit</h3>
+          <ul class="aw-minus-list">
+            {poorFit.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="aw-fit__aside">
+            We would rather tell you this is a smaller job than sell you work you do not need.
+            Not sure? Send photos.
+          </p>
+        </div>
+      </div>
+
+      <div class="aw-price">
+        <div class="aw-price__copy">
+          <h3 class="ac-type-h3-home-feature">We price the affected area and condition — not the number of pets.</h3>
+          <p>
+            A small hard-surface spot is a different job from several rooms, carpet, heavy waste,
+            or waste mixed with belongings. There is no one price for animal-waste cleanup — send
+            photos first, and we can usually tell you what needs to happen next. Some properties
+            still need an in-person walkthrough before a final scope and price, especially when
+            several rooms are involved or materials are uncertain.
+          </p>
+          <p class="aw-price__fee">{site.offer.assessmentFraming(site.offer.assessmentFee)}</p>
+        </div>
+        <div class="aw-price__drivers">
+          <p class="aw-price__label">What moves the number</p>
+          <ul class="aw-rule-list aw-rule-list--tight">
+            {priceDrivers.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 07 · QUESTIONS ═══════════════════════════════════════════════════════════════════════
+      Open Q&A, not an accordion — same reasoning as the six prior rebuilds. */}
+  <section class="aw-faq" aria-labelledby="faq-title">
+    <div class="aw-faq__inner">
+      <p class="aw-label">Questions</p>
+      <h2 id="faq-title" class="ac-type-h2-home-feature">The questions that decide this.</h2>
+      <p class="aw-lede">
+        The ones that come up on nearly every animal-waste review. General questions —
+        scheduling, payment, what happens on the day — are on the <a href="/faq/">main FAQ</a>.
+      </p>
+
+      <div class="aw-faq__grid">
+        {faq.map(([question, answer]) => (
+          <article class="aw-qa">
+            <h3 class="ac-type-h3-home-route">{question}</h3>
+            {answer.map((paragraph) => <p>{paragraph}</p>)}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 08 · CLOSE ═══════════════════════════════════════════════════════════════════════════
+      Typographic on navy, same close pattern as the six prior rebuilds. */}
+  <section class="aw-close" aria-labelledby="close-title">
+    <div class="aw-close__inner">
+      <div class="aw-close__copy">
+        <h2 id="close-title" class="ac-type-h2-final">Animal waste in the property?</h2>
+        <p class="aw-close__lede">
+          Send photos of the affected area, the flooring or surface, nearby wall or baseboard
+          edges, and any other affected rooms. We will review what you are seeing and tell you the
+          right next step.
+        </p>
+      </div>
+
+      <div class="aw-close__action">
+        <a class="aw-btn aw-btn--light" href={assessmentHref}>Send Photos of the Area</a>
+        <div class="aw-close__secondary">
+          {phoneHref && <a href={phoneHref}>Call {site.business.phone}</a>}
+          {smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
+        </div>
+        <p class="aw-close__note">Submitting a request does not authorize work or create a service agreement.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     Shared page primitives, same system the six prior rebuilds already established (spacing,
+     rule and list treatment), reused under an `aw-` prefix so scoped styles never collide.
+     NOTHING in this file sets font-size on a heading tag or on a selector that resolves to one;
+     heading sizes come from .ac-type-* role classes and are tuned by overriding the role class's
+     TOKEN on a container (AGENTS.md §6 law 1).
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+
+  .aw-label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .aw-lede {
+    margin: 22px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .aw-statement {
+    margin: 24px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-navy-900);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .aw-statement--wide {
+    max-width: 62ch;
+  }
+
+  .aw-clause {
+    margin: 18px 0 0;
+    max-width: 60ch;
+    border-left: 3px solid var(--ac-color-navy-800);
+    padding: 2px 0 2px 16px;
+    color: var(--ac-color-navy-900);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+
+  .aw-check-list,
+  .aw-minus-list {
+    max-width: none;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .aw-check-list li,
+  .aw-minus-list li {
+    position: relative;
+    max-width: none;
+    padding: 9px 0 9px 26px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .aw-check-list li + li,
+  .aw-minus-list li + li {
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .aw-check-list li::before,
+  .aw-minus-list li::before {
+    position: absolute;
+    top: 17px;
+    left: 0;
+    width: 12px;
+    height: 2px;
+    background: var(--ac-color-blue-deep);
+    content: "";
+  }
+
+  .aw-minus-list li::before {
+    background: var(--ac-color-exclusion-red);
+  }
+
+  .aw-check-list--grid,
+  .aw-minus-list--grid {
+    display: grid;
+    gap: 0 44px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aw-rule-list {
+    display: grid;
+    max-width: none;
+    margin: 20px 0 0;
+    padding: 0;
+    gap: 0 44px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    list-style: none;
+  }
+
+  .aw-rule-list li {
+    max-width: none;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 12px 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .aw-rule-list--tight {
+    grid-template-columns: 1fr;
+  }
+
+  .aw-rule-list--tight li {
+    padding: 10px 0;
+  }
+
+  .aw-btn {
+    display: inline-flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    padding-inline: 30px;
+    font-size: 0.9375rem;
+    font-weight: 750;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+
+  .aw-btn--light {
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+  }
+
+  .aw-btn--light:hover {
+    background: var(--ac-color-blue-pale);
+  }
+
+  .aw-btn--light:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 4px;
+  }
+
+  .aw-disclaimer {
+    margin: 32px 0 0;
+    max-width: 78ch;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 18px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .aw-note p {
+    margin: 14px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .aw-note h3 {
+    max-width: 34ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  /* ── 01 hero ───────────────────────────────────────────────────────────────────────────── */
+  .aw-hero {
+    background: var(--ac-color-navy-900);
+    padding-block: clamp(88px, 10vw, 132px) clamp(64px, 7vw, 96px);
+  }
+
+  .aw-hero__shell {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .aw-hero__content {
+    max-width: 62ch;
+  }
+
+  .aw-hero__eyebrow {
+    margin: 0 0 18px;
+    color: var(--ac-color-blue-on-navy);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .aw-hero__content :global(h1) {
+    max-width: 15ch;
+    color: var(--ac-color-paper);
+  }
+
+  .aw-hero__lede {
+    margin: 22px 0 0;
+    color: #ccd9e8;
+    font-size: 1.1875rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .aw-hero__thesis {
+    margin: 18px 0 0;
+    max-width: 42ch;
+    color: var(--ac-color-paper);
+    font-size: 1.1875rem;
+    font-weight: 650;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .aw-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 32px;
+    gap: 20px 28px;
+  }
+
+  .aw-hero__call {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-underline-offset: 4px;
+  }
+
+  .aw-hero__call:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .aw-hero__note {
+    margin: 20px 0 0;
+    max-width: 46ch;
+    color: #a9bdd4;
+    font-size: 0.875rem;
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  /* ── 02 visible waste vs affected material ────────────────────────────────────────────── */
+  .aw-reframe {
+    background: var(--ac-color-paper);
+    padding-block: clamp(76px, 8vw, 116px);
+  }
+
+  .aw-reframe__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .aw-check-list--grid {
+    margin-top: 28px;
+  }
+
+  .aw-question {
+    margin-top: clamp(48px, 5vw, 72px);
+    border-top: 2px solid var(--ac-color-navy-900);
+    padding-top: 28px;
+  }
+
+  .aw-question h3 {
+    max-width: none;
+    color: var(--ac-color-navy-900);
+  }
+
+  .aw-question p {
+    margin: 14px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  .aw-question__strong {
+    display: block;
+    margin-top: 8px;
+    color: var(--ac-color-navy-900);
+    font-weight: 650;
+  }
+
+  /* ── 03 where did it reach ─────────────────────────────────────────────────────────────── */
+  .aw-scope {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(76px, 8vw, 116px);
+  }
+
+  .aw-scope__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .aw-scope__label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .aw-scope__lede {
+    margin: 22px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .aw-factors {
+    display: grid;
+    margin: 36px 0 0;
+    gap: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aw-factors__row {
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding: 18px 28px 20px 0;
+  }
+
+  .aw-factors dt {
+    color: var(--ac-color-navy-900);
+    font-size: 0.9375rem;
+    font-weight: 750;
+  }
+
+  .aw-factors dd {
+    margin: 8px 0 0;
+    max-width: 40ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .aw-photos {
+    margin-top: clamp(48px, 5vw, 72px);
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 32px;
+  }
+
+  .aw-photos h3 {
+    max-width: 40ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .aw-photos p {
+    margin: 14px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  /* ── 04 cleanable surface vs damaged material ─────────────────────────────────────────── */
+  .aw-material {
+    background: var(--ac-color-paper);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .aw-material__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .aw-material__pair {
+    display: grid;
+    margin-top: 40px;
+    gap: 32px 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aw-note--stop {
+    border-top: 2px solid var(--ac-color-blue-deep);
+    padding-top: 24px;
+  }
+
+  .aw-note--stop p:last-child {
+    max-width: none;
+  }
+
+  .aw-odor {
+    margin-top: clamp(48px, 5vw, 72px);
+    border-top: 3px solid var(--ac-color-navy-800);
+    padding-top: 28px;
+  }
+
+  .aw-odor h3 {
+    max-width: 44ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .aw-odor p {
+    margin: 14px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  /* ── 05 how the cleanup is scoped ─────────────────────────────────────────────────────── */
+  .aw-plan {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .aw-plan__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .aw-plan__label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .aw-plan__lede {
+    margin: 22px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .aw-steps {
+    display: grid;
+    margin: 40px 0 0;
+    padding: 0;
+    gap: 0;
+    list-style: none;
+  }
+
+  .aw-step {
+    display: grid;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 22px 0;
+    gap: 0 28px;
+    grid-template-columns: 56px 1fr;
+  }
+
+  .aw-step:last-of-type {
+    border-bottom: 1px solid var(--ac-color-line);
+  }
+
+  .aw-step__index {
+    color: var(--ac-color-blue-deep);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .aw-step__body p {
+    margin: 8px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .aw-access {
+    margin-top: 48px;
+    border-top: 3px solid var(--ac-color-navy-800);
+    padding-top: 28px;
+  }
+
+  .aw-access h3 {
+    max-width: 44ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .aw-access p {
+    margin: 14px 0 0;
+    max-width: 66ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .aw-access a {
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
+    text-underline-offset: 3px;
+  }
+
+  .aw-boundary {
+    margin-top: clamp(48px, 5vw, 72px);
+    border-top: 2px solid var(--ac-color-exclusion-red);
+    padding-top: 28px;
+  }
+
+  .aw-boundary h3 {
+    max-width: none;
+    color: var(--ac-color-navy-900);
+  }
+
+  .aw-boundary > p {
+    margin: 14px 0 0;
+    max-width: 66ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .aw-boundary a {
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
+    text-underline-offset: 3px;
+  }
+
+  .aw-boundary .aw-minus-list--grid {
+    margin-top: 20px;
+  }
+
+  /* ── 06 evidence + fit + price ────────────────────────────────────────────────────────── */
+  .aw-fit {
+    background: var(--ac-color-paper);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .aw-fit__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .aw-evidence {
+    border-top: 3px solid var(--ac-color-navy-800);
+    padding-top: 24px;
+  }
+
+  .aw-evidence__body {
+    margin: 0;
+    max-width: 66ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .aw-fit .ac-type-h2-home-feature {
+    margin-top: 48px;
+    max-width: 32ch;
+  }
+
+  .aw-fit__columns {
+    display: grid;
+    margin-top: 40px;
+    gap: 32px 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aw-fit__aside {
+    margin-top: 18px;
+    max-width: 46ch;
+    color: var(--ac-color-ink-500);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .aw-price {
+    display: grid;
+    margin-top: 56px;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 40px;
+    gap: 32px 56px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .aw-price__copy p {
+    margin: 14px 0 0;
+    max-width: 58ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .aw-price__fee {
+    margin-top: 18px;
+    max-width: 48ch;
+    color: var(--ac-color-navy-900);
+    font-weight: 550;
+    line-height: 1.6;
+  }
+
+  .aw-price__label {
+    margin: 0 0 4px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  /* ── 07 questions ─────────────────────────────────────────────────────────────────────── */
+  .aw-faq {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .aw-faq__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .aw-faq__grid {
+    display: grid;
+    margin-top: 40px;
+    gap: 40px 48px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .aw-qa {
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 18px;
+  }
+
+  .aw-qa p {
+    margin: 10px 0 0;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  /* ── 08 close ─────────────────────────────────────────────────────────────────────────── */
+  .aw-close {
+    background: var(--ac-color-navy-950);
+    padding-block: clamp(80px, 9vw, 120px);
+  }
+
+  .aw-close__inner {
+    display: grid;
+    width: min(100% - 64px, 1080px);
+    align-items: center;
+    margin-inline: auto;
+    gap: 32px 56px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .aw-close__copy :global(h2) {
+    max-width: 15ch;
+    color: var(--ac-color-paper);
+  }
+
+  .aw-close__lede {
+    margin: 20px 0 0;
+    max-width: 46ch;
+    color: #ccd9e8;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .aw-close__secondary {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    gap: 8px 22px;
+  }
+
+  .aw-close__secondary a {
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 650;
+  }
+
+  .aw-close__secondary a:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .aw-close__note {
+    margin-top: 20px;
+    max-width: 40ch;
+    color: rgb(255 255 255 / 55%);
+    font-size: 0.75rem;
+    line-height: 1.55;
+  }
+
+  /* ── responsive ───────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 56rem) {
+    .aw-price {
+      grid-template-columns: 1fr;
+    }
+
+    .aw-close__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 50rem) {
+    .aw-material__pair {
+      grid-template-columns: 1fr;
+    }
+
+    .aw-fit__columns {
+      grid-template-columns: 1fr;
+    }
+
+    .aw-faq__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .aw-factors {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .aw-hero__shell,
+    .aw-reframe__inner,
+    .aw-scope__inner,
+    .aw-material__inner,
+    .aw-plan__inner,
+    .aw-fit__inner,
+    .aw-faq__inner {
+      width: calc(100% - 40px);
+    }
+
+    .aw-close__inner {
+      width: calc(100% - 40px);
+    }
+
+    .aw-check-list--grid,
+    .aw-minus-list--grid {
+      grid-template-columns: 1fr;
+    }
+
+    .aw-rule-list {
+      grid-template-columns: 1fr;
+    }
+
+    .aw-hero__actions {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .aw-hero__actions .aw-btn {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 22.5rem) {
+    .aw-hero__content :global(h1) {
+      max-width: 12ch;
+    }
+  }
+</style>

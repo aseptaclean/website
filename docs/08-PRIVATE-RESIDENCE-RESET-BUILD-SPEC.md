@@ -1,10 +1,14 @@
 # Private Residence Reset — Phase 4 Build Specification
 
-This implementation spec applies the approved strategy for the Private Residence Reset offer. (`docs/07-PRIVATE-RESIDENCE-RESET-STRATEGY.md` does not exist and never has — see `AGENTS.md` §1, "files that do not exist." No separate strategy document exists; this file is the sole authority for the route.)
+This specialized implementation spec applies to the Private Residence Reset route only. The
+referenced `docs/07-PRIVATE-RESIDENCE-RESET-STRATEGY.md` does not exist and never has. This file
+remains subordinate to verified facts, current owner decisions, doc 21, locked copy, and doc 30.
 
 ## 1. Strategic role
 
-- Handoff Reset remains the public flagship.
+- Complex Property Cleanup for difficult family-property situations is the global strategic
+  center. Handoff Reset may remain a specific offer or internal framework where operationally
+  valid, but it is not the global flagship and does not control the homepage.
 - Private Residence Reset is a controlled campaign page.
 - Quarterly Residence Reset Care is private retention after an initial baseline.
 - Do not create a generic residential-cleaning menu.
@@ -24,11 +28,11 @@ This implementation spec applies the approved strategy for the Private Residence
 
 Suggested title:
 
-`Private Residence Reset in San Jose & South Bay | Aseptaclean`
+`Private Residence Reset | South Bay & Peninsula | Aseptaclean`
 
 Suggested meta description:
 
-`A structured whole-home deep reset with a written room-by-room scope, controlled changes, and final completion review. Serving San Jose and the South Bay.`
+`A structured whole-home deep reset with a written room-by-room scope, controlled changes, and final completion review across the South Bay & Peninsula.`
 
 Primary search intent:
 
@@ -66,7 +70,7 @@ Lead:
 
 Primary CTA:
 
-`Request a Private Residence Assessment`
+`Tell Us About the Property`
 
 Microcopy:
 
@@ -101,11 +105,11 @@ Avoid vague “peace of mind” claims. Make the finished baseline concrete.
 2. restrained trust strip
 3. `This is not routine housekeeping`
 4. emotional outcome / restored baseline
-5. Aseptaclean Residence Baseline: Assess, Define, Reset, Verify, Maintain
+5. Aseptaclean Residence Baseline: Scope, Protect, Clear, Reset, Verify
 6. Residence Baseline document artifact
 7. included, approved detail areas, and separately scoped work
 8. assurance, change control, privacy, and property instructions
-9. starting investment and fit
+9. cost/scope drivers and fit
 10. Quarterly Residence Reset Care invitation
 11. assessment CTA
 
@@ -161,6 +165,12 @@ The value is continuity, baseline records, reserved windows, and reduced client 
 
 ## 10. Assessment integration
 
+**Architecture approved 2026-08-25; implementation unchanged in this documentation pass.** The
+future form begins situation-first and must not require a customer to diagnose the technical
+service. Additional residence-specific qualification may follow only where genuinely necessary.
+Do not modify protected SMS, 10DLC, legal-consent, privacy, or regulated-condition wording
+without verifying the controlling requirements.
+
 Campaign CTA:
 
 `/request-assessment/?offer=private-residence-reset`
@@ -193,7 +203,7 @@ Residence fields:
 - parking/access
 - whether someone will be present
 - authority to approve
-- desired investment range
+- scope/cost context only where operationally necessary; no public starting-investment strategy
 - photographs/video
 - additional context
 - consent acknowledgment
@@ -227,7 +237,8 @@ Consent-gate optional analytics through Termly.
 
 ## 12. Release criteria
 
-- Handoff Reset remains the obvious flagship on the homepage
+- the page remains a specific residence offer; Handoff Reset does not control the homepage or
+  global category positioning
 - page cannot be mistaken for a maid-service package page
 - no price figure renders anywhere on the page — cost drivers and the $195 assessment fee only, per `AGENTS.md` §4
 - form variant reaches HubSpot correctly

@@ -8,10 +8,9 @@ instruction is revoked (see §0).
 
 ## 0. Precedence
 
-**Where this file and `05-DECISIONS-LOG.md` disagree, the decisions log wins.** It is rank 1;
-this file is rank 10. `07` §10's opposite instruction — *"if they disagree, `02-OWNER-INPUTS.md`
-wins"* — is **revoked** as of 2026-08-11, because this file was demonstrably the stale one on
-the primary CTA, the city list, and the region label.
+Use the hierarchy in root `AGENTS.md`. A dated decision-log entry governs only the scope the
+owner actually decided; the log does not outrank verified facts or later owner decisions merely
+because it is newer. The deleted `07` §10 instruction that this file always wins is revoked.
 
 ---
 
@@ -30,17 +29,17 @@ the primary CTA, the city list, and the region label.
 | Address policy | Service-area business. **No published street address, ever.** |
 | Region label | **South Bay & Peninsula** |
 | Cities served (10) | San Jose, Mountain View, Sunnyvale, Santa Clara, Campbell, Los Altos, Los Altos Hills, Los Gatos, Palo Alto, Atherton |
-| Flagship offer | Aseptaclean Handoff Reset |
+| Offer | Aseptaclean Handoff Reset may remain specific/internal; it is not the global flagship |
 | Category | Whole-property clearing, deep cleaning, and documented closeout |
-| Lead offer | Property Handoff Plan |
-| **Primary CTA** | **Request an assessment** |
-| Secondary CTA | Text a photo |
+| Historical/internal lead-offer label | Property Handoff Plan; not the visible primary CTA |
+| **Primary CTA** | **Tell Us About the Property** |
+| Secondary CTA | Call Aseptaclean |
 | Response commitment | Within one business day |
 | Callback standard | Owner calls within 5 minutes during published hours; next business window otherwise |
 | On-site assessment | **$195**, credited toward an approved project booked within 7 days |
 | Published starting price | **None.** See §2. |
-| Insurance line | Insured. Certificate of Insurance available upon request. |
-| Endorsement | Organic Pathogen Endorsed — **cleaning language only** |
+| Insurance line | Recorded wording only; suppress until matched to the current COI |
+| Endorsement | Recorded wording only; suppress until matched to the current COI; cleaning language only |
 | TSWMP | Pending / unverified. Never published in any form. |
 | Environmental remediation | Not offered. Absent from the live site entirely — not even "coming soon." |
 | Launch proof state | No reviews, no case studies, no completed-project portfolio, no before/after |
@@ -53,6 +52,11 @@ the primary CTA, the city list, and the region label.
 | Cities | 5-city list | 10-city list | Decisions log, 2026-08-09 |
 | Region | `Santa Clara County` | `South Bay & Peninsula` | Decisions log, 2026-08-09 — Atherton is San Mateo County |
 | Lead offer | `24-Hour Property Handoff Plan` | `Property Handoff Plan` | Decisions log, 2026-08-16 — "24-Hour" read as a literal turnaround promise the business-day response commitment can't always honor |
+
+**CTA supersession, owner decision 2026-08-25.** `Request an assessment` was the correct 2026-08-09
+replacement for the retired 24-hour CTA, but it is no longer the default visible primary CTA.
+The route remains `/request-assessment/`, and the assessment term may still appear where context
+requires it.
 
 Note: `PUBLIC_SERVICE_COUNTY` is unset in `.env.production`, so `site.ts` falls back to a
 hardcoded `"Santa Clara County"`. Find every surface where that string renders and confirm none
@@ -113,8 +117,8 @@ Never `medical-grade`, `pharmaceutical-grade`, `hospital-grade`, or `certified r
 ## 5. Must be confirmed before production release
 
 - [ ] `info@aseptaclean.com` inbox test
-- [ ] Insurance wording matched to the current COI
-- [ ] Organic pathogen endorsement matched to the current COI
+- [ ] Insurance wording matched to the current COI; suppress the public claim until verified
+- [ ] Organic pathogen endorsement matched to the current COI; suppress the public claim until verified
 - [ ] The six Cloudflare Pages secrets set via `wrangler pages secret put` — `TURNSTILE_SECRET_KEY`,
       `HUBSPOT_ACCESS_TOKEN`, `HUBSPOT_PIPELINE_ID`, `HUBSPOT_DEAL_STAGE_ID`, `RESEND_API_KEY`,
       `EMAIL_FROM_ADDRESS`
@@ -135,9 +139,10 @@ imply contractor licensure.** Active social URLs. SMS lead alerts, gated behind
 ## 6. Brand assets
 
 Owner-supplied 2026-07-30 and in production: horizontal wordmark, reversed wordmark, 512px
-site icon. **Founder portrait not yet supplied** — the page shows a plain bordered placeholder,
-never a stock or AI-generated image. Six image slots remain unfilled; four cannot be filled by
-purchase and gate on the Phase 0 shoot. See `06-ASSET-MANIFEST.md`.
+site icon. **Founder portrait not yet supplied.** The current implementation uses a finished
+text-first composition rather than a visible development placeholder. Future owned photography
+must pass the asset and proof controls before publication; never substitute stock or AI-generated
+people, properties, crews, documents, or project evidence.
 
 ---
 

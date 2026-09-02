@@ -135,11 +135,25 @@ const endpointAvailable = Boolean(
   >
     <span data-quick-form-submit-label>{site.offer.primaryCta}</span>
   </button>
-  {/* doc 27 §18 "Submission clarification" — approved, and previously not built anywhere.
-      Owner ruling 2026-08-19: genuine gap, ship the canon string. */}
+  {/* doc 27 §18 "Submission clarification", shipped 2026-08-19; RESTATED by §8 "Directly under
+      the submit button", owner-approved verbatim 2026-08-20. §18 read "This only starts the
+      conversation. It does not book or authorize work." §8 is the same promise with the hedge
+      out of the first clause and the second clause widened past "work".
+
+      This does NOT replace the doc 21 §6 assessment disclaimer ("Submitting this form
+      authorizes Aseptaclean to contact you. It does not authorize work or create a service
+      agreement."), which is a claims-law requirement and still ships in FinalCTA and on
+      /thank-you/. §8's line is the reassurance beside the button, not the legal clause. */}
   <p class="quick-form__clarification ac-type-xs">
-    This only starts the conversation. It does not book or authorize work.
+    This starts a conversation. It does not book work or authorize anything.
   </p>
+  {/* doc 27 §8 — the secondary CTA appears everywhere the primary does, and the submit button
+      renders site.offer.primaryCta directly above this. */}
+  {site.business.smsUri && (
+    <p class="quick-form__secondary ac-type-xs">
+      <a href={site.business.smsUri}>{site.offer.secondaryCta}</a>
+    </p>
+  )}
   <p
     class="quick-form__status"
     data-quick-form-status
@@ -533,6 +547,19 @@ const endpointAvailable = Boolean(
     margin: calc(var(--ac-space-3) * -1) 0 0;
     color: var(--quick-form-muted-color);
     text-align: center;
+  }
+
+  /* Size comes from the .ac-type-xs role class on the element, not from here. */
+  .quick-form__secondary {
+    margin: var(--ac-space-2) 0 0;
+    text-align: center;
+  }
+
+  .quick-form__secondary a {
+    color: var(--quick-form-muted-color);
+    font-weight: 600;
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   .quick-form__submit {

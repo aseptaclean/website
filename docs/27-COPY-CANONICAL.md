@@ -1,12 +1,34 @@
 # 27 — Copy Canonical (Astro/Cloudflare build)
 
-**Role:** Authoritative COPY source for the live Astro/Cloudflare site. Sections
-9–15 (homepage + all service-page copy) supersede prior page copy and doc 20's
-draft rewrites. Doc 20's voice RULES remain the standard new copy must meet.
+**Role:** Specifically locked approved COPY and copy history for the live Astro/Cloudflare
+site. It is not permission to block a newer explicit owner strategy or copy approval merely
+because older wording already exists. Doc 20 Part 1 remains the voice standard for new copy.
 
-**Not authoritative for:** architecture/URLs/SEO waves (→ doc 19), visual system
-(→ doc 18), claims (→ 01-QUALITY-GUARDRAILS). Where this doc restates those, the
-named owner-doc wins.
+**Not authoritative for:** website/customer strategy, UX, UI, CRO, design, responsive behavior,
+evidence strategy, technical SEO standards, route architecture, platform, claims, current route
+state, or AI implementation behavior. Use doc 30 for website strategy and design, doc 19 plus
+`SITEMAP-MASTER.md` for specialized route planning, and doc 21 for claims.
+
+> ## Owner reconciliation — 2026-08-25
+>
+> - Default visible primary CTA: **Tell Us About the Property**. “Request an assessment” may
+>   remain where context specifically requires the assessment term.
+> - Homepage conversion strategy: adult child or family decision-maker responsible for a
+>   difficult family property. Secondary audiences remain valid without equal homepage weight.
+> - Customer-facing evidence label: **Project Notes**, keeping `/projects/`.
+> - Preferred broad customer-facing family: **Complex Property Cleanup**, keeping current URLs.
+> - Current public process: **Scope → Protect → Clear → Reset → Verify**.
+> - The homepage's customer-first H1 direction is approved, but final wording is not locked;
+>   “When a family property has become too much to handle” is the leading brief candidate.
+> - Astro + Cloudflare Pages remains the platform. All Next/Vinext and WordPress/Elementor
+>   material in this file is obsolete.
+> - The existing high-friction assessment form is current implementation history, not the
+>   approved future architecture. The approved redesign is situation-first; protected consent,
+>   privacy, 10DLC, SMS, and regulated-condition wording remains unchanged until verified.
+> - The three animal/rodent/pigeon routes remain `noindex` until their individual publication
+>   gates clear. The older “ungated for marketing” statement below is superseded.
+> - Historical rank numbers in older reconciliation annotations describe superseded chains.
+>   Use the current hierarchy in root `AGENTS.md`; do not treat those numbers as operative.
 
 **Provenance note:** copy harvested from a separate ChatGPT-hosted build
 (aseptaclean-rebuild...chatgpt.site). That build is NOT live and is NOT
@@ -14,12 +36,11 @@ maintained. The live site is Astro on Cloudflare Pages. Ignore every
 platform/deployment/technical reference in this document (esp. §25) — it
 describes the abandoned build.
 
-**Owner reconciliations applied 2026-08-09 (override this doc's originals):**
-1. Animal / rodent / pigeon pages: UNGATED for marketing per owner decision.
-   This doc's "gated — do not publish" status on §13.2–13.4 is SUPERSEDED.
-   Real remaining gate is operational: confirm COI wording covers the organic
-   pathogen endorsement + written rodent PPE/respiratory protocol before the
-   first such job. Marketing copy may publish; claims stay cleaning-only.
+**Historical owner reconciliations applied 2026-08-09:**
+1. ~~Animal / rodent / pigeon pages: UNGATED for marketing per owner decision.~~
+   **Superseded by the 2026-08-16 and 2026-08-25 owner decisions.** All three remain built,
+   `noindex, follow`, absent from the sitemap, and individually publication-gated. Do not use
+   the 2026-08-09 instruction to market, index, or broaden them.
 2. Slug: /extreme-condition-cleaning → /extreme-cleaning-san-jose/ (keyword-
    verified). Apply the city suffix to ALL service slugs per doc 19
    (/estate-cleanout-san-jose/, not /estate-cleanouts).
@@ -57,7 +78,9 @@ The site does not compete on being the cheapest cleaner. It competes on controll
 
 ### Central positioning statement
 
-> Complex properties returned to a controlled, documented condition.
+> ~~Complex properties returned to a controlled, documented condition.~~ → **Some properties need more than a routine cleaning.**
+>
+> *Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1).* *The umbrella of record is specialty property cleaning and complex cleanup — the three owner-approved city hubs in `docs/city-pages-part2-UPDATED.md` are titled "Property Cleaning & Complex Cleanup in {city}". The struck line described a document rather than a result and named no service.*
 
 ### Core operating promise
 
@@ -89,7 +112,7 @@ The site contains no fake statistics, fake reviews, invented projects, borrowed 
 - Phone: 408-785-7588
 - Service model: owner-operated assessment and scope review
 - Insurance: insured; certificate of insurance available on request
-- Geographic positioning: South Bay and Peninsula
+- Geographic positioning: South Bay & Peninsula
 - Education: B.S. Biochemistry, University of California, Riverside
 - Professional background: pharmaceutical manufacturing
 - Professional background: histology and surgical pathology
@@ -135,7 +158,14 @@ was missed. Do not restore either. See `docs/05-DECISIONS-LOG.md`, 2026-08-19.
 
 ## 4. Audience and buying situations
 
-### Primary audiences
+### Primary homepage decision-maker
+
+The homepage conversion strategy is designed first for an adult child or other family
+decision-maker responsible for an aging parent's, relative's, or family property's difficult
+condition. The audiences below remain valid secondary audiences and search intents; they do not
+receive equal homepage weight and they do not justify deleting useful service pages.
+
+### Secondary audiences
 
 - Homeowners with a difficult one-time cleaning need
 - Families managing an estate or accumulated property
@@ -179,7 +209,10 @@ The website does not sell a vague “cleaning package.” It sells a controlled 
 
 ### Primary call to action
 
-**Request an assessment**
+**Tell Us About the Property**
+
+“Request an assessment” remains permitted where context specifically requires that term, and
+the route remains `/request-assessment/`.
 
 ### Secondary calls to action
 
@@ -219,7 +252,11 @@ The site should never make the assessment feel like an unnecessary sales obstacl
 
 ---
 
-## 6. Visual design system
+## 6. Historical visual design system — superseded
+
+**Do not implement this section.** Doc 30 is the active visual/design authority and the approved
+shipping typography is Inter Variable only. Newsreader, IBM Plex Mono, and the older component
+formula below are preserved as history, not active instruction.
 
 ### Design objective
 
@@ -347,7 +384,8 @@ identifies which doc-27 copy section backs each route.
 
 The future preferred routes are:
 
-- `/service-areas/san-jose`
+- San Jose service coverage remains represented by approved top-level service routes; do not
+  create `/service-areas/san-jose/`.
 - `/service-areas/mountain-view`
 - `/service-areas/sunnyvale`
 - `/service-areas/santa-clara`
@@ -416,7 +454,7 @@ They are intentionally not published as thin pages.
 
 ### Header call to action
 
-**Request an assessment**
+**Tell Us About the Property**
 
 ---
 
@@ -424,23 +462,26 @@ They are intentionally not published as thin pages.
 
 ### 9.1 Hero
 
-**Eyebrow**  
-Property clearing · deep cleaning · documented closeout
+**Eyebrow**
+~~Property clearing · deep cleaning · documented closeout~~ → **Detailed cleaning · Complex cleanup · South Bay & Peninsula**
+*Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1).* *The struck eyebrow named only the clearing lane.*
 
-**H1**  
-Complex properties returned to a controlled, documented condition.
+**H1**
+~~Complex properties returned to a controlled, documented condition.~~ → **Some properties need more than a *routine cleaning*.**
+*Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1). Same strike as the Central positioning statement above — this is the second occurrence of the identical sentence. The replacement is the rendered H1 in `src/components/Hero.astro`; the italics mark the `<em>` accent span, which is a visual treatment, not a second string.*
 
-**Lead**  
-Hoarding, estate and severe-condition properties—cleared, cleaned and closed out under one signed scope, by one accountable operator.
+**Lead**
+~~Hoarding, estate and severe-condition properties—cleared, cleaned and closed out under one signed scope, by one accountable operator.~~ → **Deep cleaning, move-out and post-construction work, severe-condition cleanup, hoarding and estate cleanouts. One written scope, one operator you can reach.**
+*Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1).* *The H1 above it is now the plain-language line, so the lead carries the service terms.*
 
-**Approval statement**  
+**Approval statement**
 Nothing leaves the property without your written approval.
 
-**Primary CTA**  
-Request an assessment →
+**Primary CTA**
+Tell Us About the Property →
 
-**Secondary CTA**  
-Text a photo
+**Secondary CTA**
+Call Aseptaclean
 
 **Trust chips**
 
@@ -487,13 +528,13 @@ Label the panel **Sample**. It must never be presented as a real customer record
 > §9.4–9.5 to `/` without clearing **both** gates; clearing only the photography one still
 > leaves the §9.5 Specialty card unlawful to publish.
 
-**Eyebrow**  
+**Eyebrow**
 Scope of work
 
-**H2**  
+**H2**
 Four ways a property reaches its next handoff.
 
-**Supporting copy**  
+**Supporting copy**
 Choose the service group that matches the condition. The exact work is still defined property by property.
 
 ### 9.5 Homepage service cards
@@ -529,15 +570,17 @@ Project-based commercial cleaning and select recurring janitorial programs.
 
 ### 9.6 Why Aseptaclean
 
-**Eyebrow**  
+**Eyebrow**
 Why Aseptaclean
 
-**H2**  
+**H2**
 The difference is what happens before and after the work itself.
 
 #### One accountable company
 
-Clearing, cleaning and closeout documentation stay under one written scope.
+~~Clearing, cleaning and closeout documentation stay under one written scope.~~ → **Clearing, cleaning, and closeout notes stay with one accountable company.**
+
+*Struck 2026-08-24 by explicit owner instruction to lead with the result and reduce repeated process language.*
 
 #### Written scope
 
@@ -545,7 +588,9 @@ What stays, what leaves, what gets cleaned and what is excluded are written down
 
 #### Approval controls
 
-Anything we’re not sure about goes into a labeled clear bag and waits for your decision. Added work requires documented authorization.
+~~Anything we’re not sure about goes into a labeled clear bag and waits for your decision. Added work requires documented authorization.~~ → **Anything we’re not sure about goes into a labeled clear bag and waits for your decision. Added work requires your authorization in writing.**
+
+*Struck 2026-08-24 by the final copy-integrity pass; the approval control is unchanged.*
 
 > **Amended 2026-08-19 — §9.15.2 humanization amendment 1, applied.** Was: *"Uncertain items
 > are held for review."* "Held for review" is category language; a labeled clear bag is a
@@ -554,25 +599,27 @@ Anything we’re not sure about goes into a labeled clear bag and waits for your
 
 #### Documented closeout
 
-Completion photographs and noted exceptions show how the approved scope closed.
+~~Completion photographs and noted exceptions show how the approved scope closed.~~ → **Completion photographs and noted exceptions show what was finished.**
+
+*Struck 2026-08-24 by the final copy-integrity pass to state the customer result directly.*
 
 ### 9.7 Deadline band
 
-**Heading**  
+**Heading**
 Working against a listing, transfer or family deadline?
 
-**Supporting line**  
+**Supporting line**
 Assessment response within one business day
 
-**CTA**  
+**CTA**
 Request an assessment →
 
 ### 9.8 Five-stage standard
 
-**Eyebrow**  
+**Eyebrow**
 Five-stage standard
 
-**H2**  
+**H2**
 One company stays accountable from the first decision to final closeout.
 
 #### 01 — Scope
@@ -606,7 +653,8 @@ Record: Keep and review controls
 
 #### 03 — Clear
 
-Approved unwanted contents are consolidated, staged or coordinated for lawful disposal within the signed scope.
+~~Approved unwanted contents are consolidated, staged or coordinated for lawful disposal within the signed scope.~~ → **Approved contents are sorted, bagged, and cleared out of the rooms in the scope. When the job needs a container, we arrange it with the provider the city authorizes.**
+*Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1).* *"Coordinated for lawful disposal" is the self-performed phrasing `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §4.3 prohibits.*
 
 Record: Clearing status
 
@@ -624,10 +672,10 @@ Record: Closeout package
 
 ### 9.9 Property Handoff Record sample
 
-**Project identifier**  
+**Project identifier**
 Project HR-1042
 
-**Required label**  
+**Required label**
 Sample · not a client record
 
 **Facts**
@@ -652,14 +700,15 @@ Sample · not a client record
 
 ### 9.10 Pricing explanation
 
-**Eyebrow**  
+**Eyebrow**
 What it costs
 
-**H2**  
+**H2**
 One number, in writing, after the property is reviewed.
 
-**Body**  
-We do not force every property into a package. Photos may support an initial range. Complicated conditions may require a walkthrough before a firm scope and price.
+**Body**
+~~We do not force every property into a package. Photos may support an initial range. Complicated conditions may require a walkthrough before a firm scope and price.~~ → **There is no package price, because there is no standard property. Send photos and we can usually give you a range. If the condition or the access is complicated, we come look first.**
+*Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1).* *Sentences 2–3 were also hardcoded in `ServicePageLayout.astro`, so this exact pair printed on `/` and on all fourteen service pages.*
 
 **Final pricing depends on**
 
@@ -672,13 +721,13 @@ We do not force every property into a package. Photos may support an initial ran
 
 ### 9.11 Founder section
 
-**Eyebrow**  
+**Eyebrow**
 The operator, not a call center
 
-**H2**  
+**H2**
 The person defining the work stays accountable for how it is carried out.
 
-**Body**  
+**Body**
 Matthew Ruiz is directly involved in scope review, project planning and operating oversight—a controlled-process background applied to properties that require more than a truck and a guess.
 
 > **§9.15.2 humanization amendment 6 — reviewed 2026-08-19, deliberately no change.**
@@ -720,7 +769,8 @@ No. The scope identifies keep, remove and review areas. Anything we’re not sur
 
 #### What happens if a specialist condition is discovered?
 
-Work stops on that item. We document the condition and explain which qualified provider is needed before work continues.
+~~Work stops on that item. We document the condition and explain which qualified provider is needed before work continues.~~ → **Work stops on that item. We document the condition and tell you which qualified provider is needed before work continues.**
+*Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1).* *Register only — "explain which provider is needed" → "tell you" (`docs/20-COPY-VOICE.md` rule 6).*
 
 #### How quickly can the project begin?
 
@@ -728,14 +778,23 @@ Assessment requests are reviewed within one business day. Scheduling depends on 
 
 ### 9.13 Homepage assessment section
 
-**Eyebrow**  
+**Eyebrow**
 Request an assessment
 
-**H2**  
+**H2**
 Tell us about the property.
 
-**Body**  
-Tell us the city, roughly how big it is, what shape it’s in, and when it has to be done. Two or three phone photos are more useful than a long description.
+**Body**
+~~Tell us the city, roughly how big it is, what shape it’s in, and when it has to be done. Two or three phone photos are more useful than a long description.~~
+
+> **Superseded 2026-08-20 by doc 27 §8 "Above the form", owner-approved.** The replacement is
+> the same four asks and the same photo sentence; it opens on the noun instead of repeating the
+> verb from the H2 directly above it ("Tell us about the property." / "Tell us the city…").
+> Shipping copy is now *"The city, roughly how big it is, what shape it's in, and when it has to
+> be done. Two or three phone photos are more useful than a long description."* — recorded in
+> `docs/27-SECTION-9-15-CONNECTIVE-COPY.md` §27.8, which is where gate 6 now finds it. An
+> explicit owner decision is precedence rank 1 and outranks this document at rank 7. Struck
+> rather than deleted so the 2026-08-19 amendment note below still reads against its own text.
 
 > **Amended 2026-08-19 — §9.15.2 humanization amendment 3, applied.** Was: *"Include the city,
 > approximate size, current condition and deadline. You can text property photos after
@@ -744,19 +803,21 @@ Tell us the city, roughly how big it is, what shape it’s in, and when it has t
 
 ### 9.14 Final call to action
 
-**Eyebrow**  
+**Eyebrow**
 Final decision
 
-**H2**  
-Start with what you know. We will help define the rest.
+**H2**
+~~Start with what you know. We will help define the rest.~~ → **Start with what you know. We’ll help define the rest.**
+*Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1).* *Contraction only. This is `docs/20-COPY-VOICE.md` Part 2's own approved Final-CTA replacement, written 2026-08-09 and never applied to the component.*
 
-**Body**  
-Tell us what you are looking at, what must remain and when the property needs to be ready.
+**Body**
+~~Tell us what you are looking at, what must remain and when the property needs to be ready.~~ → **Tell us what you’re looking at, what has to stay, and when the property needs to be ready. Photos help if you have them.**
+*Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1).* *`docs/20-COPY-VOICE.md` Part 2 verbatim, including the photo sentence the shipped copy had dropped.*
 
 **CTAs**
 
-- Request an assessment →
-- Call 408-785-7588
+- Tell Us About the Property →
+- Call Aseptaclean
 
 ---
 
@@ -764,9 +825,9 @@ Tell us what you are looking at, what must remain and when the property needs to
 
 ### 10.1 Detailed Cleaning hub
 
-**Route:** `/detailed-cleaning`  
-**Eyebrow:** Detailed cleaning  
-**H1:** One-time cleaning for properties that need a real reset.  
+**Route:** `/detailed-cleaning`
+**Eyebrow:** Detailed cleaning
+**H1:** One-time cleaning for properties that need a real reset.
 **Lead:** Choose the page that matches the property’s next event—not a generic package that hides the difference between a deep clean, turnover and construction cleanup.
 
 Cards:
@@ -778,9 +839,9 @@ Cards:
 
 ### 10.2 Specialty Cleaning hub
 
-**Route:** `/specialty-cleaning`  
-**Eyebrow:** Specialty cleaning  
-**H1:** Condition-reviewed cleaning for difficult properties.  
+**Route:** `/specialty-cleaning`
+**Eyebrow:** Specialty cleaning
+**H1:** Condition-reviewed cleaning for difficult properties.
 **Lead:** These jobs require more screening and clearer boundaries. Photos can begin the review; complex conditions often need a walkthrough.
 
 Cards:
@@ -792,9 +853,9 @@ Cards:
 
 ### 10.3 Property Clearing hub
 
-**Route:** `/property-clearing`  
-**Eyebrow:** Property clearing  
-**H1:** Clear the contents. Recover access. Prepare the property.  
+**Route:** `/property-clearing`
+**Eyebrow:** Property clearing
+**H1:** Clear the contents. Recover access. Prepare the property.
 **Lead:** Property clearing is organized around authority, sorting rules, access and a legal disposal plan before cleaning begins.
 
 Cards:
@@ -807,10 +868,10 @@ Cards:
 
 ### 10.4 Commercial hub
 
-**Route:** `/commercial`  
-**Eyebrow:** Commercial  
-**H1:** Commercial cleaning with a written operating scope.  
-**Lead:** Project-based deep cleaning and select recurring janitorial programs for small commercial properties across Santa Clara County.
+**Route:** `/commercial`
+**Eyebrow:** Commercial
+**H1:** Commercial cleaning with a written operating scope.
+**Lead:** Project-based deep cleaning and select recurring janitorial programs for small commercial properties across the South Bay & Peninsula.
 
 Card:
 
@@ -818,8 +879,8 @@ Card:
 
 ### Shared hub close
 
-**Label:** One rule across every service  
-**Heading:** We define the work before we schedule it.  
+**Label:** One rule across every service
+**Heading:** We define the work before we schedule it.
 **Body:** Photos can start the review. Larger, heavier or more complicated properties may require a walkthrough before a firm quote.
 
 ---
@@ -858,7 +919,9 @@ Price, inclusions, exclusions and assumptions are approved before scheduling.
 
 #### 04 — Completion
 
-The work is performed against the agreed scope and priorities.
+~~The work is performed against the agreed scope and priorities.~~ → **The work is performed against the agreed plan and priorities.**
+
+*Struck 2026-08-24 by the final copy-integrity pass; stage 03 already establishes the written scope.*
 
 ---
 
@@ -866,12 +929,12 @@ The work is performed against the agreed scope and priorities.
 
 ### 12.1 One-Time Deep Cleaning
 
-**Route:** `/deep-cleaning`  
-**SEO title:** Deep Cleaning Services in San Jose & the South Bay | Aseptaclean  
-**Meta description:** Detailed one-time deep cleaning for kitchens, bathrooms and whole homes in San Jose and Santa Clara County.  
+**Route:** `/deep-cleaning`
+**SEO title:** Deep Cleaning Services in San Jose & the South Bay | Aseptaclean
+**Meta description:** Detailed one-time deep cleaning for kitchens, bathrooms and whole homes in the South Bay & Peninsula.
 **H1:** One-Time Deep Cleaning
 
-**Lead**  
+**Lead**
 For homes that need substantially more detail than routine housekeeping—especially kitchens, bathrooms, fixtures, edges and the areas that are usually skipped.
 
 **This service may fit when**
@@ -881,10 +944,10 @@ For homes that need substantially more detail than routine housekeeping—especi
 - The home needs a one-time reset
 - You want the scope defined before the crew arrives
 
-**Outcome heading**  
+**Outcome heading**
 A deeper reset with the details written down.
 
-**Outcome body**  
+**Outcome body**
 We do not rely on a vague label like “deep clean.” The quote lists the rooms, the surfaces, and the detail level — so when we say finished, you and we are reading the same page.
 
 > **Amended 2026-08-19 — §9.15.2 humanization amendment 4, applied.** Was: *"The quote
@@ -916,22 +979,22 @@ We do not rely on a vague label like “deep clean.” The quote lists the rooms
 
 **FAQ**
 
-**Is this recurring housekeeping?**  
+**Is this recurring housekeeping?**
 No. This page is for focused one-time deep cleaning. Recurring service can be discussed separately when capacity allows.
 
-**Do you move appliances?**  
+**Do you move appliances?**
 Light, safely movable appliances may be included when access and flooring conditions allow. Gas-connected, built-in or unsafe items are excluded.
 
 **Related services:** Move-In & Move-Out Cleaning, Window Cleaning, Extreme-Condition Cleaning
 
 ### 12.2 Move-In & Move-Out Cleaning
 
-**Route:** `/move-in-move-out-cleaning`  
-**SEO title:** Move-In & Move-Out Cleaning in San Jose | Aseptaclean  
-**Meta description:** Vacant move-in, move-out and apartment cleaning across San Jose and Santa Clara County.  
+**Route:** `/move-in-move-out-cleaning`
+**SEO title:** Move-In & Move-Out Cleaning in San Jose | Aseptaclean
+**Meta description:** Vacant move-in, move-out and apartment cleaning across the South Bay & Peninsula.
 **H1:** Move-In & Move-Out Cleaning
 
-**Lead**  
+**Lead**
 Vacant-property cleaning built around the handoff: keys, listing photos, a final walkthrough, a lease turnover or a clean start in a new home.
 
 **This service may fit when**
@@ -941,10 +1004,10 @@ Vacant-property cleaning built around the handoff: keys, listing photos, a final
 - Cabinets, appliances and fixtures need detailing
 - There is a firm move or listing deadline
 
-**Outcome heading**  
+**Outcome heading**
 Cleaned for the next person—not merely touched up.
 
-**Outcome body**  
+**Outcome body**
 The work is organized around the property’s next event, with priority given to the rooms and surfaces that affect a walkthrough, listing or move-in.
 
 **Work can include**
@@ -972,22 +1035,22 @@ The work is organized around the property’s next event, with priority given to
 
 **FAQ**
 
-**Does the home need to be empty?**  
+**Does the home need to be empty?**
 Vacant properties are the best fit. Limited remaining contents can be discussed, but they affect access and price.
 
-**Can you work around a closing or lease deadline?**  
+**Can you work around a closing or lease deadline?**
 Sometimes. Availability depends on property size, condition and how soon the scope is approved.
 
 **Related services:** One-Time Deep Cleaning, Window Cleaning, Post-Construction Cleaning
 
 ### 12.3 Post-Construction Cleaning
 
-**Route:** `/post-construction-cleaning`  
-**SEO title:** Post-Construction Cleaning in San Jose | Aseptaclean  
-**Meta description:** Post-construction and post-remodel cleaning for completed projects in San Jose and Santa Clara County.  
+**Route:** `/post-construction-cleaning`
+**SEO title:** Post-Construction Cleaning in San Jose | Aseptaclean
+**Meta description:** Post-construction and post-remodel cleaning for completed projects in the South Bay & Peninsula.
 **H1:** Post-Construction Cleaning
 
-**Lead**  
+**Lead**
 Detailed removal of settled construction dust and surface residue after repairs or remodeling are complete and the trades are out of the work area.
 
 **This service may fit when**
@@ -997,10 +1060,10 @@ Detailed removal of settled construction dust and surface residue after repairs 
 - The construction work is substantially complete
 - The property must be prepared for occupancy or presentation
 
-**Outcome heading**  
+**Outcome heading**
 A final-clean scope for completed renovation work.
 
-**Outcome body**  
+**Outcome body**
 Post-construction cleaning is priced differently from ordinary house cleaning because fine dust travels, resettles and requires a deliberate top-to-bottom sequence.
 
 **Work can include**
@@ -1028,22 +1091,22 @@ Post-construction cleaning is priced differently from ordinary house cleaning be
 
 **FAQ**
 
-**Can cleaning start while contractors are still working?**  
+**Can cleaning start while contractors are still working?**
 A rough pass may be possible, but the final clean should happen after dusty trades finish and the work area is released.
 
-**Do you remove paint or hardened construction residue?**  
+**Do you remove paint or hardened construction residue?**
 Only when the material and surface can be handled safely and the task is specifically included. Surface correction is not assumed.
 
 **Related services:** Window Cleaning, Move-In & Move-Out Cleaning, Debris Removal
 
 ### 12.4 Window Cleaning
 
-**Route:** `/window-cleaning`  
-**SEO title:** Interior Window Cleaning in San Jose | Aseptaclean  
-**Meta description:** Interior and accessible window cleaning for homes, turnovers and post-construction projects in Santa Clara County.  
+**Route:** `/window-cleaning`
+**SEO title:** Interior Window Cleaning in San Jose | Aseptaclean
+**Meta description:** Interior and accessible window cleaning for homes, turnovers and post-construction projects in the South Bay & Peninsula.
 **H1:** Window Cleaning
 
-**Lead**  
+**Lead**
 Detail cleaning for interior glass, frames, sills and accessible tracks as a standalone project or part of a larger property reset.
 
 **This service may fit when**
@@ -1053,10 +1116,10 @@ Detail cleaning for interior glass, frames, sills and accessible tracks as a sta
 - Remodeling left dust on glass and frames
 - Tracks and sills need detailed attention
 
-**Outcome heading**  
+**Outcome heading**
 Clearer glass with the frames and tracks accounted for.
 
-**Outcome body**  
+**Outcome body**
 The quote separates glass, screens, frames and tracks so you are not comparing an exterior wash with a detailed interior-window service.
 
 **Work can include**
@@ -1084,10 +1147,10 @@ The quote separates glass, screens, frames and tracks so you are not comparing a
 
 **FAQ**
 
-**Do you clean exterior windows?**  
+**Do you clean exterior windows?**
 Ground-level and safely accessible exterior windows may be included. High-access work is reviewed separately and may be referred.
 
-**Can you remove hard-water spots?**  
+**Can you remove hard-water spots?**
 Light deposits may improve, but mineral restoration and etched glass require a different process and are not promised as standard cleaning.
 
 **Related services:** One-Time Deep Cleaning, Move-In & Move-Out Cleaning, Post-Construction Cleaning
@@ -1098,12 +1161,12 @@ Light deposits may improve, but mineral restoration and etched glass require a d
 
 ### 13.1 Extreme-Condition Cleaning
 
-**Route:** `/extreme-condition-cleaning`  
-**SEO title:** Extreme-Condition Cleaning in San Jose | Aseptaclean  
-**Meta description:** Planned cleaning for heavily soiled and difficult-property conditions in San Jose and Santa Clara County.  
+**Route:** `/extreme-condition-cleaning`
+**SEO title:** Extreme-Condition Cleaning in San Jose | Aseptaclean
+**Meta description:** Planned cleaning for heavily soiled and difficult-property conditions in the South Bay & Peninsula.
 **H1:** Extreme-Condition Cleaning
 
-**Lead**  
+**Lead**
 For heavily soiled properties where routine cleaning is unrealistic and the work needs condition review, priorities, exclusions and a controlled scope.
 
 **This service may fit when**
@@ -1113,10 +1176,10 @@ For heavily soiled properties where routine cleaning is unrealistic and the work
 - The property needs staged recovery
 - A normal cleaning quote would be unreliable
 
-**Outcome heading**  
+**Outcome heading**
 A difficult property broken into controllable work.
 
-**Outcome body**  
+**Outcome body**
 The goal is not to hide the condition behind a generic cleaning package. We identify the priority areas, define what can be safely handled and document what remains outside scope.
 
 **Work can include**
@@ -1144,23 +1207,23 @@ The goal is not to hide the condition behind a generic cleaning package. We iden
 
 **FAQ**
 
-**Can you quote this from photos?**  
+**Can you quote this from photos?**
 Photos can support an initial range. Severe or complicated conditions usually require an in-person walkthrough before a firm scope.
 
-**Is every extreme-condition job accepted?**  
+**Is every extreme-condition job accepted?**
 No. We decline or refer conditions that exceed our current legal, insurance, training or equipment scope.
 
 **Related services:** Hoarding Cleanup, Property Cleanouts, Animal Waste Cleanup
 
 ### 13.2 Animal Waste Cleanup — gated
 
-**Route:** `/animal-waste-cleanup`  
-**Search status:** `noindex, follow` pending compliance release  
-**SEO title after release:** Animal Waste Cleanup in San Jose | Aseptaclean  
-**Meta description:** Non-human animal waste cleanup for accepted residential and property conditions in Santa Clara County.  
+**Route:** `/animal-waste-cleanup`
+**Search status:** `noindex, follow` pending compliance release
+**SEO title after release:** Animal Waste Cleanup in San Jose | Aseptaclean
+**Meta description:** Non-human animal waste cleanup for accepted residential and property conditions in the South Bay & Peninsula.
 **H1:** Animal Waste Cleanup
 
-**Lead**  
+**Lead**
 Condition-based cleanup for accepted non-human animal waste, odor sources and heavily affected surfaces after the animal issue is controlled.
 
 **This service may fit when**
@@ -1170,10 +1233,10 @@ Condition-based cleanup for accepted non-human animal waste, odor sources and he
 - The source is non-human and can be safely accessed
 - The scope needs separation from pest or repair work
 
-**Outcome heading**  
+**Outcome heading**
 Cleanup after the animal source is controlled.
 
-**Outcome body**  
+**Outcome body**
 We separate cleaning from pest treatment, veterinary issues and structural replacement. The quote covers only the surfaces and materials we can reasonably clean within the approved scope.
 
 **Work can include**
@@ -1201,23 +1264,23 @@ We separate cleaning from pest treatment, veterinary issues and structural repla
 
 **FAQ**
 
-**Do you remove live animals?**  
+**Do you remove live animals?**
 No. Animal control or a pest professional must address live animals and active entry before cleanup.
 
-**Will the odor be completely gone?**  
+**Will the odor be completely gone?**
 Not always. Waste absorbed into subfloor, drywall or other porous materials may require removal or repair by an appropriate provider.
 
 **Related services:** Rodent Dropping Cleanup, Pigeon Dropping Cleanup, Extreme-Condition Cleaning
 
 ### 13.3 Rodent Dropping Cleanup — gated
 
-**Route:** `/rodent-dropping-cleanup`  
-**Search status:** `noindex, follow` pending compliance release  
-**SEO title after release:** Rodent Dropping Cleanup in San Jose | Aseptaclean  
-**Meta description:** Condition-reviewed rodent dropping cleanup for homes and properties across Santa Clara County.  
+**Route:** `/rodent-dropping-cleanup`
+**Search status:** `noindex, follow` pending compliance release
+**SEO title after release:** Rodent Dropping Cleanup in San Jose | Aseptaclean
+**Meta description:** Condition-reviewed rodent dropping cleanup for homes and properties across the South Bay & Peninsula.
 **H1:** Rodent Dropping Cleanup
 
-**Lead**  
+**Lead**
 Cleanup of accepted rodent-dropping conditions after active pest control and entry-point work are handled by the appropriate provider.
 
 **This service may fit when**
@@ -1227,10 +1290,10 @@ Cleanup of accepted rodent-dropping conditions after active pest control and ent
 - Pest control has addressed the active source
 - The property needs a written cleanup scope
 
-**Outcome heading**  
+**Outcome heading**
 Cleanup separated from pest control and construction.
 
-**Outcome body**  
+**Outcome body**
 Aseptaclean defines the cleanable surfaces and affected areas. Extermination, exclusion, insulation and structural work remain separate trades.
 
 **Work can include**
@@ -1258,23 +1321,23 @@ Aseptaclean defines the cleanable surfaces and affected areas. Extermination, ex
 
 **FAQ**
 
-**Should pest control come first?**  
+**Should pest control come first?**
 Yes. Active infestation and entry points should be addressed before final cleanup so the condition does not immediately return.
 
-**Do you remove attic insulation?**  
+**Do you remove attic insulation?**
 No. Insulation removal and replacement are outside this cleaning scope and may require an appropriately licensed provider.
 
 **Related services:** Animal Waste Cleanup, Pigeon Dropping Cleanup, Extreme-Condition Cleaning
 
 ### 13.4 Pigeon Dropping Cleanup — gated
 
-**Route:** `/pigeon-dropping-cleanup`  
-**Search status:** `noindex, follow` pending compliance release  
-**SEO title after release:** Pigeon Dropping Cleanup in San Jose | Aseptaclean  
-**Meta description:** Condition-reviewed pigeon dropping cleanup for accessible residential and commercial property areas in Santa Clara County.  
+**Route:** `/pigeon-dropping-cleanup`
+**Search status:** `noindex, follow` pending compliance release
+**SEO title after release:** Pigeon Dropping Cleanup in San Jose | Aseptaclean
+**Meta description:** Condition-reviewed pigeon dropping cleanup for accessible residential and commercial property areas in the South Bay & Peninsula.
 **H1:** Pigeon Dropping Cleanup
 
-**Lead**  
+**Lead**
 Cleanup for accepted pigeon-dropping conditions on safely accessible surfaces after roosting, exclusion and active bird issues are addressed.
 
 **This service may fit when**
@@ -1284,10 +1347,10 @@ Cleanup for accepted pigeon-dropping conditions on safely accessible surfaces af
 - The work area can be controlled
 - The property needs a defined cleaning scope
 
-**Outcome heading**  
+**Outcome heading**
 A controlled cleanup plan for accessible affected areas.
 
-**Outcome body**  
+**Outcome body**
 The assessment determines whether the work can be handled as cleaning or needs a specialized access, bird-control or remediation provider.
 
 **Work can include**
@@ -1315,10 +1378,10 @@ The assessment determines whether the work can be handled as cleaning or needs a
 
 **FAQ**
 
-**Do you install bird spikes or exclusion systems?**  
+**Do you install bird spikes or exclusion systems?**
 No. Bird exclusion is separate from cleanup and should be completed by the appropriate provider.
 
-**Can you clean a roof?**  
+**Can you clean a roof?**
 Only safely accessible areas are considered. Roof and high-access conditions may be declined or referred.
 
 **Related services:** Animal Waste Cleanup, Rodent Dropping Cleanup, Debris Removal
@@ -1329,12 +1392,12 @@ Only safely accessible areas are considered. Roof and high-access conditions may
 
 ### 14.1 Property Cleanouts
 
-**Route:** `/property-cleanouts`  
-**SEO title:** Property Cleanout Services in San Jose | Aseptaclean  
-**Meta description:** Planned property cleanouts for homes, rentals and difficult properties across Santa Clara County.  
+**Route:** `/property-cleanouts`
+**SEO title:** Property Cleanout Services in San Jose | Aseptaclean
+**Meta description:** Planned property cleanouts for homes, rentals and difficult properties across the South Bay & Peninsula.
 **H1:** Property Cleanouts
 
-**Lead**  
+**Lead**
 Structured clearing for properties with unwanted contents, debris or accumulated material—organized around access, decision rights and the next use of the property.
 
 **This service may fit when**
@@ -1344,10 +1407,10 @@ Structured clearing for properties with unwanted contents, debris or accumulated
 - A landlord or owner needs a turnover plan
 - The volume requires staging or container coordination
 
-**Outcome heading**  
+**Outcome heading**
 A property cleared with decisions made before removal.
 
-**Outcome body**  
+**Outcome body**
 Cleanouts go wrong when every item is treated as trash. We define authority, sorting rules, staging and disposal before the crew begins.
 
 **Work can include**
@@ -1375,23 +1438,26 @@ Cleanouts go wrong when every item is treated as trash. We define authority, sor
 
 **FAQ**
 
-**Do you haul everything away yourself?**  
+**Do you haul everything away yourself?**
 Disposal may use containers or appropriate third-party providers depending on the city, volume and material type.
 
-**Can cleaning be added after the cleanout?**  
+**Can cleaning be added after the cleanout?**
 Yes. A separate cleaning phase can be scoped once surfaces and rooms become accessible.
 
 **Related services:** Estate Cleanouts, Hoarding Cleanup, Debris Removal
 
 ### 14.2 Hoarding Cleanup
 
-**Route:** `/hoarding-cleanup`  
-**SEO title:** Hoarding Cleanup in San Jose | Aseptaclean  
-**Meta description:** Structured hoarding cleanup and property clearing for accepted non-human conditions in Santa Clara County.  
+**Route:** `/hoarding-cleanup`
+**SEO title:** Hoarding Cleanup in San Jose | Aseptaclean
+**Meta description:** Structured hoarding cleanup and property clearing for accepted non-human conditions in the South Bay & Peninsula.
 **H1:** Hoarding Cleanup
 
-**Lead**  
-A staged clearing and cleaning process for heavily accumulated properties, with decisions, priorities and boundaries established before items are moved.
+**Lead**
+~~A staged clearing and cleaning process for heavily accumulated properties, with decisions,
+priorities and boundaries established before items are moved.~~ **Superseded 2026-08-24 by the
+plain-language, situation-led `/hoarding-cleanup-san-jose/` implementation and the dated owner
+copy decisions in `05-DECISIONS-LOG.md`. Do not restore.**
 
 **This service may fit when**
 
@@ -1400,10 +1466,11 @@ A staged clearing and cleaning process for heavily accumulated properties, with 
 - Items require keep/remove review
 - Cleaning cannot begin until access is restored
 
-**Outcome heading**  
-Progress without treating the property like a dumpster.
+**Outcome heading**
+~~Progress without treating the property like a dumpster.~~ **Superseded 2026-08-24 by the
+current route's decision-control framing. Do not restore.**
 
-**Outcome body**  
+**Outcome body**
 The work is divided into zones and decisions. That protects important items, keeps the crew productive and makes the next phase of cleaning possible.
 
 **Work can include**
@@ -1431,22 +1498,22 @@ The work is divided into zones and decisions. That protects important items, kee
 
 **FAQ**
 
-**Do you throw everything away?**  
+**Do you throw everything away?**
 No. Removal rules are agreed in advance, and uncertain items can be placed in a review area for the authorized decision-maker.
 
-**Can the cleanup happen in stages?**  
+**Can the cleanup happen in stages?**
 Yes. Staging is often the safest and most practical approach for dense or emotionally difficult properties.
 
 **Related services:** Property Cleanouts, Estate Cleanouts, Extreme-Condition Cleaning
 
 ### 14.3 Estate Cleanouts
 
-**Route:** `/estate-cleanouts`  
-**SEO title:** Estate Cleanout Services in San Jose | Aseptaclean  
-**Meta description:** Estate cleanout, contents clearing and follow-on cleaning across San Jose and Santa Clara County.  
+**Route:** `/estate-cleanouts`
+**SEO title:** Estate Cleanout Services in San Jose | Aseptaclean
+**Meta description:** Estate cleanout, contents clearing and follow-on cleaning across the South Bay & Peninsula.
 **H1:** Estate Cleanouts
 
-**Lead**  
+**Lead**
 A deliberate process for sorting, staging and clearing estate contents before sale, transfer, renovation or family handoff.
 
 **This service may fit when**
@@ -1456,10 +1523,10 @@ A deliberate process for sorting, staging and clearing estate contents before sa
 - The property is being prepared for sale or transfer
 - Cleaning is needed after rooms are cleared
 
-**Outcome heading**  
+**Outcome heading**
 A respectful clearout built around authority and decisions.
 
-**Outcome body**  
+**Outcome body**
 The person authorizing removal identifies what must be preserved. The scope then separates sorting, staging, disposal and final cleaning.
 
 **Work can include**
@@ -1487,23 +1554,24 @@ The person authorizing removal identifies what must be preserved. The scope then
 
 **FAQ**
 
-**Do you buy or appraise estate items?**  
+**Do you buy or appraise estate items?**
 No. Appraisal, resale and estate-sale services are separate. We follow the authorized sorting and removal plan.
 
-**Can you clean the home afterward?**  
+**Can you clean the home afterward?**
 Yes. Move-out or detailed cleaning can be added after the rooms are cleared and accessible.
 
 **Related services:** Property Cleanouts, Debris Removal, Move-In & Move-Out Cleaning
 
 ### 14.4 Debris Removal
 
-**Route:** `/debris-removal`  
-**SEO title:** Property Debris Removal in San Jose | Aseptaclean  
-**Meta description:** Property debris removal, staging and disposal coordination for accepted materials in Santa Clara County.  
+**Route:** `/debris-removal`
+**SEO title:** Property Debris Removal in San Jose | Aseptaclean
+**Meta description:** Property debris removal, staging and disposal coordination for accepted materials in the South Bay & Peninsula.
 **H1:** Debris Removal
 
-**Lead**  
-Removal planning for loose, non-hazardous property debris that must be cleared before cleaning, turnover or the next phase of work.
+**Lead**
+~~Removal planning for loose, non-hazardous property debris that must be cleared before cleaning, turnover or the next phase of work.~~ → **Loose, non-hazardous debris cleared out of a property before cleaning, turnover or the next phase of work. We do the clearing and the loading on site; the container and the trip to the facility come from the hauler your city authorizes.**
+*Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1).* *"Removal planning" is not a phrase a buyer uses, and the struck lead left the transport boundary unstated on the page most likely to be misread as a hauling service.*
 
 **This service may fit when**
 
@@ -1512,11 +1580,13 @@ Removal planning for loose, non-hazardous property debris that must be cleared b
 - A container or disposal route must be planned
 - The material can be identified before removal
 
-**Outcome heading**  
-Debris removed through a defined and legal disposal plan.
+**Outcome heading**
+~~Debris removed through a defined and legal disposal plan.~~ → **Debris gone, through a disposal route that holds up.**
+*Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1).*
 
-**Outcome body**  
-The quote separates labor, containers, third-party hauling and follow-on cleaning so disposal costs are not hidden inside a vague cleanout number.
+**Outcome body**
+~~The quote separates labor, containers, third-party hauling and follow-on cleaning so disposal costs are not hidden inside a vague cleanout number.~~ → **Aseptaclean is not a hauling company. We sort, bag, stage, carry out and load; a City-authorized hauler engaged for the project supplies the container and takes the material off-site. The quote keeps those on separate lines so you can see what each one costs.**
+*Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1).* *The substance is kept; the split in responsibility is now stated, per `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §4.1–4.3.*
 
 **Work can include**
 
@@ -1543,22 +1613,22 @@ The quote separates labor, containers, third-party hauling and follow-on cleanin
 
 **FAQ**
 
-**Are disposal fees included?**  
+**Are disposal fees included?**
 The written quote states whether container, facility or third-party hauling fees are included, estimated or billed separately.
 
-**Do you take hazardous materials?**  
+**Do you take hazardous materials?**
 No. Unknown chemicals, regulated waste and other hazardous materials require an appropriate disposal provider.
 
 **Related services:** Property Cleanouts, Estate Cleanouts, Eviction Cleanouts
 
 ### 14.5 Eviction Cleanouts
 
-**Route:** `/eviction-cleanouts`  
-**SEO title:** Eviction Cleanout Services in San Jose | Aseptaclean  
-**Meta description:** Eviction cleanout and turnover cleaning for property owners and managers in Santa Clara County.  
+**Route:** `/eviction-cleanouts`
+**SEO title:** Eviction Cleanout Services in San Jose | Aseptaclean
+**Meta description:** Eviction cleanout and turnover cleaning for property owners and managers in the South Bay & Peninsula.
 **H1:** Eviction Cleanouts
 
-**Lead**  
+**Lead**
 Contents clearing and cleaning after lawful possession has been restored and the property owner or manager has authority to direct removal.
 
 **This service may fit when**
@@ -1568,10 +1638,10 @@ Contents clearing and cleaning after lawful possession has been restored and the
 - The unit needs clearing before repairs or turnover
 - A deadline is tied to re-rental or inspection
 
-**Outcome heading**  
+**Outcome heading**
 A cleanout that begins only after authority is clear.
 
-**Outcome body**  
+**Outcome body**
 Aseptaclean does not decide what is legally abandoned. The authorized owner or manager provides direction; we then execute the approved clearing and cleaning scope.
 
 **Work can include**
@@ -1599,10 +1669,10 @@ Aseptaclean does not decide what is legally abandoned. The authorized owner or m
 
 **FAQ**
 
-**Can you remove items before the eviction is complete?**  
+**Can you remove items before the eviction is complete?**
 No. The owner or manager must confirm lawful possession and authority before contents are handled.
 
-**Can you clean after the unit is emptied?**  
+**Can you clean after the unit is emptied?**
 Yes. Turnover cleaning can be included as a second phase after access to surfaces is restored.
 
 **Related services:** Property Cleanouts, Debris Removal, Move-In & Move-Out Cleaning
@@ -1613,12 +1683,12 @@ Yes. Turnover cleaning can be included as a second phase after access to surface
 
 ### Commercial & Janitorial Cleaning
 
-**Route:** `/janitorial-services`  
-**SEO title:** Commercial Janitorial Cleaning in San Jose | Aseptaclean  
-**Meta description:** Project-based and select recurring commercial janitorial cleaning for small facilities in Santa Clara County.  
+**Route:** `/janitorial-services`
+**SEO title:** Commercial Janitorial Cleaning in San Jose | Aseptaclean
+**Meta description:** Project-based and select recurring commercial janitorial cleaning for small facilities in the South Bay & Peninsula.
 **H1:** Commercial & Janitorial Cleaning
 
-**Lead**  
+**Lead**
 Defined cleaning programs for small commercial properties that need reliable scope, clear frequencies and direct owner communication.
 
 **This service may fit when**
@@ -1628,10 +1698,10 @@ Defined cleaning programs for small commercial properties that need reliable sco
 - A one-time commercial deep clean is needed
 - Management wants one accountable point of contact
 
-**Outcome heading**  
+**Outcome heading**
 A commercial scope that can actually be inspected.
 
-**Outcome body**  
+**Outcome body**
 The agreement identifies frequencies, areas and periodic tasks. That prevents the common failure where every expectation is buried under the word “janitorial.”
 
 **Work can include**
@@ -1659,10 +1729,10 @@ The agreement identifies frequencies, areas and periodic tasks. That prevents th
 
 **FAQ**
 
-**Do you offer nightly janitorial service?**  
+**Do you offer nightly janitorial service?**
 Select schedules may be available depending on location, facility type, service window and current capacity.
 
-**Do you provide supplies?**  
+**Do you provide supplies?**
 Cleaning supplies can be included. Paper goods, liners and client consumables are defined separately in the proposal.
 
 **Related services:** One-Time Deep Cleaning, Post-Construction Cleaning, Window Cleaning
@@ -1671,20 +1741,20 @@ Cleaning supplies can be included. Paper goods, liners and client consumables ar
 
 ## 16. Service Areas page
 
-**Route:** `/service-areas`  
-**SEO title:** South Bay & Peninsula Service Area | Aseptaclean  
-**Meta description:** Aseptaclean provides owner-operated cleaning and property clearing across the South Bay and Peninsula.
+**Route:** `/service-areas`
+**SEO title:** South Bay & Peninsula Service Area | Aseptaclean
+**Meta description:** Aseptaclean provides owner-operated cleaning and property clearing across the South Bay & Peninsula.
 
-**Eyebrow**  
+**Eyebrow**
 Service area
 
-**H1**  
-South Bay and Peninsula properties, reviewed one address at a time.
+**H1**
+South Bay & Peninsula properties, reviewed one address at a time.
 
-**Lead**  
+**Lead**
 Travel, access, parking, building rules and the project condition are considered before a scope is scheduled.
 
-**Section label**  
+**Section label**
 By area
 
 > **Reconciled 2026-08-19 — code is truth.** Was: ~~*Primary service area*~~. The port ships
@@ -1700,7 +1770,7 @@ By area
 > means rewriting the list into the built grouping, which is a copy rewrite and wants an owner
 > read, not a documentation pass.
 
-**Body**  
+**Body**
 We currently review work in the cities below. Availability depends on the service, property condition, access and schedule.
 
 **Primary cities**
@@ -1719,7 +1789,7 @@ We currently review work in the cities below. Availability depends on the servic
 - Palo Alto
 - Atherton
 
-**Publishing note — internal policy, DOES NOT SHIP**  
+**Publishing note — internal policy, DOES NOT SHIP**
 Individual city guides will be published only after each page has verified local operating details and real project proof. That keeps the site useful and avoids thin location pages.
 
 > **Marked non-shipping 2026-08-19.** This was reported as a gate-6 absence, which was the
@@ -1728,10 +1798,23 @@ Individual city guides will be published only after each page has verified local
 > Marking it here stops it being re-reported every run and stops a future session "fixing" the
 > absence by rendering an internal note onto a public page.
 >
-> **The policy itself stands and is load-bearing** — it is the city-page gate that
-> `docs/SITEMAP-MASTER.md` refers to as "as earned (real job + original content)", and
-> `cityPages` is currently `[]` in the build, which is consistent with it. Do not read
-> "does not ship" as "no longer applies".
+> **The policy stood and was load-bearing** — it was the city-page gate that
+> `docs/SITEMAP-MASTER.md` referred to as "as earned (real job + original content)". Do not read
+> "does not ship" as "no longer applies"; it means the sentence is an internal policy note, not
+> visitor copy, and it must never be rendered onto a public page.
+>
+> **Its "real project proof" half is superseded — 2026-08-21, owner ruling.** The build now
+> contains nine city routes: three hubs at `/service-areas/[city]/` and six service × city pages
+> at `/service-areas/[city]/[service]/`. The claim above that `cityPages` is `[]` is **stale and
+> must not be repeated** — `/service-areas/` links down to three built city hubs.
+>
+> The "verified local operating details" half of the policy stands and is now enforced in code,
+> not prose: every rendered city fact carries a publisher, a source URL, a `verifiedAt`, and a
+> `reviewAfter` in `src/data/cityFacts.ts`, and `npm run qa:seo` blocks indexation on a stale or
+> unsourced one. The "real project proof" half is **not** a prerequisite for the route to exist;
+> real completed projects are a future proof-enhancement layer. The seven conditions that
+> replaced it are in `docs/19-SYSTEM-AND-SITEMAP.md` §2.2 and `AGENTS.md` §2.1. The anti-thin
+> intent that motivated this policy is unchanged and is now measured rather than asserted.
 
 ---
 
@@ -1739,8 +1822,8 @@ Individual city guides will be published only after each page has verified local
 
 ### 17.1 Process
 
-**Route:** `/handoff-standard/`  
-**SEO title:** Our Process | Aseptaclean  
+**Route:** `/handoff-standard/`
+**SEO title:** Our Process | Aseptaclean
 **Meta description:** How Aseptaclean scopes, protects, clears, resets and documents property work.
 
 > **Route corrected 2026-08-19 — code is truth.** Was `/process`, which has never been built
@@ -1748,34 +1831,34 @@ Individual city guides will be published only after each page has verified local
 > already recorded it as "`/handoff-standard/` (= Process)". Title and meta match the build
 > exactly and are unchanged.
 
-**Eyebrow**  
+**Eyebrow**
 The five-stage handoff standard
 
-**H1**  
+**H1**
 Decisions first. Work second. Proof at closeout.
 
-**Lead**  
+**Lead**
 The operating system is designed for properties where vague instructions create expensive mistakes.
 
-**Scope**  
+**Scope**
 We write down what stays, what goes, what gets cleaned, what is excluded, and what the project will require.
 
-**Protect**  
+**Protect**
 Keep areas are identified. Uncertain and important discovered items are separated and reported. We do not decide what mattered to your family.
 
-**Clear**  
+**Clear**
 Approved unwanted contents are consolidated, removed, or coordinated for disposal within the signed scope.
 
-**Reset**  
+**Reset**
 The property receives the detailed cleaning included for its next handoff, including animal and organic conditions within lawful scope.
 
-**Verify**  
+**Verify**
 You receive completion photographs, documented exceptions, and a Property Handoff Record showing how the approved scope was closed.
 
-**Record heading**  
+**Record heading**
 Property Handoff Record — annotated
 
-**Record body**  
+**Record body**
 Project records document the work performed. They are not regulatory clearance, inspection approval, environmental certification, or a determination that a property is safe or habitable.
 
 > **Reconciled to the build 2026-08-19 — code is truth. All five stages, plus the record
@@ -1813,22 +1896,22 @@ Project records document the work performed. They are not regulatory clearance, 
 > **This is a documentation reconciliation, not a claims approval** — if the phrase is to be
 > re-examined, that is a doc-21 review, and this note is the pointer to it.
 
-### 17.2 Projects
+### 17.2 Project Notes
 
-**Route:** `/projects`  
-**SEO title:** Projects & Property Handoffs | Aseptaclean  
+**Route:** `/projects`
+**SEO title:** Projects & Property Handoffs | Aseptaclean
 **Meta description:** The project types Aseptaclean reviews and the proof required before work is shown publicly.
 
-**Eyebrow**  
-Projects
+**Eyebrow**
+Project Notes
 
-**H1**  
+**H1**
 Real work will appear here only when it can be shown honestly.
 
-**Lead**  
+**Lead**
 No stock transformations, borrowed photographs or invented case studies. Public project records require client permission and verifiable scope details.
 
-**H2**  
+**H2**
 Property work with a defined handoff.
 
 **Project types**
@@ -1839,33 +1922,35 @@ Property work with a defined handoff.
 - Post-construction final cleaning
 - Small commercial detail projects
 
-**Publication standard heading**  
+**Publication standard heading**
 What a future case study must include.
 
-**Publication standard body**  
+**Publication standard body**
 Every published project should state the original condition, approved scope, important exclusions, work completed and documented exceptions. Before-and-after images must belong to Aseptaclean and have permission for public use.
 
 Until that proof exists, this page describes project types rather than pretending to be a portfolio.
 
 ### 17.3 About
 
-**Route:** `/about`  
-**SEO title:** About Aseptaclean | Owner-Operated Property Cleaning  
+**Route:** `/about`
+**SEO title:** About Aseptaclean | Owner-Operated Property Cleaning
 **Meta description:** Meet Matthew Ruiz and learn how Aseptaclean approaches cleaning and property clearing work.
 
-**Eyebrow**  
+**Eyebrow**
 About Aseptaclean
 
-**H1**  
-A controlled-process mindset for properties that need careful decisions.
+**H1**
+~~A controlled-process mindset for properties that need careful decisions.~~ → **Careful work on properties where the decisions matter.**
+*Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1).* *"Controlled-process mindset" is internal vocabulary.*
 
-**Lead**  
-Aseptaclean is an owner-operated cleaning and property clearing business serving the South Bay and Peninsula.
+**Lead**
+~~Aseptaclean is an owner-operated cleaning and property clearing business serving the South Bay & Peninsula.~~ → **Aseptaclean is an owner-operated specialty property cleaning and complex cleanup business serving the South Bay & Peninsula.**
+*Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1).*
 
-**Founder heading**  
+**Founder heading**
 Matthew Ruiz stays close to the scope.
 
-**Founder body**  
+**Founder body**
 Matthew is directly involved in scope review, project planning and operating oversight. His background includes a B.S. in Biochemistry from UC Riverside, pharmaceutical manufacturing, and histology and surgical pathology.
 
 **Required disclaimer**
@@ -1888,17 +1973,17 @@ You speak with the operator reviewing the property—not a distant call center.
 
 ### 17.4 FAQ
 
-**Route:** `/faq`  
-**SEO title:** Frequently Asked Questions | Aseptaclean  
+**Route:** `/faq`
+**SEO title:** Frequently Asked Questions | Aseptaclean
 **Meta description:** Answers about Aseptaclean estimates, photos, scope, pricing, access and service boundaries.
 
-**Eyebrow**  
+**Eyebrow**
 FAQ
 
-**H1**  
+**H1**
 Straight answers before the property is scheduled.
 
-**Lead**  
+**Lead**
 If a condition cannot be responsibly assessed online, we will say so.
 
 #### Can you assess a property from photos?
@@ -1935,29 +2020,29 @@ Assessment requests are reviewed within one business day. Job scheduling depends
 
 ### 17.5 Contact
 
-**Route:** `/contact`  
-**SEO title:** Request a Property Assessment | Aseptaclean  
-**Meta description:** Request an Aseptaclean cleaning or property clearing assessment in the South Bay and Peninsula.
+**Route:** `/contact`
+**SEO title:** Request a Property Assessment | Aseptaclean
+**Meta description:** Request an Aseptaclean cleaning or property clearing assessment in the South Bay & Peninsula.
 
-**Eyebrow**  
+**Eyebrow**
 Contact
 
-**H1**  
+**H1**
 Start with the property details.
 
-**Lead**  
+**Lead**
 Share the city, approximate size, current condition, access and deadline. Clear photos help us decide whether a walkthrough is needed.
 
-**Call**  
-{site.business.phone}  
+**Call**
+{site.business.phone}
 For immediate questions about fit and timing.
 
-**Text photos**  
-{site.business.phone}  
+**Text photos**
+{site.business.phone}
 Stand in the doorway and get the whole room, then step in close on the worst spots.
 
-**Service area**  
-{site.business.region}  
+**Service area**
+{site.business.region}
 Availability depends on the address, scope and schedule.
 
 > **Amended 2026-08-19 — two changes to this block, both in `docs/27-COPY-CANONICAL.md`.**
@@ -2017,7 +2102,18 @@ Submit label:
 
 Submission clarification:
 
-> This only starts the conversation. It does not book or authorize work.
+> ~~This only starts the conversation. It does not book or authorize work.~~
+
+> **Superseded 2026-08-20 by doc 27 §8 "Directly under the submit button", owner-approved.**
+> Shipping copy is now *"This starts a conversation. It does not book work or authorize
+> anything."* — the same promise with the hedge out of the first clause and the second clause
+> widened past "work". Recorded in `docs/27-SECTION-9-15-CONNECTIVE-COPY.md` §27.8. An explicit
+> owner decision is precedence rank 1 and outranks this document at rank 7.
+>
+> This string was never the claims-law disclaimer and its replacement is not either. The
+> `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §6 assessment disclaimer — *"Submitting this form
+> authorizes Aseptaclean to contact you. It does not authorize work or create a service
+> agreement."* — is a rank-2 requirement, is unaffected by this strike, and still ships.
 
 Consent:
 
@@ -2044,7 +2140,15 @@ Success message:
 
 ### Full assessment form
 
-**Reconciled to the build 2026-08-19 (register item P4). Code is truth.** This section
+> **Architecture superseded 2026-08-25; implementation unchanged.** The current 47-field wizard
+> below remains a factual record of what ships today, not the approved future form model. The
+> approved redesign begins situation-first with name, phone and/or email, property city, what the
+> visitor sees, what needs to happen next, relevant timing, and optional photos. Additional
+> qualification follows only where genuinely necessary. Do not change protected SMS, 10DLC,
+> legal-consent, privacy, or regulated-condition wording without verifying the controlling
+> requirements.
+
+**Reconciled to the build 2026-08-19 (register item P4). Current-state evidence only.** This section
 previously specified a single-step, eleven-field form with a `Service needed` dropdown and one
 free-text `Property description`. `src/components/AssessmentForm.astro` is a **three-step
 wizard with 47 named fields**. That is not a string swap — the form described here was
@@ -2170,17 +2274,18 @@ Verify the destination, notification, stored fields, source data, and customer-f
 
 ### Homepage metadata
 
-**Title**  
-Property Cleanout & Deep Cleaning | San Jose | Aseptaclean
+**Title**
+~~Property Cleanout & Deep Cleaning | San Jose & South Bay | Aseptaclean~~ → **Deep Cleaning & Complex Property Cleanup | San Jose | Aseptaclean**
+*Struck 2026-08-21 by the sitewide positioning pass (owner instruction, rank 1).* *The struck title led with the narrowest lane; the replacement leads with the higher-volume term and keeps "cleanup".*
 
-**Description**  
-Whole-property cleanout and deep cleaning in San Jose & the South Bay. Written scope before work, nothing removed without approval, documented closeout.
+**Description**
+Whole-property cleanout and deep cleaning in the South Bay & Peninsula. Written scope before work, nothing removed without approval, documented closeout.
 
 > **Reconciled to the build 2026-08-19 (register item P5). Code is truth.**
 >
 > Title was: ~~*Aseptaclean | Deep Cleaning & Property Cleanup San Jose*~~
 > Description was: ~~*Detailed deep cleaning, move-out cleaning, post-construction cleaning and
-> difficult-property cleanup in San Jose and the South Bay.*~~
+> difficult-property cleanup in the South Bay & Peninsula.*~~
 >
 > Both were replaced by the 2026-08-17 SEO/meta pass, which this section was never updated to
 > record. The shipped title leads with the primary term instead of the brand and keeps the
@@ -2253,39 +2358,70 @@ Do not create pages just to increase page count. A page must satisfy a distinct 
 
 ## 20. City-page release specification
 
-Individual city pages are deferred until they are strong enough to rank and accurate enough to trust.
+> **Amended 2026-08-21, owner ruling. Nine city pages are built and shipping `noindex`.**
+> This section's standard is otherwise intact and still governs; one input moved from *required*
+> to *optional*, and the route architecture it describes is now two tiers, not one:
+> `/service-areas/[city]/` (3 built) and `/service-areas/[city]/[service]/` (6 built).
+> `docs/19-SYSTEM-AND-SITEMAP.md` §2.2 is the governing statement; this section is copy law and
+> does not own architecture. See `docs/05-DECISIONS-LOG.md`, 2026-08-21.
+
+Individual city pages are deferred until they are strong enough to rank and accurate enough to
+trust. **"Strong enough" is now measured, not asserted** — `npm run qa:seo` runs every guard
+below against `dist/` and reports a per-route publish blocker list.
 
 ### Required city-page inputs
 
 - Verified city-specific business licensing or registration facts
 - Verified hauling, container, and disposal requirements relevant to the service
-- Real completed job or other verifiable local proof
+- ~~Real completed job or other verifiable local proof~~ — **NO LONGER REQUIRED, 2026-08-21.**
+  A local page may launch with no prior Aseptaclean job history in that city. Real completed
+  projects are a **future proof-enhancement layer**, added when a real job produces documentable
+  owner-approved material — not a prerequisite for the route to exist. **Fabricating one to
+  satisfy this line is prohibited and always was** (`AGENTS.md` §0.3). The absence of a project
+  section on a city page is not a defect.
+- **Service-specific local implications** — what each verified fact changes for *this* service at
+  *this* address, kept separate from the fact itself so an inference is never mistakable for a
+  published rule
+- **Source and freshness controls on every fact** — named publisher, source URL, `verifiedAt`,
+  `reviewAfter`; a fact past `reviewAfter` blocks indexation until reverified
 - At least 400 words of unique local content
 - Accurate neighborhood, building-access, parking, loading, or property-type context
 - Unique title, meta description, H1, lead, FAQ, and internal links
 - At least five sentences that become false if the city name is swapped
 - No claims based solely on geography
+- **No fabricated experience claims** — no job count, no "we have worked in", no anonymized
+  project, no review, rating, or proof image. Absolute, and it outranks every other line here.
 
 ### City-page structure
 
 1. City-specific H1 and lead
 2. Locally relevant property types
 3. Services actually available in that city
-4. Access, parking, building, deadline, or disposal considerations
-5. Real project evidence
-6. City-specific FAQ
-7. Related nearby cities
+4. Access, parking, building, deadline, or disposal considerations — **each rendered with its
+   source link**, per the freshness controls above
+5. ~~Real project evidence~~ — **optional enrichment as of 2026-08-21**, not a required section.
+   Add it when a real job produces documentable, owner-approved material. Never invent it.
+6. City-specific FAQ — schema must match the rendered FAQ verbatim in both directions
+7. Related nearby cities — in a sentence, never a link lattice. Sideways linking is permitted
+   only to the **sibling service in the same city**, never city-to-city
 8. Assessment CTA
 
 ### Release order
 
-1. San Jose
-2. Mountain View
-3. Sunnyvale
-4. Santa Clara
-5. Campbell
+~~1. San Jose  2. Mountain View  3. Sunnyvale  4. Santa Clara  5. Campbell~~
+**Amended 2026-08-21 to match what shipped.** San José has no city page — the San José market is
+served by the city-suffixed service pages (`/estate-cleanout-san-jose/` and siblings), and a
+`/service-areas/san-jose/` route would cannibalise them.
 
-Publish one complete city page at a time. Do not launch five duplicated pages together.
+**Built, all `noindex`:** Mountain View · Sunnyvale · Campbell — each with a hub and both service
+pages (hoarding cleanup, estate cleanout).
+**Not built:** Santa Clara, and the Peninsula cities. Add as data records, never as route files.
+**Palo Alto is legally blocked** until Public Works confirms (doc 25 §7).
+
+Publish one complete city page at a time. Do not launch five duplicated pages together. **The
+three cities were *built* together as gated drafts, which is not publishing** — all nine routes
+are `noindex, follow` and outside `sitemap.xml`, and the index flip is still a per-city decision
+gated on owner confirmation of city availability.
 
 ---
 
@@ -2375,8 +2511,8 @@ Publish one complete city page at a time. Do not launch five duplicated pages to
 
 ### Brand copy
 
-Aseptaclean  
-Detailed cleaning, specialty cleanup and property clearing across Santa Clara County.
+Aseptaclean
+Detailed cleaning, specialty cleanup and property clearing across the South Bay & Peninsula.
 
 ### Service groups
 
@@ -2431,7 +2567,12 @@ Copyright:
 
 ---
 
-## 25. Technical architecture
+## 25. Historical technical architecture — superseded
+
+**Do not implement this section.** It describes the abandoned ChatGPT-hosted Next/Vinext build.
+The approved and current platform is Astro static output on Cloudflare Pages. The only lead
+endpoint is `/api/lead`, implemented by `functions/api/lead.ts`. No WordPress, Elementor,
+Next/Vinext, `/api/leads`, or parallel endpoint work is authorized.
 
 ### Platform
 
@@ -2588,7 +2729,10 @@ Do not optimize for traffic volume alone. Optimize for qualified assessment requ
 
 ---
 
-## 28. Launch checklist
+## 28. Historical launch checklist — superseded by doc 04
+
+The old missing-endpoint premise below is false. Use `docs/04-RELEASE-CHECKLIST.md` for current
+release gates. Do not execute item 1 or create `/api/leads`.
 
 ### Must complete before sending meaningful paid traffic
 

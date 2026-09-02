@@ -1,16 +1,8 @@
 ---
-// UNPUBLISHED DRAFT — docs/19-SYSTEM-AND-SITEMAP.md §2.1 Phase 3, §2.2 SERVICE AREAS HUB spec
-// ("Contents: county framing paragraph, city pill grid, one short paragraph per area cluster...
-// links down to city pages as they exist. Parent for all Phase 3c pages."), §2.2 CITY PAGES
-// ("Hard gate: ≥1 completed job in that city... No verified original content → no page.").
-// Ships noindex, excluded from sitemap.xml.ts, not linked from nav/footer.
-//
-// No city page exists yet (confirmed: no src/pages/service-areas/{city}/ directories exist in
-// this repo), so per the hard content gate, no city links render — this page renders the
-// cluster paragraphs and the existing AreasWeServe pill component only, exactly as the spec
-// describes for the current state ("city links rendered only when city pages exist — none
-// yet"). The city-link list below is written to render conditionally so this file requires no
-// further edits once the first real city page ships — see cityPages below.
+// Indexable service-area directory and parent for the city hubs. Three complete city routes
+// now exist from the owner-approved 2026-08-21 copy package. Their individual availability
+// gates remain open, so they ship noindex and stay outside sitemap.xml while this parent gives
+// users the contextual inbound route required by that package.
 //
 // DIFFERENTIATION: this is the only page in the batch that is a directory/hub, not a
 // buyer-decision service page — no Track A/B, no fiduciary block, no FAQ, no PROOF section (a
@@ -24,18 +16,17 @@ import AccentBand from "@components/AccentBand.astro";
 import RequestForm from "@components/RequestForm.astro";
 import { serviceAreasHub } from "@data/servicePages";
 import { serviceAreasPage } from "@data/doc27CompanyPages";
+import { cityHubLinks } from "@data/cityHubPages";
 import { site } from "@data/site";
 
-// Phase 3c gate (docs/19-SYSTEM-AND-SITEMAP.md §2.1): "one per city actually worked; hard
-// content gate." Populate this list only once a real /service-areas/{city}/ page exists with
-// ≥1 completed job and genuine local content — never pre-link a page that doesn't exist.
-const cityPages: ReadonlyArray<{ city: string; href: string }> = [];
+// Centralized with the route generator so the directory and built city routes cannot drift.
+const cityPages: ReadonlyArray<{ city: string; href: string }> = cityHubLinks;
 
 const schema = [
   {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
       {
         "@type": "ListItem",
         position: 2,
@@ -86,11 +77,11 @@ const schema = [
       <section class="city-links" aria-labelledby="city-links-title">
         <div class="ac-measure-wide">
           <p class="ac-eyebrow">City pages</p>
-          <h2 id="city-links-title" class="ac-type-h2">Cities with a completed project on record</h2>
+          <h2 id="city-links-title" class="ac-type-h2">Local planning guides</h2>
           <ul class="city-links__list">
             {cityPages.map((entry) => (
               <li>
-                <a href={entry.href}>Estate cleanout in {entry.city} →</a>
+                <a href={entry.href}>{entry.city} →</a>
               </li>
             ))}
           </ul>

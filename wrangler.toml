@@ -49,12 +49,19 @@ PUBLIC_EMAIL = "info@aseptaclean.com"
 PUBLIC_FORM_ENABLED = "true"
 PUBLIC_FORM_ENDPOINT = "/api/lead"
 PUBLIC_FOUNDER_NAME = "Matthew Ruiz"
-PUBLIC_INSURANCE_STATUS = "Insured. Certificate of Insurance available upon request."
+# PUBLIC_INSURANCE_STATUS intentionally absent. doc 21 §2.5 / AGENTS.md §3: no current COI is
+# verified in this repository, so the insurance line and the "Organic Pathogen Endorsed" line
+# (both gated on this same value — see src/data/site.ts, CredentialBar.astro, about/index.astro,
+# faq/index.astro) must be suppressed rather than published. This was previously set to the
+# recorded-but-unverified wording, which shipped the claim on every production build regardless
+# of the suppression logic in src/. Set it here (matching the recorded wording in doc 21 §2.5
+# exactly, so nothing needs to change downstream) only after the owner or insurance broker
+# verifies it against a current Certificate of Insurance.
 PUBLIC_LEGAL_NAME = "Aseptaclean, LLC"
 PUBLIC_PHONE = "(408) 785-7588"
 PUBLIC_PRIVACY_CONTACT = "info@aseptaclean.com"
 PUBLIC_RESPONSE_TIME = "within one business day"
-PUBLIC_SERVICE_AREA = "San Jose and the South Bay"
+PUBLIC_SERVICE_AREA = "South Bay & Peninsula"
 PUBLIC_SITE_URL = "https://aseptaclean.com"
 PUBLIC_SMS_NUMBER = "(408) 785-7588"
 PUBLIC_TERMLY_CONSENT_ENABLED = "true"

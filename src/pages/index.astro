@@ -1,56 +1,93 @@
 ---
-// Section order and markup ported verbatim from docs/aseptaclean-FINAL-v2.html
-// (05-DECISIONS-LOG.md supersedes docs/11-COMPOSITION-AND-TYPE.md and
-// docs/18-VISUAL-DIRECTION.md's homepage section map for this page).
+// HOMEPAGE — V3 lean Sevenson architecture, rebuilt 2026-08-25.
+//
+// Section order is docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md §6, which the brief
+// itself declares supersedes the earlier section-order instructions in
+// docs/ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF-SEVENSON.md and docs/30-WEBSITE-MASTER-SPEC.md
+// §36.1 wherever they conflict. It is an explicit current owner decision (AGENTS.md §1 rank 2)
+// and therefore outranks the master spec's thirteen-beat list (rank 5). Recorded in
+// docs/05-DECISIONS-LOG.md.
+//
+//   01 Utility + Main Navigation   (StatusRibbon + Header, in BaseLayout)
+//   02 Hero
+//   03 What We Handle
+//   04 The Property Condition Changes the Work
+//   05 Operating Evidence / How Aseptaclean Works
+//   06 Final CTA
+//   07 Footer                      (in BaseLayout)
+//
+// WHY THIS IS A REDUCTION, NOT A RESTYLE. The 2026-08-25 audit measured the previous build at
+// 11,704px / 1,678 words / eight H2s / five repeats of one H2-left-content-right composition,
+// with two photographs below the hero. V3 §0 rules that the correction is to remove structure,
+// not to make the same page prettier. Eleven rendered sections became five.
+//
+// SECTIONS MERGED IN THIS PASS — content absorbed, not discarded:
+//   ConditionRecognition + ServiceFeatures  → WhatWeHandle
+//       V3 §10: the homepage does not need two routing systems for the same idea. One
+//       photographic section now does both jobs — "that looks like my situation" and "yes,
+//       Aseptaclean handles this".
+//   ScopeExplanation → ConditionChangesWork
+//       V3 §11: the standalone "A Clear Scope Before Work Begins" section is deleted and its
+//       load-bearing sentence ("The scope is defined before work begins") is absorbed into the
+//       differentiation section, which was already making the same argument.
+//   HandoffRecord + OperatorAccountability → OperatingEvidence
+//       V3 §12: one concentrated credibility movement instead of a record band, a founder
+//       section with an empty bordered photo slot, and a generic trust block.
+//
+// SECTIONS REMOVED FROM `/`, CONTENT PRESERVED ELSEWHERE — V3 §§7, 13, 14, 15:
+//   CostAndScope   → the cost DRIVERS and doc 27 §7's $195 assessment framing already render on
+//                    every service page through ServicePricing, and on /private-residence-reset/.
+//                    Nothing sitewide is lost. AGENTS.md §4 is untouched: no price figure moved,
+//                    appeared, or changed anywhere in this pass.
+//   ConfidenceAndFit → MOVED to /services/, which V3 §14 names as a correct home for fit and
+//                    boundaries. homepage.excludedScope and homepage.qualification rendered
+//                    NOWHERE else in the build, so deleting the section outright would have
+//                    deleted the site's only sitewide exclusion list. The component file is
+//                    unchanged; only its call site moved.
+//                    POINTER UPDATED 2026-08-26: ConfidenceAndFit.astro no longer exists. The
+//                    /services/ rebuild replaced it with ServiceScopeBoundary.astro, which
+//                    renders the same three sources — homepage.qualification,
+//                    homepage.excludedScope and legal.scopeDisclaimer — verbatim and unedited.
+//                    The sentence above still holds: those two arrays render on exactly one
+//                    route, and that route is still /services/.
+//   FAQ           → still the whole of /faq/, which emits its own FAQPage JSON-LD. The homepage
+//                    FAQPage node is removed with the section: schema must not describe content
+//                    a visitor cannot see (docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6.1).
+//
+// PRESERVED DELIBERATELY: canonical, robots, sitemap membership, redirects, the lead endpoint,
+// service-area generation, schema identity, and every publication gate. No route changed, no
+// gated service became visible, and no regulated future service is named.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import AccentBand from "@components/AccentBand.astro";
-import AreasWeServe from "@components/AreasWeServe.astro";
-import ConfidenceAndFit from "@components/ConfidenceAndFit.astro";
-import CredentialBar from "@components/CredentialBar.astro";
-import FAQ, { faqItems } from "@components/FAQ.astro";
+import ConditionChangesWork from "@components/ConditionChangesWork.astro";
 import FinalCTA from "@components/FinalCTA.astro";
-import HandoffRecord from "@components/HandoffRecord.astro";
-import HandoffStandard from "@components/HandoffStandard.astro";
 import Hero from "@components/Hero.astro";
-import OperatorAccountability from "@components/OperatorAccountability.astro";
-import Pricing from "@components/Pricing.astro";
-import RequestForm from "@components/RequestForm.astro";
-import ServiceCards from "@components/ServiceCards.astro";
-import WhyAseptaclean from "@components/WhyAseptaclean.astro";
+import OperatingEvidence from "@components/OperatingEvidence.astro";
+import WhatWeHandle from "@components/WhatWeHandle.astro";
 import { homepage, site } from "@data/site";
 
-// doc 19 §2.2: sameAs → GBP/Yelp/Nextdoor. Only owner-confirmed profile URLs are ever
-// included (never fabricated) — matches AGENTS.md's "never invent proof" rule.
-const sameAs = [
-  site.business.googleBusinessProfileUrl,
-  site.business.yelpUrl,
-  site.business.nextdoorUrl
-].filter((url): url is string => Boolean(url));
-
-const localBusinessSchema = {
-  "@type": "LocalBusiness",
-  "@id": new URL("/#business", site.urls.site).href,
-  name: site.business.name,
-  url: site.urls.site,
-  email: site.business.email,
-  areaServed: site.location.cities.map((name) => ({
-    "@type": "City",
-    name
-  })),
-  address: {
-    "@type": "PostalAddress",
-    addressLocality: "San Jose",
-    addressRegion: "CA",
-    addressCountry: "US"
-  },
-  geo: {
-    "@type": "GeoCoordinates",
-    latitude: 37.3382,
-    longitude: -121.8863
-  },
-  ...(sameAs.length > 0 ? { sameAs } : {})
-};
-
+// The Service nodes describe homepage.serviceCards. The LocalBusiness node remains defined once
+// in src/components/SeoHead.astro; do not re-add a business node here.
+//
+// CORRECTION 2026-08-26 — the claim this comment used to make is FALSE and was left standing for
+// a day. It read: "WhatWeHandle still renders those three families, so schema and visible copy
+// cannot drift." They have drifted, and by design on both sides:
+//
+//   serviceCards  Detailed cleaning · Complex property cleanup · Animal & organic condition cleaning
+//   WhatWeHandle  Overwhelming contents & hoarding · Neglected & heavily soiled properties ·
+//                 Estate, move-out & property transitions
+//
+// Those are three CONDITIONS a visitor recognises, not the three service families, and the animal
+// / organic family is deliberately absent from the visible page — WhatWeHandle's own header
+// comment records why (its only route ships `noindex`, and a gated service is not exposed here).
+// So `/` currently emits a Service node for a family the page does not describe or link to.
+//
+// NOT changed in this pass, deliberately. Deleting a Service node is a schema/representation
+// decision affecting how the site's services are described, and the same string also ships on
+// /services/ and /specialty-cleaning/, so a homepage-only edit would make the three disagree.
+// Raised for owner review instead; see docs/05-DECISIONS-LOG.md, 2026-08-26. The second reason it
+// needs a decision rather than a tidy-up: that node's `description` is the only place on `/` where
+// the "organic pathogen endorsement" wording appears, and AGENTS.md §3 holds every insurance and
+// endorsement claim release-gated until the wording is verified against a current COI.
 const serviceSchemas = homepage.serviceCards.map((card) => ({
   "@type": "Service",
   serviceType: card.title,
@@ -61,39 +98,17 @@ const serviceSchemas = homepage.serviceCards.map((card) => ({
     name
   }))
 }));
-
-const faqSchema = {
-  "@type": "FAQPage",
-  "@id": new URL("/#faq", site.urls.site).href,
-  mainEntity: faqItems.map((item) => ({
-    "@type": "Question",
-    name: item.question,
-    acceptedAnswer: {
-      "@type": "Answer",
-      text: item.answer
-    }
-  }))
-};
 ---
 
 <BaseLayout
-  title="Property Cleanout & Deep Cleaning | San Jose | Aseptaclean"
-  description="Whole-property cleanout and deep cleaning in San Jose & the South Bay. Written scope before work, nothing removed without approval, documented closeout."
+  title="Deep Cleaning & Complex Property Cleanup | San Jose | Aseptaclean"
+  description="Deep cleaning, move-out cleaning, hoarding and estate cleanouts in the South Bay & Peninsula. Written scope first. Nothing removed without your approval."
   canonicalPath="/"
-  schema={[localBusinessSchema, ...serviceSchemas, faqSchema]}
+  schema={serviceSchemas}
 >
   <Hero />
-  <CredentialBar />
-  <ServiceCards />
-  <ConfidenceAndFit />
-  <WhyAseptaclean />
-  <AccentBand />
-  <HandoffStandard />
-  <HandoffRecord />
-  <Pricing />
-  <AreasWeServe />
-  <OperatorAccountability />
-  <FAQ />
-  <RequestForm />
+  <WhatWeHandle />
+  <ConditionChangesWork />
+  <OperatingEvidence />
   <FinalCTA />
 </BaseLayout>

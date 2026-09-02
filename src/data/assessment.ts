@@ -1,139 +1,63 @@
+// Rebuilt 2026-09-02 for the lean request-assessment form. The service pages already explain
+// the service, qualify the customer, and set expectations — this form's only job is to collect
+// enough to start a conversation. See docs/30-WEBSITE-MASTER-SPEC.md §25 and AGENTS.md §2 for
+// which services are active (rodent-droppings and animal-waste are noindex but NOT operationally
+// gated — their situations stay in this list).
 export const assessment = {
-  version: "2026-07-30.2",
-  steps: [
-    {
-      number: "01",
-      shortLabel: "Property",
-      label: "Property fit",
-      description: "Location, transition, size, and timing"
+  version: "2026-09-02.1",
+  // Shown only to a direct visitor with no `?service=` context. Keys line up with
+  // AssessmentForm.astro's serviceContexts map so a direct-visitor answer and a service-page
+  // referral land on the same `property_situation` value server-side.
+  situations: [
+    { value: "Accumulated contents", label: "Too much stuff / packed property" },
+    { value: "Inherited or estate property", label: "Estate or property cleanout" },
+    { value: "Already empty but requires detailed cleaning", label: "Detailed deep cleaning" },
+    { value: "Difficult move-out", label: "Move-out cleaning" },
+    { value: "Overwhelmed property", label: "Property is past normal cleaning" },
+    { value: "Rodent droppings", label: "Rodent droppings" },
+    { value: "Animal waste", label: "Animal waste" },
+    { value: "Other", label: "Something else / not sure" }
+  ],
+  // At most one extra qualifying question per service, per the assessment rebuild rule. Keyed
+  // by the same `?service=` value AssessmentForm.astro already recognizes. Detailed deep
+  // cleaning has none — current workflow does not need one.
+  serviceQuestions: {
+    "hoarding-cleanup": {
+      name: "belongings_must_be_kept",
+      label: "Are there belongings that must be kept?",
+      options: ["Yes", "No", "Not sure"]
     },
-    {
-      number: "02",
-      shortLabel: "Scope",
-      label: "Scope and condition",
-      description: "Areas, clearing, cleaning, and condition flags"
+    "move-out": {
+      name: "desired_completion_date",
+      label: "When does the property need to be ready?",
+      type: "date"
     },
-    {
-      number: "03",
-      shortLabel: "Authority",
-      label: "Authority and contact",
-      description: "Decision authority and response details"
+    "rodent-droppings": {
+      name: "pest_control_involved",
+      label: "Has pest control already been involved?",
+      options: ["Yes", "No", "Scheduled", "Not sure"]
+    },
+    "animal-waste": {
+      name: "animal_waste_pattern",
+      label: "Is this a one-time accident or a repeated condition?",
+      options: ["One-time", "Repeated", "Not sure"]
+    },
+    "extreme-cleanup": {
+      name: "belongings_block_access",
+      label: "Are belongings blocking access to the areas that need cleaning?",
+      options: ["Yes", "No", "Some areas", "Not sure"]
+    },
+    "estate-cleanout": {
+      name: "items_must_be_saved",
+      label: "Are there specific items or documents that must be saved?",
+      options: ["Yes", "No", "Not sure"]
+    },
+    "property-cleanouts": {
+      name: "items_must_remain",
+      label: "Does anything need to stay at the property?",
+      options: ["Yes", "No", "Not sure"]
     }
-  ],
-  propertyTypes: [
-    "Single-family home",
-    "Townhome",
-    "Condominium",
-    "Apartment or unit",
-    "Duplex or multifamily property",
-    "Other residential property",
-    "Not sure"
-  ],
-  propertySituations: [
-    "Inherited or estate property",
-    "Preparing to sell",
-    "Landlord turnover",
-    "Difficult move-out",
-    "Accumulated contents",
-    "Overwhelmed property",
-    "Already empty but requires detailed cleaning",
-    "Move-in whole-home reset",
-    "Seasonal or pre-event whole-home reset",
-    "Second-home reopening",
-    "Establishing a whole-home cleaning baseline",
-    "Other"
-  ],
-  squareFootageRanges: [
-    "Under 1,000 sq. ft.",
-    "1,000–1,499 sq. ft.",
-    "1,500–1,999 sq. ft.",
-    "2,000–2,999 sq. ft.",
-    "3,000–3,999 sq. ft.",
-    "4,000+ sq. ft.",
-    "Not sure"
-  ],
-  areas: [
-    "Whole interior",
-    "Kitchen",
-    "Bathrooms",
-    "Bedrooms",
-    "Living or common areas",
-    "Closets",
-    "Garage",
-    "Attic",
-    "Basement",
-    "Shed or storage area",
-    "Exterior contents",
-    "Other"
-  ],
-  scopeQuestions: [
-    {
-      name: "contents_removal",
-      label: "Is unwanted contents removal needed?"
-    },
-    {
-      name: "heavy_cleaning",
-      label: "Is heavy cleaning needed?"
-    },
-    {
-      name: "garage_storage",
-      label: "Is a garage or storage area included?"
-    },
-    {
-      name: "appliance_interiors",
-      label: "Should appliance interiors be considered?"
-    },
-    {
-      name: "cabinet_interiors",
-      label: "Should cabinet interiors be considered?"
-    }
-  ],
-  conditionQuestions: [
-    {
-      name: "animal_waste",
-      label: "Known animal waste?"
-    },
-    {
-      name: "human_biological_material",
-      label: "Known human blood, bodily fluids, or other biological material?",
-      stopFlag: true
-    },
-    {
-      name: "needles_sharps",
-      label: "Known needles or sharps?",
-      stopFlag: true
-    },
-    {
-      name: "sewage",
-      label: "Known sewage?",
-      stopFlag: true
-    },
-    {
-      name: "mold",
-      label: "Known or suspected mold?",
-      stopFlag: true
-    },
-    {
-      name: "pest_activity",
-      label: "Known pest activity?"
-    }
-  ],
-  relationships: [
-    "Property owner",
-    "Heir or family representative",
-    "Executor or estate representative",
-    "Landlord",
-    "Property manager",
-    "Real estate professional",
-    "Other authorized representative"
-  ],
-  contactMethods: ["Phone call", "Text message", "Email"],
-  contactTimes: [
-    "Morning — 8 a.m. to noon",
-    "Afternoon — noon to 5 p.m.",
-    "Evening — after 5 p.m.",
-    "No preference"
-  ],
+  },
   upload: {
     acceptedTypes:
       ".jpg,.jpeg,.png,.webp,.heic,.heif,.mp4,.mov,.webm,image/jpeg,image/png,image/webp,image/heic,image/heif,video/mp4,video/quicktime,video/webm",

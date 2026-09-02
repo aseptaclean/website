@@ -1,4 +1,13 @@
 ---
+// Rebuilt 2026-09-02 for conversion. Service pages already explain the service, qualify the
+// customer, and set expectations — this form's only job is: situation, location, a short
+// description, optional photos, contact info, submit. One page, no wizard, no draft
+// persistence (nothing here takes long enough to need it).
+//
+// The Private Residence Reset offer (`?offer=private-residence-reset`) is a distinct premium
+// offer outside the main service taxonomy (doc 30 §33) and keeps its own longer residence-
+// baseline block, hidden by default and revealed by the same client-side branch this form
+// used before the rebuild. Nothing about that offer's fields or requirements changed.
 import { assessment } from "@data/assessment";
 import { legal, site } from "@data/site";
 
@@ -7,789 +16,322 @@ const endpointAvailable = Boolean(
     site.urls.formEndpoint &&
     site.integrations.turnstileSiteKey
 );
-const yesNoUnsure = [
-  { value: "yes", label: "Yes" },
-  { value: "no", label: "No" },
-  { value: "not_sure", label: "Not sure" }
-] as const;
 ---
 
 <section class="assessment" aria-labelledby="assessment-title">
   <div class="assessment__masthead ac-measure-wide">
-    <div class="assessment__intro">
-      <p class="assessment__eyebrow" data-offer-eyebrow>{site.offer.leadOffer}</p>
-      <h1 id="assessment-title" class="ac-type-h1" data-offer-title>Start with the property. We’ll review the path to handoff.</h1>
-      <p class="assessment__lead" data-offer-lead>
-        Share the property, scope, and approval details Aseptaclean needs to
-        make a fit decision and identify a clear next step.
-      </p>
-    </div>
-
-    <dl class="assessment__facts" aria-label="Assessment details">
-      <div>
-        <dt>Time to complete</dt>
-        <dd>Approximately 3–5 minutes</dd>
-      </div>
-      <div>
-        <dt>Helpful evidence</dt>
-        <dd>Property photos or video</dd>
-      </div>
-      <div>
-        <dt>Response</dt>
-        <dd>{site.offer.responseTime}</dd>
-      </div>
-    </dl>
+    <p class="assessment__eyebrow" data-offer-eyebrow>Request an Assessment</p>
+    <h1 id="assessment-title" class="ac-type-h1" data-offer-title>
+      Tell Us What Is Happening at the Property.
+    </h1>
+    <p class="assessment__lead" data-offer-lead>
+      You don&rsquo;t need to know the exact service or scope. Tell us what you&rsquo;re
+      dealing with, add photos if you have them, and we&rsquo;ll determine the right next
+      step.
+    </p>
   </div>
 
   <div class="assessment__body ac-measure-wide">
-    <aside class="assessment__rail" aria-label="Assessment progress and guidance">
-      <div class="assessment__rail-inner">
-        <p class="assessment__record-label" data-offer-record>Handoff plan intake record</p>
-        <p class="assessment__draft">Draft · Not an approved scope</p>
+    <p class="assessment__privacy-note">
+      Photos and property details are used to review your request.
+    </p>
 
-        <ol class="assessment__steps">
-          {assessment.steps.map((step, index) => (
-            <li data-step-indicator={index}>
-              <span class="assessment__step-number" aria-hidden="true">{step.number}</span>
-              <span>
-                <strong>
-                  <span class="assessment__step-label-full">{step.label}</span>
-                  <span class="assessment__step-label-short">{step.shortLabel}</span>
-                </strong>
-                <small>{step.description}</small>
-              </span>
-            </li>
+    <form
+      class="intake-form"
+      action={endpointAvailable ? site.urls.formEndpoint : undefined}
+      method="post"
+      enctype="multipart/form-data"
+      data-assessment-form
+      data-contact-phone={site.business.phone}
+    >
+      <input type="hidden" name="form_version" value={assessment.version} />
+      <input type="hidden" name="offer_type" value="handoff_reset" />
+      <input type="hidden" name="entry_route" value="/request-assessment/" />
+      <input type="hidden" name="submitted_from" value="/request-assessment/" />
+      <input type="hidden" name="utm_source" value="" />
+      <input type="hidden" name="utm_medium" value="" />
+      <input type="hidden" name="utm_campaign" value="" />
+      <input type="hidden" name="utm_term" value="" />
+      <input type="hidden" name="utm_content" value="" />
+      <input type="hidden" name="gclid" value="" />
+      <input type="hidden" name="landing_page" value="" />
+      <input type="hidden" name="referrer" value="" />
+      <input type="hidden" name="submission_timestamp" value="" />
+      <input type="hidden" name="idempotency_key" value="" />
+      <input
+        class="intake-form__honeypot"
+        type="text"
+        name="company_website"
+        tabindex="-1"
+        autocomplete="off"
+        aria-hidden="true"
+      />
+
+      <div
+        class="intake-form__errors"
+        tabindex="-1"
+        aria-labelledby="assessment-error-title"
+        hidden
+      >
+        <h2 id="assessment-error-title" class="ac-type-lead">Review the highlighted fields</h2>
+        <ul></ul>
+      </div>
+
+      <fieldset class="form-group" data-handoff-only>
+        <legend>What are you dealing with? <span aria-hidden="true">*</span></legend>
+        <div class="choice-grid" data-situation-choices>
+          {assessment.situations.map((situation) => (
+            <label class="choice-control">
+              <input
+                type="radio"
+                name="property_situation"
+                value={situation.value}
+                required
+              />
+              <span>{situation.label}</span>
+            </label>
           ))}
-        </ol>
+        </div>
+      </fieldset>
 
-        <div class="assessment__next">
-          <p class="assessment__next-label">What happens next</p>
-          <p>
-            Aseptaclean reviews the property details, condition flags, access,
-            deadline, and decision authority before confirming whether the
-            request is within scope.
-          </p>
+      <div class="form-grid" data-service-question hidden></div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="property-city">City <span aria-hidden="true">*</span></label>
+          <input
+            id="property-city"
+            name="property_city"
+            type="text"
+            autocomplete="address-level2"
+            required
+          />
+        </div>
+        <div class="form-field">
+          <label for="property-zip">
+            ZIP code <span class="form-field__optional">(optional)</span>
+          </label>
+          <input
+            id="property-zip"
+            name="property_zip"
+            type="text"
+            inputmode="numeric"
+            autocomplete="postal-code"
+            pattern="[0-9]{5}(?:-[0-9]{4})?"
+          />
         </div>
       </div>
-    </aside>
 
-    <div class="assessment__form-column">
-      <div class="assessment__privacy-note">
-        <p>
-          Photos recommended · Information and media are used only to evaluate
-          this request.
+      <div class="form-field">
+        <label for="property-detail">Tell us what is going on at the property.</label>
+        <p class="form-field__hint">
+          A few sentences is enough. Tell us what you are seeing and what you need the
+          property to become.
         </p>
+        <textarea
+          id="property-detail"
+          name="property_detail"
+          rows="4"
+          placeholder="Helping my dad with a packed 3-bedroom home. We need to keep family photos and clear most of the house before it can be sold."
+        ></textarea>
+      </div>
+
+      <div class="upload-field">
+        <label for="property-media">
+          Photos <span class="form-field__optional">(optional, but strongly encouraged)</span>
+        </label>
+        <p id="property-media-help">
+          Photos help us understand the condition faster. For most jobs, useful photos are
+          one wide photo of the area, a few closer photos of the main problem, and additional
+          rooms if several areas are affected.
+        </p>
+        <div class="upload-field__control">
+          <input
+            id="property-media"
+            name="property_media[]"
+            type="file"
+            accept={assessment.upload.acceptedTypes}
+            capture="environment"
+            aria-describedby="property-media-help property-media-limits"
+            multiple
+            data-upload-input
+            data-max-files={assessment.upload.maxFiles}
+            data-max-image-bytes={assessment.upload.maxImageBytes}
+            data-max-video-bytes={assessment.upload.maxVideoBytes}
+            data-max-total-bytes={assessment.upload.maxTotalBytes}
+            data-allowed-extensions={assessment.upload.allowedExtensions.join(",")}
+            data-image-extensions={assessment.upload.imageExtensions.join(",")}
+          />
+          <p id="property-media-limits">{assessment.upload.visibleLimits}</p>
+          <p class="upload-field__empty" data-upload-empty>No files selected.</p>
+          <ul
+            class="upload-field__files"
+            data-upload-list
+            aria-label="Selected property files"
+            hidden
+          ></ul>
+          <p class="upload-field__error form-error" data-upload-error role="alert" hidden
+          ></p>
+          <p class="visually-hidden" data-upload-status role="status" aria-live="polite"
+          ></p>
+        </div>
+      </div>
+
+      <div class="residence-questions" data-residence-only hidden>
+        <div class="residence-questions__heading">
+          <p class="condition-review__label">Residence baseline</p>
+          <h2 class="ac-type-h3">Rooms, finishes, access, and priorities</h2>
+          <p>
+            Describe the baseline you want established. These answers shape the room-by-room
+            assessment; they do not authorize work.
+          </p>
+        </div>
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="number-levels">Number of levels <span aria-hidden="true">*</span></label>
+            <select id="number-levels" name="number_of_levels" data-residence-required disabled>
+              <option value="">Select a level count</option>
+              <option>1</option>
+              <option>2</option>
+              <option>3+</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="occupancy">Residence status <span aria-hidden="true">*</span></label>
+            <select id="occupancy" name="occupancy_status" data-residence-required disabled>
+              <option value="">Select a status</option>
+              <option>Occupied</option>
+              <option>Temporarily vacant</option>
+              <option>Move-in pending</option>
+              <option>Second home</option>
+            </select>
+          </div>
+          <div class="form-field form-field--wide">
+            <label for="priority-rooms">Priority rooms or areas <span aria-hidden="true">*</span></label>
+            <textarea id="priority-rooms" name="priority_rooms" rows="4" data-residence-required disabled placeholder="List the rooms that matter most and what should feel different at completion."></textarea>
+          </div>
+          <div class="form-field form-field--wide">
+            <label for="detail-priorities">Detail priorities <span aria-hidden="true">*</span></label>
+            <textarea id="detail-priorities" name="detail_priorities" rows="4" data-residence-required disabled placeholder="Appliance or cabinet interiors, closets, interior windows, high dusting, trim, or other detail areas."></textarea>
+          </div>
+          <div class="form-field form-field--wide">
+            <label for="important-finishes">Important surfaces or finishes</label>
+            <textarea id="important-finishes" name="important_finishes" rows="4" disabled placeholder="Natural stone, oiled wood, specialty fixtures, delicate surfaces, restricted products, or areas not to disturb."></textarea>
+          </div>
+          <div class="form-field">
+            <label for="pets">Pets or animal instructions</label>
+            <input id="pets" name="pets" type="text" disabled />
+          </div>
+          <div class="form-field">
+            <label for="presence">Will someone be present?</label>
+            <select id="presence" name="someone_present" disabled>
+              <option value="">Select an answer</option>
+              <option>Yes</option>
+              <option>No</option>
+              <option>Part of the time</option>
+              <option>Not sure</option>
+            </select>
+          </div>
+          <div class="form-field">
+            <label for="safety-routing">Known condition requiring specialist review? <span aria-hidden="true">*</span></label>
+            <select id="safety-routing" name="safety_routing" data-residence-required disabled>
+              <option value="">Select an answer</option>
+              <option value="no_known_condition">No known condition</option>
+              <option value="possible_condition">Possibly / not sure</option>
+              <option value="known_condition">Yes</option>
+            </select>
+            <p class="form-field__hint">This does not imply service availability. Hazardous, regulated, severe-contamination, or specialist conditions are outside this campaign offer.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="full-name">Name <span aria-hidden="true">*</span></label>
+          <input id="full-name" name="full_name" type="text" autocomplete="name" required />
+        </div>
+
+        <div class="form-field">
+          <label for="phone">Phone <span aria-hidden="true">*</span></label>
+          <input
+            id="phone"
+            name="phone"
+            type="tel"
+            autocomplete="tel"
+            inputmode="tel"
+            required
+          />
+          <p class="form-field__hint">We call this number back — usually same business day.</p>
+        </div>
+
+        <div class="form-field">
+          <label for="email">
+            Email <span class="form-field__optional" data-residence-only hidden aria-hidden="true">*</span>
+            <span class="form-field__optional" data-email-optional-label>(optional)</span>
+          </label>
+          <input id="email" name="email" type="email" autocomplete="email" inputmode="email" />
+        </div>
+      </div>
+
+      <div class="intake-form__consent">
+        <label class="consent-control">
+          <input type="checkbox" name="privacy_consent" value="yes" required />
+          <span>
+            {legal.consentBase.lead}{" "}
+            <a href={site.urls.privacyPolicy}>{legal.consentBase.privacyLabel}</a>{legal.consentBase.tail}{" "}
+            {legal.consentAssessmentAppendix.lead}{" "}
+            <a href={site.urls.terms}>{legal.consentAssessmentAppendix.termsLabel}</a>{legal.consentAssessmentAppendix.tail}
+            <span aria-hidden="true">*</span>
+          </span>
+        </label>
+        <p>
+          Submitting this form authorizes Aseptaclean to contact you. It does not authorize
+          work or create a service agreement. Private. No pressure to have everything figured
+          out.
+        </p>
+      </div>
+
+      {
+        site.integrations.turnstileSiteKey && (
+          <div class="intake-form__turnstile">
+            <div
+              class="cf-turnstile"
+              data-sitekey={site.integrations.turnstileSiteKey}
+              data-theme="light"
+              data-size="flexible"
+            />
+          </div>
+        )
+      }
+      <noscript>
+        <p class="intake-form__no-script">
+          Security verification requires JavaScript. Please call Aseptaclean if you cannot
+          enable it.
+        </p>
+      </noscript>
+
+      {!endpointAvailable && (
+        <div class="intake-form__availability" role="status">
+          <p>
+            Online submission is not fully configured in this preview. Your answers will not
+            be sent.
+          </p>
+        </div>
+      )}
+
+      <div class="intake-form__actions">
         <button
-          class="assessment__clear-draft"
-          type="button"
-          data-clear-draft
-          hidden
+          class="button"
+          type="submit"
+          disabled={!endpointAvailable}
+          data-submit-button
         >
-          Forget saved progress
+          <span data-submit-label data-offer-submit>Send My Request</span>
         </button>
-        <p
-          class="assessment__draft-status"
-          data-draft-status
-          role="status"
-          aria-live="polite"
-          hidden
+        <p class="intake-form__submit-status" data-submit-status role="status" aria-live="polite" hidden
         ></p>
       </div>
-
-      <form
-        class="intake-form"
-        action={endpointAvailable ? site.urls.formEndpoint : undefined}
-        method="post"
-        enctype="multipart/form-data"
-        data-assessment-form
-        data-contact-phone={site.business.phone}
-      >
-        <input type="hidden" name="form_version" value={assessment.version} />
-        <input type="hidden" name="offer_type" value="handoff_reset" />
-        <input type="hidden" name="entry_route" value="/request-assessment/" />
-        <input
-          type="hidden"
-          name="submitted_from"
-          value="/request-assessment/"
-        />
-        <input type="hidden" name="utm_source" value="" />
-        <input type="hidden" name="utm_medium" value="" />
-        <input type="hidden" name="utm_campaign" value="" />
-        <input type="hidden" name="utm_term" value="" />
-        <input type="hidden" name="utm_content" value="" />
-        <input type="hidden" name="gclid" value="" />
-        <input type="hidden" name="landing_page" value="" />
-        <input type="hidden" name="referrer" value="" />
-        <input type="hidden" name="submission_timestamp" value="" />
-        <input type="hidden" name="idempotency_key" value="" />
-        <input
-          class="intake-form__honeypot"
-          type="text"
-          name="company_website"
-          tabindex="-1"
-          autocomplete="off"
-          aria-hidden="true"
-        />
-
-        <div
-          class="intake-form__errors"
-          tabindex="-1"
-          aria-labelledby="assessment-error-title"
-          hidden
-        >
-          <h2 id="assessment-error-title" class="ac-type-lead">Review the highlighted fields</h2>
-          <ul></ul>
-        </div>
-
-        <fieldset class="intake-step" id="property-fit" data-step="0">
-          <legend>
-            <span class="intake-step__number">Step 1 of 3</span>
-            <span class="intake-step__title ac-type-h2" data-step-heading tabindex="-1">
-              Property fit
-            </span>
-          </legend>
-          <p class="intake-step__intro">
-            Begin with the property’s location, transition, approximate size,
-            and required timing.
-          </p>
-          <p class="intake-form__required-note">
-            Fields marked <span aria-hidden="true">*</span><span class="visually-hidden">required</span> are required.
-          </p>
-
-          <div class="form-grid">
-            <div class="form-field">
-              <label for="property-city">Property city <span aria-hidden="true">*</span></label>
-              <input
-                id="property-city"
-                name="property_city"
-                type="text"
-                autocomplete="address-level2"
-                required
-              />
-            </div>
-
-            <div class="form-field">
-              <label for="property-type">Property type <span aria-hidden="true">*</span></label>
-              <select id="property-type" name="property_type" required>
-                <option value="">Select a property type</option>
-                {assessment.propertyTypes.map((option) => (
-                  <option value={option}>{option}</option>
-                ))}
-              </select>
-            </div>
-
-            <fieldset class="form-group">
-              <legend>Is the property vacant? <span aria-hidden="true">*</span></legend>
-              <div class="choice-row">
-                {yesNoUnsure.map((option) => (
-                  <label class="choice-control">
-                    <input
-                      type="radio"
-                      name="vacant_status"
-                      value={option.value}
-                      required
-                    />
-                    <span>{option.label}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-
-            <div class="form-field">
-              <label for="property-situation">
-                What is happening with the property? <span aria-hidden="true">*</span>
-              </label>
-              <select
-                id="property-situation"
-                name="property_situation"
-                required
-              >
-                <option value="">Select the closest situation</option>
-                {assessment.propertySituations.map((option) => (
-                  <option value={option}>{option}</option>
-                ))}
-              </select>
-            </div>
-
-            <div class="form-field">
-              <label for="completion-date">
-                Desired completion date <span aria-hidden="true">*</span>
-              </label>
-              <input
-                id="completion-date"
-                name="desired_completion_date"
-                type="date"
-                required
-              />
-              <p class="form-field__hint">
-                Share the actual target even if timing is urgent or uncertain.
-              </p>
-            </div>
-
-            <div class="form-field">
-              <label for="square-footage">
-                Approximate square footage <span aria-hidden="true">*</span>
-              </label>
-              <select
-                id="square-footage"
-                name="approximate_square_footage"
-                required
-              >
-                <option value="">Select a range</option>
-                {assessment.squareFootageRanges.map((option) => (
-                  <option value={option}>{option}</option>
-                ))}
-              </select>
-            </div>
-          </div>
-
-          <div class="intake-form__step-actions" hidden data-enhanced-actions>
-            <button class="button" type="button" data-next-step>
-              Continue to scope and condition
-            </button>
-          </div>
-        </fieldset>
-
-        <fieldset class="intake-step" id="scope-condition" data-step="1">
-          <legend>
-            <span class="intake-step__number">Step 2 of 3</span>
-            <span class="intake-step__title ac-type-h2" data-step-heading tabindex="-1">
-              Scope and condition
-            </span>
-          </legend>
-          <p class="intake-step__intro">
-            Identify the areas involved, likely work, and any conditions that
-            may require a stop, specialist review, or referral.
-          </p>
-
-          <fieldset
-            class="form-group form-group--areas"
-            data-required-checkbox-group
-            data-group-label="Areas involved"
-            data-handoff-only
-          >
-            <legend>Areas involved <span aria-hidden="true">*</span></legend>
-            <p class="form-field__hint">Select every area that may be part of the request.</p>
-            <div class="choice-grid">
-              {assessment.areas.map((area) => (
-                <label class="choice-control">
-                  <input type="checkbox" name="areas_involved[]" value={area} />
-                  <span>{area}</span>
-                </label>
-              ))}
-            </div>
-          </fieldset>
-
-          <div class="question-sheet" aria-labelledby="scope-questions-title" data-handoff-only>
-            <h2 id="scope-questions-title" class="ac-type-h3">Work to consider</h2>
-            {assessment.scopeQuestions.map((question) => (
-              <fieldset class="question-row">
-                <legend>{question.label} <span aria-hidden="true">*</span></legend>
-                <div class="choice-row">
-                  {yesNoUnsure.map((option) => (
-                    <label class="choice-control choice-control--compact">
-                      <input
-                        type="radio"
-                        name={question.name}
-                        value={option.value}
-                        required
-                      />
-                      <span>{option.label}</span>
-                    </label>
-                  ))}
-                </div>
-              </fieldset>
-            ))}
-          </div>
-
-          <div class="condition-review" aria-labelledby="condition-review-title" data-handoff-only>
-            <div class="condition-review__heading">
-              <p class="condition-review__label">Condition review</p>
-              <h2 id="condition-review-title" class="ac-type-h3">Known conditions at the property</h2>
-              <p>
-                Answering “Yes” does not mean Aseptaclean provides treatment or
-                regulated handling. These answers help identify work that may be
-                outside the current scope.
-              </p>
-            </div>
-
-            <div class="question-sheet question-sheet--conditions">
-              {assessment.conditionQuestions.map((question) => (
-                <fieldset
-                  class:list={[
-                    "question-row",
-                    {
-                      "question-row--stop":
-                        "stopFlag" in question && question.stopFlag
-                    }
-                  ]}
-                >
-                  <legend>{question.label} <span aria-hidden="true">*</span></legend>
-                  <div class="choice-row">
-                    {yesNoUnsure.map((option) => (
-                      <label class="choice-control choice-control--compact">
-                        <input
-                          type="radio"
-                          name={question.name}
-                          value={option.value}
-                          required
-                        />
-                        <span>{option.label}</span>
-                      </label>
-                    ))}
-                  </div>
-                </fieldset>
-              ))}
-            </div>
-
-            <p class="condition-review__notice">
-              Human biological material, needles or sharps, sewage, active mold,
-              and other prohibited or hazardous conditions may require work in
-              the affected area to stop and may require specialist review or
-              referral. Do not disturb material for the purpose of this
-              assessment.
-            </p>
-          </div>
-
-          <div class="residence-questions" data-residence-only hidden>
-            <div class="residence-questions__heading">
-              <p class="condition-review__label">Residence baseline</p>
-              <h2 class="ac-type-h3">Rooms, finishes, access, and priorities</h2>
-              <p>
-                Describe the baseline you want established. These answers shape
-                the room-by-room assessment; they do not authorize work.
-              </p>
-            </div>
-            <div class="form-grid">
-              <div class="form-field">
-                <label for="number-levels">Number of levels <span aria-hidden="true">*</span></label>
-                <select id="number-levels" name="number_of_levels" data-residence-required disabled>
-                  <option value="">Select a level count</option>
-                  <option>1</option>
-                  <option>2</option>
-                  <option>3+</option>
-                </select>
-              </div>
-              <div class="form-field">
-                <label for="occupancy">Residence status <span aria-hidden="true">*</span></label>
-                <select id="occupancy" name="occupancy_status" data-residence-required disabled>
-                  <option value="">Select a status</option>
-                  <option>Occupied</option>
-                  <option>Temporarily vacant</option>
-                  <option>Move-in pending</option>
-                  <option>Second home</option>
-                </select>
-              </div>
-              <div class="form-field form-field--wide">
-                <label for="priority-rooms">Priority rooms or areas <span aria-hidden="true">*</span></label>
-                <textarea id="priority-rooms" name="priority_rooms" rows="4" data-residence-required disabled placeholder="List the rooms that matter most and what should feel different at completion."></textarea>
-              </div>
-              <div class="form-field form-field--wide">
-                <label for="detail-priorities">Detail priorities <span aria-hidden="true">*</span></label>
-                <textarea id="detail-priorities" name="detail_priorities" rows="4" data-residence-required disabled placeholder="Appliance or cabinet interiors, closets, interior windows, high dusting, trim, or other detail areas."></textarea>
-              </div>
-              <div class="form-field form-field--wide">
-                <label for="important-finishes">Important surfaces or finishes</label>
-                <textarea id="important-finishes" name="important_finishes" rows="4" disabled placeholder="Natural stone, oiled wood, specialty fixtures, delicate surfaces, restricted products, or areas not to disturb."></textarea>
-              </div>
-              <div class="form-field">
-                <label for="pets">Pets or animal instructions</label>
-                <input id="pets" name="pets" type="text" disabled />
-              </div>
-              <div class="form-field">
-                <label for="presence">Will someone be present?</label>
-                <select id="presence" name="someone_present" disabled>
-                  <option value="">Select an answer</option>
-                  <option>Yes</option>
-                  <option>No</option>
-                  <option>Part of the time</option>
-                  <option>Not sure</option>
-                </select>
-              </div>
-              <div class="form-field">
-                <label for="investment-range">Desired investment range</label>
-                <select id="investment-range" name="investment_range" disabled>
-                  <option value="">Select a range</option>
-                  <option>$2,000–$3,499</option>
-                  <option>$3,500–$5,999</option>
-                  <option>$6,000+</option>
-                  <option>Need scope guidance</option>
-                </select>
-              </div>
-              <div class="form-field">
-                <label for="safety-routing">Known condition requiring specialist review? <span aria-hidden="true">*</span></label>
-                <select id="safety-routing" name="safety_routing" data-residence-required disabled>
-                  <option value="">Select an answer</option>
-                  <option value="no_known_condition">No known condition</option>
-                  <option value="possible_condition">Possibly / not sure</option>
-                  <option value="known_condition">Yes</option>
-                </select>
-                <p class="form-field__hint">This does not imply service availability. Hazardous, regulated, severe-contamination, or specialist conditions are outside this campaign offer.</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="upload-field">
-            <label for="property-media">
-              Property photos or video <span class="form-field__optional">(strongly recommended)</span>
-            </label>
-            <p id="property-media-help">
-              Include wide room views and details that affect access or scope.
-              Do not upload identification, financial records, or other
-              documents unless directly necessary to show the property condition.
-            </p>
-            <div class="upload-field__control">
-              <input
-                id="property-media"
-                name="property_media[]"
-                type="file"
-                accept={assessment.upload.acceptedTypes}
-                aria-describedby="property-media-help property-media-limits"
-                multiple
-                data-upload-input
-                data-max-files={assessment.upload.maxFiles}
-                data-max-image-bytes={assessment.upload.maxImageBytes}
-                data-max-video-bytes={assessment.upload.maxVideoBytes}
-                data-max-total-bytes={assessment.upload.maxTotalBytes}
-                data-allowed-extensions={assessment.upload.allowedExtensions.join(",")}
-                data-image-extensions={assessment.upload.imageExtensions.join(",")}
-              />
-              <p id="property-media-limits">{assessment.upload.visibleLimits}</p>
-              <p class="upload-field__empty" data-upload-empty>
-                No files selected.
-              </p>
-              <ul
-                class="upload-field__files"
-                data-upload-list
-                aria-label="Selected property files"
-                hidden
-              ></ul>
-              <p
-                class="upload-field__error form-error"
-                data-upload-error
-                role="alert"
-                hidden
-              ></p>
-              <p
-                class="visually-hidden"
-                data-upload-status
-                role="status"
-                aria-live="polite"
-              ></p>
-            </div>
-          </div>
-
-          <div class="form-grid form-grid--text">
-            <div class="form-field">
-              <label for="access-notes">Access notes</label>
-              <textarea
-                id="access-notes"
-                name="access_notes"
-                rows="4"
-                placeholder="Stairs, elevators, gates, parking, keys, occupants, or access restrictions"
-              ></textarea>
-            </div>
-
-            <div class="form-field" data-handoff-only>
-              <label for="must-remain">
-                What must remain? <span aria-hidden="true">*</span>
-              </label>
-              <textarea
-                id="must-remain"
-                name="must_remain"
-                rows="5"
-                required
-                placeholder="Describe keep areas, items, documents, or anything requiring review. Enter “Nothing identified” if none."
-              ></textarea>
-            </div>
-
-            <div class="form-field" data-handoff-only>
-              <label for="must-remove">
-                What must be removed? <span aria-hidden="true">*</span>
-              </label>
-              <textarea
-                id="must-remove"
-                name="must_remove"
-                rows="5"
-                required
-                placeholder="Describe unwanted contents, rooms, or categories. Enter “Not sure” if the scope is still being decided."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="intake-form__step-actions" hidden data-enhanced-actions>
-            <button
-              class="button button--secondary"
-              type="button"
-              data-previous-step
-            >
-              Back to property fit
-            </button>
-            <button class="button" type="button" data-next-step>
-              Continue to authority and contact
-            </button>
-          </div>
-        </fieldset>
-
-        <fieldset class="intake-step" id="authority-contact" data-step="2">
-          <legend>
-            <span class="intake-step__number">Step 3 of 3</span>
-            <span class="intake-step__title ac-type-h2" data-step-heading tabindex="-1">
-              Authority and contact
-            </span>
-          </legend>
-          <p class="intake-step__intro">
-            A clear decision-maker is required before Aseptaclean can define or
-            approve a project scope.
-          </p>
-
-          <div class="form-grid">
-            <div class="form-field">
-              <label for="full-name">Full name <span aria-hidden="true">*</span></label>
-              <input
-                id="full-name"
-                name="full_name"
-                type="text"
-                autocomplete="name"
-                required
-              />
-            </div>
-
-            <div class="form-field">
-              <label for="phone">Phone <span aria-hidden="true">*</span></label>
-              <input
-                id="phone"
-                name="phone"
-                type="tel"
-                autocomplete="tel"
-                inputmode="tel"
-                required
-              />
-              <p class="form-field__hint">
-                We call this number back — usually same business day.
-              </p>
-            </div>
-
-            <div class="form-field">
-              <label for="email">Email <span aria-hidden="true">*</span></label>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                autocomplete="email"
-                inputmode="email"
-                required
-              />
-            </div>
-
-            <div class="form-field">
-              <label for="relationship">
-                Relationship to the property <span aria-hidden="true">*</span>
-              </label>
-              <select
-                id="relationship"
-                name="relationship_to_property"
-                required
-              >
-                <option value="">Select your relationship</option>
-                {assessment.relationships.map((option) => (
-                  <option value={option}>{option}</option>
-                ))}
-              </select>
-            </div>
-
-            <fieldset class="form-group">
-              <legend>
-                Are you authorized to approve the work? <span aria-hidden="true">*</span>
-              </legend>
-              <div class="choice-row">
-                <label class="choice-control">
-                  <input
-                    type="radio"
-                    name="authority_to_approve"
-                    value="yes"
-                    required
-                  />
-                  <span>Yes</span>
-                </label>
-                <label class="choice-control">
-                  <input
-                    type="radio"
-                    name="authority_to_approve"
-                    value="no"
-                    required
-                  />
-                  <span>No</span>
-                </label>
-              </div>
-              <p class="form-field__hint">
-                If not, explain who controls approval in the additional notes.
-              </p>
-            </fieldset>
-
-            <div class="form-field form-field--wide">
-              <label for="property-address">
-                Property address <span aria-hidden="true">*</span>
-              </label>
-              <textarea
-                id="property-address"
-                name="property_address"
-                rows="3"
-                autocomplete="street-address"
-                required
-              ></textarea>
-              <p class="form-field__hint">
-                This is used to evaluate service area, access, and logistics. It
-                is not published.
-              </p>
-            </div>
-
-            <div class="form-field">
-              <label for="property-zip">Property ZIP <span data-residence-only hidden aria-hidden="true">*</span></label>
-              <input
-                id="property-zip"
-                name="property_zip"
-                type="text"
-                inputmode="numeric"
-                autocomplete="postal-code"
-                pattern="[0-9]{5}(?:-[0-9]{4})?"
-              />
-            </div>
-
-            <fieldset class="form-group">
-              <legend>Preferred contact method <span aria-hidden="true">*</span></legend>
-              <div class="choice-row choice-row--wrap">
-                {assessment.contactMethods.map((method) => (
-                  <label class="choice-control">
-                    <input
-                      type="radio"
-                      name="preferred_contact_method"
-                      value={method}
-                      required
-                    />
-                    <span>{method}</span>
-                  </label>
-                ))}
-              </div>
-            </fieldset>
-
-            <div class="form-field">
-              <label for="best-contact-time">Best contact time</label>
-              <select id="best-contact-time" name="best_contact_time">
-                <option value="">Select a time window</option>
-                {assessment.contactTimes.map((option) => (
-                  <option value={option}>{option}</option>
-                ))}
-              </select>
-            </div>
-
-            <div class="form-field form-field--wide">
-              <label for="additional-notes">Additional notes</label>
-              <textarea
-                id="additional-notes"
-                name="additional_notes"
-                rows="5"
-                placeholder="Share decision-maker details, timing constraints, or other context that would help with the fit review."
-              ></textarea>
-            </div>
-          </div>
-
-          <div class="intake-form__consent">
-            <label class="consent-control">
-              <input type="checkbox" name="privacy_consent" value="yes" required />
-              {/* legal.consentBase + legal.consentAssessmentAppendix — shared source, never
-                  re-typed here. Owner ruling 2026-08-19 (option B). 10DLC-relevant, pending
-                  owner/counsel. Every {" "} before an anchor is load-bearing: Astro trims a
-                  line-ending space and the text nodes fuse ("read thePrivacy Policy"). */}
-              <span>
-                {legal.consentBase.lead}{" "}
-                <a href={site.urls.privacyPolicy}>{legal.consentBase.privacyLabel}</a>{legal.consentBase.tail}{" "}
-                {legal.consentAssessmentAppendix.lead}{" "}
-                <a href={site.urls.terms}>{legal.consentAssessmentAppendix.termsLabel}</a>{legal.consentAssessmentAppendix.tail}
-                <span aria-hidden="true">*</span>
-              </span>
-            </label>
-            <label class="consent-control">
-              <input
-                type="checkbox"
-                name="scope_acknowledgment"
-                value="yes"
-                required
-              />
-              <span>
-                I understand that this request begins a fit review and does not
-                authorize work, create a service agreement, or reserve a project
-                date. <span aria-hidden="true">*</span>
-              </span>
-            </label>
-            <p>
-              Submitting this form authorizes Aseptaclean to contact you. It
-              does not authorize work or create a service agreement.
-            </p>
-          </div>
-
-          {
-            site.integrations.turnstileSiteKey && (
-              <div class="intake-form__turnstile">
-                <div
-                  class="cf-turnstile"
-                  data-sitekey={site.integrations.turnstileSiteKey}
-                  data-theme="light"
-                  data-size="flexible"
-                />
-                <p>Security verification is required before submission.</p>
-              </div>
-            )
-          }
-          <noscript>
-            <p class="intake-form__no-script">
-              All assessment questions remain available without JavaScript, but
-              online security verification requires it. Save your answers
-              separately and call Aseptaclean if you cannot enable JavaScript.
-            </p>
-          </noscript>
-
-          {!endpointAvailable && (
-            <div class="intake-form__availability" role="status">
-              <p>
-                Online submission is not fully configured in this preview.
-                Your answers will not be sent.
-              </p>
-            </div>
-          )}
-
-          <div class="intake-form__actions">
-            <button
-              class="button button--secondary"
-              type="button"
-              data-previous-step
-              hidden
-            >
-              Back to scope and condition
-            </button>
-            <button
-              class="button"
-              type="submit"
-              disabled={!endpointAvailable}
-              data-submit-button
-            >
-              <span data-submit-label data-offer-submit>Submit My Handoff Plan Request</span>
-            </button>
-            <p
-              class="intake-form__submit-status"
-              data-submit-status
-              role="status"
-              aria-live="polite"
-              hidden
-            ></p>
-            <p>
-              A fit review is not a quote, booking confirmation, or service
-              agreement.
-            </p>
-          </div>
-        </fieldset>
-      </form>
-    </div>
+    </form>
   </div>
 </section>
 
@@ -806,16 +348,7 @@ const yesNoUnsure = [
 }
 
 <script>
-  type FormControl =
-    | HTMLInputElement
-    | HTMLSelectElement
-    | HTMLTextAreaElement;
-
-  interface StoredDraft {
-    expiresAt: number;
-    step?: number;
-    values: Record<string, string | string[]>;
-  }
+  type FormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
   interface ValidationIssue {
     control: FormControl;
@@ -825,314 +358,281 @@ const yesNoUnsure = [
     existingError?: HTMLElement;
   }
 
+  interface ServiceQuestion {
+    name: string;
+    label: string;
+    type?: "date";
+    options?: string[];
+  }
+
   const form = document.querySelector<HTMLFormElement>("[data-assessment-form]");
 
   if (form) {
+    // RESIDENCE OFFER — a distinct premium offer outside the eight-service taxonomy (doc 30
+    // §33). Unrelated to the lean rebuild: it keeps its own longer required fields.
     const isResidenceOffer =
       new URLSearchParams(window.location.search).get("offer") ===
       "private-residence-reset";
     if (isResidenceOffer) {
       form.dataset.offer = "private_residence_reset";
-      const offerInput =
-        form.querySelector<HTMLInputElement>('input[name="offer_type"]');
-      const entryRouteInput =
-        form.querySelector<HTMLInputElement>('input[name="entry_route"]');
+      const offerInput = form.querySelector<HTMLInputElement>('input[name="offer_type"]');
+      const entryRouteInput = form.querySelector<HTMLInputElement>('input[name="entry_route"]');
       if (offerInput) offerInput.value = "private_residence_reset";
       if (entryRouteInput) entryRouteInput.value = "/private-residence-reset/";
 
       const copy = new Map<string, string>([
         ["[data-offer-eyebrow]", "Private Residence Reset assessment"],
-        [
-          "[data-offer-title]",
-          "Start with the residence. We’ll define the baseline from there."
-        ],
+        ["[data-offer-title]", "Tell Us About the Residence."],
         [
           "[data-offer-lead]",
           "Share the residence, priority rooms, finish instructions, access, and completion details Aseptaclean needs to make a fit decision."
         ],
-        ["[data-offer-record]", "Residence baseline intake record"],
-        ["[data-offer-submit]", "Submit My Residence Assessment Request"]
+        ["[data-offer-submit]", "Request My Residence Assessment"]
       ]);
       copy.forEach((content, selector) => {
         const element = document.querySelector<HTMLElement>(selector);
         if (element) element.textContent = content;
       });
 
-      form.querySelectorAll<HTMLElement>("[data-handoff-only]").forEach(
-        (block) => {
-          block.hidden = true;
-          block.removeAttribute("data-required-checkbox-group");
-          block
-            .querySelectorAll<
-              HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-            >("input, select, textarea")
-            .forEach((control) => {
-              control.disabled = true;
-              control.required = false;
-            });
-        }
-      );
-      form.querySelectorAll<HTMLElement>("[data-residence-only]").forEach(
-        (block) => {
-          block.hidden = false;
-          block
-            .querySelectorAll<
-              HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-            >("input, select, textarea")
-            .forEach((control) => {
-              control.disabled = false;
-            });
-        }
-      );
+      form.querySelectorAll<HTMLElement>("[data-handoff-only]").forEach((block) => {
+        block.hidden = true;
+        block
+          .querySelectorAll<FormControl>("input, select, textarea")
+          .forEach((control) => {
+            control.disabled = true;
+            control.required = false;
+          });
+      });
+      form.querySelectorAll<HTMLElement>("[data-residence-only]").forEach((block) => {
+        block.hidden = false;
+        block
+          .querySelectorAll<FormControl>("input, select, textarea")
+          .forEach((control) => {
+            control.disabled = false;
+          });
+      });
       form
-        .querySelectorAll<
-          HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-        >("[data-residence-required]")
+        .querySelectorAll<FormControl>("[data-residence-required]")
         .forEach((control) => {
           control.disabled = false;
           control.required = true;
         });
-      const propertyZip =
-        form.querySelector<HTMLInputElement>('input[name="property_zip"]');
+      const propertyZip = form.querySelector<HTMLInputElement>('input[name="property_zip"]');
       if (propertyZip) propertyZip.required = true;
-    }
-
-    const steps = Array.from(
-      form.querySelectorAll<HTMLFieldSetElement>(":scope > [data-step]")
-    );
-    const indicators = Array.from(
-      document.querySelectorAll<HTMLElement>("[data-step-indicator]")
-    );
-    const errorSummary =
-      form.querySelector<HTMLElement>(".intake-form__errors");
-    const errorSummaryList = errorSummary?.querySelector("ul");
-    const draftStatus =
-      document.querySelector<HTMLElement>("[data-draft-status]");
-    const clearDraftButton =
-      document.querySelector<HTMLButtonElement>("[data-clear-draft]");
-    const uploadInput =
-      form.querySelector<HTMLInputElement>("[data-upload-input]");
-    const uploadList =
-      form.querySelector<HTMLUListElement>("[data-upload-list]");
-    const uploadEmpty =
-      form.querySelector<HTMLElement>("[data-upload-empty]");
-    const uploadError =
-      form.querySelector<HTMLElement>("[data-upload-error]");
-    const uploadStatus =
-      form.querySelector<HTMLElement>("[data-upload-status]");
-    const submitButton =
-      form.querySelector<HTMLButtonElement>("[data-submit-button]");
-    const submitLabel =
-      form.querySelector<HTMLElement>("[data-submit-label]");
-    const submitStatus =
-      form.querySelector<HTMLElement>("[data-submit-status]");
-    const reducedMotion = window.matchMedia(
-      "(prefers-reduced-motion: reduce)"
-    );
-    const draftSuffix = isResidenceOffer ? "residence-v1" : "handoff-v1";
-    const localDraftKey = `aseptaclean-assessment-draft-${draftSuffix}`;
-    const sessionDraftKey = `aseptaclean-assessment-session-${draftSuffix}`;
-    const attributionKey = `aseptaclean-assessment-attribution-${draftSuffix}`;
-    const draftLifetime = 24 * 60 * 60 * 1000;
-    const attemptedSteps = new Set<number>();
-    let currentStep = 0;
-    let saveTimer = 0;
-
-    const localFieldNames = new Set([
-      "property_type",
-      "property_situation",
-      "approximate_square_footage",
-      "vacant_status",
-      "areas_involved[]",
-      "contents_removal",
-      "heavy_cleaning",
-      "garage_storage",
-      "appliance_interiors",
-      "cabinet_interiors",
-      "animal_waste",
-      "human_biological_material",
-      "needles_sharps",
-      "sewage",
-      "mold",
-      "pest_activity",
-      "relationship_to_property",
-      "authority_to_approve",
-      "preferred_contact_method",
-      "best_contact_time"
-    ]);
-
-    const persistentControls = Array.from(
-      form.querySelectorAll<FormControl>("input, select, textarea")
-    ).filter(
-      (control) =>
-        Boolean(control.name) &&
-        !["hidden", "file", "submit", "button"].includes(control.type) &&
-        control.name !== "privacy_consent"
-    );
-
-    const safeStorage = {
-      read(storage: Storage, key: string): StoredDraft | null {
-        try {
-          const raw = storage.getItem(key);
-          if (!raw) return null;
-          const parsed = JSON.parse(raw) as StoredDraft;
-          if (!parsed.expiresAt || parsed.expiresAt < Date.now()) {
-            storage.removeItem(key);
-            return null;
-          }
-          return parsed;
-        } catch {
-          return null;
-        }
-      },
-      write(storage: Storage, key: string, value: StoredDraft) {
-        try {
-          storage.setItem(key, JSON.stringify(value));
-        } catch {
-          // Storage can be unavailable in private or restricted browsing modes.
-        }
-      },
-      remove(storage: Storage, key: string) {
-        try {
-          storage.removeItem(key);
-        } catch {
-          // Nothing else is required when storage is unavailable.
-        }
-      }
-    };
-
-    const getFieldValue = (
-      controls: FormControl[]
-    ): string | string[] | null => {
-      const first = controls[0];
-      if (!first) return null;
-
-      if (first instanceof HTMLInputElement && first.type === "radio") {
-        return (
-          controls.find(
-            (control) =>
-              control instanceof HTMLInputElement && control.checked
-          )?.value ?? ""
-        );
-      }
-
-      if (first instanceof HTMLInputElement && first.type === "checkbox") {
-        return controls
-          .filter(
-            (control) =>
-              control instanceof HTMLInputElement && control.checked
-          )
-          .map((control) => control.value);
-      }
-
-      return first.value;
-    };
-
-    const collectStoredValues = (
-      useLocalStorage: boolean
-    ): Record<string, string | string[]> => {
-      const values: Record<string, string | string[]> = {};
-      const names = new Set(
-        persistentControls
-          .map((control) => control.name)
-          .filter((name) => localFieldNames.has(name) === useLocalStorage)
+      const emailInput = form.querySelector<HTMLInputElement>('input[name="email"]');
+      if (emailInput) emailInput.required = true;
+      const emailOptionalLabel = form.querySelector<HTMLElement>(
+        "[data-email-optional-label]"
       );
+      if (emailOptionalLabel) emailOptionalLabel.hidden = true;
+    }
 
-      for (const name of names) {
-        const controls = persistentControls.filter(
-          (control) => control.name === name
-        );
-        const value = getFieldValue(controls);
-        if (
-          value !== null &&
-          (Array.isArray(value) ? value.length > 0 : value !== "")
-        ) {
-          values[name] = value;
-        }
-      }
-      return values;
-    };
+    const errorSummary = form.querySelector<HTMLElement>(".intake-form__errors");
+    const errorSummaryList = errorSummary?.querySelector("ul");
+    const uploadInput = form.querySelector<HTMLInputElement>("[data-upload-input]");
+    const uploadList = form.querySelector<HTMLUListElement>("[data-upload-list]");
+    const uploadEmpty = form.querySelector<HTMLElement>("[data-upload-empty]");
+    const uploadError = form.querySelector<HTMLElement>("[data-upload-error]");
+    const uploadStatus = form.querySelector<HTMLElement>("[data-upload-status]");
+    const submitButton = form.querySelector<HTMLButtonElement>("[data-submit-button]");
+    const submitLabel = form.querySelector<HTMLElement>("[data-submit-label]");
+    const submitStatus = form.querySelector<HTMLElement>("[data-submit-status]");
+    const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const defaultSubmitLabel = submitLabel?.textContent ?? "Send My Request";
 
-    const saveDraft = () => {
-      const expiresAt = Date.now() + draftLifetime;
-      safeStorage.write(window.localStorage, localDraftKey, {
-        expiresAt,
-        step: currentStep,
-        values: collectStoredValues(true)
-      });
-      safeStorage.write(window.sessionStorage, sessionDraftKey, {
-        expiresAt,
-        values: collectStoredValues(false)
-      });
-    };
+    const timestampInput = form.elements.namedItem("submission_timestamp");
+    if (timestampInput instanceof HTMLInputElement) {
+      timestampInput.value = new Date().toISOString();
+    }
+    const idempotencyInput = form.elements.namedItem("idempotency_key");
+    if (idempotencyInput instanceof HTMLInputElement) {
+      idempotencyInput.value =
+        window.crypto?.randomUUID?.() ??
+        `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    }
 
-    const scheduleDraftSave = () => {
-      window.clearTimeout(saveTimer);
-      saveTimer = window.setTimeout(saveDraft, 250);
-    };
-
-    const restoreValues = (values: Record<string, string | string[]>) => {
-      let restored = false;
-
-      for (const [name, storedValue] of Object.entries(values)) {
-        const controls = persistentControls.filter(
-          (control) => control.name === name
-        );
-        if (!controls.length) continue;
-
-        for (const control of controls) {
-          if (
-            control instanceof HTMLInputElement &&
-            ["radio", "checkbox"].includes(control.type)
-          ) {
-            const selectedValues = Array.isArray(storedValue)
-              ? storedValue
-              : [storedValue];
-            control.checked = selectedValues.includes(control.value);
-          } else if (typeof storedValue === "string") {
-            control.value = storedValue;
+    // SERVICE CONTEXT FROM THE REFERRING SERVICE PAGE — docs/30-WEBSITE-MASTER-SPEC.md
+    // §20A.8's destination rule and §20A.9's service branch: service page CTA →
+    // /request-assessment/?service=<verified-service-key> → this form recognizes the context
+    // and preselects the situation so the visitor never re-answers a question the page they
+    // came from already asked. A service may add AT MOST ONE qualifying question
+    // (assessment.serviceQuestions), rendered into the empty [data-service-question] slot.
+    //
+    // WHITELIST, NOT PASSTHROUGH. An unrecognized `service` value is a no-op — nothing from
+    // the query string is ever written into the DOM or a field verbatim. Skipped entirely for
+    // the residence offer, which owns `entry_route` on its own branch above.
+    if (!isResidenceOffer) {
+      const serviceContexts = new Map<
+        string,
+        { entryRoute: string; situation: string; question?: ServiceQuestion }
+      >([
+        [
+          "hoarding-cleanup",
+          {
+            entryRoute: "/hoarding-cleanup-san-jose/",
+            situation: "Accumulated contents",
+            question: {
+              name: "belongings_must_be_kept",
+              label: "Are there belongings that must be kept?",
+              options: ["Yes", "No", "Not sure"]
+            }
           }
+        ],
+        [
+          "estate-cleanout",
+          {
+            entryRoute: "/estate-cleanout-san-jose/",
+            situation: "Inherited or estate property",
+            question: {
+              name: "items_must_be_saved",
+              label: "Are there specific items or documents that must be saved?",
+              options: ["Yes", "No", "Not sure"]
+            }
+          }
+        ],
+        [
+          "property-cleanouts",
+          {
+            entryRoute: "/property-cleanouts-san-jose/",
+            // "Other" — not one of the six transition-based situations above. Every other
+            // entry describes why the property is being cleaned (hoarding, estate, deep
+            // clean, move-out, extreme cleanup); a landlord/property-manager cleanout doesn't
+            // fit any of those specifically and the direct-visitor situation list has no
+            // dedicated option for it. "Other" is the honest answer, same reasoning as the
+            // rodent-droppings/animal-waste entries below before they got their own options.
+            situation: "Other",
+            question: {
+              name: "items_must_remain",
+              label: "Does anything need to stay at the property?",
+              options: ["Yes", "No", "Not sure"]
+            }
+          }
+        ],
+        [
+          "deep-cleaning",
+          {
+            entryRoute: "/deep-cleaning-san-jose/",
+            situation: "Already empty but requires detailed cleaning"
+          }
+        ],
+        [
+          "move-out",
+          {
+            entryRoute: "/move-out-cleaning-san-jose/",
+            situation: "Difficult move-out",
+            question: {
+              name: "desired_completion_date",
+              label: "When does the property need to be ready?",
+              type: "date"
+            }
+          }
+        ],
+        [
+          "extreme-cleanup",
+          {
+            entryRoute: "/extreme-cleaning-san-jose/",
+            situation: "Overwhelmed property",
+            question: {
+              name: "belongings_block_access",
+              label: "Are belongings blocking access to the areas that need cleaning?",
+              options: ["Yes", "No", "Some areas", "Not sure"]
+            }
+          }
+        ],
+        [
+          "rodent-droppings",
+          {
+            entryRoute: "/rodent-dropping-cleanup-san-jose/",
+            situation: "Rodent droppings",
+            question: {
+              name: "pest_control_involved",
+              label: "Has pest control already been involved?",
+              options: ["Yes", "No", "Scheduled", "Not sure"]
+            }
+          }
+        ],
+        [
+          "animal-waste",
+          {
+            entryRoute: "/animal-waste-cleanup-san-jose/",
+            situation: "Animal waste",
+            question: {
+              name: "animal_waste_pattern",
+              label: "Is this a one-time accident or a repeated condition?",
+              options: ["One-time", "Repeated", "Not sure"]
+            }
+          }
+        ]
+      ]);
+      const serviceKey = new URLSearchParams(window.location.search).get("service") ?? "";
+      const context = serviceContexts.get(serviceKey);
+
+      if (context) {
+        const entryRouteInput = form.querySelector<HTMLInputElement>('input[name="entry_route"]');
+        if (entryRouteInput) entryRouteInput.value = context.entryRoute;
+
+        // Preselect and hide the situation question entirely — the visitor already told the
+        // service page what they're dealing with.
+        const situationGroup = form.querySelector<HTMLElement>("[data-situation-choices]");
+        const situationFieldset = situationGroup?.closest("fieldset");
+        const matchingRadio = form.querySelector<HTMLInputElement>(
+          `input[name="property_situation"][value="${CSS.escape(context.situation)}"]`
+        );
+        if (matchingRadio) {
+          matchingRadio.checked = true;
+          if (situationFieldset) situationFieldset.hidden = true;
+          form
+            .querySelectorAll<HTMLInputElement>('input[name="property_situation"]')
+            .forEach((radio) => {
+              if (radio !== matchingRadio) radio.required = false;
+            });
         }
-        restored = true;
+
+        const questionSlot = form.querySelector<HTMLElement>("[data-service-question]");
+        if (questionSlot && context.question) {
+          const question = context.question;
+          questionSlot.hidden = false;
+          const field = document.createElement("div");
+          field.className = "form-field";
+          const label = document.createElement("label");
+          const inputId = `service-question-${question.name}`;
+          label.setAttribute("for", inputId);
+          label.textContent = question.label;
+          field.append(label);
+
+          if (question.type === "date") {
+            const input = document.createElement("input");
+            input.type = "date";
+            input.id = inputId;
+            input.name = question.name;
+            field.append(input);
+          } else if (question.options) {
+            field.removeChild(label);
+            const fieldset = document.createElement("fieldset");
+            fieldset.className = "form-group";
+            const legend = document.createElement("legend");
+            legend.textContent = question.label;
+            fieldset.append(legend);
+            const row = document.createElement("div");
+            row.className = "choice-row choice-row--wrap";
+            question.options.forEach((option) => {
+              const optionLabel = document.createElement("label");
+              optionLabel.className = "choice-control choice-control--compact";
+              const radio = document.createElement("input");
+              radio.type = "radio";
+              radio.name = question.name;
+              radio.value = option;
+              const span = document.createElement("span");
+              span.textContent = option;
+              optionLabel.append(radio, span);
+              row.append(optionLabel);
+            });
+            fieldset.append(row);
+            field.append(fieldset);
+          }
+          questionSlot.append(field);
+        }
       }
-
-      return restored;
-    };
-
-    const localDraft = safeStorage.read(window.localStorage, localDraftKey);
-    const sessionDraft = safeStorage.read(
-      window.sessionStorage,
-      sessionDraftKey
-    );
-    const restoredLocal = restoreValues(localDraft?.values ?? {});
-    const restoredSession = restoreValues(sessionDraft?.values ?? {});
-    const restored = restoredLocal || restoredSession;
-
-    if (
-      localDraft?.step !== undefined &&
-      localDraft.step >= 0 &&
-      localDraft.step < steps.length
-    ) {
-      currentStep = localDraft.step;
-    }
-
-    if (draftStatus && restored) {
-      draftStatus.hidden = false;
-      draftStatus.textContent =
-        "Saved answers restored. For privacy, file selections are never saved.";
-    }
-
-    if (clearDraftButton) {
-      clearDraftButton.hidden = false;
-      clearDraftButton.addEventListener("click", () => {
-        safeStorage.remove(window.localStorage, localDraftKey);
-        safeStorage.remove(window.sessionStorage, sessionDraftKey);
-        if (draftStatus) {
-          draftStatus.hidden = false;
-          draftStatus.textContent =
-            "Saved progress was forgotten. Answers currently on this page remain until you leave or change them.";
-        }
-      });
     }
 
     const sanitizeReferrer = (referrer: string) => {
@@ -1146,78 +646,29 @@ const yesNoUnsure = [
     };
 
     const populateAttribution = () => {
-      const allowed = [
-        "utm_source",
-        "utm_medium",
-        "utm_campaign",
-        "utm_term",
-        "utm_content",
-        "gclid"
-      ];
+      const allowed = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "gclid"];
       const parameters = new URLSearchParams(window.location.search);
-      let attribution: Record<string, string> = {};
-
-      try {
-        attribution = JSON.parse(
-          window.sessionStorage.getItem(attributionKey) ?? "{}"
-        ) as Record<string, string>;
-      } catch {
-        attribution = {};
-      }
-
       for (const name of allowed) {
         const value = parameters.get(name);
-        if (value) attribution[name] = value.slice(0, 250);
+        const input = form.querySelector<HTMLInputElement>(`input[name="${name}"]`);
+        if (value && input) input.value = value.slice(0, 250);
       }
-      attribution.landing_page ||= window.location.pathname;
-      attribution.referrer ||= sanitizeReferrer(document.referrer);
-
-      try {
-        window.sessionStorage.setItem(
-          attributionKey,
-          JSON.stringify(attribution)
-        );
-      } catch {
-        // The hidden values still work for this page view.
-      }
-
-      for (const [name, value] of Object.entries(attribution)) {
-        const input = form.elements.namedItem(name);
-        if (input instanceof HTMLInputElement) input.value = value;
-      }
+      const landingPageInput = form.querySelector<HTMLInputElement>('input[name="landing_page"]');
+      if (landingPageInput) landingPageInput.value = window.location.pathname;
+      const referrerInput = form.querySelector<HTMLInputElement>('input[name="referrer"]');
+      if (referrerInput) referrerInput.value = sanitizeReferrer(document.referrer);
     };
-
     populateAttribution();
 
-    const timestampInput = form.elements.namedItem("submission_timestamp");
-    if (timestampInput instanceof HTMLInputElement) {
-      timestampInput.value = new Date().toISOString();
-    }
-    const idempotencyInput = form.elements.namedItem("idempotency_key");
-    if (idempotencyInput instanceof HTMLInputElement) {
-      idempotencyInput.value =
-        window.crypto?.randomUUID?.() ??
-        `${Date.now()}-${Math.random().toString(36).slice(2)}`;
-    }
-
     const formatBytes = (bytes: number) => {
-      if (bytes < 1024 * 1024) {
-        return `${Math.max(1, Math.round(bytes / 1024))} KB`;
-      }
+      if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
       return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
     };
 
-    const fileExtension = (file: File) =>
-      file.name.split(".").pop()?.toLowerCase() ?? "";
+    const fileExtension = (file: File) => file.name.split(".").pop()?.toLowerCase() ?? "";
 
     const renderUpload = () => {
-      if (
-        !uploadInput ||
-        !uploadList ||
-        !uploadEmpty ||
-        !uploadError ||
-        !uploadStatus
-      ) {
+      if (!uploadInput || !uploadList || !uploadEmpty || !uploadError || !uploadStatus) {
         return [];
       }
 
@@ -1226,20 +677,14 @@ const yesNoUnsure = [
       const maxImageBytes = Number(uploadInput.dataset.maxImageBytes);
       const maxVideoBytes = Number(uploadInput.dataset.maxVideoBytes);
       const maxTotalBytes = Number(uploadInput.dataset.maxTotalBytes);
-      const allowedExtensions = new Set(
-        uploadInput.dataset.allowedExtensions?.split(",") ?? []
-      );
-      const imageExtensions = new Set(
-        uploadInput.dataset.imageExtensions?.split(",") ?? []
-      );
+      const allowedExtensions = new Set(uploadInput.dataset.allowedExtensions?.split(",") ?? []);
+      const imageExtensions = new Set(uploadInput.dataset.imageExtensions?.split(",") ?? []);
       const errorsByIndex = new Map<number, string[]>();
       const overallErrors: string[] = [];
       const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
 
       if (files.length > maxFiles) {
-        overallErrors.push(
-          `Select no more than ${maxFiles} property files.`
-        );
+        overallErrors.push(`Select no more than ${maxFiles} property files.`);
       }
       if (totalBytes > maxTotalBytes) {
         overallErrors.push(
@@ -1253,12 +698,8 @@ const yesNoUnsure = [
         if (!allowedExtensions.has(extension)) {
           fileErrors.push("Unsupported file type");
         } else {
-          const limit = imageExtensions.has(extension)
-            ? maxImageBytes
-            : maxVideoBytes;
-          if (file.size > limit) {
-            fileErrors.push(`Exceeds the ${formatBytes(limit)} file limit`);
-          }
+          const limit = imageExtensions.has(extension) ? maxImageBytes : maxVideoBytes;
+          if (file.size > limit) fileErrors.push(`Exceeds the ${formatBytes(limit)} file limit`);
         }
         if (fileErrors.length) errorsByIndex.set(index, fileErrors);
       });
@@ -1304,38 +745,25 @@ const yesNoUnsure = [
         uploadList.append(item);
       });
 
-      const allErrors = [
-        ...overallErrors,
-        ...Array.from(errorsByIndex.values()).flat()
-      ];
+      const allErrors = [...overallErrors, ...Array.from(errorsByIndex.values()).flat()];
       uploadInput.setCustomValidity(allErrors[0] ?? "");
-      uploadInput.setAttribute(
-        "aria-invalid",
-        allErrors.length ? "true" : "false"
-      );
+      uploadInput.setAttribute("aria-invalid", allErrors.length ? "true" : "false");
       uploadEmpty.hidden = files.length > 0;
       uploadList.hidden = files.length === 0;
       uploadError.hidden = allErrors.length === 0;
       uploadError.textContent = allErrors.length
         ? `${overallErrors.join(" ")} ${
-            errorsByIndex.size
-              ? "Remove files marked with an error before continuing."
-              : ""
+            errorsByIndex.size ? "Remove files marked with an error before continuing." : ""
           }`.trim()
         : "";
       uploadError.id = "property-media-error";
 
       const describedBy = new Set(
-        (uploadInput.getAttribute("aria-describedby") ?? "")
-          .split(/\s+/)
-          .filter(Boolean)
+        (uploadInput.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean)
       );
       if (allErrors.length) describedBy.add(uploadError.id);
       else describedBy.delete(uploadError.id);
-      uploadInput.setAttribute(
-        "aria-describedby",
-        Array.from(describedBy).join(" ")
-      );
+      uploadInput.setAttribute("aria-describedby", Array.from(describedBy).join(" "));
       uploadStatus.textContent = files.length
         ? `${files.length} file${files.length === 1 ? "" : "s"} selected.`
         : "No property files selected.";
@@ -1343,17 +771,20 @@ const yesNoUnsure = [
       return allErrors;
     };
 
+    let announcedPhotoAdded = false;
     uploadInput?.addEventListener("change", () => {
       renderUpload();
-      if (attemptedSteps.has(currentStep)) validateCurrentStep(false);
+      if (!announcedPhotoAdded && (uploadInput.files?.length ?? 0) > 0) {
+        announcedPhotoAdded = true;
+        window.dataLayer = window.dataLayer ?? [];
+        window.dataLayer.push({ event: "photo_added" });
+      }
     });
     renderUpload();
 
     const labelForControl = (control: FormControl) => {
       if (control.id) {
-        const label = form.querySelector<HTMLLabelElement>(
-          `label[for="${CSS.escape(control.id)}"]`
-        );
+        const label = form.querySelector<HTMLLabelElement>(`label[for="${CSS.escape(control.id)}"]`);
         if (label) return label.textContent?.replace("*", "").trim() ?? "Field";
       }
       const fieldset = control.closest("fieldset");
@@ -1361,20 +792,13 @@ const yesNoUnsure = [
       return legend?.textContent?.replace("*", "").trim() ?? "Field";
     };
 
-    // docs/27-SECTION-9-15-CONNECTIVE-COPY.md §9.15.5 approved form-state strings. Keyed on
-    // control name rather than label text so a label edit cannot silently drop them back to
-    // the generic message. Everything else keeps the generic "<label> is required."
     const approvedMissingMessage: Record<string, string> = {
-      phone: "Add a phone number so Matthew can reach you about the property.",
-      privacy_consent:
-        "Check the consent box so we're allowed to call or text you back."
+      phone: "Add a phone number so we can follow up.",
+      full_name: "Add your name so we know who to ask for.",
+      privacy_consent: "Check the consent box so we're allowed to call or text you back.",
+      property_situation: "Let us know what you're dealing with."
     };
 
-    // §9.15.5's submission-error string interpolates {site.business.phone} rather than a
-    // literal (amended 2026-08-19; AGENTS.md §3 forbids hardcoding business facts). This
-    // script is bundled and cannot read frontmatter, so the value arrives on the form's data
-    // attribute. If the attribute is ever missing, the sentence drops the number rather than
-    // printing a stale or empty one.
     const contactPhone = form.dataset.contactPhone ?? "";
     const submissionErrorMessage = contactPhone
       ? `Something went wrong on our end and the form didn't send. Call or text ${contactPhone} and we'll take it from there.`
@@ -1392,43 +816,14 @@ const yesNoUnsure = [
     };
 
     const issueContainer = (control: FormControl) =>
-      (control.closest(
-        ".form-field, .form-group, .upload-field, .question-row"
-      ) ?? control.parentElement) as HTMLElement;
+      (control.closest(".form-field, .form-group, .upload-field") ?? control.parentElement) as HTMLElement;
 
-    const collectIssues = (step: HTMLFieldSetElement) => {
+    const collectIssues = () => {
       const issues: ValidationIssue[] = [];
       const seen = new Set<string>();
-      const controls = Array.from(
-        step.querySelectorAll<FormControl>("input, select, textarea")
-      ).filter(
-        (control) =>
-          !["hidden", "button", "submit"].includes(control.type) &&
-          !control.disabled
+      const controls = Array.from(form.querySelectorAll<FormControl>("input, select, textarea")).filter(
+        (control) => !["hidden", "button", "submit"].includes(control.type) && !control.disabled
       );
-
-      const requiredCheckboxGroup = step.querySelector<HTMLElement>(
-        "[data-required-checkbox-group]"
-      );
-      if (requiredCheckboxGroup) {
-        const checkboxes = Array.from(
-          requiredCheckboxGroup.querySelectorAll<HTMLInputElement>(
-            'input[type="checkbox"]'
-          )
-        );
-        if (!checkboxes.some((checkbox) => checkbox.checked)) {
-          const first = checkboxes[0];
-          if (first) {
-            issues.push({
-              control: first,
-              container: requiredCheckboxGroup,
-              message: "Select at least one area involved.",
-              key: "areas_involved"
-            });
-            seen.add("areas_involved[]");
-          }
-        }
-      }
 
       for (const control of controls) {
         if (control === uploadInput) {
@@ -1436,9 +831,7 @@ const yesNoUnsure = [
             issues.push({
               control,
               container: issueContainer(control),
-              message:
-                uploadError.textContent?.trim() ||
-                "Review the selected property files.",
+              message: uploadError.textContent?.trim() || "Review the selected property files.",
               key: "property_media",
               existingError: uploadError
             });
@@ -1447,74 +840,45 @@ const yesNoUnsure = [
         }
 
         const key =
-          control instanceof HTMLInputElement &&
-          ["radio", "checkbox"].includes(control.type)
+          control instanceof HTMLInputElement && ["radio", "checkbox"].includes(control.type)
             ? control.name
             : control.id || control.name;
         if (!key || seen.has(key) || control.validity.valid) continue;
         seen.add(key);
-        issues.push({
-          control,
-          container: issueContainer(control),
-          message: validationMessage(control),
-          key
-        });
+        issues.push({ control, container: issueContainer(control), message: validationMessage(control), key });
       }
       return issues;
     };
 
-    const clearValidation = (scope: ParentNode) => {
-      scope
-        .querySelectorAll<HTMLElement>("[data-generated-error]")
-        .forEach((error) => error.remove());
-      scope
-        .querySelectorAll<FormControl>('[aria-invalid="true"]')
-        .forEach((control) => {
-          if (control !== uploadInput) control.removeAttribute("aria-invalid");
-          const errorIds = (
-            control.getAttribute("aria-describedby") ?? ""
-          )
-            .split(/\s+/)
-            .filter((id) => id && !id.startsWith("assessment-error-"));
-          if (errorIds.length) {
-            control.setAttribute("aria-describedby", errorIds.join(" "));
-          } else {
-            control.removeAttribute("aria-describedby");
-          }
-        });
+    const clearValidation = () => {
+      form.querySelectorAll<HTMLElement>("[data-generated-error]").forEach((error) => error.remove());
+      form.querySelectorAll<FormControl>('[aria-invalid="true"]').forEach((control) => {
+        if (control !== uploadInput) control.removeAttribute("aria-invalid");
+        const errorIds = (control.getAttribute("aria-describedby") ?? "")
+          .split(/\s+/)
+          .filter((id) => id && !id.startsWith("assessment-error-"));
+        if (errorIds.length) control.setAttribute("aria-describedby", errorIds.join(" "));
+        else control.removeAttribute("aria-describedby");
+      });
     };
 
     const prepareIssueControl = (issue: ValidationIssue, index: number) => {
       if (!issue.control.id) {
-        issue.control.id = `assessment-field-${issue.key.replace(
-          /[^a-z0-9]+/gi,
-          "-"
-        )}-${index}`;
+        issue.control.id = `assessment-field-${issue.key.replace(/[^a-z0-9]+/gi, "-")}-${index}`;
       }
       const groupControls =
-        issue.control instanceof HTMLInputElement &&
-        ["radio", "checkbox"].includes(issue.control.type)
-          ? Array.from(
-              form.querySelectorAll<FormControl>(
-                `[name="${CSS.escape(issue.control.name)}"]`
-              )
-            )
+        issue.control instanceof HTMLInputElement && ["radio", "checkbox"].includes(issue.control.type)
+          ? Array.from(form.querySelectorAll<FormControl>(`[name="${CSS.escape(issue.control.name)}"]`))
           : [issue.control];
-      const errorId =
-        issue.existingError?.id || `assessment-error-${issue.control.id}`;
+      const errorId = issue.existingError?.id || `assessment-error-${issue.control.id}`;
 
       groupControls.forEach((control) => {
         control.setAttribute("aria-invalid", "true");
         const describedBy = new Set(
-          (control.getAttribute("aria-describedby") ?? "")
-            .split(/\s+/)
-            .filter(Boolean)
+          (control.getAttribute("aria-describedby") ?? "").split(/\s+/).filter(Boolean)
         );
         describedBy.add(errorId);
-        control.setAttribute(
-          "aria-describedby",
-          Array.from(describedBy).join(" ")
-        );
+        control.setAttribute("aria-describedby", Array.from(describedBy).join(" "));
       });
 
       if (!issue.existingError) {
@@ -1527,10 +891,7 @@ const yesNoUnsure = [
       }
     };
 
-    const renderIssues = (
-      issues: ValidationIssue[],
-      focusSummary: boolean
-    ) => {
+    const renderIssues = (issues: ValidationIssue[], focusSummary: boolean) => {
       if (!errorSummary || !errorSummaryList) return;
       errorSummaryList.replaceChildren();
 
@@ -1546,9 +907,7 @@ const yesNoUnsure = [
         const link = document.createElement("a");
         link.href = `#${issue.control.id}`;
         link.textContent = issue.message;
-        link.addEventListener("click", () => {
-          issue.control.focus();
-        });
+        link.addEventListener("click", () => issue.control.focus());
         item.append(link);
         errorSummaryList.append(item);
       });
@@ -1564,94 +923,13 @@ const yesNoUnsure = [
       }
     };
 
-    const validateCurrentStep = (focusSummary = true) => {
-      const step = steps[currentStep];
-      if (!step) return true;
-      clearValidation(step);
-      renderUpload();
-      const issues = collectIssues(step);
-      renderIssues(issues, focusSummary);
-      return issues.length === 0;
-    };
-
-    const showStep = (index: number, focusHeading = true) => {
-      currentStep = Math.max(0, Math.min(index, steps.length - 1));
-      steps.forEach((step, stepIndex) => {
-        step.hidden = stepIndex !== currentStep;
-      });
-      indicators.forEach((indicator, indicatorIndex) => {
-        const state =
-          indicatorIndex === currentStep
-            ? "current"
-            : indicatorIndex < currentStep
-              ? "complete"
-              : "upcoming";
-        indicator.dataset.state = state;
-        if (state === "current") indicator.setAttribute("aria-current", "step");
-        else indicator.removeAttribute("aria-current");
-      });
-      errorSummary?.setAttribute("hidden", "");
-      saveDraft();
-
-      if (focusHeading) {
-        const heading =
-          steps[currentStep]?.querySelector<HTMLElement>("[data-step-heading]");
-        heading?.focus({ preventScroll: true });
-        heading?.scrollIntoView({
-          behavior: reducedMotion.matches ? "auto" : "smooth",
-          block: "start"
-        });
-      }
-    };
-
     form.noValidate = true;
     form.dataset.enhanced = "true";
-    form
-      .querySelectorAll<HTMLElement>("[data-enhanced-actions]")
-      .forEach((actions) => {
-        actions.hidden = false;
-      });
-    form
-      .querySelectorAll<HTMLButtonElement>(
-        "#authority-contact [data-previous-step]"
-      )
-      .forEach((button) => {
-        button.hidden = false;
-      });
-
-    form.querySelectorAll<HTMLButtonElement>("[data-next-step]").forEach(
-      (button) => {
-        button.addEventListener("click", () => {
-          attemptedSteps.add(currentStep);
-          if (validateCurrentStep(true)) showStep(currentStep + 1);
-        });
-      }
-    );
-
-    form
-      .querySelectorAll<HTMLButtonElement>("[data-previous-step]")
-      .forEach((button) => {
-        button.addEventListener("click", () => showStep(currentStep - 1));
-      });
-
-    form.addEventListener("input", scheduleDraftSave);
-    form.addEventListener("change", (event) => {
-      scheduleDraftSave();
-      if (
-        attemptedSteps.has(currentStep) &&
-        event.target instanceof HTMLElement &&
-        event.target !== uploadInput
-      ) {
-        validateCurrentStep(false);
-      }
-    });
+    form.addEventListener("change", () => renderUpload());
 
     const resetTurnstile = () => {
-      const turnstile = (
-        window as Window & {
-          turnstile?: { reset: (widget?: string | HTMLElement) => void };
-        }
-      ).turnstile;
+      const turnstile = (window as Window & { turnstile?: { reset: (widget?: string | HTMLElement) => void } })
+        .turnstile;
       const widget = form.querySelector<HTMLElement>(".cf-turnstile");
       if (turnstile && widget) turnstile.reset(widget);
     };
@@ -1659,11 +937,7 @@ const yesNoUnsure = [
     const setSubmitting = (submitting: boolean, message = "") => {
       if (submitButton) submitButton.disabled = submitting;
       form.setAttribute("aria-busy", String(submitting));
-      if (submitLabel) {
-        submitLabel.textContent = submitting
-          ? "Sending request…"
-          : "Submit My Handoff Plan Request";
-      }
+      if (submitLabel) submitLabel.textContent = submitting ? "Sending…" : defaultSubmitLabel;
       if (submitStatus) {
         submitStatus.hidden = !message;
         submitStatus.textContent = message;
@@ -1671,73 +945,50 @@ const yesNoUnsure = [
     };
 
     const submitWithProgress = () =>
-      new Promise<{ status: number; payload: Record<string, unknown> }>(
-        (resolve, reject) => {
-          const request = new XMLHttpRequest();
-          request.open("POST", form.action);
-          request.setRequestHeader("Accept", "application/json");
-          request.timeout = 90_000;
-          request.upload.addEventListener("progress", (progressEvent) => {
-            if (!submitStatus || !progressEvent.lengthComputable) return;
-            const percentage = Math.round(
-              (progressEvent.loaded / progressEvent.total) * 100
-            );
-            submitStatus.hidden = false;
-            submitStatus.textContent =
-              percentage < 100
-                ? `Uploading property details and media: ${percentage}%`
-                : "Upload complete. Confirming delivery…";
-          });
-          request.addEventListener("load", () => {
-            let payload: Record<string, unknown> = {};
-            try {
-              payload = JSON.parse(request.responseText) as Record<
-                string,
-                unknown
-              >;
-            } catch {
-              payload = {};
-            }
-            resolve({ status: request.status, payload });
-          });
-          request.addEventListener("error", () =>
-            reject(new Error("network"))
-          );
-          request.addEventListener("timeout", () =>
-            reject(new Error("timeout"))
-          );
-          request.send(new FormData(form));
-        }
-      );
+      new Promise<{ status: number; payload: Record<string, unknown> }>((resolve, reject) => {
+        const request = new XMLHttpRequest();
+        request.open("POST", form.action);
+        request.setRequestHeader("Accept", "application/json");
+        request.timeout = 90_000;
+        request.upload.addEventListener("progress", (progressEvent) => {
+          if (!submitStatus || !progressEvent.lengthComputable) return;
+          const percentage = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+          submitStatus.hidden = false;
+          submitStatus.textContent =
+            percentage < 100
+              ? `Uploading property details and photos: ${percentage}%`
+              : "Upload complete. Confirming delivery…";
+        });
+        request.addEventListener("load", () => {
+          let payload: Record<string, unknown> = {};
+          try {
+            payload = JSON.parse(request.responseText) as Record<string, unknown>;
+          } catch {
+            payload = {};
+          }
+          resolve({ status: request.status, payload });
+        });
+        request.addEventListener("error", () => reject(new Error("network")));
+        request.addEventListener("timeout", () => reject(new Error("timeout")));
+        request.send(new FormData(form));
+      });
 
     form.addEventListener("submit", async (event) => {
-      steps.forEach((step) => clearValidation(step));
+      event.preventDefault();
+      clearValidation();
       renderUpload();
-      const issues = steps.flatMap((step) => collectIssues(step));
+      const issues = collectIssues();
       if (issues.length) {
-        event.preventDefault();
-        const issueStep = steps.findIndex((step) =>
-          step.contains(issues[0]?.control ?? null)
-        );
-        showStep(Math.max(0, issueStep), false);
         renderIssues(issues, true);
         return;
       }
-      if (!form.action) {
-        event.preventDefault();
-        return;
-      }
+      if (!form.action) return;
 
-      event.preventDefault();
       const turnstileToken = form.elements.namedItem("cf-turnstile-response");
-      if (
-        !(turnstileToken instanceof HTMLInputElement) ||
-        !turnstileToken.value
-      ) {
+      if (!(turnstileToken instanceof HTMLInputElement) || !turnstileToken.value) {
         if (submitStatus) {
           submitStatus.hidden = false;
-          submitStatus.textContent =
-            "Complete the security verification, then submit again.";
+          submitStatus.textContent = "Complete the security verification, then submit again.";
           submitStatus.focus();
         }
         return;
@@ -1746,28 +997,18 @@ const yesNoUnsure = [
       if (timestampInput instanceof HTMLInputElement) {
         timestampInput.value = new Date().toISOString();
       }
-      setSubmitting(true, "Preparing your request…");
+      setSubmitting(true, "Sending your request…");
 
       try {
         const { status, payload } = await submitWithProgress();
         if (status >= 200 && status < 300 && payload.ok === true) {
-          safeStorage.remove(window.localStorage, localDraftKey);
-          safeStorage.remove(window.sessionStorage, sessionDraftKey);
-          // The short code, not the UUID: this is what the visitor may write down or
-          // photograph, and it is the reference the office can act on.
-          const code =
-            typeof payload.confirmationCode === "string"
-              ? payload.confirmationCode
-              : "";
+          const code = typeof payload.confirmationCode === "string" ? payload.confirmationCode : "";
           const callbackWindow =
-            typeof payload.callbackWindow === "string"
-              ? payload.callbackWindow
-              : "next-business-window";
+            typeof payload.callbackWindow === "string" ? payload.callbackWindow : "next-business-window";
           const parameters = new URLSearchParams({
             received: "1",
             callback: callbackWindow,
-            email:
-              payload.confirmationEmailSent === true ? "sent" : "attention"
+            email: payload.confirmationEmailSent === true ? "sent" : "attention"
           });
           if (isResidenceOffer) parameters.set("offer", "private-residence-reset");
           if (code) parameters.set("code", code);
@@ -1775,12 +1016,7 @@ const yesNoUnsure = [
           return;
         }
 
-        // §9.15.5 approved submission-error string. The server's own message still wins when
-        // it sends one — it describes the specific failure, this is the fallback.
-        const message =
-          typeof payload.message === "string"
-            ? payload.message
-            : submissionErrorMessage;
+        const message = typeof payload.message === "string" ? payload.message : submissionErrorMessage;
         setSubmitting(false, message);
         resetTurnstile();
       } catch {
@@ -1788,8 +1024,6 @@ const yesNoUnsure = [
         resetTurnstile();
       }
     });
-
-    showStep(currentStep, false);
   }
 </script>
 
@@ -1798,24 +1032,14 @@ const yesNoUnsure = [
     background: var(--ac-color-warm-white);
   }
 
-  /* Capped at 64px: this sits inside a 68px section, and internal padding must not exceed
-     the gap between sections. Was 96px top, which stacked with the section rhythm into a
-     164px band above the eyebrow. */
   .assessment__masthead {
     display: grid;
-    gap: var(--ac-space-6);
+    gap: var(--ac-space-4);
     padding-block: var(--ac-space-6) var(--ac-space-5);
   }
 
-  .assessment__intro {
-    max-width: 49rem;
-  }
-
-  .assessment__eyebrow,
-  .assessment__record-label,
-  .assessment__next-label,
-  .condition-review__label {
-    margin: 0 0 var(--ac-space-3);
+  .assessment__eyebrow {
+    margin: 0;
     color: var(--ac-color-navy-800);
     font-family: var(--ac-font-sans);
     font-size: var(--ac-text-sm);
@@ -1825,8 +1049,8 @@ const yesNoUnsure = [
   }
 
   .assessment h1 {
-    max-width: 16ch;
-    margin-block: 0 var(--ac-space-4);
+    max-width: 20ch;
+    margin: 0;
   }
 
   .assessment__lead {
@@ -1835,606 +1059,25 @@ const yesNoUnsure = [
     font-size: var(--ac-text-lead);
   }
 
-  .assessment__facts {
-    display: grid;
-    gap: var(--ac-space-4);
-    margin: 0;
-    border-block: 1px solid var(--ac-color-rule);
-    padding-block: var(--ac-space-4);
-  }
-
-  .assessment__facts div {
-    display: grid;
-    grid-template-columns: minmax(7.5rem, 0.7fr) minmax(0, 1.3fr);
-    gap: var(--ac-space-3);
-  }
-
-  .assessment__facts dt {
-    color: var(--ac-color-ink-500);
-    font-size: var(--ac-text-sm);
-  }
-
-  .assessment__facts dd {
-    margin: 0;
-    color: var(--ac-color-navy-900);
-    font-weight: 700;
-  }
-
   .assessment__body {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ac-space-5);
     border-top: 1px solid var(--ac-color-rule);
-  }
-
-  .assessment__rail {
-    border-bottom: 1px solid var(--ac-color-rule);
-    background: var(--ac-color-warm-white);
-    padding-block: var(--ac-space-5);
-  }
-
-  .assessment__record-label {
-    margin-bottom: var(--ac-space-1);
-    color: var(--ac-color-navy-800);
-  }
-
-  .assessment__draft {
-    margin: 0;
-    color: var(--ac-color-ink-500);
-    font-size: var(--ac-text-sm);
-  }
-
-  /* 2026-08-18 visual port. docs/mockups .rail — the 01/02/03 step rail: large steel numeral,
-     bold label, and a white cell with a 3px navy left edge marking the active step. This is
-     PORT-PROMPT §3's stepped form, and it ships here rather than on the homepage because these
-     three step labels are real approved copy in src/data/assessment.ts; the homepage mockup's
-     rail labels exist only in the mockup (see RequestForm.astro). */
-  .assessment__steps {
-    display: grid;
-    gap: 0;
-    margin: var(--ac-space-5) 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .assessment__steps li {
-    display: grid;
-    align-items: center;
-    padding: 13px 20px;
-    gap: 12px;
-    grid-template-columns: auto minmax(0, 1fr);
-  }
-
-  .assessment__step-number {
-    color: #c3cdd9;
-    font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-rail-numeral);
-    font-weight: 700;
-    line-height: 1;
-  }
-
-  .assessment__steps strong,
-  .assessment__steps small {
-    display: block;
-  }
-
-  .assessment__step-label-short {
-    display: none;
-  }
-
-  .assessment__steps strong {
-    color: var(--ac-color-ink-400);
-    font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-sm);
-    font-weight: 700;
-    line-height: 1.25;
-  }
-
-  .assessment__steps small {
-    margin-top: var(--ac-space-1);
-    color: var(--ac-color-ink-400);
-    font-size: 0.75rem;
-    line-height: 1.45;
-  }
-
-  .assessment__next {
-    margin-top: var(--ac-space-6);
-    border-left: 2px solid var(--ac-color-blue-500);
-    padding-left: var(--ac-space-4);
-  }
-
-  .assessment__next-label {
-    margin-bottom: var(--ac-space-2);
-    color: var(--ac-color-navy-800);
-  }
-
-  .assessment__next p:last-child {
-    margin: 0;
-    font-size: var(--ac-text-sm);
-  }
-
-  .assessment__form-column {
-    min-width: 0;
-    padding-block: var(--ac-space-5) var(--ac-space-8);
+    padding-block: var(--ac-space-6);
+    max-width: 40rem;
   }
 
   .assessment__privacy-note {
-    border-block: 1px solid var(--ac-color-rule);
-    padding-block: var(--ac-space-3);
+    margin: 0;
     color: var(--ac-color-ink-500);
     font-size: var(--ac-text-sm);
-  }
-
-  .assessment__privacy-note p {
-    margin: 0;
-  }
-
-  .assessment__clear-draft {
-    min-height: 3rem;
-    border: 0;
-    margin-top: var(--ac-space-2);
-    padding: 0;
-    background: transparent;
-    color: var(--ac-color-navy-800);
-    cursor: pointer;
-    font-weight: 700;
-    text-decoration: underline;
-    text-decoration-thickness: 0.08em;
-    text-underline-offset: 0.18em;
-  }
-
-  .assessment__clear-draft:hover {
-    color: var(--ac-color-navy-900);
-    text-decoration-thickness: 0.12em;
-  }
-
-  .assessment__draft-status {
-    margin-top: var(--ac-space-2) !important;
-    color: var(--ac-color-success);
-    font-weight: 700;
   }
 
   .intake-form {
-    margin-top: var(--ac-space-5);
-  }
-
-  .intake-form__errors {
-    scroll-margin-top: 6rem;
-    border: 2px solid var(--ac-color-error);
-    padding: var(--ac-space-4);
-    background: #f8ecea;
-    color: #6f211e;
-  }
-
-  .intake-form__errors h2 {
-    margin: 0;
-    color: #6f211e;
-  }
-
-  .intake-form__errors ul {
     display: grid;
-    gap: var(--ac-space-2);
-    margin-block: var(--ac-space-3) 0;
-    padding-left: 1.25rem;
-  }
-
-  .intake-form__errors a {
-    color: #6f211e;
-    font-weight: 700;
-  }
-
-  /* 48px, not 96px: two adjacent steps each contributed 96px, opening a 192px empty band
-     between step content — over the 130px band ceiling and over the section rhythm. */
-  .intake-step {
-    min-width: 0;
-    border: 0;
-    margin: 0;
-    padding: var(--ac-space-5) 0;
-  }
-
-  .intake-step + .intake-step {
-    border-top: 2px solid var(--ac-color-navy-800);
-  }
-
-  .intake-step > legend {
-    display: grid;
-    width: 100%;
-    gap: var(--ac-space-1);
-    padding: 0;
-    color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-sans);
-  }
-
-  .intake-step__number {
-    color: var(--ac-color-navy-800);
-    font-size: var(--ac-text-sm);
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .intake-step__title {
-    scroll-margin-top: 6rem;
-    font-weight: 700;
-    line-height: 1.15;
-  }
-
-  .intake-step__title:focus {
-    outline: none;
-  }
-
-  .intake-step__title:focus-visible {
-    outline: 3px solid var(--ac-color-focus);
-    outline-offset: 5px;
-  }
-
-  .intake-step__intro {
-    max-width: 44rem;
-    margin: var(--ac-space-3) 0 0;
-    color: var(--ac-color-ink-500);
-  }
-
-  .intake-form__required-note {
-    margin-block: var(--ac-space-4) 0;
-    color: var(--ac-color-ink-500);
-    font-size: var(--ac-text-sm);
-  }
-
-  .form-grid {
-    display: grid;
-    gap: var(--ac-space-5);
-    margin-top: var(--ac-space-6);
-  }
-
-  .form-field,
-  .form-group {
-    min-width: 0;
-  }
-
-  .form-field label,
-  .form-group > legend,
-  .upload-field > label,
-  .question-row > legend {
-    display: block;
-    color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-sm);
-    font-weight: 700;
-    line-height: 1.4;
-  }
-
-  .form-field input,
-  .form-field select,
-  .form-field textarea,
-  .upload-field input[type="file"] {
-    width: 100%;
-    min-height: 3rem;
-    border: 1px solid var(--ac-color-steel-300);
-    border-radius: var(--ac-radius-control);
-    margin-top: var(--ac-space-2);
-    padding: 0.75rem;
-    background: var(--ac-color-paper);
-    color: var(--ac-color-ink-700);
-  }
-
-  .form-field textarea {
-    min-height: 8rem;
-    resize: vertical;
-  }
-
-  .form-field input:hover,
-  .form-field select:hover,
-  .form-field textarea:hover,
-  .upload-field input[type="file"]:hover {
-    border-color: var(--ac-color-navy-800);
-  }
-
-  .form-field input:focus-visible,
-  .form-field select:focus-visible,
-  .form-field textarea:focus-visible,
-  .upload-field input[type="file"]:focus-visible {
-    border-color: var(--ac-color-focus);
-  }
-
-  .form-field [aria-invalid="true"],
-  .upload-field [aria-invalid="true"] {
-    border-color: var(--ac-color-error);
-  }
-
-  .form-field__hint,
-  .upload-field p,
-  .intake-form__actions p,
-  .intake-form__consent > p {
-    margin: var(--ac-space-2) 0 0;
-    color: var(--ac-color-ink-500);
-    font-size: var(--ac-text-sm);
-  }
-
-  .form-field__optional {
-    color: var(--ac-color-ink-500);
-    font-family: var(--ac-font-sans);
-    font-weight: 400;
-  }
-
-  .form-group {
-    border: 0;
-    margin: 0;
-    padding: 0;
-  }
-
-  .choice-row {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--ac-space-2);
-    margin-top: var(--ac-space-3);
-  }
-
-  .choice-control {
-    position: relative;
-    display: inline-grid;
-    min-height: 3rem;
-    cursor: pointer;
-    grid-template-columns: 1.25rem minmax(0, 1fr);
-    align-items: center;
-    gap: var(--ac-space-2);
-    border: 1px solid var(--ac-color-rule);
-    border-radius: var(--ac-radius-control);
-    padding: 0.65rem 0.8rem;
-    background: var(--ac-color-paper);
-    color: var(--ac-color-ink-700);
-    line-height: 1.35;
-  }
-
-  .choice-control:hover {
-    border-color: var(--ac-color-blue-500);
-  }
-
-  .choice-control:has(input:checked) {
-    border-color: var(--ac-color-navy-800);
-    background: rgb(106 155 195 / 0.12);
-    color: var(--ac-color-navy-900);
-  }
-
-  .choice-control:has(input:focus-visible) {
-    outline: 3px solid var(--ac-color-focus);
-    outline-offset: 3px;
-  }
-
-  .choice-control:has(input[aria-invalid="true"]) {
-    border-color: var(--ac-color-error);
-  }
-
-  .choice-control input {
-    width: 1.15rem;
-    height: 1.15rem;
-    margin: 0;
-    accent-color: var(--ac-color-navy-800);
-  }
-
-  .choice-control input:focus-visible {
-    outline: none;
-  }
-
-  .form-group--areas {
-    margin-top: var(--ac-space-6);
-  }
-
-  .choice-grid {
-    display: grid;
-    gap: var(--ac-space-2);
-    margin-top: var(--ac-space-3);
-  }
-
-  .question-sheet {
-    margin-top: var(--ac-space-7);
-    border-top: 2px solid var(--ac-color-navy-800);
-  }
-
-  .question-sheet > h2 {
-    margin: 0;
-    border-bottom: 1px solid var(--ac-color-rule);
-    padding-block: var(--ac-space-4);
-  }
-
-  .question-row {
-    display: grid;
-    min-width: 0;
-    gap: var(--ac-space-3);
-    border: 0;
-    border-bottom: 1px solid var(--ac-color-rule);
-    margin: 0;
-    padding-block: var(--ac-space-4);
-  }
-
-  .question-row .choice-row {
-    margin-top: 0;
-  }
-
-  .choice-control--compact {
-    min-height: 2.75rem;
-    padding-block: 0.5rem;
-    font-size: var(--ac-text-sm);
-  }
-
-  .condition-review {
-    margin-top: var(--ac-space-7);
-    border-left: 3px solid var(--ac-color-error);
-    padding-left: var(--ac-space-4);
-  }
-
-  .condition-review__heading h2 {
-    margin-block: 0 var(--ac-space-3);
-  }
-
-  .condition-review__heading > p:last-child {
-    margin: 0;
-  }
-
-  .condition-review__label {
-    color: var(--ac-color-error);
-  }
-
-  .question-sheet--conditions {
-    margin-top: var(--ac-space-5);
-    border-top-width: 1px;
-  }
-
-  .question-row--stop > legend::before {
-    color: var(--ac-color-error);
-    content: "Review flag · ";
-  }
-
-  .condition-review__notice {
-    margin: var(--ac-space-5) 0 0;
-    padding: var(--ac-space-4);
-    background: #f8ecea;
-    color: #6f211e;
-    font-size: var(--ac-text-sm);
-  }
-
-  .residence-questions {
-    margin-top: var(--ac-space-7);
-    border-left: 3px solid var(--ac-color-blue-500);
-    padding-left: var(--ac-space-4);
-  }
-
-  .residence-questions__heading h2 {
-    margin-block: 0 var(--ac-space-3);
-  }
-
-  .residence-questions__heading > p:last-child {
-    margin: 0;
-  }
-
-  .residence-questions .condition-review__label {
-    color: var(--ac-color-navy-800);
-  }
-
-  .upload-field {
-    margin-top: var(--ac-space-7);
-    border-block: 1px solid var(--ac-color-rule);
-    padding-block: var(--ac-space-5);
-  }
-
-  .upload-field__control {
-    margin-top: var(--ac-space-4);
-    padding: var(--ac-space-4);
-    background:
-      repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2rem,
-        rgb(216 224 231 / 0.45) 2rem,
-        rgb(216 224 231 / 0.45) calc(2rem + 1px)
-      ),
-      var(--ac-color-paper);
-  }
-
-  .upload-field input[type="file"] {
-    background: var(--ac-color-warm-white);
-  }
-
-  .upload-field__empty {
-    border-top: 1px solid var(--ac-color-rule);
-    padding-top: var(--ac-space-3);
-  }
-
-  .upload-field__files {
-    display: grid;
-    gap: var(--ac-space-2);
-    margin: var(--ac-space-3) 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .upload-field__files li {
-    display: grid;
-    min-width: 0;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: var(--ac-space-3);
-    border-top: 1px solid var(--ac-color-rule);
-    padding-top: var(--ac-space-2);
-  }
-
-  .upload-field__files span,
-  .upload-field__files strong,
-  .upload-field__files small {
-    display: block;
-    min-width: 0;
-    overflow-wrap: anywhere;
-  }
-
-  .upload-field__files strong {
-    color: var(--ac-color-navy-900);
-  }
-
-  .upload-field__files small {
-    color: var(--ac-color-ink-500);
-  }
-
-  .upload-field__files li[data-state="error"] small {
-    color: var(--ac-color-error);
-    font-weight: 700;
-  }
-
-  .upload-field__remove {
-    min-height: 3rem;
-    border: 1px solid var(--ac-color-navy-800);
-    border-radius: var(--ac-radius-control);
-    padding-inline: var(--ac-space-3);
-    background: var(--ac-color-paper);
-    color: var(--ac-color-navy-800);
-    cursor: pointer;
-    font-weight: 700;
-  }
-
-  .upload-field__remove:hover {
-    background: var(--ac-color-navy-900);
-    color: var(--ac-color-paper);
-  }
-
-  .form-error {
-    margin: var(--ac-space-2) 0 0;
-    color: var(--ac-color-error);
-    font-size: var(--ac-text-sm);
-    font-weight: 700;
-  }
-
-  .form-grid--text .form-field {
-    grid-column: 1 / -1;
-  }
-
-  .intake-form__consent {
-    margin-top: var(--ac-space-7);
-    border-block: 1px solid var(--ac-color-rule);
-    padding-block: var(--ac-space-5);
-  }
-
-  .consent-control {
-    display: grid;
-    cursor: pointer;
-    grid-template-columns: 1.4rem minmax(0, 1fr);
-    gap: var(--ac-space-3);
-    color: var(--ac-color-navy-900);
-    font-weight: 600;
-  }
-
-  .consent-control input {
-    width: 1.25rem;
-    height: 1.25rem;
-    margin: 0.2rem 0 0;
-    accent-color: var(--ac-color-navy-800);
-  }
-
-  .consent-control + .consent-control {
-    margin-top: var(--ac-space-4);
-  }
-
-  .intake-form__availability {
-    margin-top: var(--ac-space-5);
-    border-left: 3px solid var(--ac-color-error);
-    padding: var(--ac-space-3) var(--ac-space-4);
-    background: #f8ecea;
-    color: #6f211e;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ac-space-6);
   }
 
   .intake-form__honeypot {
@@ -2446,294 +1089,319 @@ const yesNoUnsure = [
     white-space: nowrap !important;
   }
 
-  .intake-form__turnstile {
-    display: grid;
-    gap: var(--ac-space-2);
-    margin-top: var(--ac-space-5);
+  .intake-form__errors {
+    scroll-margin-top: 6rem;
+    border: 2px solid var(--ac-color-error);
+    padding: var(--ac-space-4);
+    background: #f8ecea;
+    color: #6f211e;
   }
 
-  .intake-form__turnstile p,
+  .intake-form__errors ul {
+    display: grid;
+    gap: var(--ac-space-2);
+    margin: var(--ac-space-2) 0 0;
+    padding-left: 1.25rem;
+  }
+
+  .intake-form :global(.form-error) {
+    margin: var(--ac-space-1) 0 0;
+    color: var(--ac-color-error);
+    font-size: var(--ac-text-sm);
+    font-weight: 700;
+  }
+
+  .form-group {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ac-space-3);
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
+  .form-group[hidden],
+  .form-grid[hidden],
+  .residence-questions[hidden] {
+    display: none;
+  }
+
+  .form-group legend {
+    padding: 0;
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-sm);
+    font-weight: 700;
+  }
+
+  .choice-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--ac-space-3);
+    min-width: 0;
+  }
+
+  @media (min-width: 40rem) {
+    .choice-grid {
+      grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
+    }
+  }
+
+  .choice-row {
+    display: flex;
+    gap: var(--ac-space-3);
+  }
+
+  .choice-row--wrap {
+    flex-wrap: wrap;
+  }
+
+  .choice-control {
+    display: flex;
+    align-items: center;
+    gap: var(--ac-space-2);
+    min-width: 0;
+    border: 1px solid var(--ac-color-steel-300);
+    border-radius: var(--ac-radius-control);
+    padding: var(--ac-space-3);
+    color: var(--ac-color-ink-700);
+    font-size: var(--ac-text-sm);
+    cursor: pointer;
+  }
+
+  .choice-control:has(input:checked) {
+    border-color: var(--ac-color-navy-800);
+    background: var(--ac-color-paper);
+  }
+
+  .choice-control--compact {
+    padding: var(--ac-space-2) var(--ac-space-3);
+  }
+
+  .choice-control input {
+    accent-color: var(--ac-color-navy-800);
+  }
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--ac-space-4);
+  }
+
+  .form-field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ac-space-2);
+  }
+
+  .form-field--wide {
+    grid-column: 1 / -1;
+  }
+
+  .form-field label,
+  .consent-control {
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-sm);
+    font-weight: 700;
+  }
+
+  .form-field__optional {
+    color: var(--ac-color-ink-500);
+    font-weight: 400;
+  }
+
+  .form-field__hint {
+    margin: 0;
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-sm);
+    font-weight: 400;
+  }
+
+  .form-field input,
+  .form-field select,
+  .form-field textarea {
+    width: 100%;
+    min-width: 0;
+    min-height: 3rem;
+    border: 1px solid var(--ac-color-steel-300);
+    border-radius: var(--ac-radius-control);
+    padding: 0.75rem;
+    background: var(--ac-color-paper);
+    color: var(--ac-color-ink-700);
+    font-family: var(--ac-font-sans);
+  }
+
+  .form-field textarea {
+    min-height: 6rem;
+    resize: vertical;
+  }
+
+  .form-field input:focus-visible,
+  .form-field select:focus-visible,
+  .form-field textarea:focus-visible {
+    border-color: var(--ac-color-focus);
+    outline: 2px solid var(--ac-color-focus);
+    outline-offset: 1px;
+  }
+
+  .upload-field {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ac-space-2);
+  }
+
+  .upload-field label {
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-sm);
+    font-weight: 700;
+  }
+
+  .upload-field p {
+    margin: 0;
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-sm);
+  }
+
+  .upload-field__control {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ac-space-2);
+  }
+
+  .upload-field input[type="file"] {
+    border: 1px dashed var(--ac-color-steel-300);
+    border-radius: var(--ac-radius-control);
+    padding: var(--ac-space-3);
+    background: var(--ac-color-paper);
+  }
+
+  .upload-field__files {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ac-space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .upload-field__files li {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--ac-space-3);
+    border: 1px solid var(--ac-color-steel-300);
+    border-radius: var(--ac-radius-control);
+    padding: var(--ac-space-2) var(--ac-space-3);
+  }
+
+  .upload-field__files li[data-state="error"] {
+    border-color: var(--ac-color-error);
+  }
+
+  .upload-field__files strong {
+    display: block;
+    color: var(--ac-color-navy-900);
+    font-size: var(--ac-text-sm);
+  }
+
+  .upload-field__files small {
+    color: var(--ac-color-ink-500);
+  }
+
+  .upload-field__remove {
+    border: 0;
+    background: none;
+    color: var(--ac-color-navy-800);
+    font-size: var(--ac-text-sm);
+    font-weight: 700;
+    text-decoration: underline;
+    cursor: pointer;
+  }
+
+  .intake-form__consent {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ac-space-3);
+  }
+
+  .consent-control {
+    display: grid;
+    grid-template-columns: 1.25rem minmax(0, 1fr);
+    gap: var(--ac-space-3);
+    font-weight: 400;
+    cursor: pointer;
+  }
+
+  .consent-control input {
+    width: 1.15rem;
+    height: 1.15rem;
+    margin-top: 0.2rem;
+    accent-color: var(--ac-color-navy-800);
+  }
+
+  .consent-control span {
+    font-weight: 400;
+  }
+
+  .intake-form__consent p {
+    margin: 0;
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-sm);
+  }
+
+  .intake-form__turnstile {
+    display: flex;
+  }
+
+  .intake-form__no-script,
+  .intake-form__availability p {
+    margin: 0;
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-sm);
+  }
+
+  .intake-form__actions {
+    display: grid;
+    gap: var(--ac-space-3);
+    justify-items: start;
+  }
+
   .intake-form__submit-status {
     margin: 0;
     color: var(--ac-color-ink-500);
     font-size: var(--ac-text-sm);
   }
 
-  .intake-form__no-script {
-    margin-top: var(--ac-space-5);
-    border-left: 3px solid var(--ac-color-blue-500);
-    padding: var(--ac-space-3);
-    background: var(--ac-color-paper);
-  }
-
-  .intake-form__submit-status {
-    border-left: 3px solid var(--ac-color-blue-500);
-    padding: var(--ac-space-3);
-    background: var(--ac-color-paper);
-  }
-
-  .intake-form__availability p {
-    margin: 0;
-  }
-
-  .intake-form__actions {
+  .residence-questions {
     display: grid;
-    gap: var(--ac-space-3);
-    margin-top: var(--ac-space-5);
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--ac-space-4);
+    border: 1px solid var(--ac-color-rule);
+    border-radius: var(--ac-radius-control);
+    padding: var(--ac-space-4);
   }
 
-  .intake-form__step-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--ac-space-3);
-    border-top: 1px solid var(--ac-color-rule);
-    margin-top: var(--ac-space-7);
-    padding-top: var(--ac-space-5);
+  .residence-questions__heading p {
+    margin: var(--ac-space-1) 0 0;
+    color: var(--ac-color-ink-500);
+    font-size: var(--ac-text-sm);
   }
 
-  .button--secondary {
-    border-color: var(--ac-color-navy-800);
-    background: var(--ac-color-paper);
+  .condition-review__label {
+    margin: 0;
     color: var(--ac-color-navy-800);
+    font-family: var(--ac-font-sans);
+    font-size: var(--ac-text-sm);
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
-  .button--secondary:hover {
-    background: var(--ac-color-navy-900);
-    color: var(--ac-color-paper);
-  }
-
-  .intake-form__actions .button {
-    width: 100%;
-  }
-
-  /* Mockup .rail div.on */
-  .assessment__steps li[data-state="current"] {
-    border-left: 3px solid var(--ac-color-navy-800);
-    background: #fff;
-    padding-left: 17px;
-  }
-
-  .assessment__steps li[data-state="current"] .assessment__step-number {
-    color: var(--ac-color-navy-800);
-  }
-
-  .assessment__steps li[data-state="current"] strong {
-    color: var(--ac-color-ink-900);
-  }
-
-  .assessment__steps li[data-state="complete"] .assessment__step-number::after {
-    content: " ✓";
-  }
-
-  @media (min-width: 40rem) {
-    .assessment {
-      background:
-        linear-gradient(
-          90deg,
-          transparent 0,
-          transparent calc(50% - 1px),
-          rgb(216 224 231 / 0.25) 50%,
-          transparent calc(50% + 1px)
-        ),
-        var(--ac-color-warm-white);
-    }
-
-    .assessment__facts {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-
-    .assessment__facts div {
-      display: block;
-      border-left: 1px solid var(--ac-color-rule);
-      padding-left: var(--ac-space-3);
-    }
-
-    .assessment__facts dd {
-      margin-top: var(--ac-space-1);
-    }
-
-    .choice-grid {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .question-row {
-      grid-template-columns: minmax(12rem, 1fr) auto;
-      align-items: center;
-    }
-
-    .intake-form__actions {
-      grid-template-columns: repeat(2, minmax(0, max-content));
-      align-items: center;
-    }
-
-    .intake-form__actions p {
-      grid-column: 1 / -1;
-    }
-  }
-
-  @media (min-width: 64rem) {
-    .assessment__masthead {
-      grid-template-columns: minmax(0, 1.55fr) minmax(19rem, 0.75fr);
-      align-items: end;
-      padding-block: var(--ac-space-6) var(--ac-space-5);
-    }
-
-    .assessment__facts {
-      grid-template-columns: 1fr;
-      align-self: stretch;
-    }
-
-    .assessment__facts div {
-      display: grid;
-    }
-
-    .assessment__facts dd {
-      margin-top: 0;
-    }
-
-    .assessment__body {
-      grid-template-columns: minmax(16rem, 0.7fr) minmax(0, 1.65fr);
-      column-gap: clamp(3rem, 7vw, 7rem);
-    }
-
-    .assessment__rail {
-      border-right: 1px solid var(--ac-color-rule);
-      border-bottom: 0;
-      padding-block: var(--ac-space-6);
-      padding-right: clamp(2rem, 4vw, 4rem);
-    }
-
-    .assessment__rail-inner {
-      position: sticky;
-      top: 6.5rem;
-    }
-
-    .assessment__form-column {
-      padding-block: var(--ac-space-6) var(--ac-space-5);
-    }
-
-    .intake-step {
-      padding-block: var(--ac-space-5);
-    }
-  }
-
-  @media (max-width: 39.99rem) {
-    .assessment__masthead {
-      gap: var(--ac-space-4);
-      padding-block: var(--ac-space-6) var(--ac-space-5);
-    }
-
-    .assessment__eyebrow {
-      margin-bottom: var(--ac-space-2);
-    }
-
-    .assessment h1 {
-      margin-bottom: var(--ac-space-3);
-    }
-
-    .assessment__lead {
-      font-size: var(--ac-text-body);
-      line-height: 1.55;
-    }
-
-    .assessment__facts {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: var(--ac-space-3);
-      padding-block: var(--ac-space-3);
-    }
-
-    .assessment__facts div {
-      display: block;
-    }
-
-    .assessment__facts div:nth-child(2) {
-      display: none;
-    }
-
-    .assessment__facts dd {
-      margin-top: var(--ac-space-1);
-      font-size: var(--ac-text-sm);
-      line-height: 1.4;
-    }
-
-    .assessment__rail {
-      padding-block: var(--ac-space-4);
-    }
-
-    .assessment__steps {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: var(--ac-space-2);
-      margin-top: var(--ac-space-4);
-    }
-
-    .assessment__steps li {
-      display: block;
-      border-top-color: var(--ac-color-steel-300);
-      padding-top: var(--ac-space-2);
-    }
-
-    .assessment__steps small,
-    .assessment__next,
-    .assessment__record-label,
-    .assessment__draft {
-      display: none;
-    }
-
-    .assessment__steps strong {
-      margin-top: var(--ac-space-1);
-      font-size: 0.76rem;
-      line-height: 1.25;
-    }
-
-    .assessment__step-label-full {
-      display: none;
-    }
-
-    .assessment__step-label-short {
-      display: block;
-    }
-
-    .assessment__form-column {
-      padding-block: var(--ac-space-4) var(--ac-space-7);
-    }
-
-    .intake-form {
-      margin-top: var(--ac-space-4);
-    }
-
-    .intake-step {
-      padding-block: var(--ac-space-6);
-    }
-
-    .intake-step:first-of-type {
-      padding-top: var(--ac-space-4);
-    }
-
-    .intake-step:first-of-type .intake-step__intro {
-      display: none;
-    }
-
-    .intake-form__step-actions,
-    .intake-form__actions {
-      display: grid;
+  @media (max-width: 40rem) {
+    .form-grid {
       grid-template-columns: 1fr;
     }
-
-    .intake-form__step-actions .button {
-      width: 100%;
-    }
-
-  }
-
-  @media (max-width: 24rem) {
-    .choice-row {
-      display: grid;
-      grid-template-columns: 1fr;
-    }
-
-    .choice-control {
-      width: 100%;
-    }
-
   }
 </style>

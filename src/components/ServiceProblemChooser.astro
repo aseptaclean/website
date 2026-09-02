@@ -1,0 +1,500 @@
+---
+// VISUAL PROBLEM CHOOSER + "NOT SURE?" ROUTING — built 2026-08-26 to
+// docs/30-WEBSITE-MASTER-SPEC.md §20A.20, which separates the chooser (conversion) from the
+// directory (browsing/SEO) and warns against publishing a nine-service list as though all nine
+// are live.
+//
+// TWO CONTENT JOBS, ONE VISUAL MOVEMENT. §20A.20 lists "02 VISUAL PROBLEM CHOOSER" and "03 NOT
+// SURE? ROUTING" as separate jobs; §20A.6 says the jobs are not required to become separate
+// bands, and these two are one thought — "pick your situation, and if none of them is exactly
+// it, that is fine". Splitting them into two full-width sections would put a heading between a
+// question and its own escape hatch.
+//
+// THE DOORS ARE NOT NEW COPY. They are homepage.routingDoors in src/data/site.ts — doc 27's
+// routing block, owner-approved verbatim 2026-08-20, six situations in the buyer's own words.
+// RoutingDoors.astro rendered them on `/` until the V3 rebuild deleted that component on
+// 2026-08-25 as a duplicate routing system; since then the copy has shipped on ZERO pages while
+// doc 30 §18 makes routing this page's entire job. This is where it belongs.
+//
+// THE INDEXABLE FILTER IS THE POINT, NOT A DETAIL. site.ts's own comment specifies it: "`slug`
+// is a route, not a link. Whether a door RENDERS as a link is decided at the call site by
+// reading each page's own `indexable` flag out of doc27ServicePages.ts." That makes an
+// indexable→noindex crawl path (register P2 / release-checklist C10) impossible to create by
+// editing a copy file, and each door starts linking on its own the day its gate clears. The
+// commercial door is the live case and drops out here exactly as it dropped out on `/`.
+//
+// WHY THERE IS NO RODENT OR PIGEON DOOR. The landing-page system's chooser opens with "Rodent
+// Droppings" and carries "Pigeon Droppings". Both are struck on Cal. B&P §8550(a) and
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §3 — rank 3 — which make it unlawful to "advertise, to
+// engage in, or offer to engage in" unlicensed structural pest control, a definition §8505
+// expressly extends to rodents and whose §8555(g) exemption expressly excludes mice, rats and
+// pigeons. AGENTS.md §2 states directly that the 2026-08-26 operational-availability
+// clarification does NOT reach that constraint. `/services/` is indexable and today zero
+// indexable routes link to either page; this section keeps that invariant. See
+// docs/05-DECISIONS-LOG.md, 2026-08-26.
+import { Image } from "astro:assets";
+import chooserImage from "../assets/homepage/condition-development-hoarding-asurnipal.jpg";
+import { servicesHub } from "@data/servicePages";
+import {
+  animalPage,
+  commercialPage,
+  deepCleaningPage,
+  estatePage,
+  hoardingPage,
+  moveOutCleaningPage,
+  propertyCleanoutsPage
+} from "@data/doc27ServicePages";
+import { homepage } from "@data/site";
+
+// TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPH — NOT Aseptaclean project work, not a client
+// property, and not proof of a completed job. `[ATMOS]`-class under doc 21 §6: no crew, no
+// technician, no equipment, no document, no before/after pair.
+//   condition-development-hoarding-asurnipal.jpg
+//     Asurnipal — CC BY-SA 4.0
+//     https://commons.wikimedia.org/wiki/File:Bregenz-Cluttered_interiors_(compulsive_hoarding)-living_room-02ASD.jpg
+// Reused from `/` rather than newly sourced — see the note in ServicesHero.astro for why no new
+// image asset was added in this pass. Replace at the Phase 0 owner shoot
+// (docs/06-ASSET-MANIFEST.md §5).
+
+// Every service page whose slug appears in homepage.routingDoors, keyed by slug so the filter
+// below reads the record's OWN `indexable` flag rather than a list maintained here.
+const pagesBySlug = new Map(
+  [
+    hoardingPage,
+    estatePage,
+    propertyCleanoutsPage,
+    deepCleaningPage,
+    moveOutCleaningPage,
+    commercialPage
+  ].map((page) => [page.slug, page])
+);
+
+const doors = homepage.routingDoors.filter(
+  (door) => pagesBySlug.get(door.slug)?.indexable === true
+);
+
+const { chooser, notSure } = servicesHub;
+// Rendered only while the record it points at exists; the clause is read off the record itself
+// so doc 21 §2.3's verbatim wording cannot drift from the page it describes.
+const showCondition = chooser.condition.href === animalPage.slug;
+---
+
+<section class="chooser" id="what-are-you-dealing-with" aria-labelledby="chooser-title">
+  <div class="chooser__inner">
+    {/* Asymmetric by design: a 1.15fr copy column against a 0.85fr photograph, not a 50/50 split
+        and not four equal tiles. §20A.20's failure mode is "SERVICE CARD #1 / #2 / #3 / #4". */}
+    <div class="chooser__lead">
+      <p class="ac-eyebrow chooser__eyebrow">{chooser.eyebrow}</p>
+      <h2 id="chooser-title" class="ac-type-h2-home-feature">{chooser.heading}</h2>
+      <p class="chooser__lede">{chooser.lede}</p>
+
+      {/* A real list: six parallel routing choices are a list, and a screen reader should be
+          able to count them before reading them. */}
+      <ul class="chooser__doors">
+        {doors.map((door) => (
+          <li class="door">
+            <a class="door__link" href={door.slug}>
+              <span class="door__label">{door.label}</span>
+              <span class="door__detail">{door.detail}</span>
+              <span class="door__arrow" aria-hidden="true">&rarr;</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+
+      {showCondition && (
+        <div class="condition">
+          <p class="condition__label">{chooser.condition.label}</p>
+          <p class="condition__detail">{chooser.condition.detail}</p>
+          {/* docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §2.3 — verbatim, mandatory wherever animal or
+              organic condition work is described. Read from the service record, never retyped. */}
+          <p class="condition__clause">{chooser.condition.clause}</p>
+          <a class="condition__link" href={chooser.condition.href}>
+            {chooser.condition.linkLabel} <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+      )}
+    </div>
+
+    <figure class="chooser__media">
+      <div class="chooser__media__frame">
+        <Image
+          src={chooserImage}
+          alt="Reference photograph of a living room where accumulated household contents cover the floor and furniture."
+          widths={[420, 620, 840, 1100]}
+          sizes="(min-width: 64rem) 38vw, 92vw"
+          format="webp"
+          quality={74}
+          loading="lazy"
+          decoding="async"
+        />
+      </div>
+      <figcaption>
+        Development reference photograph · not Aseptaclean project work · Asurnipal, Wikimedia
+        Commons, CC BY-SA 4.0
+      </figcaption>
+    </figure>
+  </div>
+
+  {/* The escape hatch, on its own surface so it reads as an answer to the list above rather than
+      a seventh item in it. */}
+  <div class="not-sure">
+    <div class="not-sure__inner">
+      <div class="not-sure__copy">
+        <h3 class="ac-type-h3-home-feature">{notSure.heading}</h3>
+        <p class="not-sure__lede">{notSure.lede}</p>
+        <p class="not-sure__close">{notSure.close}</p>
+      </div>
+      <ul class="not-sure__combos">
+        {notSure.combinations.map((combination) => <li>{combination}</li>)}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .chooser {
+    background: var(--ac-color-paper);
+    padding-block: clamp(76px, 7.5vw, 112px) 0;
+  }
+
+  .chooser__inner {
+    display: grid;
+    width: min(100% - 64px, 1320px);
+    align-items: start;
+    margin-inline: auto;
+    gap: 48px 80px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  /* doc 30 §8.2 caps desktop H2 at 34–42px. Set on the token, not on the heading — AGENTS.md §6
+     law 1: a heading's size resolves through its .ac-type-* role class. */
+  .chooser__lead {
+    --ac-text-h2-home-feature: 2.375rem;
+  }
+
+  .chooser__eyebrow {
+    margin-bottom: 14px;
+  }
+
+  .chooser__lead h2 {
+    max-width: 18ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .chooser__lede {
+    margin: 16px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .chooser__doors {
+    border-top: 2px solid var(--ac-color-navy-800);
+    margin: 34px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .door {
+    border-bottom: 1px solid var(--ac-color-line-strong);
+    max-width: none;
+  }
+
+  /* One anchor per door, covering the whole row: label, detail and arrow are all part of the
+     same target, so the row is a 44px-plus hit area without a second link to the same route. */
+  .door__link {
+    display: grid;
+    align-items: baseline;
+    padding: 18px 0;
+    gap: 2px 20px;
+    grid-template-columns: minmax(0, 1fr) auto;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .door__label {
+    color: var(--ac-color-navy-900);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+
+  .door__detail {
+    grid-column: 1;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .door__arrow {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: center;
+    color: var(--ac-color-navy-800);
+    font-size: 1.125rem;
+    transition: transform 160ms ease;
+  }
+
+  .door__link:hover .door__label {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .door__link:hover .door__arrow {
+    transform: translateX(4px);
+  }
+
+  .door__link:focus-visible {
+    outline: 3px solid var(--ac-color-navy-800);
+    outline-offset: 2px;
+  }
+
+  /* Lower visual weight than a door, deliberately: this route ships noindex, and §20A.20 rules
+     out using the hub as a workaround for a publication gate. It is present and honest, not
+     promoted. */
+  .condition {
+    border-left: 3px solid var(--ac-color-steel-200);
+    margin-top: 30px;
+    padding-left: 20px;
+  }
+
+  .condition__label {
+    margin: 0;
+    max-width: 40ch;
+    color: var(--ac-color-navy-900);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .condition__detail {
+    margin: 8px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .condition__clause {
+    margin: 10px 0 0;
+    max-width: 60ch;
+    color: var(--ac-color-ink-400);
+    font-size: 0.8125rem;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .condition__link {
+    /* inline-flex makes the label and the arrow flex items, which drops the whitespace
+       text node between them. `gap` puts the space back. */
+    gap: 0.4em;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-underline-offset: 4px;
+  }
+
+  .condition__link:hover {
+    text-decoration: underline;
+  }
+
+  .condition__link:focus-visible {
+    outline: 3px solid var(--ac-color-navy-800);
+    outline-offset: 3px;
+  }
+
+  .chooser__media {
+    margin: 0;
+    /* Optically aligns the top of the photograph with the top of the H2 rather than the eyebrow,
+       so the two columns start on the same line of the composition. */
+    margin-top: 44px;
+  }
+
+  /* THE RATIO LIVES ON THE WRAPPER, NOT ON THE IMG — same pattern as WhatWeHandle.astro, and it
+     is load-bearing rather than stylistic. astro:assets emits width/height attributes (here
+     3264x2448), which are presentational hints that supply a used `height` whenever author CSS
+     does not. `aspect-ratio` is then ignored, because it only applies while height is auto — so
+     an img styled with `aspect-ratio` and no `height` renders at full intrinsic height. This
+     shipped that way for one build and made the section 2,537px tall at 1440. */
+  .chooser__media__frame {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background: var(--ac-color-steel-200);
+  }
+
+  .chooser__media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 58%;
+  }
+
+  .chooser__media figcaption {
+    /* Caption, not prose: opts out of the 62ch measure for the same reason the hero note does. */
+    max-width: none;
+    margin-top: 12px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.6875rem;
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  .not-sure {
+    background: var(--ac-color-paper);
+    padding-block: clamp(56px, 5.5vw, 76px);
+  }
+
+  .not-sure__inner {
+    display: grid;
+    width: min(100% - 64px, 1320px);
+    align-items: start;
+    border-top: 2px solid var(--ac-color-navy-800);
+    margin-inline: auto;
+    padding-top: 34px;
+    gap: 28px 80px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .not-sure__copy h3 {
+    color: var(--ac-color-navy-900);
+    max-width: 18ch;
+  }
+
+  .not-sure__lede {
+    margin: 14px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-navy-900);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+
+  .not-sure__close {
+    margin: 14px 0 0;
+    max-width: 56ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  /* Not tiles and not chips — a plain ruled list of the overlaps people actually arrive with. */
+  .not-sure__combos {
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .not-sure__combos li {
+    border-bottom: 1px solid var(--ac-color-line-strong);
+    padding: 11px 0;
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 64rem) {
+    .chooser__inner,
+    .not-sure__inner {
+      width: min(100% - 52px, 1320px);
+      gap: 40px 52px;
+    }
+
+    .chooser__lead {
+      --ac-text-h2-home-feature: 2.1875rem;
+    }
+
+    .chooser__media {
+      margin-top: 40px;
+    }
+
+    .chooser__media__frame {
+      aspect-ratio: 3 / 4;
+    }
+  }
+
+  @media (max-width: 50rem) {
+    .chooser__inner,
+    .not-sure__inner {
+      gap: 36px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .chooser__lead h2 {
+      max-width: 20ch;
+    }
+
+    .chooser__lede,
+    .not-sure__lede,
+    .not-sure__close {
+      max-width: none;
+    }
+
+    /* Photograph to the top once the columns stack, so the section still opens on an image.
+       DOM order stays copy-first for assistive technology. */
+    .chooser__media {
+      order: -1;
+      margin-top: 0;
+    }
+
+    .chooser__media__frame {
+      aspect-ratio: 16 / 10;
+    }
+
+    .chooser__media :global(img) {
+      object-position: 50% 62%;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .chooser {
+      padding-block: 64px 0;
+    }
+
+    .chooser__inner,
+    .not-sure__inner {
+      width: calc(100% - 40px);
+    }
+
+    .chooser__lead {
+      --ac-text-h2-home-feature: 1.9375rem;
+    }
+
+    .door__link {
+      /* The arrow leaves the row on a phone: at this width it competes with the label for the
+         line, and the whole row is already the target. */
+      grid-template-columns: minmax(0, 1fr);
+      padding: 16px 0;
+    }
+
+    .door__arrow {
+      display: none;
+    }
+
+    .not-sure {
+      padding-block: 52px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .door__arrow,
+    .door__link:hover .door__arrow {
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

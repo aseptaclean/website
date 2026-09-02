@@ -1,7 +1,6 @@
 # 21 — Claims and Compliance Law
 
-**Status:** ACTIVE. Precedence rank 2, below only current law, active insurance, verified
-business facts, and explicit owner decisions.
+**Status:** ACTIVE. Precedence rank 3, below verified facts and explicit current owner decisions.
 **Created:** 2026-08-11.
 **Supersedes:** nothing. **Closes:** the dangling `04-CLAIMS-GUARDRAILS.md` pointer that
 `01-QUALITY-GUARDRAILS.md` and several other documents have referenced since inception.
@@ -64,8 +63,8 @@ Wherever animal or organic condition work is described, this clause appears in f
 > **Cleaning only — not a decontamination, sterilization, or health-safety determination.**
 
 The word **sterilization** is required. A prior fidelity pass removed it to match
-`aseptaclean-FINAL-v2.html`; that was a claims regression and the clause must be restored to
-this exact wording. Doc 18 §7 and this document both outrank v2 on claims.
+the historical `aseptaclean-FINAL-v2.html`; that was a claims regression and the clause must be
+restored to this exact wording. This document governs; archived visual references do not.
 
 ### 2.4 The founder authority limit — verbatim, mandatory
 
@@ -81,10 +80,11 @@ planning, communication, and oversight.
 
 ### 2.5 Insurance and endorsement
 
-Approved, complete: **"Insured. Certificate of Insurance available upon request."**
-The site currently renders the bare word "Insured" in several places and the "available upon
-request" qualifier appears nowhere. Not false, but incomplete against the approved string —
-fix it.
+Recorded wording: **"Insured. Certificate of Insurance available upon request."**
+This wording is not publication-approved merely because it appears in this file. Owner decision
+2026-08-25 requires it to be matched against the current COI before publication; if current
+verification is not available, suppress it. Do the same for every statement about policy
+coverage, limits, specialty coverage, or insurance-linked certification.
 
 `Organic Pathogen Endorsed` is owner-confirmed and permitted, **cleaning language only**. It
 may never be expanded into a disease, decontamination, sanitization, or sterilization claim.
@@ -117,20 +117,26 @@ is enforcement discretion, not statutory safety.
 
 ### 3.1 Hard scope boundary — put this in copy and in the standard agreement
 
-> Aseptaclean cleans and decontaminates the conditions left behind **after** a licensed pest
-> operator has confirmed the infestation is resolved. Aseptaclean does not inspect for,
+> Aseptaclean may clean accepted conditions left behind **after** an appropriately licensed pest
+> operator has confirmed the active pest issue is resolved. Aseptaclean does not inspect for,
 > identify, exclude, trap, or treat pests.
+
+**Reconciled 2026-08-25.** The former sentence said “cleans and decontaminates,” contradicting
+§2.2 and the mandatory “not a decontamination” clause in §2.3. The owner explicitly rejected
+that affirmative regulated-service claim. This replacement describes cleaning only and does not
+authorize any new pest, remediation, health-safety, or regulated capability.
 
 ### 3.2 Five constructions that must not ship
 
-1. **"Post-Infestation Cleanup" as a named service.** Rename. `Rodent Contamination Cleanup`
-   or `Animal Waste Cleanup` capture the same search intent without pairing the brand to
-   §8505's regulated subject matter.
+1. **"Post-Infestation Cleanup" as a named service.** Do not use it. Existing approved route
+   language such as `Rodent Dropping Cleanup` or `Animal Waste Cleanup` is narrower and still
+   remains subject to all current publication gates.
 2. **Any sealing, exclusion, or entry-point work** described as a service.
 3. **Infestation identification written into an assessment report** — §8505 covers written
    *and oral* reports, recommendations, estimates, and bids.
 4. **Any bait, repellent, trap, or rodenticide** mention as something Aseptaclean does.
-5. **Copy implying Aseptaclean resolves the rodent problem** rather than the contamination.
+5. **Copy implying Aseptaclean resolves the rodent problem** rather than cleaning accepted
+   residual conditions after the licensed operator's work is complete.
 
 ### 3.3 The reframe that is both safer and stronger
 

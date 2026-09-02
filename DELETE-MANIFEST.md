@@ -1,5 +1,10 @@
 # DELETE MANIFEST — read this before removing anything
 
+> **SUPERSEDED HISTORICAL CLEANUP PLAN — DO NOT EXECUTE.** The repository has already undergone
+> a later archive reconciliation, the worktree has changed substantially, and many paths/statuses
+> below are no longer current. Use `AGENTS.md`, `docs/README.md`, and the current archive policy.
+> No deletion or archival operation is authorized by this file now.
+
 **Paste this whole file into Claude Code before any cleanup session.**
 
 The dangerous half of this document is §2, not §1. An agent told to "clean up the docs" will

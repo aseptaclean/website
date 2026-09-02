@@ -1,0 +1,321 @@
+---
+// NORMAL vs DETAILED vs COMPLEX — built 2026-08-26 from the landing-page system §43's
+// qualifying block, reconciled to real routes per docs/30-WEBSITE-MASTER-SPEC.md §20A.2.
+//
+// THIS IS A QUALIFYING SECTION, NOT A PRICING TABLE. §20A.16 keeps the "may be a good fit / may
+// not need us" concept but forbids turning it into a wall of rejection, and §20A.12 requires the
+// cheaper option to be explained fairly rather than insulted. So level one states plainly that
+// Aseptaclean is usually the wrong call for routine housekeeping — that sentence is the section
+// working, not a hole in it.
+//
+// THREE COLUMNS, NOT THREE CARDS. The prompt's anti-AI test names "three rounded pricing cards"
+// as the failure mode and §20A.14 asks for editorial columns, thin rules and typography instead.
+// There is no border box, no icon, no chip and no shadow here: a heavy top rule, a numeral, and
+// a change of type weight carry the whole thing. It is also the page's only image-free section,
+// which is deliberate — it sits between the chooser's photograph and the directory's, and its
+// job is to be the quiet beat between them (§7.2's natural rhythm).
+//
+// THE REACH BLOCK IS THE SAME JOB, NOT A NEW ONE. §43's "if the surfaces are hard to reach,
+// cleaning may not come first" argument is why clearing and cleaning belong in one scope rather
+// than two vendors, which is the practical consequence of the three levels above it. Its opening
+// sentence is one of doc 30 §20A.19's approved Aseptaclean lines, used here on the page where it
+// actually fits.
+import { servicesHub } from "@data/servicePages";
+
+const { conditionLevels, reach } = servicesHub;
+---
+
+<section class="levels" aria-labelledby="levels-title">
+  <div class="levels__inner">
+    <header class="levels__header">
+      <p class="ac-eyebrow">Normal cleaning, or something more</p>
+      <h2 id="levels-title" class="ac-type-h2-home-feature">Here is the difference.</h2>
+      <p class="levels__lede">
+        Most of the confusion about what we do comes down to one question: how much is the
+        property&rsquo;s condition changing the work?
+      </p>
+    </header>
+
+    <div class="levels__grid">
+      {conditionLevels.map((level, index) => (
+        <article class:list={["level", !level.fit && "level--outside"]}>
+          <p class="level__index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</p>
+          <h3 class="ac-type-h3-home-route">{level.name}</h3>
+          <p class="level__body">{level.body}</p>
+          {level.examples.length > 0 && (
+            <ul class="level__examples">
+              {level.examples.map((example) => <li>{example}</li>)}
+            </ul>
+          )}
+          <p class="level__verdict">{level.verdict}</p>
+          {level.href && level.linkLabel && (
+            <a class="level__link" href={level.href}>
+              {level.linkLabel} <span aria-hidden="true">&rarr;</span>
+            </a>
+          )}
+        </article>
+      ))}
+    </div>
+
+    <div class="reach">
+      <div class="reach__copy">
+        <h3 class="ac-type-h3-home-feature">{reach.heading}</h3>
+        <p>{reach.body}</p>
+        <p class="reach__close">{reach.close}</p>
+      </div>
+      {/* An ordered list, because the order IS the argument. Rendered as a sequence with rules
+          rather than arrows in boxes. */}
+      <ol class="reach__sequence">
+        {reach.sequence.map((step) => <li>{step}</li>)}
+      </ol>
+    </div>
+  </div>
+</section>
+
+<style>
+  .levels {
+    background: var(--ac-color-warm-white);
+    padding-block: clamp(72px, 7vw, 104px);
+  }
+
+  .levels__inner {
+    width: min(100% - 64px, 1240px);
+    margin-inline: auto;
+  }
+
+  /* doc 30 §8.2's 34–42px desktop H2 band, set on the token rather than the heading tag
+     (AGENTS.md §6 law 1). One step under the chooser's H2 — the chooser is the page's primary
+     movement and this one supports it. */
+  .levels__header {
+    --ac-text-h2-home-feature: 2.25rem;
+    max-width: 46ch;
+    margin-bottom: clamp(40px, 4vw, 56px);
+  }
+
+  .levels__header h2 {
+    margin-top: 14px;
+    color: var(--ac-color-navy-900);
+  }
+
+  .levels__lede {
+    margin: 16px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .levels__grid {
+    display: grid;
+    gap: 40px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .level {
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 18px;
+  }
+
+  /* The one level Aseptaclean usually declines reads quieter than the two it takes — a lighter
+     rule, not a red panel. */
+  .level--outside {
+    border-top-color: var(--ac-color-steel-200);
+  }
+
+  .level__index {
+    margin: 0 0 10px;
+    max-width: none;
+    color: var(--ac-color-steel-200);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    line-height: 1;
+  }
+
+  .level--outside .level__index,
+  .level--outside h3 {
+    color: var(--ac-color-ink-400);
+  }
+
+  .level h3 {
+    color: var(--ac-color-navy-900);
+    text-wrap: balance;
+  }
+
+  .level__body {
+    margin: 12px 0 0;
+    color: var(--ac-color-ink-600);
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .level__examples {
+    margin: 16px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .level__examples li {
+    border-bottom: 1px solid var(--ac-color-line-strong);
+    padding: 9px 0;
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.45;
+  }
+
+  .level__verdict {
+    margin: 18px 0 0;
+    color: var(--ac-color-navy-900);
+    font-weight: 650;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .level--outside .level__verdict {
+    color: var(--ac-color-ink-600);
+    font-weight: 600;
+  }
+
+  .level__link {
+    /* inline-flex makes the label and the arrow flex items, which drops the whitespace
+       text node between them. `gap` puts the space back. */
+    gap: 0.4em;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    align-self: flex-start;
+    margin-top: auto;
+    padding-top: 12px;
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-underline-offset: 4px;
+  }
+
+  .level__link:hover {
+    text-decoration: underline;
+  }
+
+  .level__link:focus-visible {
+    outline: 3px solid var(--ac-color-navy-800);
+    outline-offset: 3px;
+  }
+
+  .reach {
+    display: grid;
+    align-items: start;
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: clamp(48px, 5vw, 72px);
+    padding-top: clamp(36px, 3.5vw, 48px);
+    gap: 32px 80px;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+  }
+
+  .reach__copy h3 {
+    max-width: 20ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .reach__copy p {
+    margin: 18px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .reach__close {
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+  }
+
+  /* Numbered sequence on rules — §20A.14's "vertical numbered sequence… thin rules", not four
+     chevrons in boxes. The counter is CSS so the numeral is decoration and the list keeps its
+     own semantics. */
+  .reach__sequence {
+    counter-reset: reach;
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .reach__sequence li {
+    display: flex;
+    align-items: baseline;
+    border-bottom: 1px solid var(--ac-color-line-strong);
+    padding: 13px 0;
+    gap: 16px;
+    max-width: none;
+    counter-increment: reach;
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .reach__sequence li::before {
+    content: counter(reach, decimal-leading-zero);
+    color: var(--ac-color-steel-200);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+  }
+
+  @media (max-width: 64rem) {
+    .levels__inner {
+      width: min(100% - 52px, 1240px);
+    }
+
+    .levels__header {
+      --ac-text-h2-home-feature: 2.0625rem;
+    }
+
+    .levels__grid {
+      gap: 32px;
+    }
+
+    .reach {
+      gap: 28px 52px;
+    }
+  }
+
+  @media (max-width: 50rem) {
+    .levels__grid {
+      gap: 36px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .levels__header,
+    .levels__lede,
+    .reach__copy p {
+      max-width: none;
+    }
+
+    .reach {
+      gap: 28px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .reach__copy h3 {
+      max-width: 24ch;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .levels {
+      padding-block: 60px;
+    }
+
+    .levels__inner {
+      width: calc(100% - 40px);
+    }
+
+    .levels__header {
+      --ac-text-h2-home-feature: 1.875rem;
+    }
+  }
+</style>

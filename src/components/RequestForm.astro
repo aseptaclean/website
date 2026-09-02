@@ -41,14 +41,37 @@ const {
       <div>
         <p class="ac-label ac-label--on-dark">Request an assessment</p>
         <h2 id="request-title" class="ac-type-h2">Tell us about the property.</h2>
+        {/* doc 27 §8 "Above the form", owner-approved verbatim 2026-08-20. The shipped line
+            opened "Tell us the city, …", which duplicated the H2 directly above it ("Tell us
+            about the property."); §8 opens on the noun instead. Same four asks, same photo
+            sentence — the change is the first three words. */}
         <p class="ac-formsec__lede">
-          Tell us the city, roughly how big it is, what shape it&rsquo;s in, and when it has to be
-          done. Two or three phone photos are more useful than a long description.
+          The city, roughly how big it is, what shape it&rsquo;s in, and when it has to be done.
+          Two or three phone photos are more useful than a long description.
         </p>
 
         <div class="ac-callout">
           <b>{calloutHeading}</b>
           <span>{calloutBody}</span>
+        </div>
+
+        {/* doc 27 §8 "What happens next — beside EVERY form", owner-approved verbatim
+            2026-08-20. This component is the form on `/`, the four hubs, /about/, /faq/,
+            /service-areas/ and all 14 service pages, so "every form" means here.
+
+            It does not collide with the callout above it. On service pages the callout is
+            §9.15.1's own "Matthew reads every request himself." pair, which §8 supersedes —
+            that string is struck in docs/27-SECTION-9-15-CONNECTIVE-COPY.md in the same change
+            and ServicePageLayout no longer passes it, so the sentence renders once per page,
+            here, in §8's fuller wording. On every other caller the callout keeps the homepage
+            pair and this block is new. */}
+        <div class="request__next">
+          <p class="ac-label ac-label--on-dark">What happens next</p>
+          <p>
+            Matthew reads every request himself. You&rsquo;ll hear back within one business day
+            with a real answer about whether the job fits and what&rsquo;s needed to price it —
+            not an autoresponder.
+          </p>
         </div>
       </div>
 
@@ -68,5 +91,20 @@ const {
   /* Single-column .ac-stepform: no rail track, so the form card fills the whole grid. */
   .request__card {
     grid-template-columns: 1fr;
+  }
+
+  /* doc 27 §8 "what happens next" block. Rule above it rather than a second callout box —
+     the callout treatment is already spent on the string directly above, and two boxed
+     panels in one column read as two asides competing for the same attention. */
+  .request__next {
+    margin-top: 28px;
+    border-top: 1px solid rgb(255 255 255 / 18%);
+    padding-top: 20px;
+  }
+
+  .request__next p:last-child {
+    margin-top: 10px;
+    max-width: 46ch;
+    line-height: 1.6;
   }
 </style>

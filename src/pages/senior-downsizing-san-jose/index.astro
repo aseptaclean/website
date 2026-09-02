@@ -28,7 +28,7 @@ const schema = [
   {
     "@type": "Service",
     serviceType: "Senior downsizing and move-out support",
-    provider: { "@id": new URL("/#organization", site.urls.site).href },
+    provider: { "@id": new URL("/#business", site.urls.site).href },
     areaServed: site.location.cities.map((name) => ({ "@type": "City", name })),
     name: "Senior Downsizing & Move-Out Support"
   },
@@ -43,7 +43,7 @@ const schema = [
   {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
       {
         "@type": "ListItem",
         position: 2,

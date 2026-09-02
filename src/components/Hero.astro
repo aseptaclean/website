@@ -1,227 +1,295 @@
 ---
-// 2026-08-18 visual port. docs/mockups/aseptaclean-homepage-v3.html .hero — ported verbatim,
-// replacing the FINAL-v2 hero. Copy is doc 27 §9.1 (eyebrow, H1, lead, approval statement,
-// CTAs, trust chips) and §9.2 (Handoff Status sample), both verbatim. The FINAL-v2
-// "see a sample below" record link is gone: the mockup hero has no such element and the
-// string traces to neither §9.15 nor doc 27.
+import { Image } from "astro:assets";
+import heroImage from "../assets/homepage/hero-development-residence-asurnipal.jpg";
+import { site } from "@data/site";
+
+// TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPH — NOT Aseptaclean work, not a client property, and
+// not proof of a completed job.
+//   hero-development-residence-asurnipal.jpg
+//     Asurnipal — CC BY-SA 4.0 — 3264×2448
+//     https://commons.wikimedia.org/wiki/File:Bregenz-Cluttered_interiors_(compulsive_hoarding)-living_room-04ASD.jpg
 //
-// The photo slot renders the labelled gray placeholder per PORT-PROMPT §5 — photographs
-// arrive later by filename swap and their absence does not block the port.
-import { homepage, site } from "@data/site";
-
-const smsHref = site.business.smsUri;
-const phoneHref = site.business.phoneUri;
-
-// doc 27 §9.2. Labelled "Sample" in the bar — it must never read as a real customer record.
-// The mockup styles this column with its `.pill` class. Owner ruling 5 scopes the pill
-// treatment to SECTION LABELS ONLY — never badges — so these keep the pre-existing `.ac-tag`
-// status component, which global.css restyles to the mockup's `.pill--b/a/g` values.
-const statusRows = [
-  { item: "Scope", detail: "Room-by-room, signed", status: "Defined", tone: "def" },
-  { item: "Set-aside items", detail: "Documents · valuables · keys", status: "Held", tone: "review" },
-  { item: "Clearing", detail: "Approved contents", status: "Complete", tone: "clear" },
-  { item: "Reset cleaning", detail: "Defined surfaces", status: "Complete", tone: "clear" },
-  { item: "Closeout record", detail: "Photos + exceptions", status: "Issued", tone: "def" }
-] as const;
+// REPLACES hero-development-peter-herrmann.jpg, which is deleted from the repository.
+// docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md §9 rules the previous image out by
+// name: it showed a derelict, structurally abandoned building, which is the wrong message for a
+// company engaged by families to deal with a home that is still a home. §9 asks instead for a
+// real family property in an overwhelming or neglected condition, residential, serious without
+// implying demolition — which is what this room is. It is `[ATMOS]`-class under the image rule in
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6: no crew, no technician, no vehicle, no equipment and
+// no work in progress, so nothing in the frame implies Aseptaclean performed anything.
+//
+// The crop is chosen for the composition, not just the subject: the pitched timber ceiling fills
+// the upper half of the frame and is the quietest area in it, so the centered headline lands on
+// wood rather than on contents at every width.
+//
+// Replace with owner-shot photography before launch (docs/06-ASSET-MANIFEST.md §5).
 ---
 
-<section class="hero" id="overview" aria-labelledby="hero-title">
-  <div class="hero__bg" aria-hidden="true"></div>
-  <p class="hero__slot" aria-hidden="true">Photo slot<br />Cleared property · owner on site<br />2000 × 1100</p>
+<section class="home-hero" aria-labelledby="home-hero-title">
+  <div class="home-hero__media">
+    {/* 1920 is the top width, not 2400: the 2400 variant weighed 652 kB on the one image on the
+        page that is eager + fetchpriority="high", i.e. the LCP element. q76 rather than q82 for
+        the same reason — this photograph sits under a 54% flat overlay, which destroys exactly
+        the fine detail the extra quality was buying.
+        alt="" is deliberate: the photograph is atmosphere behind the H1, which carries the
+        meaning. A description here would be read out before the headline for no gain. */}
+    <Image
+      src={heroImage}
+      alt=""
+      layout="full-width"
+      widths={[480, 768, 1024, 1440, 1920]}
+      sizes="100vw"
+      format="webp"
+      quality={76}
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+    />
+  </div>
 
-  <div class="ac-shell hero__in">
-    <div>
-      <p class="ac-label ac-label--on-dark">Property clearing · Deep cleaning · Documented closeout</p>
-      <h1 id="hero-title" class="ac-type-h1">
-        Complex properties returned to a <em>controlled, documented</em> condition.
+  <div class="home-hero__overlay" aria-hidden="true"></div>
+
+  <div class="home-hero__shell">
+    <div class="home-hero__content">
+      <h1 id="home-hero-title" class="ac-type-h1-home">
+        When a family property has become too much to handle.
       </h1>
-      <p class="hero__lede">
-        Hoarding, estate and severe-condition properties—cleared, cleaned and closed out under
-        one signed scope, by one accountable operator.
+      <p class="home-hero__lede">
+        Aseptaclean helps families deal with cluttered, neglected, and difficult property
+        conditions with a clear scope before work begins.
       </p>
-      <p class="pledge">Nothing leaves the property without your written approval.</p>
-
-      <div class="ac-btns">
-        <a class="btn btn--w" href="/request-assessment/">
-          {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
-        </a>
-        <a class="btn btn--o" href={smsHref || phoneHref || "/contact/"}>Text a photo</a>
-      </div>
-
-      <div class="trust">
-        <b>Written scope before work</b>
-        <b>No unapproved charges</b>
-        <b>Documented closeout</b>
-      </div>
+      <a class="home-hero__primary" href="/request-assessment/">
+        {site.offer.primaryCta}
+      </a>
     </div>
-
-    {homepage.sampleRecord.rooms.length > 0 && (
-      <div class="status">
-        <div class="status__bar">
-          <span>Handoff status</span>
-          <span>HR-1042 · Sample</span>
-        </div>
-        {statusRows.map((row) => (
-          <div class="status__row">
-            <div>
-              <h4 class="ac-type-h3-card">{row.item}</h4>
-              <p>{row.detail}</p>
-            </div>
-            <span class={`ac-tag ac-tag--${row.tone}`}>{row.status}</span>
-          </div>
-        ))}
-      </div>
-    )}
   </div>
 
-  <div class="ac-curve" aria-hidden="true">
-    <svg viewBox="0 0 1440 82" preserveAspectRatio="none">
-      <path d="M0,82 C300,26 640,0 900,14 C1130,26 1300,58 1440,72 L1440,82 Z"></path>
-    </svg>
-  </div>
+  <p class="home-hero__development-note">
+    Development reference photograph · not Aseptaclean project work
+  </p>
 </section>
 
 <style>
-  /* Mockup `.hero` has no top padding — the 86px lives on `.hero .shell` (.hero__in below),
-     and the 36px bottom is the curved-divider allowance. The explicit 0 stops the
-     `main > section` default reaching the hero, which added a second 96px above the eyebrow. */
-  .hero {
+  /* V3 §9 TYPOGRAPHY CORRECTION. The audited hero ran a 54px H1, which the brief calls too
+     editorial against the Sevenson reference; the target is ~42–48px, starting at 44–46. 45px
+     (2.8125rem) is the value that keeps the headline on two lines at 1440 without reaching the
+     old scale. The variable is overridden per breakpoint rather than `font-size` on the h1 —
+     AGENTS.md §6 law 1 requires the heading's computed size to come from its `.ac-type-*` role
+     class, and that class reads this token. H1:body stays at 2.81:1, well over the ≥1.9:1 floor. */
+  .home-hero {
+    --ac-text-h1-home: 2.8125rem;
     position: relative;
+    min-height: 600px;
     overflow: hidden;
-    background: var(--ac-color-navy-900);
-    padding-block: 0 36px;
+    padding: 0;
+    background: var(--ac-color-navy-950);
   }
 
-  .hero__bg {
+  .home-hero__media,
+  .home-hero__overlay {
     position: absolute;
     inset: 0;
-    background:
-      linear-gradient(
-        100deg,
-        rgb(13 30 48 / 97%) 0%,
-        rgb(18 40 64 / 88%) 46%,
-        rgb(18 40 64 / 55%) 100%
-      ),
-      #1b3350;
   }
 
-  .hero__slot {
+  .home-hero__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 56%;
+  }
+
+  .home-hero__overlay {
+    z-index: 1;
+    background: rgb(10 30 45 / 54%);
+  }
+
+  .home-hero__shell {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    width: min(100% - 64px, 1320px);
+    min-height: inherit;
+    align-items: center;
+    justify-content: center;
+    margin-inline: auto;
+    padding-block: 64px;
+  }
+
+  .home-hero__content {
+    width: 100%;
+    color: var(--ac-color-paper);
+    text-align: center;
+  }
+
+  .home-hero__content h1 {
+    max-width: 920px;
+    margin-inline: auto;
+    color: var(--ac-color-paper);
+  }
+
+  .home-hero__lede {
+    max-width: 790px;
+    margin: 26px auto 0;
+    color: #f0f4f8;
+    font-size: 1.1875rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .home-hero__primary {
+    display: inline-flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 34px;
+    border-radius: 2px;
+    background: var(--ac-color-paper);
+    padding-inline: 30px;
+    color: var(--ac-color-navy-900);
+    font-size: 0.9375rem;
+    font-weight: 750;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color 150ms ease, color 150ms ease;
+  }
+
+  .home-hero__primary:hover {
+    background: var(--ac-color-blue-pale);
+    color: var(--ac-color-navy-900);
+  }
+
+  .home-hero__primary:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 4px;
+  }
+
+  .home-hero__development-note {
     position: absolute;
-    right: 26px;
-    bottom: 20px;
-    color: rgb(255 255 255 / 30%);
-    font-family: var(--ac-font-sans);
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    line-height: 1.7;
+    z-index: 2;
+    right: 18px;
+    bottom: 14px;
+    left: 18px;
+    /* THE CAP THAT WAS CLIPPING THIS, found 2026-08-26. global.css sets
+       `:where(p, li) { max-width: var(--ac-measure-read) }` = 62ch, and at this element's 10px
+       font size 62ch resolves to 413px against a 433px nowrap string — so the hero's
+       `overflow: hidden` cut the last word off at EVERY width from 768px up. It rendered
+       "…NOT ASEPTACLEAN PROJECT WOR".
+       A truncated temporary-imagery label is a compliance failure, not a cosmetic one: doc 30
+       §11.2 and AGENTS.md §0.3 require this photograph to be documented as temporary, and this
+       sentence is the whole of that documentation. A prose measure is the right default for a
+       paragraph of prose and the wrong one for a single-line corner caption, so this opts out —
+       the `:where()` wrapper carries zero specificity precisely so a plain class can.
+       `left` is pinned alongside `right` for the same reason: the box spans the hero and the
+       right-aligned text ends where it always intended to, with room to get there. */
+    max-width: none;
+    white-space: nowrap;
+    margin: 0;
+    color: rgb(255 255 255 / 78%);
+    font-size: 0.625rem;
+    font-weight: 650;
+    letter-spacing: 0.055em;
+    line-height: 1.3;
     text-align: right;
     text-transform: uppercase;
   }
 
-  .hero__in {
-    position: relative;
-    z-index: 2;
-    display: grid;
-    align-items: center;
-    padding-block: 86px;
-    gap: 64px;
-    grid-template-columns: 1.12fr 0.88fr;
+  @media (max-width: 70rem) {
+    .home-hero {
+      --ac-text-h1-home: 2.625rem;
+      min-height: 570px;
+    }
+
+    .home-hero__media :global(img) {
+      object-position: 50% 46%;
+    }
+
+    .home-hero__shell {
+      width: min(100% - 52px, 1000px);
+    }
+
+    .home-hero__lede {
+      max-width: 760px;
+      font-size: 1.125rem;
+    }
   }
 
-  .hero h1 {
-    color: #fff;
+  @media (max-width: 50rem) {
+    .home-hero {
+      --ac-text-h1-home: 2.5rem;
+      min-height: 530px;
+    }
+
+    .home-hero__media :global(img) {
+      object-position: 46% 44%;
+    }
+
+    .home-hero__shell {
+      width: calc(100% - 64px);
+      padding-block: 56px;
+    }
+
+    .home-hero__lede {
+      margin-top: 24px;
+      font-size: 1.0625rem;
+    }
+
+    .home-hero__primary {
+      margin-top: 30px;
+    }
   }
 
-  .hero h1 em {
-    color: var(--ac-color-blue-500);
-    font-style: normal;
+  @media (max-width: 30rem) {
+    .home-hero {
+      --ac-text-h1-home: 2.375rem;
+      min-height: 570px;
+    }
+
+    /* Portrait crop: the frame is 4:3 and the viewport slot is roughly 2:3, so a centred
+       object-position throws away the ceiling the headline needs. Pulling the focal point up
+       and left keeps the quiet timber area behind the copy and the contents below the CTA. */
+    .home-hero__media :global(img) {
+      object-position: 40% 38%;
+    }
+
+    .home-hero__shell {
+      width: calc(100% - 44px);
+      padding-block: 52px 64px;
+    }
+
+    .home-hero__lede {
+      font-size: 1rem;
+    }
+
+    .home-hero__primary {
+      min-height: 52px;
+      padding-inline: 26px;
+    }
+
+    .home-hero__development-note {
+      right: 12px;
+      bottom: 10px;
+      left: 12px;
+      font-size: 0.5625rem;
+      /* Centred across the full width on phones, where nowrap would push it off-screen. */
+      white-space: normal;
+      text-align: center;
+    }
   }
 
-  .hero__lede {
-    max-width: 48ch;
-    margin: 24px 0 0;
-    color: #b9c6d6;
-    font-size: var(--ac-text-lead);
-    line-height: 1.6;
+  @media (max-width: 22.5rem) {
+    .home-hero {
+      --ac-text-h1-home: 2.25rem;
+      min-height: 590px;
+    }
+
+    .home-hero__shell {
+      width: calc(100% - 40px);
+    }
   }
 
-  .pledge {
-    border-left: 3px solid var(--ac-color-amber);
-    margin: 26px 0 0;
-    padding: 11px 0 11px 16px;
-    color: #fff;
-    font-size: 1rem;
-    font-weight: 700;
-  }
-
-  .trust {
-    display: flex;
-    flex-wrap: wrap;
-    margin: 26px 0 0;
-    gap: 8px;
-  }
-
-  .trust b {
-    border: 1px solid rgb(255 255 255 / 20%);
-    padding: 7px 11px;
-    color: #9db4ce;
-    font-family: var(--ac-font-sans);
-    font-size: 10px;
-    font-weight: 500;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-  }
-
-  .status {
-    overflow: hidden;
-    border-radius: 8px;
-    background: #fff;
-    box-shadow: 0 24px 56px -24px rgb(0 0 0 / 55%);
-  }
-
-  .status__bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: var(--ac-color-navy-800);
-    padding: 13px 20px;
-    color: #fff;
-    font-family: var(--ac-font-sans);
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .status__bar span:last-child {
-    color: var(--ac-color-steel-300);
-  }
-
-  .status__row {
-    display: flex;
-    align-items: center;
-    border-top: 1px solid var(--ac-color-line);
-    padding: 15px 20px;
-    gap: 14px;
-  }
-
-  .status__row > div {
-    min-width: 0;
-    flex: 1;
-  }
-
-  .status__row p {
-    margin-top: 3px;
-    color: var(--ac-color-ink-400);
-    font-family: var(--ac-font-sans);
-    font-size: 12px;
-  }
-
-  @media (max-width: 1050px) {
-    .hero__in {
-      gap: 44px;
-      grid-template-columns: 1fr;
+  @media (prefers-reduced-motion: reduce) {
+    .home-hero__primary {
+      transition: none;
     }
   }
 </style>

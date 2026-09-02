@@ -21,6 +21,9 @@ import {
   rodentPage,
   windowCleaningPage
 } from "@data/doc27ServicePages";
+// The fee framing and the figure both live in site.ts (AGENTS.md §3). Imported so the FAQ
+// answer below states them rather than retyping "$195" as a literal, which §3 forbids.
+import { site } from "@data/site";
 
 // Phase 3/3b draft service-page content, built per docs/19-SYSTEM-AND-SITEMAP.md Part 2
 // (§2.2 SEO spec) and Part 3 (§3.2 wireframe + tone deltas). Every page sourced from this
@@ -189,7 +192,16 @@ export const seniorDownsizingPage = {
     },
     {
       question: "How much does this cost?",
-      answer: "It depends on property size, volume, and condition. A $195 on-site assessment, credited toward an approved project booked within 7 days, gives you a written price instead of a guess."
+      // Doc 27 §7 owner-approved framing, 2026-08-20. The opening sentence is the existing
+      // approved answer and stays; the fee sentence it used to carry ("A $195 on-site
+      // assessment, credited toward an approved project booked within 7 days, gives you a
+      // written price instead of a guess.") is replaced by §7 verbatim.
+      //
+      // THIS IS THE ONE SURFACE WHERE THE CREDIT TERM IS LOST. Everywhere else the credit is
+      // its own rendered element and was kept alongside §7; here it was inside the same
+      // sentence as the figure, so replacing the sentence removes it. Flagged to the owner
+      // rather than papered over by appending the credit back onto approved copy.
+      answer: `It depends on property size, volume, and condition. ${site.offer.assessmentFraming(site.offer.assessmentFee)}`
     }
   ]
 } as const;
@@ -197,63 +209,307 @@ export const seniorDownsizingPage = {
 export const serviceAreasHub = {
   slug: "/service-areas/",
   gate: null as string | null,
+  // No consumer in src/ today — /service-areas/ renders `clusters` and the doc27CompanyPages
+  // record, not this string. Corrected with the 2026-08-21 positioning pass anyway, for the same
+  // reason as publishingNote above.
   intro:
-    "Aseptaclean serves San Jose and the surrounding South Bay & Peninsula — property cleanouts, estate clearing, and deep cleaning under one written scope, wherever the property sits in the service area.",
+    "Aseptaclean covers San Jose and the surrounding South Bay & Peninsula: detailed cleaning, complex property cleanup, and animal or organic condition work, under one written scope wherever the property sits.",
   clusters: [
     {
       name: "West Valley",
-      note: "Campbell, Saratoga-adjacent, and the western San Jose neighborhoods — closer-lot properties where access and parking often shape the plan."
+      note: "Campbell, Saratoga-adjacent addresses, and western San Jose. Share the property address so access and project logistics can be reviewed for that specific site."
     },
     {
       name: "Peninsula edge",
-      note: "Mountain View, Sunnyvale, and Santa Clara — a mix of longtime family homes and faster-turnover rentals, both needing the same documented handoff."
+      note: "Mountain View, Sunnyvale, and Santa Clara. Share the property address so access and project logistics can be reviewed for that specific site."
     },
     {
       name: "South County",
-      note: "San Jose's southern neighborhoods, where larger lots and multi-generational households often mean a bigger sort-and-clear phase before cleaning begins."
+      note: "Southern San Jose. Share the property address and approved contents scope so the sort-and-clear phase can be planned for that specific site."
     }
   ]
 } as const;
 
-// Chunk 1 of the nested-hub-layer IA expansion (2026-08-11 owner sitemap paste, see the
-// session plan referenced in src/pages/services/index.astro's header comment). Hybrid IA
-// decision: this hub links DOWN to the existing flat service-page slugs above — it does not
-// introduce or require any new nested child routes. Card copy is pulled verbatim from
-// site.ts's already-approved homepage.serviceCards (docs/18-VISUAL-DIRECTION.md §6 row 3) so
-// no new claim is introduced by this page. No biohazard pillar — out of scope per
-// docs/05-DECISIONS-LOG.md / docs/19 Phase 5 / docs/90.
+// SERVICES HUB — rebuilt 2026-08-26 to docs/30-WEBSITE-MASTER-SPEC.md §18 and §20A.20, whose
+// architecture is problem-chooser first, active-directory second. It replaces the three-pillar
+// card grid this export used to carry (Chunk 1 of the 2026-08-11 nested-hub IA expansion), which
+// restated homepage.serviceCards verbatim and gave nine routes the same visual weight.
+//
+// WHY THE PILLAR SHAPE WENT. §20A.20's "critical gate" is that the directory be built from
+// current active/public service state, and §18 adds "avoid a giant grid of 12 identical cards."
+// The pillars did the opposite on both counts: they were three equal cards, and pillar three
+// existed to name a family whose only route ships noindex. The families survive — they are the
+// `families` array below — but they now carry hierarchy instead of uniformity.
+//
+// ROUTES ARE IMPORTED, NEVER RETYPED. Every href below is a `.slug` off a doc27ServicePages
+// record, so a slug cannot drift and a gated route cannot be linked by editing a copy string.
+// The call site filters on each record's own `indexable` flag, which is the mechanism site.ts's
+// routingDoors comment describes: a gated route starts linking on its own the day its gate
+// clears, with no copy change here.
+//
+// THREE THINGS THIS FILE DELIBERATELY DOES NOT DO — see docs/05-DECISIONS-LOG.md, 2026-08-26:
+//   1. It does not name or link rodent-droppings or pigeon-droppings cleanup. Those two are
+//      operationally available (doc 30 §20A.4) but they are held off every advertising surface
+//      on Cal. B&P §8550(a) and doc 21 §3 — rank 3, and AGENTS.md §2 states outright that the
+//      operational-availability clarification does not reach that constraint. `/services/` is
+//      indexable; today ZERO indexable pages link to either route, and this rebuild keeps it so.
+//   2. It does not use the landing-page system's "San Jose & Santa Clara County" geography.
+//      Owner ruling 2026-08-09: the label is "South Bay & Peninsula", because Atherton and part
+//      of the declared footprint sit in San Mateo County.
+//   3. It does not imply a dedicated move-in route exists (doc 30 §20A.3). Move-in cleaning is
+//      named only as half of the real route's real label, "Move-in & move-out cleaning".
 export const servicesHub = {
   slug: "/services/",
   gate: null as string | null,
-  intro:
-    "Every project starts with the same written scope, whichever kind of work the property needs — clearing heavy accumulation, cleaning after it's cleared, or resetting a property that just needs deep cleaning on its own.",
-  pillars: [
-    {
-      title: "Complex property clearing",
+  seoTitle: "Property Cleanup Services in San Jose | Aseptaclean",
+  // 151 characters. The landing-page system's own meta for this route ends "in San Jose and
+  // Santa Clara County", which is struck under item 2 above.
+  metaDescription:
+    "Not sure what kind of cleanup the property needs? Detailed cleaning, complex property cleanup and severe-condition work across the South Bay & Peninsula.",
+  hero: {
+    eyebrow: "Property cleanup services · South Bay & Peninsula",
+    h1: "What kind of cleanup do you need?",
+    // Landing-page system §43's hero lines, reconciled: its third line reads "Some have animal
+    // waste, rodent droppings, or years of buildup." Rodent droppings are struck here under item
+    // 1 above, and animal waste is held back to the one place on this page that carries doc 21
+    // §2.3's mandatory limiting clause with it — the chooser's `condition` row.
+    lede: [
+      "Some homes need a detailed clean.",
+      "Some need to be cleared before cleaning can begin.",
+      "Some are past the point where a routine cleaning service will take them on.",
+      "Start with what you are dealing with."
+    ]
+  },
+  // PROBLEM CHOOSER. The doors themselves are homepage.routingDoors in src/data/site.ts —
+  // owner-approved verbatim 2026-08-20, written for precisely this job ("name their situation
+  // before naming your service") and rendering on ZERO pages since the V3 homepage rebuild
+  // deleted RoutingDoors.astro on 2026-08-25. That deletion removed a duplicate routing system
+  // from `/`; it did not retire the copy, and doc 30 §18 makes routing this page's whole job.
+  // Only the framing below is new.
+  chooser: {
+    eyebrow: "Start with the problem",
+    heading: "What are you dealing with?",
+    lede: "You do not need the right service name. Pick the line that sounds like the property.",
+    // Held below the six doors as a quiet ruled row rather than promoted to a seventh door:
+    // /animal-waste-cleanup-san-jose/ ships noindex, and §20A.20 forbids using the hub as a
+    // workaround for a publication gate. doc 21 §2.3's clause is verbatim-mandatory here and
+    // travels with the row, never paraphrased.
+    condition: {
+      label: "Animal waste has affected floors, rooms, or surfaces",
       detail:
-        "Whole-property clearing for heavy accumulation, estate, and abandoned-contents conditions — nonhazardous contents, within a signed scope.",
-      links: [
-        { label: "Estate cleanout", href: estatePage.slug },
-        { label: "Hoarding cleanup", href: hoardingPage.slug },
-        { label: "Property cleanouts for managers", href: propertyCleanoutsPage.slug }
+        "Repeated or heavy non-human animal urine or feces, after the animal issue itself has been dealt with.",
+      linkLabel: "Animal waste cleanup",
+      href: animalPage.slug,
+      clause: animalPage.complianceClause
+    }
+  },
+  notSure: {
+    heading: "Not sure which one fits?",
+    lede: "That is normal. A property does not always fit one clean service name.",
+    // Landing-page system §43, minus its "Clutter + rodent droppings" pair (item 1 above).
+    combinations: [
+      "Animal waste and heavy buildup",
+      "A property cleanout and a deep clean",
+      "A move-out and a severe condition",
+      "Several problems at the same time"
+    ],
+    close:
+      "You do not have to work that out before you contact us. Describe the property, send photos if you have them, and we will tell you which kind of job it is."
+  },
+  // NORMAL vs DETAILED vs COMPLEX — landing-page system §43's qualifying block, reconciled to
+  // real route names. Its purpose is to let the wrong customer leave early, which is why the
+  // first level says outright that Aseptaclean is usually not the right fit.
+  conditionLevels: [
+    {
+      name: "Routine house cleaning",
+      body: "The home is already being maintained and the job is keeping it that way.",
+      verdict: "Aseptaclean is usually not the right fit for this.",
+      fit: false,
+      href: null as string | null,
+      linkLabel: null as string | null,
+      examples: [] as readonly string[]
+    },
+    {
+      name: "Detailed deep cleaning",
+      body: "The home is usable and easy to move through. It needs more time and more detail than routine housekeeping.",
+      verdict: "This is the level most one-time resets land on.",
+      fit: true,
+      href: deepCleaningPage.slug as string | null,
+      linkLabel: "Deep cleaning" as string | null,
+      examples: [
+        "Grease and cooked-on buildup",
+        "Baseboards, trim, and doors",
+        "Window and door tracks",
+        "Cabinet and appliance interiors",
+        "Fixtures and hard-to-reach detail"
       ]
     },
     {
-      title: "Animal & organic condition cleaning",
-      detail:
-        "Heavy organic conditions and animal waste, cleaned under our organic pathogen endorsement. Cleaning only — not a decontamination, sterilization, or health-safety determination.",
-      links: [{ label: "Animal waste cleanup", href: animalPage.slug }]
-    },
-    {
-      title: "Reset & restoration cleaning",
-      detail:
-        "Deep reset cleaning after clearing — kitchens, baths, cabinet and appliance interiors, floors and accessible surfaces — for the next handoff.",
-      links: [
-        { label: "Deep cleaning", href: deepCleaningPage.slug },
-        { label: "Senior downsizing", href: seniorDownsizingPage.slug }
+      name: "Complex property cleanup",
+      body: "The condition changes how the work has to be planned, sequenced, and priced. Square footage stops being a useful guide.",
+      verdict: "This is where Aseptaclean is usually the better fit.",
+      fit: true,
+      href: extremeCleaningPage.slug as string | null,
+      linkLabel: "Extreme-condition cleaning" as string | null,
+      examples: [
+        "Contents that block the rooms",
+        "Heavy buildup across several rooms",
+        "Debris that has to be cleared first",
+        "Animal waste on affected surfaces",
+        "More than one of these at once"
       ]
     }
-  ]
+  ],
+  // Landing-page system §43's reach block. It is the argument for why clearing and cleaning are
+  // one scope rather than two vendors, and doc 30 §20A.19 lists its opening line among the
+  // approved Aseptaclean sentences.
+  reach: {
+    heading: "You cannot clean a floor you cannot reach.",
+    body: "You cannot clean a floor covered in boxes, a cabinet that is full, or a surface under debris nobody has moved. On some properties the order of the work is the plan:",
+    sequence: ["Decide what stays", "Clear what can leave", "Reach the surface", "Clean"],
+    close: "That is why some properties need more than a cleaning crew."
+  },
+  // ACTIVE SERVICE DIRECTORY. Grouped by the repository's real service families — the same three
+  // groups megaNav uses — not by whatever grouping balances the layout (§20A.20's critical gate,
+  // and the prompt's "do not invent a group merely because it looks balanced").
+  //
+  // `hub` is null on the specialty group ON PURPOSE. /specialty-cleaning/ ships noindex, and the
+  // 2026-08-17 ruling recorded in docs/05-DECISIONS-LOG.md set it noindex precisely because its
+  // cards name rodent and pigeon dropping cleanup. Linking it from an indexable hub would route
+  // one click into the thing item 1 above exists to prevent.
+  families: [
+    {
+      key: "clearing",
+      name: "Complex property cleanup",
+      summary:
+        "For properties where the contents have to come out, or be decided on, before anything else can happen.",
+      hub: { label: "Complex property cleanup", href: "/property-clearing/" } as {
+        label: string;
+        href: string;
+      } | null,
+      // The first entry in each group is the group's feature and gets the extra visual weight.
+      services: [
+        {
+          page: hoardingPage,
+          label: "Hoarding cleanup",
+          thesis: "You stay in control of what stays and what leaves.",
+          detail:
+            "For packed homes where belongings still need sorting and decisions still have to be made. Nothing leaves the property without your written approval."
+        },
+        {
+          page: estatePage,
+          label: "Estate cleanout",
+          thesis: "Protect what matters before the property gets cleared.",
+          detail:
+            "For families and executors working through a property before sale, transfer, or handoff."
+        },
+        {
+          page: propertyCleanoutsPage,
+          label: "Property cleanouts",
+          thesis: "One vendor, one scope, one closeout record.",
+          detail: "For owners and managers who need a vacancy back on schedule."
+        },
+        {
+          page: debrisRemovalPage,
+          label: "Debris removal",
+          thesis: "We do the work on the property. The trip off-site belongs to the hauler.",
+          detail:
+            "For loose, non-hazardous debris that has to be cleared before cleaning or turnover."
+        }
+      ]
+    },
+    {
+      key: "detailed",
+      name: "Detailed cleaning",
+      summary:
+        "For properties that are usable but need substantially more detail than routine housekeeping.",
+      hub: { label: "Detailed cleaning", href: "/detailed-cleaning/" } as {
+        label: string;
+        href: string;
+      } | null,
+      services: [
+        {
+          page: deepCleaningPage,
+          label: "Deep cleaning",
+          thesis: "More work and more detail than normal housekeeping.",
+          detail:
+            "Quoted room by room from a written checklist rather than sold as a package name."
+        },
+        {
+          page: moveOutCleaningPage,
+          label: "Move-in & move-out cleaning",
+          thesis: "Get the property ready for the next handoff.",
+          detail:
+            "Scoped against the walkthrough date, for a vacant or nearly vacant property."
+        }
+      ]
+    },
+    {
+      key: "specialty",
+      name: "Severe and specialty conditions",
+      summary:
+        "For properties that need a condition review before anyone can quote the work honestly.",
+      hub: null as { label: string; href: string } | null,
+      services: [
+        {
+          page: extremeCleaningPage,
+          label: "Extreme-condition cleaning",
+          thesis: "The condition is past normal housekeeping and needs a property plan.",
+          detail:
+            "For heavily soiled properties where a normal cleaning quote would be unreliable."
+        },
+        {
+          page: animalPage,
+          label: "Animal waste cleanup",
+          thesis:
+            "The visible waste and the affected material underneath can be two different problems.",
+          detail:
+            "For accepted non-human animal waste, after the animal issue has been dealt with by the appropriate provider."
+        }
+      ]
+    }
+  ],
+  boundary: {
+    eyebrow: "Scope",
+    heading: "We keep our scope clear.",
+    lede: "Aseptaclean is a cleanup company. We do not pretend every property problem is ours to fix. If another provider is the right one, you hear it in the first conversation, with the name of the kind of provider who handles it.",
+    fitHeading: "Usually worth discussing",
+    outsideHeading: "Outside current scope — another provider handles it",
+    // Landing-page system §43's "We do not want every job. We want the right job." — kept because
+    // it is the sentence that makes the boundary read as a standard rather than a refusal.
+    close: "We do not want every job. We want the right job."
+  },
+  start: {
+    eyebrow: "How to start",
+    heading: "You do not have to diagnose the property.",
+    steps: [
+      {
+        title: "Tell us what is going on",
+        detail: "You do not need the right service name. Describe what you are looking at."
+      },
+      {
+        title: "Send photos when they help",
+        detail:
+          "The whole room, the worst area, anything unusual, and roughly how much of the property is affected."
+      },
+      {
+        title: "We review the condition",
+        detail:
+          "Which service fits, whether more photos are needed, whether the property needs a walkthrough, and whether the job is inside our scope."
+      },
+      {
+        title: "The scope is defined before work begins",
+        detail:
+          "What is included, what is excluded, and what completion means, in writing, before a date goes in the calendar."
+      }
+    ],
+    methodLink: { label: "See how we work", href: "/handoff-standard/" }
+  },
+  close: {
+    heading: "Still not sure what service you need?",
+    lede: "That is fine. Show us what is there and we will tell you what the next step should be — including when the answer is another provider.",
+    note: "Submitting a request does not authorize work or create a service agreement."
+  }
 } as const;
 
 // Chunk 2 of the nested-hub-layer IA expansion (2026-08-11 owner sitemap paste, see the plan
@@ -350,7 +606,10 @@ export const detailedCleaningHub = {
   gate: null as string | null,
   eyebrow: "Detailed cleaning",
   h1: "One-time cleaning for properties that need a real reset.",
-  lead: "Choose the page that matches the property's next event — not a generic package that hides the difference between a deep clean, turnover and construction cleanup.",
+  // 2026-08-21. The old lead ("Choose the page that matches the property's next event — not a
+  // generic package…") restated the H2 that ServiceHub renders eleven lines below it ("Pick the
+  // page that matches the property's next event."). Same page, same instruction, twice.
+  lead: "Deep cleaning, move-out and move-in turnovers, post-construction work, and interior windows — each priced off a written checklist instead of a package name.",
   cards: [
     { title: "One-Time Deep Cleaning", href: deepCleaningPage.slug as string | null },
     { title: "Move-In & Move-Out Cleaning", href: moveOutCleaningPage.slug as string | null },
@@ -363,8 +622,9 @@ export const specialtyCleaningHub = {
   slug: "/specialty-cleaning/",
   gate: null as string | null,
   eyebrow: "Specialty cleaning",
-  h1: "Condition-reviewed cleaning for difficult properties.",
-  lead: "These jobs require more screening and clearer boundaries. Photos can begin the review; complex conditions often need a walkthrough.",
+  // 2026-08-21. "Condition-reviewed" is internal vocabulary; no customer says it.
+  h1: "Cleaning for properties that need a walkthrough first.",
+  lead: "Heavily soiled properties, animal waste and organic conditions. These need more screening and clearer boundaries than a normal cleaning job, and photos are where the review starts.",
   cards: [
     { title: "Extreme-Condition Cleaning", href: extremeCleaningPage.slug as string | null },
     { title: "Animal Waste Cleanup", href: animalPage.slug as string | null },
@@ -373,12 +633,16 @@ export const specialtyCleaningHub = {
   ]
 } as const;
 
+// LABEL CHANGED 2026-08-21, ROUTE UNCHANGED — see the note above the Complex Property Cleanup
+// group in src/data/site.ts. The old H1 was a three-part imperative ("Clear the contents. Recover
+// access. Prepare the property.") and the old lead opened by defining its own category name, both
+// patterns the positioning brief rules out. Property clearing remains a named concept in the lead.
 export const propertyClearingHub = {
   slug: "/property-clearing/",
   gate: null as string | null,
-  eyebrow: "Property clearing",
-  h1: "Clear the contents. Recover access. Prepare the property.",
-  lead: "Property clearing is organized around authority, sorting rules, access and a legal disposal plan before cleaning begins.",
+  eyebrow: "Complex property cleanup",
+  h1: "When the contents have to come out before anything else can happen.",
+  lead: "Hoarding conditions, estate contents, tenant turnovers and whole-property clearing — sorted and cleared to a written plan, with a container arranged when the volume needs one.",
   cards: [
     { title: "Property Cleanouts", href: propertyCleanoutsPage.slug as string | null },
     { title: "Hoarding Cleanup", href: hoardingPage.slug as string | null },
@@ -389,10 +653,15 @@ export const propertyClearingHub = {
 } as const;
 
 // Shared hub close (doc 27 §10, below 10.4) — same block on every category hub above.
+// 2026-08-21. The old body — "Photos can start the review. Larger, heavier or more complicated
+// properties may require a walkthrough before a firm quote." — was the third rendering of the same
+// photos-then-walkthrough pair a reader meets, after Pricing.astro on `/` and the quote card on
+// every service page. All three now say their own thing; the four-step rail directly below this
+// block already asks for the photos, so nothing was lost by changing what this one talks about.
 export const hubClose = {
   label: "One rule across every service",
   heading: "We define the work before we schedule it.",
-  body: "Photos can start the review. Larger, heavier or more complicated properties may require a walkthrough before a firm quote."
+  body: "The rooms, the detail level and the exclusions are settled before a date goes in the calendar. That written scope is what the finished work gets measured against."
 } as const;
 
 // doc 27 §11 "Shared four-step process" — verbatim. Added 2026-08-18 for the visual port: the
@@ -419,7 +688,7 @@ export const sharedFourStep = [
   },
   {
     title: "04 — Completion",
-    detail: "The work is performed against the agreed scope and priorities.",
+    detail: "The work is performed against the agreed plan and priorities.",
     icon: '<circle cx="12" cy="12" r="9"/><path d="m8.5 12 2.5 2.5 4.5-5"/>'
   }
 ] as const;
@@ -445,7 +714,9 @@ export const serviceOneLiners: Record<string, string> = {
   "/property-cleanouts-san-jose/": "Full-contents clearing under one scope",
   "/hoarding-cleanup-san-jose/": "Sorted, approved, documented",
   "/estate-cleanout-san-jose/": "Heirs, executors, real deadlines",
-  "/debris-removal-san-jose/": "Approved, lawful disposal",
+  // 2026-08-21: was "Approved, lawful disposal", which reads as a disposal service Aseptaclean
+  // performs. Kept in step with the same label's `note` in megaNav (src/data/site.ts).
+  "/debris-removal-san-jose/": "Bagged, staged, loaded; container coordinated",
   "/eviction-cleanout-san-jose/": "Turnover on a clock",
   "/commercial-cleaning-san-jose/": "Project and recurring programs"
 };

@@ -1,25 +1,1672 @@
 ---
-// Route generated 2026-08-16 from docs/27-COPY-CANONICAL.md via src/data/doc27ServicePages.ts.
-// All page copy lives in that data record; all structure lives in ServicePageLayout, which
-// implements doc 27 §11's shared service-page sequence. Nothing page-specific belongs in this
-// file beyond the four identity values below — if a sentence needs to change, change doc 27
-// and regenerate the data, do not hand-edit copy here.
+// EXTREME PROPERTY CLEANUP — `/extreme-cleaning-san-jose/`. Rebuilt as the fifth gold-standard
+// individual service page (docs/30-WEBSITE-MASTER-SPEC.md §20, §20A, §21), same approach as
+// /hoarding-cleanup-san-jose/, /estate-cleanout-san-jose/, /property-cleanouts-san-jose/ and
+// /deep-cleaning-san-jose/: copy reconciled from
+// docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md §42 under §20A.1's order — landing copy → map
+// to current route → check active/gated state → check claims, pricing and scope → check current
+// copy authority → then implement. The existing `extremeCleaningPage` record in
+// src/data/doc27ServicePages.ts (owner-approved copy, in-force complianceClause and boundaries
+// list) was mined for approved language rather than discarded.
 //
-// Ships noindex pending this page's own gate (see the record's `gate` field) and is excluded
-// from src/pages/sitemap.xml.ts. Do not bulk-flip.
-import ServicePageLayout from "@layouts/ServicePageLayout.astro";
-// groupHref is deliberately NOT passed. This page is INDEXABLE while its /specialty-cleaning/
-// hub is noindex until doc 27 §21's compliance release clears, so a breadcrumb link would open
-// an indexable → noindex crawl path (route-audit failure mode #2). The three sibling specialty
-// pages are themselves noindex, so they do link the hub. Restore the href in the same change
-// that lifts the hub's noindex, not before.
+//   01 SERVICE HERO             flat navy field, no photograph — see the image note below
+//   02 PAST NORMAL HOUSEKEEPING condition recognition — does the property look like this?
+//   03 WHAT CHANGES THE JOB     access blocks cleaning; not everything on the floor is trash;
+//                                the condition under the mess may change the job — this page's
+//                                signature movement, the editorial field-assessment §20A.6 calls
+//                                for in place of seven equal cards
+//   04 THE PROPERTY PLAN        five-step field procedure + phased work for larger properties
+//   05 CLEANABLE VS NOT         cleaning vs damage, surface awareness, what we do not hide inside
+//                                "extreme cleaning" (TSWMP/regulated boundary)
+//   06 EVIDENCE + FIT + PRICE   the honest proof gap, qualification, price-driver logic
+//   07 QUESTIONS                seven, the ones that decide the purchase
+//   08 CLOSE                    "Not sure how far the property has gone?"
+//
+// THE SPECIALIST THESIS IS doc 30 §20A.5's, unchanged: **the condition is past normal
+// housekeeping and needs a property plan.** Every movement reinforces it without repeating the
+// sentence — the hero states it, 02 makes the condition visible, 03 explains why the job has to
+// be planned differently (access, contents, sequence), 04 is the plan itself, 05 draws the
+// cleaning/damage and TSWMP boundary that keeps this page from becoming a disguised biohazard
+// page, 06 is the honest evidence gap plus fit and price, 07 answers the objection that decides
+// whether this is the right service at all ("is this the same as hoarding cleanup / a deep
+// clean?").
+//
+// WHAT THIS REPLACES. The previous build: 1,298 words, one H1, SIXTEEN H2s, 4 H3s, 3 <img> (all
+// nav/footer chrome, none in the page body), 80 links (mostly nav/footer). It rendered through
+// the generic `ServicePageLayout` + `doc27ServicePages.extremeCleaningPage` record — the same
+// "one template, swap the noun" pattern §20A.5 and §20A.25 Q14 rule out, and the same pattern
+// Hoarding, Estate, Property Cleanouts and Detailed Deep Cleaning already replaced in their own
+// rebuilds. Full accounting in docs/05-DECISIONS-LOG.md.
+//
+// ROUTE STATE IS UNCHANGED AND DELIBERATELY SO. Same slug, same canonical, same `index, follow`,
+// same sitemap membership (confirmed indexable, gate: null, per doc27ServicePages.ts and
+// AGENTS.md §2's route table). No route was created, renamed, redirected or re-indexed.
+//
+// PRICING — AGENTS.md §4 IS ABSOLUTE. "No price figure is published anywhere on the site." The
+// landing-page source (§42) contains no dollar figure for this service — it is condition-driven
+// by design ("There Is No Honest Flat Price") — so there is nothing to suppress here beyond the
+// standing rule. Price logic is cost drivers + the $195 assessment framing only, exactly as the
+// four prior rebuilds ship.
+//
+// TSWMP / REGULATORY BOUNDARY — THE MOST IMPORTANT GUARDRAIL ON THIS PAGE. §42's own "WHAT WE DO
+// NOT HIDE INSIDE 'EXTREME CLEANING'" section names blood, human bodily fluids, human feces,
+// sewage, needles, chemicals, drug residue, fire damage, large mold conditions, unknown
+// hazardous material and structural damage as OUT of this service's scope — "those conditions
+// may need a different service or a different provider." That list is reproduced in movement 05
+// verbatim in spirit, because it is this page's own defense against becoming a disguised
+// biohazard page (the task brief's explicit failure mode #11). No word from AGENTS.md §7's
+// forbidden list (`remediation`, `biohazard`, `decontamination`, `sanitization`, `sterilization`)
+// appears anywhere on this page. `legal.scopeDisclaimer` and `legal.complianceClause` (this
+// page's existing `extremeCleaningPage.complianceClause`, "Cleaning only — not a decontamination,
+// sterilization, or health-safety determination") both appear, same as Property Cleanouts.
+//
+// RODENT / ANIMAL WASTE ROUTING — TREATED AS SEPARATE, NOT TSWMP-GATED. Per doc 30 §20A.4 and
+// AGENTS.md §2's 2026-08-26 owner clarification, rodent-droppings and animal-waste cleanup are
+// NOT operationally gated — their `noindex` state is a separate SEO/publication decision, not
+// evidence the service is unavailable. This page links to both by name in movement 05's routing
+// note and in the FAQ, the same way §42 does ("WHAT IF THERE ARE RODENT DROPPINGS?" / "WHAT IF
+// THERE IS ANIMAL WASTE?"), without implying either is gated or future.
+//
+// NO CredentialBar ON THIS ROUTE. Same reasoning as the four prior rebuilds — both gated
+// credential-bar claims are release-gated by AGENTS.md §3 pending a current COI match.
+//
+// NO EMBEDDED FORM. §20A.8's destination rule and §20A.9's "one assessment engine": CTAs link to
+// /request-assessment/?service=extreme-cleanup, which AssessmentForm.astro now recognizes (added
+// alongside this page) and maps to the existing "Overwhelmed property" `property_situation`
+// option — not a new one, and unclaimed by the five other service contexts.
+//
+// IMAGES — AN HONEST PROOF GAP, STATED RATHER THAN FILLED WITH A MISMATCHED PHOTO. Every
+// development photograph in the repository (docs/06-ASSET-MANIFEST.md §4) is already claimed by
+// an earlier rebuild — hero-development-residence-asurnipal.jpg (homepage hero, reused as
+// Estate's hero), condition-development-hoarding-asurnipal.jpg (Hoarding's hero),
+// condition-development-neglected-kolforn.jpg (Property Cleanouts' hero),
+// service-development-cleanup-asurnipal.jpg (homepage/services panel),
+// close-development-property-sanfranman59.jpg (homepage close-CTA), and
+// condition-development-reset-aismallard.jpg is barred sitewide from any before/after-adjacent
+// role because it may read as a fabricated "after" — a risk that is sharper on THIS page than on
+// any sibling, since this page's whole argument is a property that has NOT yet been addressed.
+// The asset manifest caps atmosphere slots at three, already knowingly exceeded by one, with an
+// explicit "do not add a fifth without a new owner decision." Detailed Deep Cleaning's rebuild
+// set the precedent for this exact situation: ship with NO photograph rather than force a
+// mismatched or over-budget asset into a role it does not fit. This page follows that precedent.
+// Movement 06 states the gap in the page's own voice. Replace with real property-condition
+// photography before the Phase 0 owner shoot's successor pass — see docs/06-ASSET-MANIFEST.md §5.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { legal, site } from "@data/site";
 import { extremeCleaningPage } from "@data/doc27ServicePages";
+
+const canonicalPath = "/extreme-cleaning-san-jose/";
+
+// REWRITTEN from the old doc27ServicePages.extremeCleaningPage `seoTitle`/`metaDescription`,
+// which described the old page's "condition-reviewed cleaning...priorities, exclusions and price
+// agreed in writing" framing. This rebuild's H1 and thesis differ, so title/description are
+// brought into agreement per §20A.22. Region is "South Bay & Peninsula" per site.ts's NAP
+// wording of record, not the landing-page source's "Santa Clara County" (Atherton is San Mateo).
+const title = "Extreme Property Cleanup in San Jose | Aseptaclean";
+const description =
+  "Extreme property cleanup in San Jose and the South Bay & Peninsula, for properties past normal housekeeping. Send photos and we will tell you what kind of job it is.";
+
+// §20A.8's destination rule + §20A.9's service branch. `?service=extreme-cleanup` is read by
+// AssessmentForm.astro (see that component's service-context block, added alongside this page).
+const assessmentHref = "/request-assessment/?service=extreme-cleanup";
+const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
+
+// §42's "DOES THE PROPERTY LOOK LIKE THIS?" recognition list — property-condition language, not
+// judgment language, per the brief's explicit instruction not to call the property filthy,
+// disgusting, nasty or hazardous.
+const recognition = [
+  "heavy buildup across many surfaces",
+  "large amounts of trash or debris",
+  "thick grease buildup",
+  "heavy bathroom buildup",
+  "rooms that have not been cleaned in a long time",
+  "items covering parts of the floor",
+  "a property left this way after a tenant moved out",
+  "heavy pet-related buildup",
+  "more than one cleaning problem at once",
+  "a property a normal cleaner has turned down"
+] as const;
+
+// §42's three-way comparison ("THERE IS A POINT WHERE 'DEEP CLEANING' STOPS BEING THE RIGHT
+// JOB"), condensed to the two rows this page needs — the third (normal cleaning) already belongs
+// to routine housekeeping, not to either service page in this pair.
+const comparison = [
+  {
+    label: "Detailed deep cleaning",
+    detail: "The property is usable and reachable. The issue is buildup, detail and labor.",
+    href: "/deep-cleaning-san-jose/",
+    linkLabel: "Detailed deep cleaning",
+    active: false
+  },
+  {
+    label: "Extreme property cleanup",
+    detail:
+      "The condition changes how the job has to be planned — buildup, access, contents, or more than one problem at once.",
+    active: true
+  }
+] as const;
+
+// §42's access sequence ("WE START WITH ACCESS") — the core educational idea, kept as a field
+// sequence rather than a paragraph.
+const accessSequence = [
+  "Open the work area",
+  "Remove approved trash or debris",
+  "Reach the surfaces underneath",
+  "Clean the property",
+  "Review what is still needed"
+] as const;
+
+// §42's KEEP / REMOVE / NOT SURE marking system — this page's own three-category rule, distinct
+// from Property Cleanouts' STAYS/LEAVES/REVIEW (a landlord-turnover scope) in framing: here the
+// point is that the crew should not decide on the fly, and a contents-heavy property may route
+// elsewhere.
+const itemRules = [
+  { label: "Keep", detail: "Do not remove." },
+  { label: "Remove", detail: "Approved to leave." },
+  { label: "Not sure", detail: "Stop and ask." }
+] as const;
+
+// §42's "ONE PROPERTY CAN HAVE MORE THAN ONE PROBLEM" combinations.
+const combinations = [
+  { title: "Heavy clutter + dirt", detail: "The property may need clearing before cleaning." },
+  { title: "Trash + animal waste", detail: "The waste may need its own cleanup plan." },
+  {
+    title: "Heavy dirt + rodent droppings",
+    detail: "Rodent-affected areas need to be handled differently from normal dirt."
+  },
+  {
+    title: "Empty property + years of buildup",
+    detail: "The property may need an extreme deep clean without much clearing."
+  },
+  {
+    title: "Tenant move-out + heavy damage",
+    detail: "Cleaning may be one part of the job. Repair is a different part."
+  }
+] as const;
+
+// §42's five-step "HOW ASEPTACLEAN BUILDS THE JOB", field-procedure sequence per §20A.14.
+const process = [
+  {
+    title: "Send photos",
+    detail:
+      "Start with the property as it is. Wide room photos, close photos of the worst areas, anything unusual, and the path into the property. Please do not clean for us first."
+  },
+  {
+    title: "Tell us what happened",
+    detail:
+      "You do not need a long story. A tenant left it this way, no one has cleaned it in years, pets affected the whole downstairs — useful facts help us scope the job."
+  },
+  {
+    title: "We tell you what kind of job it is",
+    detail:
+      "Extreme property cleanup, hoarding cleanup, property cleanout, animal waste cleanup, rodent droppings cleanup, detailed deep cleaning, more than one service, or outside our current scope."
+  },
+  {
+    title: "We look at the property",
+    detail:
+      "Large or complex jobs usually need a walkthrough — how much area is affected, what is in the way, what surfaces are present, what access is like, and what the property needs to become."
+  },
+  {
+    title: "We build the scope, in writing",
+    detail:
+      "What areas are included, what is being cleared, what is being cleaned, what is staying, what is not included, and what happens if we find something new."
+  }
+] as const;
+
+const phases = [
+  { label: "Phase 1", detail: "open paths and remove approved debris" },
+  { label: "Phase 2", detail: "clear key rooms" },
+  { label: "Phase 3", detail: "clean exposed surfaces" },
+  { label: "Phase 4", detail: "deal with other accepted conditions" },
+  { label: "Phase 5", detail: "prepare the property for its next step" }
+] as const;
+
+// §42's cleaning-vs-damage list.
+const canClean = ["Dirt", "Grease", "Waste within accepted scope", "Buildup", "Accepted debris", "Surface soil"] as const;
+
+const cannotFix = [
+  "Broken drywall",
+  "Damaged flooring",
+  "Rotten wood",
+  "Broken cabinets",
+  "Burn marks",
+  "Holes",
+  "Water-damaged materials",
+  "Structural problems"
+] as const;
+
+// §42's "WHAT WE DO NOT HIDE INSIDE 'EXTREME CLEANING'" — the TSWMP/regulatory boundary. This is
+// the single most important list on the page; see the top-of-file note.
+const outsideScope = [
+  "Blood",
+  "Human bodily fluids",
+  "Human feces",
+  "Sewage",
+  "Needles",
+  "Chemicals or drug residue",
+  "Fire damage",
+  "Large mold conditions",
+  "Unknown hazardous material",
+  "Structural damage"
+] as const;
+
+const goodFit = [
+  "normal housekeeping is no longer enough",
+  "the property has long-term buildup",
+  "several rooms need intensive work",
+  "the condition needs to be reviewed before pricing",
+  "you want a defined, written project scope",
+  "clearing and cleaning may need to happen in sequence",
+  "the property needs to become usable or ready for its next stage"
+] as const;
+
+const poorFit = [
+  "routine maintenance cleaning is all that is needed",
+  "you need recurring maid service",
+  "only junk pickup is required",
+  "construction or repair is the primary need",
+  "the condition is outside our current scope",
+  "the surfaces are damaged rather than dirty"
+] as const;
+
+const priceDrivers = [
+  "size of the affected area",
+  "amount of material and buildup",
+  "number of rooms",
+  "access",
+  "contents and clearing needed",
+  "waste removal plan",
+  "special conditions",
+  "crew size and number of work days",
+  "the property's end goal"
+] as const;
+
+// §20A.18: 4–7 highest-value, service-specific questions. Answers reconciled from §42's FAQ set
+// plus doc27ServicePages.ts's `extremeCleaningPage.faq` (owner-approved boundary language).
+const faq = [
+  [
+    "What makes a property an “extreme cleanup”?",
+    [
+      "The condition is past normal housekeeping or a normal deep clean — heavy buildup, debris, blocked areas, or several cleanup problems happening at once.",
+      "It is not about whether the property is “gross.” It is about whether the condition changes how the job has to be planned."
+    ]
+  ],
+  [
+    "Is this the same as hoarding cleanup?",
+    [
+      "Not always. A property can be extremely dirty without a large amount of personal belongings.",
+      "If sorting and item decisions are a major part of the job, hoarding cleanup usually fits better."
+    ]
+  ],
+  [
+    "Is this the same as a normal deep clean?",
+    [
+      "No. A deep clean assumes the home is already easy to work through.",
+      "Extreme cleanup may require clearing and other work before detailed cleaning can even begin."
+    ]
+  ],
+  [
+    "Do you remove belongings?",
+    [
+      "Approved trash and debris removal can be part of the scope. Belongings are marked keep, remove, or not sure before anything is cleared — the crew does not decide that on the fly.",
+      "If a lot of sorting is needed, the job may fit better under hoarding cleanup or property cleanouts, and we will tell you."
+    ]
+  ],
+  [
+    "What if you find rodent droppings or animal waste?",
+    [
+      "We stop in that area and tell you before going further. Rodent droppings and animal waste each have their own cleanup approach.",
+      "See rodent droppings cleanup or animal waste cleanup if that is the main condition."
+    ]
+  ],
+  [
+    "What if you find something outside the original scope?",
+    [
+      "We stop and tell you. Clearing a room can uncover things that were not visible before — water damage, structural issues, or a condition outside our current scope.",
+      "We do not promise the whole job from one photo of the doorway, and we do not quietly expand the project."
+    ]
+  ],
+  [
+    "Do you need to see the property first?",
+    [
+      "For most extreme cleanups, yes. Photos help us decide whether the job fits, but they cannot always show smell, depth of buildup, or what is behind the contents.",
+      "For a large job, we usually need a walkthrough before we can build a real scope and price."
+    ]
+  ]
+] as const;
+
+const schema = [
+  {
+    "@type": "Service",
+    name: "Extreme Property Cleanup in San Jose",
+    serviceType: "Extreme-condition property cleanup",
+    provider: { "@id": new URL("/#business", site.urls.site).href },
+    areaServed: { "@type": "City", name: "San Jose" }
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Complex Property Cleanup",
+        item: new URL("/property-clearing/", site.urls.site).href
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Extreme Property Cleanup",
+        item: new URL(canonicalPath, site.urls.site).href
+      }
+    ]
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: faq.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer.join("\n\n") }
+    }))
+  }
+];
 ---
 
-<ServicePageLayout
-  page={extremeCleaningPage}
-  serviceType="Extreme-condition cleaning"
-  breadcrumbName="Extreme-Condition Cleaning"
-  idPrefix="extreme"
-  groupName="Specialty Cleaning"
-/>
+<BaseLayout title={title} description={description} canonicalPath={canonicalPath} schema={schema}>
+  {/* ══ 01 · SERVICE HERO ═══════════════════════════════════════════════════════════════════
+      §20A.7: location context → unmistakable service H1 → specialist thesis → service CTA →
+      phone as secondary. NO IMAGE — see the top-of-file note on the honest proof gap and the
+      exceeded atmosphere-image budget. Flat navy field, same choice Detailed Deep Cleaning made
+      for the identical reason, so the absence of a photograph reads as a deliberate, restrained
+      choice rather than a broken layout. */}
+  <section class="ec-hero" aria-labelledby="ec-title">
+    <div class="ec-hero__shell">
+      <div class="ec-hero__content">
+        <p class="ec-hero__eyebrow">
+          Extreme Property Cleanup · San Jose · {site.location.serviceArea}
+        </p>
+        <h1 id="ec-title" class="ac-type-h1-hub">Extreme Property Cleanup</h1>
+        <p class="ec-hero__lede">
+          Some properties are past a normal deep clean. Heavy buildup, neglect, blocked areas, or
+          several problems at once can change how the work needs to be planned.
+        </p>
+        <p class="ec-hero__thesis">The condition determines the plan.</p>
+
+        <div class="ec-hero__actions">
+          <a class="ec-btn ec-btn--light" href={assessmentHref}>Send Photos for Review</a>
+          {/* Suppression rule (AGENTS.md §3): never render an empty phone link. */}
+          {phoneHref && (
+            <a class="ec-hero__call" href={phoneHref}>Call {site.business.phone}</a>
+          )}
+        </div>
+        <p class="ec-hero__note">Not sure what kind of cleanup this is? That is okay. Start with photos.</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 02 · PAST NORMAL HOUSEKEEPING ═══════════════════════════════════════════════════════
+      §20A.6's recognition movement. §42's "DOES THE PROPERTY LOOK LIKE THIS?" list, in
+      property-condition language rather than judgment language — no "filthy," "disgusting,"
+      "nasty," or "hazardous" anywhere on this page. */}
+  <section class="ec-recognize" aria-labelledby="recognize-title">
+    <div class="ec-recognize__inner">
+      <p class="ec-label">Does the property look like this?</p>
+      <h2 id="recognize-title" class="ac-type-h2-home-feature">
+        Some properties need more than a deep clean.
+      </h2>
+      <p class="ec-lede">
+        You do not need to know what to call it. Maybe a tenant left it this way. Maybe no one has
+        cleaned it in years. Maybe several problems are happening at once. This service may fit
+        when there is:
+      </p>
+
+      <ul class="ec-check-list ec-check-list--grid">
+        {recognition.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <p class="ec-statement">
+        This is not about whether the property is “gross.” It is about whether the condition is
+        past normal housekeeping.
+      </p>
+    </div>
+  </section>
+
+  {/* ══ 03 · WHAT CHANGES THE JOB ════════════════════════════════════════════════════════════
+      This page's signature movement — §42's "WE START WITH ACCESS" + "NOT EVERYTHING ON THE
+      FLOOR IS TRASH" + "THE CONDITION UNDER THE MESS MAY CHANGE THE JOB" + "ONE PROPERTY CAN
+      HAVE MORE THAN ONE PROBLEM," combined into one editorial field-assessment movement per
+      §20A.6, not four separate bands and not seven equal cards. */}
+  <section class="ec-changes" aria-labelledby="changes-title">
+    <div class="ec-changes__inner">
+      <div class="ec-changes__lead">
+        <p class="ec-changes__label">It is not just “more dirt”</p>
+        <h2 id="changes-title" class="ac-type-h2-home-feature">
+          The condition determines the plan.
+        </h2>
+        <p class="ec-changes__lede">
+          A normal deep clean assumes the home is already easy to work through.
+          <span class="ec-changes__lede-strong">Extreme property cleanup does not assume that.</span>
+        </p>
+      </div>
+
+      <div class="ec-comparison">
+        {comparison.map((row) => (
+          <div class:list={["ec-comparison__row", { "ec-comparison__row--active": row.active }]}>
+            <p class="ec-comparison__label">{row.label}</p>
+            <p class="ec-comparison__detail">{row.detail}</p>
+            {"href" in row && row.href && (
+              <a class="ec-link ec-link--dark" href={row.href}>
+                <span>{row.linkLabel}</span> <span aria-hidden="true">&rarr;</span>
+              </a>
+            )}
+          </div>
+        ))}
+      </div>
+
+      <div class="ec-access">
+        <h3 class="ac-type-h3-home-route">You cannot clean a floor you cannot reach.</h3>
+        <p>
+          If the floor is covered with bags, boxes, trash, clothes, or furniture, clearing may
+          need to happen first.
+        </p>
+        <ol class="ec-sequence">
+          {accessSequence.map((step) => (
+            <li>{step}</li>
+          ))}
+        </ol>
+      </div>
+
+      <div class="ec-changes__pair">
+        <div class="ec-note">
+          <h3 class="ac-type-h3-home-route">Not everything on the floor is trash.</h3>
+          <p>
+            If the property has a lot of belongings, we need to know what can leave. We do not
+            want the crew deciding that on the fly.
+          </p>
+          <dl class="ec-item-rules">
+            {itemRules.map((rule) => (
+              <div class="ec-item-rules__row">
+                <dt>{rule.label}</dt>
+                <dd>{rule.detail}</dd>
+              </div>
+            ))}
+          </dl>
+          <p>
+            If the property needs a lot of sorting, the job may fit better under
+            <a href="/hoarding-cleanup-san-jose/"> hoarding cleanup</a> or
+            <a href="/property-cleanouts-san-jose/"> property cleanouts</a>. We will tell you.
+          </p>
+        </div>
+
+        <div class="ec-note">
+          <h3 class="ac-type-h3-home-route">Clearing can uncover a different condition.</h3>
+          <p>
+            That is why we do not promise the whole job from one photo of the doorway. Sometimes
+            the real condition becomes clear only after we can reach the area.
+          </p>
+          <p class="ec-statement">If the condition changes the scope, we stop and tell you.</p>
+        </div>
+      </div>
+
+      <div class="ec-combos">
+        <h3 class="ac-type-h3-home-feature">One property can have more than one problem.</h3>
+        <div class="ec-combos__grid">
+          {combinations.map((combo) => (
+            <div class="ec-combos__item">
+              <p class="ec-combos__title">{combo.title}</p>
+              <p>{combo.detail}</p>
+            </div>
+          ))}
+        </div>
+        <p class="ec-statement ec-statement--wide">
+          That is why we review the whole condition, not just the service name.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 04 · THE PROPERTY PLAN ═══════════════════════════════════════════════════════════════
+      §20A.14: vertical numbered sequence, not five cards. §42's "HOW ASEPTACLEAN BUILDS THE
+      JOB," plus phased work for larger properties. */}
+  <section class="ec-plan" aria-labelledby="plan-title">
+    <div class="ec-plan__inner">
+      <p class="ec-plan__label">The property plan</p>
+      <h2 id="plan-title" class="ac-type-h2-home-feature">How we build the job.</h2>
+
+      <ol class="ec-steps">
+        {process.map((step, index) => (
+          <li class="ec-step">
+            <span class="ec-step__index" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div class="ec-step__body">
+              <h3 class="ac-type-h3-home-route">{step.title}</h3>
+              <p>{step.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div class="ec-phases">
+        <h3 class="ac-type-h3-home-route">Large properties do not need to be fixed all at once.</h3>
+        <p>A large job may be broken into phases:</p>
+        <div class="ec-phases__list">
+          {phases.map((phase) => (
+            <div class="ec-phases__item">
+              <p class="ec-phases__label">{phase.label}</p>
+              <p>{phase.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 05 · CLEANABLE VS DAMAGE + TSWMP/REGULATORY BOUNDARY ═══════════════════════════════
+      §20A.13's boundaries-as-conversion-content. The "outside scope" list is this page's most
+      important guardrail — see the top-of-file note. */}
+  <section class="ec-boundary" aria-labelledby="boundary-title">
+    <div class="ec-boundary__inner">
+      <p class="ec-label">What can be cleaned, and what cannot</p>
+      <h2 id="boundary-title" class="ac-type-h2-home-feature">
+        Not everything that looks bad is a cleaning problem.
+      </h2>
+
+      <div class="ec-boundary__pair">
+        <div class="ec-note">
+          <h3 class="ac-type-h3-home-route">Cleaning is not repair.</h3>
+          <p>An extreme property can have both. We may clean:</p>
+          <ul class="ec-inline-list">
+            {canClean.map((item) => <li>{item}</li>)}
+          </ul>
+          <p>Cleaning does not fix:</p>
+          <ul class="ec-inline-list">
+            {cannotFix.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="ec-statement">
+            If the property needs repair after cleanup, that is a separate step — and if a surface
+            is already too damaged to come back, we will tell you rather than promise a result it
+            cannot give us.
+          </p>
+        </div>
+
+        <div class="ec-note ec-note--stop">
+          <h3 class="ac-type-h3-home-route">Some conditions are a different job.</h3>
+          <p>
+            Some cleanup companies put every bad property condition under one service name. We do
+            not. Tell us if the property has:
+          </p>
+          <ul class="ec-inline-list">
+            {outsideScope.map((item) => <li>{item}</li>)}
+          </ul>
+          <p>
+            Those conditions may need a different service or a different provider. Do not clean
+            around it and hope it is fine — tell us what is there.
+          </p>
+          <p class="ec-clause">{extremeCleaningPage.complianceClause}</p>
+        </div>
+      </div>
+
+      <div class="ec-routing">
+        <h3 class="ac-type-h3-home-feature">If a specific condition is the main problem</h3>
+        <p>
+          <a href="/rodent-dropping-cleanup-san-jose/">Rodent droppings cleanup</a> and
+          <a href="/animal-waste-cleanup-san-jose/">animal waste cleanup</a> each have their own
+          cleanup approach. Tell us if either is mixed into a larger property condition, and we
+          will tell you which service fits.
+        </p>
+        <p class="ec-disclaimer">{legal.scopeDisclaimer}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 06 · EVIDENCE + FIT + PRICE ══════════════════════════════════════════════════════════
+      §20A.15's honest evidence gap (same pattern as Detailed Deep Cleaning and Property
+      Cleanouts), §20A.16's qualification without a wall of rejection, and §20A.17's price-driver
+      logic instead of a published figure. */}
+  <section class="ec-fit" aria-labelledby="fit-title">
+    <div class="ec-fit__inner">
+      <div class="ec-evidence">
+        <p class="ec-label">What we can show you today</p>
+        <p class="ec-evidence__body">
+          There is no before/during/after gallery on this page yet. Aseptaclean has no
+          photographed extreme-cleanup project to show, and a set of stock condition photos would
+          tell you nothing true about how this company works. What does exist is the property
+          plan itself — the sequence above, applied to your actual property rather than a generic
+          template, agreed before the crew opens a room.
+        </p>
+      </div>
+
+      <h2 id="fit-title" class="ac-type-h2-home-feature">
+        Two homes the same size can be completely different jobs.
+      </h2>
+
+      <div class="ec-fit__columns">
+        <div class="ec-fit__col">
+          <h3 class="ac-type-h3-home-route">Usually a fit</h3>
+          <ul class="ec-check-list">
+            {goodFit.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div class="ec-fit__col ec-fit__col--out">
+          <h3 class="ac-type-h3-home-route">Probably not a fit</h3>
+          <ul class="ec-minus-list">
+            {poorFit.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="ec-fit__aside">
+            If the property is fully usable and just needs more detail work,
+            <a href="/deep-cleaning-san-jose/"> detailed deep cleaning</a> is the closer match. If
+            item decisions are the main problem, <a href="/hoarding-cleanup-san-jose/">hoarding
+            cleanup</a> fits better. If the property mainly needs to be emptied,
+            <a href="/property-cleanouts-san-jose/"> property cleanouts</a> is the right service.
+            Not sure? Send photos. We will say whether it sounds like a fit, and we will say so
+            when it is not.
+          </p>
+        </div>
+      </div>
+
+      <div class="ec-price">
+        <div class="ec-price__copy">
+          <h3 class="ac-type-h3-home-feature">There is no honest flat price.</h3>
+          <p>
+            Price can change based on the size of the affected area, the amount of material,
+            access, contents, and what the property needs to become next. Sometimes we can give a
+            useful starting range from photos — but extreme properties can hide a lot, and a cheap
+            number based on bad information does not help you. We would rather understand the job
+            first.
+          </p>
+          <p class="ec-price__fee">{site.offer.assessmentFraming(site.offer.assessmentFee)}</p>
+        </div>
+        <div class="ec-price__drivers">
+          <p class="ec-price__label">What moves the number</p>
+          <ul class="ec-rule-list ec-rule-list--tight">
+            {priceDrivers.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 07 · QUESTIONS ═══════════════════════════════════════════════════════════════════════
+      Open Q&A, not an accordion — same reasoning as the four prior rebuilds: no click between a
+      buyer and the answer to "is this the same as hoarding cleanup?" */}
+  <section class="ec-faq" aria-labelledby="faq-title">
+    <div class="ec-faq__inner">
+      <p class="ec-label">Questions</p>
+      <h2 id="faq-title" class="ac-type-h2-home-feature">The questions that decide this.</h2>
+      <p class="ec-lede">
+        Seven that come up on nearly every extreme cleanup review. The general ones — scheduling,
+        payment, what happens on the day — are on the <a href="/faq/">main FAQ</a>.
+      </p>
+
+      <div class="ec-faq__grid">
+        {faq.map(([question, answer]) => (
+          <article class="ec-qa">
+            <h3 class="ac-type-h3-home-route">{question}</h3>
+            {answer.map((paragraph) => <p>{paragraph}</p>)}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 08 · CLOSE ═══════════════════════════════════════════════════════════════════════════
+      Typographic on navy, same as the four prior rebuilds' close — no image to lead with here
+      either, and repeating that composition keeps the sitewide rhythm rather than improvising a
+      fifth close pattern. */}
+  <section class="ec-close" aria-labelledby="close-title">
+    <div class="ec-close__inner">
+      <div class="ec-close__copy">
+        <h2 id="close-title" class="ac-type-h2-final">
+          Not sure how far the property has gone?
+        </h2>
+        <p class="ec-close__lede">
+          You do not need to diagnose it. Send photos or tell us what is happening. We will
+          determine whether the property needs detailed cleaning, extreme cleanup, clearing first,
+          or another service.
+        </p>
+      </div>
+
+      <div class="ec-close__action">
+        <a class="ec-btn ec-btn--light" href={assessmentHref}>Send Photos for Review</a>
+        <div class="ec-close__secondary">
+          {phoneHref && <a href={phoneHref}>Call {site.business.phone}</a>}
+          {smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
+        </div>
+        <p class="ec-close__note">
+          Submitting a request does not authorize work or create a service agreement.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     Shared page primitives, same system Hoarding/Estate/Property Cleanouts/Detailed Deep
+     Cleaning already established (spacing, rule and list treatment), reused under an `ec-`
+     prefix so scoped styles never collide. NOTHING in this file sets font-size on a heading tag
+     or on a selector that resolves to one; heading sizes come from .ac-type-* role classes and
+     are tuned by overriding the role class's TOKEN on a container (AGENTS.md §6 law 1).
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+
+  .ec-label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .ec-lede {
+    margin: 22px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .ec-statement {
+    margin: 24px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-navy-900);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .ec-statement--wide {
+    max-width: 62ch;
+  }
+
+  .ec-inline-list {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: none;
+    margin: 14px 0 0;
+    padding: 0;
+    gap: 4px 10px;
+    list-style: none;
+  }
+
+  .ec-inline-list li {
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .ec-inline-list li:not(:last-child)::after {
+    margin-left: 10px;
+    color: var(--ac-color-line-strong);
+    content: "·";
+  }
+
+  .ec-rule-list {
+    display: grid;
+    max-width: none;
+    margin: 20px 0 0;
+    padding: 0;
+    gap: 0 44px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    list-style: none;
+  }
+
+  .ec-rule-list li {
+    max-width: none;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 12px 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .ec-rule-list--tight {
+    grid-template-columns: 1fr;
+  }
+
+  .ec-rule-list--tight li {
+    padding: 10px 0;
+  }
+
+  .ec-check-list,
+  .ec-minus-list {
+    max-width: none;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ec-check-list li,
+  .ec-minus-list li {
+    position: relative;
+    max-width: none;
+    padding: 9px 0 9px 26px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .ec-check-list li + li,
+  .ec-minus-list li + li {
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .ec-check-list li::before,
+  .ec-minus-list li::before {
+    position: absolute;
+    top: 17px;
+    left: 0;
+    width: 12px;
+    height: 2px;
+    background: var(--ac-color-blue-deep);
+    content: "";
+  }
+
+  .ec-minus-list li::before {
+    background: var(--ac-color-exclusion-red);
+  }
+
+  .ec-check-list--grid {
+    display: grid;
+    gap: 0 44px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ec-link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    margin-top: 18px;
+    gap: 0.4em;
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-underline-offset: 4px;
+  }
+
+  .ec-link:hover {
+    text-decoration: underline;
+  }
+
+  .ec-link--dark {
+    color: var(--ac-color-paper);
+  }
+
+  .ec-link--dark:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .ec-btn {
+    display: inline-flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    padding-inline: 30px;
+    font-size: 0.9375rem;
+    font-weight: 750;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+
+  .ec-btn--light {
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-btn--light:hover {
+    background: var(--ac-color-blue-pale);
+  }
+
+  .ec-btn--light:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 4px;
+  }
+
+  .ec-clause {
+    margin: 18px 0 0;
+    max-width: 60ch;
+    border-left: 3px solid var(--ac-color-navy-800);
+    padding: 2px 0 2px 16px;
+    color: var(--ac-color-navy-900);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+
+  .ec-disclaimer {
+    margin: 24px 0 0;
+    max-width: 78ch;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 18px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .ec-note p {
+    margin: 14px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .ec-note h3 {
+    max-width: 30ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  /* ── 01 hero — flat navy field, no photograph (see top-of-file note) ─────────────────── */
+  .ec-hero {
+    background: var(--ac-color-navy-900);
+    padding-block: clamp(88px, 10vw, 132px) clamp(64px, 7vw, 96px);
+  }
+
+  .ec-hero__shell {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .ec-hero__content {
+    max-width: 62ch;
+  }
+
+  .ec-hero__eyebrow {
+    margin: 0 0 18px;
+    color: var(--ac-color-blue-on-navy);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .ec-hero__content :global(h1) {
+    max-width: 15ch;
+    color: var(--ac-color-paper);
+  }
+
+  .ec-hero__lede {
+    margin: 22px 0 0;
+    color: #ccd9e8;
+    font-size: 1.1875rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .ec-hero__thesis {
+    margin: 18px 0 0;
+    max-width: 40ch;
+    color: var(--ac-color-paper);
+    font-size: 1.1875rem;
+    font-weight: 650;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .ec-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 32px;
+    gap: 20px 28px;
+  }
+
+  .ec-hero__call {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-underline-offset: 4px;
+  }
+
+  .ec-hero__call:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .ec-hero__note {
+    margin: 20px 0 0;
+    max-width: 46ch;
+    color: #a9bdd4;
+    font-size: 0.875rem;
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  /* ── 02 recognize ─────────────────────────────────────────────────────────────────────── */
+  .ec-recognize {
+    background: var(--ac-color-paper);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .ec-recognize__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .ec-recognize .ec-check-list--grid {
+    margin-top: 28px;
+  }
+
+  /* ── 03 what changes the job ──────────────────────────────────────────────────────────── */
+  .ec-changes {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(76px, 8vw, 116px);
+  }
+
+  .ec-changes__inner {
+    width: min(100% - 64px, 1200px);
+    margin-inline: auto;
+  }
+
+  .ec-changes__lead {
+    max-width: 64ch;
+  }
+
+  .ec-changes__label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .ec-changes__lede {
+    margin: 22px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .ec-changes__lede-strong {
+    display: block;
+    margin-top: 6px;
+    color: var(--ac-color-navy-900);
+    font-weight: 650;
+  }
+
+  .ec-comparison {
+    display: grid;
+    margin-top: 40px;
+    gap: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ec-comparison__row {
+    border-top: 2px solid var(--ac-color-line-strong);
+    padding: 22px 28px 24px 0;
+  }
+
+  .ec-comparison__row--active {
+    border-top-color: var(--ac-color-navy-900);
+  }
+
+  .ec-comparison__label {
+    margin: 0;
+    max-width: none;
+    color: var(--ac-color-navy-900);
+    font-size: 1.0625rem;
+    font-weight: 750;
+  }
+
+  .ec-comparison__detail {
+    margin: 10px 0 0;
+    max-width: 34ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .ec-access {
+    margin-top: clamp(48px, 5vw, 72px);
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 32px;
+  }
+
+  .ec-access h3 {
+    max-width: 30ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-access > p {
+    margin: 14px 0 0;
+    max-width: 56ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .ec-sequence {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    max-width: none;
+    margin: 22px 0 0;
+    padding: 0;
+    gap: 10px;
+    list-style: none;
+    counter-reset: ec-sequence;
+  }
+
+  .ec-sequence li {
+    max-width: none;
+    border: 1px solid var(--ac-color-line-strong);
+    border-radius: 2px;
+    padding: 8px 14px;
+    color: var(--ac-color-navy-900);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .ec-sequence li:not(:last-child)::after {
+    margin-left: 10px;
+    color: var(--ac-color-ink-400);
+    content: "\2192";
+  }
+
+  .ec-changes__pair {
+    display: grid;
+    margin-top: clamp(48px, 5vw, 72px);
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 32px;
+    gap: 32px 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ec-item-rules {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: none;
+    margin: 18px 0 0;
+    gap: 10px 24px;
+  }
+
+  .ec-item-rules__row {
+    min-width: 96px;
+  }
+
+  .ec-item-rules dt {
+    color: var(--ac-color-navy-900);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .ec-item-rules dd {
+    margin: 4px 0 0;
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.875rem;
+  }
+
+  .ec-combos {
+    margin-top: clamp(48px, 5vw, 72px);
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 32px;
+  }
+
+  .ec-combos h3 {
+    max-width: 34ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-combos__grid {
+    display: grid;
+    margin-top: 28px;
+    gap: 24px 40px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ec-combos__item {
+    border-top: 2px solid var(--ac-color-blue-deep);
+    padding-top: 14px;
+  }
+
+  .ec-combos__title {
+    margin: 0;
+    max-width: none;
+    color: var(--ac-color-navy-900);
+    font-size: 0.9375rem;
+    font-weight: 700;
+  }
+
+  .ec-combos__item p:not(.ec-combos__title) {
+    margin: 8px 0 0;
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  /* ── 04 property plan ─────────────────────────────────────────────────────────────────── */
+  .ec-plan {
+    background: var(--ac-color-paper);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .ec-plan__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .ec-plan__label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .ec-steps {
+    display: grid;
+    margin: 40px 0 0;
+    padding: 0;
+    gap: 0;
+    list-style: none;
+  }
+
+  .ec-step {
+    display: grid;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 22px 0;
+    gap: 0 28px;
+    grid-template-columns: 56px 1fr;
+  }
+
+  .ec-step:last-of-type {
+    border-bottom: 1px solid var(--ac-color-line);
+  }
+
+  .ec-step__index {
+    color: var(--ac-color-blue-deep);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .ec-step__body p {
+    margin: 8px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .ec-phases {
+    margin-top: 48px;
+    border-top: 3px solid var(--ac-color-navy-800);
+    padding-top: 28px;
+  }
+
+  .ec-phases h3 {
+    max-width: 40ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-phases > p {
+    margin: 12px 0 0;
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .ec-phases__list {
+    display: grid;
+    margin: 24px 0 0;
+    gap: 0 28px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+
+  .ec-phases__item {
+    border-top: 2px solid var(--ac-color-blue-deep);
+    padding-top: 14px;
+  }
+
+  .ec-phases__label {
+    margin: 0;
+    max-width: none;
+    color: var(--ac-color-navy-900);
+    font-size: 0.75rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .ec-phases__item p:not(.ec-phases__label) {
+    margin: 8px 0 0;
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  /* ── 05 cleanable vs damage / boundary ────────────────────────────────────────────────── */
+  .ec-boundary {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .ec-boundary__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .ec-boundary__pair {
+    display: grid;
+    margin-top: 40px;
+    gap: 40px 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ec-note--stop {
+    border-top: 2px solid var(--ac-color-exclusion-red);
+    padding-top: 24px;
+  }
+
+  .ec-routing {
+    margin-top: 44px;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 32px;
+  }
+
+  .ec-routing h3 {
+    max-width: none;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-routing p:not(.ec-disclaimer) {
+    margin: 14px 0 0;
+    max-width: 66ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .ec-routing a {
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
+    text-underline-offset: 3px;
+  }
+
+  /* ── 06 evidence + fit + price ────────────────────────────────────────────────────────── */
+  .ec-fit {
+    background: var(--ac-color-paper);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .ec-fit__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .ec-evidence {
+    border-top: 3px solid var(--ac-color-navy-800);
+    padding-top: 24px;
+  }
+
+  .ec-evidence__body {
+    margin: 0;
+    max-width: 66ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .ec-fit .ac-type-h2-home-feature {
+    margin-top: 48px;
+    max-width: 26ch;
+  }
+
+  .ec-fit__columns {
+    display: grid;
+    margin-top: 40px;
+    gap: 32px 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ec-fit__aside {
+    margin-top: 18px;
+    max-width: 46ch;
+    color: var(--ac-color-ink-500);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .ec-fit__aside a {
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
+    text-underline-offset: 3px;
+  }
+
+  .ec-price {
+    display: grid;
+    margin-top: 56px;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 40px;
+    gap: 32px 56px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .ec-price__copy p {
+    margin: 14px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .ec-price__fee {
+    margin-top: 18px;
+    max-width: 48ch;
+    color: var(--ac-color-navy-900);
+    font-weight: 550;
+    line-height: 1.6;
+  }
+
+  .ec-price__label {
+    margin: 0 0 4px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  /* ── 07 questions ─────────────────────────────────────────────────────────────────────── */
+  .ec-faq {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .ec-faq__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .ec-faq__grid {
+    display: grid;
+    margin-top: 40px;
+    gap: 40px 48px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ec-qa {
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 18px;
+  }
+
+  .ec-qa p {
+    margin: 10px 0 0;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  /* ── 08 close ─────────────────────────────────────────────────────────────────────────── */
+  .ec-close {
+    background: var(--ac-color-navy-950);
+    padding-block: clamp(80px, 9vw, 120px);
+  }
+
+  .ec-close__inner {
+    display: grid;
+    width: min(100% - 64px, 1080px);
+    align-items: center;
+    margin-inline: auto;
+    gap: 32px 56px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .ec-close__copy :global(h2) {
+    max-width: 17ch;
+    color: var(--ac-color-paper);
+  }
+
+  .ec-close__lede {
+    margin: 20px 0 0;
+    max-width: 46ch;
+    color: #ccd9e8;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .ec-close__secondary {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    gap: 8px 22px;
+  }
+
+  .ec-close__secondary a {
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 650;
+  }
+
+  .ec-close__secondary a:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .ec-close__note {
+    margin-top: 20px;
+    max-width: 40ch;
+    color: rgb(255 255 255 / 55%);
+    font-size: 0.75rem;
+    line-height: 1.55;
+  }
+
+  /* ── responsive ───────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 64rem) {
+    .ec-combos__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .ec-phases__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 56rem) {
+    .ec-price {
+      grid-template-columns: 1fr;
+    }
+
+    .ec-close__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 50rem) {
+    .ec-comparison {
+      grid-template-columns: 1fr;
+    }
+
+    .ec-comparison__row {
+      padding-right: 0;
+    }
+
+    .ec-changes__pair {
+      grid-template-columns: 1fr;
+    }
+
+    .ec-boundary__pair {
+      grid-template-columns: 1fr;
+    }
+
+    .ec-fit__columns {
+      grid-template-columns: 1fr;
+    }
+
+    .ec-faq__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ec-phases__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .ec-hero__shell,
+    .ec-recognize__inner,
+    .ec-changes__inner,
+    .ec-plan__inner,
+    .ec-boundary__inner,
+    .ec-fit__inner,
+    .ec-faq__inner {
+      width: calc(100% - 40px);
+    }
+
+    .ec-close__inner {
+      width: calc(100% - 40px);
+    }
+
+    .ec-check-list--grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ec-combos__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .ec-phases__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .ec-rule-list {
+      grid-template-columns: 1fr;
+    }
+
+    .ec-hero__actions {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .ec-hero__actions .ec-btn {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 22.5rem) {
+    .ec-hero__content :global(h1) {
+      max-width: 12ch;
+    }
+  }
+</style>

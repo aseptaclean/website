@@ -1584,7 +1584,10 @@ phase-gated sitemap (Phase 1 live routes → Phase 3/3b/3c service, checklist, a
 gated on crew capacity/certification/real jobs → Phase 4 assessment quiz and question posts).
 Building past a phase gate in doc 19 (e.g. a biohazard page before certification is held, or a
 city page with no completed job in that city) is out of scope regardless of this architecture
-change.
+change. **[The city-page half of this example was superseded 2026-08-21 — the completed-job
+prerequisite no longer exists; see the closing entry of this log. The principle stands and the
+biohazard half is unchanged: doc 19's phase gates still bind, and the four-gate biohazard
+prohibition in `AGENTS.md` §2 is absolute.]**
 
 **Files affected:** `AGENTS.md` (precedence chain, Scope section), `docs/07-ONE-PAGE-DIRECTIVE.md`
 (status line only), `docs/19-SYSTEM-AND-SITEMAP.md` (no change — already committed as the source
@@ -1689,6 +1692,9 @@ gate still applies per city — no `/service-areas/{city}/` page exists yet for 
 until a real completed job in that city supports one; Palo Alto, Atherton, and Los Altos Hills
 are named as priority cities when jobs allow (highest estate-ticket value and Track B fiduciary
 referral density).
+**[The completed-job condition in this paragraph was superseded 2026-08-21. Mountain View,
+Sunnyvale, and Campbell have pages, built on verified city facts with no job history in any of
+them. Palo Alto remains legally blocked. See the closing entry of this log.]**
 
 **Files affected:** none this session — the 10-city list and cluster framing were already
 present in `docs/19-SYSTEM-AND-SITEMAP.md` and in the previously-built `/service-areas/` draft
@@ -1712,6 +1718,9 @@ page, excluded from `src/pages/sitemap.xml.ts`'s manual allowlist, and not linke
   clusters, with city links intentionally empty (`cityPages = []` in
   `src/pages/service-areas/index.astro`) since no `/service-areas/{city}/` page exists yet,
   per doc 19's hard content gate on city pages.
+  **[Record of 2026-08-18 state. Superseded 2026-08-21 — three city hubs are built and the hub
+  links down to them; doc 19's hard content gate was itself superseded that day. See the closing
+  entry of this log.]**
 - `/deep-cleaning-san-jose/`, `/property-cleanouts-for-managers/` — Phase 3b pages, each
   carrying a visible internal (not public-facing) launch-gate note: deep cleaning is gated on
   the B10 checklist being finalized, PM/turnover is gated on crew capacity being confirmed. Both
@@ -5295,3 +5304,3964 @@ do.**
 | P8 | Open — `REPO-STATE.md` sections 2–10 stale; row 10 of its route table newly so, deliberately. |
 | P9 | Open on **two** conditions: **A** owner confirms crew capacity per service (rows 1–4) · **B** five §21 inputs on record, row 8 after 5–7 (rows 5–8). **C ✅ closed 2026-08-20** — row 9 folded into P1, row 10 launched. |
 | P10 | Open — dead `navigation` export, deliberately left in place. |
+
+---
+
+## SEO and copy correction pass — owner rulings executed (2026-08-20)
+
+Owner-supplied rulings on a completed SEO/copy audit. Copy was canon-locked to
+`docs/27-COPY-CANONICAL.md` and `docs/27-SECTION-9-15-CONNECTIVE-COPY.md`; the only authorized
+copy changes were the ones ruled in section B. Everything below is either an executed ruling, a
+ruling stopped on a named conflict, or a conflict found while executing.
+
+### 0. Term assignment — the doc 19 §2.1/§2.2 conflict, resolved
+
+`19` §2.1 assigned **property cleanout san jose** to `/property-cleanouts-san-jose/` as a
+"category hub". §2.2 assigns the same term to the **homepage** as its primary query, and §2.2's
+own PM/TURNOVER entry gives `/property-cleanouts-san-jose/` a *different* primary,
+*tenant abandonment cleanout*. One document chartered two routes to compete for one query.
+
+It survived the 2026-08-16 rename and the 2026-08-17 sitemap correction because each pass read
+one section and not the other — §2.1 is a URL tree, §2.2 is a per-page spec, and nobody had
+cause to diff them.
+
+**Ruled: `/` owns `property cleanout san jose`. `/property-cleanouts-san-jose/` owns
+`tenant abandonment cleanout san jose`.** §2.1's line is struck in place with an inline reason
+and replaced with §2.2's assignment, so the two sections now agree. No code changed — the build
+already matched §2.2.
+
+### A1 — Termly resource blocker: STOPPED, not implemented
+
+**The ruling's own stop-condition is met.** It directed `defer` on the Termly resource-blocker
+plus a move below the canonical, font preload and stylesheets on all 24 main-layout routes,
+*unless* Termly requires head-first execution for consent correctness. It does.
+
+Three independent confirmations:
+
+1. **Termly's documentation.** The Consent Banner script must be added before all other scripts
+   in `<head>`; Auto Blocker can only intercept trackers it sees before they execute. Termly
+   publishes a dedicated article titled *"Why does Termly's script need to be the first script
+   on my page?"*
+2. **This repository has already made and fixed this exact mistake.** Commit `36e696c`
+   (2026-08-09) moved the blocker back above `SeoHead`'s JSON-LD with the message: *"Auto Blocker
+   only reliably classifies scripts that load after it, and the JSON-LD tag from SeoHead had been
+   sneaking in first."*
+3. **The site depends on the mechanism.** `Analytics.astro` ships GA/GTM as
+   `type="text/plain" data-type="analytics"`, and the Turnstile script carries
+   `data-categories="essential"` — both are Auto Blocker conventions that only work if the
+   blocker parses those tags. `defer` guarantees it runs after the document is parsed, i.e.
+   after every one of them.
+
+There is also no partial version worth taking: "after the canonical" means after `SeoHead`'s
+JSON-LD `<script>` — precisely what `36e696c` fixed — and a render-blocking script placed after
+a stylesheet waits on that stylesheet, so the move would make the blocking window *longer*.
+
+**Not implemented. Consent correctness beats the render-blocking win.** A `preconnect` to
+`app.termly.io` ahead of the tag would shave connection setup without touching execution order
+or consent behaviour; it is outside the ruled scope and is offered, not taken.
+
+### A2 — the three orphans: two done, one stopped
+
+- **`/private-residence-reset/`** — done. One low-emphasis crawlable link in the footer utility
+  row plus a `sitemap.xml` entry. Deliberately **not** in `megaNav`: that export feeds the header
+  mega-panel *and* the footer link grid, and AGENTS.md §2 records this route as a "campaign page,
+  out of nav". Anchor text is `site.residenceOffer.name`, the label the page already renders.
+- **`/data-request/`** — done. `noindex, follow`. It renders "Request form not published in this
+  preview"; an unfinished compliance surface must not be indexable. The route still resolves and
+  the WordPress-era URL still works. Reversal condition recorded in AGENTS.md §2.
+- **`/sms-notification-consent/`** — **STOPPED. Not changed.** See the conflict below.
+
+### A2/A4 — `/sms-notification-consent/`: STOPPED on a conflict the rulings do not reach
+
+Three separate instructions land on this one file: A2's `noindex` flip, A4's move onto the
+shared `SeoHead` path, and A4's repointing of "both `/terms-and-conditions/` links". **All three
+require editing a page that AGENTS.md fences twice.**
+
+- §2: *"byte-preserved, under Twilio 10DLC carrier review — **DO NOT EDIT**"*
+- §6: *"Do not 'fix' that page. Exclude it from any font grep gate."*
+
+Three specifics make this more than a formality:
+
+1. **Both `/terms-and-conditions/` links in the entire repository are on this page**
+   (lines 87 and 137). There is no third instance, so A4's link repointing has no target that
+   is not this file.
+2. **Those two links are consent disclosures**, sitting inside the SMS opt-in block the carrier
+   reviews. They are the "View the Privacy Policy and Terms & Conditions" line — the thing a
+   10DLC reviewer checks. Editing them mid-review is a campaign risk, not a link fix.
+3. **A4 is not a small edit.** The page is a standalone `<!doctype html>` document that does not
+   use `BaseLayout`. Putting it on `SeoHead` means wrapping it in the layout and inheriting
+   `Header`, `Footer`, `StatusRibbon`, `MobileCTA` and `global.css` — a full rebuild of a
+   byte-preserved page, not a metadata addition.
+
+The ruling invited disagreement on the `noindex` merit. **The `noindex` is right on the merits** —
+it is an internal ops page and should not be indexed. The blocker is not the SEO judgement, it
+is the edit freeze, which the rulings do not address. **Both A2's sms half and all of A4 are
+deferred with a named closing condition: the Twilio 10DLC campaign review completes and the
+owner lifts the byte-preservation fence.** All four changes should then ship in one commit.
+
+Independent confirmation that the audit itself treated this page as untouchable: A5 asked for
+BreadcrumbList on "the 6 missing non-root routes". Nine routes lacked one. Six is the count you
+get after excluding `/` (root), `/404` (not a hierarchy position) **and this page**.
+
+### A3 — one business entity
+
+Before: an `Organization` at `/#organization` emitted on every route from `SeoHead`, plus a
+`LocalBusiness` at `/#business` hand-written on three routes in three mutually incomplete
+shapes — `/` had `geo` and a `PostalAddress` but no telephone, `/contact/` had telephone but no
+geo, `/about/` had a name and a founder link and nothing else. `Service.provider` split between
+the two ids depending on which file emitted the node.
+
+After: **one `LocalBusiness` at `/#business`, identical on all 36 layout routes** — `name`,
+`legalName`, `url`, `telephone`, `email`, `areaServed` (10-city `City[]`), `geo`, `openingHours`,
+`image`, `logo`, `founder`. Verified mechanically: one `@id`, one key set, 36 routes.
+`/#organization` is retired and has **zero** remaining references.
+
+Two notes worth keeping:
+
+- **The `PostalAddress` on `/` was a live rule violation**, not merely redundant. AGENTS.md §3:
+  "service-area business — no published street address, ever" and "never infer a physical office
+  from service-area coverage." It is removed, not relocated. `dist/` now contains zero.
+- **`openingHours` needed a machine-readable value.** `site.business.hours` is prose and is not a
+  valid `openingHours` value, so `site.business.hoursSchema` (`"Mo-Sa 07:00-19:00"`) was added
+  beside it rather than formatting a string inside the component — AGENTS.md §3 forbids
+  hardcoding a business fact in a component. The two must change together.
+
+### A5 — breadcrumbs, and a second URL for the homepage
+
+`BreadcrumbList` added to the six missing non-root routes: `/privacy/`, `/terms/`,
+`/cookie-policy/`, `/data-request/`, `/thank-you/`, `/request-assessment/`.
+
+The trailing-slash fix was the larger of the two. Every existing crumb used `site.urls.site` for
+the Home item — a bare origin, `https://aseptaclean.com`, while the homepage canonical says
+`https://aseptaclean.com/`. **34 routes were advertising two URLs for one page.**
+`site.urls.home` was added and now carries it; all 34 agree.
+
+**`/extreme-cleaning-san-jose/`'s missing hub tier — options reported, none invented.** Its
+parent `/specialty-cleaning/` is `noindex` because its cards name rodent and pigeon dropping
+cleanup. The page currently renders its group segment as plain text rather than a link, which
+is the correct behaviour for an indexable page under a gated hub and should not be "fixed" by
+linking it. The options, for an owner decision:
+
+1. **Two-tier crumb** — `Home / Extreme-Condition Cleaning`, dropping the group tier entirely on
+   this one route. Honest, and matches what the page renders today.
+2. **Reparent to `/services/`** — indexable, and already the site's one legitimate index hub.
+   Changes the information architecture for one route.
+3. **Leave as-is** — group segment present as unlinked text. Status quo; costs the crumb a level
+   of link equity but claims nothing false.
+4. **Ungate `/specialty-cleaning/`** — requires doc 27 §21's compliance release. Not available
+   inside this repository.
+
+No default was picked. Recorded as needing an owner ruling.
+
+### A6 — remaining technical
+
+- **S4** — `/private-residence-reset/`'s `Service.areaServed` was a bare string; now the 10-city
+  `City[]` every other Service node uses.
+- **S8** — `ItemList` on `/estate-cleanout-checklist/`, nested five sections × their items,
+  read from the same `checklist` object the page renders so markup cannot drift from copy.
+  **The audit's "26 items" is 5 section nodes + 21 item nodes**; the page has 21 checklist items
+  in 5 sections. The nested shape reconciles the count and preserves the grouping.
+- **a11** — three heading levels, element only, text unchanged: `CredentialBar` h4→h2 (four
+  cells), the homepage status card h4→h2, the service-page fit heading h3→h2 (with
+  `.ac-fit h3` renamed to `.ac-fit h2` so its margin and colour still land). All three sat
+  directly under an `<h1>` with nothing between, so each skipped one or two levels on every
+  route it appears on. **`<main>` on all 36 layout routes now has zero skipped levels.**
+  Computed styles are unchanged: the `.ac-type-*` role class outranks the bare element rule on
+  every visual property, and `h1,h2,h3` and `h4` set the same margin and colour. Verified, not
+  assumed — so no screenshots were required.
+- **I1** — the wordmark declared 180×28 and 160×25 against a real 900×215. CSS sizes it by
+  height with `width: auto`, so the browser reserved a box at the wrong ratio and reflowed on
+  decode — a header layout shift on every cold load, on every route. All three tags now declare
+  the intrinsic size. Settled rendering is unchanged.
+- **I3** — `loading="lazy"` + `decoding="async"` on the footer reversed wordmark, the last
+  eagerly-fetched image on an otherwise image-free site.
+- **C5** — `hero-variants.css` was shipping in production: `prune-dev-routes.mjs` deleted
+  `dist/dev/` but not the bundles Astro emitted for those routes. The script now sweeps
+  `dist/_astro` **by reference** rather than by filename, so a future dev route cannot
+  reintroduce the problem. It removes two orphans per build (`hero-variants`, `type-specimen`).
+- **C3 — partially resolved, and one attempt reverted.** `inlineStylesheets: "never"` collapsed
+  seven different head shapes into one: every route now links its stylesheets, none inlines.
+  **The residual is real and recorded:** Astro sequences a route's stylesheets by module-graph
+  depth, so `/private-residence-reset/`, `/request-assessment/`, `/data-request/`, `/thank-you/`
+  and `/senior-downsizing-san-jose/` still link their page-scoped CSS *before* the global bundle
+  while every other route links it after.
+  **`vite.build.cssCodeSplit: false` fixes it and was reverted.** It does make all 36 layout
+  routes identical — but Vite then links that single bundle into every emitted page, including
+  `/sms-notification-consent/`, arriving *after* that page's own `sms-consent.css` so the site's
+  global rules would restyle a page under active carrier review. Verified in `dist/`, then
+  reverted, with a do-not-re-add note in `astro.config.mjs`.
+  Practical impact of the residual is low — Astro's scoped styles carry a `data-astro-cid-*`
+  attribute and outrank unscoped global selectors regardless of order — but it is a real
+  inconsistency and it stays open rather than being called done.
+
+### A7 — internal linking
+
+- **Homepage → individual service pages.** `/` linked to two group hubs and to no individual
+  service page at all. It now also links `/property-cleanouts-san-jose/`,
+  `/hoarding-cleanup-san-jose/`, `/estate-cleanout-san-jose/`, `/debris-removal-san-jose/`,
+  `/deep-cleaning-san-jose/` and `/move-out-cleaning-san-jose/`. **No new copy**: every anchor is
+  a `megaNav` child label, already rendered sitewide in the header and footer, and the row
+  carries no heading because a heading would be a new string. The set is **filtered by each
+  page's own `indexable` field**, so a gated route cannot be linked from `/` by editing that
+  component — the eight currently-gated routes drop out automatically and will appear when their
+  gates clear.
+- **`/estate-cleanout-checklist/` into the footer.** doc 19 §2.1 lists it under "RESOURCES
+  (footer)" and §2's linking rules say "Checklist ← estate page + footer + every letter". The
+  estate-page link shipped with the 2026-08-20 launch; the footer half was the missing one.
+- **`/handoff-standard/` from `/estate-cleanout-san-jose/` and `/property-cleanouts-san-jose/`.**
+  Placed at the end of the "How this starts" rail — the four steps are the intake path, the five
+  stages are what the project runs under, so it needs no heading of its own. Anchor is
+  "The Handoff Standard", the §9.15.1 nav label already used in `megaNav` and on `/about/`.
+- **The Animal & organic homepage card stays unlinked.** Its three children are the §21 /
+  B&P §8550(a) set. `/extreme-cleaning-san-jose/` is indexable but sits under the same `noindex`
+  hub, so it has no linkable homepage tier — the same gap A5 reports above. Not invented.
+
+### B1 — five titles restored to doc 19 §2.2 verbatim
+
+`/` · `/estate-cleanout-san-jose/` · `/hoarding-cleanup-san-jose/` · `/debris-removal-san-jose/`
+· `/contact/`. Each divergence dropped "South Bay"; each is now §2.2's string exactly.
+
+**The count reconciles precisely.** Ten of §2.2's thirteen title specs diverged from the build.
+Six of those ten dropped "South Bay". Five of those six are on **indexable** routes — the sixth
+is `/rodent-dropping-cleanup-san-jose/`, which is `noindex`. "All five divergent titles, every
+one dropping South Bay" is the indexable set, and that is what was restored.
+
+**The other four divergences were left alone and are listed here so they are not mistaken for
+oversights** — none drops "South Bay", so none is in B1's scope:
+`/animal-waste-cleanup-san-jose/`, `/deep-cleaning-san-jose/`, `/about/`, `/handoff-standard/`.
+
+**B1 and B2 collide on exactly one title, and B2 won.** doc 19 §2.2 specifies
+`Service Areas | San Jose & Santa Clara County | Aseptaclean` for `/service-areas/`. Restoring
+it verbatim would reintroduce the exact string B2 strikes sitewide. **Not restored** — the
+shipped `South Bay & Peninsula Service Area | Aseptaclean` already carries the ruled NAP
+wording. §2.2's line is struck in place with the reason. **This is a conflict between two of
+the owner's own rulings and is flagged rather than resolved silently.**
+
+**Register P5's scope, corrected.** P5 was recorded closed 2026-08-19 as "doc 27 §19 homepage
+title reconciled". It reconciled §19 **to the code**, and §19 and doc 19 §2.2 specify *different
+strings* — so closing P5 never touched the divergence that mattered. Doc 19 owns titles by
+charter (rank 6; doc 27 owns page words, and a `<title>` is not page copy). §19 is now
+reconciled to §2.2, and the homepage meta description with it.
+
+### B2 — one service-area string, sitewide
+
+**`South Bay & Peninsula`. Ampersand, never "and". This is the NAP wording of record and must
+match GBP and Yelp character for character.**
+
+- `src/data/site.ts`: `serviceArea` now defaults to the ruled string and `regionLabel` is
+  **bound to the same variable**, so the two names cannot drift the way `serviceArea` and
+  `county` did. `.env.production` updated.
+- **`county` is deleted, not renamed.** It defaulted to "Santa Clara County" and had **zero
+  consumers in `src/`** — nothing ever rendered it. `PUBLIC_SERVICE_COUNTY` removed from
+  `.env.example` with it.
+- **All 33 "Santa Clara County" instances struck**, including the four on indexable service-page
+  meta descriptions (`/move-out-cleaning-san-jose/`, `/property-cleanouts-san-jose/`,
+  `/hoarding-cleanup-san-jose/`, `/estate-cleanout-san-jose/`). The claim contradicts a 10-city
+  footprint containing Atherton, which is in San Mateo County.
+- **The 14 service-page eyebrows** carried `· San Jose & the South Bay`, a *second* service-area
+  string on the most-repeated surface on the site. Now the single string. This is the largest
+  copy surface B2 touches and doc 19 §3.2 specified the old form — an explicit owner ruling is
+  rank 1 and outranks doc 19's rank 6, so §3.2's line is struck with that reason.
+- **The footer tagline** read "for San Jose and the South Bay & Peninsula" — naming the region
+  twice, in two shapes, in one sentence, on all 37 routes. Now "for the South Bay & Peninsula",
+  read from `site.location.serviceArea`.
+- doc 18 §7's credential-bar line is struck to match; the component already read the value.
+
+`dist/` contains **zero** "Santa Clara County", **zero** "and the South Bay", **zero**
+"South Bay and Peninsula".
+
+**One instance was deliberately NOT struck**: doc 19 §1.6's referral-letter targeting list
+("all Santa Clara County"). That states which counties to prospect for referral *partners*, not
+where Aseptaclean serves — an operational instruction no visitor reads. It is annotated in
+place, and separately flagged as probably stale, since §2.2's own city-page priority names
+Palo Alto, Atherton and Los Altos Hills as the densest fiduciary referral market and two of the
+three are outside the county. Widening ring A is a business decision the owner has not made.
+
+### B3 — the $195 assessment fee, propagated
+
+**Claims-check run first, as directed. Result: PASS, no violations.** The fee is the one price
+figure doc 21 §8 permits ("No price figure other than the $195 assessment fee"), AGENTS.md §4
+is an explicit owner decision that it stays published, and doc 19 §3.2 puts it in the
+service-page template's PRICING HONESTY row. Both figure and terms read from `src/data/site.ts`,
+so nothing was retyped and no new claim was introduced.
+
+**Cause of the gap:** the 2026-08-18 visual port merged `ServicePricing`'s drivers into the
+"What moves the number" overlay card but did not carry the fee across. The drivers shipped with
+no number attached, so the one block telling a reader what moves the price never said what
+anything costs. `/senior-downsizing-san-jose/` (excluded from that port) and
+`/private-residence-reset/` kept theirs, which is why it stayed invisible.
+
+**Count note.** The ruling says 8 service pages. The fix is one edit to `ServicePageLayout`,
+which serves **14** — the 7 indexable ones plus the 7 gated drafts, which carry it uniformly and
+harmlessly. Whichever 8 the audit meant are covered.
+
+### C — declined, recorded with reasons, not implemented
+
+| # | Finding | Why declined |
+| --- | --- | --- |
+| b3 | Homepage primary term absent from H1 and first 100 words | Doc 27 §30's H1s and declarative H2s are the brand voice. |
+| b4 | No primary term in any subheading on 23 of 25 routes | Term placement in subheadings is not worth a voice change across 23 routes. |
+| b5 | `/faq/` never states "frequently asked questions" outside the title | Same. The title carries it; the page speaks in the brand's voice. |
+
+All three are real observations and all three are **declined on voice grounds, not disputed on
+facts.** Recorded so a later pass does not re-raise them as new findings.
+
+### Register
+
+Three rows added, two corrected.
+
+| # | State |
+| --- | --- |
+| P1 | Open — delete-or-write on `/senior-downsizing-san-jose/`. Also carries row 9's index status. Retires five components. |
+| P2 | Open — structural crawl path. **Scope corrected 2026-08-20:** 25 indexable sources / 7 gated routes receiving links / 4 receiving zero as audited; 24 / 7 / 5 as built after `/data-request/` went `noindex`. Not "all 21 into all 11" — that implied a uniform grid, and a third of the gated set is already unreachable from the indexable set. Needs its own session on nav architecture. |
+| P3 | Open — server/client error-string divergence. |
+| P4 | ✅ Closed 2026-08-19. |
+| P5 | ✅ Closed 2026-08-19 — **scope corrected 2026-08-20.** It reconciled doc 27 §19 to the code; doc 19 §2.2 specifies a different string and owns titles by charter. The homepage title divergence P5 appeared to close was closed by B1, not by P5. |
+| P6 | Open — homepage states the uncertain-items commitment two ways. |
+| P7 | Open — doc 27 §16 city presentation vs built grouping. |
+| P8 | Open — `REPO-STATE.md` sections 2–10 stale; row 10 of its route table newly so, deliberately. |
+| P9 | Open on **two** conditions: **A** owner confirms crew capacity per service (rows 1–4) · **B** five §21 inputs on record, row 8 after 5–7 (rows 5–8). **C ✅ closed 2026-08-20.** |
+| P10 | Open — dead `navigation` export, deliberately left in place. |
+| **P11** | **New (audit A8).** Service-page bodies are ~49% identical boilerplate — **288 8-gram shingles common to all seven** indexable service pages. Needs the doc 27 §12–14 differentiation rewrite. **The highest-value open copy item on the site**, and squarely a copy-authority job, not an SEO one. Closes when §12–14 carry per-service bodies that survive a shingle re-run. |
+| **P12** | **New (audit b8/b11).** `/handoff-standard/`, `/about/`, `/detailed-cleaning/` and `/property-clearing/` have **no extractable factual block**, and whole-card anchors swallow placeholder slot labels into link text — a card's accessible name currently includes "Photo slot 2000 × 1100". A7's homepage service links were placed *outside* the tile anchor for exactly this reason rather than nesting an `<a>` in an `<a>`. Closes when the card anchor is restructured to wrap the title rather than the card, and the four pages carry an extractable block. |
+| **P13** | **New (audit c4).** Two states that were never registered: `/data-request/`'s unfinished "not published in this preview" render, and `/private-residence-reset/`'s orphan status. **The orphan half is closed by this pass** (footer link + sitemap entry). The `/data-request/` half stays open and closes with release-checklist C8 — wire the DSAR provider, then flip `noindex` and add the sitemap entry together. |
+| **P18** | **New 2026-08-20 (spacing audit), owner ruling — leave in place, do not delete yet.** `.route-shell` in `src/styles/global.css` and the whole of `src/components/ServiceChecklist.astro` are **dead**: referenced by nothing in `src/`, present on no built route. Both carry 96px (`--ac-space-7`) and 72px (`--ac-space-8`) values that **would violate internal ≤ external the moment they were wired**, since the section rhythm around them is 68px. `.route-shell` also carries a viewport-coupled `min-height: 55vh`, the same pattern corrected on `/privacy/` and `/data-request/` in this pass. Registered so the values are not inherited unexamined by whoever wires them. **Closes when someone decides delete-or-wire** — if wired, the padding comes to the scale first. |
+
+---
+
+## 2026-08-20 — Sitewide spacing audit and correction
+
+**Committed separately from this document**, per the owner's instruction. Source commit:
+"Restore sitewide section spacing to the mockup scale" (11 files, `src/` only).
+
+### What changed
+
+`main > section { padding-block: clamp(3.5rem, 7vw, 6rem) }` survived the 2026-08-18 mockup
+port. Class selectors outrank it, so `.ac-sec` sections were already correct at 68px/60px and
+the bug was invisible there — it landed only on sections *without* `.ac-sec`, which kept the
+pre-port 96px. That included the five wrappers the mockups give **zero** section padding
+(`.hero`, `.ac-cred`, `.ac-band`, `.ac-photoband`, `.ac-fit`), each of which already carries
+its own inner-shell rhythm and was therefore double-padded.
+
+Measured on computed styles in `dist/` across the 25 indexable routes at 1440×900 and 390×844,
+against the same measurement taken on `docs/mockups/*.html` (measured, not hand-read):
+
+| | before | after |
+| --- | --- | --- |
+| diverged section-instances | 138 / 288 | 28 / 288 |
+| wasted vertical pixels (both viewports) | 15,746.8 | 3,840 |
+| uniform empty vertical gaps > 130px | 282 | 193 |
+
+Every remaining divergence is either the build being **tighter** than the mockup and
+deliberate, or `/sms-notification-consent/`. The 3,840px residual is entirely the four 480px
+Termly/DSAR embed reservations, which fill in production.
+
+### Conflicts resolved
+
+**1. Owner's mockup-authority instruction (rank 1) vs `docs/18-VISUAL-DIRECTION.md` §4
+(rank 5).** Doc 18 §4 requires adjacent sections to differ in vertical padding by ≥1.5× or be
+exactly 1.0×, and its checklist fails "any two adjacent sections sharing container width *and*
+vertical padding." After this pass `/about/` has four consecutive 68px sections in the same
+1200px shell, which fails that checklist. **The mockups themselves do this** — the homepage
+mockup runs two adjacent `.sec--tight` sections at identical padding and width. The owner
+instruction naming `docs/mockups/*.html` as pixel authority is rank 1 and wins. Doc 18 §4 is
+**RULED 2026-08-20 — doc 18 amended, not left failing.** New `docs/18-VISUAL-DIRECTION.md`
+§4.1 permits uniform section rhythm wherever the approved mockups specify it, and records
+`/about/`'s four consecutive 68px sections as **compliant under the amendment**. The retained-
+items bullet and the §9 failure-audit line in doc 18 are struck-and-replaced in place; the
+originating rule in `docs/11-COMPOSITION-AND-TYPE.md` §4 and its own §9 checklist line carry
+the same amendment pointing at 18 §4.1 as operative. The 1.5× ratio continues to govern rhythm
+choices the mockups do not settle. Also noted while amending doc 11 §4: its `--ac-rhythm-*`
+token table is historical — those five tokens have no consumer on any indexable route.
+
+**2. "All spacing values must be multiples of 8" vs the mockup values.** The instruction set
+contains both rules, and they contradict: `.sec` 68px, mobile `.sec` 60px, `.hero` 86px,
+`.fit` 34/36px, `.cred` 24/18px, `.band` mobile 22px, `.ph` 66/62/44px, `.pgh` 42/44px and
+`.fieldwrap` 68px are all mockup values that are not multiples of 8. Raised for ruling rather
+than resolved in the build.
+
+**RULED 2026-08-20 — mockups win; the restoration was correct.** `docs/mockups/*.html` is now
+the named section-rhythm authority, and the ×8 grid is **a preference for new values only, not
+a constraint on ratified ones.** Rationale recorded in `docs/18-VISUAL-DIRECTION.md` §4.1: the
+grid exists to remove arbitrary choices from *undecided* spacing; once a value is decided and
+ratified in an approved mockup the grid has no remaining work to do on it, and rounding 68 to
+72 would trade a specified value for an unspecified one to satisfy a rule whose only purpose
+was to prevent unspecified values. Values introduced by this pass are all on the 8 scale
+(0, 24, 40, 48, 64, 480); values traced to a mockup stand at their mockup figure.
+
+**3. `.sec--tight` renders looser on mobile than on desktop.** In every mockup,
+`@media(max-width:760px) .sec{padding:60px 0}` is declared *after* `.sec--tight{padding:48px 0}`
+at equal specificity and captures it, so tight sections rendered **60px at 390px against 48px
+at 1440px** — the loosest thing on the page, for the one variant that exists to be tighter.
+The build reproduced it faithfully. Raised for ruling.
+
+**RULED 2026-08-20 — overruled, do not reproduce. Logged as a mockup defect corrected, not as
+a build divergence.** This is a media-query ordering bug, not a decision. The build is now
+**48px desktop / 40px mobile** (`.ac-sec--tight`, with the mobile step placed after `.ac-sec`
+inside the 760px block so source order resolves it correctly). **All twelve files in
+`docs/mockups/` were corrected in the same change** — `.sec--tight{padding:40px 0}` added after
+`.sec{padding:60px 0}` in each `@media(max-width:760px)` block, with an inline note — so the
+bug is not re-taught to whoever next reads them as authority. Verified after the fix: build and
+corrected mockups both measure 48/48 at 1440 and 40/40 at 390. Sitewide gaps over 130px fell
+193 → 179; divergence count and wasted-pixel total unchanged.
+
+### What I did not do, and why
+
+- **`/sms-notification-consent/` untouched.** Byte-preserved under Twilio 10DLC carrier review
+  (AGENTS.md §6). It accounts for 11 of the 28 remaining divergences and has no `<main>`, so
+  its wrappers are measured off `<body>`. Excluded by rule, not by oversight.
+- **Deliberate zero-top-padding retained** on `.services-up` (`/service-areas/`) and
+  `.checklist-footer-note` (`/estate-cleanout-checklist/`): both continue the same background
+  surface as the section above, so a top pad would draw a seam that is not there. Same for
+  `.checklist-print-actions` (32/0), a print utility bar with no mockup counterpart.
+- **Intra-section column slack not touched.** The 130–250px gaps remaining on `/about/` and
+  `/request-assessment/` are two-column grids whose shorter column ends early — a layout
+  characteristic the mockups share, not a padding value. Fixing it means changing grid
+  alignment, which is outside a spacing correction.
+- **Empty photo-slot bands left alone.** The 248–325px bands inside `.ac-photoband` are
+  unfilled proof slots. AGENTS.md §0.3: the slot ships empty. Not a spacing defect.
+- **Dead spacing declarations left in place** — `.route-shell` in `global.css` and all of
+  `ServiceChecklist.astro`, referenced by nothing in `src/` and present on no built route, both
+  carrying 96px/72px values that would violate internal ≤ external if wired. **RULED
+  2026-08-20: leave in place, registered as P18**, closes when someone decides delete-or-wire.
+
+### Owner constraint 2026-08-20 — homepage hero fits 1440×900
+
+**Met by the mockup values alone.** Removing the stray 96px took the lowest hero ink from
+993.7px to 897.7px against a 900px fold. All eight required elements — eyebrow, H1, lead,
+pledge, both CTAs, trust chips, status card — sit above the fold with 93.8px headroom. The
+escalation path the owner authorised (reduce hero padding, then the H1 clamp maximum) was
+**not needed and not used**, so the 1.9:1 H1:body floor was never approached. Note for the
+record: the Termly consent banner overlays the lowest ~140px on a first visit until dismissed;
+that is an overlay, not layout.
+
+### Gates
+
+| Gate | Verdict |
+| --- | --- |
+| Type law rule 1 (no font-size on a heading) | **PASS** — cross-reference method: 227 sized classes in `src/` × 35 classes on `<h1>`–`<h6>` in `dist/`; intersection is 17 `.ac-type-*` role classes and nothing else. No bare heading selector, no inline size. |
+| Type law rule 2 (≥1.9:1 at every width) | **PASS** — 37/37 built routes, nine widths 320–1920. Worst 1.900:1 at 320px on the 13 band-header routes, identical to the 2026-08-18 baseline. No type token was touched. |
+| `qa:gate6` | **PASS**, and trustworthy: `extracted 174`, delta **0** against the recorded baseline. No canon document was edited this session, so predicted delta was zero and actual matched. |
+| `npm run build` | **PASS** — env validation + 39 pages. Also verified standalone: the commit's content was built in an isolated worktree at HEAD + these hunks only. |
+
+### Rule worked around
+
+None. One process note: the working tree held a concurrent editing pass (~30 `src/` and 6
+`docs/` files, modified 06:21–07:18 while this audit ran) interleaved with these changes in 10
+of the 11 files. On the owner's instruction the commit was assembled as HEAD + spacing hunks
+only and the parallel work left uncommitted and untouched, rather than bundling unreviewed
+changes under a spacing message.
+
+---
+
+## Doc 27 §1, §7, §8 shipped; §§2–6 withheld; commercial door reported (2026-08-20)
+
+Owner-approved amendment: `docs/27-CONVERSION-REWRITE.md` sections **1, 7 and 8 only**.
+Sections 2–6 (the estate, hoarding, property-cleanouts, move-out and deep-cleaning page
+openings) are **not authorized** and were not touched — no service-page body was rewritten, no
+H1 changed, no doc 19 title touched, and the NAP wording that shipped earlier today
+(`doc27CompanyPages.ts`, "South Bay & Peninsula") was not altered.
+
+### 1. The fee ruling was already the adopted one
+
+Owner ruling: photo review is free; the $195 applies only when an on-site walkthrough is
+required. **Checked before shipping, not assumed** — this reproduces row 3 of the migrated `07`
+§3 table above ("Free on-site assessment → Photo review free; on-site $195, credited within 7
+days | Adopted"). §7's wording states that fact without using "free assessment" or "free
+consultation", so `AGENTS.md` §7's standing prohibition is intact. Nothing needed escalation.
+
+### 2. Conflicts resolved, and against what
+
+| Conflict | Resolution |
+| --- | --- |
+| §1 inserts a section into the FINAL-v2 homepage order `index.astro` records as ported verbatim | Owner decision (rank 1) beats FINAL-v2 (rank 9) and doc 18's section map (rank 5). Shipped. |
+| §8 requires "Text a photo" everywhere the primary appears; a logged decision split the secondary CTA (Hero = text, Final CTA = call) | Owner decision (rank 1) beats the logged design decision. Both doors now ship — §8 adds one, it does not close the call link. |
+| §7's paragraph omits the credit term, which is a rank-1 adopted fact and a business fact in `AGENTS.md` §3 | Kept the credit as its own adjacent string wherever it was already its own element. Deleting an owner-adopted term is a larger unauthorized act than keeping one §7 is merely silent on. **One exception in §4 below.** |
+| §9.15.1's service-page form-callout body says the same thing as §8's "what happens next" | §8 supersedes. §9.15.1 body struck with reason; heading not struck (§8's paragraph opens with it). |
+| Doc 27 §9.13 form body and §18 submission clarification are superseded by §8 | Both struck at source in `27-COPY-CANONICAL.md` with inline reasons. Doc 21 §6's assessment disclaimer is a **rank-2** requirement, was not touched, and still ships — §8's line is reassurance, not the legal clause. |
+
+### 3. The commercial door was reported, not linked
+
+`/commercial-cleaning-san-jose/` ships `indexable: false`. `/` is indexable, so linking door six
+would open an indexable→noindex crawl path — register **P2**, release-checklist **C10**, the
+same path `ServiceCards.astro` already refuses to open for the Animal & organic card. Per the
+owner's instruction to report before linking, **five doors ship and the sixth does not render.**
+
+The mechanism matters more than the omission: `RoutingDoors.astro` filters on each page's own
+`indexable` flag, so the door cannot be linked by editing a copy file, and it starts rendering
+on its own the day the gate clears. The row is struck in the canon **only** so gate 6 reports it
+`struck` rather than `absent`; it is held, not rejected, and `homepage.routingDoors` still
+carries all six verbatim. **Owner: rule on whether commercial should be linked.**
+
+### 4. Open item for the owner — the credit term on one FAQ answer
+
+In `servicePages.ts` ("How much does this cost?") the credit sat inside the same sentence as the
+figure, so replacing that sentence with §7 removes it **on that one surface**. It was not
+re-appended, because appending to owner-approved copy is a rewrite. Every other fee surface kept
+it. **Owner: confirm whether the credit should follow §7 onto that answer.**
+
+### 5. A pre-existing defect this work surfaced — the fee was invisible on 14 routes
+
+`.ac-rec__fee b { color: #fff }` in `ServicePageLayout.astro`, against `.ac-rec`'s
+`background: #fff`. The B3 fee block was styled for a dark band and rendered in a white overlay
+card, so **"$195 on-site assessment" was white-on-white on all 14 service pages**, with the
+credit line at `#b9c6d6` barely above it. This was uncommitted working-tree work predating this
+session, not a committed regression, and it went unnoticed because the hidden string was short.
+§7's paragraph turned the same bug into a blank half-card, which is how it was caught — in a
+1440px screenshot, not by any grep. Corrected to light-surface tokens. **A copy gate cannot see
+this class of defect: gate 6 confirms a string is in the DOM, not that a human can read it.**
+
+### 6. Not done, and why
+
+- **§§2–6 not appended to the canon.** Appending copy to
+  `27-SECTION-9-15-CONNECTIVE-COPY.md` is what puts it under gate 6, so pasting unapproved
+  sections there would convert them into an enforced requirement to ship.
+- **`/sms-notification-consent/` untouched.** Byte-preserved under active Twilio 10DLC carrier
+  review (`AGENTS.md` §2, §6). It is the one route with no "Text a photo" and that is correct.
+- **`/request-assessment/`'s "Desired investment range" select still publishes `$2,000–$3,499`
+  and higher bands.** A price figure other than the $195 fee, against doc 21 §8 and
+  `AGENTS.md` §4. Pre-existing, present at HEAD, outside this amendment's scope — **flagged,
+  not fixed.**
+- **Register P2 not narrowed.** The global nav and footer still link every service page from
+  every page; `/`'s three links to `/commercial-cleaning-san-jose/` are nav and footer links
+  that predate this work. Still C10, still requires a nav change rather than a link edit.
+
+### 7. Evidence
+
+Build passes. **37 routes, route set byte-identical to baseline.** Sitemap unchanged at 23 URLs.
+Gate 6 **PASS — 0 absent** (182 extracted, up from 174; 12 struck), re-run after reconciling the
+extraction at source in both canon documents. `astro check`: 0 errors, 0 warnings. Zero "Get an
+Estimate" in `dist/` — the string has never shipped. Zero placeholders. Banned-vocabulary sweep:
+every hit is a negation or disclaimer, the one legitimate use. Typography laws verified on
+computed styles at both widths — no `font-size` resolving onto any heading, H1:body 2.5:1 and
+3.7:1 on `/`, 2.2:1 and 3.1:1 on the service page, all above the 1.9:1 floor; no horizontal
+overflow at 390 or 1440.
+
+---
+
+## Current-build documentation audit (2026-08-21)
+
+Audit-only session. No website implementation, route, copy, style, function, configuration,
+or existing source document was changed. Added the four owner-requested root audit files:
+
+- `CURRENT-BUILD-AUDIT.md`
+- `CURRENT-DESIGN-SYSTEM.md`
+- `CURRENT-WEBSITE-COPY.md`
+- `CURRENT-SITE-MAP.md`
+
+The copy inventory was extracted mechanically from a fresh production-mode build and contains
+all 37 deployable HTML routes, global shell copy, form choices/placeholders, image alt text,
+titles, descriptions, and source mappings. The other three files document the route/template
+graph, 38-component inventory (33 used, 5 apparently dead), implemented tokens and computed
+responsive behavior, SEO/schema/index state, asset inventory, accessibility implementation,
+and strategy-versus-build comparison.
+
+### Conflicts/findings recorded, not resolved
+
+1. Seven gated shared-template service pages render a visible pink `LAUNCH GATE — not for
+   publication` banner containing internal capacity or compliance instructions. The class is
+   styled visibly; this is not a hidden comment.
+2. The Private Residence Reset assessment variant enables three public investment ranges
+   (`$2,000–$3,499`, `$3,500–$5,999`, `$6,000+`), conflicting with AGENTS §4's rule that the
+   $195 assessment is the only published figure.
+3. `wrangler.toml` sets `PUBLIC_SERVICE_AREA = "San Jose and the South Bay"`, conflicting with
+   the current `site.ts` default and rank-1 business fact `South Bay & Peninsula`.
+4. The shared build is Inter-only while AGENTS §6 still declares Newsreader + Inter + IBM Plex
+   Mono. Newsreader and IBM Plex Mono remain installed but unused.
+5. `/private-residence-reset/` publicly uses `Assess → Define → Reset → Verify → Maintain`,
+   conflicting with the standing mechanism-name prohibition.
+6. The current build has no service×city generator or city detail route; only the service-area
+   hub, ten-city shared data, and `areaServed` schema exist. This is correctly gated by doc 19,
+   not treated as a code defect.
+
+### What was deliberately not done
+
+- No finding was fixed, because the owner requested an audit before redesign, rewrite, or
+  refactor.
+- `/sms-notification-consent/` was read and documented but not edited; its carrier-review fence
+  remains intact.
+- `functions/api/lead.ts` was not touched.
+- Existing dirty-worktree changes were preserved.
+
+### Evidence
+
+- `npm run build:local`: PASS; Astro emitted 39 pages, the production prune removed two dev
+  routes/assets, leaving 37 HTML pages.
+- Rendered all 37 pages to inventory titles, descriptions, canonicals, robots, H1s, headings,
+  sections, schema types, links, CTAs, images, and forms.
+- Computed representative layouts at 390px and 768px; document scroll width equaled viewport
+  width. The only off-viewport geometry was the intentionally translated closed drawer.
+- `npm run check`: 0 errors, four hints.
+- `npm run qa:phase4:static`: expectedly failed its private-preview robots assertion because
+  the audit used a production-mode build, whose robots policy is `Allow: /`.
+
+---
+
+## Three data-driven city hubs built as gated drafts (2026-08-21)
+
+Built the owner-requested city hubs at `/service-areas/mountain-view/`,
+`/service-areas/sunnyvale/`, and `/service-areas/campbell/` from one static Astro route and
+shared data. Each page carries the approved H1, title, meta description, city intro, sourced
+local planning notes, featured Hoarding Cleanup and Estate Cleanout, future detailed/specialty
+service structure, the existing assessment form, closing CTA, and visible/schema breadcrumbs.
+
+### Conflicts and resolutions
+
+| Conflict | Resolution |
+| --- | --- |
+| The explicit build request and `city-pages-part2-UPDATED.md` require these routes, while doc 19/AGENTS retain a completed-job/availability location-page gate and the copy package still shows city availability unchecked. | Built complete routes but set each to `noindex, follow` and kept all three out of `sitemap.xml`. No availability or completed-job claim was introduced. |
+| The updated link map requires `/service-areas/` to link to all three hubs, while the crawl-path register warns about indexable→noindex links. | Added the three specifically required contextual links to the service-area directory and recorded the deliberate gated path here. No footer or global-nav links were added. |
+| The Mountain View neighborhood strip is approved only subject to verification. | Omitted it entirely. No neighborhood names render on any city hub. |
+| The schema build spec names the provider as a single existing LocalBusiness; the current SEO system's canonical entity id is `/#business`, not the copy package's illustrative `/#localbusiness`. | Reused `SeoHead` and its existing `/#business` node. City hubs add `CollectionPage` and `BreadcrumbList` only; no per-city business or address was created. |
+
+### Implementation and fact discipline
+
+- Added `src/data/cityFacts.ts`: one sourced record per regulatory/provider fact, with
+  `verifiedAt`, `reviewAfter`, source name/type, and official source URL. Facts were rechecked
+  against the City of Mountain View, City of Sunnyvale, City of Campbell, and West Valley
+  Collection & Recycling sources on 2026-08-21.
+- Added `src/data/cityHubPages.ts`: three page records, shared featured-service copy, unique SEO,
+  intros, future-service copy, and explicit `draft-noindex` status.
+- Added one generator at `src/pages/service-areas/[city]/index.astro`; no hardcoded city route
+  directories or service×city child routes were created.
+- Updated `/service-areas/` to read its city links from the same data as the generator, removing
+  the stale empty-state wording that claimed no city route existed.
+
+### Deliberately not done
+
+- No neighborhood strip; none of the supplied neighborhood names was independently verified.
+- No `/service-areas/{city}/{service}/` routes. This request was limited to the three city hubs.
+- No sitemap entries or index flips until the owner confirms availability and the remaining
+  location-page gate is cleared.
+- No per-city `LocalBusiness`, address, office, review, proof image, or completed-project claim.
+- `functions/api/lead.ts` and `/sms-notification-consent/` were untouched.
+
+### Evidence
+
+- `npm run check`: PASS — 0 errors; four pre-existing hints.
+- `npm run build`: PASS — production environment validation passed; all three routes emitted;
+  42 Astro pages before the normal two-route dev prune.
+- Built-output checks: unique canonical per route; `noindex, follow`; `CollectionPage` and
+  `BreadcrumbList`; form and closing CTA present; city routes absent from `sitemap.xml`; no
+  `/#localbusiness` or city business entity emitted.
+- Headless Chrome at 390×844: all three returned 200; scroll width 390px; one visible H1; H1/body
+  ratio exactly 1.9:1; assessment form and closing CTA visible; two linked breadcrumb ancestors;
+  zero page or console errors with third-party requests blocked.
+
+---
+
+## Six service×city pages built as gated drafts (2026-08-21)
+
+Built `/service-areas/{mountain-view,sunnyvale,campbell}/{hoarding-cleanup,estate-cleanout}/`
+from one Astro generator and three separated data records, using `docs/city-service-data-UPDATED.md`
+and `docs/city-pages-part2-UPDATED.md` as the copy source. Each page carries breadcrumbs, the
+approved H1/title/meta, the shared service opening, the container-coordination policy, scope and
+fit, the sourced local planning notes, the "what this changes here" implications, the four-step
+process, three city-specific FAQs, sibling/parent/city-hub links, and the assessment CTA.
+
+### Conflicts and resolutions
+
+| Conflict | Resolution |
+| --- | --- |
+| The build request and the copy package require six routes, while `AGENTS.md` §2 keeps a completed-job gate on city pages, `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §7 makes a location page a licensing decision first, and the copy package's own city-availability checkbox is still open. | Built complete routes at `publishStatus: "draft-noindex"` — `noindex, follow`, outside `sitemap.xml`. No availability, completed-job, or experience claim was introduced. Same posture as the three city hubs. |
+| The schema spec names `provider` as `https://aseptaclean.com/#localbusiness`; this repository's single business entity is `/#business`, emitted by `SeoHead` on every route. | Used `/#business`. No per-city `LocalBusiness` and no address. The copy package's id is illustrative. |
+| Link map B1 puts "Also serving" blocks on `/hoarding-cleanup-san-jose/` and `/estate-cleanout-san-jose/`, which are two of the site's most valuable indexable routes. | **Deferred, not built.** Adding them now would open six new indexable→`noindex` crawl paths (register P2 / release-checklist C10) to pages that cannot be indexed yet, and no canon document supplies the "Also serving" heading string. Inbound linking is satisfied contextually from each page's own city hub instead. Build these blocks in the same change that flips the six pages to `index`. **[SUPERSEDED 2026-08-21 by owner ruling — the blocks are built and remain in place while the city pages are `noindex`. See "Owner ruling: the 'Also serving' blocks stay while the city pages are noindex (2026-08-21)" at the end of this log. Do not act on the deferral above.]** |
+| The city hub's featured cards linked straight to the San Jose parent service pages, skipping the middle tier the hub's own breadcrumb advertises. | Repointed each card to that city's service page, which carries the parent link onward. `parentHref` is retained on the record as the fallback if a service is ever withdrawn from a city. |
+| Three approved implications assert a housing-composition premise ("much of the city's housing is multifamily", the Campbell Housing Element sentence) that no `CityFact` record can support and no verified source URL exists for. | Rendered the approved copy unedited and flagged it in data instead: `ServiceCityImplication.ownerReviewNote`, never rendered. **Open — see below.** |
+
+### Fact / implication separation
+
+- `src/data/cityFacts.ts` holds verified facts only, and gained `ServiceSlug` plus an optional
+  `appliesTo` guard so a service-scoped rule can never render on the other service. No current
+  record narrows — every fact is a container, right-of-way, or street-access rule bearing on both
+  services — so the guard is a mechanism, not an active filter.
+- `src/data/serviceCityImplications.ts` (new) holds the eighteen operational conclusions. Each
+  declares `basis`: `"city-fact"` with non-empty `factIds`, or `"operating-model"` with none, for
+  the three authority implications that derive from the confirmed operating model rather than any
+  city publication. There is no third case.
+- `src/data/serviceCityPages.ts` (new) holds the join only — SEO identity, shared openings, the
+  eighteen FAQs, the coordination policy. Scope and fit are read from the parent San Jose service
+  record rather than re-authored, per the package's Part E inventory.
+- One generator at `src/pages/service-areas/[city]/[service].astro`. No duplicated route files.
+
+### Open — carry into the publish gate
+
+- **Housing-composition premise, three implications.** `mv-estate-access-authority`,
+  `sunnyvale-estate-access-authority`, `sunnyvale-hoarding-private-staging`, and
+  `campbell-estate-private-staging` assert a housing mix with no sourced record. Before any of
+  these pages ships `index`, either add a sourced housing `CityFact` (Census/ACS or the city's
+  Housing Element) or have the owner strike the premise sentence. Rewriting owner-approved copy
+  to dodge the gap was not taken as this session's call.
+  **[CLOSED 2026-08-21 by owner ruling — the premises are struck and one sourced Census housing
+  fact was added. Two further claims in the hub intros were found and fixed in the same pass. See
+  "The four unsourced housing-composition claims are struck" at the end of this log.]**
+- **`AGENTS.md` §2's route inventory is now stale by nine routes** (three hubs from 2026-08-21,
+  six added here). That section forbids hand-editing and requires regeneration from a fresh
+  build; the build now emits 46 HTML pages. Flagged, not edited.
+  **[CLOSED 2026-08-21 — §2 was regenerated from a fresh build and gained §2.1. See "The
+  completed-job prerequisite for city pages is superseded" at the end of this log.]**
+
+### Deliberately not done
+
+- No sitemap entries, no `index` flip, no owner-availability claim.
+- No "Also serving" blocks on the two parent service pages (see the table above).
+  **[SUPERSEDED 2026-08-21 — the blocks were subsequently built and are owner-approved to stay.
+  See the closing entry of this log.]**
+- No neighborhood strip — none of the supplied names is independently verified.
+- No per-city `LocalBusiness`, address, review, rating, project count, or proof image.
+- No price figure; the assessment-fee block is not rendered on these pages at all.
+- No footer or global-nav links to the six routes.
+- `functions/api/lead.ts` and `/sms-notification-consent/` untouched.
+
+### Evidence
+
+- `npm run check`: PASS — 0 errors, the same four pre-existing hints.
+- `npm run build`: PASS — production env validation passed; 48 pages before the dev prune, 46
+  emitted; all six routes present.
+- Built output: unique title/canonical/H1 per route; `noindex, follow` on all six; one
+  `LocalBusiness` node per page at `/#business`; `Service` + `BreadcrumbList` (4 levels) +
+  `FAQPage`; all 18 FAQ questions and answers verbatim in the DOM; six routes absent from
+  `sitemap.xml`.
+- Copy guards: zero matches for the experience-claim list, zero hauling constructions, zero `$`
+  figures. Every hit for `remediat`, `habitab`, `clearance`, `licensed` is the mandated negation
+  clause in the boundaries panel or the sitewide footer — permitted per doc 21 §2.2.
+- Headless Chrome at 390px and 1440px: all six returned 200; one H1 each; H1:body 1.90:1 at 390px
+  and 2.60:1 at 1440px; document scroll width equal to viewport; zero page errors.
+- Route audit: no `_redirects` collision (the bare `/mountain-view/` sources are distinct paths);
+  no orphans; each page receives links only from its own `noindex` hub and `noindex` sibling, so
+  **zero new indexable→`noindex` crawl paths were created**.
+
+---
+
+## The city-page indexation system closed: three publication states, a derived sitemap, and a build-time guard (2026-08-21)
+
+**Trigger.** The nine city routes shipped complete and gated on 2026-08-21, with their
+indexation posture held in a two-value `publishStatus` field, their absence from `sitemap.xml`
+maintained by hand, and the eleven build guards of
+`docs/city-pages-part2-UPDATED.md` D3 existing only as prose. This session closed all three
+gaps. **No page copy was written, edited, or removed.** The nine routes render exactly the same
+words they did before this change.
+
+### Ruling 1 — the middle rung was doing two jobs, so it became two rungs
+
+`draft-noindex` conflated *not finished* with *finished but gated*. Those are different
+decisions with different correct behaviors, and the old field could not tell them apart.
+`src/data/publication.ts` (new) replaces it with three states:
+
+| State | Route built? | robots | In sitemap? | Meaning |
+| --- | --- | --- | --- | --- |
+| `draft` | **No** | — | No | Copy unfinished or unapproved. The page does not exist; nothing may link to it. |
+| `noindex` | Yes | `noindex, follow` | No | Finished, reachable, withheld from the index behind a gate. |
+| `published-index` | Yes | `index, follow` | **Yes** | Live. |
+
+All nine records moved `draft-noindex` → `noindex`, which is the same rendered output they had
+before — the copy is finished and the pages are meant to be readable. Nothing was set to
+`draft`, and nothing was published.
+
+`draft` is load-bearing rather than decorative: `getStaticPaths` on both generators filters to
+built records, and every link helper (`cityHubLinks`, `getCityServiceLinks`,
+`getServiceCityLinks`, `getSiblingServiceCityPage`, the new `getBuiltServiceCityPage`) filters
+the same way, so dropping a record to `draft` withdraws its route *and* every link into it in
+one edit. A city page is additionally gated on its hub being built, because two of its required
+links and breadcrumb position 3 point at the hub — a child that outlives its parent publishes
+two links into a 404. Verified end-to-end: with one record at `draft`, the hub card fell back to
+the parent service page, the sibling link disappeared, and the parent's "also serving" list lost
+that city, all without a hand edit.
+
+### Ruling 2 — the sitemap derives the nine city routes instead of listing them
+
+`src/pages/sitemap.xml.ts` is a hand-maintained allowlist, and that is exactly how a noindex
+page reaches a sitemap: the entry is added in one change and the robots flip happens in another.
+The nine city routes are now derived from `publishStatus` via `indexableOnly()`, so one field
+decides both. The remaining routes stay hand-listed — that allowlist is a decision, not an
+oversight, and this session did not touch it.
+
+Today the derived set is empty, all nine being `noindex`. That is the correct output.
+
+### Ruling 3 — D3's eleven guards are executable, and they run against `dist/`, not source
+
+`scripts/city-seo-guards.mjs` (new, `npm run qa:seo`). It reads built HTML, because the specific
+defect the FAQ guard exists to catch — schema built from a different array than the markup —
+passes any source grep. Data records are bundled out of TypeScript with esbuild, following the
+`qa:phase3:endpoint` precedent, so `appliesTo`, `reviewAfter`, `factIds`, and `publishStatus`
+are read as values rather than re-parsed from text by a second, weaker parser.
+
+Coverage: unique H1/title/meta sitewide · self-referencing canonical · BreadcrumbList with
+resolvable crumbs · `Service` on the six · `CollectionPage` on the three hubs · FAQPage matching
+the rendered FAQ **in both directions** · one `LocalBusiness` at `/#business` and no second
+entity · no address, `aggregateRating`, `review`, or `priceRange` anywhere · fake-experience,
+hauling, and regulated-claim vocabulary · public prices and permit-fee amounts · facts rendered
+on the wrong service · facts past `reviewAfter` · implications whose `factIds` do not resolve ·
+required links out and one contextual inbound link in · sitemap ↔ robots agreement in both
+directions.
+
+### Ruling 4 — two severities, split on exposure rather than on convenience
+
+A **compliance** finding is an error on any built page, indexable or not. `noindex` is not a
+cure for an unlawful sentence: the page is still published, still readable, still linked.
+An **index-quality** finding on a `noindex` page is a *publish blocker* — recorded, printed,
+exit 0 — because D3's own remedy for a failing guard is that the page ships `noindex`, and
+failing the build on those would make a gated draft uncommittable. On a `published-index` page
+every finding is an error. A page with zero blockers is eligible for promotion, subject to the
+owner confirmations that are not a machine's to make.
+
+### Ruling 5 — the price guard restricts currency, not numbers
+
+These pages are useful *because* they carry verified operational figures. The 30-day permit
+window, 36-foot street width, 72-hour parking limit, SMaRT Station hours, 8–40 cubic yard
+container sizes, six-foot and fifteen-foot clearances, and ten-working-day review period must
+all survive the guard untouched. The patterns therefore key on a currency symbol, a currency
+word, or a fee named with an amount — never on a bare quantity — and a **self-test** asserts
+exactly that on every run: ten permitted operational strings must produce zero findings and four
+public prices must produce findings. If someone later tightens these into a general
+number-detector, the run fails and says why.
+
+The `$195` assessment fee is the one permitted price figure (doc 27 §7). It is masked from the
+approved `assessmentFraming()` paragraph, so a differently-worded `$195` sentence still fails.
+
+### Ruling 6 — the mandated negation clauses are masked, per doc 21 §2.2
+
+The first guard run failed all six service×city pages on `remediation` and `licensed`. Both were
+inside `legal.scopeDisclaimer` in the Stop/notify/refer panel — the mandated negation, whose
+whole job is to name those words in order to disclaim them. Doc 21 §2.2 is explicit that an
+automated gate must whitelist the mandated clauses rather than fail them. The mask is read from
+`src/data/site.ts`, the same module the pages render, so editing the legal copy updates the
+whitelist in the same change. It is exact-match: a *paraphrase* of a mandated clause is still a
+finding, which is the intended strictness.
+
+### Two findings the guard produced on its first real runs
+
+- **A bug in the guard itself.** Hub records key the city by display name (`city: "Mountain
+  View"`), service×city records by slug (`city: "mountain-view"`). Reading `record.city`
+  generically compared a display name against a slug, so every fact lookup on the three hubs
+  matched nothing and every fact guard on them silently passed. Caught by a deliberate staleness
+  test that fired on the six service pages and not on the hubs rendering the same fact. Both
+  shapes are now normalized to `citySlug`/`cityDisplay` once, at the join.
+- **`/sms-notification-consent/` has no canonical.** A canonical was added and then **reverted**:
+  `.claude/skills/route-audit` records that the page is under Twilio 10DLC carrier review and
+  must never be edited. It is exempted in the guard with the reason printed on every run, rather
+  than silently skipped. Revisit when carrier review clears.
+
+### Deliberately not done
+
+- No copy written, edited, or removed. No `publishStatus` raised. No sitemap entry added.
+- No owner-availability claim, no "Also serving" blocks, no price figure on these pages.
+  **[The "Also serving" clause is SUPERSEDED as of 2026-08-21 — the blocks were subsequently built
+  and are owner-approved to stay. See the closing entry of this log. The rest of this bullet
+  stands.]**
+- The hand-listed portion of `sitemap.xml.ts` untouched — eighteen exclusions are decisions.
+- `functions/api/lead.ts` and `/sms-notification-consent/` untouched.
+- The housing-composition premise on four implications remains open and carries into the publish
+  gate, unchanged from the 2026-08-21 entry above.
+
+### Evidence
+
+- `npm run build`: PASS — 48 pages before the dev prune, 46 emitted.
+- `npm run check`: PASS — 0 errors, the same four pre-existing hints.
+- `npm run qa:seo`: PASS — 0 errors, 0 publish blockers, 9/9 city routes clean.
+- Guards verified by injection, not by assertion. Each was made to fire and then reverted:
+  fake-experience (3 patterns), hauling, three regulated-claim words, three price forms, FAQ
+  mismatch in both directions, broken canonical, missing parent-service link, fact rendered on a
+  service its `appliesTo` excludes, implication citing an out-of-scope fact, fact past
+  `reviewAfter` (fired on the hub and both service pages), duplicate H1 and title across two
+  hubs, and a noindex route smuggled into `sitemap.xml` (caught from both directions).
+- Publication ladder verified end-to-end: one record to `published-index` → built `index, follow`
+  and appeared in `sitemap.xml`; one record to `draft` → not built, and its hub card, sibling
+  link, and parent "also serving" entry all withdrew automatically.
+- Route audit: 30 redirect rules, zero source/route collisions, zero dead destinations, zero
+  chains. 23 sitemap entries, all built, none `noindex`. Orphans are the five pre-existing
+  noindex/out-of-nav routes. Never-build list clean — the one `/locations/` hit is a redirect
+  *retiring* that path, not a route.
+- **Pre-existing failure, unrelated and not fixed:** `npm run qa:phase4:static` fails on "private
+  preview robots.txt does not block crawling". That assertion is unconditional, while
+  `src/pages/robots.txt.ts` correctly emits `Allow: /` for a production build. The audit encodes
+  a private-preview expectation that a production build cannot satisfy. Whether the site should
+  still block crawling is an owner decision, so it was reported rather than edited.
+
+---
+
+## Owner ruling: the "Also serving" blocks stay while the city pages are noindex (2026-08-21)
+
+**Trigger.** A final audit of the city-page build found that the contextual "Also serving" blocks
+on `/hoarding-cleanup-san-jose/` and `/estate-cleanout-san-jose/` are **built and rendering**, while
+three separate statements in this log record them as deferred and not built. The implementation and
+the log disagreed. This entry resolves that in favor of the implementation, on owner instruction.
+
+**No file outside this log was changed by this entry.** The blocks were already in the tree; this
+records the authority for what is there, it does not build anything.
+
+### The ruling
+
+> The contextual "Also serving" blocks on the San Jose hoarding-cleanup and estate-cleanout pages
+> will remain in place while the new city pages are `noindex`.
+
+**Owner-approved 2026-08-21.**
+
+**Reason.** These links establish the intended internal-link architecture and ensure the six
+service × city pages carry contextual inbound links *before* indexation, rather than acquiring them
+at flip time.
+
+### What this supersedes
+
+| Superseded statement | Where |
+| --- | --- |
+| "**Deferred, not built.** … Build these blocks in the same change that flips the six pages to `index`." | `## Six service×city pages built as gated drafts (2026-08-21)` → *Conflicts and resolutions*, link map B1 row |
+| "No 'Also serving' blocks on the two parent service pages (see the table above)." | same entry → *Deliberately not done* |
+| "No owner-availability claim, no 'Also serving' blocks, no price figure on these pages." | `## The city-page indexation system closed…(2026-08-21)` → *Deliberately not done* (the "Also serving" clause only; the rest of that bullet stands) |
+
+All three have been annotated in place with a pointer here. Their original wording is preserved —
+the annotation marks them superseded, it does not rewrite the decision that was made at the time.
+
+The deferral was reasoned, and the reasoning is worth preserving: adding the blocks opens six
+indexable→`noindex` crawl paths, which is register **P2** / release-checklist **C10**. That cost is
+now **accepted deliberately** rather than avoided.
+
+### Why the original condition could not hold
+
+The deferral instructed that the blocks be built "in the same change that flips the six pages to
+`index`". That ordering is not reachable, and the guard is what makes it unreachable.
+
+`docs/city-pages-part2-UPDATED.md` D4 requires `inboundLinkCount >= 1` **from an indexable page**
+before a route may be published, and `scripts/city-seo-guards.mjs` enforces it. Without the "Also
+serving" blocks, each service × city page is reachable only from its city hub and its sibling — both
+`noindex` — which the guard reports as a publish blocker:
+
+> Reachable only from noindex pages (…). D4 requires at least one contextual inbound link from an
+> indexable page before this route can be published.
+
+So the blocks are a **precondition** of the flip, not a companion to it. Deferring them until the
+flip would have made the flip permanently blocked. Building them first is the only ordering the
+guard permits, and it is the ordering the owner has now ratified.
+
+### Current state, as ratified
+
+| | |
+| --- | --- |
+| Blocks rendering on | `/hoarding-cleanup-san-jose/`, `/estate-cleanout-san-jose/` — both `index, follow` |
+| Crawl paths opened | 6 — three per parent, each into a `noindex, follow` route |
+| Anchor text | Composed from `serviceDefinitions[].name` (e.g. "Hoarding Cleanup in Mountain View") |
+| Mechanism | `ServicePageLayout.astro` `alsoServing` prop → `getServiceCityLinks()`, filtered through `builtOnly()` |
+| Guard result | `npm run qa:seo` — 0 errors, 0 publish blockers, 9/9 city routes clean |
+
+The links are derived, not hand-written: a city withdrawn from `serviceCityPages.ts`, or dropped to
+`draft`, loses its "Also serving" entry in the same change. A parent page cannot advertise a route
+that was not built.
+
+### What this ruling does NOT do
+
+- It does **not** raise any `publishStatus`. All nine city routes remain `noindex, follow` and
+  outside `sitemap.xml`.
+- It does **not** resolve the owner city-availability confirmation, which still gates all nine.
+- It does **not** resolve the housing-composition premise on four implications, which still gates
+  four of the six service pages. **[Resolved later the same day — see the closing entry of this
+  log. That gate is lifted; owner city-availability confirmation still gates all nine routes.]**
+- It does **not** narrow register **P2** or release-checklist **C10**. Both remain open, and this
+  ruling adds six instances to P2's scope rather than removing any. P2 still needs its own session
+  on nav architecture.
+
+### Still open after this entry
+
+- `AGENTS.md` §2's route inventory remains stale by nine routes, and its line 167 still reports
+  `cityPages = []`, which the built output contradicts.
+- `docs/19-SYSTEM-AND-SITEMAP.md` §2.2 still states the ≥1-completed-job hard gate as operative.
+  The conflict was resolved on 2026-08-21 (build, ship `noindex`, claim nothing), but doc 19 itself
+  was never updated and still reads as prohibiting what shipped.
+
+Both are documentation drift, not implementation defects, and both are flagged rather than edited
+here — this entry was scoped to the log.
+
+**[BOTH CLOSED 2026-08-21 — see "The completed-job prerequisite for city pages is superseded" at
+the end of this log. `AGENTS.md` §2 was regenerated and doc 19 §2.2's hard gate was superseded in
+place, with the old rule kept verbatim as history.]**
+
+---
+
+## The four unsourced housing-composition claims are struck; one sourced housing fact enters `cityFacts.ts` (2026-08-21)
+
+Owner-directed, following `CITY-PAGES-BUILD-REPORT.md` §3 ("the one substantive content risk in the
+build") and the "Open — carry into the publish gate" item logged with the six service×city pages
+earlier the same day. **This closes that item.**
+
+### The conflict
+
+The approved copy package (`docs/city-service-data-UPDATED.md`, `docs/city-pages-part2-UPDATED.md`)
+asserts a housing composition for three cities. The build session rendered that copy unedited and
+flagged it in data rather than rewriting it, on the reasoning that owner-approved copy is not an
+agent's to edit. The owner has now ruled the other way: **strike the premise.** Where owner-approved
+copy and the sourcing law disagree, the sourcing law wins, and the deviation is recorded here so the
+copy package is not treated as restorable on this point.
+
+### The audit — six claims, not four
+
+The build report named four. A sweep of every rendered housing-stock and owner/renter string found
+two more, both in city-hub intro prose, which no `CityFact` covered either.
+
+| # | Route(s) | Rendered claim | Source in project | Disposition |
+| --- | --- | --- | --- | --- |
+| 1 | `/service-areas/mountain-view/estate-cleanout/` | "Much of the city's housing is multifamily, where private staging is frequently unavailable and a building manager controls loading access…" | None. Mountain View's verified fact list carries no housing entry. | Premise struck; recast as a condition of the address. Record dropped to `basis: "operating-model"`, `factIds: []`. |
+| 2 | `/service-areas/sunnyvale/hoarding-cleanup/` | H3 "Sunnyvale's housing skews multifamily, so private staging often isn't available." | None. | Heading replaced with "Whether the address has private staging decides which rule governs the container." Body unchanged; it was already conditional and already cited `sunnyvale-encroachment-permit`. |
+| 3 | `/service-areas/sunnyvale/estate-cleanout/` | H3 "Renter-majority housing means access authority may sit with someone outside the estate." + "Much of Sunnyvale's housing is multifamily." | None. | Both premise sentences struck. Record dropped to `basis: "operating-model"`, `factIds: []`. |
+| 4 | `/service-areas/campbell/estate-cleanout/` | "The City's Housing Element reports that single-family detached homes make up a substantial share of the housing stock." | **No Housing Element exists anywhere in this repository** — the sentence attributed a specific document that was never held, cited, or linked. | Sentence struck. Rewritten onto the one sourced housing figure the project does hold (below). |
+| 5 | `/service-areas/sunnyvale/` | "Sunnyvale includes substantial multifamily housing, where private staging may be limited…" | None. | Recast: "Where the address is a condo or apartment…". Not in the build report; found by the sweep. |
+| 6 | `/service-areas/campbell/` | "Campbell has a substantial stock of detached homes, but container placement still depends on the actual property." | None for the detached-stock premise. | Premise struck; the property-by-property point kept. Not in the build report; found by the sweep. |
+
+### The one fact that had a source
+
+`docs/city-service-data-UPDATED.md`'s own Campbell fact list carries "Roughly half of Campbell's
+housing is owner-occupied (50.5%, U.S. Census QuickFacts, 2019–2023 ACS)" — publisher and vintage
+named. That is the only authoritative housing source in the project. It is now `campbell-owner-occupancy`
+in `src/data/cityFacts.ts`, and `campbell-estate-private-staging` cites it by id.
+
+Two type unions widened to hold it, both to values `docs/city-pages-part2-UPDATED.md` §D2 had already
+specified and the implementation had simply never needed: `factType: "housing"` and
+`sourceType: "census"`. No new shape was invented.
+
+**It is a tenure figure and carries only a tenure inference.** It says who owns the units, not what
+shape they are. It does not support a claim about detached homes, multifamily share, or driveways,
+and the implication reads it for exactly one thing: whether the person authorizing the work controls
+the private ground a container would sit on. Nothing else may be built on it.
+
+Two limits on the record, both deliberate:
+
+- **Not independently re-fetched.** Census QuickFacts returns HTTP 403 to automated requests and the
+  Census API requires a key this project does not hold. The record therefore enters on the same
+  provenance as every other fact in the file — the research package, verified 2026-08-21 — with
+  `sourceUrl` set to the canonical QuickFacts table for the source the package names. Re-read it by
+  hand at the publish gate before Campbell flips to `index`. Noted in the record's own comment, not
+  only here.
+- **Phrased as a share, not as QuickFacts' label.** The published label — "owner-occupied housing unit
+  rate of 50.5%" — trips the `public-price` guard's permit-fee heuristic (`rate … of … <digit>`), and
+  the guard is right to catch that shape. The copy states the same figure as a percentage of occupied
+  units, which is QuickFacts' own definition of the rate. The guard was not touched; weakening
+  `rate of` would let a real permit fee through.
+
+### The rewrite rule applied
+
+No city's housing stock is asserted anywhere on the nine routes. Each rewrite keeps the operational
+point — a managed building is a second approval; private staging decides whether the right-of-way
+rule applies — and states it as a **condition of the address** ("where the property is a condo or
+apartment"), which is what gets checked at assessment anyway. That is a scope statement about how a
+project is planned, not a demographic claim, and it needs no source.
+
+The `ServiceCityImplication.ownerReviewNote` field and its `HOUSING_MIX_NOTE` constant are removed.
+They existed to hold exactly these four flags; with the premises struck they had no users, and a
+never-rendered field with no users is a place for the next unsourced claim to hide. The prohibition
+they encoded now lives as a comment at the head of the file: **do not reintroduce a housing premise
+for Mountain View or Sunnyvale without a `CityFact` carrying a real source URL.**
+
+### Evidence
+
+- `npm run check`: PASS — 0 errors, 0 warnings, the same four pre-existing hints.
+- `npm run build`: PASS — 48 pages built, 46 emitted after the dev prune.
+- `npm run qa:seo`: PASS — 0 errors, 0 publish blockers, **9/9** city routes clean. The first run
+  after the fact was added failed 3 Campbell routes on `public-price`; the copy was fixed, not the guard.
+- Claims check: clean. Zero hits for the banned vocabulary or the experience-claim patterns across
+  all three touched files.
+- Built output: zero matches in `dist/` for `housing is multifamily`, `housing skews`,
+  `renter-majority`, `Housing Element`, `substantial multifamily`, or `detached-home inventory`.
+  Every remaining housing string in `dist/` is either the sourced Census fact (rendered with its
+  source link on the three Campbell routes), the implication that cites it, a conditional property
+  reference that asserts nothing about a city ("a narrow street, no driveway, a multifamily
+  property"), or the property-type dropdown on `/request-assessment/`.
+
+### Scope
+
+Nine routes remain `noindex, follow` and outside `sitemap.xml`. This entry does not raise any
+`publishStatus`, does not resolve the owner city-availability confirmation, and changed no copy
+outside the six claims tabled above. The copy package itself was left as the historical record of
+what was approved; this entry is the authority on where the built site now deviates from it.
+
+### Still open, unchanged by this entry
+
+- ~~`AGENTS.md` §2's route inventory is still stale by nine routes; line 167 still reports `cityPages = []`.~~
+  **CLOSED — see the next entry.**
+- ~~`docs/19-SYSTEM-AND-SITEMAP.md` §2.2 still states the ≥1-completed-job hard gate as operative.~~
+  **CLOSED — see the next entry.**
+- Owner city-availability confirmation still gates all nine routes. **Still open.**
+
+---
+
+## The completed-job prerequisite for city pages is superseded (2026-08-21)
+
+Owner ruling, rank 1. Documentation-only pass: **no website code, data, or copy was modified.**
+
+This closes the documentation drift flagged in the two entries above and in
+`CITY-PAGES-BUILD-REPORT.md` §4. Two documents had been contradicting the shipped build since the
+city routes landed earlier the same day, and five more carried the same stale claim.
+
+### The conflict
+
+Nine city routes exist and pass every automated gate. Meanwhile:
+
+- `AGENTS.md` §2 stated *"City pages nest under `/service-areas/{city}/` and require ≥1 completed
+  job in that city plus original content that could only be about that city. No verified content →
+  no page,"* and its route inventory reported `cityPages = []`.
+- `docs/19-SYSTEM-AND-SITEMAP.md` §2.2 stated *"Hard gate: ≥1 completed job in that city + 150–250
+  words that could only be about that city + one anonymized real-job specific. No verified original
+  content → no page."*
+- `docs/SITEMAP-MASTER.md` recorded the per-city row as **not built**, gated "as earned (real job +
+  original content)".
+- `docs/25CITYPAGESPEC.md` §3.3, §6, and §7 required a real anonymized project and ended with
+  *"Everything else waits on a completed job in that city."*
+- `docs/27-COPY-CANONICAL.md` §16 asserted `cityPages` is `[]` "which is consistent with it", and
+  §20 listed *"Real completed job or other verifiable local proof"* as a **required** input.
+- `CURRENT-SITE-MAP.md` and `CURRENT-BUILD-AUDIT.md` both stated no service × city architecture
+  exists.
+
+Aseptaclean has completed no job in Mountain View, Sunnyvale, or Campbell. Under the documents as
+written, none of the nine routes was permitted to exist. Under the build, all nine do.
+
+### The ruling
+
+**The completed-job requirement is superseded for these initial city and service pages.** It is
+recorded as history in every document that carried it, not deleted. A local page may launch with
+**no prior Aseptaclean job history in that city** when it contains all seven of:
+
+1. **Verified city facts** — named publisher, source URL, in `src/data/cityFacts.ts`.
+2. **Service-specific local implications** — what those facts change for *this* service at *this*
+   address, in `src/data/serviceCityImplications.ts`, each declaring its `basis`.
+3. **No fabricated experience claims.** Absolute, and it outranks the other six.
+4. **Proper internal links** — up to the parent service page, across to the city hub, ≥1 inbound.
+5. **Unique useful copy** — surviving doc 25 §2's swap test.
+6. **Applicable source and freshness controls** — `verifiedAt` / `reviewAfter`, enforced.
+7. **Passing SEO quality gates** — `npm run qa:seo`, run against `dist/`.
+
+**Real completed projects remain a future proof-enhancement layer, not a prerequisite for the route
+to exist.** When a real job produces documentable, owner-approved material, it is added as proof.
+Until then the route stands on verified facts. Nothing here permits inventing the proof it makes
+optional — `AGENTS.md` §0.3 is unchanged and unweakened.
+
+### Why the old rule existed, and why replacing it is not a loosening
+
+The completed-job gate was written on 2026-08-09, before this project had a city data layer, a
+sourced-fact model, or an automated quality gate. Its real target was **thin, templated,
+name-swapped location pages** — Google's named doorway-page pattern, which doc 25 §1 says this
+domain cannot absorb. With no other instrument available, a completed job was the only usable proxy
+for *"this page is about a real place."*
+
+That proxy has been replaced by the property it was standing in for, and the replacement is
+measured rather than asserted: `scripts/city-seo-guards.mjs` checks identity, schema, claims, fact
+freshness, and the link graph against the **rendered HTML**, and reports per-route publish blockers.
+The anti-thin intent is unchanged. **Two parts of the old gate survive and got stricter, not
+looser:** doc 25 §6's 400-word minimum of city-specific prose supersedes doc 19's 150–250 figure,
+and the swap test is now checked per route.
+
+### What this ruling does NOT do
+
+- It does **not** override `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` (rank 2). §7 still makes every
+  city page a licensing decision before it is an SEO decision. Untouched.
+- It does **not** raise any `publishStatus`. All nine routes remain `noindex, follow` and outside
+  `sitemap.xml`. **Owner confirmation of city availability still gates all nine** — that is the one
+  remaining gate, and it is a business fact, not a machine decision.
+- It does **not** license bulk city expansion. Doc 25 §7's "ship two or three, not ten" stands, as
+  does `docs/01-QUALITY-GUARDRAILS.md`'s "no more than one thin city page published at a time".
+- It does **not** narrow register **P2** or release-checklist **C10**. The nine routes added nine
+  indexable→`noindex` crawl paths, deliberately.
+- It changes **no website code.** The build is the same before and after this pass.
+
+### Documented architecture, as reconciled
+
+```
+/service-areas/                     area hub — indexable, in sitemap.xml
+/service-areas/[city]/              city hub          — 3 built
+/service-areas/[city]/[service]/    service × city    — 6 built
+```
+
+Cities `mountain-view` · `sunnyvale` · `campbell` × services `hoarding-cleanup` ·
+`estate-cleanout`. The 3 × 2 grid is complete. Both tiers are generated from data records by two
+dynamic route files; a new city or service is a record, not a page. Any `/locations/*` route
+remains forbidden.
+
+### Files changed
+
+| File | Change |
+| --- | --- |
+| `AGENTS.md` | §2 route inventory regenerated from a fresh build (37 → **46** routes; `noindex` 13 → **22**; sitemap unchanged at 23); `cityPages = []` struck; crawl-path table gained a third row; **new §2.1 "City pages — two tiers, both built"** carrying the superseded rule verbatim and the seven conditions |
+| `docs/19-SYSTEM-AND-SITEMAP.md` | §2.1 tree shows both tiers; Wave 4's "first job per city" superseded; **§2.2 CITY PAGES rewritten** — old hard gate quoted verbatim in a supersession block; §3.3 template amended, REAL JOB row optional, 2026-08-09 sketch kept; linking rule amended for the same-city sibling link |
+| `docs/SITEMAP-MASTER.md` | Per-city row replaced with two built rows; totals corrected to 46 |
+| `docs/25CITYPAGESPEC.md` | Status banner; §3.3, §6, §7, §8 amended in place. §2 swap test, §3 angles, §4 landmarks, §5 no-map **unchanged** |
+| `docs/27-COPY-CANONICAL.md` | §16 stale `cityPages = []` note corrected; §20 "real completed job" moved from required to optional, two inputs added, release order amended |
+| `CURRENT-SITE-MAP.md` | Re-audit banner; tree, inventory, index state, link structure updated; "Service × city architecture" section rewritten from denial to description; redirect open item recorded |
+| `CURRENT-BUILD-AUDIT.md` | Partial-supersession banner; five obsolete statements struck in place, findings otherwise intact |
+| `CITY-PAGES-BUILD-REPORT.md` | §4 and verdict item 3 closed |
+
+### Evidence
+
+- `npm run build:local`: PASS — 48 pages built, **46** emitted after the dev prune.
+- Route counts read from `dist/`: 46 HTML files; 24 indexable, 22 `noindex` (incl. `/404`).
+- `dist/sitemap.xml`: **23** `<loc>` entries. No city route appears in it.
+- `npm run qa:seo`: **PASSED — 0 errors, 0 publish blockers, 9/9 city routes clean.**
+- Inbound links verified in `dist/`: all three hubs linked from `/service-areas/` and
+  `/property-clearing/`; all six service × city pages linked from their hub, their same-city
+  sibling, and their parent San Jose service page. **Zero city-to-city links** — checked directly,
+  and the reason doc 19's "never sideways" rule was amended rather than dropped.
+
+### Standing rule for the next session
+
+The seven conditions are now the city-page gate. If a future document is found still stating the
+completed-job requirement as operative, it is stale by definition — this entry supersedes it. Do
+not restore the old gate, and do not read its supersession as permission to publish a thin page or
+to invent proof.
+
+---
+
+## The nine city pages get the approved composition (2026-08-21)
+
+A visual/CSS implementation pass over the three city hubs and six service × city pages. The
+routes, data records, copy, facts, implications, schema, robots policy and link map are the same
+before and after; what changed is how those pages are composed and where the shared parts live.
+
+The pages were structurally correct and visually generic: a compact `.ac-pgh` band, prose, a
+two-up fact-card grid, flat featured cards, the shared form section eight sections down, and a
+closing band — six to nine sections of near-identical geometry, with the hero, fact list and
+closing band written twice (once per generator) and already drifting apart in gap and padding
+values. Nothing on them said *local landing page*, and nothing said *Aseptaclean* that the shared
+template was not saying by default.
+
+### What now composes these pages
+
+| Tier | Sequence |
+| --- | --- |
+| City hub | two-column navy hero with the intake form in it → credential strip → planning-notes rail + sourced fact register → two large photo-topped service tiles → quiet hairline list of the secondary services → dark closing band |
+| Service × city | hero + form → screening band → credential strip → editorial recognition statement → coordination-policy strip → fact register → pale-blue "what this changes here" field with numbered rows → scope panels → four-step rail → FAQ + related-link column → dark closing band |
+
+Surfaces alternate navy / white / warm-white / pale blue, and no two sections share a geometry.
+The hub and its children no longer look like the same page with different words.
+
+### Conflicts and resolutions
+
+| Conflict | Resolution |
+| --- | --- |
+| The owner-approved city composition (part 2 A1) puts the intake form in the hero, while `RequestForm` already rendered the same form lower on the page, and doc 27 §8 requires "What happens next" beside **every** form. | The form **moved rather than multiplied**. One `QuickHandoffForm` per page, in the hero panel, carrying §9.13's "Tell us about the property." and §8's lede; §8's "What happens next" paragraph moved with it, into the hero's left column under a rule. `<RequestForm />` was removed from both generators — two copies of one form on one page is not a composition question. |
+| Removing `RequestForm` also removes its default callout pair ("Have a bigger or more complicated property?"). | Accepted and recorded. That pair is `RequestForm`'s homepage default, not city-page copy; no approved callout exists for these routes, and §9.15.1 does not assign one. Every other string that component renders on these pages moved into the hero with the form. |
+| The brief asks for a neighbourhood strip. | **Omitted, again.** The copy package marks those names "VERIFY before publish", `docs/25CITYPAGESPEC.md` §6 forbids a standalone neighbourhood list outright, and the 2026-08-21 hub entry already omitted them on both grounds. Nothing here reinstates them. |
+| The brief asks for the detailed/specialty services to be a link list where the routes exist. The six parent routes do exist — but `/post-construction-cleaning-san-jose/`, `/animal-waste-cleanup-san-jose/` and `/rodent-dropping-cleanup-san-jose/` are gated `noindex`, and the audit records the last of those as deliberately carrying **no inbound link from an indexable page**. | The names render as a hairline text list, not links. Linking them would open exactly the crawl paths register **P2** warns about the moment a hub is flipped to index. The two indexable group hubs, `/detailed-cleaning/` and `/specialty-cleaning/`, stay as the route through, as they already were. |
+| The six service pages have no `lead` field, and their shared opening is the recognition section — using it in the hero would spend it twice. | The hero lead is each page's own approved meta description, the one sentence in the package that describes that service in that city. The supporting line is §9.15.1's service-page hero pledge, already on all 14 parent service pages. |
+| The approved closing band names the primary CTA and the phone; doc 27 §8 requires "Text a photo" wherever the primary appears. | Three actions, the same resolution `FinalCTA` already carries. The band also gained doc 21 §6's assessment disclaimer verbatim, which ships beside every other assessment CTA on the site. |
+
+### One copy change, and it was not a design decision
+
+`futureServices` for **Sunnyvale and Campbell** ended with a build directive that was rendering to
+visitors as page copy:
+
+> Do not expose a child route until that service is active and its city record passes the publish
+> gate.
+
+That is an instruction to the builder, in the same family as the placeholder strings `AGENTS.md`
+§7 forbids in a production build, and it is already enforced in code — a `draft` record in
+`src/data/publication.ts` produces no route at all. Struck from the rendered string and kept as a
+comment on the record. The customer-facing sentence before it is unchanged, and Mountain View's
+paragraph, which carries no directive, is untouched.
+
+### Three defects the screenshot pass found
+
+1. **The form rendered inside a 186px track.** `.cty-panel` and `.ac-stepform` declare
+   `grid-template-columns` at equal specificity, so bundle order decided the winner and the
+   stylesheet lost: the compact form was laid out 186px wide, wrapping the consent sentence to
+   nine lines and the panel to 1271px. Fixed by qualifying the selector, then every other
+   tie-with-global.css in the new file was audited and qualified the same way — `.ac-crumb`,
+   `.ac-steps4`, `.ac-hdr-lite`, `.ac-btns`. `RequestForm` never hit this because Astro's scoped
+   styles add an attribute selector and win the tie by accident.
+2. **The recognition section centred itself.** `max-width` on the `.ac-shell` element shrinks a
+   container that centres itself, so the section sat centred against every other left-aligned
+   section on the page. The cap moved to an inner element.
+3. **Featured-tile CTAs sat at different heights** in cards the grid had already made equal
+   height, because the CTA rule used a fixed top margin against two descriptions of different
+   lengths.
+
+### Deliberately not done
+
+- No change to any city fact, implication, FAQ, H1, title, meta description, schema node,
+  `publishStatus`, sitemap rule, or the hauling boundary. All nine routes remain `noindex, follow`
+  and outside `sitemap.xml`; owner confirmation of city availability is still the open gate.
+- No new colour, type token, breakpoint or font. The pass added no token; it uses the existing
+  palette, type roles, 1200px shell, 24px gutters, button system, form controls and the 1050/760
+  breakpoints.
+- No new photography and no invented photograph. The two featured tiles use the existing labelled
+  placeholder slot at tile scale.
+- No hero photo slot on either tier: the panel occupies the region the slot label is placed in.
+  Recorded as an unfilled slot rather than moved somewhere it would collide.
+- `functions/api/lead.ts`, `/sms-notification-consent/`, the global nav, the footer and
+  `ServicePageLayout` were untouched. Form submission behaviour is byte-identical — the same
+  component, with its own `formId` and entry route.
+
+### Files changed
+
+| File | Change |
+| --- | --- |
+| `src/styles/city-pages.css` | **New.** The shared visual layer for both tiers and the three shared components. Reuses `.ac-stepform`, `.ac-panel__h`, `.ac-citylist`, `.ac-steps4`, `.ac-faq`, `.ac-relcol`, `.ac-dual`, `.ac-fit`, `.ac-panel`, `.ac-final` and the button system rather than restating them |
+| `src/components/CityHero.astro` | **New.** Two-column hero with breadcrumb, eyebrow, H1, lead, optional pledge, §8's "what happens next", and the compact form in an `.ac-stepform` panel under an `.ac-panel__h` document bar |
+| `src/components/CityPlanningNotes.astro` | **New.** The fact register — narrow rail against a reading column, one hairline row per record, the record's own `factType` in the gutter, source underneath |
+| `src/components/CityCloseBand.astro` | **New.** The dark closing band on `.ac-final`, three actions, doc 21 §6 disclaimer |
+| `src/pages/service-areas/[city]/index.astro` | Recomposed against the three components; hub intro split (paragraph 1 → hero lead, remainder → planning column); featured cards became large photo-topped tiles; secondary services became a rail + hairline list; ~210 lines of scoped CSS deleted |
+| `src/pages/service-areas/[city]/[service].astro` | Recomposed; recognition section pulled out as an editorial statement; implications moved to their own field with numbered rows; FAQ/links tail switched to the shared `.ac-dual` + `.ac-relcol` pair used by all 14 service pages; ~230 lines of scoped CSS deleted |
+| `src/data/cityHubPages.ts` | `futureServiceNames` added (the approved paragraph's nouns, for the list); the Sunnyvale and Campbell build directive struck from the rendered string |
+
+### Evidence
+
+- `npm run build:local`: PASS — 48 pages built, 46 emitted after the dev prune.
+- `npm run check`: PASS — 0 errors; the same four pre-existing hints.
+- `npm run qa:seo`: **PASSED — 0 errors, 0 publish blockers, 9/9 city routes clean.**
+- **Type law #1 and #2 verified on computed styles** in the built output, not by grep: across all
+  nine routes at 320 / 390 / 768 / 1024 / 1280 / 1440px, no heading takes a `font-size` from any
+  selector outside its `.ac-type-*` role class; H1:body is 2.20:1 at 320–768px, 2.56:1 at 1024px
+  and 3.10:1 at 1280–1440px, against the ≥1.9:1 floor. One visible H1 per page, no heading-level
+  skips.
+- **No horizontal overflow** on any of the four inspected routes at 320 / 390 / 768 / 1024 / 1280 /
+  1440px: `scrollWidth === clientWidth` at every width, and no element extends past the viewport.
+- **Section rhythm measured, not assumed:** 68px desktop / 60px mobile standard, 48/40 tight,
+  matching the rest of the site. No section runs a 120px+ gap.
+- Screenshots reviewed at 390px and 1440px — full page and per section — for the Mountain View
+  hub, Mountain View hoarding cleanup, Sunnyvale estate cleanout and the Campbell hub.
+- Claims check: every hit for `licensed`, `remediation`, `clearance` and `habitable` in the
+  rendered nine pages is the sitewide footer negation or the scope-panel disclaimer — the
+  permitted narrowing use under doc 21 §2.2. Zero affirmative claims, zero price figures, zero
+  placeholder strings. The build directive above no longer appears in any rendered page.
+
+### Open
+
+- **The hero's left column runs shorter than the intake panel at ≥1051px** — roughly 300–400px of
+  navy below the "what happens next" note on a 1440px viewport. Anchoring the note to the foot of
+  the column was tried and reverted: it moved the gap into the middle of the column, which reads
+  worse. Closing it properly needs either a shorter form or one more approved element in that
+  column, and inventing copy to fill a layout hole is what §1 forbids. Reported, not papered over.
+- The hub's secondary-service list leaves space under it at desktop for the same reason — five or
+  six names in two columns are shorter than the rail beside them. Both are spacing, not defects.
+
+---
+
+## 2026-08-21 — Sitewide copy reconciliation: the positioning of record reaches the implementation
+
+**Instruction:** owner, direct — reposition the customer-facing copy under *specialty property
+cleaning & complex cleanup*, correct the hauling boundary, cut template repetition, and make the
+copy sound like a real local service business. Copy implementation only: no redesign, no routing
+change, no city-data-model change, no form-logic change, no invented proof.
+
+Precedence: an explicit owner instruction is rank 1 and beats `docs/27-COPY-CANONICAL.md` (rank 7).
+It does **not** beat `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` (rank 2), and nothing below weakens it.
+
+Full record: `SITEWIDE-COPY-UPDATE-REPORT.md`.
+
+### The conflict, and how it was resolved rather than merged silently
+
+Fifteen strings replaced by this pass were doc 27 approved copy — the homepage positioning
+statement and hero, the homepage title, the Clear stage, the pricing explanation, one FAQ answer,
+the Final CTA pair, four Debris Removal strings, the About H1 and lead, and the footer tagline.
+`npm run qa:gate6` correctly reported all fifteen as **absent from the build** and failed.
+
+They were **not** deleted from the canon. Each is now `~~struck~~` in place in
+`docs/27-COPY-CANONICAL.md` and `docs/27-SECTION-9-15-CONNECTIVE-COPY.md` with the replacement
+string and a one-line reason, using the strike convention `scripts/gate6-copy-trace.mjs` already
+implements ("the record of what was rejected is worth as much as the record of what was
+approved"). Gate 6 now passes with `struck: 27`, `absent: 0`. Doc 27 and the build agree again,
+and the diff explains itself to the next reader.
+
+**Doc 27 remains rank 7 and remains authoritative for every string this pass did not strike.**
+
+### Rulings
+
+**1. The umbrella is specialty property cleaning and complex cleanup.** Not new — it is the wording
+of the three owner-approved city hubs in `docs/city-pages-part2-UPDATED.md`. The rest of the site
+had not caught up, and `/` in particular read as a cleanout company with cleaning attached.
+
+**2. "Property Clearing" is renamed "Complex Property Cleanup" — label only, URL unchanged.**
+`/property-clearing/` keeps its route, canonical, sitemap entry and every inbound link; no redirect
+was added because nothing moved. Changed: nav group label, footer column heading, hub
+H1/title/crumb, breadcrumb schema, and the eyebrow on five service pages. *Property clearing*
+survives as a concept in body copy and verbatim in `legal.scopeDisclaimer`. The visible label and
+the slug now differ — deliberate, and flagged for the owner as item 1 of the report's open list.
+
+**3. The hauling boundary is stated on four surfaces, not forty.** Doc 21 §4.1's operating rule and
+Part E's owner-confirmed operating model, in plain words, on `/` (excluded-scope line + new FAQ),
+`/debris-removal-san-jose/` (lead, outcome body, pledge, boundary, new FAQ),
+`/property-cleanouts-san-jose/` (the FAQ that previously answered a yes/no question without saying
+either), and `/faq/` (new question). Hoarding and estate carry it once inside `workIncludes`.
+Nothing legitimate was removed: clearing, cleanouts, contents removal from rooms, container
+loading, dumpster coordination and disposal coordination are all described in **more** detail than
+before, because the on-site work is most of the job and the copy had been compressing it into the
+single word "clearing".
+
+**4. Four strings hardcoded in `ServicePageLayout.astro` became per-record overrides.** The hero
+pledge, the scope-panel footer, the pricing headline and the pricing paragraph printed identically
+on all fourteen service pages, and the pricing pair also appeared verbatim on `/`. They now read
+from the `section` record that already existed — no new field, no new interface, defaults
+preserved. Measured in `dist/`: each now reaches **7 pages, all of them the gated `noindex` set**,
+down from 14–20. Every indexable service page and all six service × city pages say these in their
+own words. The six city pages additionally now inherit their **parent service's** pledge rather
+than a shared hardcode.
+
+The seven gated pages keep the defaults on purpose. Writing differentiating copy for pages no
+visitor can reach is copy invented to fill a slot, which §0.3 and PORT-PROMPT §1 both forbid.
+
+**5. The visible launch-gate banner is deleted.** Six gated service pages rendered a pink strip
+reading "LAUNCH GATE — not for publication:" plus internal crew-capacity and compliance-release
+notes as real public HTML — `CURRENT-BUILD-AUDIT.md` highest-risk inconsistency #1. Gone from all
+seven affected routes. **Gating is unchanged**: `page.gate` still drives `indexable`, still holds
+each route out of `sitemap.xml`, and now emits as an HTML comment so source still explains itself.
+
+**6. `serviceAreasPage.publishingNote` was factually stale and is corrected.** It still required
+"real project proof" before a city page publishes — the prerequisite superseded by owner ruling
+earlier the same day (`AGENTS.md` §2.1). Nothing renders the field; it was corrected anyway,
+because a superseded rule sitting in a copy source is how it gets published by whoever wires the
+field up later. Same reasoning applied to `serviceAreasHub.intro` and `offer.category`.
+
+### What was not touched, and why
+
+Every URL, redirect and canonical. All three verbatim-mandatory disclaimers. The doc 21 §2.3
+animal/organic clause — verified byte-identical on all five surfaces that carry it. *"Nothing
+leaves the property without your written approval."* (doc 20 rule 7 untouchable — reused verbatim
+as the hoarding hero pledge rather than reworded). The six Handoff Assurance items (rule 7,
+guarantee terms). `/sms-notification-consent/`. All consent, Turnstile and form-field copy. The six
+doc 27 §1 routing doors. The `$195` figure and its owner-approved framing.
+
+**The animal-waste, rodent-dropping and pigeon-dropping pages were not minimised or removed** —
+untouched apart from the gate banner, still linked from `/specialty-cleaning/`, clause intact, and
+no human-biohazard or remediation language introduced anywhere.
+
+### Evidence
+
+- `npm run check`: PASS — 0 errors, 0 warnings, the same 4 pre-existing hints.
+- `npm run build:local`: PASS — 48 built, 46 emitted after the dev prune.
+- `npm run qa:seo`: **PASSED — 0 errors, 0 publish blockers, 9/9 city routes clean.**
+- `npm run qa:gate6`: **PASS — 0 absent** (was FAIL — 15 absent before the canon reconciliation).
+- One H1 on 46/46 pages. Title, meta description and H1 all **46 distinct across 46 pages**, zero
+  duplicates in any of the three. Canonical, robots and OG present on every page bar the two
+  documented exemptions.
+- **Zero broken internal links** across all 46 pages.
+- **Hauling sweep:** every sentence in `dist/` pairing *we/our/Aseptaclean* with a transport verb
+  attributes the transport to the authorized provider. Zero self-performed claims.
+- **Fabricated-experience sweep** (the city-guard pattern set, run sitewide rather than on the nine
+  city routes): **zero** matches.
+- **Banned-vocabulary sweep:** every hit for `remediation`, `licensed`, `decontaminat`, `steriliz`
+  is inside a mandated negation clause or a scope exclusion — the permitted narrowing use under
+  doc 21 §2.2. Zero affirmative claims.
+- **Visible internal copy:** zero matches sitewide for "not for publication", "LAUNCH GATE",
+  "Page in development", "UNPUBLISHED", "OWNER INPUT", "REPLACE_WITH".
+- Route architecture unchanged and re-verified against `AGENTS.md` §2: **46 routes, 23 sitemap
+  URLs, 22 `noindex`.**
+- No `font-size` declaration added and no heading markup changed, so neither typography law is
+  reachable by this diff.
+
+### Open
+
+Seven items, listed in `SITEWIDE-COPY-UPDATE-REPORT.md` §8. The two that need an owner decision:
+whether `/property-clearing/` should eventually follow its new label as a routing change with a
+redirect, and the four dead `homepage.*` exports that should be deleted in a cleanup commit rather
+than a copy one.
+
+---
+
+## 2026-08-23 — Full website post-build audit (audit only)
+
+### Scope and result
+
+Created `FULL-SITE-POST-BUILD-AUDIT.md` after auditing the current production output, source,
+governing documents, all 46 deployable HTML pages, all nine city routes, responsive behavior at
+six required widths, accessibility, local facts, schema, links, forms, proof assets, and current
+QA scripts. The audit concludes that the architecture is technically strong but the site is not
+ready for an unconditional launch or city-page indexation until the report's critical/high items
+are closed.
+
+### Conflicts recorded
+
+- The Private Residence Reset form still publishes investment ranges despite AGENTS.md §4's
+  no-public-price decision.
+- `/handoff-standard/` uses ambiguous “removed ... for disposal” language without authorized-
+  provider attribution, conflicting with the owner-supplied off-site transport boundary.
+- San Jose parent services say “Also serving” for all city children while owner city-availability
+  confirmation remains the human publication gate.
+- One Mountain View implication, three `/service-areas/` cluster descriptions, and the current
+  Campbell Census source/claim pairing do not satisfy the requested local-evidence standard.
+- `wrangler.toml` still says “San Jose and the South Bay,” conflicting with the canonical “South
+  Bay & Peninsula” business fact.
+- Private Residence Reset renders a retired process sequence.
+- README, prior audit reports, and code comments retain stale architecture/count/QA statements.
+
+### What was deliberately not changed
+
+Per the owner's audit-first instruction, no public copy, route, component, CSS, form, schema,
+navigation, publication state, sitemap entry, endpoint, or deployment configuration was changed.
+The findings were documented rather than repaired. `/sms-notification-consent/` remained untouched.
+
+### Evidence
+
+- `npm run check`: PASS, 0 errors, 0 warnings, 4 hints.
+- Production `npm run build`: PASS, 48 generated and 46 deployable after dev-route pruning.
+- `npm run qa:seo`: PASS, 9/9 city routes structurally eligible, 0 errors/blockers.
+- `npm run qa:gate6`: PASS, 0 absent.
+- `npm run qa:phase3:endpoint`: PASS, including staging submission and fallback paths.
+- Staging `npm run qa:phase4:static`: PASS.
+- Browser QA: 13 required routes × 6 widths = 78 combinations, zero horizontal overflow and zero
+  H1-count failures; Axe found real serious contrast failures. The older phase-4 deep script hung
+  after browser launch and was terminated, so it is recorded as incomplete rather than passed.
+- Static built-site scan: zero broken rendered internal links. The crawler's only reported missing
+  route is a stale hardcoded seed, not a site link.
+- The production build was restored after staging checks.
+
+---
+
+## 2026-08-24 — Launch blocker repair pass 1
+
+### What changed
+
+- Removed the Private Residence Reset assessment variant's entire “Desired investment range”
+  field, including the `$2,000–$3,499`, `$3,500–$5,999`, `$6,000+`, and “Need scope guidance”
+  options. The form's existing property, timing, access, decision, condition, and priority fields
+  remain the non-price qualification method. The `$195` on-site assessment fee remains published.
+- Rewrote the Handoff Standard's Clear-stage introduction to limit Aseptaclean's role to sorting,
+  bagging, staging, clearing rooms, and loading an approved container when included. The copy now
+  assigns provider selection, placement, and disposal-requirement coordination to Aseptaclean and
+  off-site transport to the applicable city-authorized or franchised provider.
+
+### Conflict resolved
+
+These two public surfaces conflicted with AGENTS.md §4 and
+`docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §4. No conflicting lower-authority copy was retained on the
+rendered surfaces.
+
+### What was deliberately not changed
+
+No route, endpoint, form action, PRR offer routing, city publication record, sitemap entry,
+“Also serving” label, metadata, schema, or unrelated copy was changed. All nine city routes remain
+`noindex, follow`. The nearby “You should not have to coordinate a hauler…” sentence remains; the
+revised stage copy directly below it now makes the authorized-provider boundary explicit.
+
+### Evidence
+
+- `npm run check`: PASS — 0 errors, 0 warnings, the same 4 pre-existing hints.
+- Production `npm run build`: PASS — 48 generated, 46 deployable after pruning two dev routes.
+- `npm run qa:seo`: PASS — 46 pages, 9/9 city routes, 0 errors and 0 publish blockers.
+- Rendered price sweep: zero matches for all three removed bands, the former field label, or
+  `investment_range`.
+- Rendered hauling sweep: the Handoff Standard now attributes off-site transport to the applicable
+  authorized/franchised provider; all other matched public copy, metadata, and schema either
+  describes on-site work/coordination or expressly attributes off-site transport to the provider.
+- City-state check: 9/9 city-route HTML files still render `noindex, follow`; both San Jose parent
+  pages still render “Also serving.”
+
+---
+
+## 2026-08-24 — Local SEO source integrity repair
+
+### What changed
+
+- Rewrote `mv-hoarding-street-width` as a conditional implication of Mountain View's verified
+  36-foot placement rule. Removed the unsupported assertion that the city contains residential
+  streets below the threshold.
+- Reverified `campbell-owner-occupancy` against the current U.S. Census Bureau QuickFacts table
+  and updated the record from 50.5% / 2019–2023 to 51.7% / 2020–2024. Updated the exact source URL,
+  source name, `verifiedAt`, and `reviewAfter`.
+- Rewrote `campbell-estate-private-staging` to state that citywide tenure does not establish
+  private container space or permission at a particular property. No detached-home or driveway
+  availability was inferred.
+- Replaced the three unsupported `/service-areas/` cluster generalizations with geographic
+  grouping and property-specific planning instructions. No new demographic fact was introduced.
+- Added `LOCAL-SOURCE-REPAIR-REPORT.md` with the fact-to-implication trace and QA evidence.
+
+### Conflict resolved
+
+The four `UNSUPPORTED LOCAL CLAIM` findings and the Campbell Census source-drift blocker from
+`FULL-SITE-POST-BUILD-AUDIT.md` are resolved. Verified facts remain in `cityFacts.ts`; operational
+implications remain separately keyed to fact IDs in `serviceCityImplications.ts`.
+
+### What was deliberately not changed
+
+No route, design, city, sitemap entry, availability label, or publication status changed. All
+nine city routes remain `noindex, follow`. No blog or secondary source was used.
+
+### Evidence
+
+- Census QuickFacts currently reports Campbell owner occupancy at 51.7% for 2020–2024.
+- `npm run check`: PASS — 0 errors, 0 warnings, the same 4 pre-existing hints.
+- Production `npm run build`: PASS — 48 generated, 46 deployable after dev-route pruning.
+- `npm run qa:seo`: PASS — 46 pages, 9/9 city routes, 0 errors and 0 publish blockers.
+- Rendered sweep: zero matches for the four unsupported claims, 50.5%, or 2019–2023; the current
+  51.7% / 2020–2024 Census record renders with its source link.
+
+---
+
+## 2026-08-24 — Accessibility and mobile visual repair
+
+### What changed
+
+- Darkened the shared homepage photo-slot and portrait labels, city featured-photo labels, city
+  operational-implication numerals, and shared process numerals using existing ink tokens. The
+  corrected foreground/background pairs measure at least 4.71:1.
+- Added a narrow-phone type step and reduced the 320px shell gutter so the audited homepage,
+  city-hub, Hoarding San Jose, About, and Private Residence Reset H1s wrap into readable phrases.
+  Sizes remain on type-role classes and retain the required 1.9:1 H1-to-body ratio floor.
+- Raised every fixed mobile CTA link to a 48px minimum target and tied reserved body clearance to
+  the existing 72px sticky-CTA token.
+- Added route-normalized `aria-current="page"` output to matching desktop, mega-menu, drawer, home,
+  and assessment links, with existing-token visual current-state treatments.
+
+### Conflict resolved
+
+No governing-document conflict was encountered. The responsive H1 changes preserve AGENTS.md §6's
+heading-size placement and ratio laws while addressing the audit's 320px wrapping finding.
+
+### What was deliberately not changed
+
+No route, navigation destination or behavior, public copy, city publication status, form behavior,
+schema, endpoint, or visual-system direction changed. `/sms-notification-consent/` remained
+untouched. City routes not represented in the shared navigation do not receive an invented current
+link solely to expose `aria-current`.
+
+### Evidence
+
+- `npm run check`: PASS — 0 errors, 0 warnings, the same 4 pre-existing hints.
+- Production `npm run build`: PASS — 48 generated, 46 deployable after pruning two dev routes.
+- Browser responsive sweep: PASS — 13 representative routes × 6 widths (320, 390, 768, 1024,
+  1280, and 1440) = 78 cases; zero horizontal overflow, zero H1-count failures, and zero CTA
+  clearance failures.
+- Axe at 390px: PASS — all 13 representative routes, zero violations (including zero serious or
+  critical contrast violations).
+- Mobile CTA links measure at least 55.25px high in the narrow-phone matrix; the fixed bar is
+  56.25px high with 72px of reserved body clearance.
+
+---
+
+## 2026-08-24 — Production service-area configuration reconciliation
+
+### What changed
+
+- Updated Cloudflare Pages' checked-in `PUBLIC_SERVICE_AREA` variable in `wrangler.toml` from
+  “San Jose and the South Bay” to the canonical “South Bay & Peninsula.”
+- Strengthened production environment validation so the effective build value and the Wrangler
+  public variable must both exactly match the canonical phrase. When a local `.env.production`
+  exists, its value is independently checked as well, so a process override cannot conceal local
+  file drift.
+
+### Conflict resolved
+
+The stale Wrangler public variable conflicted with the rank-1 business fact in AGENTS.md §3, the
+current `.env.production` value, and the `site.ts` fallback. The Cloudflare value now agrees with
+all three. The exact-value validation closes the audit's silent deployed-regression path.
+
+### What was deliberately not changed
+
+The confirmed 10-city list, `.env.production`, `.env.example`, `site.ts`, secrets, API keys, lead
+endpoint logic, SMS carrier-review route/state, and Termly variables/behavior were unchanged.
+Historical documentation and explanatory comments containing superseded wording were not blindly
+rewritten.
+
+### Evidence
+
+- `npm run validate:env -- --mode production`: PASS.
+- Negative configuration smoke test with `PUBLIC_SERVICE_AREA="San Jose and the South Bay"`:
+  correctly FAILS with the exact canonical-value error.
+- Production `npm run build`: PASS — 48 generated, 46 deployable after pruning two dev routes.
+- Rendered production scan: the canonical phrase appears in 45 ordinary HTML pages; zero rendered
+  HTML files contain “San Jose and the South Bay.”
+- Non-document deployment/config scan: zero stale values. The only remaining source match is a
+  historical explanatory comment in `Footer.astro`, which was intentionally preserved.
+- `npm run qa:phase4:static` was also probed but is private-preview-specific; against the required
+  production build it correctly reports that production `robots.txt` does not block crawling. It
+  did not modify output and is not a production-configuration failure.
+
+---
+
+## 2026-08-24 — Final copy integrity repair
+
+### What changed
+
+- Replaced the Private Residence Reset's retired Assess → Define → Reset → Verify → Maintain rail
+  with Scope → Protect → Clear → Reset → Verify. Rewrote only the stage explanations and directly
+  adjacent PRR copy needed to fit that sequence, lead with the finished residence, and remove
+  redundant “scope,” “documented,” and “controlled” wording.
+- Neutralized the five audit-identified unsupported statements: the homepage FAQ heading, homepage
+  service-group introduction, `/services/` introduction, Hoarding quote guidance, and the
+  Property Cleanouts cleaning FAQ. The replacements state present-tense guidance without project
+  frequency or categorical cost claims.
+- Simplified repeated process labels in the shared parent-service and service×city templates:
+  “As approved,” “Not included,” and “This is what we both mean by finished” replace repeated
+  “scope” constructions where the contractual meaning was already established nearby. The
+  mandatory legal scope disclaimer was preserved verbatim.
+- Tightened the homepage confidence and Why Aseptaclean blocks where “scope” or “documented” was
+  repeated several times in the same section, while retaining written approval, completion-photo,
+  exception, and correction boundaries.
+- Reconciled the affected canonical copy rows with struck-old → approved-new history and updated
+  the PRR build specification's process line so lower-authority material cannot restore the retired
+  sequence.
+
+### Conflict resolved
+
+The explicit owner instruction supersedes the former frequency claims and repeated template strings
+in docs 27 and the retired PRR sequence in doc 08. Those documents now record the supersession rather
+than silently disagreeing with the build. No claims-law wording was weakened.
+
+### What was deliberately not changed
+
+No broad site rewrite was performed. Routes, city publication states, city facts, service
+availability labels, pricing, forms, schema structure, navigation, endpoint logic, secrets, SMS
+carrier-review state, and Termly behavior were unchanged. Necessary uses of “scope,” “assessment,”
+“handoff,” “documented,” and “controlled”—including branded names, form labels, contractual
+boundaries, and mandatory disclaimers—remain. Visual-only mockups and historical audit findings were
+not blindly rewritten.
+
+### Evidence
+
+- `npm run check`: PASS — 0 errors, 0 warnings, the same 4 pre-existing hints.
+- Production `npm run build`: PASS — 48 generated, 46 deployable after pruning two dev routes.
+- `npm run qa:gate6`: PASS — 0 approved strings absent from the rendered build.
+- `npm run qa:seo`: PASS — 46 built pages scanned, 9/9 city routes remain `noindex, follow`, 0
+  errors and 0 publish blockers.
+- Rendered sweep: zero matches for all five unsupported source statements, the retired PRR
+  sequence, the superseded shared-template labels, or the former “controlled changes” PRR
+  description. The PRR method rail renders Scope, Protect, Clear, Reset, Verify in that order.
+
+---
+
+## 2026-08-24 — Current-state repository reconciliation and full-site closeout audit
+
+### What changed
+
+- Replaced the two public “Also serving” availability claims with neutral local-planning links
+  that expressly do not confirm service availability. All nine city routes remain `noindex`.
+- Removed visible image-development placeholders and converted affected homepage, founder,
+  service, hub, and city surfaces to finished text-first or decorative-field compositions.
+- Replaced `/data-request/`'s unfinished preview message with a functioning email-based privacy
+  request path; kept the route `noindex` pending provider-backed DSAR configuration.
+- Corrected the remaining ordinary-page Hoarding closing-band contrast failure.
+- Consolidated documentation authority in `AGENTS.md`, normalized canonical filenames, and moved
+  dated audits, reports, mockups, screenshots, reference HTML/PDF, and retired specifications to
+  `docs/archive/2026-08-24-reconciliation/` without deleting history.
+- Retired the archived connective-copy file from the active copy-trace inputs and reconciled two
+  Hoarding strings in doc 27 that current owner-approved route copy had superseded.
+- Removed unused Newsreader and IBM Plex Mono dependencies; Inter remains the only shipping face.
+- Added `qa:current` for all-route responsive, accessibility, SEO identity, link, placeholder,
+  and city-indexation verification. Applied available npm security fixes.
+
+### Conflicts resolved
+
+- The 2026-08-21 decision to label links “Also serving” conflicted with the 2026-08-24 owner
+  instruction not to imply availability before confirmation. The newer explicit instruction wins.
+- Older mockup and asset-slot rules required visible labeled placeholders; the current owner
+  instruction says redesign without unavailable imagery. The placeholders were removed without
+  creating fake photography.
+- `AGENTS.md` described a three-font stack while the owner-approved 2026-08-18 implementation and
+  generated assets were Inter-only. Documentation and dependencies now match the implementation.
+- The release documentation described `/data-request/` as an unfinished preview. The route now
+  provides a complete email path while preserving the provider/indexation gate.
+
+### Deliberately not done
+
+- Did not edit `functions/api/lead.ts` or create an Astro API route.
+- Did not edit `/sms-notification-consent/`; its carrier-review exceptions are recorded by the
+  audit but excluded from fix enforcement.
+- Did not index city routes, claim city availability, invent photography, create case studies,
+  add reviews, change public pricing, or broaden hauling/regulatory scope.
+- Did not close COI, city availability, live redirect, provider DSAR, or production-domain gates
+  with repository evidence that cannot prove them.
+
+### Evidence
+
+- `npm run check`: pass, 0 errors and 0 warnings (4 hints).
+- `npm run build`: pass, 48 generated / 46 deployable.
+- `npm run qa:seo`: pass, 9/9 city routes clean and still `noindex, follow`.
+- `npm run qa:gate6`: pass, 0 active approved strings absent.
+- `npm run qa:current`: pass, 46 routes × 6 widths; Axe on all routes at 390px; no ordinary-page
+  serious/critical violations, overflow, clipping, broken internal links, metadata identity
+  failures, or visible development placeholders.
+- `npm audit`: 0 known vulnerabilities after the available non-breaking fixes.
+
+Full handoff: `FULL-SITE-CURRENT-STATE-AUDIT.md`.
+
+---
+
+## 2026-08-24 — Approved Hoarding Cleanup San Jose long-form page
+
+### What changed
+
+- Replaced `/hoarding-cleanup-san-jose/`'s shared short-form service template with the owner's
+  supplied long-form page copy and a route-specific editorial layout. No other service route or
+  shared visual component was changed for this implementation.
+- Set the owner-supplied title and meta description, retained one H1 and a self canonical, and
+  generated Service, BreadcrumbList, and FAQPage schema. The visible ten-item FAQ and FAQPage data
+  read from the same source so their questions and answers cannot drift.
+- Preserved the parent-service link, related-service links, assessment CTA, and the three required
+  city-guide inbound links. The city block uses the newer neutral local-planning wording and
+  expressly does not confirm service availability.
+- Added the verbatim animal/organic limiting clause and the standard lawful-scope disclaimer
+  required by `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md`.
+
+### Conflict resolved
+
+The explicit owner-supplied page copy supersedes the older Hoarding record and shared service-page
+sequence for this route only. Claims law still outranks the supplied copy, so its two mandatory
+scope notices were added without rewriting or deleting any approved sentence. The earlier
+“Also serving” label was not restored because the newer 2026-08-24 availability ruling requires
+neutral local-planning language until city availability is confirmed.
+
+### Deliberately not done
+
+- Did not edit another service page, a city page, routing, sitemap membership, publication status,
+  global design tokens, forms, or `functions/api/lead.ts`.
+- Did not claim city availability, self-performed hauling or transport, regulated work, prior
+  experience, reviews, project counts, or public project pricing.
+- Did not shorten the supplied long-form copy or add photography to fill an unavailable proof slot.
+
+### Evidence
+
+- `npm run check`: pass, 0 errors and 0 warnings (4 pre-existing hints).
+- Production `npm run build`: pass, 48 generated / 46 deployable after pruning two dev routes.
+- `npm run qa:seo`: pass, 9/9 city routes clean, 0 errors, 0 publish blockers.
+- Rendered copy comparison: every supplied approved-copy line present; one H1; exact title, meta,
+  canonical, and ten FAQ entries; visible FAQ and FAQPage schema match exactly.
+- Responsive inspection at 320, 390, 768, and 1440 pixels: no horizontal overflow. Full visual
+  review completed at 390 and 1440 pixels; Keep/Remove/Review/Do not touch, provider boundary,
+  FAQ, related links, and closing CTA remain readable.
+
+---
+
+## 2026-08-24 — Hoarding page visual-system restoration
+
+### What changed
+
+- Reworked only `/hoarding-cleanup-san-jose/` from the first route-specific long-form composition
+  into the established Aseptaclean service-page vocabulary: shared hero, credential strip,
+  reading-width sections, stage rails, scope panels, FAQ treatment, related-service column, and
+  shared assessment form.
+- Kept the approved long-form content while grouping it into fewer logical editorial movements.
+  The Keep / Remove / Review / Do not touch rail and the on-site/provider transport boundary remain
+  prominent without turning every content section into a card.
+- Corrected the page-local ordered-list reset at the mobile breakpoint so the decision rail does
+  not show duplicate native list markers. No shared stylesheet or component was edited.
+
+### Conflict resolved
+
+The initial long-form implementation satisfied the supplied content requirements but introduced a
+standalone visual language that did not match the immediately preceding approved site design. The
+newer owner instruction required the established visual system to be restored while retaining the
+copy, so the route now composes existing classes and components rather than expanding that custom
+direction. The supplied secondary label “Text us photos” remains the repository-owned shared CTA
+label “Text a photo”; changing `site.ts` would affect other pages and violate this task's page-only
+scope.
+
+### Deliberately not done
+
+- Did not edit another service page, a city page, routing, global tokens, shared CSS, navigation,
+  forms, publication state, sitemap logic, or `functions/api/lead.ts`.
+- Did not revert or modify unrelated working-tree changes that predated this page task.
+- Did not restore the availability-claim wording “Also serving”; nearby-city links remain neutral
+  planning guides and do not claim current service availability.
+
+### Evidence
+
+- Diff classification found the visual regression entirely in the Hoarding route's standalone
+  markup and local CSS; this restoration changed no shared design file.
+- `npm run check`: pass, 0 errors and 0 warnings (4 pre-existing hints).
+- Production `npm run build`: pass, 48 generated / 46 deployable after pruning two dev routes.
+- `npm run qa:seo`: pass, 9/9 city routes clean, 0 errors, 0 publish blockers.
+- Automated rendered-copy check: 267 of 268 supplied lines present verbatim; only the shared CTA
+  label differs as documented above. Visible FAQ questions match FAQPage schema exactly.
+- Responsive checks at 320, 390, 768, and 1440 pixels: one H1, no horizontal overflow, no runtime
+  errors, and an H1/body ratio above the 1.9 floor at every width. Visual review completed at 390
+  and 1440 pixels. Comparison screenshots for the homepage, Deep Cleaning, Property Clearing, and
+  Mountain View retained their pre-restoration dimensions and layout metrics.
+
+---
+
+## 2026-08-25 — Owner-approved documentation authority reconciliation
+
+### Owner decisions recorded
+
+- Visible primary CTA is **Tell Us About the Property**; secondary CTA is
+  **Call Aseptaclean**. `/request-assessment/` remains the route.
+- The homepage primarily serves an adult child or family decision-maker managing a relative's
+  difficult property. Secondary audiences remain legitimate without controlling the homepage.
+- “When a family property has become too much to handle” is an approved H1 direction, not final
+  locked copy. Final copy must be completed in the homepage brief/copy process.
+- Preferred evidence label is **Project Notes**; keep `/projects/` and never invent proof.
+- Preferred customer-facing category is **Complex Property Cleanup**; preserve existing URLs.
+- Keep Astro static output plus Cloudflare Pages. WordPress/Elementor migration instructions are
+  obsolete. `/api/lead` remains singular at `functions/api/lead.ts`.
+- The owner rejected affirmative “decontaminates” wording. Claims law continues to prohibit an
+  invented regulated capability.
+- Do not embed a Google Map on Contact. Do not create `/service-areas/san-jose/`.
+- Handoff Reset is not the global flagship. It may remain a specific or internal framework.
+- The future `/request-assessment/` direction is situation-first. Protected consent, privacy,
+  SMS, 10DLC, carrier-reviewed, and regulated-scope text remains untouched without verified
+  authority.
+- Keep current city indexation gates and use a conservative gated-content default.
+- Verify current COI/insurance/endorsement facts before public use; suppress if unverified.
+- Public process is **Scope → Protect → Clear → Reset → Verify**.
+- Keep the current verified service-area wording. Do not publish a general starting investment
+  or “gross filth” language.
+- Visible FAQs may remain useful; do not add `FAQPage` schema solely for a rich result.
+- Current technical inventory remains: 46 built routes; 24 indexable; 23 sitemap entries; one
+  indexable route outside the sitemap; 22 `noindex`; nine city routes `noindex`.
+- The authority hierarchy is: verified facts; explicit current owner decisions; claims law;
+  specifically locked canonical copy; doc 30; nonconflicting specialty documents; current
+  implementation as technical evidence; AI preference. The doc 30 changelog is historical only.
+
+### Conflicts resolved safely in documentation
+
+- Replaced competing precedence chains in `AGENTS.md`, `docs/README.md`, doc 30, and the active
+  doc-precedence skill with the owner-approved hierarchy.
+- Limited doc 27 to specifically locked copy and copy history. Removed its authority over
+  strategy, routes, platform, design, indexation, and current implementation facts.
+- Reconciled the claims document's internal animal/organic wording so it does not affirm a
+  decontamination capability. Retained the mandatory limiting clause and regulated boundaries.
+- Reconciled CTA, homepage-audience, process, Project Notes, Complex Property Cleanup, Handoff
+  Reset, pricing, service-area, Contact-map, San Jose-hub, and platform instructions across the
+  active master and specialty documents.
+- Corrected stale sitemap rows and animal/rodent/pigeon publication language to retain per-route
+  gating. Reconciled `/data-request/`, `/sms-notification-consent/`, and
+  `/private-residence-reset/` status descriptions with the documented 46-route snapshot.
+- Cancelled the old triage-quiz instruction in place and removed it from GBP-link guidance.
+- Marked WordPress/Elementor material, visual-system material in doc 27, stale technical
+  architecture, root bootstrap prompts, cleanup manifests, and completed port prompts as
+  historical or obsolete rather than implementation authority.
+- Reconciled active AI skills so current technical behavior is derived from a fresh build and
+  never used to override higher authority. Removed the obsolete 27-route snapshot and the false
+  blanket prohibition on `/projects/`.
+- Added page briefs for `/` and `/request-assessment/` with approved strategy, claims and
+  evidence limits, responsive/SEO requirements, edge states, integration boundaries, and named
+  open decisions. These briefs explicitly do not authorize implementation.
+
+### Documentation files changed in this reconciliation
+
+- Repository instructions/history: `AGENTS.md`, `README.md`, `START-CODEX-PROMPT.md`,
+  `PORT-PROMPT.md`, `DELETE-MANIFEST.md`, `FULL-SITE-CURRENT-STATE-AUDIT.md`, and four active
+  `.claude/skills/*/SKILL.md` files.
+- Governing/specialty docs: `docs/README.md`, docs 01, 02, 04, 05, 08, 19, 20, 21, 25, 27,
+  30, doc 30's changelog, and `docs/SITEMAP-MASTER.md`.
+- Historical city source packages: `docs/city-pages-part2-UPDATED.md` and
+  `docs/city-service-data-UPDATED.md`, each retained in place with a non-authoritative banner.
+- Page briefs: `docs/page-briefs/HOME.md` and
+  `docs/page-briefs/REQUEST-ASSESSMENT.md`.
+
+### Historical material preserved
+
+No file was moved, deleted, renamed, or newly archived in this pass. Stale root prompts and city
+source packages were preserved in place with explicit historical/non-authoritative boundaries.
+The pre-existing `docs/archive/2026-08-24-reconciliation/` contents were not altered as source
+authority and remain historical evidence only.
+
+### External verification still open
+
+- Current Certificate of Insurance and Organic Pathogen Endorsement match.
+- Owner confirmation of availability for the nine gated city routes.
+- Live-host redirect, carrier-review, Termly, inbox/spam, and production performance checks.
+- Provider-backed privacy-request workflow before `/data-request/` indexation.
+- Final homepage H1/supporting copy, usable Project Notes evidence, and final situation-first form
+  field/data-handling decisions.
+
+### Deliberately not done
+
+- No public website implementation, design, copy render, route, redirect, sitemap, robots,
+  publication status, schema output, platform, build configuration, or lead endpoint was changed.
+- No build was run because this was a documentation-only reconciliation and route/indexation
+  output was required to remain unchanged.
+- Protected consent/privacy/SMS/10DLC/carrier-reviewed public copy was not edited.
+
+## Homepage navigation and hero implementation — 2026-08-25
+
+Implemented only the owner-requested first homepage slice after rereading
+`ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF.md`, the homepage page brief, and the claims law:
+
+- Replaced the former utility ribbon with the verified service-area wording and phone number.
+  Suppressed the unverified insurance/endorsement statement from that surface.
+- Rebuilt the global header as a restrained operating-company navigation. Service links are
+  derived from current indexable service records; gated routes remain absent. Desktop uses a
+  flat services panel, while tablet and mobile use keyboard-operable native disclosure controls.
+- Changed the shared primary CTA label to the owner-approved `Tell Us About the Property` while
+  preserving `/request-assessment/` as the route.
+- Rebuilt the homepage hero with the owner-approved headline and supporting copy, a lower-left
+  desktop composition, and stacked small-screen behavior. No approved Aseptaclean hero photograph
+  exists in the repository, so the media area is explicitly marked as a development placeholder.
+- Added a dedicated homepage-H1 type role. Heading size remains controlled through an
+  `.ac-type-*` class and clears the current computed H1-to-body ratio requirement.
+
+No lower homepage section, footer, lead form, schema, route, publication state, sitemap, robots
+directive, Cloudflare function, consent page, or carrier-reviewed copy was changed. The existing
+post-hero credential strip still contains release-gated insurance wording; it was recorded as an
+out-of-scope existing issue rather than silently expanded into this limited implementation.
+
+## Sevenson-led homepage Phase 1–2 supersession — 2026-08-25
+
+The owner supplied and approved
+`docs/ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF-SEVENSON.md`, then explicitly authorized
+implementation through the first two post-hero sections. This supersedes the lower-left,
+Interdoor-heavy hero recorded immediately above wherever the two directions conflict.
+
+- The global hierarchy remains factual utility row → sticky white navigation → full-width hero.
+  The utility copy now uses the approved `Specialty Property Cleaning + Complex Cleanup` label
+  and the phone remains data-driven.
+- The hero is now one full-width media field with one flat navy overlay, centered copy, one white
+  rectangular CTA, a 560–650px responsive height, and a 38–58px responsive H1. The former split,
+  lower-left panel and hero phone CTA were removed.
+- Added `What are you dealing with?` as three large image-led situation routes. Every destination
+  is a currently indexable service route: extreme-condition cleaning, hoarding cleanup, and
+  estate cleanout.
+- Added `A clear scope before work begins.` as a quiet text-and-rules composition. It uses no
+  cards, icons, numbered steps, dashboard treatment, or invented operational proof.
+- The former homepage credential strip and duplicate `RoutingDoors` block were removed from the
+  homepage opening sequence. Their shared component files remain intact for other consumers.
+- No approved Aseptaclean property, project, equipment, vehicle, operator, or before/after image
+  exists in `public/assets`; the hero and three recognition media slots therefore remain explicit
+  development placeholders marked `Not project proof`.
+
+No route, canonical, robots directive, sitemap logic, redirect, JSON-LD generator, publication
+state, service-area record, request-assessment implementation, or `functions/api/lead.ts` file was
+changed. The built state remains 46 HTML pages, 24 indexable, 22 noindex, and 23 sitemap URLs.
+
+`npm run qa:gate6` still expects `Call Aseptaclean` in the hero from the older canonical-copy
+shape. The new governing brief requires one hero CTA, so the string remains absent and that legacy
+check reports a conflict. Its other two absent strings (`Project Notes` and an internal assessment-
+architecture note) predate this slice. The copy-trace script and protected route/form behavior
+were not changed to make a superseded expectation pass.
+
+## Homepage build repair and lean-header correction — 2026-08-25
+
+The owner stopped further homepage-section work and required the current build and header to be
+corrected first.
+
+- `src/pages/index.astro` correctly imports
+  `@components/ConditionRecognition.astro`; `tsconfig.json` correctly maps `@components/*` to
+  `src/components/*`. The reported missing-module state occurred because the new component file
+  was not present in the source set resolving the import. The file now exists at the canonical
+  component path and remains required by the approved homepage sequence.
+- Reduced the utility row to 30px on tablet/desktop and 28px on mobile. On mobile, the long
+  category label is suppressed while the verified phone remains visible.
+- Reduced the main navigation inner height to 68px desktop and 64px tablet/mobile. The utility
+  row plus desktop navigation now renders at 99px total at 1440px.
+- Widened the header shell to `min(100% - 64px, 1504px)`, which renders as a 1376px inner shell
+  with 32px outer padding at 1440px. Navigation uses the available center column rather than a
+  narrow body-text container.
+- The rendered wordmark is 142×34px desktop/tablet and 126×30px at 390px. The rendered desktop
+  phone and primary CTA are both 44px tall; the CTA is 208px wide at 1440px.
+- Added the owner-verified `(408) 785-7588` fallback in `src/data/site.ts` so ordinary Astro dev
+  mode does not suppress the phone when `.env.production` is not loaded. Production still reads
+  the same value from `PUBLIC_PHONE`.
+
+No new homepage section, route, service state, schema, canonical, robots directive, sitemap,
+redirect, form, or lead endpoint was added or changed. `astro check`, the production build, and
+the live Astro dev server all resolve the component successfully with no compiler, page, or
+console errors.
+
+## Recognition photography, atmosphere-slot cap, and homepage H2 scale — 2026-08-25
+
+Phase 2 of the Sevenson-led homepage rebuild. The two sections themselves were already built;
+this slice filled their imagery and corrected two defects found by measuring the built output.
+
+**Recognition media slots filled with temporary development photography.** The three
+`ConditionRecognition.astro` slots previously rendered as text placeholders on the reasoning
+that no approved Aseptaclean photography exists. That reasoning still holds — none exists — but
+it left the section non-photographic, and the governing brief requires the photographs to be the
+section's visual objects. The slots now carry third-party photographs of real property
+conditions, visibly labelled `Development reference photographs · not Aseptaclean project work`
+and credited in-component:
+
+| Slot | File | Source | License |
+| --- | --- | --- | --- |
+| Heavy buildup or neglected property | `condition-development-neglected-kolforn.jpg` | Kolforn, Wikimedia Commons | CC BY-SA 4.0 |
+| Hoarding or overwhelming contents | `condition-development-hoarding-asurnipal.jpg` | Asurnipal, Wikimedia Commons | CC BY-SA 4.0 |
+| Estate, move-out, or property reset | `condition-development-reset-aismallard.jpg` | aismallard, Wikimedia Commons | CC BY-SA 3.0 |
+
+None depicts a crew, a technician, a document, a before/after pair, or any implied Aseptaclean
+work, so each passes the `21-CLAIMS-AND-COMPLIANCE-LAW.md` §6 image test on the `No` branch and
+is `[ATMOS]`-class rather than `[OWNED]`.
+
+**Conflict recorded rather than merged.** `06-ASSET-MANIFEST.md` §4 caps atmosphere imagery at
+**three slots total** sitewide. The hero already holds one, so these three take the site to four
+and exceed that cap by one. Resolved under `AGENTS.md` §1 in favour of the explicit current
+owner instruction (rank 2) directing temporary development imagery for this section, over the
+manifest's editorial cap (rank 6 detail of a rank 3 authority). The cap's purpose — that the
+site must not become stock-photo theatre — is served by the visible development label on both
+the hero and this section. **This is not a licence to add a fifth.** The standing target in
+`06-ASSET-MANIFEST.md` §5 is unchanged: all four are placeholders for the Phase 0 owner shoot
+and must be replaced before launch. Two items still need an owner call, both listed in the
+build report: whether CC BY-SA attribution is acceptable on a commercial page even temporarily,
+and whether the bare-room photograph in the third slot reads as an implied "after".
+
+**Homepage H2 scale corrected.** `--ac-text-h2-home-feature` resolved to 63.4px at 1440px while
+the hero H1 resolves to 54px, so both new sections carried a section heading larger than the
+page's H1. Retuned to `clamp(2.25rem, 4vw, 3.25rem)`, and the `ScopeExplanation.astro` small-
+screen override to `clamp(2rem, 5vw, 2.25rem)`. Computed H1 > H2 > H3 now holds at 320, 360,
+375, 390, 430, 768, 1024, 1280, and 1440px, and the scope H2 lands at 52px — inside the brief's
+46–58px band and below the hero. Both rules of the typography law are intact: size still lives
+only on the `.ac-type-h2-home-feature` role class, never on a heading selector, and the
+H1-to-body ratio measures 2.38–3.38 against a 1.9 floor.
+
+**Recognition panel structure.** Each panel now exposes one link rather than three to the same
+route (media wrapper, heading, and text link were separate anchors); the heading anchor is
+stretched over the panel and the trailing affordance is inert. Panel copy uses flex alignment
+instead of a fixed `min-height: 5.2em`, which had reserved roughly three unused lines at 1440px,
+and the third panel no longer inherits the tablet 2 + 1 row gap on mobile.
+
+No route, canonical, robots directive, sitemap logic, redirect, JSON-LD generator, publication
+state, service-area record, request-assessment implementation, or `functions/api/lead.ts` file
+was changed, and no dependency was added. `astro check` reports 0 errors; the production build
+completes at 48 pages. Measured across nine widths there is no page-level horizontal overflow
+and no first-party console error. The only console errors are Cloudflare Turnstile `110200`
+(invalid domain) from the committed `AssessmentForm.astro`, which is a localhost-preview
+artifact unrelated to these sections.
+
+## V3 lean-Sevenson homepage rebuild (2026-08-25)
+
+Implemented `docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md`, which the brief itself
+declares supersedes earlier homepage section-order and architecture instructions wherever they
+conflict. Under `AGENTS.md` §1 it is an explicit current owner decision (rank 2) and therefore
+outranks `docs/30-WEBSITE-MASTER-SPEC.md` §36.1 (rank 5) and
+`docs/ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF-SEVENSON.md`. Homepage only — no other route's
+architecture was changed except the one relocation recorded below.
+
+**Eleven rendered sections became five.** Final order: Hero · What We Handle · The Property
+Condition Changes the Work · Operating Evidence · Final CTA.
+
+| Old section | Outcome | Where the content went |
+| --- | --- | --- |
+| ConditionRecognition + ServiceFeatures | merged | `WhatWeHandle.astro` — V3 §10, one routing system instead of two |
+| ScopeExplanation | merged | absorbed into `ConditionChangesWork.astro` — V3 §11; the five-row scope register still ships via `ServiceScope` on the service pages and on `/handoff-standard/` |
+| HandoffRecord + OperatorAccountability | merged | `OperatingEvidence.astro` — V3 §12, one credibility movement |
+| CostAndScope | removed from `/` | cost drivers and doc 27 §7's $195 framing already render on every service page via `ServicePricing` and on `/private-residence-reset/`. **`AGENTS.md` §4 is untouched — no price figure was moved, added, or changed anywhere.** |
+| ConfidenceAndFit | **relocated to `/services/`** | V3 §14 names the services hub as a correct home. `homepage.excludedScope` and `homepage.qualification` rendered in exactly one place in the build, so deleting the section would have deleted the site's only sitewide exclusion list. Component file unchanged; only its call site moved. |
+| FAQ | removed from `/` | still the whole of `/faq/`. The homepage `FAQPage` JSON-LD node was removed with it — schema must not describe content a visitor cannot see. `/faq/` emits its own `FAQPage`. |
+
+**Conflict recorded rather than merged — `qa:gate6` now reports 16 absent approved strings.**
+Ten were already absent before this pass: they lived only in components that had zero importers
+at session start (`WhyAseptaclean`, `HandoffStandard`, `Pricing`), in the pre-session rewrites of
+`OperatorAccountability` and `FinalCTA`, or nowhere in `src/` at all ("Call Aseptaclean",
+"Matthew Ruiz is directly involved…", "Project Notes"). Six are consequences of this pass, all
+from doc 27 §§9.10/9.11/9.14 homepage slots and the three homepage FAQ answers. Doc 27 is rank 4
+and applies where "not superseded by a rank 1–3 authority"; V3 is rank 2, so V3 governs the
+placement. The *information* survives: `/faq/` answers all three topics in its own approved
+wording ("Can I manage the project remotely?", "Will you remove anything without approval?",
+"How soon will you respond?"), and duplicating the homepage variants there would ship two
+near-identical questions.
+
+**Not done, and why.** The repo-idiomatic fix is to mark the superseded homepage-only slots
+`~~struck~~` in `docs/27-COPY-CANONICAL.md` with an inline reason, which is how the 27 existing
+struck strings are handled and which would return gate 6 to PASS. That edits rank-4 locked
+canonical copy, so it is left for explicit owner approval rather than taken unilaterally — this
+file exists because one document once silently overrode four higher-ranked ones.
+
+**Header (V3 §8).** The phone number was rendering in the utility bar *and* in the main nav
+simultaneously above 70rem. The nav copy is removed; the utility bar keeps it. That freed the
+horizontal space to move the nav collapse from 70rem (1120px) to 63.9375rem, so 1024px now keeps
+the full navigation and the primary CTA instead of dropping both to a hamburger. `StatusRibbon`'s
+gutter breakpoint and the header script's `matchMedia` moved with it.
+
+**Footer / nav (V3 §17).** `/request-assessment/` was exposed twice under two names on all 45
+routes. The `megaNav` "Request an assessment" child is removed; `site.offer.primaryCta`
+("Tell Us About the Property") is the single visible label. The route is not orphaned — it is
+still linked from the header CTA, hero, closing CTA, footer utility row, mobile bar, and every
+service page.
+
+**Mobile CTA (V3 §18).** The shared `MobileCTA` bar showed three equal buttons. It is adapted
+per-route rather than changed globally or disabled: on `/` it renders one filled primary plus an
+outlined "Call". All other routes are byte-identical. Amber is not used on `/`, so owner ruling
+D1's rationed accent is unaffected.
+
+**Typography (V3 §§9, 23).** Hero H1 54px → 45px desktop (42/40/38/36 down the scale). All four
+homepage H2s now resolve to 40px; the audited build ran 52px. Both `AGENTS.md` §6 laws hold: no
+`font-size` is declared on any heading selector — every change is made on the `--ac-text-*` token
+the role class reads — and the H1:body ratio measures 2.38–2.81 against the 1.9 floor.
+
+**Hero image replaced.** `hero-development-peter-herrmann.jpg` is deleted from the repository.
+V3 §9 rules it out by name: it showed a derelict, structurally abandoned building. Replaced with
+`hero-development-residence-asurnipal.jpg` (Asurnipal, Wikimedia Commons, CC BY-SA 4.0) — a real
+family property in an overwhelming condition, residential, serious without implying demolition.
+
+**Temporary-image cap superseded for homepage development.** V3 §19 explicitly supersedes the
+older count limitation, including the four-slot conflict recorded in the previous entry above.
+Six temporary development photographs now ship on `/`, each with a visible development label.
+This is NOT permission to present any of them as proof; all six are placeholders for the Phase 0
+owner shoot (`docs/06-ASSET-MANIFEST.md` §5) and must be replaced before launch.
+
+**Dead code removed after importer verification** — twelve components, each confirmed at zero
+importers: `ServiceCards`, `WhyAseptaclean`, `HandoffStandard`, `Pricing`, `Card`, `RoutingDoors`,
+`ConditionRecognition`, `ServiceFeatures`, `ScopeExplanation`, `HandoffRecord`,
+`OperatorAccountability`, `CostAndScope`. `ServiceFitPanel.astro` is also orphaned but is a
+service-page artifact rather than an abandoned-homepage one, so it is reported and left in place.
+The `navigation` export in `src/data/site.ts` remains a dead export containing a now-dangling
+`/#standards` anchor; it has no consumer and renders nothing, and cleaning it is out of scope here.
+
+**Preserved, verified against the build:** routes, canonical logic, robots, sitemap membership,
+redirects, `functions/api/lead.ts`, service-area generation, city gating, and every publication
+gate. `<main>` on `/` links no gated route. `qa:seo` and `qa:current` (46 routes × 6 widths, Axe
+at 390px on every route) both pass.
+
+**Measured, old → new:** 1440px 11,704px → 4,954px (−58%); 1024px 11,813 → 5,427 (−54%);
+768px 14,219 → 6,228 (−56%); 390px 17,170 → 7,361 (−57%). Visible words in `<main>` 1,678 → 394.
+Homepage H2s 8 → 4. Photographs below the hero 2 → 5. Repeated H2-left/content-right compositions
+5 → 1.
+
+## Website documentation authority reinstalled: one governing master, one supporting copy source (2026-08-26)
+
+**Documentation only. No application code, CSS, Astro component, route, form, public page, data
+module, or approved service copy was modified.** No `publishStatus`, robots tag, sitemap entry,
+canonical, redirect, price, claim, or credential changed. No build was run, because nothing that
+a build observes was touched.
+
+### What the owner decided
+
+One governing website strategy/design document, and one supporting service-page content source:
+
+```
+GOVERNING                docs/30-WEBSITE-MASTER-SPEC.md
+SUPPORTING SERVICE COPY  docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md
+```
+
+Plus a clarification, restated from the owner prompt and already carried in doc 30 §20A.4:
+rodent-droppings, animal-waste, and pigeon-droppings cleanup are **not operationally gated**. The
+gate is TSWMP-dependent work. Operational availability, TSWMP scope, and SEO/indexation state are
+three separate questions and a `noindex` route is not evidence that a service is unavailable.
+
+### Files installed
+
+Both were already present in the working tree, untracked, written 2026-08-26 04:35 and 04:36 —
+before this session opened. Neither has ever been committed, so there is no prior tracked version
+to diff against and no "replacement" occurred in the git sense. Their content was verified as the
+new supplied versions, not older drafts, on three independent markers: doc 30 carries the
+August 25 owner correction at §1, an entire §20A reconciling the landing-page system across 25
+subsections, and a §50 documentation-cleanup instruction that matches the owner's task. Recorded
+this way deliberately — a future session should not assume a replace step happened here.
+
+| Path | Lines | Role |
+| --- | --- | --- |
+| `docs/30-WEBSITE-MASTER-SPEC.md` | 3,409 | Rank 5. Governing website authority. |
+| `docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` | 6,916 | Rank 6. Service-page content only. |
+
+### Authority changes made
+
+- **`AGENTS.md` §1** — rank 5 row now reads "the single governing website document"; rank 6 row
+  names the landing-page system. New §1.1 states the GOVERNING / SUPPORTING pair, lists the nine
+  things the landing-page file can never establish on its own, and points to doc 30 §20A for the
+  reconciliation order. New §1.2 retires the three homepage briefs.
+- **`AGENTS.md` §2** — added the operational / TSWMP / indexation separation after the `noindex`
+  list, with an explicit statement that it moves no gate, and a note that the B&P §8550(a) reason
+  the rodent and pigeon routes stay out of `megaNav` is rank 3 and untouched by it.
+- **`docs/README.md`** — added the GOVERNING / SUPPORTING block, added the landing-page system to
+  the active governing set marked "content, not authority", added a retired-homepage-briefs
+  section.
+- **`.claude/skills/doc-precedence/SKILL.md`** — convenience chain updated at ranks 5 and 6; added
+  the retired-briefs paragraph. The skill's own instruction is to fix this list when it drifts.
+
+### Older documents found, and what happened to each
+
+| Document | Self-declared status | Now |
+| --- | --- | --- |
+| `docs/ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF.md` | "one governing implementation brief" | SUPERSEDED banner |
+| `docs/ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF-SEVENSON.md` | "Canonical Build Specification" | SUPERSEDED banner |
+| `docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md` | "Canonical homepage direction" | SUPERSEDED banner |
+| `docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` | "Master build document" | Demoted to supporting content, banner added |
+| `docs/30-WEBSITE-MASTER-SPEC-CHANGELOG.md` | already historical-only | Unchanged; stale pointer flagged below |
+
+**Marked superseded in place rather than archived, deliberately.** The archive convention at
+`docs/archive/2026-08-24-reconciliation/` was the obvious move and is the wrong one here. Ten
+`src/` files and `scripts/v3-homepage-check.mjs` cite these briefs by path and section as the
+recorded reason a shipped decision was made — `Hero.astro` §9, `ConditionChangesWork.astro` §11,
+`OperatingEvidence.astro` §12, `Header.astro` §8 and its duplicate-phone removal, `Footer.astro`
+§17, `MobileCTA.astro` §18, `site.ts` §17, `services/index.astro` §14, `index.astro` §6, and
+`FinalCTA.astro` §20 — as do four entries in this log. Moving the files strands every one of
+those pointers, and repairing them would mean editing application code, which this task forbids.
+A banner removes the authority while keeping the traceability. Doc 30 §50 permits either.
+
+### Conflict: the V3 brief was ranked above doc 30 and no longer is
+
+A: `docs/05-DECISIONS-LOG.md`, "V3 lean-Sevenson homepage rebuild (2026-08-25)" — "Under
+`AGENTS.md` §1 it is an explicit current owner decision (rank 2) and therefore outranks
+`docs/30-WEBSITE-MASTER-SPEC.md` §36.1 (rank 5)." (rank 2, as claimed)
+B: Owner instruction 2026-08-26 — "There should be ONE governing website strategy/design
+document: `docs/30-WEBSITE-MASTER-SPEC.md`", listing V2/V3 homepage briefs among the documents to
+remove from active authority. (rank 2, and later)
+
+**Resolution: B. Doc 30 §17 is the homepage architecture.** The later owner decision governs, and
+under `AGENTS.md` §1 a log entry "governs only the scope it actually decided" — the 2026-08-25
+entry decided a build that has since shipped. It is spent, not a standing rank-2 elevation.
+
+**Nothing is lost, and this is why the resolution is safe.** Doc 30 §17's target architecture is
+the same five-section order the V3 brief produced — Hero · What We Handle · The Property Condition
+Changes the Work · Operating Evidence · Final CTA — and that is exactly what `src/pages/index.astro`
+renders today, verified by reading its markup. The V3 direction was absorbed into the master, not
+reversed by it. **No homepage change is implied or authorized by this entry.**
+
+Type: superseded authority → losing documents banner-marked.
+
+### Conflict: the landing-page system publishes a price the owner has barred
+
+A: `AGENTS.md` §4, owner decision 2026-08-11 — "No price figure is published anywhere on the
+site," the $195 assessment fee excepted. (rank 2)
+B: `docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` — "Qualifying 2-bed / 2-bath homes start at
+$1,350," ten times, at lines 444, 1856, 2230, 2427, 2466, 2873, 3066, 3107, 3513, and 3730 as the
+file now stands, across detailed, move-in, and move-out cleaning. A separate `$300` figure appears
+at line 2898 as an objection-handling H1 ("I FOUND A CLEANER FOR $300."), which is a competitor
+comparison rather than an Aseptaclean price but still renders a price figure on a public page.
+(rank 6)
+
+**Resolution: A. The `$1,350` sentences are not publishable.** Doc 30 §20A.17 already fences this
+— "DO NOT AUTOMATICALLY PUBLISH `$1,350` JUST BECAUSE IT APPEARS IN THE LANDING-PAGE COPY" — and
+§20A.23 lists it under conditional copy.
+
+**The copy was not edited.** The owner instruction is explicit that approved service copy is not
+to be modified because the master shows a shorter example, and a price the owner may later approve
+is not a defect in a content source. The fence is stated in the file's banner and in `AGENTS.md`
+§1.1 instead. **Anyone implementing a service page must clear the price against `AGENTS.md` §4
+before it renders.** This remains open until an owner decision reverses §4.
+
+Type: violated rule → fenced at the point of use, copy preserved.
+
+### Conflict: two stale pointers in `docs/page-briefs/HOME.md`
+
+A: `docs/page-briefs/HOME.md` §8 — "Follow `docs/30-WEBSITE-MASTER-SPEC.md`: Clinical Field
+Editorial…" (rank 6)
+B: `docs/30-WEBSITE-MASTER-SPEC.md` — the phrase "Clinical Field Editorial" appears **zero** times
+in the installed master. It was the previous master's named direction, recorded in the changelog
+§5. (rank 5)
+
+Also: HOME.md §7's twelve-item narrative sequence is the previous master's homepage sequence
+verbatim, against doc 30 §17's five-section architecture and its "Excluded standalone homepage
+sections" list, which bars an independent Cost section, Fit/Boundaries, giant FAQ, founder essay,
+service directory, Clear Scope section, project placeholder, and homepage lead form.
+
+**Resolution: B on both.** A reconciliation note was added to HOME.md restating the current visual
+authority as doc 30 §6/§7/§8, and recasting §7 as a content checklist of narrative obligations
+rather than a rendered section order. **§7's twelve items were not deleted** — they are
+owner-approved strategy from 2026-08-25, and several are satisfied inside the five sections or on
+`/faq/`, `/services/`, and the service pages. Deleting owner-approved strategy to match a
+composition rule would be the wrong repair.
+
+Type: stale description → corrected doc.
+
+### Still pointing at something obsolete, and left alone
+
+- **`scripts/v3-homepage-check.mjs:3`** cites `docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md`
+  §28 as the source of its accessibility gates. The path still resolves and the banner is now the
+  first thing a reader hits. It is not wired into any `package.json` script. Left alone: editing
+  it is a code change, and its gates are not themselves wrong.
+- **Ten `src/` comment citations** of the two Sevenson briefs, listed above. Historical rationale
+  for shipped decisions. Left alone for the same reason.
+- **`docs/30-WEBSITE-MASTER-SPEC-CHANGELOG.md` §Files** instructs the reader to treat
+  `ASEPTACLEAN-MASTER-WEBSITE-SITEMAP.md` as "the new canonical working specification" and names
+  two sibling files. **None of the three exists in this repository.** The file is already fenced
+  as historical-explanation-only at both `AGENTS.md` §1 and its own header, so the stale pointer
+  cannot act, but it is a live invitation to go looking for a file that is not there.
+- **`docs/ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF.md`** names `ASEPTACLEAN-MASTER-WEBSITE-SITEMAP.md`
+  and `Pasted markdown.md` as primary references; neither exists. Called out in its banner.
+
+### Not done, and why
+
+- **No second strategy document was created.** The owner instruction bars `homepage-v4.md`,
+  `service-page-design.md`, `Sevenson-guidelines.md`, `implementation-plan.md`, and any further
+  master spec. Consolidation was the point.
+- **No website implementation.** Doc 30 §17's homepage architecture already matches what ships;
+  §20A's service-page system has not been implemented against any route and is not authorized by
+  this entry.
+- **No archival move.** Reasoned above.
+- **No approved service copy edited**, including the `$1,350` sentences.
+
+---
+
+## 2026-08-26 — Homepage `/` finish pass: four defect repairs, two findings raised for owner review
+
+**Task.** "Rebuild and finish the homepage," under `docs/30-WEBSITE-MASTER-SPEC.md` §17 as the
+governing architecture (AGENTS.md §1 rank 5, and §1.2's ruling that the three retired homepage
+briefs are historical rationale only).
+
+**What the audit actually found, and why this is a repair pass rather than a rebuild.** The
+2026-08-25 V3 pass had already reduced `/` to doc 30 §17's five movements, and §17 carries the same
+section order. Measured against §17 the shipped page conformed: five movements in the required
+sequence, one H1, four H2s, no homepage form, no cost/fit/FAQ/founder-essay/service-directory/
+clear-scope/project-placeholder section, three photographic capability routes pointing only at
+indexable routes, the sample handoff artifact labelled, no empty founder box. Rebuilding a
+conforming page to prove it had been rebuilt would have been churn. So the pass measured, found
+four defects, and repaired those.
+
+Baseline, unchanged by this pass and restated because it is the comparison of record: `<main>`
+394 words (was 1,678); document height 4,937 / 5,387 / 6,188 / 7,337px at 1440 / 1024 / 768 / 390
+(was 11,704 / 11,813 / 14,219 / 17,170); 8 H1+H2+H3 in `<main>`; 6 images; 0 form fields.
+
+### Repaired
+
+1. **The hero's temporary-imagery disclaimer was truncated at every width ≥768px.**
+   `.home-hero__development-note` inherits `global.css`'s `:where(p, li) { max-width:
+   var(--ac-measure-read) }` prose measure. At the note's 10px size 62ch resolves to 413px against
+   a 433px `white-space: nowrap` string, so the hero's `overflow: hidden` cut the last word and the
+   line rendered **"…NOT ASEPTACLEAN PROJECT WOR"** at 768, 1024, 1280, 1440 and 1920px.
+   This is a compliance defect, not a cosmetic one: doc 30 §11.2 and AGENTS.md §0.3 permit
+   temporary development photography only where it is documented as temporary, and that sentence
+   is the whole of the documentation. Fixed with `max-width: none` plus a pinned `left`, in
+   `src/components/Hero.astro`. The `:where()` wrapper carries zero specificity precisely so a
+   class can opt out. `WhatWeHandle`'s equivalent credit hit the same cap and broke one line into
+   two; corrected the same way. Verified 320→1920: `scrollWidth === clientWidth` at every width.
+
+2. **`/about/` shipped in the footer twice, under two labels, on all 45 routes.** `megaNav`'s
+   Company group carried both a `hub` (`About Aseptaclean`) and a child (`About`), both `/about/`,
+   and `Footer.astro` renders the hub directly above its children. Doc 30 §10 forbids a "repeated
+   primary destination under multiple labels". The child was removed from `src/data/site.ts` — the
+   same repair, for the same reason, as the 2026-08-25 removal of the `Request an assessment` child
+   recorded a few lines below it in that file. The hub link survives; `/about/` is not orphaned and
+   keeps its header nav item. Footer duplicate destinations: 1 → 0.
+
+3. **The mobile action bar sat under the home-indicator gesture area.** `.mbar` is `bottom: 0`
+   fixed with no safe-area handling, so on a notched device the lower band of the homepage's
+   primary conversion action was under the system inset. `env(safe-area-inset-bottom, 0px)` added
+   to the anchors' `padding-bottom` (not the container's — each half carries its own fill, and
+   padding the container would have shown a transparent strip of page beneath both buttons), and
+   the matching `body.has-mobile-cta` reservation in `global.css` grown by the same amount.
+
+4. **"Clear work. Documented handoff." broke to three lines with a one-word last line at 320px.**
+   Rejected by doc 30 §8.3. §8.3's fix order was worked in sequence and every lever above font size
+   was exhausted — the container cannot widen enough (the phrase needs 320px at 32px type, the
+   whole viewport), there is no grid allocation at one column, and `max-width: 20ch` is not the
+   binding constraint. The size therefore steps to 1.75rem below 22.5rem, measured rather than
+   guessed: 29px still wraps to three lines, 28px is the largest value that keeps "Documented
+   handoff." whole in the 280px available. Set on `--ac-text-h2-home-feature`, never on the
+   heading — AGENTS.md §6 law 1 holds, and the size still resolves through
+   `.ac-type-h2-home-feature`. 320→1440 re-swept: no heading anywhere on `/` now ends on one word.
+
+### Raised for owner review, not changed
+
+- **`/` emits a Service JSON-LD node for a service family the page does not describe.**
+  `homepage.serviceCards` is Detailed cleaning / Complex property cleanup / Animal & organic
+  condition cleaning; `WhatWeHandle` renders three *conditions* instead, and deliberately omits the
+  animal/organic family because its only route ships `noindex`. `src/pages/index.astro` asserted
+  the opposite in a comment — "WhatWeHandle still renders those three families, so schema and
+  visible copy cannot drift". **That assertion was false.** The comment is corrected in this pass;
+  the schema is not, because deleting a Service node is a representation decision and the same
+  description also ships on `/services/` and `/specialty-cleaning/`, so a homepage-only edit would
+  put the three out of step.
+- **The same node's `description` is the only place on `/` where the "organic pathogen endorsement"
+  wording appears.** AGENTS.md §3 holds every insurance and endorsement claim release-gated until
+  the wording is verified against a current COI, and no COI is in the repository. This is already
+  registered — see the 2026-08-07 owner-supplied fact and its "Must be confirmed before production
+  release" entry in `docs/02-OWNER-INPUTS.md` — so this pass adds a location, not a new finding.
+  **Launch blocker. Not resolvable by editing copy** (claims-check escalation rule).
+
+### Verification
+
+- `astro check`: **0 errors**, 0 warnings.
+- `npm run build:local`: **48 pages, clean**; `/` returns 200 from `astro preview`.
+- **Type law rule 1 — PASS.** Verified by the required cross-reference method, not by grepping
+  selector text: every class in `src/` declaring a `font-size` was intersected against every class
+  landing on an `<h1>`–`<h6>` in `dist/`. 0 bare heading-tag selectors, 0 inline heading
+  `font-size`, and every class in the intersection is an `.ac-type-*` role class.
+- **Type law rule 2 — PASS.** Computed-style sweep, all **46 built routes** × 320/360/390/414/768/
+  1024/1280/1440/1920px. 0 routes below the 1.9:1 floor, 0 routes without an H1. `/` is the
+  strongest on the site at 2.250:1 worst-case (36/16 at 320px). Thirteen `--ac-text-h1-band` routes
+  remain at exactly 1.900:1 at 320px — unchanged zero-margin pass, still the binding case.
+- **Claims — PASS.** Every hit for the banned vocabulary in `/`'s visible text is a scope-narrowing
+  disclaimer, the one legitimate use: two `not a licensed general contractor, remediation
+  contractor, pest-control operator…` lines and two `not regulatory clearance, inspection approval,
+  environmental certification, or a determination that a property is safe or habitable` lines. No
+  affirmative claim, no price figure, no placeholder, no fabricated review/rating/stat/badge. The
+  animal/organic verbatim clause is intact where that family is described. Doc 21 §2.4's founder
+  clause does not bind: the evidence section states a role and an accountability, not a background.
+- **Axe (wcag2a/2aa/21a/21aa)**: 0 violations at 390px and 1440px. 26-stop keyboard walk: 0 focus
+  stops without a visible outline. `prefers-reduced-motion` honoured. 200% zoom clean.
+- **No horizontal overflow at any of 320/360/375/390/430/768/1024/1280/1440/1920** —
+  `documentElement.scrollWidth === clientWidth` at every width. **0 console errors, 0 failed
+  requests.** *Note for the next session:* `scripts/v3-homepage-check.mjs` reports "overflow 3" and
+  9 console errors, and **both are harness artifacts, not page defects.** The three are the closed
+  `<details>` mobile drawer's `position: fixed` children, which report stale rects under
+  `content-visibility: hidden` and create no scrollable overflow; the nine are one per width from
+  the script's own `page.route(…termly.io…, abort)`. Independently disproved with an unmodified
+  context. Do not "fix" either.
+- **0 broken internal links** on `/`; **0 missing `alt`** in `<main>`.
+
+### Not done, and why
+
+- **Four orphaned components were left in place**: `RelatedServices`, `ServiceBoundaries`,
+  `ServiceChecklist`, `ServiceFitPanel`. All four are genuinely unreferenced, and all four are
+  **service-page** components, not homepage ones. Register item **P18 carries an explicit owner
+  ruling — "leave in place, do not delete yet… closes when someone decides delete-or-wire."** That
+  is rank 2 and this pass does not overturn it. The homepage's own orphans were already removed by
+  the 2026-08-25 pass; there is no homepage junk drawer left to clear.
+- **The footer still links six `noindex` service routes** from an indexable page
+  (post-construction, window, specialty hub, animal waste, eviction, commercial). Worth recording
+  precisely: **`Header.astro` filters gated routes out through `indexableServicePaths`; `Footer.astro`
+  renders raw `megaNav` and does not.** The footer's own comment claims "this footer lists the same
+  routes the sitewide mega-menu lists and no others, because footer and nav must agree" — that
+  stopped being true when the header filter was added. Unchanged here: it is release-checklist
+  **C10 / register P2**, it spans all 45 routes, and AGENTS.md §2 states that narrowing it "means
+  changing the nav, not editing a link." Raised, not acted on, in a homepage-scoped pass.
+- **Two Rule 1 typography violations exist off the homepage and were not fixed.**
+  `src/pages/private-residence-reset.astro:708` declares `.residence-hero .ac-type-h1 { font-size:
+  2rem }` and `src/styles/city-pages.css:772` declares `.cty-hero .ac-type-h1-hub { font-size:
+  1.9375rem }`, both inside `@media (max-width: 360px)`, both landing on a live `<h1>`. AGENTS.md
+  §6 law 1 admits no exception for a component re-declaring the role class's own size. **Gate
+  verdict for those two routes: FAIL (pre-existing, off-scope).** Not repaired here because the
+  correct fix relocates the values into `--ac-text-h1` / `--ac-text-h1-hub`, which are shared by 5
+  and 26 routes respectively and would require a full-route ratio re-measure — a typography
+  decision spanning the service and city families, in a pass the owner scoped to `/` and will
+  review before service pages are touched. Both still clear the 1.9:1 floor (2.000 and 1.938).
+- **No hero photograph was changed.** All five homepage images remain temporary, licensed,
+  `[ATMOS]`-class development references, each captioned as such on the page and credited in
+  source. Replacement with owner-shot photography is `docs/06-ASSET-MANIFEST.md` §5 and remains the
+  highest-value launch item on the page.
+- **No route, canonical, robots tag, sitemap entry, redirect, schema node, lead endpoint, form,
+  publication gate or price was created, changed or removed.**
+- **`scripts/v3-homepage-check.mjs`'s stale note about `Hero.astro:38-51`** rendering a hardcoded
+  five-row "Handoff Status" panel, repeated in `.claude/skills/type-law/SKILL.md`, is **obsolete**:
+  the current `Hero.astro` is a photographic hero with no such panel, and `HandoffStandard.astro`
+  no longer exists. `homepage.handoffStages` now has two consumers, `ServiceMethodRail.astro` and
+  `/handoff-standard/`, and they read the same data. Flagged, not edited — the skill file is not
+  this pass's to rewrite.
+
+---
+
+## 2026-08-26 — Services Hub `/services/` rebuilt to doc 30 §18 + §20A.20
+
+Built to `docs/30-WEBSITE-MASTER-SPEC.md` §18 (route job and visual direction) and §20A.20
+(problem-chooser first, active directory second), with copy reconciled from
+`docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` §43–44 through §20A.1's order. **No route,
+canonical, robots tag, sitemap entry, redirect, `publishStatus`, price, credential or lead
+endpoint was created, changed or removed.** `/services/` is still indexable, still in
+`sitemap.xml`, still carries only a `BreadcrumbList`. Build: 48 pages, `astro check` 0 errors.
+
+### What replaced what
+
+The previous page was `PageHeader` + a three-up pillar card grid restating
+`homepage.serviceCards` + `ConfidenceAndFit` + an embedded `RequestForm`. Measured before: 568
+words, **zero images**, 3 H2s, 3,692px at 1440 / 6,854px at 390, and a live Turnstile widget
+throwing console errors at every width on a page whose job is routing.
+
+After: 1,233 words, 3 photographs, 5 H2s, 7,702px at 1440 / 11,980px at 390 — between `/`
+(7,337px at 390) and the gold-standard service page (20,006px at 390), which is where a hub with
+a directory belongs.
+
+Six components created — `ServicesHero`, `ServiceProblemChooser`, `ServiceConditionLevels`,
+`ServiceDirectory`, `ServiceScopeBoundary`, `ServicesClose`. One deleted: `ConfidenceAndFit.astro`
+(no other importer).
+
+### Three conflicts resolved, none silently
+
+**1. Rodent- and pigeon-droppings routing — rank 3 wins, they are not on this page.**
+
+- A: the task prompt and doc 30 §20A.4 — the hub "may route to rodent-droppings, animal-waste and
+  pigeon-droppings cleanup", and `noindex` is not evidence a service is unavailable. (Rank 2 / 5.)
+- B: `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §3 — Cal. B&P §8505 expressly includes **rodents** in
+  structural pest control and §8550(a) makes it unlawful to "advertise, to engage in, or offer to
+  engage in" it unlicensed; the §8555(g) exemption **expressly excludes mice, rats and pigeons**.
+  (Rank 3.)
+
+**B wins, and §20A.4 concedes it on its own terms** — it permits routing "if current owner/site
+architecture approves them as public services," and the current architecture does not: `AGENTS.md`
+§2 states outright that the 2026-08-26 operational-availability clarification "does not touch the
+separate reason `/rodent-dropping-cleanup-san-jose/` and `/pigeon-dropping-cleanup-san-jose/` are
+held out of `megaNav`… which are rank 3 and unaffected by an operational-availability
+clarification." The 2026-08-17 and 2026-08-18 entries above record the same invariant twice, and
+`/specialty-cleaning/` is `noindex` **specifically because** its cards name these two services.
+
+Verified in `dist/` before and after: **zero indexable routes link to either page.** Still zero.
+Neither slug is imported into any new component or into `servicesHub`, so neither can be added by
+editing a copy string. **This is not a statement that the services are unavailable** — §20A.4's
+separation of availability / TSWMP / indexation stands untouched. **Owner: clearing this needs an
+SPCB licensing answer, not a copy decision.**
+
+**2. "San Jose & Santa Clara County" — struck, already decided.** The landing-page system's §43
+eyebrow, title tag and meta description all use it. Owner ruling 2026-08-09 (above) sets the
+sitewide label as **"South Bay & Peninsula"** because Atherton and part of the declared footprint
+sit in San Mateo County. Applied to the eyebrow and the meta description. No document amended —
+`AGENTS.md` §1.1 and doc 30 §20A.23 already fence the landing-page file from setting geography.
+
+**3. Move-in cleaning — no route implied.** Doc 30 §20A.3. Move-in appears only inside the real
+route's real label, "Move-in & move-out cleaning" (`/move-out-cleaning-san-jose/`). No new route,
+nav entry, sitemap entry or schema.
+
+### The one deliberate exception, made visible in code
+
+`/animal-waste-cleanup-san-jose/` ships `noindex` and is listed in the directory anyway. It is
+operationally available (§20A.4), it was **already** linked from this exact page, and it reaches
+all 23 indexable routes through `megaNav` — so listing it opens no crawl path that does not
+already exist. It renders through a named `alwaysList` escape rather than through the
+`indexable` filter, so removing the exception is a one-line deliberate act. Doc 21 §2.3's
+verbatim clause travels with it, read off the service record rather than retyped; it renders
+three times on the page, always in full.
+
+Every other row is filtered on its own record's `indexable` flag. Post-construction, window
+cleaning, eviction cleanouts and commercial fail that filter today and drop out without being
+named — including the commercial routing door, exactly as it drops out on `/`.
+
+### Content preserved that would otherwise have been lost
+
+`ConfidenceAndFit` was moved to this route on 2026-08-25 precisely because
+`homepage.excludedScope` and `homepage.qualification` render in **one** place in the entire build.
+Deleting it in a hub redesign would have repeated that mistake one pass later. `ServiceScopeBoundary`
+renders all four of its sources verbatim and unedited: `homepage.qualification` (4 rows),
+`homepage.excludedScope` (8 rows), `legal.scopeDisclaimer`, and `site.location`. The pointer
+comment in `src/pages/index.astro` was updated to name the new component.
+
+`homepage.routingDoors` — doc 27's routing block, owner-approved verbatim 2026-08-20 — had
+rendered on **zero** pages since the V3 rebuild deleted `RoutingDoors.astro` on 2026-08-25. It is
+the problem chooser now, which is the job it was written for.
+
+### Repaired during the pass
+
+- **A type law 1 violation in this pass's own code**, caught by resolving computed styles in
+  `dist/`, not by grepping: `.service__title` declared `font-size` and landed on an `<h4>` on
+  three rows. The h4 now carries `.ac-type-h4-mega` in markup and the component class sets weight
+  only. Both laws now pass at all nine widths — H1:body 2.00 at 320px rising to 2.71 at 1440px,
+  and every heading's size resolves through an `.ac-type-*` role class.
+- **Two images rendered at full intrinsic height** (2,448px and 2,880px), because `aspect-ratio`
+  on an `<img>` is ignored whenever `astro:assets`' `width`/`height` attributes supply a used
+  height. Section was 2,537px tall at 1440. Fixed with the repo's existing wrapper pattern —
+  ratio on the frame, `height: 100%` on the img — as `WhatWeHandle.astro` already does.
+- `inline-flex` on four arrow links dropped the whitespace before the glyph; `gap` restores it.
+- Touch targets on the three feature service titles were 21px; padded to 45.6px.
+
+### Not done, and why
+
+- **No new image asset was added.** `docs/06-ASSET-MANIFEST.md` §4 records the atmosphere-slot cap
+  as already knowingly exceeded, says "do not add a fifth without a new owner decision", and leaves
+  open whether CC BY-SA attribution is acceptable on a commercial page at all. The three
+  photographs are existing repository assets in new roles and crops, each captioned as a
+  development reference on the page. **Owner: answering the CC BY-SA question is what unblocks
+  sourcing hub-specific photography.**
+- **No proof / before-during-after section.** Zero completed documented projects exist (doc 21 §6).
+  `AGENTS.md` §0.3 — the slot ships empty. The page's evidence is the operating mechanism instead:
+  the boundary list, the four-step start, and a link to `/handoff-standard/`.
+- **No `Service` or `ItemList` schema.** Doc 21 §6.1's recommended set for a supporting page is
+  `BreadcrumbList`, which is what shipped before and what ships now. `/` already emits `Service`
+  nodes for the three families and one is under open owner review; a second, differently scoped set
+  here would make two pages disagree while that review is open.
+- **No query parameter invented.** §20A.8 sketches `/request-assessment/?service=<key>`. Inspected
+  `AssessmentForm.astro`: the only parameter it reads is `offer=private-residence-reset`. There is
+  no `service` key, so the link is the bare route. Building that branch is its own task.
+- **`/senior-downsizing-san-jose/` dropped from the directory.** It is `noindex`, `AGENTS.md` §2
+  flags it P1 delete-or-write, and it is an audience page rather than a service. It keeps its
+  inbound links from `/who-we-help/` and `/service-areas/` and is not orphaned.
+- **`.ac-eyebrow` renders as a tinted chip** and the brief's anti-AI list rules out chips. Left
+  alone: it is the sitewide label component with ~20 call sites, and diverging on one page is a
+  sitewide style decision, not a hub decision. **Owner: flag if the flat treatment is wanted.**
+- **`.ac-type-h1-hub` is hard-coded to `font-size: 2rem` in `global.css` at ≤360px**, which beats
+  the per-section token, so this hub's H1 is 32px at 320–360 rather than the ~35px the token would
+  give. Both type laws still pass. Relocating that value into `--ac-text-h1-hub` would move every
+  `.ac-type-h1-hub` route at once — the same shared-token problem the 2026-08-26 homepage pass
+  declined for the same reason.
+- **`qa:gate6` remains FAIL — 16 absent**, byte-identical to the baseline recorded in the
+  2026-08-25 V3 entry above. None of the 16 relate to `/services/`; the §9.4 service-group strings
+  the old pillars carried are in gate 6's own **exempt** list. Unchanged by this pass and still
+  waiting on owner approval to strike the superseded homepage slots in doc 27.
+- **`commercialPage` is an unused import in `src/data/servicePages.ts`.** Pre-existing — it had
+  exactly one occurrence at `HEAD` too. Left alone as unrelated cleanup.
+- **Palo Alto** appears in the rendered service geography, verbatim from `site.location.cities`
+  and identical to what `ConfidenceAndFit` rendered on this same route. Not a new assertion; the
+  PAMC 5.20.040(b) open item in doc 21 §7 is unchanged and still open.
+
+### Verification
+
+`astro check` 0 errors · production build 48 pages · `qa:seo` PASSED, 0 errors, 0 publish blockers
+· 45 routes and 23 sitemap entries unchanged · 12 `noindex` routes unchanged · browser console
+clean at all nine widths (320/360/375/390/430/768/1024/1280/1440) · no horizontal overflow at any
+width or at 200% zoom · 25 focusable elements in `main`, all with a visible 3px ring, in DOM order
+· all transitions disabled under `prefers-reduced-motion` · no one-word last line on any heading
+at any width · all 13 internal links resolve 200 · mobile bar is two actions on `/` and
+`/services/`, three on the other 43 routes.
+
+One known and accepted item: the inline "Where we work" link is a 20px-tall text link inside a
+sentence, inherited verbatim from `ConfidenceAndFit`. WCAG 2.5.8 exempts targets in a block of
+text; padding an inline link inside flowing prose would overlap adjacent lines.
+
+---
+
+## 2026-08-26 — Hoarding Cleanup `/hoarding-cleanup-san-jose/` rebuilt as the first gold-standard service page
+
+Built to `docs/30-WEBSITE-MASTER-SPEC.md` §20 ("Gold standard": use this route as the first fully
+governed service-page implementation), §20A (the service landing-page conversion system) and §21
+(the hoarding page's own special notes), with copy reconciled from
+`docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` §35 under §20A.1's order — landing copy → map
+to current route → check active/gated state → check claims, pricing and scope → check current
+copy authority → then implement.
+
+### Section architecture — eight movements, was twelve sections
+
+```
+01 SERVICE HERO        photograph + one flat overlay, left-aligned, service confirmed on sight
+02 CONDITION + REFRAME "We do not walk in and throw everything away." + ruled condition list
+03 CLIENT CONTROL      the five item decisions as a document register, on navy — signature moment
+04 HOW THE JOB WORKS   goal first, six-step field procedure, clearing before cleaning, stop-and-tell
+05 WHAT PROOF EXISTS   the honest gap, stated, plus the sample Property Handoff Record
+06 FIT + PRICE         junk-truck reframe, two quiet columns, price drivers, local planning notes
+07 QUESTIONS           seven, open Q&A rather than an accordion
+08 CLOSE               "You do not have to solve the whole house today."
+```
+
+§20A.5's specialist thesis — **you stay in control of what stays and what leaves** — is the spine.
+The hero states it, 02 explains why it needs stating, 03 is the mechanism, 04 shows it surviving
+contact with the property, 05 is the document it produces, 06 is where it stops being worth paying
+for, and 07 answers it as an objection. It is never repeated as the same sentence twice.
+
+### OLD vs NEW, measured from a production build, not estimated
+
+| | OLD | NEW |
+| --- | ---: | ---: |
+| page height 1440 / 768 / 390 | 10,159 / 13,178 / 18,364 px | 9,746 / 11,997 / 16,325 px |
+| main word count | 1,929 | 2,221 |
+| H1 / H2 / H3 | 1 / **18** / 22 | 1 / **7** / 21 |
+| images in `<main>` | **0** | 2 |
+| multi-item grids (>2 items) at 1440 | 9 | 6 |
+| rendered sections | 12 | 8 |
+| links to the assessment route | **0** (in-page `#request` anchor) | 2 |
+| hero height 1440 / 1024 / 768 / 390 | 778 / 759 / 746 / 877 px | 540 / 500 / 500 / 539 px |
+| H1 size 1440 / 1024 / 768 / 390 | 49.6 / 41 / 35.2 / 35.2 px | 46 / 42 / 40 / 38 px |
+| worst H1:body ratio | 2.20:1 @390 | 2.00:1 @320 (floor 1.9) |
+
+The page is 4% shorter at 1440 and 11% shorter at 390 while carrying 292 more words and two
+photographs it did not have. §20A.22 licenses length that comes from intent coverage; the
+reduction came from deleting eighteen-H2 structure, not from deleting answers.
+
+### Copy: retained, combined, shortened, moved
+
+- **Retained near-verbatim from the landing-page system §35** — the hero lines ("A packed home can
+  feel hard to even start", "You decide what stays. You decide what goes.", "Private cleanup.
+  Clear plan. No pressure to decide everything at once."), "We do not walk in and throw everything
+  away", the five KEEP/SET ASIDE/DONATE/REMOVE/NOT SURE definitions, the condition-recognition
+  list, "The goal changes the job", the six process steps, "If the job changes, we tell you before
+  we change the work", the fit/not-fit pairs, the price drivers, and the closing "You do not have
+  to solve the whole house today."
+- **Combined** — recognition + reframe into one movement; goal + process + clearing-before-cleaning
+  + hidden conditions + exclusions into one; qualification + junk-hauler differentiation + price
+  logic into one. §20A.6: adopt the eleven jobs, do not build eleven bands.
+- **Shortened** — the old page's three separate "different property situations" essays (whole
+  house / someone still lives there / remote owner) reduce to their operative facts inside
+  movements 03 and 04; the ten-question FAQ becomes seven.
+- **Moved to `/faq/`** — staging the work, whether you must be present throughout, family
+  disagreement, and job duration. Linked from the questions movement.
+- **Rewritten for the reader, deliberately** — §35's condition list is written as second-person
+  imperatives ("You cannot use part of a room"). Doc 30 §3 designs for the adult child helping a
+  parent as much as the resident, and the imperative misreads for them. Now property observations.
+- **Sixth process step added** — §35 stops at "we clean the cleared areas". A process that ends
+  before the handoff contradicts `/handoff-standard/` and `homepage.sampleRecord`'s own closeout
+  row. Step 06 states current operating truth; it is not a new capability.
+
+### Reconciliations made, none silent
+
+1. **H1 is now "Hoarding Cleanup", was "Hoarding Cleanup in San Jose".** `docs/27-COPY-CANONICAL.md`
+   §14.2 (rank 4) locks that H1 and the entry is **not** struck — only its lead and outcome heading
+   are, both superseded 2026-08-24. The landing-page system §35 and doc 30 §20A.7 agree. The city
+   still carries in the eyebrow, the title tag, the breadcrumb and the body.
+2. **Title and meta description preserved byte-for-byte.** The title is doc 27 §14.2's canonical
+   string. The meta description is the one commit `c3dc0fd` wrote in the 2026-08-19 SEO pass — a
+   newer explicit decision than doc 27's own line for that field. A composition rebuild is not
+   licence to move a page's search metadata, so neither was touched.
+3. **"South Bay & Peninsula", never "Santa Clara County".** §35's eyebrow and meta both say Santa
+   Clara County. AGENTS.md §3 and owner ruling 2026-08-09 govern: Atherton is San Mateo. Same
+   reconciliation `/services/` made on 2026-08-26.
+4. **No `/hoarding-cleanup/` short slug.** §35 proposes it; §20A.2 forbids acting on it. No route,
+   redirect, canonical, robots tag or sitemap entry changed anywhere in this pass.
+5. **No price published.** §35 asks for price drivers and no fake number, which agrees with
+   AGENTS.md §4. The only figure on the page is the $195 assessment fee, rendered through
+   `site.offer.assessmentFraming(site.offer.assessmentFee)` — doc 27 §7's owner-approved wording,
+   with the figure interpolated from site data rather than retyped.
+6. **`CredentialBar` removed from this route.** Its first two cells ("Insured · COI available on
+   request", "Endorsed · Organic pathogen endorsement") are held release-gated by AGENTS.md §3
+   until matched against a current COI. `/` dropped it 2026-08-25 and `/services/` 2026-08-26;
+   this follows. **The component is untouched and still ships on its other 14 routes.**
+7. **The embedded `RequestForm` is removed** — the full navy band with a live `QuickHandoffForm`
+   and Turnstile widget. §20A.8's destination rule and §20A.9's one-assessment-engine rule both say
+   feed the existing system rather than duplicate lead infrastructure per service page, which is
+   the call `/services/` already made. This also removes the route's Turnstile network calls.
+8. **`/animal-waste-cleanup-san-jose/` is no longer linked from the body.** It ships `noindex`, and
+   an indexable→noindex in-body link is release-checklist C10. Measured first: it receives inbound
+   links from 20 other built pages including the sitewide footer on this very page, so nothing is
+   orphaned. The condition itself is still described, and doc 21 §2.3's verbatim clause travels
+   with that description.
+
+### The query parameter §20A.8 sketches is now built, and was not invented blind
+
+`/services/`'s 2026-08-26 entry recorded "no query parameter invented — building the branch is its
+own task." **This is that task.** `?service=hoarding-cleanup` is read by `AssessmentForm.astro`
+under three constraints:
+
+1. **Whitelist, not passthrough.** An unrecognized value is a no-op. Nothing from the query string
+   is written into the DOM or into a field verbatim.
+2. **It only ever selects an option that already exists.** `property_situation` is a `<select>`
+   built from `assessment.propertySituations`; "Accumulated contents" is an existing option. If it
+   is ever renamed the match fails and the field is left untouched — a stale key cannot corrupt a
+   submission.
+3. **A saved draft always wins.** It runs after `restoreValues()` and writes only into a field that
+   is still empty.
+
+It sets `entry_route` to `/hoarding-cleanup-san-jose/` so the lead records which service page
+produced it. **No new field, no new endpoint, no new form.** The hoarding branch §20A.9 asks for
+already exists on that form and is already required: relationship to the property, authority to
+approve, vacant status, `must_remain` / `must_remove`, deadline, and photo upload.
+
+Verified in a browser, five cases, zero console errors: bare route unchanged · valid key applies
+both effects · unknown key no-op · `?offer=private-residence-reset` unaffected · saved draft
+overrides the preselect while the entry route is still recorded.
+
+### Evidence and imagery
+
+- **No real Aseptaclean project photography exists**, so §20A.15's START → SORTED → CLEARED →
+  CLEANED sequence **is not built**. AGENTS.md §0.3 — the slot ships empty. Movement 05 says so in
+  the page's own voice ("There is no photo gallery on this page…") and gives the slot to the real
+  artifact instead: the sample Property Handoff Record, whose four rows already carry
+  Keep / Keep / Review / Remove — this page's decision system applied to areas, with one item still
+  open. Labelled "Sample · not a client record" per doc 27 §9.9, with `legal.documentationDisclaimer`.
+- **Two temporary development photographs, both existing repository assets in new roles.**
+  `condition-development-hoarding-asurnipal.jpg` (a 4:5 panel on `/`) is the full-bleed hero;
+  `service-development-cleanup-asurnipal.jpg` (a 4:5 figure on `/`, a 21:9 hero on `/services/`) is
+  a 3:2 editorial panel. **No new asset was acquired** — `docs/06-ASSET-MANIFEST.md` §4 records the
+  atmosphere cap as knowingly exceeded and leaves the CC BY-SA commercial-use question open. Both
+  carry a visible development label.
+- **`condition-development-reset-aismallard.jpg` (the empty room) is deliberately NOT used here.**
+  The manifest already flags an open question about whether it reads as an implied "after". On a
+  page whose argument is start → sorted → cleared → cleaned, a bare room anywhere near that
+  sequence would read as a fabricated after-shot. AGENTS.md §0.3.
+
+### Hero overlay was measured, not chosen by eye
+
+`scripts/hoarding-hero-contrast.mjs` (new) composites the flat overlay over the real pixels the
+browser draws and walks every one inside each text element's box, reporting the **worst** case each
+string has to survive rather than an average. At 0.55, three hero strings failed WCAG AA against
+near-white fabric: the lede (4.35:1), the reassurance line (4.17:1) and — worst — the
+temporary-imagery label (3.45:1). **A truncated or illegible development label is a compliance
+failure, not a cosmetic one.** At 0.64 with four colour lifts, all seven hero strings clear AA at
+320–1440; lowest measured is 4.71:1 against a 4.5 requirement. The photograph still reads
+unmistakably as a packed room.
+
+0.64 is above the 0.42–0.58 band the retired Sevenson homepage brief gave for `/`. That band was
+written for a different frame; this one carries bright laundry and paper across its whole lower two
+thirds and there is no crop that avoids it without throwing away the subject.
+
+### Claims check — clean
+
+Every banned-word hit in the built page is a mandated negation or a third-party reference:
+doc 21 §3.1's pest boundary verbatim ("an appropriately licensed pest operator…"), §2.3's animal
+/ organic clause verbatim **including "sterilization"**, `legal.scopeDisclaimer`, and
+`legal.documentationDisclaimer`. Doc 21 §4.2's permitted disposal sentence is used verbatim and
+nothing implies self-performed hauling. No `hoarder` as a noun — "hoarding" appears only
+adjectivally. No fabricated proof, no stat bar, no credential, no price but $195.
+
+**One deliberate boundary call raised rather than resolved silently:** the hidden-conditions list
+includes "signs of pest activity" as something a crew may encounter. That is an observation
+paired, in the same movement, with §3.1's verbatim disclaimer that Aseptaclean does not inspect
+for, identify, exclude, trap or treat pests. The previous build listed "pest activity" plainly and
+passed the baseline sweep. Flagged because B&P §8505 reaches oral and written reports, and the line
+between "we stopped and told you what we saw" and "identification of an infestation" is the one
+this document set exists to police. **Owner: confirm the phrasing is acceptable, or the list item
+can be dropped without weakening the section.**
+
+### Not done, and why
+
+- **No before/during/after proof section.** See above — zero completed documented projects.
+- **No new component was created and no shared service layout was touched.** The page is one route
+  file. `ServicePageLayout.astro` has fourteen importers and this route was never one of them;
+  §20 says not to build one universal service-page template, and a set of eight
+  hoarding-shaped components would invite exactly the template momentum the brief forbids for the
+  next service.
+- **Two shared components changed, both additively and both route-scoped.** `MobileCTA.astro` — a
+  third route joins the two-action bar (§20A.10, "only two actions"); the other 42 routes are
+  untouched and the text door still ships in this page's closing CTA per doc 27 §8.
+  `AssessmentForm.astro` — the service-context block above; it has exactly one importer,
+  `/request-assessment/`.
+- **`FAQPage` schema kept, regenerated from the seven visible questions.** §20A.18 forbids *adding*
+  one to chase rich results; this route already had it, and doc 21 §6.1 requires schema not to
+  describe content a visitor cannot see. Dropping ten questions to seven without regenerating the
+  node would have broken exactly that.
+- **`.ac-type-h1-hub` is hard-set to `font-size: 2rem` in `global.css` below 360px**, which beats
+  this page's token, so the H1 is 32px at 320–360 rather than the ~35px the token gives. Both type
+  laws still pass (2.00:1 against a 1.9 floor) and "Hoarding Cleanup" holds one line there. Left
+  alone for the reason the 2026-08-26 `/services/` pass gave: relocating that value moves every
+  `.ac-type-h1-hub` route at once.
+- **The page is still long at 390px — 16,325px.** Down 2,075px from the baseline, but a long-form
+  service page on a phone is inherently tall and §20A.22 licenses length that comes from intent
+  coverage. **Owner: this is the number to react to at visual review** if the answer is "still too
+  much"; movements 04 and 06 are the two carrying most of it.
+
+### Verification
+
+`astro check` **0 errors** · production build **48 pages**, unchanged · `npm run qa:seo`
+**PASSED, 0 errors, 0 publish blockers** · route count 44 + `/404` and **23 sitemap entries,
+both unchanged** · `/hoarding-cleanup-san-jose/` still `index, follow`, canonical unchanged, still
+in `sitemap.xml` · all 10 internal links in `<main>` resolve **200** · **axe 0 violations** at
+1440 and 390 (wcag2a/2aa/21a/21aa) · browser console **clean at all nine widths**
+(320/360/375/390/430/768/1024/1280/1440) · **no horizontal overflow at any width or at 200% zoom**
+· 14 focusable elements in `<main>`, **all with a visible focus indicator** at 1440 and 390 ·
+**zero touch targets under 44px** at 390 · transitions disabled under `prefers-reduced-motion`.
+
+**Type law — both rules PASS, verified by computed styles on the built output.**
+`scripts/type-law-check.mjs` (new) walks the live CSSOM for every `<h1>`–`<h6>` on **all 44 routes
+at 9 widths** and reports every rule that both matches the element and declares `font-size` — the
+cross-reference method the skill requires, not a selector grep. Rule 1: **clean, sitewide.**
+Rule 2: all 44 routes clear 1.9:1; this route's worst is 2.000:1 at 320px.
+
+**Gate 6 — FAIL, 16 approved strings absent. Unchanged from the recorded baseline and NOT caused
+by this pass.** `extracted: 115`, same corpus. All 16 are §9.x homepage strings, §17.2 Project
+Notes and the §2143 assessment-form architecture note; **none is from §14.2 Hoarding Cleanup** and
+none relates to this route. Still waiting on owner approval to strike the superseded homepage slots
+in doc 27. Reported as FAIL rather than "PASS with a caveat" per the standing gate-reporting rule.
+
+### Files
+
+```
+src/pages/hoarding-cleanup-san-jose/index.astro   rewritten
+src/components/AssessmentForm.astro               + service-context block (one importer)
+src/components/MobileCTA.astro                    + third two-action route
+scripts/hoarding-page-check.mjs                   new — OLD/NEW metrics, responsive + axe sweep
+scripts/hoarding-hero-contrast.mjs                new — worst-case text contrast over the photo
+scripts/type-law-check.mjs                        new — both type laws, computed styles, all routes
+docs/06-ASSET-MANIFEST.md                         two existing assets gain a documented third role
+```
+
+## 2026-09-01 — Estate Cleanout `/estate-cleanout-san-jose/` rebuilt as the second gold-standard service page
+
+Same approach as the 2026-08-26 Hoarding Cleanup rebuild directly above: copy reconciled from
+`docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` §39 under §20A.1's order (landing copy → map to
+current route → check active/gated state → check claims/pricing/scope → check current copy
+authority → then implement), replacing the shared `ServicePageLayout.astro` + `doc27ServicePages.ts`
+template this route and `/property-cleanouts-san-jose/` both still used. `/property-cleanouts-san-jose/`
+is untouched and still runs the shared template — not rebuilt this pass, per the task brief.
+
+**Specialist thesis:** *Protect what matters before the property gets cleared* (doc 30 §20A.5's own
+line for this route). Deliberately not Hoarding's *you stay in control of what stays and what leaves*
+— the two pages share a decision-authority mechanism structurally (doc 30 §20A names it for both) but
+argue from different premises: Hoarding is about accumulated contents and disposition; Estate is about
+protecting irreplaceable items before a property handoff (sale, rental, family return, vacancy).
+
+**Architecture, 8 movements:** hero → protect-what-matters/Save List (signature movement, navy) →
+decision authority + property end-goal → clearing plan (6 steps) + stop-and-ask + hidden conditions →
+contents/donation/appraisal boundaries → evidence gap + remote/deadline support + fit/price → FAQ →
+close. The Save List is a hand-rolled document artifact (`.ec-savelist`), not a reuse of Hoarding's
+`homepage.sampleRecord` Property Handoff Record — same "document, not six cards" pattern, different
+document, different content, because a save list (instructions written in advance) and a disposition
+register (categories applied room by room) are different mechanisms.
+
+**Imagery.** `hero-development-residence-asurnipal.jpg` — already in the repository (full-bleed hero
+on `/`), reused here in the same role. **No new asset acquired.** `docs/06-ASSET-MANIFEST.md` §4
+records the atmosphere-slot cap as already exceeded by one and says not to add a fifth without a new
+owner decision; this pass respects that by reusing an existing file rather than sourcing new
+photography, same as Hoarding's rebuild did with its own two images.
+`condition-development-reset-aismallard.jpg` (the empty room) is deliberately not used, for the same
+reason the manifest already bars it from Hoarding: an open owner question about whether it reads as
+an implied "after", which is a real risk on a page whose whole argument is a property still full of a
+family's belongings. `condition-development-hoarding-asurnipal.jpg` and
+`service-development-cleanup-asurnipal.jpg` (Hoarding's hero and editorial panel) are not reused here
+either — a shared photograph across sibling service pages would blur the distinction both pages exist
+to make.
+
+**No before/during/after proof section**, same reason as Hoarding: zero completed documented estate
+projects exist. AGENTS.md §0.3 — the slot ships empty, stated in the page's own voice, rather than
+filled with stock captioned as work.
+
+**Route state unchanged.** Same slug, same canonical, `index, follow`, same `sitemap.xml` membership.
+SEO title and meta description are rewritten (previously `estatePage.seoTitle` /
+`.metaDescription` in `doc27ServicePages.ts`, describing the OLD lead "Estate cleanout in San Jose
+without deciding everything today") to agree with this rebuild's actual thesis and H1, per §20A.22.
+BreadcrumbList position 2 stays "Complex Property Cleanup" / `/property-clearing/`; position 3 is
+"Estate Cleanouts", matching the megaNav label. FAQPage schema regenerated from the seven visible
+questions, never padded (doc 21 §6.1).
+
+**Copy retained from `doc27ServicePages.ts`'s `estatePage` record** rather than discarded: the
+appraisal/estate-sale boundary language ("No. Appraisal, resale and estate-sale services are
+separate..."), the donation-acceptance framing, and `legal.scopeDisclaimer`'s "not a licensed general
+contractor, remediation contractor, pest-control operator, appraiser..." clause, which directly
+supports this page's appraisal boundary. That data record and its `Doc27ServicePage` type are
+otherwise unchanged and still serve `/property-cleanouts-san-jose/` and the other twelve routes still
+on the shared template.
+
+**No CredentialBar on this route**, same reasoning as Hoarding: "Insured · COI available on request"
+and "Endorsed · Organic pathogen endorsement" are release-gated by AGENTS.md §3 pending a current COI
+match.
+
+**No embedded form.** §20A.8's destination rule — CTAs link to
+`/request-assessment/?service=estate-cleanout` instead of duplicating lead infrastructure.
+
+### Two shared components changed, both additively and both route-scoped
+
+`src/components/AssessmentForm.astro` — the existing `serviceContexts` map (added 2026-08-26 for
+Hoarding) gains an `estate-cleanout` entry: `entryRoute: "/estate-cleanout-san-jose/"`,
+`situation: "Inherited or estate property"`. That situation string is an existing
+`assessment.propertySituations` option, not a new one — the same whitelist-only, saved-draft-wins
+constraints already documented at that call site apply unchanged. Verified in a browser, four cases,
+zero console errors: `?service=estate-cleanout` sets both fields · unknown key is a no-op ·
+`?service=hoarding-cleanup` still works (no regression) · bare route unaffected.
+
+`src/components/MobileCTA.astro` — a fourth route joins the two-action bar (`isEstateCleanout`
+alongside `isHome`, `isServicesHub`, `isHoarding`). The other 41 routes are untouched. The text door
+still ships in this page's closing CTA, same as the other three two-action routes.
+
+### Verification
+
+`astro check` **0 errors** · production build **48 pages, unchanged** · route count and `sitemap.xml`
+membership unchanged · `/estate-cleanout-san-jose/` still `index, follow`, canonical unchanged ·
+JSON-LD `Service` / `BreadcrumbList` / `FAQPage` all present and correct, FAQPage count matches the 7
+visible questions exactly · all outbound links in `<main>` resolve **200**, including the three
+`noindex` estate service×city links (deliberate, per AGENTS.md §2's crawl-path note, same pattern as
+Hoarding's own city links) · redirect-collision check clean — `/hoarding-estate-clearouts/` and
+`/residential-property-clearing/` both redirect into this route as sources only, neither collides
+with a built page · never-build list clean · browser console **clean at all ten widths**
+(320/360/375/390/430/768/1024/1280/1440/1920) · **no horizontal overflow at any width** · H1 stays one
+line at every width · mobile sticky CTA renders the two-action variant · mobile hero content order at
+390px matches the required sequence (eyebrow → H1 → lede → thesis → primary CTA → call → reassurance).
+
+**Type law — both rules PASS, verified by computed styles on the built output**, reusing
+`scripts/type-law-check.mjs` unchanged. Rule 1: clean, sitewide (44 routes). Rule 2: all 44 routes
+clear 1.9:1; this route's worst is 2.000:1 at 320px.
+
+**Claims check — clean.** The mandatory animal/organic clause is used verbatim
+("Cleaning only — not a decontamination, sterilization, or health-safety determination."), the pest
+boundary is the third-party-reference pattern ("an appropriately licensed pest operator"), the
+disposal language matches the one permitted construction exactly ("not a hauling company...
+handled by a City-authorized hauler engaged for the project"), and no price figure appears other than
+the $195 assessment fee via `site.offer.assessmentFraming()`. No founder-background text on this page,
+so the second mandatory clause does not apply. No Palo Alto claim, no new SPCB boundary assertion, no
+household-hazardous-waste promise, no new insurance/endorsement wording — nothing requiring
+escalation.
+
+### Not done, and why
+
+- **No condition-recognition movement**, unlike Hoarding's "is the home getting hard to use?". An
+  estate property is not being diagnosed for a hoarding condition; it is being prepared for its next
+  stage. Property end-goal (sold / rented / returned to family / made usable / emptied) is this page's
+  equivalent second mechanism, per doc 30 §20A.
+- **Remote/out-of-area decision-making and deadlines have no Hoarding equivalent** — both are folded
+  into movement 06 rather than given their own bands, per §20A.6's licence to combine jobs where that
+  produces stronger rhythm.
+- **`/property-cleanouts-san-jose/` was not rebuilt.** Explicitly out of scope for this pass; it still
+  runs `ServicePageLayout.astro` + `doc27ServicePages.ts`'s `propertyCleanoutsPage` record, unchanged.
+
+### Files
+
+```
+src/pages/estate-cleanout-san-jose/index.astro    rewritten (was a 29-line ServicePageLayout wrapper)
+src/components/AssessmentForm.astro               + estate-cleanout service-context entry
+src/components/MobileCTA.astro                    + fourth two-action route
+```
+
+## 2026-09-01 — Property Cleanouts `/property-cleanouts-san-jose/` rebuilt as the third gold-standard service page
+
+Same order as Hoarding and Estate: landing copy (doc `ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md`
+§39, shared with Estate — §39 covers "Estate & Property Cleanout" as one landing page) → mapped to
+the current route → checked against active/gated state → checked against claims, pricing and scope
+→ checked against current copy authority (`doc27ServicePages.ts`'s `propertyCleanoutsPage` record)
+→ implemented. Doc 30 §20A.24 item 3 names this page next after Hoarding and Estate and says
+"adapt the broader property-clearing logic; do not duplicate Estate page."
+
+### Section architecture — nine movements, was the shared 14-page `ServicePageLayout` template
+
+01 Service hero · 02 What is stopping the property from moving forward (recognition — Estate has
+no equivalent) · 03 Stays / Leaves / Review + decision authority (this page's signature movement,
+navy field) · 04 Property goal + clearing sequence + phased-work note · 05 Clearing vs cleaning +
+hidden conditions + not-a-hauler · 06 Evidence gap + logistics · 07 Fit + price · 08 Questions ·
+09 Close.
+
+### Distinction from Estate Cleanout, made explicit in the file's own header comment
+
+Estate's signature movement is a Save List (named items, family-protection framing). This page's
+signature movement is a three-category Stays/Leaves/Review operational scope (landlord/owner
+framing, no family language). Estate's goal list uses a family-disposition frame ("returned to
+family"); this page's goal list uses a next-use/readiness frame ("ready to sell / rent / repair /
+turn over") with no family-return option — that is Estate's scope. This page carries a
+condition-recognition movement Estate deliberately omits (Estate's own build note: "an estate
+property is not being diagnosed... it is being prepared for its next stage"). This page carries
+more logistics and more of the disposal/hauler and junk-hauler-comparison content, per the brief's
+instruction that Property Cleanouts "can carry more logistics than Estate." No save-list document,
+no donation/appraisal boundary, no remote-family movement — those stay Estate-specific; this page's
+fit-aside instead routes a family/estate situation to Estate Cleanout and a heavy-accumulation
+situation to Hoarding Cleanup.
+
+### Two shared components changed, both additively and both route-scoped
+
+`src/components/AssessmentForm.astro` — the existing `serviceContexts` map gains a
+`property-cleanouts` entry: `entryRoute: "/property-cleanouts-san-jose/"`, `situation: "Landlord
+turnover"`. That situation string is an existing `assessment.propertySituations` option, chosen
+because `"Accumulated contents"` and `"Inherited or estate property"` are already claimed by
+Hoarding and Estate respectively — the three service pages needed to land on three different
+pre-filled answers, not collide on one.
+
+`src/components/MobileCTA.astro` — a fifth route joins the two-action bar (`isPropertyCleanouts`
+alongside `isHome`, `isServicesHub`, `isHoarding`, `isEstateCleanout`). The other 40 routes are
+untouched. The text door still ships in this page's closing CTA, same as the other four
+two-action routes.
+
+### Image reuse, not new acquisition
+
+`condition-development-neglected-kolforn.jpg` (Kolforn, CC BY-SA 4.0) is the hero — already in the
+repository as a recognition/directory panel on `/` and `/services/`, reused here as a full-bleed
+hero in a new crop. Chosen specifically so this page's hero photograph differs from both Estate's
+(`hero-development-residence-asurnipal.jpg`) and Hoarding's (`condition-development-hoarding-
+asurnipal.jpg`) — three sibling service pages sharing one hero photograph would blur the
+distinction all three exist to make. The atmosphere-slot cap remains "exceeded by one, knowingly"
+per `docs/06-ASSET-MANIFEST.md` §4 — no new file was added.
+
+### `getServiceCityLinks()` intentionally not called
+
+`ServiceSlug` in `cityFacts.ts` is `"hoarding-cleanup" | "estate-cleanout"` only. Widening that
+shared type to a third value touches `cityFacts.ts`, `serviceCityPages.ts`,
+`serviceCityImplications.ts`, and the two already-approved pages that read them — a shared-data-
+model change, not a single-page content change, and out of scope for this pass. This page ships
+with no "Local planning notes" block as a result: an honest omission, not a broken link.
+
+### Claims check — clean
+
+The mandatory animal/organic clause is used verbatim ("Cleaning only — not a decontamination,
+sterilization, or health-safety determination."), the disposal language matches the one permitted
+construction exactly ("not a hauling company... handled by a City-authorized hauler engaged for
+the project," reused from `propertyCleanoutsPage.faq`'s owner-approved, 2026-08-21-corrected
+answer), "mold-like growth" is never shortened, and no price figure appears other than the $195
+assessment fee via `site.offer.assessmentFraming()`. No founder-background text on this page, so
+the second mandatory clause does not apply. No Palo Alto claim, no new SPCB boundary assertion, no
+household-hazardous-waste promise, no new insurance/endorsement wording — nothing requiring
+escalation.
+
+### Verification
+
+Production build **48 pages, unchanged** · route count and `sitemap.xml` membership unchanged ·
+canonical, title, meta description and `index, follow` all present and distinct from Estate's ·
+JSON-LD `Service` / `BreadcrumbList` / `FAQPage` present and correct inside the `@graph`, FAQPage
+count matches the 7 visible questions · all outbound links resolve, including the two existing
+`_redirects` sources that point into this route (`/property-cleanouts-for-managers/`,
+`/eviction-difficult-turnaround-clearing/`) — verified as redirect sources only, neither collides
+with a built page · four already-approved pages (`/`, `/services/`, `/hoarding-cleanup-san-jose/`,
+`/estate-cleanout-san-jose/`) still build with unchanged titles.
+
+**Type law — both rules PASS**, via `scripts/type-law-check.mjs` unchanged: Rule 1 clean across
+all 43 routes; Rule 2 all 43 routes clear 1.9:1, this route's worst is 2.000:1 at 320px; no H1
+one-word wrapping.
+
+**Responsive QA, via a headless Chromium script against the production build** (widths 320, 390,
+768, 1440): HTTP 200 at every width, zero horizontal overflow at every width including 320px, zero
+browser console errors. Mobile sticky CTA at 390px renders the two-action variant ("Tell Us About
+the Property" / "Call now"). Mobile hero content order at 390px matches the required sequence:
+eyebrow → H1 "Property Cleanouts" → lede → thesis "Clear the property so it can move forward." →
+primary CTA → call.
+
+### OLD vs NEW, measured from a production build
+
+| | OLD (`ServicePageLayout` + `propertyCleanoutsPage`) | NEW |
+| --- | --- | --- |
+| Word count | 1,256 | 2,180 |
+| H1 | 1 | 1 |
+| H2 | 16 | 12 |
+| H3 | 4 | 17 (+6 H4) |
+| Images | 3 | 4 |
+| CTA links (assessment + tel) | 9 | 12 |
+| Title | "Property Cleanout Services in San Jose \| Aseptaclean" | "Property Cleanouts in San Jose \| Aseptaclean" |
+
+### Not done, and why
+
+- **No `getServiceCityLinks()` / local planning notes block** — see the shared-type-widening note
+  above. A future pass can add `"property-cleanouts"` to `ServiceSlug` if the owner wants city-page
+  coverage for this service; that is a data-model decision, not made here.
+- **No condition-severity register like Hoarding's five categories.** This page's Stays/Leaves/
+  Review is three categories by design — an operational scope for a landlord/owner audience, not a
+  personal-condition disposition register.
+- **No save-list document, donation/appraisal boundary, or remote-family movement** — Estate-
+  specific content, not duplicated here per the brief's explicit instruction not to make this page
+  "Estate Cleanout without the word estate."
+
+### Files
+
+```
+src/pages/property-cleanouts-san-jose/index.astro   rewritten (was a 22-line ServicePageLayout wrapper)
+src/components/AssessmentForm.astro                 + property-cleanouts service-context entry
+src/components/MobileCTA.astro                      + fifth two-action route
+```
+
+## Detailed Deep Cleaning rebuilt — `/deep-cleaning-san-jose/` (2026-09-01)
+
+Fourth gold-standard individual service-page rebuild, same approach as hoarding, estate and
+property-cleanouts: `docs/30-WEBSITE-MASTER-SPEC.md` §20/§20A/§21 governs, copy reconciled from
+`docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` §36 under §20A.1's order — landing copy → map
+to current route → check active/gated state → check claims, pricing and scope → check current
+copy authority → then implement. Replaced the 21-line `ServicePageLayout` +
+`doc27ServicePages.deepCleaningPage` wrapper with a standalone file, `dc-` scoped styles, same
+primitive system as the three prior rebuilds.
+
+**Route state unchanged.** Same slug, canonical, `index, follow`, sitemap membership, breadcrumb
+parent `/detailed-cleaning/`. The route table already showed this page `gate: null, indexable:
+true` (`doc27ServicePages.ts`) and `AGENTS.md` §2 already lists it indexable — the old internal
+"B10 checklist" gate note found in this log's Phase 4 entry was superseded by the 2026-08-17 SEO
+pass correction recorded later in this file; nothing here reopens that question.
+
+**Pricing — AGENTS.md §4 followed, not the landing-page source's $1,350.** §4 names that exact
+sentence as the barred example. No public price figure appears anywhere on the rebuilt page —
+only cost drivers and the $195 assessment-fee framing, same as the three prior rebuilds. This
+is the single most consequential reconciliation the brief asked for and it was verified against
+AGENTS.md §4, doc 30 §20A.17, and this log before implementation, not assumed.
+
+**Founder background omitted, not restated.** The landing-page source's "science, drug
+manufacturing, and hospital lab work" line does not match `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md`
+§2.4's permitted statements ("BS Biochemistry, UC Riverside · prior pharmaceutical manufacturing
+experience · prior histology and surgical pathology experience..."), and §2.4's founder-
+authority-limit clause is mandatory wherever that background appears. Rather than restate a
+credential claim on a service page — which risks reading as an implied capability claim §2.1
+does not allow — the page omits the background and links to `/about/`, which already carries
+the correct statement with its limiting clause.
+
+**Image proof gap stated honestly, not filled with a mismatched photo.** Every image in the
+repository (`docs/06-ASSET-MANIFEST.md` §4) depicts room-scale clutter, neglect, or an exterior;
+none shows the kitchen-grease/shower-buildup/baseboard/window-track subject matter this page's
+argument needs, and the four already-used-elsewhere images are claimed by the hoarding, estate
+and property-cleanouts rebuilds. The manifest caps atmosphere slots at three, "already knowingly
+exceeded by one," with an explicit "do not add a fifth without a new owner decision." Forcing a
+sixth or seventh reused asset into a detail-proof role would also misrepresent the page's own
+argument (condition + detail, not clutter). The page ships with no photograph at all — a flat
+navy hero and a stated evidence gap in movement 05 — rather than either violate the asset cap or
+mislead with a wrong-subject image. This is the one significant deviation from the task brief's
+"use a strong real detail photo" hero direction, made deliberately and flagged here rather than
+silently reconciled, per doc 30 §20A.23.
+
+**Region corrected.** "San Jose & Santa Clara County" (landing-page source) → "San Jose · South
+Bay & Peninsula" (site.ts's NAP wording of record) — Atherton is San Mateo County, not Santa
+Clara, so the county name is never used sitewide.
+
+**Move-in intent handled without a new route.** §20A.3 forbids creating `/move-in-cleaning/`.
+The fit section mentions an empty-home / pre-move scenario as one qualifying situation because
+that intent already exists as a `property_situation` option; no new route, nav entry, or
+sitemap entry was added.
+
+**Service context added to the assessment engine**, same mechanism as the three prior rebuilds:
+`?service=deep-cleaning` → `AssessmentForm.astro`'s whitelist map → pre-fills the existing
+`property_situation` option "Already empty but requires detailed cleaning" (unclaimed by the
+other three service contexts) — not a new form field, not a new option.
+
+**Mobile sticky CTA — sixth route opted into the two-action variant** (`MobileCTA.astro`), same
+route-scoped mechanism as `/`, `/services/`, hoarding, estate and property-cleanouts. Verified in
+the built HTML: `class="mbar mbar--duo"` with exactly two `<a>` elements ("Tell Us About the
+Property", "Call now").
+
+**One heading shortened during QA.** The movement-02 H2 originally read `"Deep clean" can mean
+almost anything. So we tell you what we mean.` (67 characters) — long enough at
+`--ac-text-h2-home-feature`'s size to risk a wrapped, orphaned final line at 390px, and longer
+than every other H2 on this page or its three siblings. Shortened to `"Deep clean" can mean
+almost anything.` (38 characters); the second sentence folded into the lede paragraph instead.
+
+**No headless browser available in this environment** (Playwright's bundled Chromium does not
+support this session's macOS version) — responsive QA and the H1:body type-law ratio were
+verified by CSS/token inspection and cross-reference against the already-verified sibling pages'
+identical class usage (`.ac-type-h1-hub`, same `dc-`-prefixed primitive system as `hc-`/`ec-`),
+not by live computed-style measurement or screenshot. Flagged as a verification-method
+limitation, not a skipped check — see the response for the type-law and responsive-QA detail.
+
+### OLD vs NEW, measured from a production build
+
+| | OLD (`ServicePageLayout` + `deepCleaningPage`) | NEW |
+| --- | --- | --- |
+| Word count | 1,082 | 2,006 |
+| H1 | 1 | 1 |
+| H2 | 16 | 12 |
+| H3 | 4 | 29 |
+| Images | 3 (chrome only — 0 body photographs) | 3 (chrome only — 0 body photographs, deliberate) |
+| Links (`<a>`, incl. nav/footer) | 81 | 80 |
+| Title | "Deep Cleaning Services in San Jose \| Aseptaclean" | "Detailed Deep Cleaning in San Jose \| Aseptaclean" |
+
+### Not done, and why
+
+- **No hero photograph** — see the image-proof-gap note above. This is the one deliberate
+  deviation from the task brief's hero-image direction.
+- **No `getServiceCityLinks()` / local planning notes block** — `ServiceSlug` in `cityFacts.ts`
+  is a closed union of `"hoarding-cleanup" | "estate-cleanout"` only; adding `"deep-cleaning"`
+  would need real city-fact data, a data-model decision not made here, same reasoning
+  property-cleanouts' entry already recorded for its own omission of this block.
+- **No signature document/register movement** (hoarding's five-category register, estate's save
+  list) — this page's mechanism is the written scope itself (movement 04), not a separate
+  artifact; inventing one would duplicate content rather than add a new idea.
+- **No FAQPage schema question count change** — seven questions ship, matching the visible FAQ
+  exactly, same "no padding beyond what renders" discipline as the three prior rebuilds.
+
+### Files
+
+```
+src/pages/deep-cleaning-san-jose/index.astro   rewritten (was a 21-line ServicePageLayout wrapper)
+src/components/AssessmentForm.astro            + deep-cleaning service-context entry
+src/components/MobileCTA.astro                 + sixth two-action route
+```
+
+## 2026-09-01 — Move-Out Cleaning `/move-out-cleaning-san-jose/` rebuilt as the fifth gold-standard service page
+
+Same approach as the four prior rebuilds directly above: copy reconciled from
+`docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` §38 under §20A.1's order (landing copy → map to
+current route → check active/gated state → check claims/pricing/scope → check current copy
+authority → then implement), replacing the shared `ServicePageLayout.astro` +
+`doc27ServicePages.moveOutCleaningPage` template.
+
+**Specialist thesis:** *Get the property ready for whoever gets it next* (doc 30 §20A.5's own
+line for this route). Deliberately not Deep Cleaning's buildup/detail argument — the task brief
+was explicit that this page must not be Deep Cleaning with the CTA swapped. Every movement argues
+property transition and handoff timing, not surface condition: the hero states it, movement 02
+reframes "clean" as "ready for X," movement 03 is why an empty home is a real opportunity
+(access), movement 04 is the written scope plus movers-then-cleaners sequencing, movement 05 is
+the honest limit (cleaning is not repair, not a deposit guarantee), movement 06 is the evidence
+gap plus fit/price, movement 07 answers the objections a tenant, owner or agent actually raises.
+
+**Architecture, 8 movements:** hero (empty-room photo) → clean-for-the-handoff reframe (the
+"ready for" sequence) → empty-access-changes-the-job (this page's signature movement — what
+becomes visible once furniture is gone, plus "empty does not always mean clean") → written scope
+by room + movers/timing sequencing → cleaning-vs-damage + a dedicated security-deposit boundary +
+heavier-than-expected conditions → evidence gap + fit/price (move-out vs. property cleanout, not
+routine vs. detailed) → seven questions, security-deposit question leading → close.
+
+**Distinction from Deep Cleaning, by design:** no room-by-room buildup-severity recognition
+movement (Deep Cleaning's "Look Closer"); this page's equivalent movement is about ACCESS, not
+accumulation. The fit reframe here is move-out cleaning vs. a property cleanout, not routine vs.
+detailed cleaning — a different basic-option question for a different buyer. This page carries a
+dedicated, standalone security-deposit/inspection boundary statement that Deep Cleaning has no
+occasion to make (no landlord/tenant relationship on a one-time residential clean). Different
+close line, different price-driver order (occupancy/handoff timing leads here), different image
+(a photograph, not Deep Cleaning's honest no-image gap).
+
+**Distinction from Property Cleanouts**, stated on the page itself (movement 06's fit column):
+Property Cleanouts is for a property whose contents still block access — clearing has to happen
+before cleaning can start. This page is for a property that is already mostly accessible, where
+the remaining need is cleaning. Each page links to the other at the point a visitor might be in
+the wrong one.
+
+**H1 narrowed from the old conflated title.** The previous build's H1/title was "Move-In & Move-
+Out Cleaning" — one route covering two distinct intents. §20A.3 is explicit that move-in cleaning
+is not yet a routed decision (no dedicated page, no nav entry), so this rebuild's H1, thesis and
+title narrow to move-out only, matching the route's own slug. The move-in intent is not deleted:
+an empty home before occupancy is the same access condition this page's movement 03 already
+argues, so the overlap is preserved implicitly rather than as a second equally-weighted argument.
+`megaNav`'s "Move-In & Move-Out" nav label in `site.ts` is untouched — shared navigation data,
+out of scope for a single-page content rebuild.
+
+**Security-deposit / inspection language — the task brief's strongest constraint for this page.**
+Never guaranteed anywhere: full deposit return, landlord approval, passing inspection, no
+deductions, or that the home will "look brand new." Movement 05 states the boundary in the
+landing-page source's own factual register ("A detailed move-out clean can address the cleaning
+portion of the handoff. It cannot control damage-related deductions or a landlord's final
+decision.") and the FAQ's leading question repeats it as a direct answer.
+
+**Pricing — AGENTS.md §4 is absolute.** The landing-page source's "$1,350" starting-price
+sentence (§38, three occurrences: hero, cost section, final CTA) is not published anywhere on
+this page. No current owner decision reverses §4. Price logic is cost drivers plus the $195
+assessment framing only, same as the four prior rebuilds.
+
+**Image — `condition-development-reset-aismallard.jpg` (the empty room) used for the first time
+on any route.** Every prior rebuild (Hoarding, Estate, Property Cleanouts, Deep Cleaning)
+deliberately withheld this exact file because `docs/06-ASSET-MANIFEST.md` §4 flags an open owner
+question — does a bare room read as a fabricated "after" shot? On those pages (arguments:
+start→sorted→cleared→cleaned, or buildup→detail) an empty room risks exactly that misread, since
+none of those pages' subject matter IS an empty room. This page's subject matter IS an empty
+room — movement 03's argument is literally "the home is empty, and that access is the
+opportunity." It is not paired with any "before" image, not captioned as a result, and the body
+copy explicitly disclaims completed-work status ("empty does not always mean clean"). Same
+[ATMOS]-class role every other reused asset on the site already plays (AGENTS.md §0.3; doc 21
+§6). No new asset acquired — the manifest's atmosphere-slot cap is not raised; an existing file
+gains a fourth documented role. **Flagged rather than silently resolved**, per doc 30 §20A.23 —
+this is a judgment call about an open owner question, not a settled fact, and the owner should
+confirm it reads correctly on this specific page.
+
+**No CredentialBar on this route.** Same reasoning as the four prior rebuilds — both gated
+credential-bar claims are release-gated by AGENTS.md §3 pending a current COI match.
+
+**No embedded form.** §20A.8's destination rule and §20A.9's "one assessment engine" — CTAs link
+to `/request-assessment/?service=move-out` instead of duplicating lead infrastructure.
+
+**Service context added to the assessment engine**, same mechanism as the four prior rebuilds:
+`?service=move-out` → `AssessmentForm.astro`'s whitelist map → pre-fills the existing
+`property_situation` option "Difficult move-out" (unclaimed by the other four service contexts;
+"Already empty but requires detailed cleaning" stays Deep Cleaning's, since a move-out property is
+not always fully empty yet) — not a new form field, not a new option.
+
+**Mobile sticky CTA — seventh route opted into the two-action variant** (`MobileCTA.astro`), same
+route-scoped mechanism as `/`, `/services/`, hoarding, estate, property-cleanouts and deep
+cleaning. Verified in the built HTML: `class="mbar mbar--duo"` with exactly two `<a>` elements
+("Get My Move-Out Estimate", "Call now").
+
+### Claims check — clean
+
+Ran the `claims-check` skill against the full page. No violations. The one `$1,350` string in the
+file is a code comment documenting why the figure is excluded, not a rendered value. The one
+`licensed` hit is `legal.scopeDisclaimer`'s standard negation, imported verbatim. The security-
+deposit language is an explicit refusal to guarantee, matching the required boundary exactly. No
+`hoarder` as a noun, no `gross filth`, no other banned vocabulary.
+
+### Verification
+
+`astro check` **0 errors** (129 files; pre-existing warnings in unrelated files only) · production
+build **48 pages**, unchanged · route count unchanged, still 45 `index.html` + `/404` ·
+`sitemap.xml` **23 entries**, unchanged, `/move-out-cleaning-san-jose/` present exactly once ·
+canonical unchanged (`https://aseptaclean.com/move-out-cleaning-san-jose/`) · robots unchanged
+(`index, follow`) · `BreadcrumbList` schema correct (Home → Detailed Cleaning → Move-Out
+Cleaning) · `Service` and `FAQPage` schema present and well-formed · all 5 unique internal links
+in `<main>` resolve **200** · sibling pages (`/`, `/services/`, hoarding, estate,
+property-cleanouts, deep-cleaning) spot-checked unaffected by the `MobileCTA.astro` and
+`AssessmentForm.astro` edits — each still renders its own correct two-action or three-action bar.
+
+**Type law — both rules PASS, verified by computed styles on the built output.**
+`scripts/type-law-check.mjs` across all 43 routes: Rule 1 clean sitewide; Rule 2 all routes clear
+1.9:1, this route's worst is 2.000:1 at 320px. No heading orphan wrapping detected on any route.
+
+**Responsive/accessibility QA**, `scripts/hoarding-page-check.mjs` run against
+`/move-out-cleaning-san-jose/` on a live `astro preview` build: page height 12,829 / 10,124 /
+8,419px at 390/768/1440 · main words 1,370 · H1/H2/H3 1/7/21 · 1 image, 7 grids, 8 sections, 2
+assessment links · H1 size 46px at every width checked · H1:body ratio **2.88:1** at 390 and 1440
+(floor is 1.9:1) · **no horizontal overflow at any width** · **no overflow at 200% zoom** · 0
+headings without an `.ac-type-*` role class · **axe: 0 violations at 1440 and 390** · **console
+errors: 0** · **0 touch targets under 44px at 390**.
+
+### OLD vs NEW, measured from a production build
+
+| | OLD (`ServicePageLayout` + `moveOutCleaningPage`) | NEW |
+| --- | --- | --- |
+| Word count (`<main>`) | 1,067 | 1,554 (full-page); 1,370 (QA script's stricter count) |
+| H1 | 1 | 1 |
+| H2 | 16 | 12 |
+| H3 | 4 | 21 |
+| Images | 3 (chrome only — 0 body photographs) | 4 (1 body photograph: the empty-room hero) |
+| Links (`<a>`, incl. nav/footer) | 81 | 78 |
+| Title | "Move-In & Move-Out Cleaning in San Jose \| Aseptaclean" | "Move-Out Cleaning in San Jose \| Aseptaclean" |
+
+### Not done, and why
+
+- **No `getServiceCityLinks()` / local planning notes block** — `ServiceSlug` in `cityFacts.ts` is
+  a closed union of `"hoarding-cleanup" | "estate-cleanout"` only; adding a third value is a
+  shared-data-model change out of scope for a single-page content rebuild, same reasoning
+  property-cleanouts' and deep-cleaning's entries already recorded for their own omission.
+- **No signature document/register artifact** (hoarding's five-category register, estate's save
+  list) — this page's mechanism is the written scope itself (movement 04) plus the movers/timing
+  sequence, not a separate artifact.
+- **No move-in-specific section.** §20A.3 forbids creating a dedicated move-in route or treating
+  move-in as an equally-weighted second argument on this page; the empty-home access argument in
+  movement 03 already covers the one real overlap (empty home before occupancy vs. after
+  move-out) without inventing new scope.
+- **`megaNav`'s nav label left as "Move-In & Move-Out"** — shared navigation data in `site.ts`,
+  out of scope for this page-content rebuild.
+
+### Files
+
+```
+src/pages/move-out-cleaning-san-jose/index.astro   rewritten (was a 21-line ServicePageLayout wrapper)
+src/components/AssessmentForm.astro                + move-out service-context entry
+src/components/MobileCTA.astro                     + seventh two-action route
+```
+
+## Rodent Droppings Cleanup rebuild — `/rodent-dropping-cleanup-san-jose/` (2026-09-02)
+
+Seventh gold-standard individual service-page rebuild, same approach as Hoarding, Estate,
+Property Cleanouts, Detailed Deep Cleaning, Move-Out and Extreme Property Cleanup: copy
+reconciled from `docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` §34 under §20A.1's order —
+landing copy → map to current route → check active/gated state → check claims, pricing and scope
+→ check current copy authority → then implement.
+
+**The CDC / hantavirus / dry-sweep reconciliation — the material conflict this rebuild resolves.**
+`docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` §34 (rank 6) contains three CDC citations and
+repeated "do not dry sweep or vacuum" guidance attributed to CDC ("FOUND DROPPINGS? START HERE" /
+"Do Not Dry Sweep or Vacuum Them," plus two further CDC mentions in the process and FAQ
+sections). `AGENTS.md` §7 (rank 1) states verbatim: "No hantavirus or rodent-specific handling
+language until written crew protocol exists." `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §3.4
+(rank 3) restates the same rule with reasoning: hantavirus is not a bloodborne pathogen, 8 CCR
+§5193 is not the operative standard for dry rodent-dropping cleanup, and publishing CDC-attributed
+handling instructions without a written crew protocol and PPE requirements on file is "a visible
+expertise failure to any informed buyer and a competence claim we cannot support." Doc 21
+outranks the landing-page file per `AGENTS.md` §1's precedence chain (rank 3 over rank 6).
+**Resolution: the CDC/dry-sweep material is dropped from the rebuilt page in full** — it appears
+nowhere on the page. `src/pages/specialty-cleaning/index.astro`'s own carried-forward comment
+("no ... hantavirus / rodent-specific handling language anywhere on this page") independently
+confirms this is the established sitewide rule, not a one-page judgment call made for this
+rebuild.
+
+**Pest control / SPCB boundary, doc 21 §3.1–§3.2 — honored throughout.** The page states the hard
+scope boundary directly (movement 04) and the five barred constructions are respected: no
+"Post-Infestation Cleanup" naming, no exclusion/sealing described as a service, no infestation
+identification framed as an assessment finding, no bait/repellent/trap/rodenticide claimed as
+something Aseptaclean does, no copy implying Aseptaclean resolves the rodent problem itself.
+
+**Doc 21 §2.3's animal/organic limiting clause is mandatory here and is included verbatim**
+("Cleaning only — not a decontamination, sterilization, or health-safety determination."),
+rendered in movement 04 immediately after the "we do not provide" list — the same clause Extreme
+Cleaning and Specialty Cleaning already carry, required because this page describes animal/
+organic condition work.
+
+**Operational service state was not inferred from indexation.** Per `AGENTS.md` §2's 2026-08-26
+owner clarification and doc 30 §20A.4, rodent-droppings cleanup is described throughout as a
+real, current, operationally available service — never as "coming soon" or "future." The route's
+`noindex` state is unchanged and is treated strictly as a separate SEO/publication decision (the
+gate is `docs/27-COPY-CANONICAL.md` §21's release inputs — insurance wording, disposal procedure,
+PPE/work-zone limits, final claims review — none of which this content rebuild clears or
+attempts to clear).
+
+**Route state is unchanged and deliberately so.** Same slug, same canonical, still `noindex,
+follow`, still excluded from `sitemap.xml`, still held out of `megaNav` (Cal. B&P §8550(a) +
+doc 21 §3, rank 3 — unaffected by the operational-availability clarification). No route created,
+renamed, redirected, or re-indexed.
+
+**Mobile sticky CTA — opted into the two-action bar** (`MobileCTA.astro`'s `isTwoAction` flag),
+per doc 30 §20A.10's "only two actions" rule, eighth route to do so. Noted for the record:
+`/extreme-cleaning-san-jose/` never opted into this bar and still ships the three-action default
+— an inconsistency from that earlier rebuild, left as-is since fixing it is out of scope for this
+page's content rebuild.
+
+**Assessment context** — `AssessmentForm.astro` gained a `rodent-droppings` service-context entry
+mapping to `property_situation: "Other"` rather than one of the six existing transition-based
+options (Accumulated contents / Inherited or estate property / Landlord turnover / Already empty
+/ Difficult move-out / Overwhelmed property). None of those options describes a condition-driven
+visit truthfully — they all describe why a property is being cleaned (a move, a turnover, an
+inheritance), and rodent-droppings cleanup is triggered by a condition, not a transition. "Other"
+was chosen as the honest answer over forcing a false match. The form's existing `pest_activity`
+condition-flag radio was deliberately left alone rather than auto-filled — it lives inside a
+conditionally-rendered `data-handoff-only` block, and auto-filling a radio input is a different
+and riskier mechanism than the six precedents' simple `<select>` value-match, which was judged
+out of scope for this rebuild.
+
+**Images.** No photograph ships. `docs/06-ASSET-MANIFEST.md` §4's atmosphere-image cap (three) is
+already knowingly exceeded by one with an explicit "do not add a fifth without a new owner
+decision," and §6 permanently prohibits "hazmat or PPE theatre" and "any image implying a
+regulated service" — both of which a stock rodent-droppings photo risks reading as. No real
+Aseptaclean rodent-cleanup photography exists yet. Same honest-proof-gap precedent Detailed Deep
+Cleaning and Extreme Property Cleanup already set, rather than forcing a mismatched or risky
+asset into the role.
+
+**Pricing.** No figure published. Cost-driver list only, per `AGENTS.md` §4.
+
+### Verification
+
+Production build **48 pages**, unchanged, zero errors/warnings. Canonical
+`https://aseptaclean.com/rodent-dropping-cleanup-san-jose/`, unchanged. Robots
+`noindex, follow`, unchanged. Excluded from `sitemap.xml` (0 matches), unchanged. `Service`,
+`BreadcrumbList`, and `FAQPage` schema present. Not present in `megaNav` (confirmed absent from
+`src/data/site.ts`'s export). Every internal link in the rebuilt page (`/faq/`,
+`/hoarding-cleanup-san-jose/`, `/property-cleanouts-san-jose/`) resolves to a built route.
+Banned-vocabulary grep (`licensed · certified · remediation · biohazard · decontaminat ·
+sanitiz · steriliz · clearance · habitable · hoarder · gross filth · free assessment ·
+hantavirus · post-infestation`) returns zero hits outside the file's own top-of-file comment
+documenting what was removed and why — one live hit (the word "licensed" describing the
+pest-control provider's work, not Aseptaclean's) was found and reworded to "regulated" during
+review rather than left as an ambiguous read. `pnpm`/`npm run build:local` clean. No page-level
+`<script>` block added (matches the Extreme Cleaning precedent — zero new client JS surface).
+Type law: no `font-size` on any heading selector in the new file; all headings use pre-existing
+`.ac-type-*` role classes already in production use on `/extreme-cleaning-san-jose/`
+(`ac-type-h1-hub`, `ac-type-h2-home-feature`, `ac-type-h2-final`, `ac-type-h3-home-route`,
+`ac-type-h3-home-feature`) — no new type token introduced, so the H1:body ratio is inherited
+unchanged from an already-shipping route (`--ac-text-h1-hub` floor 2.2rem / 16px body ≈ 2.2:1,
+narrow-viewport override 2rem / 16px = 2.0:1, both above the 1.9:1 floor).
+
+**Not independently re-verified this session:** live-browser responsive/axe/console/zoom QA.
+`npx playwright install chromium` failed in this sandbox ("Playwright does not support chromium
+on mac13") — no local Chromium available to drive a real browser check. Static analysis only:
+breakpoint set is identical to Extreme Cleaning's proven pattern (56/50/40/22.5rem, one fewer
+than Extreme Cleaning's 64rem tier because this page has no 3-column grid needing that collapse),
+every grid uses `minmax(0, 1fr)`, no fixed-pixel widths present, narrow-viewport containers use
+the same `calc(100% - 40px)` pattern. This is a real gap against the release-checklist QA bar,
+not a pass — flagged rather than asserted.
+
+### Files
+
+```
+src/pages/rodent-dropping-cleanup-san-jose/index.astro   rewritten (was a 21-line ServicePageLayout wrapper)
+src/components/AssessmentForm.astro                      + rodent-droppings service-context entry
+src/components/MobileCTA.astro                            + eighth two-action route
+```
+
+## Animal Waste Cleanup rebuild — `/animal-waste-cleanup-san-jose/` (2026-09-02)
+
+Eighth gold-standard individual service-page rebuild, same approach as Hoarding, Estate, Property
+Cleanouts, Detailed Deep Cleaning, Move-Out, Extreme Property Cleanup and Rodent Droppings: copy
+reconciled from `docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` §40 under §20A.1's order —
+landing copy → map to current route → check active/gated state → check claims, pricing and scope
+→ check current copy authority → then implement.
+
+**The disinfect/decontamination reconciliation — the material conflict this rebuild resolves.**
+`docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` §40 (rank 6) contains a full "CLEANING AND
+DISINFECTING ARE NOT THE SAME THING" section and a process step reading "When disinfecting is
+appropriate for the material and scope, products are used according to their label."
+`docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §2.2 (rank 3) bans `disinfect` "as an outcome claim"
+outright, with no permitted-negation carve-out covering it the way §2.3 carves out the
+animal/organic clause. Doc 21 outranks the landing-page file per `AGENTS.md` §1's precedence
+chain. **Resolution: the disinfect section and process sentence are dropped from the rebuilt page
+in full** — neither appears anywhere. The source's enzyme-cleaner FAQ answer ("The product used
+depends on the surface and condition... no one chemical we promise") was also dropped rather than
+kept in its hedged form: naming a product category at all is a method claim with no current
+approved operating documentation, which the task brief independently rules out.
+
+**Doc 21 §2.3's animal/organic limiting clause is mandatory here and is included verbatim**
+("Cleaning only — not a decontamination, sterilization, or health-safety determination."),
+rendered in movement 04 immediately after the porous-materials boundary — the same clause Rodent
+Droppings, Extreme Cleaning and Specialty Cleaning already carry.
+
+**`animalPage` in `src/data/doc27ServicePages.ts` was NOT removed or altered.**
+`ServiceDirectory.astro` (its `alwaysList` exception) and `ServiceProblemChooser.astro` (its
+`showCondition` block) both read `animalPage.slug` and `animalPage.complianceClause` off that
+record independently of how the page itself renders. Only `src/pages/animal-waste-cleanup-san-
+jose/index.astro`'s rendering was replaced, matching how the Rodent Droppings rebuild left
+`rodentPage` in place. Both consumer components were re-checked against the rebuilt route after
+the change and still resolve correctly (see Verification).
+
+**SPCB / pest boundary — adapted, not copied from Rodent Droppings.** Doc 21 §3's structural-
+pest-control exposure is written around Cal. B&P §8505's express inclusion of rodents and
+§8555(g)'s express exclusion of mice/rats/pigeons; animal waste (dog/cat urine and feces) is not
+itself structural pest control, so Rodent's "Pest Control vs Cleanup" movement is not reproduced
+wholesale. What carries over: the page never claims to identify, exclude, trap, or treat any pest
+or wild animal, "Wildlife" is deliberately not offered as a selectable animal-type path, and a
+job that turns out to involve rodent activity routes to Rodent Droppings Cleanup or a licensed
+pest operator rather than being absorbed here.
+
+**Human-waste / TSWMP boundary — explicit, per the task brief's strongest warning.** The page
+never generalizes to "urine or feces of any kind." Movement 05 states directly that human waste,
+blood, and human biological material are outside this service, with no implied automatic
+acceptance if one is discovered mid-job. Doc 30 §20A.4's three-part separation (operational
+availability / TSWMP gate / SEO state) governs this page; the TSWMP gate itself is untouched.
+
+**Carpet / flooring / subfloor — restrained, per the task brief.** No extraction, subfloor
+treatment, or guaranteed-odor-removal claim appears anywhere. §40's own restraint ("Do you
+replace carpet or padding? No.") is preserved; flooring/subfloor questions route to "another
+qualified provider," matching Rodent Droppings' and Extreme Cleaning's identical restraint on
+structural materials.
+
+**Operational service state was not inferred from indexation.** Per `AGENTS.md` §2's 2026-08-26
+owner clarification and doc 30 §20A.4, animal-waste cleanup is described throughout as a real,
+current, operationally available service — never as "coming soon" or "future." The route's
+`noindex` state is unchanged and is treated strictly as a separate SEO/publication decision (the
+gate is `docs/27-COPY-CANONICAL.md` §21's release inputs — insurance wording, pest-boundary
+confirmation, disposal procedure, PPE/work-zone limits, final claims review — none of which this
+content rebuild clears or attempts to clear).
+
+**Route state is unchanged and deliberately so.** Same slug, same canonical, still `noindex,
+follow`, still excluded from `sitemap.xml`. Unlike Rodent/Pigeon Droppings, this route was
+already present in `megaNav` (`src/data/site.ts`'s Specialty Cleaning group) and already an
+`alwaysList` exception in `ServiceDirectory.astro` and `ServiceProblemChooser.astro` before this
+rebuild — those three components already treated it as linked and operationally available. No
+route created, renamed, redirected, or re-indexed by this change.
+
+**Mobile sticky CTA — opted into the two-action bar** (`MobileCTA.astro`'s `isTwoAction` flag),
+per doc 30 §20A.10's "only two actions" rule, ninth route to do so.
+
+**Assessment context** — `AssessmentForm.astro` gained an `animal-waste` service-context entry
+mapping to `property_situation: "Other"`, same mechanism and same reasoning as the existing
+`rodent-droppings` entry: animal-waste cleanup is triggered by a condition, not a transition, and
+none of the six existing transition-based options describe it truthfully.
+
+**Images.** No photograph ships. `docs/06-ASSET-MANIFEST.md` §4's atmosphere-image cap (three) is
+already knowingly exceeded by one with an explicit "do not add a fifth without a new owner
+decision," and §6 permanently prohibits "hazmat or PPE theatre" and "any image implying a
+regulated service." The task brief independently rules out cute-pet stock, sad-pet imagery,
+cartoon smell lines, fake before/after, and AI-generated pet mess. No real Aseptaclean
+animal-waste-cleanup photography exists yet. Same honest-proof-gap precedent Rodent Droppings,
+Extreme Property Cleanup and Detailed Deep Cleaning already set.
+
+**Pricing.** No figure published. Cost-driver list only, per `AGENTS.md` §4. No odor-treatment
+"packages" or tiers, per the task brief's explicit prohibition.
+
+### Verification
+
+Production build **48 pages**, unchanged, zero errors/warnings. Canonical
+`https://aseptaclean.com/animal-waste-cleanup-san-jose/`, unchanged. Robots `noindex, follow`,
+unchanged. Excluded from `sitemap.xml` (0 matches), unchanged. `Service`, `BreadcrumbList`, and
+`FAQPage` schema present. Present in `megaNav` and in `ServiceDirectory.astro` /
+`ServiceProblemChooser.astro`'s exception lists, unchanged from before this rebuild. Every
+internal link in the rebuilt page (`/faq/`, `/property-cleanouts-san-jose/`,
+`/hoarding-cleanup-san-jose/`, `/extreme-cleaning-san-jose/`, `/rodent-dropping-cleanup-san-jose/`)
+resolves to a built route. Banned-vocabulary grep (`licensed · certified · remediation ·
+biohazard · decontaminat · sanitiz · steriliz · clearance · habitable · hoarder · gross filth ·
+free assessment · hantavirus · post-infestation · disinfect · enzyme`) returns zero hits outside
+the file's own top-of-file comment and the single mandated §2.3 negation clause; the three
+`licensed` hits in the built page are the permitted `legal.scopeDisclaimer` negation ("is not a
+licensed general contractor..."), one in the page body and two in shared footer chrome.
+`npm run build:local` clean. No page-level `<script>` block added. Type law: no `font-size` on
+any heading selector in the new file; all headings use pre-existing `.ac-type-*` role classes
+already in production use (`ac-type-h1-hub`, `ac-type-h2-home-feature`, `ac-type-h2-final`,
+`ac-type-h3-home-route`, `ac-type-h3-home-feature`) — no new type token introduced, so the
+H1:body ratio is inherited unchanged from already-shipping routes. All nine prior rebuilt/
+approved routes (`/`, `/services/`, `/hoarding-cleanup-san-jose/`, `/estate-cleanout-san-jose/`,
+`/property-cleanouts-san-jose/`, `/deep-cleaning-san-jose/`, `/move-out-cleaning-san-jose/`,
+`/extreme-cleaning-san-jose/`, `/rodent-dropping-cleanup-san-jose/`) re-verified to build after
+the shared-component edits. `MobileCTA` confirmed rendering `mbar mbar--duo` on the new route and
+on the existing eight two-action routes, and the unmodified three-action default on
+`/extreme-cleaning-san-jose/`.
+
+**Not independently re-verified this session:** live-browser responsive/axe/console/zoom QA. No
+local Chromium available in this sandbox to drive a real browser check (same gap the Rodent
+Droppings entry recorded). Static analysis only: the CSS grid/breakpoint pattern is copied
+directly from Rodent Droppings' proven set (56/50/40/22.5rem), every grid uses `minmax(0, 1fr)`,
+no fixed-pixel widths present, narrow-viewport containers use the same `calc(100% - 40px)`
+pattern. This is a real gap against the release-checklist QA bar, not a pass — flagged rather
+than asserted.
+
+### Files
+
+```
+src/pages/animal-waste-cleanup-san-jose/index.astro   rewritten (was a 21-line ServicePageLayout wrapper)
+src/components/AssessmentForm.astro                    + animal-waste service-context entry
+src/components/MobileCTA.astro                          + ninth two-action route
+```
+
+## `/request-assessment/` rebuilt for conversion (2026-09-02)
+
+**Directive:** stop building new service pages; rebuild the assessment for conversion. The three-step
+questionnaire (Property fit → Scope and condition → Authority and contact, ~43 visible fields/questions)
+made the customer scope the project for us. Rebuilt as a single lean page: situation → city/ZIP →
+description → optional photos → name/phone/email → submit, ~18 visible field groups on the default
+path — a 58% reduction. Full before/after measurement in the session's final report.
+
+**Architecture decision — one route, two flows, not two forms.** `/request-assessment/` must serve
+both the eight-service lean path and the Private Residence Reset offer (`?offer=private-residence-reset`,
+doc 30 §33 — a distinct premium offer outside the eight-service taxonomy, out of this task's scope).
+Rather than splitting into two components, `AssessmentForm.astro` keeps both in one file: the lean
+markup renders by default, and the pre-existing residence-only fieldset (hidden by default) is
+revealed by the same client-side branch the prior build used. The residence offer's own required
+fields and copy are unchanged.
+
+**Backend contract change — three form identities, not two.** `functions/_lib/lead.ts`'s
+`validateLead` previously kept one boolean (`form_version` present = "detailed", requiring the full
+long-form field set). The lean form still sends `form_version` (so `providers.ts`'s `isDetailedLead`
+correctly routes it to the richer HubSpot/SMS summary instead of the sparse "quick request" one built
+for the homepage's 3-field form) but requires a much smaller set. Added `leanRequiredFields`
+(`property_city`, `property_situation`) as a third branch alongside the short-form and residence-offer
+branches. Retired `handoffOptionalFields`'s hard requirement (kept the fields in the allowlist as
+harmless no-ops in case a stale cached page still posts them) and deleted the now-fully-dead
+`areas_involved[]`/`allowedAreas` schema — nothing sends it anymore.
+
+**Two latent validation bugs found and fixed, both pre-existing but never previously reachable.**
+`email` and `desired_completion_date` validation both tested `data.field` for `typeof "string"`
+without also checking it was non-empty; both fields were always `required` in every form that sent
+them before this rebuild, so an empty string could never reach the check. Making both fields optional
+on the lean form exposed the gap — a move-out visitor leaving the date blank, or anyone leaving email
+blank, would have been rejected with "Enter a valid ZIP/completion date" despite the field being
+explicitly optional. Fixed by guarding both checks on a truthy value first, same pattern already used
+for `property_zip`.
+
+**`providers.ts` owner-alert summaries updated for the new field shape.** The "Handoff Reset" HubSpot
+deal summary and owner-fallback-email body referenced long-form-only fields
+(`property_address`, `authority_to_approve`, `contents_removal`, condition-flag fields) that the lean
+form never sends — those would have rendered as "Not supplied" noise instead of the lean form's actual
+answers. Replaced with a summary that reads `property_city`, `property_zip`, `property_situation`,
+`property_detail`, and whichever one of the six new service-qualifying-question fields was submitted.
+The owner-fallback-email's `Description:` line previously only appeared for the short homepage form;
+now also appears for the lean form (both use `property_detail`), so its answer isn't dropped from the
+one channel that fires when SMS is off (the current default, pending 10DLC).
+
+**Situation-value reconciliation.** The eight-service `?service=` → `property_situation` map (added
+2026-08-26, extended per-service since) needed one correction: `property-cleanouts` had mapped to
+`"Landlord turnover"`, a value that existed in the old 12-option long-form list but has no equivalent
+in the new 8-option direct-visitor list. Remapped to `"Other"` — same reasoning already established for
+`rodent-droppings`/`animal-waste` before those got dedicated values: a landlord/property-manager
+cleanout is a distinct situation, not one of the six transition-based options, and forcing a false
+match would misrepresent the visitor's situation to whoever reads the lead. Also added two new
+`property_situation` values, `"Rodent droppings"` and `"Animal waste"`, replacing their prior shared
+`"Other"` mapping now that the direct-visitor list gives them dedicated options — better data than the
+prior workaround, not a new claim.
+
+**CSS bug found and fixed — `[hidden]` defeated by sibling `display: grid` rules.** The new lean
+layout uses `display: grid` on several containers that are also conditionally hidden via the `hidden`
+attribute (the situation picker once a service context preselects it, the service-question slot, the
+residence-only block). Author-stylesheet `display` rules always win the cascade over the UA
+stylesheet's `[hidden] { display: none }`, regardless of specificity — so `.form-group[hidden]` was
+rendering *visible* until an explicit `[hidden] { display: none }` override was added for the three
+affected classes. The prior 3-step build never hit this because none of its grid containers were ever
+toggled by the bare `hidden` attribute (visibility there was step-based, via a different mechanism).
+
+**CSS bug found and fixed — grid intrinsic-size blowout on narrow viewports.** Several nested
+`display: grid` containers had no explicit `grid-template-columns`, defaulting to an implicit
+single auto-sized column. An implicit grid track's auto sizing is based on content's `max-content`
+width unless the track is explicitly capped — so at 320–390px, `<input>`/`<select>` elements'
+browser-default `min-width: auto` propagated all the way up through five nested grid levels
+(`.assessment__body` → `.intake-form` → `.form-group`/`.form-grid` → `.form-field` → the input),
+causing ~90px of horizontal overflow on every route width, invisible at desktop widths where the
+40rem `max-width` happened to exceed the blowout size. Fixed by giving every single-column grid
+container an explicit `grid-template-columns: minmax(0, 1fr)` (two-column grids: `repeat(2,
+minmax(0, 1fr))`) instead of relying on `min-width: 0` on the container alone, which does not affect
+how a container sizes its own implicit tracks. This is the same `minmax(0, 1fr)` pattern the
+animal-waste-cleanup rebuild (entry above) had already adopted as proven practice — not discovered
+independently as new, re-derived the hard way in this session before finding the precedent.
+
+**Not fixed, flagged instead — pre-existing sitewide overflow in `Header.astro`'s closed mobile-nav
+drawer.** At 1280px viewport with 200% CSS zoom simulation (`document.body.style.zoom`, not a true
+browser zoom equivalent), `.mobile-nav__drawer` (`position: fixed; inset: 0` inside a closed
+`<details>`) was measured contributing to `document.documentElement.scrollWidth` despite being
+visually non-interactive when closed. Confirmed this is unrelated to any change in this session —
+present in `Header.astro`, sitewide, not reproduced by a normal viewport-width sweep (320–1440px, no
+zoom simulation, zero overflow at every width including on `/request-assessment/`). Flagged for a
+future sitewide QA pass rather than fixed here, since `Header.astro` is out of this task's scope and
+the test methodology (`body.style.zoom`) is not authoritative for real browser zoom behavior.
+
+**Not touched:** `functions/api/lead.ts` (zero changes — the endpoint remains field-name agnostic),
+Turnstile/honeypot/spam wiring, `/thank-you/`, analytics event names (`assessment_start`/
+`assessment_submit` already fire sitewide off `[data-assessment-form]`; added one new event,
+`photo_added`, fired client-side in `AssessmentForm.astro` on first file selection — no new analytics
+library).
+
+### Files
+
+```
+src/components/AssessmentForm.astro   rewritten — single lean page replaces 3-step wizard;
+                                       residence-offer branch preserved
+src/data/assessment.ts                rewritten — situations list + per-service question map
+                                       replaces step/scope/condition/residence option data
+src/pages/request-assessment.astro    copy updated (title, meta description, stale header comment)
+functions/_lib/lead.ts                three-way form-identity contract; two validation bug fixes;
+                                       retired dead areas_involved/allowedAreas schema
+functions/_lib/providers.ts           owner-alert summaries updated for the lean field shape
+```
+
+## Pre-launch audit — P0 fixes and precedence resolution (2026-09-02)
+
+Ran a launch-readiness pass: `astro check`, production build, route/redirect/link audit, claims/
+TSWMP sweep, header/overflow/responsive audit, images/accessibility audit, and manual review of
+the lead endpoint, forms, footer, legal pages, and deployment config. Four issues fixed; one
+precedence conflict resolved and logged here per this file's own instruction not to leave a
+conflict resolved only in-session.
+
+### Conflict: unverified insurance/endorsement claim shipping unconditionally
+
+A: `docs/05-DECISIONS-LOG.md`, undated "Insurance publication decision" entry (predates every
+timestamped entry in this file, including 2026-07-29) — "Owner confirmed the UPCM policy is
+active. Approved public wording: `Insured. Certificate of Insurance available upon request.`"
+(no assigned rank; an owner decision, but the oldest one in this file, and one this file's own
+2026-08-25 reconciliation implicitly superseded without saying so explicitly)
+
+B: `AGENTS.md` §3 (version 2026-08-25, the file's own stated operative chain) — "No current COI
+or equivalent policy document is present in the repository. Until the owner or broker verifies
+the exact insurance and endorsement wording against current documentation, those public trust
+claims remain release-gated. Do not preserve them merely because an older document or
+environment value contains them." Same rule independently in `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md`
+§2.5 (rank 3): both the insurance line and "Organic Pathogen Endorsed" must be matched against a
+*current* COI before release; "unverified → suppress the statement entirely," citing its own
+2026-08-25 owner decision.
+
+**Resolution: B wins.** AGENTS.md is explicitly the single current operative precedence chain
+("If any other document disagrees with this one, this one wins") and is dated the same day as
+doc 21's cited owner decision. The old log entry is the oldest entry in a 9,000+ line file with
+no rank of its own — per this skill's own rule, "a log entry records an owner decision but has
+no blanket rank of its own; it governs only the scope actually decided," and does not survive a
+later, more specific, explicitly-superseding statement in the file that IS the current chain.
+Independent corroboration: every rebuilt service page in `src/` (hoarding-cleanup, estate-
+cleanout, property-cleanouts, deep-cleaning, move-out-cleaning, extreme-cleaning, rodent-
+dropping, animal-waste) already carries its own code comment omitting `CredentialBar` for this
+exact reason, predating this session — the more recent implementation had already treated the
+old log entry as stale.
+
+**Type:** violated rule → fixed code. The suppression mechanism existed in intent but was
+broken: `src/data/site.ts`'s `insuranceStatus` field had the unverified wording hardcoded as its
+own fallback, so an empty `PUBLIC_INSURANCE_STATUS` could never actually suppress anything, and
+`wrangler.toml`'s committed production `[vars]` block set the var to that same wording directly
+— so the claim shipped on every production build regardless of what any component checked.
+
+**Changed:**
+- `src/data/site.ts` — removed the hardcoded fallback on `insuranceStatus`; empty env now means
+  empty, not a defaulted claim.
+- `src/components/CredentialBar.astro` — the "Insured" and "Endorsed" cells (previously static
+  markup with no data connection at all) are now both conditional on `site.business.insuranceStatus`
+  being non-empty. This component ships on `/request-assessment/`, `/faq/` (via `ServiceHub.astro`
+  on some routes), the three city hubs, the six service×city pages, and any future route that
+  imports it — the exact sitewide surface the per-page comments elsewhere in `src/` describe
+  avoiding.
+- `src/styles/global.css` — `.ac-cred > .ac-shell` grid changed from a hardcoded
+  `repeat(4, 1fr)` to `repeat(auto-fit, minmax(0, 1fr))` so the bar lays out correctly with 2 or
+  4 cells present.
+- `src/pages/about/index.astro` — the insurance line is now conditional on the same field
+  instead of always rendering.
+- `src/pages/faq/index.astro` — the "Are you insured?" Q&A is filtered out of both the visible
+  answer list and the `FAQPage` JSON-LD when insurance is unverified, so the claim does not
+  survive in structured data either.
+- `wrangler.toml` — removed `PUBLIC_INSURANCE_STATUS` from the committed production `[vars]`
+  block (previously set to the exact wording doc 21 §2.5 says to suppress). Left a comment
+  recording the exact recorded wording so it can be restored verbatim once the owner or broker
+  verifies a current COI.
+- `.env.production` (gitignored, local only) — cleared to match, so local production builds
+  test the same suppressed state as the real deploy.
+
+**Not changed:** the mandatory verbatim scope disclaimer ("Aseptaclean performs property
+clearing and approved cleaning within its current lawful and insured scope...") in
+`legal.scopeDisclaimer` and `FAQ.astro` — this is a different, pre-approved construction (doc 21
+§6, migrated from the master brief) describing an operating boundary, not an affirmative "we are
+insured" trust statement, and doc 21 does not gate it the way it gates §2.5's two named lines.
+
+**Logged so the claim is not silently reintroduced:** restoring `PUBLIC_INSURANCE_STATUS` (and
+therefore re-enabling all four render sites at once, since they now share one gate) requires an
+owner/broker COI verification per doc 21 §2.5 — not a reversion of this fix.
+
+### Other P0/P1 fixes this pass
+
+- **`astro check` error, `src/pages/extreme-cleaning-san-jose/index.astro:454`** — `comparison`
+  array's two object literals had inconsistent shape (`active` only on the second), so
+  TypeScript's inferred union type had no `active` property on the first member. Added
+  `active: false` to the first row. `astro check` now reports 0 errors (was 1); this was the
+  pre-existing error referenced in prior assessment notes.
+- **`src/components/MobileCTA.astro`** — `/extreme-cleaning-san-jose/` was the only one of the
+  eight rebuilt individual service pages that had not opted into the two-action (`Call` +
+  primary CTA) mobile bar; it still shipped the three-action default the component's own prior
+  comment flagged as "an inconsistency from that rebuild." Added it to the `isTwoAction` route
+  list, matching the pattern the other seven already use. Verified in the built output
+  (`class="mbar mbar--duo"`, matching the sibling service pages).
+
+### Not fixed, flagged instead
+
+- **No keyboard focus trap in the open mobile nav drawer** (`Header.astro`) — confirmed by this
+  session's header/overflow audit. Escape correctly closes the drawer and returns focus to the
+  hamburger; all drawer links are reachable via Tab; but nothing stops Tab from moving past the
+  drawer's last link into `<main>` content sitting visually behind the open, full-screen overlay.
+  Real WCAG 2.4.3-adjacent gap, but it requires new JS behavior, not a CSS fix, and the drawer is
+  otherwise fully operable — left for a dedicated accessibility pass rather than rushed here.
+- **The "closed mobile-nav drawer contributes to horizontal overflow at 200% zoom" concern**,
+  re-investigated this session across 6 pages × 9 widths × zoom simulation × drawer open/closed —
+  not reproduced at any real browser width. The only overflow found is a deliberate sitewide
+  `body { min-width: 20rem }` floor in `global.css`, identical below 320px regardless of drawer
+  state, and within the WCAG 1.4.10 320px reflow baseline. This corroborates the same finding
+  already recorded earlier in this file (search "Not fixed, flagged instead — pre-existing
+  sitewide overflow"), from a different, less reliable synthetic-zoom test method.
+- **`src/data/assessment.ts`'s `serviceQuestions` object** is fully unused dead data —
+  `AssessmentForm.astro` hardcodes its own duplicate `serviceContexts` map inline instead of
+  importing it. Both copies currently agree, so this is not a visible bug, but it is a drift
+  risk. Left as-is; a data-layer cleanup is outside a launch-blocker pass.
+- **`src/data/site.ts`'s exported `navigation` array** (`/#standards` etc.) is dead code, never
+  imported anywhere — `Header.astro` uses only `megaNav`. Its `/#standards` anchor target does
+  not exist in the current build. Not a live defect since nothing renders it; flagged for a
+  future cleanup pass.
+
+### Files
+```
+src/pages/extreme-cleaning-san-jose/index.astro   comparison array shape fix; MobileCTA opt-in note
+src/components/MobileCTA.astro                    added extreme-cleaning to isTwoAction routes
+src/data/site.ts                                  removed hardcoded insuranceStatus fallback
+src/components/CredentialBar.astro                Insured/Endorsed cells now conditional
+src/styles/global.css                             .ac-cred grid: auto-fit instead of fixed 4-col
+src/pages/about/index.astro                        insurance line now conditional
+src/pages/faq/index.astro                          "Are you insured?" filtered when unverified
+wrangler.toml                                      removed unverified PUBLIC_INSURANCE_STATUS
+.env.production                                    cleared to match (gitignored, local only)
+```
+
+## True end-to-end customer form test — real Turnstile, real inboxes (2026-09-02)
+
+The 2026-09-02 lean-rebuild `/request-assessment/` form, `functions/_lib/lead.ts`, and
+`functions/_lib/providers.ts` were all uncommitted working-tree changes with no deployment and no
+live test evidence — every prior closed lead-pipeline item in this log was verified against an
+older build. Built and deployed the current working tree to the real `aseptaclean` Cloudflare
+Pages project (`aseptaclean.pages.dev`, production environment, all 7 provider secrets present)
+and ran the actual customer journey: a real headed Chrome via Playwright
+(`--disable-blink-features=AutomationControlled`, the same documented method as the 2026-08-11
+runs — Turnstile detects `navigator.webdriver` otherwise and silently never issues a token,
+"No available adapters" in console), landing on a live service page and clicking its real CTA,
+not constructing the query string by hand.
+
+**Two submissions, both HTTP 201, both confirmed at the provider, not just the endpoint's own
+optimistic report:**
+
+- **Minimum lead** (situation, city, name, phone, consent only — no email/ZIP/description/photo):
+  owner alert delivered to `matthew.ruiz@aseptaclean.com` (`AC-7S2T4D`), clean body — `Not
+  supplied` for the untouched fields, no `undefined`/`null`/`[object Object]`.
+- **Full lead**, entered via the live `/hoarding-cleanup-san-jose/` CTA
+  (`?service=hoarding-cleanup`): service-context preselection correctly hid the situation picker,
+  set `property_situation=Accumulated contents`, and rendered the one qualifying question
+  (`belongings_must_be_kept`). Photo, ZIP, description, and email all submitted. R2 record,
+  HubSpot contact/deal, owner email, and customer confirmation email all agree on every field —
+  no drift, no stale-field leakage from the retired long-form questionnaire.
+
+**Found and fixed live:** `sendOwnerFallbackEmail`'s `leadSummary` — the actual body of the
+owner's primary (email-only, SMS off pending 10DLC) notification — omitted `property_zip`, the
+per-service qualifying answer, and the photo/file count. All three were already being computed
+and sent correctly to HubSpot's deal description (`syncHubSpot`'s local `serviceAnswer`
+computation); the owner email simply never read them. Extracted `serviceAnswer` to a shared
+top-level helper, added `ZIP`, `Service question`, and `Photos/files` lines to `leadSummary`,
+redeployed, and re-submitted the full-lead case again to confirm the fix in an actually-delivered
+message, not just a code read: confirmed via Resend (`AC-4XV8GS`, delivered 14:11:13 UTC) — ZIP
+`95126`, `Service question: Yes`, `Photos/files: 1` all present. Before this fix, the owner's
+only channel for a lead's ZIP, qualifying answer, and photo count was opening HubSpot or the R2
+record by hand; the email itself under-reported every lead with those fields.
+
+Also verified: the failure path (corrupted Turnstile token client-side, valid everything else)
+returns HTTP 400 before any R2 write, keeps the customer on the form with the approved error
+copy, retains entered field values, re-enables the submit button, and sends neither owner alert
+nor customer confirmation — confirmed against live Resend send logs (no new sends for the failed
+attempt). Refreshing `/thank-you/` after a real success does not re-POST `/api/lead` (confirmed
+by response-listener count across a real `page.reload()`).
+
+**Not exercised this pass:** `TEST 1`'s and the failure test's confirmation-email suppression
+messaging on `/thank-you/` (the `email=none`/`email=attention` branches) was covered by the
+existing 2026-08-11 evidence in this file's release-checklist companion, not re-screenshotted
+here. HubSpot dedupe-on-phone (the no-email path's identifier) was exercised structurally by the
+minimum-lead test but not re-verified against a second submission from the same phone number.
+
+### Files
+```
+functions/_lib/providers.ts   shared serviceAnswer() helper; owner email now includes ZIP,
+                               service question, and photo/file count
+```

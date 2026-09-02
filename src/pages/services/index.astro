@@ -1,22 +1,48 @@
 ---
-// Chunk 3 of the nested-hub-layer IA expansion (owner-approved plan, 2026-08-11): this page
-// shipped as an unpublished noindex draft in Chunk 1 and is now a real, linked, indexable
-// page — linked from primary nav and the footer, included in sitemap.xml.ts. Hybrid IA
-// decision: this hub sits ABOVE the existing flat service-page URLs without migrating or
-// 301-ing them — every pillar card below links straight to an existing flat page (e.g.
-// /hoarding-cleanup-san-jose/), never to a not-yet-built nested child route. No dropdown/
-// submenu — flat nav entry only (owner decision, see src/data/site.ts). No biohazard pillar
-// or link exists anywhere on this page, per the standing owner directive
-// (docs/05-DECISIONS-LOG.md, docs/19-SYSTEM-AND-SITEMAP.md Part 2.1 Phase 5, docs/90) — this
-// is out of scope in any form.
+// SERVICES HUB — `/services/`. Rebuilt 2026-08-26 to docs/30-WEBSITE-MASTER-SPEC.md §18 (the
+// route's job and visual direction) and §20A.20 (problem-chooser first, active directory second),
+// with copy reconciled from docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md §43–44 under the
+// §20A.1 order: landing copy → map to current route → check active/gated state → check claims,
+// pricing and scope → check current copy authority → then implement.
 //
-// DIFFERENTIATION: this is a hub/directory page, not a buyer-decision service page — same
-// class as /service-areas/ (no Track A/B split, no FAQ, no proof section, no pricing). Its
-// three pillar cards reuse copy verbatim from site.ts's already-approved homepage.serviceCards
-// (docs/18-VISUAL-DIRECTION.md §6 row 3) so no new claim is introduced by this page.
+//   01 SERVICES HERO            ServicesHero            full-bleed photograph, left-aligned
+//   02 PROBLEM CHOOSER          ServiceProblemChooser   six doors + the "not sure?" routing beat
+//   03 CONDITION LEVELS         ServiceConditionLevels  routine vs detailed vs complex + reach
+//   04 SERVICE DIRECTORY        ServiceDirectory        three real families, three visual weights
+//   05 SCOPE / BOUNDARY         ServiceScopeBoundary    fit, exclusions, geography, disclaimer
+//   06 HOW TO START + CTA       ServicesClose           four steps into one action
+//
+// WHAT THIS REPLACES. The previous page was PageHeader + a three-up pillar card grid restating
+// homepage.serviceCards + ConfidenceAndFit + an embedded RequestForm: 568 words, zero images,
+// three H2s, and a full lead form with a live Turnstile widget on a page whose job is routing.
+//
+// ROUTE STATE IS UNCHANGED AND DELIBERATELY SO. Same slug, same canonical, same sitemap
+// membership, still indexable, same BreadcrumbList. No route was created, renamed, redirected or
+// re-indexed by this pass, and no service's `publishStatus` moved. `/services/` remains the
+// canonical services hub; AGENTS.md §2's narrowing (the prohibition targets `/services/{slug}`,
+// not this hub) is what makes it legitimate, and nothing here adds a child route under it.
+//
+// SCHEMA IS BreadcrumbList ONLY, unchanged from the previous build and deliberately not extended.
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6.1's recommended set for a supporting page is exactly
+// that, and doc 30 §20A.22 plus the task brief both say not to emit service schema for work
+// outside current authority. `/` already emits Service nodes for the three families and one of
+// them is under open owner review (see src/pages/index.astro) — adding a second, differently
+// scoped set here would make two pages disagree about what Aseptaclean sells while that review
+// is open.
+//
+// THE THREE RECONCILIATIONS THIS PAGE MAKES, all recorded in docs/05-DECISIONS-LOG.md 2026-08-26:
+//   1. No rodent-droppings or pigeon-droppings routing, despite both appearing in the
+//      landing-page system's chooser and directory. Cal. B&P §8550(a) + doc 21 §3, rank 3.
+//   2. "South Bay & Peninsula", never "Santa Clara County". Owner ruling 2026-08-09.
+//   3. No move-in route implied. Doc 30 §20A.3; move-in appears only inside the real route's
+//      real label, "Move-in & move-out cleaning".
 import BaseLayout from "@layouts/BaseLayout.astro";
-import PageHeader from "@components/PageHeader.astro";
-import RequestForm from "@components/RequestForm.astro";
+import ServiceConditionLevels from "@components/ServiceConditionLevels.astro";
+import ServiceDirectory from "@components/ServiceDirectory.astro";
+import ServiceProblemChooser from "@components/ServiceProblemChooser.astro";
+import ServiceScopeBoundary from "@components/ServiceScopeBoundary.astro";
+import ServicesClose from "@components/ServicesClose.astro";
+import ServicesHero from "@components/ServicesHero.astro";
 import { servicesHub } from "@data/servicePages";
 import { site } from "@data/site";
 
@@ -24,7 +50,7 @@ const schema = [
   {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
       {
         "@type": "ListItem",
         position: 2,
@@ -37,102 +63,16 @@ const schema = [
 ---
 
 <BaseLayout
-  title="Services | Aseptaclean"
-  description="Property clearing, animal and organic condition cleaning, and reset cleaning — every project starts with one written scope. San Jose & the South Bay."
+  title={servicesHub.seoTitle}
+  description={servicesHub.metaDescription}
   canonicalPath={servicesHub.slug}
   noindex={false}
   schema={schema}
 >
-  <PageHeader
-    headingId="services-title"
-    eyebrow="Services"
-    h1={"What Aseptaclean handles"}
-    lede={servicesHub.intro}
-    crumb="Services"
-  />
-
-  <section class="pillars" aria-labelledby="pillars-title">
-    <div class="ac-measure-wide">
-      <p class="ac-eyebrow">By category</p>
-      <h2 id="pillars-title" class="ac-type-h2 pillars__heading">Three kinds of work, one signed scope</h2>
-      <div class="pillars__grid">
-        {
-          servicesHub.pillars.map((pillar) => (
-            <div class="pillar-card">
-              <h3 class="ac-type-h3">{pillar.title}</h3>
-              <p class="pillar-card__detail">{pillar.detail}</p>
-              <ul class="pillar-card__links">
-                {pillar.links.map((link) => (
-                  <li>
-                    <a href={link.href}>{link.label} →</a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
-
-  <RequestForm />
+  <ServicesHero />
+  <ServiceProblemChooser />
+  <ServiceConditionLevels />
+  <ServiceDirectory />
+  <ServiceScopeBoundary />
+  <ServicesClose />
 </BaseLayout>
-
-<style>
-  .pillars {
-    background: var(--ac-color-paper);
-  }
-
-  .pillars__heading {
-    max-width: 36ch;
-    margin-top: var(--ac-space-3);
-  }
-
-  .pillars__grid {
-    display: grid;
-    gap: var(--ac-space-5);
-    margin-top: var(--ac-space-6);
-  }
-
-  .pillar-card {
-    border-top: 2px solid var(--ac-color-navy-900);
-    padding-top: 16px;
-  }
-
-  .pillar-card h3 {
-    margin-bottom: 8px;
-  }
-
-  .pillar-card__detail {
-    max-width: 44ch;
-    color: var(--ac-color-ink-600);
-    font-size: 0.92rem;
-  }
-
-  .pillar-card__links {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin: var(--ac-space-4) 0 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  .pillar-card__links a {
-    color: var(--ac-color-navy-800);
-    font-weight: 600;
-    font-size: 0.92rem;
-    text-decoration: none;
-  }
-
-  .pillar-card__links a:hover {
-    text-decoration: underline;
-    text-underline-offset: 3px;
-  }
-
-  @media (min-width: 40rem) {
-    .pillars__grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-</style>

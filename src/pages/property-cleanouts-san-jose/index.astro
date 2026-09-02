@@ -1,21 +1,1902 @@
 ---
-// Route generated 2026-08-16 from docs/27-COPY-CANONICAL.md via src/data/doc27ServicePages.ts.
-// All page copy lives in that data record; all structure lives in ServicePageLayout, which
-// implements doc 27 §11's shared service-page sequence. Nothing page-specific belongs in this
-// file beyond the four identity values below — if a sentence needs to change, change doc 27
-// and regenerate the data, do not hand-edit copy here.
+// PROPERTY CLEANOUTS — `/property-cleanouts-san-jose/`. Rebuilt following the same gold-standard
+// approach as `/hoarding-cleanup-san-jose/` and `/estate-cleanout-san-jose/`
+// (docs/30-WEBSITE-MASTER-SPEC.md §20, §20A), with copy reconciled from
+// docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md §39 (shared with Estate — §39 covers "Estate &
+// Property Cleanout" as one landing page) under §20A.1's order: landing copy → map to current
+// route → check active/gated state → check claims, pricing and scope → check current copy
+// authority → then implement. The existing `propertyCleanoutsPage` record in
+// src/data/doc27ServicePages.ts (owner-approved, route-audit-corrected copy) was mined for
+// approved language — the hauler boundary, the FAQ answers, the section headings — rather than
+// discarded.
 //
-// Ships noindex pending this page's own gate (see the record's `gate` field) and is excluded
-// from src/pages/sitemap.xml.ts. Do not bulk-flip.
-import ServicePageLayout from "@layouts/ServicePageLayout.astro";
-import { propertyCleanoutsPage } from "@data/doc27ServicePages";
+//   01 SERVICE HERO             photograph + overlay, left-aligned, service confirmed on sight
+//   02 WHAT IS STOPPING IT      recognition: triggers that stall a property, "you cannot clean a
+//                               floor you cannot reach" — this page's condition-recognition
+//                               movement, which Estate deliberately has none of
+//   03 STAYS / LEAVES / REVIEW  operational rule system + brief decision-authority note — this
+//                               page's signature movement, simpler and less document-like than
+//                               Estate's Save List because the audience is not sorting a family's
+//                               belongings, it is executing a landlord/owner's approved scope
+//   04 PROPERTY GOAL + PLAN     what the property needs to become next, then the clearing
+//                               sequence as field procedure — the second mechanism this page runs
+//                               on, shared in kind with Estate but different in content (no
+//                               family/return-to-family goal; adds "ready to rent/sell/turn over")
+//   05 CLEARING + CLEANING      clearing vs cleaning, hidden conditions, why this is not a junk
+//                               hauler — the disposal/hauler and basic-option-first content
+//   06 EVIDENCE + LOGISTICS     the honest proof gap, phased work, access/logistics — carries more
+//                               logistics than Estate per the brief
+//   07 FIT + PRICE              qualification + price drivers
+//   08 QUESTIONS                seven, the ones that decide the purchase
+//   09 CLOSE                    "Clear the property so it can move forward."
+//
+// THE SPECIALIST THESIS IS §20A.5's, unchanged: for property cleanouts, doc 30 does not name one
+// explicitly the way it does for Hoarding and treats Estate/property cleanout as one row — so this
+// build adopts the brief's own core-thesis line as the specialist thesis: **Clear the property so
+// it can move forward.** This is deliberately NOT Estate's "protect what matters before the
+// property gets cleared" (a family-decision argument) and NOT Hoarding's "you stay in control of
+// what stays and what leaves" (a condition-management argument). It is a logistics/progression
+// argument: the property is stuck, and clearing is what unsticks it.
+//
+// DISTINCTION FROM ESTATE CLEANOUT, BY DESIGN, NOT BY ACCIDENT:
+//   - Estate's signature movement is a Save List — named items and named categories an authorized
+//     person defines before clearing starts, framed as protecting a family's irreplaceable things.
+//     This page's signature movement is a STAYS / LEAVES / REVIEW rule system framed as an
+//     operational scope a landlord, owner or property manager sets so the crew is not guessing —
+//     logistics language, not family language. There is no "we do not start by clearing" opening;
+//     this page starts with the property's own stalled state.
+//   - Estate's second mechanism is the property's end goal, phrased as "sold / rented / returned
+//     to family / made usable / emptied" — a family-disposition frame. This page's property-goal
+//     list is phrased as "ready to sell / ready to rent / ready for repair / ready for turnover /
+//     usable again / emptied" — a next-use/readiness frame with no "returned to family" option,
+//     because family disposition is Estate's scope, not this page's.
+//   - This page has a condition-recognition movement ("what is stopping the property from moving
+//     forward?") that Estate explicitly does not carry — Estate's own build note says "an estate
+//     property is not being diagnosed... it is being prepared for its next stage." This page's
+//     audience (landlord, owner, investor, property manager) IS being asked to recognize a stalled
+//     property, so the movement belongs here.
+//   - This page carries more logistics (access, stairs, parking, phased work) and more of the
+//     disposal/hauler and junk-hauler-comparison content than Estate, per the brief's explicit
+//     instruction that Property Cleanouts "can carry more logistics than Estate." Estate carries
+//     the donation/appraisal/remote-family nuance that this page deliberately keeps light.
+//   - No save-list document artifact, no "if the family is not in California" remote-decision
+//     movement, no donation/appraisal boundary section — those are Estate's estate-specific
+//     objections and are not duplicated here. This page's fit-aside instead routes a family/estate
+//     situation to Estate Cleanout and a heavy-accumulation situation to Hoarding Cleanup.
+// DISTINCTION FROM HOARDING CLEANUP (`/hoarding-cleanup-san-jose/`):
+//   Hoarding's signature movement is a five-category decision REGISTER (Keep/Set aside/Donate/
+//   Remove/Not sure) applied to an accumulation condition, with a private/dignified tone built
+//   around "you stay in control." This page's STAYS/LEAVES/REVIEW system is three categories, not
+//   five, framed as a turnover/logistics scope rather than a sensitive personal-condition
+//   register, and this page has no condition-recognition movement about hoarding severity — its
+//   own condition-recognition movement is about property STATE (vacant, blocked, mid-transition),
+//   not accumulation severity.
+//
+// WHAT THIS REPLACES. The previous build: a 22-line wrapper around the shared
+// `ServicePageLayout.astro` template, fed by `propertyCleanoutsPage` in doc27ServicePages.ts —
+// the same generic 14-page template that both Hoarding and Estate replaced in their own rebuilds.
+// That template's section sequence is identical across all remaining pages with only the record's
+// strings changing, which is exactly the "one template, swap the noun" failure mode §20A.5 and
+// §20A.25 Q14 rule out.
+//
+// ROUTE STATE IS UNCHANGED AND DELIBERATELY SO. Same slug, same canonical, same `index, follow`,
+// same sitemap membership. The BreadcrumbList trail is unchanged: /property-clearing/ (parent hub)
+// through to this page's own H1. SEO title and meta description are rewritten here — see the note
+// beside those constants — because the previous template pulled them from
+// `propertyCleanoutsPage.seoTitle` / `.metaDescription`, which described a different H1
+// ("Property cleanouts in San Jose that keep a vacancy on schedule") than this rebuild uses. New
+// title/description describe the same route and the same service, in this page's own words, per
+// §20A.22 ("do not create a second page for a keyword variation" — this is one page, one route,
+// refreshed copy).
+//
+// NO CredentialBar ON THIS ROUTE. Same reasoning as Hoarding and Estate: "Insured · COI available
+// on request" and "Endorsed · Organic pathogen endorsement" are release-gated by AGENTS.md §3
+// pending a current COI match. Taking a gated claim off an indexable page is the conservative
+// direction.
+//
+// NO EMBEDDED FORM. §20A.8's destination rule and §20A.9's "one assessment engine" — CTAs link to
+// /request-assessment/?service=property-cleanouts instead of duplicating lead infrastructure.
+//
+// NO getServiceCityLinks() CALL. `ServiceSlug` in cityFacts.ts is `"hoarding-cleanup" |
+// "estate-cleanout"` only — property-cleanouts is not a member, and widening that shared type to
+// add a third value affects `cityFacts.ts`, `serviceCityPages.ts`, `serviceCityImplications.ts`
+// and the two already-approved pages that read them. That is a shared-data-model change, not a
+// single-page content change, so it is out of scope for this pass and is not made here. This page
+// carries no "Local planning notes" block as a result — an honest omission, not a broken link.
+import { Image } from "astro:assets";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import heroImage from "../../assets/homepage/condition-development-neglected-kolforn.jpg";
+import { legal, site } from "@data/site";
+
+// TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPH — NOT Aseptaclean project work, NOT a client
+// property, and NOT proof of any completed job. `[ATMOS]`-class under
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6: no crew, no vehicle, no equipment, no work in progress,
+// no before/after pair.
+//
+//   condition-development-neglected-kolforn.jpg
+//     Kolforn — CC BY-SA 4.0
+//     https://commons.wikimedia.org/wiki/File:2_Church_Cottage_West_Runton_30_01_2010_(14).JPG
+//
+// REUSED, NOT NEWLY ACQUIRED. docs/06-ASSET-MANIFEST.md §4 records the atmosphere-slot cap as
+// already knowingly exceeded by one (four slots against a cap of three) and says "do not add a
+// fifth without a new owner decision." This file is already in the repository — used today as a
+// recognition/directory panel on `/` and `/services/` — and is reused here as a full-bleed hero
+// in a different role and crop, the same choice Hoarding's and Estate's rebuilds made rather than
+// sourcing a new asset.
+//
+// `hero-development-residence-asurnipal.jpg` (Estate's hero) and
+// `condition-development-hoarding-asurnipal.jpg` (Hoarding's hero) are not reused here — a shared
+// photograph across sibling service pages would blur the distinction all three pages exist to
+// make. `condition-development-reset-aismallard.jpg` (the empty room) stays barred from this page
+// for the same reason it is barred from Hoarding: it is an open owner question whether an empty
+// room reads as an implied "after," and this page's hero needs to read as a property that has NOT
+// yet been addressed.
+
+const canonicalPath = "/property-cleanouts-san-jose/";
+
+// REWRITTEN FROM `propertyCleanoutsPage.seoTitle` / `.metaDescription` (doc27ServicePages.ts),
+// which described the page's OLD lead ("Property cleanouts in San Jose that keep a vacancy on
+// schedule"). This rebuild's H1 and thesis differ from that lead, so the title/description are
+// brought into agreement with what the page now actually says, per §20A.22.
+const title = "Property Cleanouts in San Jose | Aseptaclean";
+const description =
+  "Property cleanouts in San Jose for owners, landlords, property managers and investors. What stays, what leaves and what needs review is agreed before a room is cleared.";
+
+// §20A.8's destination rule + §20A.9's service branch. `?service=property-cleanouts` is read by
+// AssessmentForm.astro, added alongside this page (see that component's service-context block).
+// It maps to the existing "Landlord turnover" `property_situation` option — already present on
+// the form, not invented for this page — and records the real entry route on the lead.
+const assessmentHref = "/request-assessment/?service=property-cleanouts";
+const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
+
+// §39 / doc 30 §20A.6's recognition movement: what stalls a property before it can move forward.
+const triggers = [
+  "the property is listed or about to be listed for sale",
+  "a new tenant is waiting to move in",
+  "repairs or renovation cannot start yet",
+  "rooms, closets or a garage are not reachable",
+  "a tenant or previous owner left contents behind",
+  "the property has sat vacant and filled up over time",
+  "a family property needs to be cleared before its next step"
+] as const;
+
+// Three categories, not five — the operational-scope frame the brief calls for, distinct from
+// Hoarding's five-category register and Estate's save-list instructions.
+const rules = [
+  {
+    label: "Stays",
+    detail: "approved to remain — furniture, fixtures or contents the owner or tenant is keeping"
+  },
+  {
+    label: "Leaves",
+    detail: "approved to be cleared — the contents the scope defines as removable"
+  },
+  {
+    label: "Review",
+    detail: "not yet decided — set aside and flagged rather than moved either direction"
+  }
+] as const;
+
+const authority = [
+  "who can approve the scope",
+  "who can approve a change once work is underway",
+  "who the crew contacts when something is unclear",
+  "which areas, if any, are off-limits"
+] as const;
+
+// The property's next use. Next-use/readiness frame, not Estate's family-disposition frame — no
+// "returned to family" option here; that is Estate's scope.
+const goals = [
+  { label: "Ready to sell", detail: "cleared so the property can be listed and shown" },
+  { label: "Ready to rent", detail: "cleared and cleaned ahead of the next tenant" },
+  { label: "Ready for repair", detail: "rooms opened so a contractor or inspector can access them" },
+  { label: "Ready for turnover", detail: "cleared to the condition a lease or sale requires" },
+  { label: "Usable again", detail: "rooms, paths or storage areas cleared for present use" },
+  { label: "Emptied", detail: "approved contents removed, property ready for its next step" }
+] as const;
+
+// Field-procedure sequence. §39's six-stage plan, reworded from Estate's family-protection framing
+// into a property-progression framing — no "protect important items" opening step, because this
+// page's rule system (above) is the scope-setting step, not a save-list.
+const process = [
+  {
+    title: "Define the property goal",
+    detail: "What the property needs to become next sets the sequence, the scope and the deadline before anything else is decided."
+  },
+  {
+    title: "Confirm stays, leaves and review",
+    detail: "The categories above are agreed in writing with the authorized contact before the crew opens a single room."
+  },
+  {
+    title: "Open work areas",
+    detail: "Access comes first — paths, doorways and rooms that are currently blocked get cleared enough to work through the rest of the property."
+  },
+  {
+    title: "Clear approved contents",
+    detail: "Work moves room by room against the written scope, not at random and not by whichever area is nearest the door."
+  },
+  {
+    title: "Clean exposed areas, when included",
+    detail: "Once a room is open, surfaces in scope are cleaned. Not automatic — written into the plan or it does not happen."
+  },
+  {
+    title: "Review for handoff",
+    detail: "The completed scope is walked through against the plan before the property moves to its next stage."
+  }
+] as const;
+
+const discoveries = [
+  "rodent droppings",
+  "animal waste",
+  "heavy buildup not visible from the doorway",
+  "water damage",
+  "mold-like growth",
+  "sharp objects",
+  "human biological material",
+  "damaged flooring or walls"
+] as const;
+
+const cleaningScope = [
+  "floors",
+  "baseboards",
+  "shelving",
+  "cabinets",
+  "counters",
+  "kitchens",
+  "bathrooms",
+  "closets",
+  "other reachable surfaces"
+] as const;
+
+// Phased work — useful for broader cleanouts per the brief, not promised for every project.
+const phases = [
+  { label: "Phase 1", detail: "open access and clear the priority area" },
+  { label: "Phase 2", detail: "clear the remaining approved contents" },
+  { label: "Phase 3", detail: "clean exposed surfaces, when included" },
+  { label: "Phase 4", detail: "prepare the property for the next vendor or handoff" }
+] as const;
+
+const logistics = [
+  "access — stairs, parking, elevators, carry distance",
+  "whether the property is occupied or vacant",
+  "container placement, if a container is part of the job",
+  "building or property rules that affect scheduling",
+  "other vendors who need access to the same property",
+  "your deadline"
+] as const;
+
+const goodFit = [
+  "several rooms or a whole property need clearing",
+  "contents are the reason cleaning, repair, sale or turnover cannot start",
+  "not everything in the property is necessarily trash",
+  "cleaning may be needed once rooms are cleared",
+  "you want the scope agreed in writing before work starts",
+  "a simple single-item pickup would not cover what the property actually needs"
+] as const;
+
+const poorFit = [
+  "only one or two large items need to be picked up",
+  "everything is already in one pile and a truck is all that is needed",
+  "an estate sale or appraisal is the main thing you need",
+  "the main need is construction or repair work",
+  "the condition is outside our current scope"
+] as const;
+
+const priceDrivers = [
+  "property size and how many rooms are affected",
+  "amount of contents and how densely the property is filled",
+  "sorting and review work required",
+  "access — stairs, parking, carry distance",
+  "crew size and number of work days",
+  "cleaning after clearing, when it is included",
+  "disposal and container coordination",
+  "conditions that were not visible at the start",
+  "your deadline"
+] as const;
+
+// §20A.18: 4–7 highest-value, service-specific questions. Answers reconciled from
+// doc27ServicePages.ts's `propertyCleanoutsPage.faq` (owner-approved: the hauler-boundary answer
+// starts with "No," per that record's 2026-08-21 fix) plus §39's stronger objection set.
+const faq = [
+  [
+    "Is this the same as junk removal?",
+    [
+      "Not usually. Junk removal works well when everything is already known to be trash.",
+      "A property cleanout can also include sorting contents into stays, leaves and review, clearing rooms in a defined order, and cleaning once they are open — more than a pickup covers."
+    ]
+  ],
+  [
+    "Do you haul everything away yourselves?",
+    [
+      "No. We are not a hauling company, and nothing leaves the property in our vehicles.",
+      "We do the on-site work — sorting, bagging, staging, carrying out and loading approved material — and disposal off the property is handled by a City-authorized hauler engaged for the project."
+    ]
+  ],
+  [
+    "Does everything have to be sorted before you start?",
+    [
+      "No. But the more that is already decided — known stays, items approved to leave, who can make the calls — the faster the clearing can move.",
+      "Tell us what falls into review before work starts so the crew is not guessing."
+    ]
+  ],
+  [
+    "Can cleaning be included after clearing?",
+    [
+      "Yes, when it is written into the scope.",
+      "How much a property needs usually cannot be judged until the area is open, which is why clearing and cleaning are scoped as separate phases rather than one assumed package."
+    ]
+  ],
+  [
+    "What if you find rodent droppings, animal waste or another condition?",
+    [
+      "We stop in that area and tell you before going further. We do not quietly fold it into a bigger bill.",
+      "If the condition needs handling outside our current scope, we say so rather than guessing at it."
+    ]
+  ],
+  [
+    "Can you clear only part of the property?",
+    [
+      "Yes. A cleanout can cover one area, several rooms, or the whole property — the scope is written to match what you actually need cleared.",
+      "Larger properties can also be handled in phases when that is the sensible way to run the job."
+    ]
+  ],
+  [
+    "Do you need to see the property first?",
+    [
+      "For most cleanouts, yes. Photos help us start scoping. Larger or fuller properties usually need a walkthrough before a firm scope and price."
+    ]
+  ]
+] as const;
+
+const schema = [
+  {
+    "@type": "Service",
+    name: "Property Cleanouts in San Jose",
+    serviceType: "Property cleanout",
+    provider: { "@id": new URL("/#business", site.urls.site).href },
+    areaServed: { "@type": "City", name: "San Jose" }
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Complex Property Cleanup",
+        item: new URL("/property-clearing/", site.urls.site).href
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Property Cleanouts",
+        item: new URL(canonicalPath, site.urls.site).href
+      }
+    ]
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: faq.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer.join("\n\n") }
+    }))
+  }
+];
 ---
 
-<ServicePageLayout
-  page={propertyCleanoutsPage}
-  serviceType="Property cleanout"
-  breadcrumbName="Property Cleanouts"
-  idPrefix="cleanouts"
-  groupName="Property Clearing"
-  groupHref="/property-clearing/"
-/>
+<BaseLayout title={title} description={description} canonicalPath={canonicalPath} schema={schema}>
+  {/* ══ 01 · SERVICE HERO ═══════════════════════════════════════════════════════════════════
+      §20A.7: location context → unmistakable service H1 → specialist thesis → service CTA →
+      phone as secondary → service-relevant image. */}
+  <section class="pc-hero" aria-labelledby="pc-title">
+    <div class="pc-hero__media">
+      <Image
+        src={heroImage}
+        alt=""
+        layout="full-width"
+        widths={[480, 768, 1024, 1440, 1920]}
+        sizes="100vw"
+        format="webp"
+        quality={74}
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+      />
+    </div>
+
+    <div class="pc-hero__overlay" aria-hidden="true"></div>
+
+    <div class="pc-hero__shell">
+      <div class="pc-hero__content">
+        <p class="pc-hero__eyebrow">
+          Property cleanouts · San Jose · {site.location.serviceArea}
+        </p>
+        <h1 id="pc-title" class="ac-type-h1-hub">Property Cleanouts</h1>
+        <p class="pc-hero__lede">
+          When a property has too much left in it to move forward, we help define what stays,
+          what can leave, and what needs to happen next.
+        </p>
+        <p class="pc-hero__thesis">Clear the property so it can move forward.</p>
+
+        <div class="pc-hero__actions">
+          <a class="pc-btn pc-btn--light" href={assessmentHref}>{site.offer.primaryCta}</a>
+          {phoneHref && (
+            <a class="pc-hero__call" href={phoneHref}>Call {site.business.phone}</a>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <p class="pc-hero__development-note">
+      Development reference photograph · not Aseptaclean project work
+    </p>
+  </section>
+
+  {/* ══ 02 · WHAT IS STOPPING THE PROPERTY FROM MOVING FORWARD ═══════════════════════════════
+      This page's condition-recognition movement — Estate deliberately has none; this page needs
+      one because the audience is being asked to recognize a stalled property, not a family
+      decision already in motion. */}
+  <section class="pc-recognize" aria-labelledby="recognize-title">
+    <div class="pc-recognize__inner">
+      <p class="pc-label">What is holding things up</p>
+      <h2 id="recognize-title" class="ac-type-h2-home-feature">
+        You cannot clean a floor you cannot reach.
+      </h2>
+      <p class="pc-lede">
+        A property can be structurally ready for its next step and still be stuck — because the
+        contents inside it have not been addressed. That shows up as:
+      </p>
+      <ul class="pc-check-list pc-check-list--grid">
+        {triggers.map((item) => <li>{item}</li>)}
+      </ul>
+      <p class="pc-statement">
+        Not all of it is trash. Some of it needs a decision before it needs a truck.
+      </p>
+    </div>
+  </section>
+
+  {/* ══ 03 · STAYS / LEAVES / REVIEW + DECISION AUTHORITY ════════════════════════════════════
+      This page's signature movement — an operational rule system, not Estate's save-list
+      document. Navy field, same placement logic as Hoarding's and Estate's own navy movements,
+      different content shape (three-category scope rule, not a five-category disposition register
+      or named-item instructions). */}
+  <section class="pc-rules" aria-labelledby="rules-title">
+    <div class="pc-rules__inner">
+      <div class="pc-rules__lead">
+        <p class="pc-rules__label">Before the crew opens a room</p>
+        <h2 id="rules-title" class="ac-type-h2-home-feature">
+          The rules need to be clear first.
+        </h2>
+        <p class="pc-rules__lede">
+          A property cleanout is not one big pile to be cleared. Before anything moves, the scope
+          sorts the property into three categories:
+        </p>
+      </div>
+
+      <dl class="pc-rules__list">
+        {rules.map((rule) => (
+          <div class="pc-rules__row">
+            <dt>{rule.label}</dt>
+            <dd>{rule.detail}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div class="pc-authority">
+        <h3 class="ac-type-h3-home-route">One authorized contact approves the scope.</h3>
+        <p>Before work starts, we need to know:</p>
+        <ul class="pc-check-list pc-check-list--dark">
+          {authority.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="pc-authority__note">
+          The crew should not be guessing at any of the four. One clear contact keeps the job
+          moving without a mid-project dispute over what was approved.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 04 · PROPERTY GOAL + CLEARING SEQUENCE ═══════════════════════════════════════════════
+      This page's second mechanism: what the property needs to become next, then the field
+      procedure that gets it there. */}
+  <section class="pc-goal" aria-labelledby="goal-title">
+    <div class="pc-goal__inner">
+      <div class="pc-goal__head">
+        <p class="pc-label">The property's next step</p>
+        <h2 id="goal-title" class="ac-type-h2-home-feature">
+          What does the property need to become?
+        </h2>
+        <p class="pc-lede">
+          The next use changes the sequence, the crew, the schedule and the cleaning scope. We
+          need to know where the property is going before we plan how to get it there.
+        </p>
+      </div>
+
+      <dl class="pc-goal__list">
+        {goals.map((goal) => (
+          <div class="pc-goal__row">
+            <dt>{goal.label}</dt>
+            <dd>{goal.detail}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div class="pc-process">
+        <h3 class="ac-type-h3-home-feature">We do not start at random.</h3>
+        <ol class="pc-steps">
+          {process.map((step, index) => (
+            <li class="pc-step">
+              <span class="pc-step__index" aria-hidden="true">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <div class="pc-step__body">
+                <h4 class="ac-type-h3-home-route">{step.title}</h4>
+                <p>{step.detail}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+
+      <div class="pc-phases">
+        <h3 class="ac-type-h3-home-route">Larger properties can run in phases.</h3>
+        <p>
+          Not every project needs this, but a broad cleanout sometimes moves faster when it is
+          broken into stages rather than treated as one continuous job:
+        </p>
+        <div class="pc-phases__list">
+          {phases.map((phase) => (
+            <div class="pc-phases__item">
+              <p class="pc-phases__label">{phase.label}</p>
+              <p>{phase.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 05 · CLEARING + CLEANING + HIDDEN CONDITIONS + NOT A HAULER ══════════════════════════
+      §20A.13's boundaries-as-conversion-content, the clearing-vs-cleaning distinction, and the
+      disposal/hauling accuracy the brief is most careful about on this specific page. */}
+  <section class="pc-clear" aria-labelledby="clear-title">
+    <div class="pc-clear__inner">
+      <div class="pc-clear__head">
+        <p class="pc-label">Clearing, cleaning, and what changes the scope</p>
+        <h2 id="clear-title" class="ac-type-h2-home-feature">
+          Clearing is not the same as cleaning.
+        </h2>
+        <p class="pc-lede">
+          A room full of furniture, boxes and contents cannot be fully cleaned yet — the floor,
+          baseboards and corners underneath are not visible from the doorway. Once approved
+          contents are cleared, the areas exposed can be reviewed for cleaning.
+        </p>
+      </div>
+
+      <div class="pc-clear__pair">
+        <div class="pc-cleaning">
+          <h3 class="ac-type-h3-home-route">A cleared property is not always a clean property.</h3>
+          <p>
+            Cleaning in scope can cover:
+          </p>
+          <ul class="pc-inline-list">
+            {cleaningScope.map((item) => <li>{item}</li>)}
+          </ul>
+          <p>It is included when it is written into the plan. It is not automatic.</p>
+          <a class="pc-link" href="/deep-cleaning-san-jose/">
+            <span>Detailed deep cleaning</span> <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+
+        <div class="pc-note pc-note--stop">
+          <h3 class="ac-type-h3-home-route">If the condition changes the scope, we stop and tell you.</h3>
+          <p>Clearing a full property can expose:</p>
+          <ul class="pc-inline-list">
+            {discoveries.map((item) => <li>{item}</li>)}
+          </ul>
+          <p>
+            New condition, new decision. We do not silently expand the project — we stop in that
+            area and tell you before going further.
+          </p>
+          <p class="pc-clause">
+            Cleaning only — not a decontamination, sterilization, or health-safety determination.
+          </p>
+        </div>
+      </div>
+
+      <div class="pc-hauler">
+        <h3 class="ac-type-h3-home-feature">We are not selling truck space.</h3>
+        <p>
+          Aseptaclean is not a hauling company. We sort, bag, stage, carry out and load approved
+          material; disposal and transport off the property are handled by a City-authorized
+          hauler engaged for the project. Where a container is part of the job, we coordinate its
+          placement in advance. If a junk hauler is genuinely all a property needs — everything
+          already approved to go, pickup the only job — that is the right call, and we do not need
+          to turn a small pickup into a large project. Aseptaclean is the better fit when the
+          property still needs decisions, more than one area to work through, or cleaning linked
+          to the clearing.
+        </p>
+        <p class="pc-disclaimer">{legal.scopeDisclaimer}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 06 · EVIDENCE + LOGISTICS ═════════════════════════════════════════════════════════════
+      §20A.15's honest evidence gap, paired with the logistics content the brief says this page
+      can carry more of than Estate. */}
+  <section class="pc-evidence" aria-labelledby="evidence-title">
+    <div class="pc-evidence__inner">
+      <div class="pc-evidence__lead">
+        <p class="pc-label">Evidence and logistics</p>
+        <h2 id="evidence-title" class="ac-type-h2-home-feature">
+          What we can show you today.
+        </h2>
+        <p class="pc-lede">
+          There is no photo gallery on this page yet. Aseptaclean has no photographed property
+          cleanout to show, and a set of stock before-and-after images would tell you nothing true
+          about how this company works. When a real project produces documentable, owner-approved
+          photographs — start, sorted, cleared, cleaned — they will replace this note.
+        </p>
+      </div>
+
+      <div class="pc-logistics">
+        <h3 class="ac-type-h3-home-route">What affects scheduling</h3>
+        <ul class="pc-rule-list">
+          {logistics.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 07 · FIT + PRICE ══════════════════════════════════════════════════════════════════════
+      §20A.16's qualification without a wall of rejection, plus §20A.17's price-driver logic
+      instead of a published figure. */}
+  <section class="pc-fit" aria-labelledby="fit-title">
+    <div class="pc-fit__inner">
+      <div class="pc-fit__columns">
+        <div class="pc-fit__col">
+          <h3 class="ac-type-h3-home-route">Usually a fit</h3>
+          <ul class="pc-check-list">
+            {goodFit.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="pc-fit__aside">
+            If this is a family or estate matter rather than a landlord or owner turnover,
+            <a href="/estate-cleanout-san-jose/"> estate cleanout</a> is usually the closer match.
+            If the property's main issue is heavy accumulation rather than a transition,
+            <a href="/hoarding-cleanup-san-jose/"> hoarding cleanup</a> covers that.
+          </p>
+        </div>
+        <div class="pc-fit__col pc-fit__col--out">
+          <h3 class="ac-type-h3-home-route">Probably not a fit</h3>
+          <ul class="pc-minus-list">
+            {poorFit.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="pc-fit__aside">
+            If a junk hauler is genuinely all the property needs, use one.
+          </p>
+        </div>
+      </div>
+
+      <div class="pc-price">
+        <div class="pc-price__copy">
+          <h3 class="ac-type-h3-home-feature">We price the property we see.</h3>
+          <p>
+            A one-bedroom unit and a four-bedroom house with a packed garage are not the same
+            job, and a published starting figure would only ever be honest about one of them.
+            Larger cleanouts usually need photographs and often a walkthrough before a firm scope
+            and price.
+          </p>
+          <p class="pc-price__fee">{site.offer.assessmentFraming(site.offer.assessmentFee)}</p>
+        </div>
+        <div class="pc-price__drivers">
+          <p class="pc-price__label">What moves the number</p>
+          <ul class="pc-rule-list pc-rule-list--tight">
+            {priceDrivers.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 08 · QUESTIONS ════════════════════════════════════════════════════════════════════════
+      Open Q&A, not an accordion — same reasoning as Hoarding and Estate. */}
+  <section class="pc-faq" aria-labelledby="faq-title">
+    <div class="pc-faq__inner">
+      <div class="pc-faq__head">
+        <p class="pc-label">Questions</p>
+        <h2 id="faq-title" class="ac-type-h2-home-feature">The questions that decide this.</h2>
+        <p class="pc-lede">
+          Seven that come up on nearly every property cleanout. The general ones — scheduling,
+          payment, what happens on the day — are on the <a href="/faq/">main FAQ</a>.
+        </p>
+      </div>
+
+      <div class="pc-faq__grid">
+        {faq.map(([question, answer]) => (
+          <article class="pc-qa">
+            <h3 class="ac-type-h3-home-route">{question}</h3>
+            {answer.map((paragraph) => <p>{paragraph}</p>)}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 09 · CLOSE ════════════════════════════════════════════════════════════════════════════
+      The brief's own final-CTA direction, distilled to the thesis line rather than restating the
+      full triad — the triad already appears in movement 04 (property goal) and movement 03
+      (stays/leaves/review). */}
+  <section class="pc-close" aria-labelledby="close-title">
+    <div class="pc-close__inner">
+      <div class="pc-close__copy">
+        <h2 id="close-title" class="ac-type-h2-final">
+          Clear the property so it can move forward.
+        </h2>
+        <p class="pc-close__lede">
+          Tell us where the property is, what needs to stay, what needs to leave, and what it
+          needs to become next. Then we can determine the right next step.
+        </p>
+      </div>
+
+      <div class="pc-close__action">
+        <a class="pc-btn pc-btn--light" href={assessmentHref}>{site.offer.primaryCta}</a>
+        <div class="pc-close__secondary">
+          {phoneHref && <a href={phoneHref}>Call {site.business.phone}</a>}
+          {smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
+        </div>
+        <p class="pc-close__note">
+          Submitting a request does not authorize work or create a service agreement.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     Shared page primitives — the same system Hoarding's and Estate's rebuilds established
+     (spacing, rule and list treatment), reused under a `.pc-` prefix so this page's styles never
+     collide with either sibling even though all three ship as single scoped <style> blocks.
+     NOTHING in this file sets font-size on a heading tag or on a selector that resolves to one;
+     heading sizes come from `.ac-type-*` role classes and are tuned by overriding the role
+     class's TOKEN on a container (AGENTS.md §6 law 1).
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+
+  .pc-label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .pc-lede {
+    margin: 22px 0 0;
+    max-width: 60ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .pc-statement {
+    margin: 28px 0 0;
+    max-width: 46ch;
+    color: var(--ac-color-navy-900);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .pc-inline-list {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: none;
+    margin: 16px 0 0;
+    padding: 0;
+    gap: 4px 10px;
+    list-style: none;
+  }
+
+  .pc-inline-list li {
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .pc-inline-list li:not(:last-child)::after {
+    margin-left: 10px;
+    color: var(--ac-color-line-strong);
+    content: "·";
+  }
+
+  .pc-rule-list {
+    display: grid;
+    max-width: none;
+    margin: 20px 0 0;
+    padding: 0;
+    gap: 0 44px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    list-style: none;
+  }
+
+  .pc-rule-list li {
+    max-width: none;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 12px 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .pc-rule-list--tight li {
+    padding: 10px 0;
+  }
+
+  .pc-check-list,
+  .pc-minus-list {
+    max-width: none;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .pc-check-list li,
+  .pc-minus-list li {
+    position: relative;
+    max-width: none;
+    padding: 9px 0 9px 26px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .pc-check-list li + li,
+  .pc-minus-list li + li {
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  /* CSS marks, not inline SVG — same reasoning as Hoarding/Estate: these are rules, not icons,
+     and a decorative glyph per row is noise a screen reader has to be told to ignore. */
+  .pc-check-list li::before,
+  .pc-minus-list li::before {
+    position: absolute;
+    top: 17px;
+    left: 0;
+    width: 12px;
+    height: 2px;
+    background: var(--ac-color-blue-deep);
+    content: "";
+  }
+
+  .pc-minus-list li::before {
+    background: var(--ac-color-exclusion-red);
+  }
+
+  .pc-check-list--grid {
+    display: grid;
+    gap: 0 44px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pc-check-list--dark li {
+    color: #ccd9e8;
+  }
+
+  .pc-check-list--dark li + li {
+    border-top: 1px solid rgb(255 255 255 / 16%);
+  }
+
+  .pc-check-list--dark li::before {
+    background: var(--ac-color-blue-on-navy);
+  }
+
+  .pc-link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    margin-top: 18px;
+    gap: 0.4em;
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-underline-offset: 4px;
+  }
+
+  .pc-link:hover {
+    text-decoration: underline;
+  }
+
+  .pc-btn {
+    display: inline-flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    padding-inline: 30px;
+    font-size: 0.9375rem;
+    font-weight: 750;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+
+  .pc-btn--light {
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+  }
+
+  .pc-btn--light:hover {
+    background: var(--ac-color-blue-pale);
+  }
+
+  .pc-btn--light:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 4px;
+  }
+
+  .pc-clause {
+    margin: 18px 0 0;
+    max-width: 60ch;
+    border-left: 3px solid var(--ac-color-navy-800);
+    padding: 2px 0 2px 16px;
+    color: var(--ac-color-navy-900);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+
+  .pc-disclaimer {
+    margin: 24px 0 0;
+    max-width: 78ch;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 18px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  /* ══ 01 · HERO ══════════════════════════════════════════════════════════════════════════ */
+
+  .pc-hero {
+    --ac-text-h1-hub: 2.875rem;
+    position: relative;
+    min-height: 540px;
+    overflow: hidden;
+    padding: 0;
+    background: var(--ac-color-navy-950);
+  }
+
+  .pc-hero__media,
+  .pc-hero__overlay {
+    position: absolute;
+    inset: 0;
+  }
+
+  .pc-hero__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 62%;
+  }
+
+  /* Flat overlay, doc 30 §20A.7 — no gradient, no vignette. Re-run
+     scripts/hoarding-hero-contrast.mjs (or an equivalent pass) against this route's own crop
+     before launch to independently verify this opacity rather than assuming Estate's measured
+     value transfers to a different photograph. */
+  .pc-hero__overlay {
+    z-index: 1;
+    background: rgb(10 30 45 / 64%);
+  }
+
+  .pc-hero__shell {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    width: min(100% - 64px, 1320px);
+    min-height: inherit;
+    align-items: center;
+    margin-inline: auto;
+    padding-block: 72px;
+  }
+
+  .pc-hero__content {
+    max-width: 620px;
+    color: var(--ac-color-paper);
+  }
+
+  .pc-hero__eyebrow {
+    margin: 0 0 18px;
+    max-width: none;
+    color: rgb(255 255 255 / 92%);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .pc-hero__content h1 {
+    max-width: 12ch;
+    color: var(--ac-color-paper);
+  }
+
+  .pc-hero__lede {
+    margin: 20px 0 0;
+    max-width: 46ch;
+    color: #f1f5fa;
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .pc-hero__thesis {
+    margin: 14px 0 0;
+    max-width: 34ch;
+    color: var(--ac-color-paper);
+    font-size: 1.1875rem;
+    font-weight: 650;
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+
+  .pc-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 30px;
+    gap: 8px 26px;
+  }
+
+  .pc-hero__call {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-underline-offset: 5px;
+  }
+
+  .pc-hero__call:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .pc-hero__call:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 3px;
+  }
+
+  .pc-hero__development-note {
+    position: absolute;
+    z-index: 2;
+    right: 18px;
+    bottom: 14px;
+    left: 18px;
+    max-width: none;
+    white-space: nowrap;
+    margin: 0;
+    color: rgb(255 255 255 / 92%);
+    font-size: 0.625rem;
+    font-weight: 650;
+    letter-spacing: 0.055em;
+    line-height: 1.3;
+    text-align: right;
+    text-transform: uppercase;
+  }
+
+  /* ══ 02 · RECOGNITION ═══════════════════════════════════════════════════════════════════ */
+
+  .pc-recognize {
+    background: var(--ac-color-paper);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .pc-recognize__inner {
+    --ac-text-h2-home-feature: 2.5rem;
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .pc-recognize__inner h2 {
+    max-width: 20ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .pc-recognize .pc-check-list--grid {
+    margin-top: 28px;
+  }
+
+  /* ══ 03 · STAYS / LEAVES / REVIEW ═══════════════════════════════════════════════════════ */
+
+  .pc-rules {
+    background: var(--ac-color-navy-900);
+    padding-block: clamp(80px, 8vw, 120px);
+  }
+
+  .pc-rules__inner {
+    --ac-text-h2-home-feature: 2.5rem;
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .pc-rules__lead {
+    max-width: 60ch;
+  }
+
+  .pc-rules__label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-on-navy);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .pc-rules__lead h2 {
+    max-width: 16ch;
+    color: var(--ac-color-paper);
+  }
+
+  .pc-rules__lede {
+    margin: 24px 0 0;
+    max-width: 52ch;
+    color: #ccd9e8;
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .pc-rules__list {
+    display: grid;
+    margin: clamp(40px, 4vw, 56px) 0 0;
+    gap: 0 48px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .pc-rules__row {
+    border-top: 3px solid var(--ac-color-blue-on-navy);
+    padding-top: 18px;
+  }
+
+  .pc-rules__list dt {
+    color: var(--ac-color-paper);
+    font-size: 1rem;
+    font-weight: 750;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  .pc-rules__list dd {
+    margin: 10px 0 0;
+    max-width: 32ch;
+    color: #ccd9e8;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .pc-authority {
+    border-top: 1px solid rgb(255 255 255 / 22%);
+    margin-top: clamp(48px, 5vw, 72px);
+    padding-top: 32px;
+  }
+
+  .pc-authority h3 {
+    max-width: 30ch;
+    color: var(--ac-color-paper);
+  }
+
+  .pc-authority > p:not(.pc-authority__note) {
+    margin: 14px 0 0;
+    max-width: none;
+    color: #ccd9e8;
+    font-size: 0.9375rem;
+  }
+
+  .pc-authority .pc-check-list--dark {
+    max-width: 60ch;
+  }
+
+  .pc-authority__note {
+    margin: 18px 0 0;
+    max-width: 56ch;
+    color: #a9bdd4;
+    font-size: 0.875rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  /* ══ 04 · PROPERTY GOAL + SEQUENCE ══════════════════════════════════════════════════════ */
+
+  .pc-goal {
+    background: var(--ac-color-warm-white);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .pc-goal__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .pc-goal__head {
+    --ac-text-h2-home-feature: 2.5rem;
+    max-width: 64ch;
+  }
+
+  .pc-goal__head h2 {
+    max-width: 18ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .pc-goal__list {
+    display: grid;
+    margin: clamp(40px, 4vw, 56px) 0 0;
+    gap: 0 48px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .pc-goal__row {
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 16px;
+    padding-bottom: 20px;
+  }
+
+  .pc-goal__list dt {
+    color: var(--ac-color-navy-900);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .pc-goal__list dd {
+    margin: 8px 0 0;
+    max-width: 30ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .pc-process {
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: clamp(48px, 5vw, 72px);
+    padding-top: clamp(40px, 4vw, 56px);
+  }
+
+  .pc-process h3 {
+    max-width: 24ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .pc-steps {
+    --ac-text-h3-home-route: 1.375rem;
+    display: grid;
+    margin: clamp(32px, 3.5vw, 48px) 0 0;
+    padding: 0;
+    gap: 0 60px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    list-style: none;
+  }
+
+  .pc-step {
+    display: grid;
+    max-width: none;
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding: 20px 0;
+    gap: 4px 22px;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .pc-step:nth-child(-n + 2) {
+    border-top: 2px solid var(--ac-color-navy-800);
+  }
+
+  .pc-step__index {
+    color: var(--ac-color-blue-deep);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    line-height: 1.9;
+  }
+
+  .pc-step__body h4 {
+    color: var(--ac-color-navy-900);
+  }
+
+  .pc-step__body p {
+    margin: 6px 0 0;
+    max-width: 42ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.58;
+    text-wrap: pretty;
+  }
+
+  .pc-phases {
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: clamp(48px, 5vw, 72px);
+    padding-top: 32px;
+  }
+
+  .pc-phases h3 {
+    max-width: 30ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .pc-phases > p {
+    margin: 14px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .pc-phases__list {
+    display: grid;
+    margin: 24px 0 0;
+    gap: 0 32px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .pc-phases__item {
+    border-top: 2px solid var(--ac-color-blue-deep);
+    padding-top: 14px;
+  }
+
+  .pc-phases__label {
+    margin: 0;
+    max-width: none;
+    color: var(--ac-color-navy-900);
+    font-size: 0.75rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .pc-phases__item p:not(.pc-phases__label) {
+    margin: 8px 0 0;
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.875rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  /* ══ 05 · CLEARING + CLEANING + HAULER ═════════════════════════════════════════════════ */
+
+  .pc-clear {
+    background: var(--ac-color-paper);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .pc-clear__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .pc-clear__head {
+    --ac-text-h2-home-feature: 2.5rem;
+    max-width: 66ch;
+  }
+
+  .pc-clear__head h2 {
+    max-width: 20ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .pc-clear__pair {
+    display: grid;
+    align-items: start;
+    margin-top: clamp(44px, 4.5vw, 64px);
+    gap: 40px 72px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pc-cleaning,
+  .pc-note {
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 24px;
+  }
+
+  .pc-note--stop {
+    border-top-color: var(--ac-color-exclusion-red);
+  }
+
+  .pc-cleaning h3,
+  .pc-note h3 {
+    max-width: 30ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .pc-cleaning > p,
+  .pc-note > p {
+    margin: 16px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .pc-hauler {
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: clamp(48px, 5vw, 72px);
+    padding-top: 32px;
+  }
+
+  .pc-hauler h3 {
+    max-width: 28ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .pc-hauler > p:not(.pc-disclaimer) {
+    margin: 16px 0 0;
+    max-width: 74ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  /* ══ 06 · EVIDENCE + LOGISTICS ══════════════════════════════════════════════════════════ */
+
+  .pc-evidence {
+    background: var(--ac-color-warm-white);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .pc-evidence__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .pc-evidence__lead {
+    --ac-text-h2-home-feature: 2.5rem;
+    max-width: 68ch;
+  }
+
+  .pc-evidence__lead h2 {
+    max-width: 20ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .pc-logistics {
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: clamp(44px, 4.5vw, 64px);
+    padding-top: 28px;
+  }
+
+  .pc-logistics h3 {
+    color: var(--ac-color-navy-900);
+  }
+
+  /* ══ 07 · FIT + PRICE ═══════════════════════════════════════════════════════════════════ */
+
+  .pc-fit {
+    background: var(--ac-color-paper);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .pc-fit__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .pc-fit__columns {
+    display: grid;
+    align-items: start;
+    gap: 40px 72px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pc-fit__col {
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 22px;
+  }
+
+  .pc-fit__col--out {
+    border-top-color: var(--ac-color-line-strong);
+  }
+
+  .pc-fit__col h3 {
+    color: var(--ac-color-navy-900);
+  }
+
+  .pc-fit__aside {
+    margin: 20px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .pc-fit__aside a {
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
+    text-underline-offset: 3px;
+  }
+
+  .pc-price {
+    display: grid;
+    align-items: start;
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: clamp(48px, 5vw, 72px);
+    padding-top: 32px;
+    gap: 36px 72px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  }
+
+  .pc-price__copy {
+    --ac-text-h3-home-feature: 1.75rem;
+  }
+
+  .pc-price__copy h3 {
+    max-width: 27ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .pc-price__copy p {
+    margin: 18px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  .pc-price__fee {
+    color: var(--ac-color-navy-900);
+    font-weight: 550;
+  }
+
+  .pc-price__label {
+    max-width: none;
+    margin: 0;
+    color: var(--ac-color-navy-900);
+    font-size: 0.75rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .pc-price__drivers .pc-rule-list {
+    margin-top: 12px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* ══ 08 · QUESTIONS ═════════════════════════════════════════════════════════════════════ */
+
+  .pc-faq {
+    background: var(--ac-color-warm-white);
+    padding-block: clamp(72px, 7vw, 104px);
+  }
+
+  .pc-faq__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .pc-faq__head {
+    --ac-text-h2-home-feature: 2.5rem;
+  }
+
+  .pc-faq__head h2 {
+    max-width: 20ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .pc-faq__head .pc-lede a {
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
+    text-underline-offset: 3px;
+  }
+
+  .pc-faq__grid {
+    --ac-text-h3-home-route: 1.5rem;
+    display: grid;
+    align-items: start;
+    margin-top: clamp(40px, 4vw, 56px);
+    gap: 0 72px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .pc-qa {
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding: 24px 0;
+  }
+
+  .pc-qa:nth-child(-n + 2) {
+    border-top: 2px solid var(--ac-color-navy-800);
+  }
+
+  .pc-qa h3 {
+    max-width: 30ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .pc-qa p {
+    margin: 12px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  /* ══ 09 · CLOSE ═════════════════════════════════════════════════════════════════════════ */
+
+  .pc-close {
+    background: var(--ac-color-navy-950);
+    padding-block: clamp(80px, 8vw, 116px);
+  }
+
+  .pc-close__inner {
+    --ac-text-h2-final: 2.75rem;
+    display: grid;
+    width: min(100% - 64px, 1320px);
+    align-items: start;
+    margin-inline: auto;
+    gap: 40px 88px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .pc-close__copy h2 {
+    max-width: 16ch;
+    color: var(--ac-color-paper);
+  }
+
+  .pc-close__lede {
+    margin: 22px 0 0;
+    max-width: 48ch;
+    color: #ccd9e8;
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .pc-close__action {
+    border-top: 2px solid rgb(255 255 255 / 40%);
+    padding-top: 26px;
+  }
+
+  .pc-close__secondary {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 6px;
+    gap: 4px 24px;
+  }
+
+  .pc-close__secondary a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-underline-offset: 5px;
+  }
+
+  .pc-close__secondary a:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .pc-close__secondary a:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 3px;
+  }
+
+  .pc-close__note {
+    margin: 22px 0 0;
+    max-width: 44ch;
+    color: #7f96b4;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 70rem / 1120px — laptop and large tablet
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 70rem) {
+    .pc-hero {
+      --ac-text-h1-hub: 2.625rem;
+      min-height: 500px;
+    }
+
+    .pc-hero__shell {
+      width: min(100% - 52px, 1000px);
+    }
+
+    .pc-hero__content {
+      max-width: 560px;
+    }
+
+    .pc-recognize__inner,
+    .pc-rules__inner,
+    .pc-goal__inner,
+    .pc-clear__inner,
+    .pc-evidence__inner,
+    .pc-fit__inner,
+    .pc-faq__inner {
+      width: min(100% - 52px, 1320px);
+    }
+
+    .pc-recognize__inner,
+    .pc-rules__inner,
+    .pc-goal__head,
+    .pc-clear__head,
+    .pc-evidence__lead,
+    .pc-faq__head {
+      --ac-text-h2-home-feature: 2.25rem;
+    }
+
+    .pc-close__inner {
+      --ac-text-h2-final: 2.4rem;
+      width: min(100% - 52px, 1320px);
+    }
+
+    .pc-rules__list,
+    .pc-goal__list {
+      gap: 0 32px;
+    }
+
+    .pc-steps,
+    .pc-clear__pair,
+    .pc-fit__columns,
+    .pc-faq__grid,
+    .pc-price {
+      gap: 32px 48px;
+    }
+
+    .pc-phases__list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 24px 32px;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 64rem / 1024px — three-column registers collapse to one; two-column pairs stay put
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 64rem) {
+    .pc-rules__list,
+    .pc-goal__list {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px 0;
+    }
+
+    .pc-rules__row,
+    .pc-goal__row {
+      max-width: 60ch;
+    }
+
+    .pc-check-list--grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 50rem / 800px — small tablet: remaining two-columns collapse to one
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 50rem) {
+    .pc-steps,
+    .pc-clear__pair,
+    .pc-fit__columns,
+    .pc-faq__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pc-step:nth-child(-n + 2) {
+      border-top: 1px solid var(--ac-color-line-strong);
+    }
+
+    .pc-step:first-child {
+      border-top: 2px solid var(--ac-color-navy-800);
+    }
+
+    .pc-qa:nth-child(-n + 2) {
+      border-top: 1px solid var(--ac-color-line-strong);
+    }
+
+    .pc-qa:first-child {
+      border-top: 2px solid var(--ac-color-navy-800);
+    }
+
+    .pc-price {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .pc-close__inner {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 32px;
+    }
+
+    .pc-phases__list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 44rem / 704px — phone: hero shell narrows
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 44rem) {
+    .pc-hero {
+      --ac-text-h1-hub: 2.375rem;
+      min-height: 460px;
+    }
+
+    .pc-hero__shell {
+      width: min(100% - 40px, 1000px);
+      padding-block: 56px;
+    }
+
+    .pc-hero__content,
+    .pc-hero__content h1,
+    .pc-hero__lede,
+    .pc-hero__thesis {
+      max-width: none;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 40rem / 640px — small phone
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 40rem) {
+    .pc-recognize__inner,
+    .pc-rules__inner,
+    .pc-goal__inner,
+    .pc-clear__inner,
+    .pc-evidence__inner,
+    .pc-fit__inner,
+    .pc-faq__inner,
+    .pc-close__inner {
+      width: min(100% - 40px, 1320px);
+    }
+
+    .pc-recognize__inner h2,
+    .pc-rules__lead h2,
+    .pc-goal__head h2,
+    .pc-clear__head h2,
+    .pc-evidence__lead h2,
+    .pc-faq__head h2,
+    .pc-close__copy h2 {
+      max-width: none;
+    }
+
+    .pc-recognize__inner,
+    .pc-rules__inner,
+    .pc-goal__head,
+    .pc-clear__head,
+    .pc-evidence__lead,
+    .pc-faq__head {
+      --ac-text-h2-home-feature: 2rem;
+    }
+
+    .pc-close__inner {
+      --ac-text-h2-final: 1.875rem;
+    }
+
+    .pc-hero__eyebrow {
+      font-size: 0.625rem;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     Reduced motion
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .pc-btn,
+    .pc-hero__call,
+    .pc-close__secondary a {
+      transition: none;
+    }
+  }
+</style>

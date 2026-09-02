@@ -41,15 +41,26 @@ const { eyebrow, headingId } = Astro.props;
   .compact-hero__shell {
     position: relative;
     z-index: 1;
-    max-width: 49rem;
+    /* .ac-measure-wide centres its own box, so capping max-width here centred the entire hero
+       column: this was the only route on the site whose H1 did not begin at the 1200px shell's
+       left edge (measured x=328 at 1440px against x=120 for the homepage, service pages, city
+       hubs and Private Residence Reset). Let the shell be the shell and cap the text measure on
+       the text instead. */
+    max-width: none;
   }
 
+  /* This eyebrow also carries .ac-eyebrow, which paints the pale-blue chip. Overriding only
+     the colour to the on-dark #8fb4de left light blue text sitting on that pale chip —
+     measured 1.88:1, well under AA. The element is on the dark hero, so it takes the
+     system's on-dark chip treatment (.ac-eyebrow--on-dark in global.css) instead, which
+     measures 7.65:1. */
   .compact-hero .eyebrow {
-    color: #8fb4de;
+    background: rgb(255 255 255 / 12%);
+    color: #cbd9e8;
   }
 
   .compact-hero .eyebrow::before {
-    background: #8fb4de;
+    background: #cbd9e8;
   }
 
   /* No font-size here — docs/11 §1 forbids a component sizing a heading, and this override
@@ -57,6 +68,10 @@ const { eyebrow, headingId } = Astro.props;
      against a 2.5:1 floor, 2.90:1 at 1440px against a 4:1 floor). Size now comes from
      .ac-type-h1 on the slotted heading, which reads --ac-text-h1. */
   .compact-hero :global(h1) {
+    /* Replaces the measure the centred wrapper used to impose. max-width, not font-size —
+       docs/11 §1 still forbids a component sizing a heading. 22ch tracks the hub H1's own
+       20ch cap and keeps the headline near the 640-670px other page families measure. */
+    max-width: 22ch;
     margin-bottom: 0;
     color: #fff;
     line-height: 1.08;

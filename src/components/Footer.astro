@@ -19,6 +19,7 @@ import { legal, megaNav, site } from "@data/site";
 
 const year = new Date().getFullYear();
 const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
 const termlyConsentEnabled = site.integrations.termly.consentEnabled;
 
 const linkGroups = megaNav.filter((group) => group.children && group.hub);
@@ -30,16 +31,35 @@ const directGroups = megaNav.filter((group) => !group.children);
     <div class="foot__g">
       <div>
         <a class="foot__logo" href="/">
+          {/* I1 — declared size is the reversed wordmark's actual intrinsic 900×215, not the
+              old 180×28 (a 6.43 ratio against a real 4.19). CSS sizes it by height with
+              `width: auto`, so the wrong ratio reserved a 180px-wide box and reflowed to 117px
+              on decode. Settled rendering is unchanged; the shift is gone.
+              I3 — `loading="lazy"`: the footer mark is below the fold on every route, and it was
+              the only remaining eagerly-fetched image on an otherwise image-free site. */}
           <img
             src={site.business.logoReversedUrl}
             alt={`${site.business.name} — home`}
-            width="180"
-            height="28"
+            width="900"
+            height="215"
+            loading="lazy"
+            decoding="async"
           />
         </a>
+        {/* B2 — the geography reads "the South Bay & Peninsula". docs/27-SECTION-9-15's approved
+            tagline said "for San Jose and the South Bay & Peninsula", which named the region
+            twice in two different shapes inside one sentence and put the forbidden "and the
+            South Bay" form in the footer of all 37 routes. The rest of the line is unchanged
+            §9.15 copy. This is the NAP wording of record — it must match GBP and Yelp character
+            for character, so it is now the same string site.location.serviceArea carries. */}
+        {/* 2026-08-21. Was "Property clearing, detailed cleaning, and documented closeout for
+            the {region}." The B2 geography ruling above is untouched — the region still renders
+            from site.location.serviceArea and nothing else. What changed is the first half:
+            "property clearing" led the sitewide tagline on all 46 routes, and a closeout document
+            was one of the three things the company was described as selling. */}
         <p class="foot__tagline">
-          Property clearing, detailed cleaning, and documented closeout for San Jose and the
-          South Bay &amp; Peninsula.
+          Specialty property cleaning and complex cleanup for the
+          {" "}{site.location.serviceArea}.
         </p>
         {phoneHref && (
           <p class="foot__phone"><a href={phoneHref}>{site.business.phone}</a></p>
@@ -63,7 +83,40 @@ const directGroups = megaNav.filter((group) => !group.children);
     <div class="foot__bot">
       <nav class="foot__utility" aria-label="More">
         {directGroups.map((group) => <a href={group.href}>{group.label}</a>)}
+        {/* Resource + campaign routes, deliberately in the low-emphasis utility row rather than
+            the five-column link grid above.
+
+            /estate-cleanout-checklist/ — docs/19-SYSTEM-AND-SITEMAP.md §2.1 lists it under
+            "RESOURCES (footer)" and §2's linking rules say "Checklist ← estate page + footer +
+            every letter." The estate-page link shipped with the 2026-08-20 launch; this is the
+            footer half of the same rule, and it was the missing one. Anchor text is the asset's
+            own approved title (src/data/servicePages.ts), not a written-for-SEO phrase.
+
+            /private-residence-reset/ — an 814-word commercial page with Service schema that had
+            ZERO inbound links anywhere in the build (register P13). AGENTS.md §2 records it as a
+            "campaign page, out of nav", so it does NOT go in megaNav: that export feeds both the
+            header mega-panel and the footer link grid, and putting it there would put a campaign
+            route into primary navigation. One low-emphasis crawlable link here satisfies
+            discoverability without contradicting the out-of-nav ruling. Anchor text is
+            site.residenceOffer.name, the label the page itself renders. */}
+        <a href="/estate-cleanout-checklist/">The Executor's Estate Cleanout Checklist</a>
+        <a href="/private-residence-reset/">{site.residenceOffer.name}</a>
+        {/* ONE LABEL FOR /request-assessment/, 2026-08-25 —
+            docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md §17: "Fix duplicate
+            destinations/labels. Do not list the assessment route twice under different names."
+            The footer was exposing one route twice: the Company column rendered megaNav's
+            "Request an assessment" child, and this row rendered site.offer.primaryCta, so the
+            same href shipped as two differently-named links a few hundred pixels apart on all 45
+            routes.
+
+            The megaNav child is the one that was removed (see src/data/site.ts) — it also fed the
+            header Company dropdown, where "Request an assessment" sat directly beneath a navy
+            button reading "Tell Us About the Property" pointing at the same place. This slot
+            survives because site.offer.primaryCta is the single owner-approved visible label for
+            this route (2026-08-25 ruling); the nav child was the stale spelling of it. */}
         <a href="/request-assessment/">{site.offer.primaryCta}</a>
+        {/* doc 27 §8 — the secondary CTA appears everywhere the primary does. */}
+        {smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
         <a href={site.urls.privacyPolicy}>Privacy</a>
         <a href={site.urls.terms}>Terms</a>
         {site.urls.cookiePolicy && <a href={site.urls.cookiePolicy}>Cookie Policy</a>}
@@ -194,8 +247,26 @@ const directGroups = megaNav.filter((group) => !group.children);
   }
 
   @media (max-width: 1050px) {
+    /* minmax(0,1fr) rather than 1fr: a bare 1fr floors at min-content, so the brand
+       column's longest word took 141px of the 272px available at 320px and squeezed the
+       link column to 95px. Even tracks keep the two columns actually equal. */
     .foot__g {
-      grid-template-columns: repeat(2, 1fr);
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 32px 24px;
+    }
+  }
+
+  /* Below ~480px two columns leave ~120px per track, which wrapped nearly every link to
+     two lines ("Complex Property Cleanup hub" ran to three). One column gives each link
+     the full shell width and removes the wrapping entirely. */
+  @media (max-width: 480px) {
+    .foot__g {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+    }
+
+    .foot__tagline {
+      max-width: none;
     }
   }
 </style>

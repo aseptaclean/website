@@ -1,25 +1,38 @@
 ---
 // Category hub, docs/SITEMAP-MASTER.md "Property Clearing". Copy source doc 27 §10.3.
+// CUSTOMER-FACING LABEL CHANGED 2026-08-21: the category reads "Complex Property Cleanup"
+// everywhere a visitor sees it — title, crumb, breadcrumb schema, nav, footer. The route
+// `/property-clearing/`, the canonical, the sitemap entry and every inbound link are unchanged,
+// and no redirect was added because nothing moved. See src/data/site.ts's megaNav note.
 // Indexable — the "UNPUBLISHED DRAFT / ships noindex" note that stood here was stale.
 // Senior Downsizing is grouped under Property Clearing in SITEMAP-MASTER.md but is absent from
 // doc 27 §10.3's card list, so it is not a card here. Owner ruling 3 of 2026-08-18 also
 // excluded /senior-downsizing-san-jose/ from this port entirely.
 // 2026-08-18 visual port: body is docs/mockups/template-service-hub.html via ServiceHub.astro.
+// 2026-08-21: link map B1's "coverage block" — a contextual link from this hub to each of the
+// three city hubs (docs/city-pages-part2-UPDATED.md). The three targets ship `noindex, follow`
+// while city availability is unconfirmed, so this is an indexable page linking into noindex
+// drafts. That is deliberate: B1 requires the inbound link, and D4 makes `inboundLinkCount >= 1`
+// a precondition of those pages ever being indexed. Not in the footer, per B1.
 import BaseLayout from "@layouts/BaseLayout.astro";
 import RequestForm from "@components/RequestForm.astro";
 import ServiceHub from "@components/ServiceHub.astro";
+import { cityHubLinks } from "@data/cityHubPages";
 import { propertyClearingHub } from "@data/servicePages";
 import { site } from "@data/site";
+
+// Same source /service-areas/ reads, so the two directories of city pages cannot disagree.
+const cityPages = cityHubLinks;
 
 const schema = [
   {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
       {
         "@type": "ListItem",
         position: 2,
-        name: "Property Clearing",
+        name: "Complex Property Cleanup",
         item: new URL(propertyClearingHub.slug, site.urls.site).href
       }
     ]
@@ -28,8 +41,8 @@ const schema = [
 ---
 
 <BaseLayout
-  title="Property Clearing | San Jose | Aseptaclean"
-  description="Property cleanouts, hoarding cleanup, and estate cleanouts — one written scope, one accountable operator, one documented closeout. San Jose & the South Bay."
+  title="Complex Property Cleanup | San Jose | Aseptaclean"
+  description="Hoarding cleanup, estate cleanouts, property cleanouts and debris clearing in the South Bay & Peninsula. Written scope first. Nothing leaves without your approval."
   canonicalPath={propertyClearingHub.slug}
   schema={schema}
 >
@@ -38,8 +51,78 @@ const schema = [
     h1={propertyClearingHub.h1}
     lead={propertyClearingHub.lead}
     cards={propertyClearingHub.cards}
-    crumb="Property Clearing"
+    crumb="Complex Property Cleanup"
   />
+
+  {
+    cityPages.length > 0 && (
+      <section class="coverage" aria-labelledby="coverage-title">
+        <div class="ac-measure-wide">
+          <p class="ac-eyebrow">By city</p>
+          <h2 id="coverage-title" class="ac-type-h3 coverage__head">
+            The city decides more of this than you would think
+          </h2>
+          <p class="coverage__body">
+            Which company may drop a container, whether it can sit in the street, how long a permit
+            takes — all of that is set where the property is, not by us. These pages collect the
+            rules for one city each, with sources.
+          </p>
+          <ul class="coverage__list">
+            {cityPages.map((entry) => (
+              <li>
+                <a href={entry.href}>{entry.city} →</a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    )
+  }
 
   <RequestForm />
 </BaseLayout>
+
+<style>
+  /* No `font-size` on `.coverage__head` — it takes its size from `.ac-type-h3` (AGENTS.md §6
+     law 1). */
+  .coverage {
+    background: var(--ac-color-warm-white);
+  }
+
+  .coverage__head {
+    max-width: 36ch;
+    margin-top: var(--ac-space-3);
+  }
+
+  .coverage__body {
+    max-width: 58ch;
+    margin-top: var(--ac-space-4);
+    color: var(--ac-color-ink-600);
+  }
+
+  .coverage__list {
+    display: grid;
+    gap: 10px;
+    margin: var(--ac-space-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .coverage__list a {
+    color: var(--ac-color-navy-800);
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .coverage__list a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 40rem) {
+    .coverage__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px 24px;
+    }
+  }
+</style>

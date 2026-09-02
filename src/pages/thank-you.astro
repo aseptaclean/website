@@ -3,12 +3,32 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import { site } from "@data/site";
 
 const phoneHref = site.business.phoneUri;
+
+// A5 — BreadcrumbList. This route had none; every other non-root route on the site does, and a
+// crumb trail is how a leaf page tells a crawler where it sits. The "Home" item uses
+// `site.urls.home` (WITH the trailing slash) so it matches the homepage canonical exactly —
+// `site.urls.site` is a bare origin and produced a second URL for the same page.
+const schema = [
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Thank You",
+        item: new URL("/thank-you/", site.urls.site).href
+      }
+    ]
+  }
+];
 ---
 
 <BaseLayout
   title="Thank You | Aseptaclean"
   description="Aseptaclean assessment request confirmation."
   canonicalPath="/thank-you/"
+  schema={schema}
   noindex={true}
   showMobileCta={false}
 >
@@ -172,9 +192,9 @@ const phoneHref = site.business.phoneUri;
     margin: 0;
     color: var(--ac-color-navy-800);
     font-family: var(--ac-font-sans);
-    font-size: 0.75rem;
+    font-size: var(--ac-text-label-chip);
     font-weight: 700;
-    letter-spacing: 0.09em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
   }
 

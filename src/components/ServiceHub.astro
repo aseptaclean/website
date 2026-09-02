@@ -39,13 +39,13 @@ interface Props {
 
 const { h1, lead, cards, crumb, complianceClause } = Astro.props;
 const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
 const count = cards.length;
 ---
 
 <header class="ac-ph" aria-labelledby="hub-title">
   <div class="ac-ph__bg" aria-hidden="true"></div>
   <div class="ac-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-  <p class="ac-slot-label" aria-hidden="true">Photo slot<br />1800 × 700</p>
 
   <div class="ac-shell">
     <p class="ac-crumb"><a href="/">Home</a> / {crumb}</p>
@@ -55,6 +55,8 @@ const count = cards.length;
       <a class="btn btn--w" href="/request-assessment/">
         {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
       </a>
+      {/* doc 27 §8 — the secondary CTA appears everywhere the primary does. */}
+      {smsHref && <a class="btn btn--o" href={smsHref}>{site.offer.secondaryCta}</a>}
       {phoneHref && <a class="btn btn--o" href={phoneHref}>Call {site.business.phone}</a>}
     </div>
   </div>
@@ -82,7 +84,6 @@ const count = cards.length;
     <div class="ac-hubcards">
       {cards.map((card) => (
         <article class="ac-card">
-          <div class="ac-card__image" role="presentation">Photo · {card.title.toLowerCase()}</div>
           <div class="ac-card__body">
             <h3 class="ac-type-h3-card">{card.title}</h3>
             {card.href && serviceOneLiners[card.href] && <p>{serviceOneLiners[card.href]}</p>}

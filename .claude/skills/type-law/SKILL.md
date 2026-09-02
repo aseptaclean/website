@@ -58,11 +58,12 @@ predate that direction and were written when headline scale was the only contras
 This is a floor, not a target. It exists so a heading cannot collapse toward body size. Do not
 raise a heading token to chase the retired numbers — the token values are the approved design.
 
-**Last measured (2026-08-18, all 37 built routes):** zero below 1.9:1. Thirteen band-header
+**Historical measurement (2026-08-18, then 37 built routes):** zero below 1.9:1. Thirteen band-header
 routes sit at *exactly* 1.900:1 at 320px, driven by `--ac-text-h1-band`'s `1.9rem` minimum
 against the 16px body. That is a pass with zero margin: **any** reduction of that token, or any
 increase to the body size, breaks the floor on 13 routes at once. Re-measure after touching
-either.
+either. The route set has since grown to 46; never report the historical 37-route sweep as a
+current full-site pass.
 
 **Measure computed styles, not token values.** A `clamp()` in a token tells you nothing about
 what actually renders at a given viewport, and a component override can defeat the token

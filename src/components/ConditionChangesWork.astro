@@ -1,0 +1,207 @@
+---
+// THE PROPERTY CONDITION CHANGES THE WORK — recomposed 2026-08-25 to
+// docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md §11.
+//
+// THIS SECTION NOW ABSORBS ScopeExplanation ("A clear scope before work begins."), which is
+// deleted from `/`. §11 is explicit that the two must not both exist: they were making one
+// argument twice, in sequence, at a combined 1,498px on desktop and 1,983px at 390px. The
+// load-bearing sentence survives the merge verbatim — "The scope is defined before work begins"
+// is §11's required key idea and is now the second paragraph here. ScopeExplanation's five-row
+// register (Condition / Included work / Boundaries / Material changes / Handoff) does NOT
+// survive: it is a service-page answer, and all five rows still render on the service pages
+// through ServiceScope and on /handoff-standard/.
+//
+// THE SENTENCE §11 NAMES IS GONE. "The two columns are not better and worse. They are two
+// different jobs, priced and sequenced differently…" is struck: §11 says "No sentence explaining
+// that the columns are 'not better and worse'. No internal design rationale." It was the page
+// explaining its own layout to the customer.
+//
+// FIVE ROWS BECAME THREE. §11's table is the three pairs below, verbatim. The two dropped rows
+// ("Predictable labor / Labor follows actual condition", "Limited contents decisions / Client
+// decisions may affect scope") say the same thing the surviving three already say, and the
+// second one restates homepage.assurance, which ships in full on the service pages.
+//
+// QUIET BY DESIGN. §11 asks this to be a visual reset after the photo-heavy capability section:
+// typography, space and thin rules, no cards, no image grid. It sits between WhatWeHandle's
+// three large photographs and OperatingEvidence's large image, and its whole job is to be the
+// pause between them. Every statement is one Aseptaclean already makes elsewhere on the site, so
+// the section carries no disclaimer of its own.
+const comparison = [
+  ["Maintained property", "Condition-specific"],
+  ["Standard checklist", "Defined scope"],
+  ["Routine visit", "Project handoff"]
+] as const;
+---
+
+<section class="condition-work" aria-labelledby="condition-work-title">
+  <div class="condition-work__inner">
+    <div class="condition-work__statement">
+      <h2 id="condition-work-title" class="ac-type-h2-home-feature">
+        The property condition changes the work.
+      </h2>
+      <p>
+        Routine cleaning assumes the property is already being maintained. When contents,
+        buildup, access, condition or deadlines change the job, the work needs to be defined
+        around the property.
+      </p>
+      <p class="condition-work__scope">The scope is defined before work begins.</p>
+      <p>
+        What is included, what is excluded and what completion means are written down first.
+      </p>
+    </div>
+
+    {/* A real <table>: two parallel lists whose rows correspond is tabular data, and the row
+        correspondence is the entire point of the section. Screen readers get the pairing from
+        the markup rather than from visual adjacency. */}
+    <table class="condition-work__table">
+      <thead>
+        <tr>
+          <th scope="col">Routine cleaning</th>
+          <th scope="col">An Aseptaclean project</th>
+        </tr>
+      </thead>
+      <tbody>
+        {comparison.map(([routine, project]) => (
+          <tr>
+            <td>{routine}</td>
+            <td>{project}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<style>
+  .condition-work {
+    background: var(--ac-color-warm-white);
+    padding-block: clamp(72px, 7vw, 100px);
+  }
+
+  .condition-work__inner {
+    display: grid;
+    width: min(100% - 64px, 1240px);
+    align-items: start;
+    margin-inline: auto;
+    gap: 48px 88px;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 0.85fr);
+  }
+
+  /* V3 §23: homepage H2s land at 36–42px, never the audited 52px. Set on the token, not on the
+     heading — AGENTS.md §6 law 1. */
+  .condition-work__statement {
+    --ac-text-h2-home-feature: 2.5rem;
+  }
+
+  .condition-work__statement h2 {
+    max-width: 16ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .condition-work__statement p {
+    max-width: 46ch;
+    margin: 22px 0 0;
+    color: var(--ac-color-ink-600);
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  /* The one sentence §11 requires, given the weight of a statement rather than being buried mid
+     paragraph. Not a pull quote and not a card — a change of colour and weight on the same
+     measure. */
+  .condition-work__scope {
+    color: var(--ac-color-navy-900);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .condition-work__table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+  }
+
+  .condition-work__table th {
+    width: 50%;
+    border-bottom: 2px solid var(--ac-color-navy-800);
+    padding: 0 24px 14px 0;
+    color: var(--ac-color-navy-900);
+    font-size: 0.75rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .condition-work__table td {
+    border-bottom: 1px solid var(--ac-color-line-strong);
+    padding: 20px 24px 20px 0;
+    line-height: 1.5;
+    vertical-align: top;
+  }
+
+  .condition-work__table td:first-child {
+    color: var(--ac-color-ink-600);
+  }
+
+  .condition-work__table td:last-child {
+    padding-right: 0;
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+  }
+
+  .condition-work__table th:last-child {
+    padding-right: 0;
+  }
+
+  @media (max-width: 64rem) {
+    .condition-work__inner {
+      width: min(100% - 52px, 1240px);
+      gap: 40px 56px;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.9fr);
+    }
+
+    .condition-work__statement {
+      --ac-text-h2-home-feature: 2.25rem;
+    }
+  }
+
+  @media (max-width: 50rem) {
+    .condition-work__inner {
+      gap: 36px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .condition-work__statement h2 {
+      max-width: 18ch;
+    }
+
+    .condition-work__statement p {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .condition-work {
+      padding-block: 60px;
+    }
+
+    .condition-work__inner {
+      width: calc(100% - 40px);
+    }
+
+    .condition-work__statement {
+      --ac-text-h2-home-feature: 2rem;
+    }
+
+    .condition-work__table th,
+    .condition-work__table td {
+      padding-right: 14px;
+    }
+
+    .condition-work__table td {
+      padding-block: 16px;
+      font-size: 0.9375rem;
+    }
+  }
+</style>

@@ -1,5 +1,11 @@
 # PORT-PROMPT — Visual redesign port (owner-approved 2026-08-18)
 
+> **COMPLETED HISTORICAL SESSION PROMPT — DO NOT EXECUTE.** The referenced mockups and visual
+> authority have been archived, and doc 30 now governs website design. Only protections already
+> promoted into `AGENTS.md`—the singular lead endpoint, static Astro/Cloudflare architecture,
+> protected SMS-consent page, and typography laws—remain active. This file is preserved to
+> explain the 2026-08-18 port, not to direct new implementation.
+
 Read this file in full before touching anything. Then read `AGENTS.md`. Where this prompt and
 `AGENTS.md` conflict on **scope or visual direction**, this prompt wins — it carries an explicit
 owner decision dated 2026-08-18 (see §7). On **claims, safety, and business facts**, `AGENTS.md`

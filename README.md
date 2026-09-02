@@ -1,5 +1,11 @@
 # Aseptaclean Codex Starter
 
+> **SUPERSEDED HISTORICAL BOOTSTRAP — DO NOT USE AS CURRENT WEBSITE INSTRUCTIONS.** This file
+> describes the original one-page starter package and cites documents that no longer exist.
+> The active site is multi-page Astro on Cloudflare Pages. Start with `AGENTS.md`, then
+> `docs/README.md` and `docs/30-WEBSITE-MASTER-SPEC.md`. The historical workflow below is
+> preserved for traceability only.
+
 ## What this package is
 
 This package is the control system for building the current Aseptaclean Astro one-page launch.
@@ -31,7 +37,7 @@ Do **not** paste every document into each Codex prompt. Put these files in the r
 9. Update `docs/05-DECISIONS-LOG.md` only after an owner decision.
 10. Do not launch until `docs/04-RELEASE-CHECKLIST.md` and the master 90/100 gate pass.
 
-## Local commands
+## Historical local-command reference
 
 - `npm install` — install the locked dependencies
 - `npm run dev` — start local development

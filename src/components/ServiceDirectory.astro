@@ -1,0 +1,487 @@
+---
+// ACTIVE SERVICE DIRECTORY — built 2026-08-26 to docs/30-WEBSITE-MASTER-SPEC.md §20A.20 and §18.
+//
+// THE CRITICAL GATE, IMPLEMENTED IN CODE RATHER THAN PROMISED IN A COMMENT. §20A.20: "The
+// directory must be built from current active/public service state… The service hub must never
+// become a workaround for a publication gate." Every row below is filtered on its own service
+// record's `indexable` flag, so a gated route cannot appear by editing a copy string, and a
+// route that clears its gate starts listing on its own. Post-construction, window cleaning,
+// eviction cleanouts and commercial all fail that filter today and drop out without being named.
+//
+// ONE EXCEPTION, DECIDED NOT INHERITED — /animal-waste-cleanup-san-jose/. It ships noindex but is
+// operationally available (doc 30 §20A.4, owner clarification 2026-08-26), and it is already
+// linked from `/services/` today and from all 23 indexable routes through megaNav, so listing it
+// here opens no crawl path that does not already exist. It renders through the `alwaysList`
+// escape below rather than through the filter, so the exception is visible in code and has to be
+// removed deliberately. doc 21 §2.3's limiting clause travels with it, read off the record.
+//
+// RODENT AND PIGEON ARE NOT IN THIS DIRECTORY and cannot be added by editing data: neither slug
+// is imported into this component or into servicesHub.families. Cal. B&P §8550(a) and doc 21 §3
+// — rank 3 — and AGENTS.md §2's statement that the operational-availability clarification does
+// not reach that constraint. See docs/05-DECISIONS-LOG.md, 2026-08-26.
+//
+// HIERARCHY, NOT UNIFORMITY. §18 forbids "a giant grid of 12 identical cards" and the prompt
+// asks for visual weight to follow customer importance. So: the complex-property-cleanup group
+// leads, carries the only photograph in the section, and gives its first service a feature
+// treatment; the other two groups are ruled text rows. Nine services, three weights, zero
+// identical cards.
+import { Image } from "astro:assets";
+import directoryImage from "../assets/homepage/condition-development-neglected-kolforn.jpg";
+import { servicesHub } from "@data/servicePages";
+import { animalPage } from "@data/doc27ServicePages";
+
+// TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPH — NOT Aseptaclean project work, not a client
+// property, and not proof of a completed job. `[ATMOS]`-class under doc 21 §6.
+//   condition-development-neglected-kolforn.jpg
+//     Kolforn — CC BY-SA 4.0
+//     https://commons.wikimedia.org/wiki/File:2_Church_Cottage_West_Runton_30_01_2010_(14).JPG
+// Reused from `/` rather than newly sourced — see ServicesHero.astro. Replace at the Phase 0
+// owner shoot (docs/06-ASSET-MANIFEST.md §5).
+
+// The one deliberate exception described above. A slug, not a boolean on the record, so the
+// service record itself stays an honest statement of publication state.
+const alwaysList = new Set<string>([animalPage.slug]);
+
+// The feature/rest split happens here rather than in the template so `feature` is a value the
+// type system knows exists: a family whose services all fail the filter is dropped entirely
+// rather than rendering a heading over nothing.
+const families = servicesHub.families
+  .map((family) => {
+    const visible = family.services.filter(
+      (service) => service.page.indexable || alwaysList.has(service.page.slug)
+    );
+    return { ...family, feature: visible[0], rest: visible.slice(1) };
+  })
+  .filter(
+    (family): family is typeof family & { feature: NonNullable<typeof family.feature> } =>
+      family.feature !== undefined
+  );
+---
+
+<section class="directory" id="all-services" aria-labelledby="directory-title">
+  <div class="directory__inner">
+    <header class="directory__header">
+      <p class="ac-eyebrow">Everything currently available</p>
+      <h2 id="directory-title" class="ac-type-h2-home-feature">Services, by what the property needs.</h2>
+    </header>
+
+    {families.map((family, familyIndex) => {
+      const { feature, rest } = family;
+      const isLead = familyIndex === 0;
+      return (
+        <section
+          class:list={["family", isLead && "family--lead"]}
+          aria-labelledby={`family-${family.key}`}
+        >
+          <div class="family__head">
+            <h3 id={`family-${family.key}`} class="ac-type-h3-home-feature">{family.name}</h3>
+            <p class="family__summary">{family.summary}</p>
+            {family.hub && (
+              <a class="family__hub" href={family.hub.href}>
+                All {family.hub.label.toLowerCase()} <span aria-hidden="true">&rarr;</span>
+              </a>
+            )}
+          </div>
+
+          <div class="family__body">
+            {/* The lead family opens on a photograph; the other two open straight into their
+                feature service. Same markup, different weight. */}
+            {isLead && (
+              <figure class="family__media">
+                <div class="family__media__frame">
+                  <Image
+                    src={directoryImage}
+                    alt="Reference photograph of a neglected residential kitchen with worn, long-unmaintained surfaces."
+                    widths={[420, 640, 880]}
+                    sizes="(min-width: 64rem) 32vw, 92vw"
+                    format="webp"
+                    quality={74}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </div>
+                <figcaption>
+                  Development reference photograph · not Aseptaclean project work · Kolforn,
+                  Wikimedia Commons, CC BY-SA 4.0
+                </figcaption>
+              </figure>
+            )}
+
+            <div class="family__services">
+              <article class="service service--feature">
+                {/* The SIZE comes from .ac-type-h4-mega, a role class, never from
+                    .service__title — AGENTS.md §6 law 1, which is verified on computed styles in
+                    dist/ and which an earlier draft of this component failed. .service__title
+                    carries colour, the link treatment and the touch target only. */}
+                <h4 class="ac-type-h4-mega service__title">
+                  <a href={feature.page.slug}>{feature.label}</a>
+                </h4>
+                <p class="service__thesis">{feature.thesis}</p>
+                <p class="service__detail">{feature.detail}</p>
+                {/* doc 21 §2.3 / §2.2 permitted negation — verbatim off the service record,
+                    never retyped, so the clause cannot drift from the page it describes. */}
+                {feature.page.complianceClause && (
+                  <p class="service__clause">{feature.page.complianceClause}</p>
+                )}
+              </article>
+
+              {rest.length > 0 && (
+                <ul class="service__rows">
+                  {rest.map((service) => (
+                    <li>
+                      <a class="row" href={service.page.slug}>
+                        <span class="row__label">{service.label}</span>
+                        <span class="row__thesis">{service.thesis}</span>
+                        <span class="row__arrow" aria-hidden="true">&rarr;</span>
+                      </a>
+                      {service.page.complianceClause && (
+                        <p class="row__clause">{service.page.complianceClause}</p>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          </div>
+        </section>
+      );
+    })}
+  </div>
+</section>
+
+<style>
+  .directory {
+    background: var(--ac-color-paper);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .directory__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  /* Token override, not a font-size on the heading — AGENTS.md §6 law 1. */
+  .directory__header {
+    --ac-text-h2-home-feature: 2.375rem;
+    margin-bottom: clamp(44px, 4.5vw, 64px);
+  }
+
+  .directory__header h2 {
+    max-width: 20ch;
+    margin-top: 14px;
+    color: var(--ac-color-navy-900);
+  }
+
+  .family {
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 26px;
+  }
+
+  .family + .family {
+    margin-top: clamp(48px, 5vw, 72px);
+  }
+
+  /* Secondary groups get a hairline instead of the heavy rule: the lead group is the one the
+     page wants read first, and the rule weight is how that is said. */
+  .family:not(.family--lead) {
+    border-top-color: var(--ac-color-line-strong);
+  }
+
+  .family__head {
+    display: grid;
+    align-items: baseline;
+    margin-bottom: 30px;
+    gap: 10px 60px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) auto;
+  }
+
+  .family__head h3 {
+    color: var(--ac-color-navy-900);
+    text-wrap: balance;
+  }
+
+  .family:not(.family--lead) .family__head {
+    --ac-text-h3-home-feature: 1.5rem;
+  }
+
+  .family__summary {
+    margin: 0;
+    max-width: 52ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .family__hub {
+    /* inline-flex makes the label and the arrow flex items, which drops the whitespace
+       text node between them. `gap` puts the space back. */
+    gap: 0.4em;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-self: end;
+    color: var(--ac-color-navy-800);
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-underline-offset: 4px;
+    white-space: nowrap;
+  }
+
+  .family__hub:hover {
+    text-decoration: underline;
+  }
+
+  .family__hub:focus-visible,
+  .service__title a:focus-visible,
+  .row:focus-visible {
+    outline: 3px solid var(--ac-color-navy-800);
+    outline-offset: 3px;
+  }
+
+  .family__body {
+    display: grid;
+    align-items: start;
+    gap: 32px 60px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .family--lead .family__body {
+    grid-template-columns: minmax(0, 0.62fr) minmax(0, 1fr);
+  }
+
+  .family__media {
+    margin: 0;
+  }
+
+  /* Ratio on the wrapper, height:100% on the img — see the note in ServiceProblemChooser.astro
+     for why an `aspect-ratio` on the img alone is silently defeated by astro:assets' width and
+     height attributes. */
+  .family__media__frame {
+    display: block;
+    overflow: hidden;
+    aspect-ratio: 4 / 3;
+    background: var(--ac-color-steel-200);
+  }
+
+  .family__media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 46% 52%;
+  }
+
+  .family__media figcaption {
+    max-width: none;
+    margin-top: 10px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.6875rem;
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  .service--feature {
+    border-bottom: 1px solid var(--ac-color-line-strong);
+    padding-bottom: 22px;
+  }
+
+  /* NO font-size here. The h4 carries .ac-type-h4-mega in markup and takes its size from that
+     role class; this selector only adjusts weight, which type law 1 does not govern. */
+  .service__title {
+    font-weight: 700;
+  }
+
+  /* The anchor wraps the whole title, so it is a standalone target rather than a link inside a
+     sentence, and doc 30 §8.5's 44px minimum applies to it. Padding grows the hit area and a
+     matching negative margin gives the space back, so the target passes without the row moving. */
+  .service__title a {
+    display: inline-block;
+    padding-block: 12px;
+    margin-block: -12px;
+    color: var(--ac-color-navy-900);
+    text-decoration: none;
+  }
+
+  .service__title a:hover {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .service__thesis {
+    margin: 10px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .service__detail {
+    margin: 8px 0 0;
+    max-width: 58ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .service__clause,
+  .row__clause {
+    margin: 10px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-400);
+    font-size: 0.8125rem;
+    font-style: italic;
+    line-height: 1.5;
+  }
+
+  .service__rows {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .service__rows li {
+    border-bottom: 1px solid var(--ac-color-line-strong);
+    max-width: none;
+  }
+
+  .row {
+    display: grid;
+    align-items: baseline;
+    padding: 16px 0;
+    gap: 2px 20px;
+    grid-template-columns: minmax(0, auto) minmax(0, 1fr) auto;
+    color: inherit;
+    text-decoration: none;
+  }
+
+  .row__label {
+    color: var(--ac-color-navy-900);
+    font-weight: 700;
+    line-height: 1.4;
+    white-space: nowrap;
+  }
+
+  .row__thesis {
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  .row__arrow {
+    color: var(--ac-color-navy-800);
+    transition: transform 160ms ease;
+  }
+
+  .row:hover .row__label {
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .row:hover .row__arrow {
+    transform: translateX(4px);
+  }
+
+  .row__clause {
+    padding-bottom: 14px;
+  }
+
+  @media (max-width: 64rem) {
+    .directory__inner {
+      width: min(100% - 52px, 1320px);
+    }
+
+    .directory__header {
+      --ac-text-h2-home-feature: 2.1875rem;
+    }
+
+    .family__head {
+      gap: 10px 40px;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .family__hub {
+      grid-column: 2;
+      justify-self: start;
+    }
+
+    .family--lead .family__body {
+      grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
+      gap: 28px 40px;
+    }
+  }
+
+  @media (max-width: 50rem) {
+    .family__head {
+      display: block;
+    }
+
+    .family__summary {
+      margin-top: 12px;
+      max-width: none;
+    }
+
+    .family--lead .family__body {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .family__media__frame {
+      aspect-ratio: 16 / 10;
+    }
+
+    .service__thesis,
+    .service__detail {
+      max-width: none;
+    }
+
+    /* Label above thesis once the row loses its horizontal room, so neither is squeezed into a
+       column too narrow to read. */
+    .row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .row__label {
+      white-space: normal;
+    }
+
+    .row__arrow {
+      display: none;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .directory {
+      padding-block: 64px;
+    }
+
+    .directory__inner {
+      width: calc(100% - 40px);
+    }
+
+    .directory__header {
+      --ac-text-h2-home-feature: 1.9375rem;
+    }
+
+    .directory__header h2 {
+      max-width: 22ch;
+    }
+
+    .family:not(.family--lead) .family__head {
+      --ac-text-h3-home-feature: 1.375rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .row__arrow,
+    .row:hover .row__arrow {
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

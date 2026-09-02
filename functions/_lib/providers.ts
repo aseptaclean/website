@@ -18,6 +18,18 @@ const field = (value: LeadRecord["data"][string] | undefined) => {
 
 const isDetailedLead = (lead: LeadRecord) => Boolean(lead.data.form_version);
 
+// Any of the six service-specific qualifying questions the lean form (2026-09-02 rebuild) may
+// have shown — at most one is ever present on a given submission.
+const serviceAnswer = (lead: LeadRecord) =>
+  field(
+    lead.data.belongings_must_be_kept ||
+      lead.data.pest_control_involved ||
+      lead.data.animal_waste_pattern ||
+      lead.data.belongings_block_access ||
+      lead.data.items_must_be_saved ||
+      lead.data.items_must_remain
+  );
+
 export async function verifyTurnstile(
   env: LeadEnvironment,
   token: string,
@@ -139,18 +151,13 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
           `Private uploads: ${lead.files.length}`
         ]
       : [
-          `Offer: Handoff Reset`,
+          `Offer: Assessment request`,
           `Confirmation code: ${lead.code}`,
           `Request ID: ${lead.id}`,
-          `Property: ${field(lead.data.property_address)}, ${field(lead.data.property_city)}`,
+          `Property: ${field(lead.data.property_city)} ${field(lead.data.property_zip)}`,
           `Situation: ${field(lead.data.property_situation)}`,
-          `Deadline: ${field(lead.data.desired_completion_date)}`,
-          `Authority: ${field(lead.data.authority_to_approve)}`,
-          `Contents removal: ${field(lead.data.contents_removal)}`,
-          `Heavy cleaning: ${field(lead.data.heavy_cleaning)}`,
-          `Known conditions: animal waste=${field(lead.data.animal_waste)}; biological material=${field(lead.data.human_biological_material)}; sharps=${field(lead.data.needles_sharps)}; sewage=${field(lead.data.sewage)}; mold=${field(lead.data.mold)}; pests=${field(lead.data.pest_activity)}`,
-          `Must remain: ${field(lead.data.must_remain)}`,
-          `Must remove: ${field(lead.data.must_remove)}`,
+          `Description: ${field(lead.data.property_detail)}`,
+          `Service question: ${serviceAnswer(lead)}`,
           `Private uploads: ${lead.files.length}`
         ]
   ).join("\n");
@@ -314,7 +321,7 @@ export function sendOwnerFallbackEmail(
     ? "Quick request"
     : isResidence
     ? "Private Residence Reset"
-    : "Handoff Reset";
+    : "Assessment request";
   // SMS_ALERTS_ENABLED off (the default until 10DLC approval) means email is the sole,
   // expected notification channel — not a degraded fallback — so the copy must not read
   // as an incident. Any other skip/failure reason means SMS was actually attempted.
@@ -349,10 +356,15 @@ export function sendOwnerFallbackEmail(
     `Phone: ${lead.data.phone}`,
     `Email: ${field(lead.data.email)}`,
     `City: ${field(lead.data.property_city)}`,
+    `ZIP: ${field(lead.data.property_zip)}`,
     `Situation: ${field(lead.data.property_situation)}`,
-    ...(!isDetailedLead(lead)
-      ? [`Description: ${field(lead.data.property_detail || lead.data.additional_notes)}`]
+    ...(!isResidence
+      ? [
+          `Description: ${field(lead.data.property_detail || lead.data.additional_notes)}`,
+          `Service question: ${serviceAnswer(lead)}`
+        ]
       : []),
+    `Photos/files: ${lead.files.length}`,
     `Callback window: ${lead.callbackWindow}`,
     `Submitted: ${lead.receivedAt}`,
     `Call: tel:${callbackPhone}`

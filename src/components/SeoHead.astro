@@ -20,19 +20,51 @@ const {
 } = Astro.props;
 const canonical = new URL(canonicalPath, site.urls.site);
 const shouldNoindex = noindex || !site.deployment.isPublicProduction;
-const organizationId = new URL("/#organization", site.urls.site).href;
+// ONE business entity, ONE @id, defined here so it renders identically on every route.
+//
+// Before 2026-08-20 there were two competing identifiers for the same company: an
+// `Organization` at `/#organization`, emitted on every route from this file, and a
+// `LocalBusiness` at `/#business`, hand-written on three routes in three DIFFERENT and
+// mutually incomplete shapes — `/` had `geo` and a PostalAddress but no telephone, `/contact/`
+// had telephone but no geo, and `/about/` had nothing but a name and a founder link. Service
+// nodes then split between the two ids depending on which file emitted them.
+//
+// `/#business` wins as the surviving id: `LocalBusiness` is a subtype of `Organization`, so the
+// single node carries every property both used to, and `worksFor` on the /about/ Person node
+// already pointed here. `/#organization` is retired — every `provider`, `publisher`, and
+// `about` reference in src/ was repointed in the same change. If you find `/#organization`
+// anywhere, it is a dangling reference, not a second entity.
+//
+// NO `address`. AGENTS.md §3: service-area business, no published street address, ever, and
+// never infer a physical office from service-area coverage. The `/` node's PostalAddress was a
+// violation of exactly that rule and was removed, not moved.
+const businessId = new URL("/#business", site.urls.site).href;
 const websiteId = new URL("/#website", site.urls.site).href;
 const pageId = `${canonical.href}#webpage`;
+const logoUrl = site.business.logoUrl
+  ? new URL(site.business.logoUrl, site.urls.site).href
+  : "";
+// doc 19 §2.2: sameAs → GBP/Yelp/Nextdoor. Only owner-confirmed profile URLs are ever included
+// (AGENTS.md §0.3 — never fabricate a profile). Moved here from src/pages/index.astro so the
+// single entity carries them on every route instead of only on `/`.
+const sameAs = [
+  site.business.googleBusinessProfileUrl,
+  site.business.yelpUrl,
+  site.business.nextdoorUrl
+].filter((url): url is string => Boolean(url));
 const graph: Array<Record<string, unknown>> = [
   {
-    "@type": "Organization",
-    "@id": organizationId,
+    "@type": "LocalBusiness",
+    "@id": businessId,
     name: site.business.name,
     legalName: site.business.legalName,
     url: site.urls.site,
     email: site.business.email,
     ...(site.business.phone ? { telephone: site.business.phone } : {}),
-    logo: new URL(site.business.logoUrl, site.urls.site).href,
+    // Suppression rule (AGENTS.md §3): a missing asset omits the property rather than
+    // shipping a placeholder URL.
+    ...(logoUrl ? { logo: logoUrl, image: logoUrl } : {}),
+    openingHours: site.business.hoursSchema,
     founder: {
       "@type": "Person",
       "@id": new URL("/#founder", site.urls.site).href,
@@ -42,14 +74,20 @@ const graph: Array<Record<string, unknown>> = [
     areaServed: site.location.cities.map((name) => ({
       "@type": "City",
       name
-    }))
+    })),
+    geo: {
+      "@type": "GeoCoordinates",
+      latitude: site.location.geo.latitude,
+      longitude: site.location.geo.longitude
+    },
+    ...(sameAs.length > 0 ? { sameAs } : {})
   },
   {
     "@type": "WebSite",
     "@id": websiteId,
     url: site.urls.site,
     name: site.business.name,
-    publisher: { "@id": organizationId }
+    publisher: { "@id": businessId }
   },
   {
     "@type": "WebPage",
@@ -58,7 +96,7 @@ const graph: Array<Record<string, unknown>> = [
     name: title,
     description,
     isPartOf: { "@id": websiteId },
-    about: { "@id": organizationId }
+    about: { "@id": businessId }
   },
   ...(schema ? (Array.isArray(schema) ? schema : [schema]) : [])
 ];

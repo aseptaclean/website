@@ -1,0 +1,95 @@
+---
+// Two-column hero for the nine city routes: breadcrumb, eyebrow, H1, city or service lead, and
+// the site's existing compact intake form in a contained panel on the right. Shared by both
+// generators so a hub and its children cannot drift apart.
+//
+// WHY THE FORM IS HERE AND NOT IN A SECOND SECTION
+// These pages previously rendered <RequestForm /> lower down. Putting the compact form in the
+// hero — the owner-approved 2026-08-20 city composition, docs/city-pages-part2-UPDATED.md A1
+// "Hero intake form … replaces a plain CTA" — and ALSO keeping RequestForm would put two copies
+// of the same form on one page. So the form moved rather than multiplied, and the approved copy
+// that sits beside it moved with it:
+//   · doc 27 §9.13 H2 "Tell us about the property."            → the panel head
+//   · doc 27 §8 "The city, roughly how big it is, …"           → the panel lede
+//   · doc 27 §8 "What happens next — beside EVERY form"        → the left column, under a rule
+// No string here was written for this component. The form logic is not duplicated: it is
+// QuickHandoffForm, the same component RequestForm wires, with its own formId and entry route.
+//
+// The .ac-marks sweep is deliberately absent. It is drawn into the right side of an inner-page
+// header, which is exactly where the panel now sits; Hero.astro — the site's other two-column
+// hero with a white card — omits it for the same reason.
+import QuickHandoffForm from "@components/QuickHandoffForm.astro";
+import { site } from "@data/site";
+import "@styles/city-pages.css";
+
+export type Crumb = { label: string; href?: string };
+
+interface Props {
+  /** Visible breadcrumb trail, ancestors first; the last entry is the current page. */
+  crumbs: readonly Crumb[];
+  eyebrow: string;
+  h1: string;
+  titleId: string;
+  lead: string;
+  /** Optional single supporting line on the amber rule — the service-page hero pledge. */
+  pledge?: string;
+  /** Right-hand meta on the panel's document bar. The city name; never a claim. */
+  panelMeta: string;
+  formId: string;
+  entryRoute: string;
+}
+
+const { crumbs, eyebrow, h1, titleId, lead, pledge, panelMeta, formId, entryRoute } =
+  Astro.props;
+const panelTitleId = `${formId}-panel-title`;
+---
+
+<header class="cty-hero" aria-labelledby={titleId}>
+  <div class="cty-hero__bg" aria-hidden="true"></div>
+
+  <div class="ac-shell cty-hero__in">
+    <div class="cty-hero__copy">
+      <nav class="ac-crumb cty-crumb" aria-label="Breadcrumb">
+        <ol>
+          {crumbs.map((crumb) => (
+            <li aria-current={crumb.href ? undefined : "page"}>
+              {crumb.href ? <a href={crumb.href}>{crumb.label}</a> : crumb.label}
+            </li>
+          ))}
+        </ol>
+      </nav>
+
+      <p class="cty-hero__eyebrow">{eyebrow}</p>
+      <h1 id={titleId} class="ac-type-h1-hub">{h1}</h1>
+      <p class="cty-hero__lead">{lead}</p>
+      {pledge && <p class="cty-hero__pledge">{pledge}</p>}
+
+      <div class="cty-hero__next">
+        <p class="ac-label ac-label--on-dark">What happens next</p>
+        <p>
+          Matthew reads every request himself. You&rsquo;ll hear back within one business day
+          with a real answer about whether the job fits and what&rsquo;s needed to price it &mdash;
+          not an autoresponder.
+        </p>
+      </div>
+    </div>
+
+    {/* .ac-stepform is the site's form card; .cty-panel collapses its 186px rail track, which
+        this compact form has no steps to fill. .ac-panel__h is the shared operational bar the
+        scope panels use — the panel reads as an intake document, not a signup card. */}
+    <div class="ac-stepform cty-panel" id="request" aria-labelledby={panelTitleId}>
+      <div class="ac-panel__h">
+        <span>{site.offer.primaryCta}</span>
+        <span>{panelMeta}</span>
+      </div>
+      <div class="cty-panel__head">
+        <h2 id={panelTitleId} class="ac-type-h3">Tell us about the property.</h2>
+        <p class="cty-panel__lede">
+          The city, roughly how big it is, what shape it&rsquo;s in, and when it has to be done.
+          Two or three phone photos are more useful than a long description.
+        </p>
+      </div>
+      <QuickHandoffForm formId={formId} entryRoute={entryRoute} />
+    </div>
+  </div>
+</header>

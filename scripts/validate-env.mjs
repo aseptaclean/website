@@ -6,6 +6,7 @@ const modeIndex = process.argv.indexOf("--mode");
 const mode =
   modeIndex >= 0 ? process.argv[modeIndex + 1] : process.env.PUBLIC_DEPLOYMENT_ENV;
 const projectRoot = process.cwd();
+const approvedServiceArea = "South Bay & Peninsula";
 
 function parseEnvFile(path) {
   if (!existsSync(path)) return {};
@@ -27,6 +28,8 @@ function parseEnvFile(path) {
   );
 }
 
+const productionEnvPath = resolve(projectRoot, ".env.production");
+const productionFileValues = parseEnvFile(productionEnvPath);
 const fileValues = {
   ...parseEnvFile(resolve(projectRoot, ".env")),
   ...parseEnvFile(resolve(projectRoot, `.env.${mode || "production"}`))
@@ -108,6 +111,37 @@ const missing = required.filter((key) => {
 const errors = [];
 if (missing.length) {
   errors.push(`Missing or placeholder values: ${missing.join(", ")}`);
+}
+
+// PUBLIC_SERVICE_AREA is a canonical public business fact, not a free-form deployment label.
+// Validate the effective build value and the checked-in Cloudflare Pages variable separately:
+// local production builds otherwise read .env.production and could pass while wrangler.toml
+// contains a stale value that overrides the deployed build. The production env file is local
+// and gitignored, so check it when present without requiring it in Cloudflare's checkout.
+if (values.PUBLIC_SERVICE_AREA !== approvedServiceArea) {
+  errors.push(
+    `PUBLIC_SERVICE_AREA must exactly equal "${approvedServiceArea}".`
+  );
+}
+if (
+  existsSync(productionEnvPath) &&
+  productionFileValues.PUBLIC_SERVICE_AREA !== approvedServiceArea
+) {
+  errors.push(
+    `.env.production PUBLIC_SERVICE_AREA must exactly equal "${approvedServiceArea}".`
+  );
+}
+
+const wranglerPath = resolve(projectRoot, "wrangler.toml");
+const wranglerServiceArea = existsSync(wranglerPath)
+  ? readFileSync(wranglerPath, "utf8").match(
+      /^\s*PUBLIC_SERVICE_AREA\s*=\s*"([^"]*)"\s*$/m
+    )?.[1]
+  : undefined;
+if (wranglerServiceArea !== approvedServiceArea) {
+  errors.push(
+    `wrangler.toml PUBLIC_SERVICE_AREA must exactly equal "${approvedServiceArea}".`
+  );
 }
 
 const siteUrl = values.PUBLIC_SITE_URL;

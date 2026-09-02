@@ -1,21 +1,1330 @@
 ---
-// Route generated 2026-08-16 from docs/27-COPY-CANONICAL.md via src/data/doc27ServicePages.ts.
-// All page copy lives in that data record; all structure lives in ServicePageLayout, which
-// implements doc 27 §11's shared service-page sequence. Nothing page-specific belongs in this
-// file beyond the four identity values below — if a sentence needs to change, change doc 27
-// and regenerate the data, do not hand-edit copy here.
+// DETAILED DEEP CLEANING — `/deep-cleaning-san-jose/`. Rebuilt 2026-09-01 as the fourth
+// gold-standard individual service page (docs/30-WEBSITE-MASTER-SPEC.md §20, §20A, §21), same
+// approach as /hoarding-cleanup-san-jose/, /estate-cleanout-san-jose/ and
+// /property-cleanouts-san-jose/: copy reconciled from
+// docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md §36 under §20A.1's order — landing copy → map
+// to current route → check active/gated state → check claims, pricing and scope → check current
+// copy authority → then implement.
 //
-// Ships noindex pending this page's own gate (see the record's `gate` field) and is excluded
-// from src/pages/sitemap.xml.ts. Do not bulk-flip.
-import ServicePageLayout from "@layouts/ServicePageLayout.astro";
-import { deepCleaningPage } from "@data/doc27ServicePages";
+//   01 SERVICE HERO             photograph + overlay, left-aligned, service confirmed on sight
+//   02 WE DEFINE THE SCOPE      "Deep clean" can mean almost anything + routine-vs-detailed
+//                               comparison, on a ruled two-column table rather than two cards
+//   03 LOOK CLOSER              condition recognition by room, beside a large photograph — this
+//                               page's signature movement in place of hoarding's document
+//                               register / estate's save list, because this page has no
+//                               five-category mechanism; the mechanism IS the written scope
+//   04 SCOPE + EXCLUSIONS       what may be included, what is not automatic, cleaning vs damage,
+//                               surface awareness — combined per §20A.6
+//   05 HOW IT WORKS + PROOF     five-step field procedure + the honest no-photo-gallery gap
+//   06 FIT + PRICE              basic-option reframe, two quiet columns, price drivers, no figure
+//   07 QUESTIONS                seven, the ones that decide the purchase
+//   08 CLOSE                    "Want the home cleaned in detail?"
+//
+// THE SPECIALIST THESIS IS §20A.5's, unchanged: **this is more work and more detail than normal
+// housekeeping.** Every movement reinforces it without repeating the sentence — the hero states
+// it, 02 explains why "deep clean" needs defining at all, 03 makes the condition visible, 04 is
+// the written scope that makes the thesis binding rather than a slogan, 05 is the procedure and
+// the honest evidence gap, 06 is where routine cleaning is the honest answer instead, and 07
+// answers it as an objection ("is this the same as a normal deep clean?").
+//
+// WHAT THIS REPLACES. The previous build: 1,082 words, one H1, SIXTEEN H2s, 4 H3s, zero
+// photographs of actual cleaning subject matter (3 <img> on the page were nav/footer chrome),
+// 81 links (mostly nav/footer). §20A.6 is explicit that the eleven conversion jobs are not
+// eleven bands; this rebuild combines them into eight visual movements. The old page rendered
+// through the generic `ServicePageLayout` + `doc27ServicePages.deepCleaningPage` record — the
+// same "one template, swap the noun" pattern §20A.5 and §20A.25 Q14 rule out. That record's
+// approved language (the checklist-is-the-product framing, the room-by-room quote logic) is
+// mined for copy below, not discarded. Full accounting in docs/05-DECISIONS-LOG.md.
+//
+// ROUTE STATE IS UNCHANGED AND DELIBERATELY SO. Same slug, same canonical, same `index, follow`,
+// same sitemap membership (confirmed indexable, gate: null, per doc27ServicePages.ts and
+// AGENTS.md §2's route table). No route was created, renamed, redirected or re-indexed. The old
+// internal "B10 checklist" gate note referenced in docs/05-DECISIONS-LOG.md was already reverted
+// by owner correction before this rebuild — SITEMAP-MASTER always said `index` for this route,
+// and the doc27 data record ships `gate: null`. Nothing here reopens that question.
+//
+// PRICING — AGENTS.md §4 IS ABSOLUTE. "No price figure is published anywhere on the site,"
+// and §4 names the landing-page source's own "$1,350" sentence as the example. Doc 30 §20A.17
+// repeats the check-before-publish instruction. There is no current owner decision reversing
+// AGENTS.md §4, so no figure appears anywhere on this page — not in the hero, not near price
+// logic, not in a footnote. Price logic is cost drivers + the $195 assessment framing only,
+// exactly as hoarding, estate and property-cleanouts already ship.
+//
+// FOUNDER BACKGROUND — NOT RESTATED HERE. The landing-page source's "science, drug
+// manufacturing, and hospital lab work" line does not match docs/21-CLAIMS-AND-COMPLIANCE-LAW.md
+// §2.4's permitted background statements ("BS Biochemistry, UC Riverside · prior pharmaceutical
+// manufacturing experience · prior histology and surgical pathology experience..."), and §2.4's
+// verbatim founder-authority-limit clause is mandatory wherever that background appears. Rather
+// than restate a credential claim on a service page — which risks reading as "this is why the
+// cleaning is more thorough," an implied capability claim §2.1 does not allow — this page omits
+// the background entirely and links to /about/, which already carries the full statement with
+// its required limiting clause. The service argument stays condition + scope + labor, per the
+// brief's own instruction not to lean on credentials alone.
+//
+// MOVE-IN INTENT — NOT A SEPARATE SECTION, NOT A NEW ROUTE. §20A.3: the landing-page source's
+// move-in page is a future route candidate only. This page's fit section mentions an empty-home
+// / pre-move scenario as one qualifying situation (it already exists as a `property_situation`
+// option — "Already empty but requires detailed cleaning" — see AssessmentForm.astro), because
+// that is real current intent this route already serves. No `/move-in-cleaning/` route, nav
+// entry, or sitemap entry is added.
+//
+// NO CredentialBar ON THIS ROUTE. Same reasoning as the three prior rebuilds — both gated
+// credential-bar claims (insurance wording, organic pathogen endorsement) are release-gated by
+// AGENTS.md §3 pending a current COI match, and dropping a gated claim from an indexable page is
+// the conservative direction. The component is untouched; only this call site omits it.
+//
+// NO EMBEDDED FORM. §20A.8's destination rule and §20A.9's "one assessment engine": CTAs link to
+// /request-assessment/?service=deep-cleaning, which AssessmentForm.astro now recognizes (added
+// alongside this page) and maps to the existing "Already empty but requires detailed cleaning"
+// `property_situation` option — not a new one, and unclaimed by the other three service
+// contexts, so the four service pages do not collide on the same pre-filled answer.
+//
+// IMAGES — AN HONEST PROOF GAP, STATED RATHER THAN FILLED WITH A MISMATCHED PHOTO. Every image
+// currently in the repository (docs/06-ASSET-MANIFEST.md §4) depicts room-scale clutter,
+// neglect or an exterior — condition-development-hoarding-asurnipal.jpg,
+// condition-development-neglected-kolforn.jpg, hero-development-residence-asurnipal.jpg and
+// service-development-cleanup-asurnipal.jpg are already claimed by the hoarding, property-
+// cleanouts and estate rebuilds; close-development-property-sanfranman59.jpg is an exterior
+// street view already used as `/`'s close-CTA image. None depicts the kitchen-grease,
+// shower-buildup, baseboard or window-track subject matter this page's argument actually needs,
+// and the manifest caps atmosphere slots at three, "already knowingly exceeded by one," with an
+// explicit "do not add a fifth without a new owner decision." A wrong-subject photo would also
+// misrepresent the page's own argument (condition + detail, not clutter), and
+// condition-development-reset-aismallard.jpg (the one empty-room frame) is barred from any
+// before/after-adjacent role sitewide — on THIS page, whose whole argument is detail work made
+// visible, that risk is sharper than on hoarding or estate, not weaker. So this page ships with
+// NO PHOTOGRAPH AT ALL rather than force a mismatched asset into a detail-proof role. Movement
+// 05 states the gap in the page's own voice, the same honesty move hoarding's proof section
+// makes. Replace with real macro/detail photography before the Phase 0 owner shoot's successor
+// pass — see docs/06-ASSET-MANIFEST.md §5.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { legal, site } from "@data/site";
+
+const canonicalPath = "/deep-cleaning-san-jose/";
+
+// REWRITTEN from the old doc27ServicePages.deepCleaningPage `seoTitle`/`metaDescription`, which
+// described the old page's "one-time deep cleaning...quoted room by room" framing. This
+// rebuild's H1 and thesis differ, so title/description are brought into agreement per §20A.22.
+// Region corrected to "South Bay & Peninsula" — site.ts §B2's NAP wording of record — rather
+// than the landing-page source's "Santa Clara County" (Atherton is San Mateo County).
+const title = "Detailed Deep Cleaning in San Jose | Aseptaclean";
+const description =
+  "Detailed deep cleaning in San Jose and the South Bay & Peninsula, for homes that need more than routine housekeeping. The scope is written before the crew arrives, room by room.";
+
+// §20A.8's destination rule + §20A.9's service branch. `?service=deep-cleaning` is read by
+// AssessmentForm.astro (see that component's service-context block, added alongside this page).
+const assessmentHref = "/request-assessment/?service=deep-cleaning";
+const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
+
+// §36's routine-vs-detailed comparison, kept as two short columns rather than two cards.
+const routine = ["Dust", "Vacuum", "Mop", "Wipe counters", "Basic bathroom surfaces", "Keeps the home maintained"] as const;
+
+const detailed = [
+  "Work through buildup",
+  "Clean edges and trim",
+  "Work on baseboards",
+  "Clean doors and frames",
+  "Detail fixtures",
+  "Clean hard-to-reach areas",
+  "Work through the kitchen in detail",
+  "Work through bathrooms in detail"
+] as const;
+
+// §36's "LOOK CLOSER" room lists, kept as plain nouns — this is the condition-recognition
+// movement, so the point is recognition speed, not full sentences.
+const rooms = [
+  {
+    room: "Kitchen",
+    items: ["grease on cabinet fronts", "dust and grease on cabinet tops", "buildup around the stove", "dirty appliance fronts", "backsplash buildup", "sink and faucet buildup", "edges and corners"]
+  },
+  {
+    room: "Bathrooms",
+    items: ["soap buildup", "shower glass", "tile surfaces", "fixtures", "sink buildup", "toilet areas", "baseboards", "edges and corners"]
+  },
+  {
+    room: "Living areas & bedrooms",
+    items: ["baseboards", "doors and frames", "trim", "switch plates", "reachable vents", "dust on ledges", "corners", "floor edges"]
+  },
+  {
+    room: "Windows",
+    items: ["interior glass", "sills", "tracks", "frames"],
+    note: "when included in your scope"
+  }
+] as const;
+
+// §36's "WHAT MAY BE PART OF YOUR CLEAN" — kept as a written-scope list, grouped by room.
+const scope = [
+  { area: "Kitchen", items: ["counters", "backsplash", "sink and fixtures", "stove surface", "appliance exteriors", "cabinet fronts", "cabinet tops where safe and reachable", "baseboards", "doors and frames", "floors"] },
+  { area: "Bathrooms", items: ["shower surfaces", "tub", "shower glass", "sink", "fixtures", "toilet", "mirrors", "baseboards", "doors and frames", "floors"] },
+  { area: "Living areas & bedrooms", items: ["reachable surfaces", "baseboards", "doors and frames", "trim", "switch plates", "reachable vents", "ledges", "floor edges", "floors"] }
+] as const;
+
+const scopeExtras = ["Interior windows", "Window tracks", "Inside the refrigerator", "Inside the oven", "Inside cabinets", "Other detail work agreed on before the job"] as const;
+
+// §36's "WHAT IS NOT AUTOMATICALLY INCLUDED" — doc 30 §20A.13's "boundary language is a trust
+// mechanism," kept as its own list rather than folded into the scope grid.
+const notAutomatic = [
+  "Inside every cabinet",
+  "Inside every drawer",
+  "Large amounts of interior glass",
+  "Heavy oven buildup",
+  "Heavy refrigerator cleaning",
+  "Moving large furniture",
+  "High areas that need special access",
+  "Heavy buildup that needs more work",
+  "Special surfaces that need a different process"
+] as const;
+
+// §36's cleaning-vs-damage list.
+const cannotFix = ["Scratches", "Etching", "Worn finishes", "Burn marks", "Permanent stains", "Damaged stone", "Broken coatings", "Old damage"] as const;
+
+const surfaces = ["Natural stone", "Porcelain", "Stainless steel", "Wood", "Painted cabinets", "Glass", "Brass", "Copper", "Tile"] as const;
+
+// §36's five-step process, kept as a field procedure — §20A.14, not five cards.
+const process = [
+  {
+    title: "Tell us about the home",
+    detail: "Home size, bedrooms, bathrooms, condition, what you want cleaned, and when you need the work done. Photos help but are not required for the first call."
+  },
+  {
+    title: "We look at the details",
+    detail: "For larger or more detailed jobs, we may need photos or a walkthrough before giving a final price."
+  },
+  {
+    title: "We set the scope, in writing",
+    detail: "A clear list of the work included in the job. Extra work you want added goes in before the job starts, when possible."
+  },
+  {
+    title: "We do the work",
+    detail: "The crew works through the agreed scope — area by area, detail by detail."
+  },
+  {
+    title: "We review the home against the scope",
+    detail: "Before the job is closed out, the completed work is checked against what was written down, not against an adjective."
+  }
+] as const;
+
+const goodFit = [
+  "You want more than a basic cleaning",
+  "The home has buildup",
+  "Small details matter to you",
+  "You want the scope clear before work starts",
+  "You have not had a true deep clean in a long time",
+  "You want a one-time reset",
+  "You care more about the work than getting the cheapest quote"
+] as const;
+
+const poorFit = [
+  "You only want the lowest price",
+  "You need a quick two-hour clean",
+  "You only need floors and counters cleaned",
+  "You want repair or restoration work",
+  "You expect cleaning to fix damaged surfaces",
+  "The work is outside our current scope"
+] as const;
+
+// AGENTS.md §4 keeps the cost drivers and forbids the figure. §36's list.
+const priceDrivers = [
+  "home size",
+  "number of bathrooms",
+  "current condition",
+  "amount of buildup",
+  "number of windows",
+  "appliances",
+  "inside cabinets",
+  "special surfaces",
+  "high or hard-to-reach areas",
+  "how much detail work you want"
+] as const;
+
+// §20A.18: 4–7 highest-value service-specific questions. Seven ship, chosen for effect on fit,
+// scope and next step; the general ones (scheduling, payment) belong on /faq/.
+const faq = [
+  [
+    "Is this the same as a normal deep clean?",
+    [
+      "Maybe not. The words “deep clean” can mean different things from one cleaning company to another.",
+      "That is why we show you the written scope before the work starts, rather than asking you to trust an adjective."
+    ]
+  ],
+  [
+    "How long will the cleaning take?",
+    [
+      "It depends on the home. A detailed clean can take much longer than a basic cleaning.",
+      "The size of the home is only one part of it — condition and scope matter too."
+    ]
+  ],
+  [
+    "Do you clean inside cabinets?",
+    [
+      "Only when it is part of the scope.",
+      "Inside cabinets can add a lot of time, so that work is priced before the job rather than assumed."
+    ]
+  ],
+  [
+    "Do you clean ovens and refrigerators?",
+    ["Yes, when they are included in the scope. Tell us if you want the inside cleaned."]
+  ],
+  [
+    "Do you clean windows?",
+    ["Interior window cleaning can be added to the scope. The number and type of windows affect the price."]
+  ],
+  [
+    "Can you remove hard-water marks?",
+    [
+      "We can work on mineral buildup when the surface allows it, but not every mark can be cleaned away.",
+      "Some glass or stone may already be etched or damaged. We will not promise a result the surface cannot give us."
+    ]
+  ],
+  [
+    "What if you find something that needs more work?",
+    [
+      "We tell you. We do not quietly add work and surprise you with a bigger bill.",
+      "If the scope needs to change, we talk about it first."
+    ]
+  ]
+] as const;
+
+const schema = [
+  {
+    "@type": "Service",
+    name: "Detailed Deep Cleaning in San Jose",
+    serviceType: "Deep cleaning",
+    provider: { "@id": new URL("/#business", site.urls.site).href },
+    areaServed: { "@type": "City", name: "San Jose" }
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Detailed Cleaning",
+        item: new URL("/detailed-cleaning/", site.urls.site).href
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Detailed Deep Cleaning",
+        item: new URL(canonicalPath, site.urls.site).href
+      }
+    ]
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: faq.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer.join("\n\n") }
+    }))
+  }
+];
 ---
 
-<ServicePageLayout
-  page={deepCleaningPage}
-  serviceType="Deep cleaning"
-  breadcrumbName="One-Time Deep Cleaning"
-  idPrefix="deep"
-  groupName="Detailed Cleaning"
-  groupHref="/detailed-cleaning/"
-/>
+<BaseLayout title={title} description={description} canonicalPath={canonicalPath} schema={schema}>
+  {/* ══ 01 · SERVICE HERO ═══════════════════════════════════════════════════════════════════
+      §20A.7: location context → unmistakable service H1 → specialist thesis → service CTA →
+      phone as secondary. NO IMAGE — see the top-of-file note on the honest proof gap. Flat navy
+      field rather than a photographic hero, so the absence of a photograph reads as a
+      deliberate, restrained choice rather than a broken layout. */}
+  <section class="dc-hero" aria-labelledby="dc-title">
+    <div class="dc-hero__shell">
+      <div class="dc-hero__content">
+        <p class="dc-hero__eyebrow">
+          Detailed Deep Cleaning · San Jose · {site.location.serviceArea}
+        </p>
+        <h1 id="dc-title" class="ac-type-h1-hub">Detailed Deep Cleaning</h1>
+        <p class="dc-hero__lede">
+          For homes that need more than a normal cleaning.
+        </p>
+        <p class="dc-hero__thesis">This is more work and more detail than normal housekeeping.</p>
+        <p class="dc-hero__detail">
+          Grease. Buildup. Baseboards. Trim. Fixtures. Tracks. Edges. Hard-to-reach areas.
+        </p>
+
+        <div class="dc-hero__actions">
+          <a class="dc-btn dc-btn--light" href={assessmentHref}>Request a Deep Clean Estimate</a>
+          {/* Suppression rule (AGENTS.md §3): never render an empty phone link. */}
+          {phoneHref && (
+            <a class="dc-hero__call" href={phoneHref}>Call {site.business.phone}</a>
+          )}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 02 · WE DEFINE THE SCOPE ═══════════════════════════════════════════════════════════
+      §20A.6's movement 02. The reframe leads: "deep clean" is a term every competitor uses
+      differently, so the first job is telling the visitor what Aseptaclean means by it. The
+      routine-vs-detailed comparison is a ruled two-column list, not two rounded cards
+      (§20A.12: explain the basic option fairly, do not insult it). */}
+  <section class="dc-define" aria-labelledby="define-title">
+    <div class="dc-define__inner">
+      <p class="dc-label">What we mean by it</p>
+      <h2 id="define-title" class="ac-type-h2-home-feature">
+        “Deep clean” can mean almost anything.
+      </h2>
+      <p class="dc-lede">
+        One company may call a longer house cleaning a deep clean. Another may clean baseboards,
+        tracks, doors, fixtures and buildup. That makes it hard to compare quotes — so we tell
+        you what we mean before the job starts.
+      </p>
+      <p class="dc-statement">We set the scope before the job starts.</p>
+      <p>
+        You know what we are cleaning. You know what is not included. You know what you are
+        paying for.
+      </p>
+
+      <div class="dc-compare">
+        <div class="dc-compare__col">
+          <h3 class="ac-type-h3-home-route">Routine cleaning</h3>
+          <p class="dc-compare__note">Keeps a home maintained. Often the right service.</p>
+          <ul class="dc-rule-list">
+            {routine.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div class="dc-compare__col dc-compare__col--detailed">
+          <h3 class="ac-type-h3-home-route">Aseptaclean detailed deep cleaning</h3>
+          <p class="dc-compare__note">For the work that takes more time — the things that build up and the things that get skipped.</p>
+          <ul class="dc-rule-list">
+            {detailed.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <p class="dc-statement dc-statement--wide">More detail takes more time. That is the difference.</p>
+    </div>
+  </section>
+
+  {/* ══ 03 · LOOK CLOSER ═══════════════════════════════════════════════════════════════════
+      §20A.6's condition-recognition movement, this page's signature composition in place of a
+      document register — the mechanism on this page IS the written scope in movement 04, so this
+      movement's job is purely recognition speed: can the visitor see their own house in this
+      list within seconds? Room lists as open columns, not four equal cards. */}
+  <section class="dc-recognize" aria-labelledby="recognize-title">
+    <div class="dc-recognize__inner">
+      <p class="dc-label">Look closer</p>
+      <h2 id="recognize-title" class="ac-type-h2-home-feature">
+        The home can look clean and still need detail work.
+      </h2>
+      <p class="dc-lede">
+        Walk into a room and it may look fine. Look closer and you may see dust along the trim,
+        grease above the kitchen, buildup around fixtures, dirty tracks, or dirt along the floor
+        edges. That is the level we are looking at — not just whether the floor was vacuumed.
+      </p>
+
+      <div class="dc-rooms">
+        {rooms.map((entry) => (
+          <div class="dc-rooms__col">
+            <h3 class="ac-type-h3-home-route">
+              {entry.room}
+              {"note" in entry && entry.note && <span class="dc-rooms__note"> — {entry.note}</span>}
+            </h3>
+            <ul class="dc-inline-list">
+              {entry.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <p class="dc-statement">
+        We do not race through the house. Good detail work takes time, which is why a detailed
+        clean costs more than a normal cleaning.
+      </p>
+    </div>
+  </section>
+
+  {/* ══ 04 · SCOPE + EXCLUSIONS + CLEANING VS DAMAGE + SURFACES ═══════════════════════════
+      §20A.6 combines what we do + what we do not + method into one movement. §20A.13: scope and
+      exclusions are conversion content, not something to soften. Cleaning-vs-damage and
+      surface-awareness both belong here because they answer the same underlying question — what
+      can and cannot change about this surface today. */}
+  <section class="dc-scope" aria-labelledby="scope-title">
+    <div class="dc-scope__inner">
+      <p class="dc-label">The written scope</p>
+      <h2 id="scope-title" class="ac-type-h2-home-feature">We build the scope around the home.</h2>
+      <p class="dc-lede">
+        Not every home needs the same work. Maybe the kitchen needs the most time. Maybe the
+        shower has heavy buildup. Maybe the trim and small details were missed. We look at the
+        condition first, then build the scope.
+      </p>
+
+      <div class="dc-scope__grid">
+        {scope.map((group) => (
+          <div class="dc-scope__col">
+            <h3 class="ac-type-h3-home-route">{group.area}</h3>
+            <ul class="dc-rule-list dc-rule-list--tight">
+              {group.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <div class="dc-scope__extras">
+        <h3 class="ac-type-h3-home-route">Other work, when added to the scope</h3>
+        <ul class="dc-inline-list">
+          {scopeExtras.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+
+      <div class="dc-notauto">
+        <h3 class="ac-type-h3-home-route">What is not automatically included</h3>
+        <p>Some work can add a lot of time. For example:</p>
+        <ul class="dc-minus-list">
+          {notAutomatic.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="dc-statement dc-statement--wide">
+          We would rather price that work first than surprise you later.
+        </p>
+      </div>
+
+      <div class="dc-scope__pair">
+        <div class="dc-note">
+          <h3 class="ac-type-h3-home-route">Cleaning and damage are not the same thing.</h3>
+          <p>Cleaning may remove dirt, grease, dust, soap and some types of buildup. Cleaning cannot fix:</p>
+          <ul class="dc-inline-list">
+            {cannotFix.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="dc-statement">
+            More scrubbing is not always the answer. If we think the problem is damage and not
+            dirt, we will tell you rather than keep scrubbing to make it look like we tried harder.
+          </p>
+        </div>
+
+        <div class="dc-note">
+          <h3 class="ac-type-h3-home-route">Different surfaces need different care.</h3>
+          <p>Your home may have:</p>
+          <ul class="dc-inline-list">
+            {surfaces.map((item) => <li>{item}</li>)}
+          </ul>
+          <p>
+            The same cleaner should not be used on every surface. Before working on a surface, we
+            look at what it is and what condition it is in. If we are not sure a method is right
+            for the surface, we do not guess.
+          </p>
+        </div>
+      </div>
+
+      <p class="dc-disclaimer">{legal.scopeDisclaimer}</p>
+    </div>
+  </section>
+
+  {/* ══ 05 · HOW IT WORKS + WHAT PROOF EXISTS ═══════════════════════════════════════════════
+      §20A.14: vertical numbered sequence, not five cards. §20A.15 asks for before/during/after
+      evidence; there is none to show honestly (see the top-of-file image note), so the gap is
+      stated in the page's own voice rather than filled with a mismatched photograph —
+      §20A.25 Q9's "real evidence or an honest proof gap" and AGENTS.md §0.3's "empty beats
+      fake" both point the same way. */}
+  <section class="dc-process" aria-labelledby="process-title">
+    <div class="dc-process__inner">
+      <p class="dc-label">How it works</p>
+      <h2 id="process-title" class="ac-type-h2-home-feature">Five steps, from first call to closeout.</h2>
+
+      <ol class="dc-steps">
+        {process.map((step, index) => (
+          <li class="dc-step">
+            <span class="dc-step__index" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div class="dc-step__body">
+              <h3 class="ac-type-h3-home-route">{step.title}</h3>
+              <p>{step.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div class="dc-proof">
+        <h3 class="ac-type-h3-home-feature">What we can show you today.</h3>
+        <p>
+          There is no before/during/after gallery on this page yet. Aseptaclean has no
+          photographed deep-cleaning project to show, and a set of stock detail photos would tell
+          you nothing true about how this company works.
+        </p>
+        <p>
+          What does exist is the written scope itself — the list above, applied to your actual
+          home rather than a generic template, agreed before the crew arrives.
+        </p>
+        <a class="dc-link" href="/handoff-standard/">
+          <span>How a scope gets written and closed out</span> <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 06 · FIT + PRICE ═════════════════════════════════════════════════════════════════════
+      §20A.12 (explain the basic option first) and §20A.16 (qualify without a wall of rejection)
+      combined with price logic, same pattern as the three prior rebuilds. No dollar figure
+      anywhere — AGENTS.md §4 is absolute and doc 30 §20A.17 requires the same check before any
+      publication. */}
+  <section class="dc-fit" aria-labelledby="fit-title">
+    <div class="dc-fit__inner">
+      <p class="dc-label">Fit</p>
+      <h2 id="fit-title" class="ac-type-h2-home-feature">
+        Why does this cost more than a normal cleaning?
+      </h2>
+      <p class="dc-lede">
+        Because you are buying more work — more labor, more detail, more time. Not a nicer bottle
+        of cleaner or a fancier name. If all you need is a quick basic cleaning, you should not
+        pay Aseptaclean prices for it. If you want the home worked through in detail, that is what
+        this service is built for.
+      </p>
+
+      <div class="dc-fit__columns">
+        <div class="dc-fit__col">
+          <h3 class="ac-type-h3-home-route">Usually a fit</h3>
+          <ul class="dc-check-list">
+            {goodFit.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div class="dc-fit__col dc-fit__col--out">
+          <h3 class="ac-type-h3-home-route">Probably not a fit</h3>
+          <ul class="dc-minus-list">
+            {poorFit.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="dc-fit__aside">
+            If the home is already empty and needs a full reset before move-in or after move-out,
+            this service still applies — tell us the timing when you request an estimate. Where
+            the property still has to be cleared of contents first,
+            <a href="/property-cleanouts-san-jose/"> property cleanouts</a> or
+            <a href="/hoarding-cleanup-san-jose/"> hoarding cleanup</a> may be the earlier step.
+            Where the condition is past normal housekeeping,
+            <a href="/extreme-cleaning-san-jose/"> extreme-condition cleaning</a> is the closer
+            match. Not sure? Send photos. We will say whether it sounds like a fit, and we will
+            say so when it is not.
+          </p>
+        </div>
+      </div>
+
+      <div class="dc-price">
+        <div class="dc-price__copy">
+          <h3 class="ac-type-h3-home-feature">Square footage is only part of the job.</h3>
+          <p>
+            A home in good shape that just needs the trim and windows finished, and a home with
+            heavy kitchen and bathroom buildup, are not the same job at the same size. Condition
+            and the amount of detail work you want both move the price.
+          </p>
+          <p class="dc-price__fee">{site.offer.assessmentFraming(site.offer.assessmentFee)}</p>
+        </div>
+        <div class="dc-price__drivers">
+          <p class="dc-price__label">What moves the number</p>
+          <ul class="dc-rule-list dc-rule-list--tight">
+            {priceDrivers.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 07 · QUESTIONS ═══════════════════════════════════════════════════════════════════════
+      Open Q&A, not an accordion — same reasoning as the three prior rebuilds: no click between a
+      buyer and the answer to "is this the same as a normal deep clean?" */}
+  <section class="dc-faq" aria-labelledby="faq-title">
+    <div class="dc-faq__inner">
+      <p class="dc-label">Questions</p>
+      <h2 id="faq-title" class="ac-type-h2-home-feature">The questions that decide this.</h2>
+      <p class="dc-lede">
+        Seven that come up on nearly every detailed cleaning job. The general ones — scheduling,
+        payment, what happens on the day — are on the <a href="/faq/">main FAQ</a>.
+      </p>
+
+      <div class="dc-faq__grid">
+        {faq.map(([question, answer]) => (
+          <article class="dc-qa">
+            <h3 class="ac-type-h3-home-route">{question}</h3>
+            {answer.map((paragraph) => <p>{paragraph}</p>)}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 08 · CLOSE ═══════════════════════════════════════════════════════════════════════════
+      Typographic on navy, same as the three prior rebuilds' close — no image to lead with here
+      either, and repeating that composition keeps the sitewide rhythm rather than improvising a
+      fourth close pattern. */}
+  <section class="dc-close" aria-labelledby="close-title">
+    <div class="dc-close__inner">
+      <div class="dc-close__copy">
+        <h2 id="close-title" class="ac-type-h2-final">Want the home cleaned in detail?</h2>
+        <p class="dc-close__lede">
+          Tell us about the home. Send photos of the areas that need the most work. We will review
+          the job and tell you what the next step should be.
+        </p>
+      </div>
+
+      <div class="dc-close__action">
+        <a class="dc-btn dc-btn--light" href={assessmentHref}>Request a Deep Clean Estimate</a>
+        <div class="dc-close__secondary">
+          {phoneHref && <a href={phoneHref}>Call {site.business.phone}</a>}
+          {smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
+        </div>
+        <p class="dc-close__note">
+          Submitting a request does not authorize work or create a service agreement.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     Shared page primitives, same system hoarding/estate/property-cleanouts already established
+     (spacing, rule and list treatment), reused under a `dc-` prefix so scoped styles never
+     collide. NOTHING in this file sets font-size on a heading tag or on a selector that resolves
+     to one; heading sizes come from .ac-type-* role classes and are tuned by overriding the role
+     class's TOKEN on a container (AGENTS.md §6 law 1).
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+
+  .dc-label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .dc-lede {
+    margin: 22px 0 0;
+    max-width: 60ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .dc-statement {
+    margin: 24px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-navy-900);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .dc-statement--wide {
+    max-width: 60ch;
+  }
+
+  .dc-inline-list {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: none;
+    margin: 14px 0 0;
+    padding: 0;
+    gap: 4px 10px;
+    list-style: none;
+  }
+
+  .dc-inline-list li {
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .dc-inline-list li:not(:last-child)::after {
+    margin-left: 10px;
+    color: var(--ac-color-line-strong);
+    content: "·";
+  }
+
+  .dc-rule-list {
+    display: grid;
+    max-width: none;
+    margin: 20px 0 0;
+    padding: 0;
+    gap: 0 44px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    list-style: none;
+  }
+
+  .dc-rule-list li {
+    max-width: none;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 12px 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .dc-rule-list--tight {
+    grid-template-columns: 1fr;
+  }
+
+  .dc-rule-list--tight li {
+    padding: 10px 0;
+  }
+
+  .dc-check-list,
+  .dc-minus-list {
+    max-width: none;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .dc-check-list li,
+  .dc-minus-list li {
+    position: relative;
+    max-width: none;
+    padding: 9px 0 9px 26px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .dc-check-list li + li,
+  .dc-minus-list li + li {
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .dc-check-list li::before,
+  .dc-minus-list li::before {
+    position: absolute;
+    top: 17px;
+    left: 0;
+    width: 12px;
+    height: 2px;
+    background: var(--ac-color-blue-deep);
+    content: "";
+  }
+
+  .dc-minus-list li::before {
+    background: var(--ac-color-exclusion-red);
+  }
+
+  .dc-link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    margin-top: 18px;
+    gap: 0.4em;
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-underline-offset: 4px;
+  }
+
+  .dc-link:hover {
+    text-decoration: underline;
+  }
+
+  .dc-btn {
+    display: inline-flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    padding-inline: 30px;
+    font-size: 0.9375rem;
+    font-weight: 750;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+
+  .dc-btn--light {
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+  }
+
+  .dc-btn--light:hover {
+    background: var(--ac-color-blue-pale);
+  }
+
+  .dc-btn--light:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 4px;
+  }
+
+  .dc-disclaimer {
+    margin: 28px 0 0;
+    max-width: 78ch;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 18px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  /* ── 01 hero — flat navy field, no photograph (see top-of-file note) ─────────────────── */
+  .dc-hero {
+    background: var(--ac-color-navy-900);
+    padding-block: clamp(88px, 10vw, 132px) clamp(64px, 7vw, 96px);
+  }
+
+  .dc-hero__shell {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .dc-hero__content {
+    max-width: 62ch;
+  }
+
+  .dc-hero__eyebrow {
+    margin: 0 0 18px;
+    color: var(--ac-color-blue-on-navy);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .dc-hero__content :global(h1) {
+    max-width: 16ch;
+    color: var(--ac-color-paper);
+  }
+
+  .dc-hero__lede {
+    margin: 22px 0 0;
+    color: #ccd9e8;
+    font-size: 1.1875rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .dc-hero__thesis {
+    margin: 18px 0 0;
+    max-width: 44ch;
+    color: var(--ac-color-paper);
+    font-size: 1.1875rem;
+    font-weight: 650;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .dc-hero__detail {
+    margin: 20px 0 0;
+    max-width: 52ch;
+    color: #a9bdd4;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .dc-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 32px;
+    gap: 20px 28px;
+  }
+
+  .dc-hero__call {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-underline-offset: 4px;
+  }
+
+  .dc-hero__call:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  /* ── 02 define ────────────────────────────────────────────────────────────────────────── */
+  .dc-define {
+    background: var(--ac-color-paper);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .dc-define__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .dc-compare {
+    display: grid;
+    margin-top: 40px;
+    gap: 32px 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dc-compare__col--detailed {
+    border-left: 3px solid var(--ac-color-blue-deep);
+    padding-left: 28px;
+  }
+
+  .dc-compare__note {
+    margin: 8px 0 0;
+    max-width: 36ch;
+    color: var(--ac-color-ink-500);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .dc-compare .dc-rule-list {
+    grid-template-columns: 1fr;
+  }
+
+  /* ── 03 recognize ─────────────────────────────────────────────────────────────────────── */
+  .dc-recognize {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .dc-recognize__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .dc-recognize .dc-lede {
+    max-width: 68ch;
+  }
+
+  .dc-rooms {
+    display: grid;
+    margin-top: 36px;
+    gap: 32px 48px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .dc-rooms__note {
+    color: var(--ac-color-ink-500);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    text-transform: none;
+    letter-spacing: normal;
+  }
+
+  /* ── 04 scope ─────────────────────────────────────────────────────────────────────────── */
+  .dc-scope {
+    background: var(--ac-color-paper);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .dc-scope__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .dc-scope__grid {
+    display: grid;
+    margin-top: 40px;
+    gap: 32px 48px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .dc-scope__extras,
+  .dc-notauto {
+    margin-top: 44px;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 32px;
+  }
+
+  .dc-scope__pair {
+    display: grid;
+    margin-top: 44px;
+    gap: 40px 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dc-note p {
+    margin: 14px 0 0;
+    max-width: 48ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  /* ── 05 process + proof ───────────────────────────────────────────────────────────────── */
+  .dc-process {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .dc-process__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .dc-steps {
+    display: grid;
+    margin: 40px 0 0;
+    padding: 0;
+    gap: 0;
+    list-style: none;
+  }
+
+  .dc-step {
+    display: grid;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 22px 0;
+    gap: 0 28px;
+    grid-template-columns: 56px 1fr;
+  }
+
+  .dc-step:last-of-type {
+    border-bottom: 1px solid var(--ac-color-line);
+  }
+
+  .dc-step__index {
+    color: var(--ac-color-blue-deep);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .dc-step__body p {
+    margin: 8px 0 0;
+    max-width: 60ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .dc-proof {
+    margin-top: 48px;
+    border-top: 3px solid var(--ac-color-navy-800);
+    padding-top: 28px;
+  }
+
+  .dc-proof p {
+    margin: 14px 0 0;
+    max-width: 60ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  /* ── 06 fit + price ───────────────────────────────────────────────────────────────────── */
+  .dc-fit {
+    background: var(--ac-color-paper);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .dc-fit__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .dc-fit__columns {
+    display: grid;
+    margin-top: 40px;
+    gap: 32px 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dc-fit__aside {
+    margin-top: 18px;
+    max-width: 44ch;
+    color: var(--ac-color-ink-500);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .dc-price {
+    display: grid;
+    margin-top: 56px;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 40px;
+    gap: 32px 56px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .dc-price__copy p {
+    margin: 14px 0 0;
+    max-width: 48ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .dc-price__fee {
+    margin-top: 18px;
+    max-width: 48ch;
+    color: var(--ac-color-navy-900);
+    font-weight: 550;
+    line-height: 1.6;
+  }
+
+  .dc-price__label {
+    margin: 0 0 4px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  /* ── 07 questions ─────────────────────────────────────────────────────────────────────── */
+  .dc-faq {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .dc-faq__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .dc-faq__grid {
+    display: grid;
+    margin-top: 40px;
+    gap: 40px 48px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .dc-qa {
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 18px;
+  }
+
+  .dc-qa p {
+    margin: 10px 0 0;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  /* ── 08 close ─────────────────────────────────────────────────────────────────────────── */
+  .dc-close {
+    background: var(--ac-color-navy-950);
+    padding-block: clamp(80px, 9vw, 120px);
+  }
+
+  .dc-close__inner {
+    display: grid;
+    width: min(100% - 64px, 1080px);
+    align-items: center;
+    margin-inline: auto;
+    gap: 32px 56px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .dc-close__copy :global(h2) {
+    max-width: 16ch;
+    color: var(--ac-color-paper);
+  }
+
+  .dc-close__lede {
+    margin: 20px 0 0;
+    max-width: 46ch;
+    color: #ccd9e8;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .dc-close__secondary {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    gap: 8px 22px;
+  }
+
+  .dc-close__secondary a {
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 650;
+  }
+
+  .dc-close__secondary a:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .dc-close__note {
+    margin-top: 20px;
+    max-width: 40ch;
+    color: rgb(255 255 255 / 55%);
+    font-size: 0.75rem;
+    line-height: 1.55;
+  }
+
+  /* ── responsive ───────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 64rem) {
+    .dc-rooms {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .dc-scope__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 56rem) {
+    .dc-price {
+      grid-template-columns: 1fr;
+    }
+
+    .dc-close__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 50rem) {
+    .dc-compare {
+      grid-template-columns: 1fr;
+    }
+
+    .dc-compare__col--detailed {
+      border-left: none;
+      border-top: 3px solid var(--ac-color-blue-deep);
+      padding-left: 0;
+      padding-top: 20px;
+    }
+
+    .dc-scope__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .dc-scope__pair {
+      grid-template-columns: 1fr;
+    }
+
+    .dc-fit__columns {
+      grid-template-columns: 1fr;
+    }
+
+    .dc-faq__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .dc-hero__shell,
+    .dc-define__inner,
+    .dc-recognize__inner,
+    .dc-scope__inner,
+    .dc-process__inner,
+    .dc-fit__inner,
+    .dc-faq__inner {
+      width: calc(100% - 40px);
+    }
+
+    .dc-close__inner {
+      width: calc(100% - 40px);
+    }
+
+    .dc-rooms {
+      grid-template-columns: 1fr;
+      gap: 28px;
+    }
+
+    .dc-rule-list {
+      grid-template-columns: 1fr;
+    }
+
+    .dc-hero__actions {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .dc-hero__actions .dc-btn {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 22.5rem) {
+    .dc-hero__content :global(h1) {
+      max-width: 12ch;
+    }
+  }
+</style>

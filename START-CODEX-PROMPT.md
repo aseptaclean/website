@@ -1,5 +1,9 @@
 # First Codex Prompt
 
+> **SUPERSEDED — DO NOT EXECUTE.** This was the original one-page Phase 0 prompt and depends on
+> deleted planning documents. Current agents start with `AGENTS.md`, `docs/README.md`, doc 30,
+> and an approved file in `docs/page-briefs/`. Preserved as historical evidence only.
+
 Read `AGENTS.md` and follow its required reading order.
 
 We are starting **Phase 0 — Audit and implementation plan** from `docs/03-BUILD-PLAN.md`.

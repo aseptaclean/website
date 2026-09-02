@@ -3,6 +3,35 @@
 **Created 2026-08-11.** Owner decision: build city pages. This spec defines the version that
 survives, because the default version does not.
 
+**Authority boundary — amended 2026-08-25.** This file governs city-page specificity,
+anti-doorway quality, and publication gates only. Doc 30 governs website strategy, design,
+conversion, and technical SEO. Default visible primary CTA is **Tell Us About the Property**.
+Do not create `/service-areas/san-jose/`; do not embed a Google Map; and do not add or maintain
+`FAQPage` schema merely to pursue a Google FAQ rich result.
+
+> ## Status — amended 2026-08-21. The pages are built.
+>
+> Nine city routes exist and ship `noindex, follow`: **3 city hubs** at
+> `/service-areas/[city]/` and **6 service × city pages** at
+> `/service-areas/[city]/[service]/` (Mountain View · Sunnyvale · Campbell ×
+> hoarding-cleanup · estate-cleanout). One gate remains, and it is owner confirmation of city
+> availability — not a completed job.
+>
+> **§2 (the swap test), §3 (the four content angles), §4 (landmarks), and §5 (no Google Map) are
+> unchanged and remain the standard.** They are why these pages are not doorway pages.
+>
+> **One change: the completed-job prerequisite is superseded.** §3.3's real anonymized project,
+> §6's `Project` row, and §7's "everything else waits on a completed job" are **optional
+> proof enhancement**, not preconditions for a route to exist. What replaced the prerequisite is
+> the seven-condition model in `docs/19-SYSTEM-AND-SITEMAP.md` §2.2 and `AGENTS.md` §2.1:
+> verified city facts with sources · service-specific local implications · no fabricated
+> experience claims · proper internal links · unique useful copy · source and freshness controls
+> · passing SEO quality gates. Each superseded passage below is marked in place and kept.
+>
+> **Nothing here licenses inventing a project.** The element §3.3 calls "the hardest to fake" is
+> now optional precisely so that no one is tempted to fake it. See `docs/05-DECISIONS-LOG.md`,
+> 2026-08-21.
+
 ---
 
 ## 1. The risk, stated once
@@ -63,11 +92,22 @@ Real constraints that change scope and price:
   reach the door; material shuttles. That is a real line item, not a flourish.
 - **Willow Glen, Naglee Park** — 1920s bungalows, narrow interior stairs, no side yard.
 
-### 3.3 One real anonymized project
+### 3.3 One real anonymized project — **optional as of 2026-08-21**
 
 One paragraph: situation, constraint, what was done, what the completion record showed. No
-address, no names. This is the hardest element to fake, which is exactly why it works — and
-why `19-SYSTEM-AND-SITEMAP.md` gates city pages on having actually worked there.
+address, no names. This is the hardest element to fake, which is exactly why it works — ~~and
+why `19-SYSTEM-AND-SITEMAP.md` gates city pages on having actually worked there.~~
+
+**Superseded.** Doc 19 §2.2's completed-job hard gate was lifted on 2026-08-21 by owner ruling.
+This angle is still the strongest of the four when the material exists, and it is now a
+**proof-enhancement layer**: add it to a city's pages when a real job there produces
+documentable, owner-approved material. Its absence does not block the route, and none of the
+nine built pages carries one. Angles §3.1, §3.2, and §3.4 do the work in the meantime, and §3.1
+(disposal, permits, hauler rules) is the one carrying it — every such claim on the built pages
+renders with a publisher and a source URL.
+
+**The reason it is "hardest to fake" is the reason it must never be faked.** No invented project,
+no composite, no illustrative example written as if it happened. `AGENTS.md` §0.3.
 
 ### 3.4 Genuinely local FAQs
 
@@ -130,24 +170,39 @@ about that place.** No standalone lists of neighborhoods or landmarks anywhere.
 
 ## 6. Page structure
 
-Route: `/service-areas/{city}/` — nested under the hub, per doc 19. Not root-level slugs.
+**Amended 2026-08-21 — the architecture is two tiers, not one.** Both are nested under the hub,
+per doc 19. Not root-level slugs, and never under `/locations/`.
+
+```
+/service-areas/[city]/              city hub          — 3 built
+/service-areas/[city]/[service]/    service × city    — 6 built
+```
+
+Both are generated from data records (`src/data/cityHubPages.ts`, `src/data/serviceCityPages.ts`)
+by two dynamic route files. A new city or service is a record. Do not hand-author a route file.
 
 ```
 H1            Property Clearing & Deep Cleaning in {City}
 Opening       2–3 sentences on what this page covers. No "proudly serving."
 Local reality Disposal, permits, hauler rules for this city — §3.1
+                → each fact rendered WITH its publisher and source link
 Property stock What the housing here actually is, and what that changes — §3.2
-Project       One anonymized job in this city — §3.3
+                → only where a sourced fact supports it. Six unsourced housing claims were
+                  struck from the built pages on 2026-08-21; do not reintroduce one.
+Project       ~~One anonymized job in this city — §3.3~~  OPTIONAL as of 2026-08-21
 Services       Links to the service pages. Do not restate them.
 Local FAQ      3–5 questions, city-specific — §3.4
 Nearby         2–3 adjacent cities, in a sentence, not a list
-CTA            Request an assessment
+CTA            Tell Us About the Property
 ```
 
-**Unique per page:** title, meta description, H1, opening, local reality, property stock,
-project, FAQs. **Shared:** the service links, CTA, header, footer.
+**Unique per page:** title, meta description, H1, opening, local reality, property stock, FAQs —
+and the project, where one exists. **Shared:** the service links, CTA, header, footer.
 
-**Minimum 400 words of genuinely city-specific prose.** Under that, do not ship it.
+**Minimum 400 words of genuinely city-specific prose. Under that, do not ship it.** This did not
+change on 2026-08-21 and it is not relaxed by the project section becoming optional — a page
+with no project owes those words to the other three angles, not to the template. It supersedes
+doc 19 §3.3's older 150–250 figure.
 
 ---
 
@@ -159,26 +214,59 @@ values, lowest price sensitivity. Palo Alto is legally blocked, so it drops out.
 **Ship two or three. Not ten.** Prove they rank and convert before scaling. Ten pages built on
 an unproven pattern is ten pages to fix.
 
-Order:
-1. **San José** — largest market, disposal rules fully researched, and the city you actually
-   operate in
-2. **Santa Clara** — the exclusive-franchise story is the single most differentiated piece of
-   content available, and it is genuinely useful
-3. **Los Altos Hills** or **Atherton** — highest value, once a job exists there
+~~Order:~~
+~~1. **San José** — largest market, disposal rules fully researched, and the city you actually
+   operate in~~
+~~2. **Santa Clara** — the exclusive-franchise story is the single most differentiated piece of
+   content available, and it is genuinely useful~~
+~~3. **Los Altos Hills** or **Atherton** — highest value, once a job exists there~~
 
-Everything else waits on a completed job in that city.
+~~Everything else waits on a completed job in that city.~~
+
+> **Amended 2026-08-21. "Ship two or three, not ten" above is unchanged and still governs — it
+> is why three cities were built and not ten.** What changed is the release condition and the
+> order.
+>
+> **A city no longer waits on a completed job there.** It waits on verified city facts with real
+> sources, service-specific implications drawn from them, unique copy that survives §2's swap
+> test, correct internal links, live freshness controls, a clean `npm run qa:seo`, and owner
+> confirmation of availability. Full model: `docs/19-SYSTEM-AND-SITEMAP.md` §2.2.
+>
+> **Built (all `noindex`):** Mountain View · Sunnyvale · Campbell. These three led because their
+> disposal, container, and encroachment rules were the ones actually researched and sourced —
+> the same reasoning the old order applied, run on facts on hand rather than jobs on hand.
+>
+> **San José has no city page and should not get one.** It is served by the city-suffixed service
+> pages (`/estate-cleanout-san-jose/` and siblings); a `/service-areas/san-jose/` route would
+> cannibalise the site's highest-value indexable pages. This reverses the old order's item 1.
+>
+> **Next, in order:** Santa Clara (the exclusive-franchise story is still the most differentiated
+> content available) → Atherton or Los Altos Hills (highest value). **Palo Alto stays out until
+> Public Works confirms** — legally blocked, unchanged.
 
 ---
 
 ## 8. Before any of them ship
 
+**Amended 2026-08-21.** "Ship" now means **raise `publishStatus` to `published-index`**, not
+"create the route" — a finished page may exist at `noindex` while its gate is open. Several
+items below are now machine-checked by `npm run qa:seo` against `dist/` and are marked `[auto]`.
+
 - [ ] Swap test run on each page — five statements must become false
 - [ ] Word count ≥400 of city-specific prose
 - [ ] No standalone neighborhood or landmark list anywhere
 - [ ] Disposal and permit claims confirmed with that city, not inferred
-- [ ] `/service-areas/` hub linked from somewhere — it currently has zero inbound internal
-      links while seven redirects point into it
-- [ ] Unique title, meta, H1, canonical
+- [ ] Every rendered fact carries a publisher, a source URL, and a `verifiedAt` — and is not
+      past its `reviewAfter` `[auto]`
+- [ ] Every implication resolves to a fact id, or declares `basis: "operating-model"` `[auto]`
+- [ ] No fabricated experience claim — no job count, project, review, or rating `[auto]`
+- [ ] ~~`/service-areas/` hub linked from somewhere — it currently has zero inbound internal
+      links while seven redirects point into it~~ ✅ **DONE.** The hub is linked from 45 of 46
+      built pages via the global nav and footer. Superseded by the per-route inbound-link guard:
+      every city page must receive ≥1 inbound link `[auto]`
+- [ ] Unique title, meta, H1, canonical `[auto]`
 - [ ] `areaServed` JSON-LD correct
-- [ ] `21-CLAIMS-AND-COMPLIANCE-LAW.md` §8 clean
+- [ ] `21-CLAIMS-AND-COMPLIANCE-LAW.md` §8 clean — and §7's licensing decision made for that
+      city, which no script can make
+- [ ] Owner has confirmed the service is actually available in that city
 - [ ] Palo Alto absent until Public Works confirms

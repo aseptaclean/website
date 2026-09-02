@@ -4,19 +4,19 @@ import ResidenceBaselineRecord from "@components/ResidenceBaselineRecord.astro";
 import { legal, site } from "@data/site";
 
 const stages = [
-  ["Assess", "Review the residence, desired outcome, priority rooms, finishes, access, and timing."],
-  ["Define", "Write the room-by-room baseline, including what is included, restricted, or separately scoped."],
-  ["Reset", "Complete the approved detail-intensive work in the agreed sequence."],
-  ["Verify", "Review completion room by room and record changes, exceptions, and remaining decisions."],
-  ["Maintain", "After the baseline is established, select residences may be invited to quarterly care."]
+  ["Scope", "Agree on the desired outcome, priority rooms, included details, restrictions, access, and timing."],
+  ["Protect", "Record finish requirements, no-entry areas, pet instructions, and anything that must remain untouched."],
+  ["Clear", "Prepare each approved room for detail work, moving only agreed light contents and keeping restricted areas protected."],
+  ["Reset", "Complete the approved detail-intensive cleaning in the agreed sequence."],
+  ["Verify", "Review completion room by room and note changes, exceptions, and remaining decisions."]
 ] as const;
 const included = [
-  "Whole-home deep-cleaning scope built around the residence",
+  "Whole-home deep cleaning organized around the residence",
   "Kitchen and bathroom detail work",
   "Floors, baseboards, doors, trim, and accessible surfaces",
   "Cabinet, appliance, closet, or high-dusting priorities when listed",
   "Finish, restricted-area, access, parking, and pet instructions",
-  "Room-by-room completion review and documented exceptions"
+  "Room-by-room completion review and noted exceptions"
 ] as const;
 const separate = [
   "Organizing, laundry, or extensive dishes",
@@ -25,7 +25,11 @@ const separate = [
   "Heavy contents movement",
   "Animal-waste or severe-contamination conditions",
   "Post-construction residue",
-  "Hauling or disposal",
+  // 2026-08-21. Was "Hauling or disposal", under a heading reading "Separately scoped or outside
+  // the offer" — which implied hauling is something Aseptaclean sells separately. It is not sold
+  // at all (docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §4.1). What genuinely IS separately scoped is
+  // the clearing work and the container coordination around it.
+  "Contents clearing and container coordination",
   "Hazardous, regulated, structural, or other work outside Aseptaclean’s current lawful and insured scope"
 ] as const;
 const schema = [
@@ -35,9 +39,12 @@ const schema = [
     name: site.residenceOffer.name,
     serviceType: "Structured whole-home deep cleaning",
     description:
-      "A structured whole-home deep reset with a written room-by-room scope, controlled changes, and final completion review.",
-    provider: { "@id": new URL("/#organization", site.urls.site).href },
-    areaServed: site.location.serviceArea,
+      "A structured whole-home deep reset with a written room-by-room plan, approved changes, and final completion review.",
+    provider: { "@id": new URL("/#business", site.urls.site).href },
+    // S4 — was the bare `site.location.serviceArea` string. Every other Service node on the site
+    // emits the 10-city City[] array; a plain string here made this the one route whose
+    // areaServed a consumer could not resolve to places. Same source, same shape as the rest.
+    areaServed: site.location.cities.map((name) => ({ "@type": "City", name })),
     url: new URL("/private-residence-reset/", site.urls.site).href
   },
   {
@@ -47,7 +54,7 @@ const schema = [
         "@type": "ListItem",
         position: 1,
         name: "Home",
-        item: site.urls.site
+        item: site.urls.home
       },
       {
         "@type": "ListItem",
@@ -62,7 +69,7 @@ const schema = [
 
 <BaseLayout
   title="Private Residence Reset in San Jose & South Bay | Aseptaclean"
-  description="A structured whole-home deep reset with a written room-by-room scope, controlled changes, and final completion review. Serving San Jose and the South Bay."
+  description="A structured whole-home deep reset with a written room-by-room plan, approved changes, and final completion review. Serving the South Bay & Peninsula."
   canonicalPath="/private-residence-reset/"
   schema={schema}
   showMobileCta={false}
@@ -74,8 +81,8 @@ const schema = [
         <h1 id="residence-title" class="ac-type-h1">Bring the entire residence back to a <em>defined standard.</em></h1>
         <p class="residence-hero__lead">
           A structured, detail-intensive whole-home reset for homeowners who
-          need more than routine maintenance cleaning—and want the property,
-          priorities, sequencing, and completion handled under one written scope.
+          need more than routine maintenance cleaning—and want priority rooms,
+          important finishes, and the whole residence brought back to an agreed standard.
         </p>
         <a class="button" href={site.residenceOffer.assessmentUrl}>
           {site.residenceOffer.primaryCta}
@@ -86,9 +93,16 @@ const schema = [
           walkthrough is required.
         </p>
       </div>
+      {/* Doc 27 §7, owner-approved verbatim 2026-08-20 — the fourth and last $195 surface on
+          the site. It read "On-site assessment / $195 / Credited toward… Final pricing follows
+          the defined scope." The figure still comes from site.offer.assessmentFee, now inside
+          §7's paragraph. The credit line and the "Final pricing follows the defined scope."
+          sentence both stay: the first is an owner-adopted term §7 is silent on, the second is
+          this page's own doc 08 copy and is outside §7's scope entirely. */}
       <aside aria-label="Assessment">
-        <span>On-site assessment</span>
-        <strong>${site.offer.assessmentFee}</strong>
+        <p class="residence-assessment__framing">
+          {site.offer.assessmentFraming(site.offer.assessmentFee)}
+        </p>
         <p>{site.offer.assessmentFeeTerms} Final pricing follows the defined scope.</p>
       </aside>
     </div>
@@ -131,7 +145,7 @@ const schema = [
         </p>
         <p>
           Important finishes, restricted areas, access, and pet instructions
-          are already documented. Completion is reviewed against the baseline
+          are already recorded. Completion is reviewed against the baseline
           you approved.
         </p>
       </div>
@@ -174,8 +188,8 @@ const schema = [
   <section class="residence-scope" aria-labelledby="residence-scope-title">
     <div class="ac-measure-wide">
       <header>
-        <p class="residence-index">05 / Scope boundary</p>
-        <h2 id="residence-scope-title" class="ac-type-h2">The residence is considered as a whole. The scope is still exact.</h2>
+        <p class="residence-index">05 / What is included</p>
+        <h2 id="residence-scope-title" class="ac-type-h2">The residence is considered as a whole. The work is still exact.</h2>
       </header>
       <div class="residence-scope__columns">
         <section aria-labelledby="may-include">
@@ -183,7 +197,7 @@ const schema = [
           <ul>{included.map((item) => <li>{item}</li>)}</ul>
         </section>
         <section aria-labelledby="separate-scope">
-          <h3 id="separate-scope" class="ac-type-lead">Separately scoped or outside the offer</h3>
+          <h3 id="separate-scope" class="ac-type-lead">Separate or outside the offer</h3>
           <ul>{separate.map((item) => <li>{item}</li>)}</ul>
         </section>
       </div>
@@ -199,8 +213,8 @@ const schema = [
       </header>
       <dl>
         <div>
-          <dt>Scope and change control</dt>
-          <dd>Added work, materials, access, or timing changes are documented before they proceed.</dd>
+          <dt>Changes and approvals</dt>
+          <dd>Added work, materials, access, or timing changes are agreed before they proceed.</dd>
         </div>
         <div>
           <dt>Finishes and restricted areas</dt>
@@ -263,14 +277,15 @@ const schema = [
 <style>
   .residence-label,
   .residence-index,
-  .residence-hero aside > span,
+  /* `.residence-hero aside > span` dropped from this list 2026-08-20 — the "On-site
+     assessment" label it styled is gone, absorbed into doc 27 §7's paragraph. */
   .residence-fit aside > span {
     margin: 0;
     color: var(--ac-color-navy-800);
     font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-xs);
+    font-size: var(--ac-text-label-chip);
     font-weight: 700;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
   }
 
@@ -298,10 +313,16 @@ const schema = [
     margin: var(--ac-space-4) 0 0;
   }
 
+  /* font-style is reset because nothing else set it: this rule styles the emphasis with
+     colour and weight (the site's colour-only headline-emphasis idiom, see .ac-mark in
+     global.css) but left the UA's italic on <em> in place. That italic was the only italic
+     display type anywhere on the site and was the main thing making this route read as a
+     separate design. The <em> markup and the copy are unchanged. */
   h1 em,
   .residence-outcome h2 em {
     color: var(--ac-color-navy-800);
     font-weight: 430;
+    font-style: normal;
   }
 
   .residence-hero__lead {
@@ -327,15 +348,16 @@ const schema = [
     padding-top: var(--ac-space-5);
   }
 
-  .residence-hero aside strong {
-    display: block;
-    margin-top: var(--ac-space-3);
+  /* Replaced `.residence-hero aside strong`, the 3.25–5.5rem display figure that rendered the
+     bare "$195". Doc 27 §7 puts the number inside a sentence, and a sentence set at display
+     size is not a price anchor, it is a wall of type. Body size, navy, with the paragraph
+     below it carrying the credit term at the muted colour it already used. */
+  .residence-assessment__framing {
+    margin: var(--ac-space-3) 0 0;
     color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-display);
-    font-size: clamp(3.25rem, 8vw, 5.5rem);
+    font-size: var(--ac-text-body);
     font-weight: 500;
-    letter-spacing: -0.05em;
-    line-height: 0.95;
+    line-height: 1.6;
   }
 
   .residence-hero aside p {
@@ -677,6 +699,14 @@ const schema = [
     .residence-fit,
     .residence-decision {
       padding-block: 60px;
+    }
+  }
+
+  @media (max-width: 360px) {
+    /* The global mobile display size is intentionally retained elsewhere; this longer
+       campaign headline needs one smaller step to keep whole phrases together at 320px. */
+    .residence-hero .ac-type-h1 {
+      font-size: 2rem;
     }
   }
 </style>

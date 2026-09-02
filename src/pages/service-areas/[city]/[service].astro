@@ -1,0 +1,375 @@
+---
+// ONE generator for all six /service-areas/{city}/{service}/ pages, per
+// docs/city-pages-part2-UPDATED.md Part D1 ("one Astro template per type, driven by data — do
+// not hand-code nine routes"). Its sibling generator, [city]/index.astro, produces the three
+// city hubs that sit directly above these in the breadcrumb.
+//
+// The page is assembled from three separate records so the copy package's fact/implication
+// separation is structural rather than editorial:
+//   · cityFacts.ts               verified, sourced, dated city and provider rules
+//   · serviceCityImplications.ts what those rules change for ONE service, with factIds back
+//   · serviceCityPages.ts        the join — SEO identity, shared opening, city FAQ
+// Scope and fit come from the parent San Jose service record, not from new copy.
+//
+// 2026-08-21 design pass. The sections below are unchanged in content and order of argument —
+// recognition, then sourced facts, then what those facts change, then scope, process, questions
+// — but the composition is now the owner-approved city layout rather than the shared service
+// template with prose dropped into it:
+//   · the compact .ac-pgh band became a two-column hero with the intake form in it, so the
+//     form is above the fold instead of eight sections down;
+//   · the two-up fact-card grid became a document register — one hairline row per record, the
+//     record's factType in the gutter, its source underneath;
+//   · "What this changes here" moved onto its own pale-blue field with numbered rows, so a
+//     visitor can see where verified fact ends and Aseptaclean's reading of it begins;
+//   · the FAQ and link tail now use the same .ac-dual / .ac-relcol pair as all 14 service pages.
+// Copy, facts, implications, schema, robots and the link map are untouched by that pass. The
+// visual layer is src/styles/city-pages.css, shared with the hub generator.
+//
+// ALL SIX SHIP `noindex, follow` AND STAY OUT OF sitemap.xml. City availability is not
+// owner-confirmed (docs/city-pages-part2-UPDATED.md Part E), and
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §7 is explicit that a location page is a licensing
+// decision before it is an SEO decision. Same posture the three city hubs shipped in on
+// 2026-08-21. Flip `publishStatus` per page — never as a group. The sitemap entry no longer has
+// to be added by hand in that change: src/pages/sitemap.xml.ts derives these routes from the
+// same field, so the two cannot disagree. What the flip DOES require is a clean
+// `npm run qa:seo` for that page — the guards in scripts/city-seo-guards.mjs are advisory while
+// a page is `noindex` and blocking the moment it is `published-index`.
+import CityCloseBand from "@components/CityCloseBand.astro";
+import CityHero from "@components/CityHero.astro";
+import CityPlanningNotes from "@components/CityPlanningNotes.astro";
+import CredentialBar from "@components/CredentialBar.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { getCityFactsForService } from "@data/cityFacts";
+import { getImplications } from "@data/serviceCityImplications";
+import {
+  containerCoordinationPolicy,
+  getSiblingServiceCityPage,
+  serviceCityPages,
+  serviceDefinitions
+} from "@data/serviceCityPages";
+import { cityHubPages } from "@data/cityHubPages";
+import { builtOnly, isIndexable } from "@data/publication";
+import { sharedFourStep } from "@data/servicePages";
+import { legal, site } from "@data/site";
+import "@styles/city-pages.css";
+
+// `draft` records produce no route — see src/data/publication.ts. `noindex` records are built.
+//
+// A city page is additionally gated on its HUB being built: position 3 of this page's breadcrumb
+// and one of its three required internal links both point at `/service-areas/{city}/`, so a
+// child that outlives its parent publishes two links into a 404. Dropping a hub to `draft`
+// therefore withdraws its children in the same change, without anyone having to remember to.
+//
+// The set is built inside the function, not above it: Astro lifts `getStaticPaths` out of the
+// frontmatter, so it cannot close over consts declared there.
+export function getStaticPaths() {
+  const builtHubCities = new Set(builtOnly(cityHubPages).map((hub) => hub.slug));
+  return builtOnly(serviceCityPages)
+    .filter((page) => builtHubCities.has(page.city))
+    .map((page) => ({
+      params: { city: page.city, service: page.service },
+      props: { page }
+    }));
+}
+
+const { page } = Astro.props;
+const service = serviceDefinitions[page.service];
+const scope = service.scopeSource;
+const facts = getCityFactsForService(page.city, page.service);
+const implications = getImplications(page.city, page.service);
+const sibling = getSiblingServiceCityPage(page.city, page.service);
+const siblingService = sibling ? serviceDefinitions[sibling.service] : null;
+const hub = cityHubPages.find((entry) => entry.slug === page.city);
+const hubPath = hub?.path ?? `/service-areas/${page.city}/`;
+
+const canonicalUrl = new URL(page.path, site.urls.site).href;
+const idPrefix = `${page.city}-${page.service}`;
+
+// Mirrors ServicePageLayout's icon markup so the fit and scope lists read identically to the
+// parent service page they inherit their copy from.
+const check = '<path d="m4 12 5 5L20 6"/>';
+const minus = '<path d="M5 12h14"/>';
+
+const schema = [
+  {
+    "@type": "Service",
+    "@id": `${canonicalUrl}#service`,
+    name: page.h1,
+    serviceType: service.serviceType,
+    url: canonicalUrl,
+    // The ONE existing business entity. SeoHead emits it at /#business on every route; the copy
+    // package's `#localbusiness` is illustrative, not this repository's id. No per-city
+    // LocalBusiness and no address — AGENTS.md §3, service-area business.
+    provider: { "@id": new URL("/#business", site.urls.site).href },
+    areaServed: {
+      "@type": "City",
+      name: page.cityName,
+      address: {
+        "@type": "PostalAddress",
+        addressRegion: "CA",
+        addressCountry: "US"
+      }
+    },
+    description: page.metaDescription
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Service Areas",
+        item: new URL("/service-areas/", site.urls.site).href
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: page.cityName,
+        item: new URL(hubPath, site.urls.site).href
+      },
+      { "@type": "ListItem", position: 4, name: service.name, item: canonicalUrl }
+    ]
+  },
+  {
+    // Built from the same array the body renders, so every question and answer appears verbatim
+    // in the DOM. Schema-only Q&A is a structured-data policy violation.
+    "@type": "FAQPage",
+    "@id": `${canonicalUrl}#faq`,
+    mainEntity: page.faq.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  }
+];
+---
+
+<BaseLayout
+  title={page.seoTitle}
+  description={page.metaDescription}
+  canonicalPath={page.path}
+  noindex={!isIndexable(page.publishStatus)}
+  schema={schema}
+>
+  {/* The hero lead is this page's own approved meta description — the one sentence in the copy
+      package that describes this service in this city. The shared opening is NOT used here: it
+      is the recognition section below, where it gets the editorial treatment it was written for,
+      and repeating it in the hero would spend it twice.
+
+      The pledge WAS §9.15.1's generic service-page hero line, hardcoded here and therefore
+      identical on all six service × city pages. As of 2026-08-21 it reads from the parent
+      service's own `section.pledge`, so the three hoarding cities inherit "Nothing leaves the
+      property without your written approval." and the three estate cities inherit the authority
+      line — each matching the parent page a reader arrives from. The §9.15.1 string remains the
+      fallback for any future service that supplies none. */}
+  <CityHero
+    crumbs={[
+      { label: "Home", href: "/" },
+      { label: "Service Areas", href: "/service-areas/" },
+      { label: page.cityName, href: hubPath },
+      { label: service.name }
+    ]}
+    eyebrow={scope.eyebrow}
+    h1={page.h1}
+    titleId={`${idPrefix}-title`}
+    lead={page.metaDescription}
+    pledge={scope.section?.pledge ?? "The scope names the rooms and the detail level before anyone arrives."}
+    panelMeta={page.cityName}
+    formId={`${idPrefix}-form`}
+    entryRoute={page.path}
+  />
+
+  {/* Screening band and credential strip in the same positions the 14 parent service pages put
+      them — directly under the hero, before anything is explained. */}
+  <section class="ac-fit" aria-labelledby={`${idPrefix}-fit-title`}>
+    <div class="ac-shell">
+      <h2 id={`${idPrefix}-fit-title`} class="ac-type-label-head">
+        {scope.section?.fitHeading ?? "This service may fit when"}
+      </h2>
+      <ul>
+        {scope.fitWhen.map((item) => (
+          <li>
+            <svg viewBox="0 0 24 24" aria-hidden="true" set:html={check} />
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <CredentialBar />
+
+  {/* The shared service opening, as an editorial statement rather than a card: white field,
+      section H2, reading measure, and nothing else competing with it. */}
+  <section class="ac-sec cty-opening" aria-labelledby={`${idPrefix}-opening-title`}>
+    <div class="ac-shell">
+      {/* Capped inside the shell, not by shrinking it: .ac-shell centres itself, so a narrower
+          shell would centre this section against every other left-aligned section on the page. */}
+      <div class="cty-opening__in">
+        <p class="ac-label">Where this starts</p>
+        <h2 id={`${idPrefix}-opening-title`} class="ac-type-h2">{service.opening.heading}</h2>
+        {service.opening.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+    </div>
+  </section>
+
+  {/* The operating boundary, stated on the page rather than left to be inferred from the
+      container references below it. docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §4.3: nothing may read
+      as self-performed transport, and every one of these pages discusses debris boxes. */}
+  <aside class="cty-policy" aria-label="Container and disposal coordination">
+    <div class="ac-shell">
+      <p>{containerCoordinationPolicy}</p>
+    </div>
+  </aside>
+
+  {/* VERIFIED FACTS, rendered straight from cityFacts.ts with the publishing source attached to
+      each one and nothing else — no conclusion, no inference. What any of it means for this
+      service is the next section, on a different surface, deliberately separate. */}
+  <CityPlanningNotes
+    cityName={page.cityName}
+    facts={facts}
+    titleId={`${idPrefix}-planning-title`}
+  />
+
+  {/* OPERATIONAL IMPLICATIONS — Aseptaclean's reading of the records above for this one service.
+      Each record names its supporting factIds in the data; the pale-blue field and the numbered
+      rows are how a reader sees the same boundary without being told about it. */}
+  <section class="ac-sec cty-changes" aria-labelledby={`${idPrefix}-changes-title`}>
+    <div class="ac-shell">
+      <div class="ac-sec__head">
+        <p class="ac-label">Planning against the address</p>
+        <h2 id={`${idPrefix}-changes-title`} class="ac-type-h2">
+          What this changes for {service.name.toLowerCase()} here
+        </h2>
+      </div>
+      {implications.map((item, index) => (
+        <div class="cty-impl">
+          <b>{String(index + 1).padStart(2, "0")}</b>
+          <div>
+            <h3 class="ac-type-h3">{item.heading}</h3>
+            <p>{item.body}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <section class="ac-sec cty-scope" aria-labelledby={`${idPrefix}-scope-title`}>
+    <div class="ac-shell">
+      <div class="ac-sec__head">
+        <p class="ac-label">What is included</p>
+        <h2 id={`${idPrefix}-scope-title`} class="ac-type-h2">
+          {scope.section?.scopeHeading ?? "What this covers"}
+        </h2>
+        <p>{scope.outcomeBody}</p>
+      </div>
+
+      <div class="ac-split">
+        <div class="ac-panel ac-panel--in">
+          <div class="ac-panel__h"><span>Work can include</span><span>As approved</span></div>
+          <ul>
+            {scope.workIncludes.map((item) => (
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true" set:html={check} />
+                {item}
+              </li>
+            ))}
+          </ul>
+          <p class="ac-panel__f">This is what we both mean by finished.</p>
+        </div>
+
+        <div class="ac-panel ac-panel--out" aria-labelledby={`${idPrefix}-boundaries-title`}>
+          <div class="ac-panel__h">
+            <span id={`${idPrefix}-boundaries-title`}>Stop / notify / refer</span>
+            <span>Not included</span>
+          </div>
+          <ul>
+            {scope.boundaries.map((item) => (
+              <li>
+                <svg viewBox="0 0 24 24" aria-hidden="true" set:html={minus} />
+                {item}
+              </li>
+            ))}
+          </ul>
+          <p class="ac-panel__f">
+            <span class="visually-hidden">
+              {scope.section?.boundariesHeading ?? "What is not included"}.{" "}
+            </span>{legal.scopeDisclaimer}
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* The site's four-step intake rail, unchanged. There is no city-specific process. */}
+  <section class="ac-sec ac-sec--tight cty-process" aria-labelledby={`${idPrefix}-process-title`}>
+    <div class="ac-shell">
+      <h2 id={`${idPrefix}-process-title`} class="ac-hdr-lite ac-type-label-head">How this starts</h2>
+      <ol class="ac-steps4 cty-steps">
+        {sharedFourStep.map((step) => (
+          <li class="ac-stage">
+            <b>{step.title.slice(0, 2)}</b>
+            <h3 class="ac-type-h3">{step.title.slice(5)}</h3>
+            <p>{step.detail}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <section class="ac-sec cty-tail" aria-labelledby={`${idPrefix}-faq-title`}>
+    <div class="ac-shell">
+      <div class="ac-dual">
+        <div>
+          <h2
+            id={`${idPrefix}-faq-title`}
+            class="ac-hdr-lite ac-type-label-head cty-head-flush"
+          >
+            Questions about {service.name.toLowerCase()} in {page.cityName}
+          </h2>
+          <div class="ac-faq cty-faq">
+            {page.faq.map((item) => (
+              <details>
+                <summary>{item.question}</summary>
+                <p>{item.answer}</p>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        {/* Link map B2 — parent service, sibling service, city hub, process. Anchor text is the
+            map's, not written here. These are why the page is not an orphan in either direction,
+            and they stay a restrained link column rather than four CTA cards. */}
+        <nav class="ac-relcol" aria-labelledby={`${idPrefix}-links-title`}>
+          <h2
+            id={`${idPrefix}-links-title`}
+            class="ac-hdr-lite ac-type-label-head cty-rel-head"
+          >
+            Related local services
+          </h2>
+          <a href={service.parentHref}>
+            <span>Parent service</span>
+            <b>{service.name} — how the work is scoped</b>
+          </a>
+          {sibling && siblingService && (
+            <a href={sibling.path}>
+              <span>In this city</span>
+              <b>{siblingService.name} in {page.cityName}</b>
+            </a>
+          )}
+          <a href={hubPath}>
+            <span>City hub</span>
+            <b>All services in {page.cityName}</b>
+          </a>
+          <a href="/handoff-standard/">
+            <span>Process</span>
+            <b>How a scope is written</b>
+          </a>
+        </nav>
+      </div>
+    </div>
+  </section>
+
+  <CityCloseBand titleId={`${idPrefix}-close-title`} />
+</BaseLayout>

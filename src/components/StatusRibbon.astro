@@ -1,76 +1,84 @@
 ---
-// 2026-08-18 visual port. docs/mockups .ribbon — ported verbatim. Content is doc 27 §8's
-// "Utility ribbon" list, which is four items ending in the phone number; the mockup pushes
-// that last item to the right edge with `margin-left:auto`.
-//
-// The previous ribbon carried "Organic Pathogen Endorsed" as a fourth cell. That belongs to
-// docs/18-VISUAL-DIRECTION.md §7's CREDENTIAL BAR, which is a different component
-// (CredentialBar.astro) and still renders it verbatim — §7 is not weakened by this change.
-// Doc 27 §8 owns the ribbon and does not list it. Never "licensed" here; no job count, no
-// years figure (docs/18-VISUAL-DIRECTION.md §7, retained).
 import { site } from "@data/site";
-
-const phoneHref = site.business.phoneUri;
 ---
 
-<div class="ribbon">
-  <div class="ribbon__in ac-measure-wide">
-    <span><span class="ribbon__dot" aria-hidden="true"></span>Insured — COI on request</span>
-    <span>Owner-operated assessments</span>
-    <span>{site.location.regionLabel}</span>
-    {phoneHref && <b><a href={phoneHref}>{site.business.phone}</a></b>}
+<div class="utility-bar" aria-label="Service category and phone">
+  <div class="utility-bar__inner">
+    <span>{site.offer.utilityLabel}</span>
+    {site.business.phoneUri && (
+      <a href={site.business.phoneUri}>{site.business.phone}</a>
+    )}
   </div>
 </div>
 
 <style>
-  .ribbon {
+  .utility-bar {
     background: var(--ac-color-navy-950);
-    color: #8fa6bf;
-    font-family: var(--ac-font-sans);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
+    color: var(--ac-color-steel-on-navy);
+  }
+
+  .utility-bar__inner {
+    display: flex;
+    width: min(100% - 64px, 1504px);
+    min-height: 30px;
+    align-items: center;
+    justify-content: space-between;
+    margin-inline: auto;
+    gap: 24px;
+    font-size: 0.75rem;
+    font-weight: 650;
+    letter-spacing: 0.045em;
+    line-height: 1.3;
     text-transform: uppercase;
   }
 
-  .ribbon__in {
+  .utility-bar a {
     display: flex;
-    height: 34px;
-    flex-wrap: wrap;
+    min-height: 30px;
     align-items: center;
-    gap: 26px;
-  }
-
-  .ribbon b {
-    margin-left: auto;
-    color: #fff;
-    font-weight: 500;
-  }
-
-  .ribbon b a {
-    color: inherit;
+    color: var(--ac-color-paper);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
     text-decoration: none;
   }
 
-  .ribbon__dot {
-    display: inline-block;
-    width: 6px;
-    height: 6px;
-    margin-right: 8px;
-    border-radius: 50%;
-    background: var(--ac-color-status-green);
-    vertical-align: middle;
+  .utility-bar a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
-  @media (max-width: 760px) {
-    .ribbon__in {
-      height: auto;
-      padding-block: 8px;
+  /* Kept in step with Header.astro's collapse breakpoint, which moved from 70rem to 63.9375rem
+     on 2026-08-25. The utility bar and the nav below it share one gutter; if only one of them
+     narrows, the phone number and the logo stop lining up on their left and right edges through
+     the whole 1024–1120px band. */
+  @media (max-width: 63.9375rem) {
+    .utility-bar__inner {
+      width: min(100% - 40px, 1504px);
+    }
+  }
+
+  @media (max-width: 30rem) {
+    .utility-bar__inner {
+      width: calc(100% - 40px);
+      min-height: 28px;
+      justify-content: flex-end;
       gap: 14px;
+      font-size: 0.625rem;
+      letter-spacing: 0.025em;
     }
 
-    .ribbon b {
-      margin-left: 0;
+    .utility-bar__inner > span {
+      display: none;
+    }
+
+    .utility-bar a {
+      min-height: 28px;
+    }
+  }
+
+  @media print {
+    .utility-bar {
+      display: none;
     }
   }
 </style>

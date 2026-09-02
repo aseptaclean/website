@@ -5,12 +5,32 @@ import PageHeader from "@components/PageHeader.astro";
 import { site } from "@data/site";
 
 const policy = site.integrations.termly.policies.privacy;
+
+// A5 — BreadcrumbList. This route had none; every other non-root route on the site does, and a
+// crumb trail is how a leaf page tells a crawler where it sits. The "Home" item uses
+// `site.urls.home` (WITH the trailing slash) so it matches the homepage canonical exactly —
+// `site.urls.site` is a bare origin and produced a second URL for the same page.
+const schema = [
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Privacy Policy",
+        item: new URL("/privacy/", site.urls.site).href
+      }
+    ]
+  }
+];
 ---
 
 <BaseLayout
   title="Privacy Policy | Aseptaclean"
   description="Read Aseptaclean’s Termly-managed Privacy Policy or access the provider fallback."
   canonicalPath="/privacy/"
+  schema={schema}
   showMobileCta={false}
 >
   <PageHeader

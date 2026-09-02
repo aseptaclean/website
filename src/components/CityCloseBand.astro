@@ -1,0 +1,54 @@
+---
+// Closing band for the nine city routes — the site's shared dark closing treatment (.ac-final,
+// the same surface, label, type role and button set as FinalCTA on the homepage), composed with
+// the copy column and the actions side by side.
+//
+// Copy is docs/city-pages-part2-UPDATED.md A1 "Closing band", owner-approved 2026-08-20, and is
+// identical on all nine routes by that approval.
+//
+// The third action is doc 27 §8: "Text a photo" appears everywhere the primary CTA does. The
+// approved band names the primary and the phone; §8 adds the low-commitment door rather than
+// closing one, which is the same resolution FinalCTA carries. The closing line is the
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6 assessment disclaimer, verbatim, as it ships beside
+// every other assessment CTA on the site.
+import { site } from "@data/site";
+import "@styles/city-pages.css";
+
+interface Props {
+  titleId: string;
+}
+
+const { titleId } = Astro.props;
+const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
+---
+
+<section class="ac-sec ac-final" aria-labelledby={titleId}>
+  <div class="ac-shell cty-close__layout">
+    <div>
+      <p class="ac-label ac-label--on-dark">A clearer first look</p>
+      <h2 id={titleId} class="ac-type-h2-final">
+        Send a few photos and we&rsquo;ll tell you what you&rsquo;re looking at.
+      </h2>
+      <p>
+        Stand in the doorway, get the whole room, then step in close on the worst of it.
+        That&rsquo;s usually enough to say whether it&rsquo;s a fit and what it&rsquo;ll take.
+      </p>
+      <p class="cty-close__sub">
+        Submitting a request does not authorize work or create a service agreement.
+      </p>
+    </div>
+
+    <div class="ac-btns cty-close__actions">
+      <a class="btn btn--w" href="/request-assessment/">
+        {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
+      </a>
+      {/* Suppression rule (AGENTS.md §3): never render an empty phone link. Both derive from
+          the same business value, so both are gated on it. */}
+      {smsHref && <a class="btn btn--o" href={smsHref}>{site.offer.secondaryCta}</a>}
+      {phoneHref && (
+        <a class="btn btn--o" href={phoneHref}>Call {site.business.phone}</a>
+      )}
+    </div>
+  </div>
+</section>

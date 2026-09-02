@@ -1,16 +1,32 @@
 # 19 — The System, Sitemap & Wireframes (v3 — self-contained)
 
-**Status:** Active planning authority for growth architecture. Owner-directed, 2026-08-08.
+**Status:** Active specialized planning authority for routes and growth architecture,
+owner-reconciled 2026-08-25.
 **Repo location:** `docs/19-SYSTEM-AND-SITEMAP.md`
-**Relationship:** Below `01-QUALITY-GUARDRAILS.md` (claims) and `18-VISUAL-DIRECTION.md` /
-`aseptaclean-FINAL-v2.html` (visual). Where this doc names copy, `01` still outranks it.
-**Copy source:** page WORDS come from `27-COPY-CANONICAL.md` (§9–15). This doc
-owns architecture, URLs, SEO, and publish waves only. Where 27 restates
-architecture, THIS doc wins; where this doc implies copy, 27 wins.
+**Relationship:** Governed by the hierarchy in root `AGENTS.md`. Verified facts, current owner
+decisions, doc 21, specifically locked doc 27 copy, and doc 30 outrank this file.
+**Copy source:** specifically locked page wording comes from `27-COPY-CANONICAL.md`; new copy
+must follow doc 20 and doc 21. This file owns specialized route planning and publication waves
+only where consistent with higher authorities.
 
-**Self-containment rule:** every future build session must be able to execute from this
-doc alone. If information needed to build a page lives only in a conversation, it goes
-in this doc first.
+**No standalone execution:** do not build from this document alone. Read `AGENTS.md`, doc 21,
+doc 30, the applicable page brief, locked copy, and current technical evidence first.
+
+> ## Owner reconciliation — 2026-08-25
+>
+> Doc 30 now governs customer/website strategy, design, conversion, responsive behavior,
+> evidence, technical SEO, and AI implementation. This file remains a specialized route and
+> growth-planning document only.
+>
+> - Default visible primary CTA: **Tell Us About the Property**. The route remains
+>   `/request-assessment/`.
+> - Do not create `/service-areas/san-jose/`.
+> - Do not embed a Google Map on Contact; use service-area information.
+> - `/assessment/` remains cancelled. Part 4 below is preserved historical material only.
+> - Visible FAQs may remain useful, but `FAQPage` schema is not a mechanical requirement and
+>   must not be added or maintained merely to pursue a Google FAQ rich result.
+> - Current public process: **Scope → Protect → Clear → Reset → Verify**.
+> - Astro + Cloudflare Pages remains the approved platform.
 
 ---
 
@@ -51,10 +67,11 @@ Must never: quote prices, promise scope, use the words remediation/biohazard/lic
 or press for details the caller hesitates on. Tone: calm, unhurried, zero judgment.
 
 ### 1.3 CONVERT — on page and on call
-- One dominant CTA per page → assessment form (`#request`) or call.
+- One dominant visible CTA per page → **Tell Us About the Property** or call, using the
+  approved route and page-brief hierarchy.
 - On the call: photo-first triage; fixed number only after walkthrough; "no obligation
   to authorize work" said out loud.
-- Phase 4: triage quiz becomes primary capture (spec in Part 5).
+- The former Phase 4 triage quiz is cancelled; do not build or link `/assessment/`.
 
 ### 1.4 DELIVER — unchanged
 Five-Stage Standard, signed scope, Handoff Record. The product is the proof.
@@ -78,6 +95,16 @@ Five-Stage Standard, signed scope, Handoff Record. The product is the proof.
 ### 1.6 Referral letter program (ring A)
 **Targets (~40):** probate & estate-planning attorneys (15), probate/trust-sale
 realtors (10), senior move managers (5), top PM firms (10) — all Santa Clara County.
+
+> **NOT struck by the 2026-08-20 "Santa Clara County" sweep — read this before "fixing" it.**
+> Owner ruling B2 removes that phrase everywhere it states the SERVICE AREA. This instance
+> states something else: which counties to prospect for referral partners. It is an operational
+> targeting instruction, not a public claim, and no visitor ever reads it.
+> **It is, separately, probably stale** — §2.2's city-page priority names Palo Alto, Atherton and
+> Los Altos Hills as "highest estate tickets + densest Track B fiduciary referral market in the
+> Bay Area," and two of those three are outside Santa Clara County. Widening the ring-A target
+> list to match the footprint is a business decision the owner has not made, so it is flagged
+> here and left as written rather than edited under an SEO ruling. See `docs/05-DECISIONS-LOG.md`.
 **Package:** one-page letter + printed Executor's Checklist (Part 6) + sample Handoff
 Record. Physical mail. Follow-up call week 2: "Did the checklist land? Want a stack
 for clients?"
@@ -107,10 +134,9 @@ toward zero over 12 months.
 
 ### 2.1 Site architecture & nav (owner tree adopted 2026-08-09)
 
-**Superseded by `docs/SITEMAP-MASTER.md` (2026-08-16), which is now the single source of
-truth for routes and index status.** The sitemap below is retained for the SEO-spec detail
-in §2.2 that master doesn't restate; where the two disagree on a route, slug, or index
-status, master wins.
+The route tree below is retained for its SEO-spec detail. Reconcile it with
+`docs/SITEMAP-MASTER.md`, the current owner decisions recorded in `AGENTS.md`, and a fresh
+build. Neither rank-6 route document silently overrides the other.
 
 Nav = grouped dropdowns once Phase 3 pages publish; flat nav until then.
 Every page: keyword-slugged URL, one primary query, one h1.
@@ -131,7 +157,8 @@ SPECIALTY CLEANING
   (pigeon guano = H2 on animal page; split only if GSC shows volume)
 
 PROPERTY CLEARING
-  /property-cleanouts-san-jose/         property cleanout san jose (category hub)
+  /property-cleanouts-san-jose/         ~~property cleanout san jose (category hub)~~
+                                        tenant abandonment cleanout san jose
   /estate-cleanout-san-jose/            estate cleanout san jose  ← highest value
   /hoarding-cleanup-san-jose/           hoarding cleanup san jose
   /eviction-cleanout-san-jose/          eviction cleanout san jose (PM/turnover page)
@@ -141,15 +168,33 @@ PROPERTY CLEARING
 COMMERCIAL
   /commercial-cleaning-san-jose/        commercial cleaning san jose (janitorial)
 
-SERVICE AREAS
-  /service-areas/  → /service-areas/{city}/ (San Jose core in service pages;
-  Mountain View, Sunnyvale, Santa Clara, Campbell + Peninsula cities as earned)
+SERVICE AREAS                                 ← two nested tiers, both BUILT 2026-08-21
+  /service-areas/                             area hub (San Jose core stays in service pages)
+    /service-areas/[city]/                    city hub          — 3 built
+      /service-areas/[city]/[service]/        service × city    — 6 built
+  built cities:   mountain-view · sunnyvale · campbell
+  built services: hoarding-cleanup · estate-cleanout      (3 × 2 grid, complete)
+  Santa Clara + Peninsula cities: not built. Add as data records, never as route files.
 
 PROCESS    /handoff-standard/           (brand moat page)
 PROJECTS   /projects/                   (publishes when real job photos exist)
 ABOUT      /about/    FAQ /faq/ or homepage section    CONTACT /contact/
-RESOURCES (footer): /estate-cleanout-checklist/  /assessment/ (quiz, Phase 4)
+RESOURCES (footer): /estate-cleanout-checklist/  (no `/assessment/` route)
 ```
+
+**Term assignment — owner ruling 2026-08-20. Resolves the §2.1/§2.2 conflict above.**
+This section assigned **property cleanout san jose** to `/property-cleanouts-san-jose/` as a
+"category hub". §2.2 assigns the same term to the **HOMEPAGE** as its primary query, and §2.2's
+PM/TURNOVER entry independently gives `/property-cleanouts-san-jose/` a different primary
+(*tenant abandonment cleanout*). Two routes were therefore chartered to compete for one query,
+which is the cannibalisation this document exists to prevent, and the conflict survived the
+2026-08-16 rename and the 2026-08-17 sitemap correction because each pass read only one of the
+two sections.
+
+**Resolved: `/` owns `property cleanout san jose`. `/property-cleanouts-san-jose/` owns
+`tenant abandonment cleanout san jose`.** §2.1's assignment is struck above and replaced with
+§2.2's, so the two sections now agree. §2.2 is unchanged and remains the per-page spec. See
+`docs/05-DECISIONS-LOG.md`, 2026-08-20.
 
 **Publish order (SEO value × readiness):**
 Wave 1 (live now): home, about, contact, handoff-standard, thank-you, legal, 404.
@@ -157,7 +202,14 @@ Wave 2 (month 2): estate → hoarding → animal → rodent → senior downsizin
 checklist → service-areas hub → property-cleanouts hub → debris (minimums copy).
 Wave 3 (as crew/scope confirms): deep cleaning, move-out, extreme cleaning,
 eviction/PM, post-construction, window, commercial.
-Wave 4: /projects/ (first job photos), city pages (first job per city), quiz.
+Wave 4: /projects/ (first job photos), ~~city pages (first job per city)~~, quiz.
+
+**Wave 4's city-page condition is superseded (2026-08-21, owner ruling).** "First job per city"
+is no longer what releases a city page — see the CITY PAGES entry in §2.2 for the seven
+conditions that replaced it. Nine city routes are already built and shipping `noindex`; their
+one remaining gate is owner confirmation of city availability. `/projects/` is unaffected and
+still waits on first job photos. The quiz was **CANCELLED 2026-08-20** — see
+`docs/SITEMAP-MASTER.md`.
 
 **Homepage nav until Wave 2:** Services (scrolls to cards) · Method · The
 Record · About · FAQ · phone · CTA — unchanged.
@@ -165,38 +217,38 @@ Record · About · FAQ · phone · CTA — unchanged.
 ### 2.2 Per-page SEO spec (the part that must not live in chat)
 
 **HOMEPAGE `/`**
-- Primary: property cleanout san jose
-- Secondary: house cleanout services, home cleanout san jose, cleanout services
-  near me, whole house cleanout
-- Title: `Property Cleanout & Deep Cleaning | San Jose & South Bay | Aseptaclean`
-- Meta: `Whole-property cleanout and deep cleaning in San Jose & the South Bay.
-  Written scope before work, nothing removed without approval, documented closeout.`
-- Schema: LocalBusiness (areaServed = the 10-city list incl. Peninsula, geo San Jose, sameAs → GBP/Yelp/
-  Nextdoor) + FAQPage. NO aggregateRating ever without real reviews.
+- Primary intent: family decision-maker seeking help with an overwhelming relative's property.
+- Supporting search terms must be validated during the homepage copy/SEO brief; do not restore
+  the former single-service keyword target merely because it is recorded in history.
+- Title and meta: finalize through `docs/page-briefs/HOME.md`, the active master, claims law,
+  and current verified service-area wording. No exact replacement is locked here.
+- Schema: LocalBusiness using only verified service areas and active profiles. Add `FAQPage`
+  only with a current semantic justification, never solely to pursue a rich result. NO
+  `aggregateRating` without real reviews.
 
 **ESTATE `/estate-cleanout-san-jose/`** — highest value page on the site
 - Primary: estate cleanout san jose
 - Secondary: estate cleanout services, house cleanout after death, probate house
   cleanout, executor property cleanout, inherited house cleanout, deceased estate
   cleanout bay area
-- Title: `Estate Cleanout in San Jose & South Bay | Aseptaclean`
+- Title: `Estate Cleanout in San Jose | South Bay & Peninsula | Aseptaclean`
 - Meta: `Estate and probate property cleanouts with a signed scope, held-for-review
-  controls, and a documented Handoff Record. Serving San Jose & the South Bay.`
+  controls, and a documented Handoff Record. South Bay & Peninsula.`
 - Audience split: Track A grieving family (top) + Track B executor/attorney (own H2)
-- Schema: Service + FAQPage + Breadcrumb
+- Schema: Service + Breadcrumb; `FAQPage` only under the sitewide conditional rule above.
 
 **HOARDING `/hoarding-cleanup-san-jose/`**
 - Primary: hoarding cleanup san jose
 - Secondary: hoarder house cleanout, hoarding cleaning services, help cleaning a
   hoarder's house, hoarding cleanup for elderly parent, cluttered house cleanout
-- Title: `Hoarding Cleanup in San Jose & South Bay | Aseptaclean`
+- Title: `Hoarding Cleanup in San Jose | South Bay & Peninsula | Aseptaclean`
 - Meta: `Compassionate hoarding cleanup with nothing removed without written
-  approval. Discreet, judgment-free, documented. San Jose & the South Bay.`
+  approval. Discreet, judgment-free, documented. South Bay & Peninsula.`
 - Audience: written to the ADULT CHILD, not the person who hoards. Question-phrased
   H2s ("Will everything be thrown away?") to feed AI Overviews.
-- Schema: Service + FAQPage + Breadcrumb
+- Schema: Service + Breadcrumb; `FAQPage` only under the sitewide conditional rule above.
 
-**ANIMAL/ORGANIC `/animal-waste-cleanup-san-jose/`** — fastest ranking win
+**ANIMAL/ORGANIC `/animal-waste-cleanup-san-jose/`** — built but gated `noindex`
 - Primary: animal waste cleanup san jose
 - Secondary: pet waste cleaning house, cat urine cleanup home, animal hoarding
   cleanup, house with animal waste cleaning
@@ -205,20 +257,19 @@ Record · About · FAQ · phone · CTA — unchanged.
   pathogen endorsement. Cleaning only — documented, discreet, South Bay.`
 - Wording law: cleaning under endorsement. Never biohazard/remediation/decontaminate/
   sanitize/sterilize.
-- OWNER DECISION 2026-08-09: rodent-dropping and pigeon-dropping cleanup are IN
-  marketed scope (cleaning language only, no disease-risk claims). Operational
-  gate remains: written PPE/respiratory protocol required before first rodent
-  job — SOP task, not a marketing gate.
-- Schema: Service + FAQPage + Breadcrumb
+- The 2026-08-09 marketing note is superseded by the 2026-08-25 conservative gated-content
+  decision. Animal-, rodent-, and pigeon-related routes stay gated until their current business,
+  insurance, operating-protocol, claims, and publication conditions are verified.
+- Schema: Service + Breadcrumb; `FAQPage` only under the sitewide conditional rule above.
 
-**RODENT DROPPINGS `/rodent-dropping-cleanup-san-jose/`** (owner-approved 2026-08-09)
+**RODENT DROPPINGS `/rodent-dropping-cleanup-san-jose/`** — built but gated `noindex`
 - Primary: rodent dropping cleanup san jose · Secondary: mouse droppings cleaning
   attic, rat droppings removal house, rodent waste cleaning bay area
 - Near-zero local competition; strong candidate for fastest standalone ranking
   after animal/organic. Cleaning language only — no disease/hantavirus risk
   claims, no "decontamination." May launch as an H2 section on the animal page
-  and split out once it earns impressions.
-- Title: `Rodent Dropping Cleanup | San Jose & South Bay | Aseptaclean`
+  only after every current gate is cleared; do not use impressions to bypass them.
+- Title: `Rodent Dropping Cleanup | San Jose | South Bay & Peninsula | Aseptaclean`
 
 **PIGEON DROPPINGS** — H2 section on the animal/organic page (pigeon guano
 cleanup san jose). Split to its own page only if GSC shows real query volume.
@@ -231,7 +282,7 @@ cleanup san jose). Split to its own page only if GSC shows real query volume.
   never single-item/curbside pricing, never hourly, never "cheap hauling"
   language. This page exists to CAPTURE the query and educate upward into
   cleanout scope, not to compete with junk haulers on price.
-- Title: `Property Debris Removal | San Jose & South Bay | Aseptaclean`
+- Title: `Property Debris Removal | San Jose | South Bay & Peninsula | Aseptaclean`
 
 **CHECKLIST `/estate-cleanout-checklist/`** — link magnet, letter destination
 - Primary: estate cleanout checklist
@@ -294,9 +345,10 @@ supersession note)
 
 **CONTACT `/contact/`**
 - Primary: aseptaclean contact / phone (brand-nav intent)
-- Title: `Contact Aseptaclean | San Jose & South Bay Property Cleanouts`
+- Title: `Contact Aseptaclean | South Bay & Peninsula`
 - Contents: phone (public number — same everywhere, NAP law), email, service-area
-  list, hours, response promise, form component, embedded map. This is the GBP
+  list, hours, response promise, form component, and clear service-area information. Do not
+  embed a Google Map or imply a customer-facing storefront. This is the GBP
   website-field landing candidate alongside /.
 
 **HANDOFF STANDARD `/handoff-standard/`**
@@ -305,7 +357,7 @@ supersession note)
 - Contents: five-stage method in full, complete annotated sample Handoff Record,
   what each record field protects, who relies on it (family / executor / attorney /
   PM). The citable "our standard" URL for letters and referrers. Fixes the live
-  footer link. Breadcrumb + FAQPage schema if FAQs included.
+  footer link. Breadcrumb schema; `FAQPage` only under the sitewide conditional rule above.
 
 **SENIOR DOWNSIZING `/senior-downsizing-san-jose/`**
 - Primary: senior downsizing services san jose
@@ -313,38 +365,115 @@ supersession note)
   senior move cleanout, downsizing a parent's home bay area
 - Title: `Senior Downsizing & Move-Out Support | San Jose | Aseptaclean`
 - Meta: `Respectful downsizing support when a parent moves — sorting, set-aside
-  controls, clearing, and cleaning under one signed scope. San Jose & South Bay.`
+  controls, clearing, and cleaning under one signed scope. South Bay & Peninsula.`
 - Tone delta: NOBODY DIED. A parent is moving. Hope-forward, not grief-forward;
   the parent may read this page themselves — write it so that is safe.
 - Referral tie: the page senior-move managers need to see before sending clients.
-- Schema: Service + FAQPage + Breadcrumb
+- Schema: Service + Breadcrumb; `FAQPage` only under the sitewide conditional rule above.
 
 **SERVICE AREAS HUB `/service-areas/`**
 - Primary: property cleanout near me (adjacent) · aseptaclean service area
-- Title: `Service Areas | San Jose & Santa Clara County | Aseptaclean`
+- Title: ~~`Service Areas | San Jose & Santa Clara County | Aseptaclean`~~ **VOID — do not
+  restore.** Owner ruling B2 (2026-08-20) strikes every "Santa Clara County" service-area claim
+  sitewide: the 10-city footprint contains Atherton, which is in San Mateo County, so the label
+  is factually wrong wherever it appears. **This title is the one place B1 and B2 collide** —
+  B1 restores divergent titles to this section verbatim, and doing that here would reintroduce
+  the exact string B2 removes. B2 wins on facts, and this title was therefore NOT restored.
+  The shipped title stays `South Bay & Peninsula Service Area | Aseptaclean`
+  (`src/data/doc27CompanyPages.ts`), which already carries the ruled NAP wording.
+  Reported to the owner rather than resolved silently — see `docs/05-DECISIONS-LOG.md`.
 - Contents: South Bay & Peninsula framing paragraph, 10-city pill grid, one short paragraph per area
   cluster (San Jose core / West Valley: Campbell–Los Gatos–Saratoga adj. / North County: Sunnyvale–Mtn View–Santa Clara / Peninsula: Los Altos–LAH–Palo Alto–Atherton), links down to city pages
   as they exist. Parent for all Phase 3c pages.
 
-**CITY PAGES `/service-areas/{city}/`**
-- Primary: estate cleanout {city} (+ hoarding variant if jobs support)
-- Hard gate: ≥1 completed job in that city + 150–250 words that could only be about
-  that city + one anonymized real-job specific. No verified original content → no page.
-- Nested under /service-areas/ (updated from root-level slugs).
-- Priority when jobs allow: Palo Alto, Atherton, Los Altos Hills first — highest
-  estate tickets + densest Track B fiduciary referral market in the Bay Area.
+**CITY PAGES — two tiers, both BUILT 2026-08-21**
+
+```
+/service-areas/[city]/              city hub          — 3 built
+/service-areas/[city]/[service]/    service × city    — 6 built
+```
+
+- Built cities: `mountain-view` · `sunnyvale` · `campbell`
+- Built services: `hoarding-cleanup` · `estate-cleanout` — the 3 × 2 grid is complete
+- Identity as built, city hub: H1 *"Property Cleaning & Complex Cleanup in {City}"*, title
+  *"{City} Property Cleaning & Complex Cleanup | Aseptaclean"*
+- Identity as built, service × city: H1 *"{Service} in {City}"*, title
+  *"{Service} in {City} | South Bay & Peninsula | Aseptaclean"* — the primary query is the
+  service-plus-city term (*estate cleanout mountain view*), which is the reason this tier exists
+  and the reason San José is deliberately absent from it
+- Nested under `/service-areas/` (updated from root-level slugs). Any `/locations/*` route
+  remains forbidden.
+- All nine ship `noindex, follow` and are outside `sitemap.xml`. One gate remains: **owner
+  confirmation of city availability.** Every automated gate passes — `npm run qa:seo` reports
+  9/9 clean.
+- Generated from data, never hand-authored: `src/data/cityHubPages.ts`,
+  `src/data/serviceCityPages.ts`, `src/data/cityFacts.ts`,
+  `src/data/serviceCityImplications.ts`. A new city is a record, not a file.
+- Priority for the next cities: Atherton and Los Altos Hills — highest estate tickets and the
+  densest Track B fiduciary referral market in the Bay Area. **Palo Alto is legally blocked**
+  until Public Works confirms (doc 25 §7). This priority no longer waits on jobs; it waits on
+  verified city facts and owner availability confirmation.
+
+> ### The hard gate on this entry is superseded — 2026-08-21, owner ruling
+>
+> **The former rule, verbatim, kept as the historical record:**
+>
+> > *Hard gate: ≥1 completed job in that city + 150–250 words that could only be about that
+> > city + one anonymized real-job specific. No verified original content → no page.*
+>
+> That gate was authored when the project had no city data layer, no sourced-fact model, and no
+> automated quality gate. A completed job was the only proxy available for "this page is about a
+> real place." Those controls now exist, so the proxy is replaced by what it stood for.
+>
+> **A local page may now launch with no prior Aseptaclean job history in that city** when it
+> carries all seven of:
+>
+> 1. **Verified city facts** — named publisher and source URL, in `cityFacts.ts`.
+> 2. **Service-specific local implications** — what each fact changes for *this* service at
+>    *this* address, in `serviceCityImplications.ts`, each declaring its `basis`.
+> 3. **No fabricated experience claims.** Absolute, and it outranks the other six. No job count,
+>    no anonymized project, no review, rating, or proof image. `AGENTS.md` §0.3 is unchanged.
+> 4. **Proper internal links** — up to the parent service page, across to the city hub, and at
+>    least one inbound link from an existing page.
+> 5. **Unique useful copy** — unique H1, title, meta, and body that survives the doc 25 §2 swap
+>    test. A template wearing a city's name still does not ship.
+> 6. **Applicable source and freshness controls** — `verifiedAt` and `reviewAfter` on every
+>    fact; a fact past `reviewAfter` blocks indexation until reverified.
+> 7. **Passing SEO quality gates** — `npm run qa:seo` clean for that route, measured against
+>    `dist/`, not source.
+>
+> **The word-count and swap-test half of the old gate survives and is stricter, not looser.**
+> Only the *completed-job* prerequisite is lifted. Doc 25 §6's 400-word minimum of genuinely
+> city-specific prose governs; the 150–250 figure above is superseded by it.
+>
+> **Real completed projects remain a future proof-enhancement layer, not a prerequisite for the
+> route to exist.** Doc 25 §6's REAL PROJECT row and §3.3's REAL JOB row below become optional
+> enrichment, added when a real job produces documentable, owner-approved material. Their
+> absence is not a defect. Inventing them is still §0.3 fabrication.
+>
+> **This does not override `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §7** (rank 3), which still
+> makes every city page a licensing decision before it is an SEO decision.
+>
+> Full ruling: `docs/05-DECISIONS-LOG.md`, 2026-08-21.
 
 **QUESTION POSTS `/questions/…`** — first two, in order:
 - `/questions/estate-cleanout-cost/` — Primary: how much does an estate cleanout
-  cost. Answer honestly with driver framework + realistic ranges + the $195
-  assessment; pricing-transparency tone. Highest-volume informational query in
+  cost. Answer honestly with the approved driver framework and the $195 assessment fee;
+  do not publish a generalized range or starting investment. Highest-volume informational query in
   the category; links to estate page.
 - `/questions/junk-removal-vs-estate-cleanout/` — intercepts hauler-term searchers,
   educates the difference (scope, approval controls, documentation, cleaning),
   funnels upward to estate page. Never disparages haulers — ring B are partners.
 
 **Linking rules:** homepage ↔ service pages (cards + breadcrumbs). /service-areas/
-→ down to city pages; city pages → up to their service page, never sideways.
+→ down to city hubs; city hubs → down to their service × city pages; every city page
+→ up to its parent service page. ~~never sideways~~ — **amended 2026-08-21.** One sideways
+link is permitted and built: a service × city page links to its **sibling service in the same
+city** (estate ↔ hoarding in that city). It is not permitted across cities, which is what the
+original rule existed to prevent — a lattice of city-to-city links is the doorway-page pattern.
+Parent service pages link back down through neutral local-planning blocks that do not assert
+availability; those links are derived from built records, so a city dropped to `draft` loses its
+link in the same change.
 /questions/ posts → service pages. Checklist ← estate page + footer + every letter.
 /handoff-standard/ ← footer + estate/PM fiduciary blocks + letters. /about/ ←
 founder section "More about the operator →". Anchor text = target page's primary
@@ -359,9 +488,9 @@ equivalent. Pull the list from GSC + `site:` operator before cutover. Line item 
 ## PART 3 — WIREFRAMES
 
 ### 3.1 Homepage — BUILT
-`aseptaclean-FINAL-v2.html` is the wireframe made real; it is the implementation
-target (port verbatim, per the standing prompt). Pending single addition: one
-discretion line in hero chips or Recognition — candidate copy:
+`docs/30-WEBSITE-MASTER-SPEC.md` and the approved homepage page brief are the future
+implementation authorities. The archived `aseptaclean-FINAL-v2.html` is historical visual
+evidence only and must not be ported verbatim. A previously proposed discretion line was:
 *"Unmarked assessment · no photographs shared without permission"* — VERIFY the
 vehicle is actually unmarked before shipping the word "unmarked."
 
@@ -369,10 +498,14 @@ vehicle is actually unmarked before shipping the word "unmarked."
 ```
 [Ribbon / Nav — shared components]
 COMPACT DARK HERO (~55% homepage hero height)
-  eyebrow: {SERVICE} · SAN JOSE & THE SOUTH BAY
+  eyebrow: {SERVICE} · ~~SAN JOSE & THE SOUTH BAY~~ SOUTH BAY & PENINSULA
+           (struck 2026-08-20 — owner ruling B2 sets ONE service-area string
+            sitewide, "South Bay & Peninsula", ampersand and never "and". An
+            explicit owner decision is rank 2 and outranks this document's
+            rank 6. All 14 service-page eyebrows now carry the single string.)
   H1 in buyer's words (never brand vocabulary)
   lead: 2 lines, recognition-first
-  [Request an assessment →] [Text a photo]   + 3 trust chips
+  [Tell Us About the Property →] [Call Aseptaclean]   + approved trust controls
 RECOGNITION      H2 to the actual searcher; 2 short paras; dignity-first
 SCOPE            "What this covers" ✓-list + link to exclusions
 FIDUCIARY BLOCK  (estate & PM pages only) H2 "For executors, attorneys, and
@@ -381,7 +514,8 @@ FIDUCIARY BLOCK  (estate & PM pages only) H2 "For executors, attorneys, and
 METHOD           5 stages condensed to 5 rows w/ record tags
 PROOF            Handoff Record excerpt + ONE anonymized real-job line
 PRICING HONESTY  drivers + $195 assessment credit (no invented figures)
-FAQ              4–6 in searcher phrasing (FAQPage schema)
+FAQ              4–6 in searcher phrasing; structured data only with a current semantic need,
+                 never solely to pursue a deprecated FAQ rich result
 FORM PANEL       same component as homepage (#request)
 [Footer — shared]  · 900–1,200 words total · Breadcrumb schema
 ```
@@ -391,6 +525,51 @@ clinical labels for the person. ANIMAL = matter-of-fact dignity; hardest-shame
 buyer; lead with "we have seen worse and we don't judge" energy without saying it.
 
 ### 3.3 City page template
+
+**Amended 2026-08-21 — the built template supersedes the sketch below.** Two tiers ship, not
+one, and the REAL JOB row is now optional enrichment rather than a required section. See §2.2.
+
+**City hub — `/service-areas/[city]/`, as built**
+```
+Compact hero: breadcrumb · H1 "Property Cleaning & Complex Cleanup in {City}"
+INTRO             what the address changes
+LOCAL PLANNING    verified city facts, each rendered WITH its source link
+FEATURED          cards to that city's own service pages (parent link as fallback)
+SERVICE AREA      surrounding-cities context
+FORM · CTA
+Schema: CollectionPage + BreadcrumbList
+```
+
+**Service × city — `/service-areas/[city]/[service]/`, as built**
+```
+Compact hero: breadcrumb · H1 "Estate Cleanout in {City}"
+OPENING           shared service opening + container-coordination policy
+SCOPE AND FIT     read from the parent San Jose service record, not re-authored
+LOCAL PLANNING    verified city facts, each rendered WITH its source link
+WHAT THIS CHANGES service-specific implications, keyed to those facts
+PROCESS           four steps
+FAQ               3 city-specific, schema-matched verbatim in both directions
+LINKS             sibling service in this city · parent service page · city hub
+FORM · CTA
+Schema: Service + BreadcrumbList; add FAQPage only with a current semantic justification,
+never solely to pursue a deprecated rich result
+```
+
+**Two deltas from the original sketch, both deliberate:**
+
+- ~~`REAL JOB — one anonymized specific from the actual job there`~~ — **optional enrichment,
+  not a required section.** Superseded 2026-08-21; the route does not wait on it. Adding a
+  fabricated one is `AGENTS.md` §0.3 fabrication and is never permitted.
+- ~~`150–250 words`~~ — superseded upward by doc 25 §6's **400-word minimum** of genuinely
+  city-specific prose.
+
+**A verified fact is never rendered without its source link.** Facts live in `cityFacts.ts` with
+a publisher, URL, `verifiedAt`, and `reviewAfter`; the operational conclusions drawn from them
+live separately in `serviceCityImplications.ts`. Do not merge the two — a fact can be reverified
+against its source and an inference cannot, and mixing them produces a page where the difference
+is invisible.
+
+**Original 2026-08-09 sketch, kept as the historical record:**
 ```
 Compact hero: H1 "Estate Cleanout in {City}"
 LOCAL REALITY   150–250 words possible only for this city (neighborhoods worked,
@@ -414,7 +593,7 @@ link block: Handoff Standard / Services / Contact → form panel.
 
 ### 3.6 Contact page
 Compact hero: H1 "Contact Aseptaclean" → two-column: [phone, email, hours,
-response promise, service-area pills] ∥ [form panel] → embedded map → NAP block
+response promise, service-area pills] ∥ [form panel] → service-area information → NAP block
 matching GBP exactly.
 
 ### 3.7 Handoff Standard page
@@ -429,7 +608,13 @@ Contact · form panel omitted · logs 404 path to analytics for redirect patchin
 
 ---
 
-## PART 4 — TRIAGE QUIZ SPEC (Phase 4, `/assessment/`)
+## PART 4 — HISTORICAL TRIAGE QUIZ SPEC (CANCELLED; DO NOT BUILD)
+
+**Owner decision 2026-08-20, reaffirmed 2026-08-25:** `/assessment/` is cancelled. The material
+below is historical product exploration only. Do not create a route, draft, link, sitemap entry,
+or GBP booking destination from it. The approved conversion route remains
+`/request-assessment/`, with a future situation-first architecture governed by doc 30 and an
+approved page brief.
 
 Questions (plain words, one screen each):
 1. How full is the property? — A lived-in, needs deep cleaning · B heavy in places
@@ -469,7 +654,8 @@ promise. No diagnosis language, no condition labels for people, no price quotes.
   the South Bay. Written scope before any work, nothing removed without approval, and
   a documented closeout on every project. Owner-operated and insured."
 - Photos: logo, founder, vehicle, kit flat-lay at open; then 2–3/wk cadence.
-- Booking link → /#request (later /assessment/). UTM-tag it.
+- Booking link → the current approved conversion destination. Do not use the cancelled
+  `/assessment/` route. UTM-tag the approved destination.
 - Reviews: script in §1.5. Respond to all <24h, personally, no AI-paste tone.
 
 ---

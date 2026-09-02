@@ -1,0 +1,437 @@
+---
+// WHAT WE HANDLE — built 2026-08-25 to docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md
+// §10. This ONE section replaces BOTH of the sections it supersedes:
+//
+//   ConditionRecognition ("What are you dealing with?")  — the recognition/routing section
+//   ServiceFeatures      ("What Aseptaclean handles now.") — the long services section
+//
+// §10's reasoning, which is the whole point of the merge: the homepage does not need two
+// separate routing systems for the same idea. The audited page ran both, one after the other,
+// at a combined 3,374px on desktop and 5,202px at 390px — and they routed to overlapping sets
+// of the same service pages. One photographic section now does both jobs: "that looks like my
+// situation" and "yes, Aseptaclean handles this kind of problem."
+//
+// WHAT WAS CUT, deliberately, per §10's copy rule (title + one sentence + one link):
+//   · the three multi-paragraph service essays, including the three "why routine cleaning does
+//     not fit" paragraphs written for the previous brief;
+//   · the eleven-row written-checklist panel (still on /detailed-cleaning/ and the deep-cleaning
+//     page, which is where a checklist answers a question someone is actually asking);
+//   · the second tier of per-family route grids, replaced by one plain "More services" row —
+//     §10: "Do not create another card grid."
+//
+// `id="service-cards"` IS CARRIED OVER for the third time and must stay. /about/ and /404/ both
+// link to `/#service-cards`. The section that originally owned the anchor is long gone; the
+// destination it means is this one, so the anchor travels with the content rather than becoming
+// two dead links.
+//
+// GATED ROUTES CANNOT BE LINKED FROM THIS FILE. Every href is filtered through each service
+// record's own `indexable` flag, exactly as ServiceFeatures did. Post-construction, window,
+// eviction, animal-waste, rodent, pigeon and commercial all fail the filter today and drop out
+// on their own; /specialty-cleaning/ is noindex and is not referenced. Clearing doc 27 §21 and
+// the B&P §8550(a) constraint is the unblock — not editing this file. This also keeps `/`, which
+// is indexable, from creating an indexable→noindex crawl path (release-checklist C10).
+//
+// THE ANIMAL / ORGANIC FAMILY IS NOT A ROUTE HERE. Its only route,
+// /animal-waste-cleanup-san-jose/, ships noindex, and §10 says outright "Do not expose gated
+// services." The family is therefore not described in this section, which is also why
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §2.3's verbatim limiting clause does not appear in it:
+// §2.3 binds "wherever animal or organic condition work is described", and this section does not
+// describe it. The clause still travels with the family everywhere it IS described — it is part
+// of the homepage.serviceCards string itself, including inside the Service JSON-LD `/` emits.
+import { Image } from "astro:assets";
+import hoardingImage from "../assets/homepage/condition-development-hoarding-asurnipal.jpg";
+import neglectedImage from "../assets/homepage/condition-development-neglected-kolforn.jpg";
+import resetImage from "../assets/homepage/condition-development-reset-aismallard.jpg";
+import { megaNav } from "@data/site";
+import {
+  debrisRemovalPage,
+  deepCleaningPage,
+  estatePage,
+  extremeCleaningPage,
+  hoardingPage,
+  moveOutCleaningPage,
+  propertyCleanoutsPage
+} from "@data/doc27ServicePages";
+
+// TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPHS — NOT Aseptaclean project work, not proof of any
+// completed job, and not client properties. All three are `[ATMOS]`-class under the image rule in
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6: no crew, no technician, no equipment, no document and
+// no before/after pair, so none of them implies Aseptaclean performed the work. §6 caps
+// atmosphere imagery at three slots; V3 §19 supersedes that cap for homepage development only,
+// so the composition can be judged before the owner shoot — it is NOT permission to present any
+// of these as proof. Replace all three with owner-shot photography before launch
+// (docs/06-ASSET-MANIFEST.md §5).
+//
+//   condition-development-hoarding-asurnipal.jpg
+//     Asurnipal — CC BY-SA 4.0
+//     https://commons.wikimedia.org/wiki/File:Bregenz-Cluttered_interiors_(compulsive_hoarding)-living_room-02ASD.jpg
+//   condition-development-neglected-kolforn.jpg
+//     Kolforn — CC BY-SA 4.0
+//     https://commons.wikimedia.org/wiki/File:2_Church_Cottage_West_Runton_30_01_2010_(14).JPG
+//   condition-development-reset-aismallard.jpg
+//     aismallard — CC BY-SA 3.0
+//     https://commons.wikimedia.org/wiki/File:Empty_apartment_room_with_corner_windows.jpg
+
+// §10's three customer-facing situations, verbatim. Each carries ONE short factual sentence and
+// ONE link, and each sentence states a condition rather than a capability — nothing here is a
+// new service claim.
+const situations = [
+  {
+    slug: "contents",
+    title: "Overwhelming contents & hoarding",
+    detail:
+      "The contents have to be sorted and decided before any cleaning can begin.",
+    linkLabel: "Hoarding cleanup",
+    page: hoardingPage,
+    image: hoardingImage,
+    alt: "Reference photograph of a living room where accumulated household contents cover the floor and furniture."
+  },
+  {
+    slug: "neglected",
+    title: "Neglected & heavily soiled properties",
+    detail:
+      "The condition has moved past routine upkeep and needs a defined one-time project.",
+    linkLabel: "Extreme-condition cleaning",
+    page: extremeCleaningPage,
+    image: neglectedImage,
+    alt: "Reference photograph of a neglected residential kitchen with worn, long-unmaintained surfaces."
+  },
+  {
+    slug: "transition",
+    title: "Estate, move-out & property transitions",
+    detail:
+      "A property has to become manageable for sale, occupancy or handoff, usually against a date.",
+    linkLabel: "Estate cleanouts",
+    page: estatePage,
+    image: resetImage,
+    alt: "Reference photograph of an emptied residential room with bare walls and a clean wood floor."
+  }
+] as const;
+
+// §10's restrained secondary treatment: a plain row of text links, not a second card grid.
+// Labels come from megaNav rather than being retyped, so nav and homepage cannot disagree about
+// what a route is called.
+const navLabel = (href: string) =>
+  megaNav.flatMap((group) => group.children ?? []).find((child) => child.href === href)?.label ??
+  "";
+
+const moreServices = [deepCleaningPage, moveOutCleaningPage, propertyCleanoutsPage, debrisRemovalPage]
+  .filter((page) => page.indexable)
+  .map((page) => ({ label: navLabel(page.slug), href: page.slug }))
+  .filter((link) => link.label !== "");
+---
+
+<section class="handle" id="service-cards" aria-labelledby="handle-title">
+  <div class="handle__inner">
+    <header class="handle__header">
+      <h2 id="handle-title" class="ac-type-h2-home-feature">What we handle</h2>
+      <p>You do not need to know the service name before you contact Aseptaclean.</p>
+    </header>
+
+    <div class="handle__routes">
+      {situations.map((situation) => (
+        <article class={`route route--${situation.slug}`}>
+          <div class="route__media">
+            <Image
+              src={situation.image}
+              alt={situation.alt}
+              widths={[420, 620, 840, 1100]}
+              sizes="(min-width: 64rem) 30vw, (min-width: 40rem) 46vw, 92vw"
+              format="webp"
+              quality={76}
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+          <div class="route__copy">
+            <h3 class="ac-type-h3-home-route">{situation.title}</h3>
+            <p>{situation.detail}</p>
+            {/* Exactly one link per item, stretched over the whole article so the photograph is
+                clickable without adding a second anchor to the same destination. The heading is
+                deliberately NOT a link — two anchors to one route is what §10's "one simple text
+                link" rules out. */}
+            <a class="route__link" href={situation.page.slug}>
+              {situation.linkLabel} <span aria-hidden="true">&rarr;</span>
+            </a>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    {moreServices.length > 0 && (
+      <nav class="handle__more" aria-label="More services">
+        <span>More services</span>
+        {moreServices.map((link) => <a href={link.href}>{link.label}</a>)}
+        <a href="/services/">All current services</a>
+      </nav>
+    )}
+
+    <p class="handle__development-note">
+      Development reference photographs · not Aseptaclean project work · Wikimedia Commons,
+      CC BY-SA
+    </p>
+  </div>
+</section>
+
+<style>
+  .handle {
+    background: var(--ac-color-paper);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .handle__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  /* V3 §23 caps homepage H2s at 36–42px; the audited build ran 52px. 40px (2.5rem) is the value
+     used by all three surviving H2s, set on the token rather than on the heading so AGENTS.md §6
+     law 1 holds — the size still resolves through .ac-type-h2-home-feature. */
+  .handle__header {
+    --ac-text-h2-home-feature: 2.5rem;
+    max-width: 46ch;
+    margin-bottom: clamp(40px, 4vw, 60px);
+  }
+
+  /* 56ch, not 40: at 40 the line broke after "before" and left the supporting sentence stacked
+     in a narrow column under a one-line heading, with the rest of a 1320px row empty. One line
+     at desktop reads as a caption to the heading, which is what it is. */
+  .handle__header p {
+    max-width: 56ch;
+    margin: 18px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 1.0625rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .handle__routes {
+    display: grid;
+    gap: 32px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .route {
+    position: relative;
+    display: flex;
+    min-width: 0;
+    flex-direction: column;
+  }
+
+  /* 4:5 portrait, not the old 1:1 thumbnail. §10 asks for images that "feel important, not
+     thumbnails"; at a 1320px container each panel is ~418px wide and ~522px tall, which is the
+     tallest element in the section and makes photography, not type, carry it. */
+  .route__media {
+    overflow: hidden;
+    aspect-ratio: 4 / 5;
+    background: var(--ac-color-steel-200);
+  }
+
+  .route__media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 160ms ease;
+  }
+
+  /* Each photograph carries its subject in a different part of the frame, so the focal point is
+     tuned per panel rather than shared. */
+  .route--contents .route__media :global(img) {
+    object-position: 50% 58%;
+  }
+
+  .route--neglected .route__media :global(img) {
+    object-position: 46% 52%;
+  }
+
+  .route--transition .route__media :global(img) {
+    object-position: 58% 56%;
+  }
+
+  .route:hover .route__media :global(img) {
+    transform: scale(1.02);
+  }
+
+  .route__copy {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 20px;
+  }
+
+  .route__copy h3 {
+    color: var(--ac-color-navy-900);
+    text-wrap: balance;
+  }
+
+  .route__copy p {
+    margin: 12px 0 0;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  /* Panels are equal-height grid items, so pushing the link to the bottom aligns all three
+     without reserving a fixed number of description lines. */
+  .route__link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    align-self: flex-start;
+    margin-top: auto;
+    padding-top: 14px;
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-underline-offset: 4px;
+  }
+
+  .route__link::after {
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    content: "";
+  }
+
+  .route:hover .route__link {
+    text-decoration: underline;
+  }
+
+  .route__link:focus-visible {
+    outline: 3px solid var(--ac-color-navy-800);
+    outline-offset: 3px;
+  }
+
+  /* §10's secondary treatment: one hairline row of plain text links. No cards, no icons, no
+     second grid. */
+  .handle__more {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: clamp(40px, 4vw, 56px);
+    padding-top: 18px;
+    gap: 4px 26px;
+  }
+
+  .handle__more > span {
+    color: var(--ac-color-navy-900);
+    font-size: 0.75rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .handle__more a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-underline-offset: 4px;
+  }
+
+  .handle__more a:hover {
+    color: var(--ac-color-navy-900);
+  }
+
+  .handle__more a:focus-visible {
+    outline: 3px solid var(--ac-color-navy-800);
+    outline-offset: 3px;
+  }
+
+  .handle__development-note {
+    /* Same opt-out as the hero's disclaimer, 2026-08-26, and the same reason: global.css's
+       `:where(p, li)` 62ch prose measure resolves to ~455px at this 11px size, which broke a
+       one-line credit into two inside a 1320px container. The cap is right for prose and wrong
+       for a caption. This one wrapped rather than clipped, so it stayed legible — it is
+       corrected here because it is the same disclaimer doing the same job. */
+    max-width: none;
+    margin: 32px 0 0;
+    color: var(--ac-color-ink-400);
+    font-size: 0.6875rem;
+    font-weight: 650;
+    letter-spacing: 0.055em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 64rem) {
+    .handle__inner {
+      width: min(100% - 52px, 1320px);
+    }
+
+    .handle__header {
+      --ac-text-h2-home-feature: 2.25rem;
+    }
+
+    .handle__routes {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* 2 + 1: the third situation takes the full row with a wider crop rather than being squeezed
+       into a half-width column on its own. */
+    .route:last-child {
+      display: grid;
+      align-items: end;
+      grid-column: 1 / -1;
+      gap: 0 32px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .route:last-child .route__media {
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .handle {
+      padding-block: 64px;
+    }
+
+    .handle__inner {
+      width: calc(100% - 40px);
+    }
+
+    .handle__header {
+      --ac-text-h2-home-feature: 2rem;
+      margin-bottom: 32px;
+    }
+
+    .handle__header p {
+      max-width: none;
+    }
+
+    .handle__routes {
+      gap: 40px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* Undo the 2 + 1 tablet composition so the third situation stacks like the other two: copy
+       tight under its photograph, not separated by the grid's row gap. */
+    .route:last-child {
+      display: flex;
+      align-items: stretch;
+      flex-direction: column;
+      gap: 0;
+      grid-column: auto;
+    }
+
+    .route__media,
+    .route:last-child .route__media {
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .route__media :global(img),
+    .route:hover .route__media :global(img) {
+      transform: none;
+      transition: none;
+    }
+  }
+</style>

@@ -28,10 +28,9 @@ const ROOT = fileURLToPath(new URL("..", import.meta.url)).replace(/\/$/, "");
 const DIST = join(ROOT, "dist");
 const VERBOSE = process.argv.includes("--verbose");
 
-const SOURCES = [
-  join(ROOT, "docs/27-SECTION-9-15-CONNECTIVE-COPY.md"),
-  join(ROOT, "docs/27-COPY-CANONICAL.md"),
-];
+// The connective-copy addendum was archived on 2026-08-24. Archived material cannot control
+// the current build, so the active trace reads the reconciled canon only.
+const SOURCES = [join(ROOT, "docs/27-COPY-CANONICAL.md")];
 
 // A string is exempt from "must be present" when the canon itself says it does not ship, or
 // when it belongs to a route held behind a gate. Each entry needs a reason — an exemption

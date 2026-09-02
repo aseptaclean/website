@@ -15,12 +15,17 @@ export const serviceAreasPage = {
   slug: "/service-areas/",
   seoTitle: "South Bay & Peninsula Service Area | Aseptaclean",
   metaDescription:
-    "Aseptaclean provides owner-operated cleaning and property clearing across the South Bay and Peninsula.",
+    "Owner-operated specialty property cleaning and complex cleanup across San Jose, the South Bay and the Peninsula. Reviewed one address at a time.",
   eyebrow: "Service area",
-  h1: "South Bay and Peninsula properties, reviewed one address at a time.",
+  h1: "South Bay & Peninsula properties, reviewed one address at a time.",
   lead: "Travel, access, parking, building rules and the project condition are considered before a scope is scheduled.",
   sectionLabel: "Primary service area",
-  h2: "Start with the property—not a city-page promise.",
+  // 2026-08-21. Was "Start with the property—not a city-page promise." Two problems: it is a
+  // mirrored X-not-Y aphorism (docs/20-COPY-VOICE.md rule 2 caps those at one per page and the
+  // page has no other claim on the slot), and it now argues against three city pages this same
+  // route links to eleven lines further down. The clusters below it are geography, so the
+  // heading is geography.
+  h2: "The same service area, whichever way you come at it.",
   body: "We currently review work in the cities below. Availability depends on the service, property condition, access and schedule.",
   primaryCities: [
     "San Jose",
@@ -31,8 +36,14 @@ export const serviceAreasPage = {
   ],
   primaryCityStatus: "Assessment requests accepted",
   alsoReviewed: ["Los Altos", "Los Altos Hills", "Los Gatos", "Palo Alto", "Atherton"],
+  // FACTUALLY CORRECTED 2026-08-21, and it has no consumer in src/ — nothing renders this string
+  // today. It said city guides publish only after "verified local operating details and real
+  // project proof". The real-project-proof half was superseded by owner ruling on 2026-08-21
+  // (AGENTS.md §2.1): a city page may now launch on verified, sourced facts with no prior job in
+  // that city. Leaving the old sentence in a copy source is how a superseded rule gets published
+  // by someone who wires the field up later.
   publishingNote:
-    "Individual city guides will be published only after each page has verified local operating details and real project proof. That keeps the site useful and avoids thin location pages."
+    "City pages publish only once the local operating details on them are verified against a named source and that city's availability is confirmed. That is what keeps them useful instead of thin."
 } as const;
 
 export const processPage = {
@@ -97,10 +108,14 @@ export const aboutPage = {
   slug: "/about/",
   seoTitle: "About Aseptaclean | Owner-Operated Property Cleaning",
   metaDescription:
-    "Meet Matthew Ruiz and learn how Aseptaclean approaches cleaning and property clearing work.",
+    "Meet Matthew Ruiz and how Aseptaclean approaches specialty property cleaning and complex cleanup in the South Bay & Peninsula.",
   eyebrow: "About Aseptaclean",
-  h1: "A controlled-process mindset for properties that need careful decisions.",
-  lead: "Aseptaclean is an owner-operated cleaning and property clearing business serving the South Bay and Peninsula.",
+  // 2026-08-21. "A controlled-process mindset" is internal vocabulary and reads like a consulting
+  // deck; the lead described the company by its two operational verbs. Positioning of record is
+  // specialty property cleaning and complex cleanup — the lead now says that, and the H1 says the
+  // thing the founder's background actually buys the customer.
+  h1: "Careful work on properties where the decisions matter.",
+  lead: "Aseptaclean is an owner-operated specialty property cleaning and complex cleanup business serving the South Bay & Peninsula.",
   founderHeading: "Matthew Ruiz stays close to the scope.",
   founderBody:
     "Matthew is directly involved in scope review, project planning and operating oversight. His background includes a B.S. in Biochemistry from UC Riverside, pharmaceutical manufacturing, and histology and surgical pathology.",
@@ -158,6 +173,15 @@ export const faqPage = {
       answer:
         "No. Aseptaclean is not a contractor. Structural work, demolition, pest treatment and specialty remediation are outside the current scope."
     },
+    // Added 2026-08-21. `/faq/` is where a comparison shopper lands, and this is the single
+    // question that separates Aseptaclean from the junk-removal companies it gets grouped with.
+    // Same operating boundary as the homepage FAQ and the debris-removal page, said once more
+    // here because this is the page people read to settle exactly this kind of question.
+    {
+      question: "Are you a hauling company?",
+      answer:
+        "No, and it matters more than it sounds. We do the work at the property: sorting, bagging, staging, clearing rooms and garages, and loading the container when that is part of the job. When a project needs a dumpster or debris box we arrange it through the provider your city authorizes, sort out placement and any permit, and handle the disposal requirements. The transport off-site is done by that provider, not by us."
+    },
     {
       question: "Can I manage the project remotely?",
       answer:
@@ -176,9 +200,15 @@ export const contactPage = {
   // Retitled 2026-08-18. The old "Request a Property Assessment | Aseptaclean" duplicated the
   // intent of /request-assessment/ and gave the two routes near-identical titles in the SERP,
   // so neither read as the contact page.
-  seoTitle: "Contact Aseptaclean | San Jose Property Clearing",
+  //
+  // Restored to docs/19-SYSTEM-AND-SITEMAP.md §2.2 CONTACT verbatim on 2026-08-20 (B1). The
+  // 2026-08-18 replacement, "Contact Aseptaclean | San Jose Property Clearing", solved the
+  // duplication but wrote a NEW string rather than using the one §2.2 already specified — and
+  // dropped "South Bay" doing it. Doc 19 owns titles by charter (AGENTS.md §1 rank 6; doc 27
+  // owns page words, and a <title> is not page copy). Do not re-author this string.
+  seoTitle: "Contact Aseptaclean | San Jose & South Bay Property Cleanouts",
   metaDescription:
-    "Request an Aseptaclean cleaning or property clearing assessment in the South Bay and Peninsula.",
+    "Request an Aseptaclean cleaning or property clearing assessment in the South Bay & Peninsula.",
   eyebrow: "Contact",
   h1: "Start with the property details.",
   lead: "Share the city, approximate size, current condition, access and deadline. Clear photos help us decide whether a walkthrough is needed.",

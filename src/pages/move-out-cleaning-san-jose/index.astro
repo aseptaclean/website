@@ -1,21 +1,1419 @@
 ---
-// Route generated 2026-08-16 from docs/27-COPY-CANONICAL.md via src/data/doc27ServicePages.ts.
-// All page copy lives in that data record; all structure lives in ServicePageLayout, which
-// implements doc 27 §11's shared service-page sequence. Nothing page-specific belongs in this
-// file beyond the four identity values below — if a sentence needs to change, change doc 27
-// and regenerate the data, do not hand-edit copy here.
+// MOVE-OUT CLEANING — `/move-out-cleaning-san-jose/`. Rebuilt 2026-09-01 as the fifth
+// gold-standard individual service page (docs/30-WEBSITE-MASTER-SPEC.md §20, §20A), same approach
+// as /hoarding-cleanup-san-jose/, /estate-cleanout-san-jose/ and /deep-cleaning-san-jose/: copy
+// reconciled from docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md §38 under §20A.1's order —
+// landing copy → map to current route → check active/gated state → check claims, pricing and
+// scope → check current copy authority → then implement.
 //
-// Ships noindex pending this page's own gate (see the record's `gate` field) and is excluded
-// from src/pages/sitemap.xml.ts. Do not bulk-flip.
-import ServicePageLayout from "@layouts/ServicePageLayout.astro";
-import { moveOutCleaningPage } from "@data/doc27ServicePages";
+//   01 SERVICE HERO             photograph + overlay, left-aligned, service confirmed on sight
+//   02 CLEAN FOR THE HANDOFF    the reframe: a move-out clean has a job to do, not an adjective —
+//                               "ready for" sequence + what needs to be clean before keys change
+//   03 EMPTY ACCESS             this page's signature movement — an empty home exposes what
+//                               furniture was hiding; large photo + what becomes visible +
+//                               empty-does-not-mean-clean
+//   04 SCOPE + TIMING           written scope by room, what is not automatic, movers-then-cleaners
+//                               sequencing — combined per §20A.6
+//   05 CLEANING VS DAMAGE       cleaning/damage boundary, heavier-than-expected conditions, and the
+//                               security-deposit boundary — the honest-limits movement this page
+//                               needs that deep-cleaning does not (no landlord/tenant relationship
+//                               there)
+//   06 WHAT PROOF EXISTS + FIT + PRICE   the honest no-photo-gallery gap, fit/price logic
+//   07 QUESTIONS                seven, the ones that decide the purchase
+//   08 CLOSE                    "When does the property need to be ready?"
+//
+// THE SPECIALIST THESIS IS §20A.5's, unchanged: **get the property ready for the next handoff.**
+// Every movement reinforces it without repeating the sentence — the hero states it, 02 explains
+// what "ready" means for THIS property's next use, 03 is why a move-out is a real cleaning
+// opportunity (access), 04 is the written scope that makes the thesis binding, 05 is the honest
+// limit (cleaning is not repair, not a deposit guarantee), 06 is the honest evidence gap plus fit
+// and price, 07 answers the objections a tenant, owner or agent actually has.
+//
+// NOT A DEEP-CLEANING CLONE WITH THE CTA CHANGED. Per the task brief's explicit instruction, this
+// page is built around property TRANSITION, not buildup/detail. Concretely different from
+// /deep-cleaning-san-jose/:
+//   - No "look closer" room-by-room condition-recognition movement built around buildup severity.
+//     This page's equivalent movement (03) is about ACCESS — what an empty home exposes — not
+//     about how much grease or dust has accumulated. The photographic subject is a vacated room,
+//     not a lived-in one.
+//   - The scope movement here is framed around the property's NEXT USE (rental handoff, sale,
+//     new tenant, family transfer) and sequenced against movers/repairs/trash removal — deep
+//     cleaning has no handoff-timing content at all, because a one-time detailed clean of an
+//     occupied home has no "who gets the keys next" question.
+//   - This page carries a dedicated cleaning-vs-damage-vs-SECURITY-DEPOSIT movement. Deep cleaning
+//     has a cleaning-vs-damage note folded into its scope section; this page needs a stronger,
+//     separate version because the landlord/tenant relationship raises a claim Aseptaclean must
+//     never make (deposit return, inspection passage) that simply does not arise on a one-time
+//     residential deep clean.
+//   - Deep cleaning's fit section reframes "routine cleaning vs detailed cleaning." This page's
+//     fit section instead reframes "move-out cleaning vs property cleanout" — the basic-option
+//     comparison a move-out visitor actually needs is "do I need cleaning or do I need the
+//     property cleared first," not "do I need more scrubbing."
+//   - Different close line, different price-driver list order (occupancy/handoff timing leads
+//     here; buildup leads on deep cleaning), different image (a vacated room, not no image).
+//
+// DISTINCTION FROM PROPERTY CLEANOUTS (`/property-cleanouts-san-jose/`), stated explicitly on the
+// page itself (movement 06's fit column) per the task brief: Property Cleanouts is for a property
+// that still has contents blocking access — clearing has to happen before cleaning can start. This
+// page is for a property that is already mostly accessible, where the primary remaining need is
+// cleaning. The two pages are sequential, not overlapping, and each links to the other at the
+// point a visitor might be in the wrong one.
+//
+// WHAT THIS REPLACES. The previous build: a 21-line wrapper around the shared
+// `ServicePageLayout.astro` template, fed by `moveOutCleaningPage` in doc27ServicePages.ts (H1
+// "Move-In & Move-Out Cleaning" — a conflated title covering two distinct intents on one page).
+// 1,067 words, one H1, SIXTEEN H2s, 4 H3s, 3 <img> (all nav/footer chrome, zero content
+// photography), 81 links (mostly nav/footer). §20A.3 is explicit that move-in cleaning is not yet
+// a routed decision — no dedicated page, no nav entry — so this rebuild's H1 and thesis narrow to
+// MOVE-OUT only, matching the route's own slug and the task brief's scope. The move-in intent
+// remains servable through this route's existing "already empty" framing where it naturally
+// overlaps (an empty home before occupancy is the same access condition as an empty home after
+// move-out), but the page does not carry a second, equally-weighted move-in argument the way the
+// old H1 implied. Approved language from the old record — the written-scope framing, the FAQ
+// answer on security deposits, the "landlord/property manager" audience — is mined for copy below,
+// not discarded. Full accounting in docs/05-DECISIONS-LOG.md.
+//
+// ROUTE STATE IS UNCHANGED AND DELIBERATELY SO. Same slug, same canonical, same `index, follow`,
+// same sitemap membership (confirmed indexable in sitemap.xml.ts and AGENTS.md §2's route table).
+// No route was created, renamed, redirected or re-indexed. `megaNav`'s "Move-In & Move-Out" nav
+// label in src/data/site.ts is untouched — that is shared navigation data, out of scope for a
+// single-page content rebuild, and changing it would affect every page that renders the header.
+//
+// PRICING — AGENTS.md §4 IS ABSOLUTE. The landing-page source's "$1,350" starting-price sentence
+// appears three times in §38 (hero, cost section, final CTA). AGENTS.md §1.1 names this exact
+// figure as barred pending an owner decision reversing §4, and doc 30 §20A.17 requires the same
+// check before any publication. No current owner decision reverses §4, so no figure appears
+// anywhere on this page — not in the hero, not near price logic, not in a footnote. Price logic is
+// cost drivers + the $195 assessment framing only, exactly as the four prior rebuilds ship.
+//
+// SECURITY-DEPOSIT / INSPECTION LANGUAGE — the task brief's strongest constraint for this specific
+// page. Never guaranteed anywhere on this page: full deposit return, landlord approval, passing
+// inspection, no deductions, or that the home will "look brand new." Movement 05 states the
+// boundary in the landing-page source's own factual register ("A detailed move-out clean can
+// address the cleaning portion of the handoff. It cannot control damage-related deductions or a
+// landlord's final decision.") and the FAQ repeats it as a direct answer to the question a tenant
+// actually asks.
+//
+// NO CredentialBar ON THIS ROUTE. Same reasoning as the four prior rebuilds — both gated
+// credential-bar claims (insurance wording, organic pathogen endorsement) are release-gated by
+// AGENTS.md §3 pending a current COI match, and dropping a gated claim from an indexable page is
+// the conservative direction. The component is untouched; only this call site omits it.
+//
+// NO EMBEDDED FORM. §20A.8's destination rule and §20A.9's "one assessment engine": CTAs link to
+// /request-assessment/?service=move-out, which AssessmentForm.astro now recognizes (added
+// alongside this page) and maps to "Difficult move-out" — an existing `property_situation` option
+// (assessment.propertySituations) unclaimed by the four other service contexts already wired
+// (hoarding-cleanup → "Accumulated contents"; estate-cleanout → "Inherited or estate property";
+// property-cleanouts → "Landlord turnover"; deep-cleaning → "Already empty but requires detailed
+// cleaning"). No new option was added to the form.
+//
+// IMAGE — condition-development-reset-aismallard.jpg (the empty room) IS USED HERE, the first
+// route to use it. Every prior rebuild (Hoarding, Estate, Property Cleanouts, Deep Cleaning)
+// deliberately withheld this exact file because docs/06-ASSET-MANIFEST.md §4 flags an open owner
+// question — does a bare room read as a fabricated "after" shot? — and on THOSE pages (whose
+// arguments are start→sorted→cleared→cleaned or buildup→detail) placing an empty room anywhere
+// near the sequence risks exactly that misread, since none of those pages' subject matter IS an
+// empty room. This page's subject matter IS an empty room: the core argument (movement 03) is
+// literally "the home is empty, and that access is the opportunity." Used here, the photograph is
+// not standing in for a before/after claim — it is not paired with any "before" image, it is not
+// captioned as a result, and the page's own body copy explicitly disclaims completed-work status
+// ("empty does not always mean clean"). It illustrates the CONDITION the page is discussing, the
+// same [ATMOS]-class role every other reused asset on the site already plays (AGENTS.md §0.3;
+// doc 21 §6). Development-label caption carried through unchanged from its prior uses. No new
+// asset acquired — docs/06-ASSET-MANIFEST.md §4's cap is not raised, an existing file gains a
+// fourth documented role.
+import { Image } from "astro:assets";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import heroImage from "../../assets/homepage/condition-development-reset-aismallard.jpg";
+import { legal, site } from "@data/site";
+
+// TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPH — NOT Aseptaclean project work, NOT a client
+// property, and NOT proof of any completed job or a before/after pair. `[ATMOS]`-class under
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6: no crew, no vehicle, no equipment, no work in progress.
+//
+//   condition-development-reset-aismallard.jpg
+//     aismallard — CC BY-SA 3.0
+//     https://commons.wikimedia.org/wiki/File:Empty_apartment_room_with_corner_windows.jpg
+//
+// REUSED, NOT NEWLY ACQUIRED. See the top-of-file note on why this page is the first to use it.
+
+const canonicalPath = "/move-out-cleaning-san-jose/";
+
+// REWRITTEN from `moveOutCleaningPage.seoTitle` / `.metaDescription` (doc27ServicePages.ts), which
+// described the old conflated "Move-In & Move-Out Cleaning" framing. This rebuild's H1 and thesis
+// narrow to move-out only, so title/description are brought into agreement per §20A.22.
+const title = "Move-Out Cleaning in San Jose | Aseptaclean";
+const description =
+  "Move-out cleaning in San Jose and the South Bay & Peninsula, scoped around the property's next handoff. The written scope is agreed before the crew arrives, not decided on walkthrough day.";
+
+// §20A.8's destination rule + §20A.9's service branch. `?service=move-out` is read by
+// AssessmentForm.astro (see that component's service-context block, added alongside this page).
+const assessmentHref = "/request-assessment/?service=move-out";
+const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
+
+// Movement 02's "ready for" sequence — the handoff-defines-scope reframe from the task brief,
+// kept as short typographic fragments rather than six equal tiles.
+const readyFor = [
+  "a buyer walkthrough",
+  "a landlord or property-manager inspection",
+  "a new tenant",
+  "listing photography",
+  "a family handoff",
+  "repair or contractor work"
+] as const;
+
+// Movement 03: what becomes visible once furniture and belongings are gone.
+const exposed = [
+  "dust lines along the walls",
+  "baseboard buildup",
+  "marks on doors and frames",
+  "grease in the kitchen",
+  "dirt inside cabinets",
+  "shower and fixture buildup",
+  "dirty window tracks",
+  "dust in closets",
+  "floor edges that were covered"
+] as const;
+
+// What cleaning does not automatically fix, even once it is visible — closes movement 03 before
+// the page moves into the written scope, per the task brief's sequencing.
+const notFixedByAccess = [
+  "wall damage",
+  "flooring damage",
+  "scratches",
+  "permanent staining",
+  "paint damage",
+  "worn finishes"
+] as const;
+
+// Movement 04's written scope, grouped by room — from §38's "What Can Be Included?" section,
+// reworded to match this page's own voice rather than quoted verbatim.
+const scope = [
+  { area: "Kitchen", items: ["counters", "backsplash", "sink and faucets", "stovetop", "cabinet fronts", "appliance exteriors", "baseboards", "doors and frames", "floors"] },
+  { area: "Bathrooms", items: ["shower and tub", "shower glass", "toilet", "sink and faucets", "mirrors", "vanity", "baseboards", "doors and frames", "floors"] },
+  { area: "Bedrooms & living areas", items: ["reachable surfaces", "closets and shelves", "baseboards", "doors and frames", "trim", "switch plates", "floor edges", "floors"] }
+] as const;
+
+const scopeExtras = [
+  "Inside empty cabinets and drawers",
+  "Interior windows, sills and tracks",
+  "Inside the oven",
+  "Inside the refrigerator",
+  "Garage areas",
+  "Other detail work agreed on before the job"
+] as const;
+
+const notAutomatic = [
+  "Inside every cabinet or drawer",
+  "Large amounts of interior glass",
+  "Heavy oven or refrigerator buildup",
+  "Garage detailing",
+  "Unusually heavy buildup",
+  "Areas still blocked by belongings"
+] as const;
+
+// Movement 04's timing/sequencing content — the task brief's "work backward from the handoff."
+const sequence = [
+  "Belongings, boxes and trash are out",
+  "Repairs, painting or flooring work are finished",
+  "Aseptaclean cleans the agreed scope",
+  "Final review against the written scope",
+  "Handoff to the next step"
+] as const;
+
+// Movement 05: what cleaning can address vs. what it cannot fix — the security-deposit boundary
+// is kept as its own dedicated statement per the task brief, not folded into this list.
+const canHelp = ["dirt", "dust", "grease", "soap buildup", "food residue", "normal surface soil"] as const;
+const cannotFix = ["holes", "broken items", "scratches", "chipped surfaces", "burn marks", "damaged paint", "etched glass", "damaged stone", "worn finishes", "broken flooring"] as const;
+
+// What a heavier-than-expected condition can look like — the task brief's "if the condition
+// changes the job, we tell you" rule, kept short and factual, not fear-based.
+const heavierConditions = [
+  "heavy grease or buildup",
+  "excessive pet hair",
+  "significant debris",
+  "areas that are not reachable yet"
+] as const;
+
+const goodFit = [
+  "the property is empty or nearly empty",
+  "you want a detailed clean, not a quick wipe-down",
+  "you want the scope written before work starts",
+  "cabinets, appliances or windows need attention",
+  "there is a real handoff date to work backward from",
+  "you do not want to argue later about what was included"
+] as const;
+
+const poorFit = [
+  "you only want the lowest-cost wipe-down",
+  "you need recurring housekeeping, not a one-time clean",
+  "the property still holds too much to reach the surfaces",
+  "the main need is repairs, not cleaning",
+  "you expect cleaning to guarantee a deposit or inspection result"
+] as const;
+
+const priceDrivers = [
+  "square footage and bedroom/bathroom count",
+  "whether the property is empty or still occupied",
+  "current condition and amount of buildup",
+  "cabinets, appliances and windows included",
+  "garage or other extra areas",
+  "how much detail work you want",
+  "your handoff date"
+] as const;
+
+// §20A.18: 4–7 highest-value service-specific questions. The security-deposit question leads
+// because it is the single highest-stakes claim this page must get right.
+const faq = [
+  [
+    "Will this guarantee my security deposit back?",
+    [
+      "No. No cleaning company can honestly promise that.",
+      "A detailed move-out clean can address the cleaning portion of the handoff. It cannot control damage-related deductions, unpaid rent, normal wear, or a landlord's final decision."
+    ]
+  ],
+  [
+    "Should the home be empty before you clean?",
+    [
+      "For a true move-out clean, yes. Furniture, boxes, trash and food should be out so the crew is cleaning, not packing or sorting your belongings.",
+      "If items will still be there, tell us before the job — it can change the scope and the price."
+    ]
+  ],
+  [
+    "When should I schedule the clean relative to the movers?",
+    [
+      "After. If repairs, painting or flooring work are still happening, the property can get dirty again before the handoff.",
+      "The better order is: move out, finish other work, remove trash, then clean."
+    ]
+  ],
+  [
+    "Do you clean inside cabinets, the oven, or the refrigerator?",
+    ["Yes, when they are empty and included in the scope. Heavy buildup can take more time and is priced before the job rather than assumed."]
+  ],
+  [
+    "Do you clean windows and garages?",
+    ["Interior windows and garage areas can be added to the scope. Tell us during the estimate if you want them included."]
+  ],
+  [
+    "What if the property is dirtier than expected?",
+    [
+      "We tell you. If the condition changes the scope — heavier buildup, pet hair, debris, or areas we cannot yet reach — we say so before doing the extra work, not after.",
+      "We do not quietly expand the job and surprise you with a bigger bill."
+    ]
+  ],
+  [
+    "Do you have a landlord or property checklist I should send?",
+    ["Yes, send it. A move-out inspection list or property checklist helps us compare what you want cleaned against what the landlord or manager is actually looking for."]
+  ]
+] as const;
+
+const schema = [
+  {
+    "@type": "Service",
+    name: "Move-Out Cleaning in San Jose",
+    serviceType: "Move-out cleaning",
+    provider: { "@id": new URL("/#business", site.urls.site).href },
+    areaServed: { "@type": "City", name: "San Jose" }
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Detailed Cleaning",
+        item: new URL("/detailed-cleaning/", site.urls.site).href
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Move-Out Cleaning",
+        item: new URL(canonicalPath, site.urls.site).href
+      }
+    ]
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: faq.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer.join("\n\n") }
+    }))
+  }
+];
 ---
 
-<ServicePageLayout
-  page={moveOutCleaningPage}
-  serviceType="Move-in and move-out cleaning"
-  breadcrumbName="Move-In & Move-Out Cleaning"
-  idPrefix="moveout"
-  groupName="Detailed Cleaning"
-  groupHref="/detailed-cleaning/"
-/>
+<BaseLayout title={title} description={description} canonicalPath={canonicalPath} schema={schema}>
+  {/* ══ 01 · SERVICE HERO ═══════════════════════════════════════════════════════════════════
+      §20A.7: location context → unmistakable service H1 → specialist thesis → service CTA →
+      phone as secondary → service-relevant image. The empty-room photograph is this page's own
+      subject matter — see the top-of-file note on why this is the first route to use it. */}
+  <section class="mo-hero" aria-labelledby="mo-title">
+    <div class="mo-hero__media">
+      <Image
+        src={heroImage}
+        alt=""
+        layout="full-width"
+        widths={[480, 768, 1024, 1440, 1920]}
+        sizes="100vw"
+        format="webp"
+        quality={74}
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+      />
+    </div>
+
+    <div class="mo-hero__overlay" aria-hidden="true"></div>
+
+    <div class="mo-hero__shell">
+      <div class="mo-hero__content">
+        <p class="mo-hero__eyebrow">
+          Move-Out Cleaning · San Jose · {site.location.serviceArea}
+        </p>
+        <h1 id="mo-title" class="ac-type-h1-hub">Move-Out Cleaning</h1>
+        <p class="mo-hero__lede">
+          When the belongings are leaving, the property gets one of its best chances for a true
+          top-to-bottom cleaning. We define the work around what it needs before the handoff.
+        </p>
+        <p class="mo-hero__thesis">Get the property ready for whoever gets it next.</p>
+
+        <div class="mo-hero__actions">
+          <a class="mo-btn mo-btn--light" href={assessmentHref}>Get My Move-Out Estimate</a>
+          {phoneHref && (
+            <a class="mo-hero__call" href={phoneHref}>Call {site.business.phone}</a>
+          )}
+        </div>
+      </div>
+    </div>
+
+    <p class="mo-hero__development-note">
+      Development reference photograph · not Aseptaclean project work
+    </p>
+  </section>
+
+  {/* ══ 02 · CLEAN FOR THE HANDOFF ═══════════════════════════════════════════════════════════
+      §20A.6's reframe movement. The core argument: the goal is not "clean," it is "ready for the
+      next person" — and what "ready" means depends on what the property is being handed to. */}
+  <section class="mo-handoff" aria-labelledby="handoff-title">
+    <div class="mo-handoff__inner">
+      <p class="mo-label">What the clean is for</p>
+      <h2 id="handoff-title" class="ac-type-h2-home-feature">A move-out clean has a job to do.</h2>
+      <p class="mo-lede">
+        The property may need to be ready for a buyer walkthrough, a landlord inspection, a new
+        tenant, or a family handoff. A quick surface clean may be enough for one property. Another
+        may need a lot more detail. The end goal is what decides which.
+      </p>
+
+      <div class="mo-ready">
+        <p class="mo-ready__label">Ready for</p>
+        <ul class="mo-ready__list">
+          {readyFor.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+
+      <p class="mo-statement">The handoff defines the scope.</p>
+      <p class="mo-handoff__question">What needs to be clean before the keys change hands?</p>
+    </div>
+  </section>
+
+  {/* ══ 03 · EMPTY ACCESS CHANGES THE JOB ═══════════════════════════════════════════════════
+      This page's signature movement, per the task brief. Large photo (the hero already carries
+      it, so this movement leads with the list) + what becomes visible + empty-does-not-mean-clean
+      + what access does not fix. */}
+  <section class="mo-access" aria-labelledby="access-title">
+    <div class="mo-access__inner">
+      <div class="mo-access__lead">
+        <p class="mo-label">Why this is a real opportunity</p>
+        <h2 id="access-title" class="ac-type-h2-home-feature">
+          An empty home gives us access you normally do not have.
+        </h2>
+        <p class="mo-lede">
+          Furniture, rugs, boxes and decor can hide a lot. Once they are gone, previously blocked
+          areas become reachable — wall edges, baseboards, closet floors, cabinet interiors, and
+          flooring that has been covered for years.
+        </p>
+        <p class="mo-statement">Empty does not always mean clean.</p>
+      </div>
+
+      <div class="mo-exposed">
+        <h3 class="ac-type-h3-home-route">What often shows up once furniture is gone</h3>
+        <ul class="mo-inline-list">
+          {exposed.map((item) => <li>{item}</li>)}
+        </ul>
+
+        <p class="mo-access__note">
+          Access does not automatically fix what it reveals. Cleaning does not repair:
+        </p>
+        <ul class="mo-inline-list">
+          {notFixedByAccess.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 04 · SCOPE + TIMING ═══════════════════════════════════════════════════════════════════
+      §20A.6 combines the written scope with movers/access sequencing — both answer "what happens
+      and in what order," so they belong in one movement rather than two. §20A.13: scope and
+      exclusions are conversion content. */}
+  <section class="mo-scope" aria-labelledby="scope-title">
+    <div class="mo-scope__inner">
+      <p class="mo-label">The written scope</p>
+      <h2 id="scope-title" class="ac-type-h2-home-feature">We define the scope before the job.</h2>
+      <p class="mo-lede">
+        “Move-out cleaning” means different things to different companies. You think the oven is
+        included; the cleaner does not. You expect the window tracks; they were never part of the
+        quote. We avoid that by writing the scope down before the crew arrives.
+      </p>
+
+      <div class="mo-scope__grid">
+        {scope.map((group) => (
+          <div class="mo-scope__col">
+            <h3 class="ac-type-h3-home-route">{group.area}</h3>
+            <ul class="mo-rule-list mo-rule-list--tight">
+              {group.items.map((item) => <li>{item}</li>)}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <div class="mo-scope__extras">
+        <h3 class="ac-type-h3-home-route">Other work, when added to the scope</h3>
+        <ul class="mo-inline-list">
+          {scopeExtras.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+
+      <div class="mo-notauto">
+        <h3 class="ac-type-h3-home-route">What is not automatically included</h3>
+        <ul class="mo-minus-list">
+          {notAutomatic.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="mo-statement mo-statement--wide">
+          If it adds meaningful work, it goes in the scope. We would rather price it first than
+          surprise you on the day.
+        </p>
+      </div>
+
+      <div class="mo-sequence">
+        <h3 class="ac-type-h3-home-route">Cleaning works best after the movers are done.</h3>
+        <p>
+          If repairs, painting or flooring work are still happening, the property can get dirty
+          again before the handoff. Work backward from the date it actually needs to be ready:
+        </p>
+        <ol class="mo-sequence__list">
+          {sequence.map((step) => <li>{step}</li>)}
+        </ol>
+        <p>
+          If movers and cleaners have to overlap, tell us — the scope may need to be split or
+          adjusted rather than done in one pass.
+        </p>
+      </div>
+
+      <p class="mo-disclaimer">{legal.scopeDisclaimer}</p>
+    </div>
+  </section>
+
+  {/* ══ 05 · CLEANING VS DAMAGE + SECURITY DEPOSIT ═══════════════════════════════════════════
+      The task brief's most important boundary movement. Kept separate from the deep-cleaning
+      page's version because this page needs an explicit, standalone security-deposit statement a
+      one-time residential detailed clean never has to make. */}
+  <section class="mo-boundary" aria-labelledby="boundary-title">
+    <div class="mo-boundary__inner">
+      <p class="mo-label">What cleaning can and cannot do</p>
+      <h2 id="boundary-title" class="ac-type-h2-home-feature">Cleaning cannot repair damage.</h2>
+
+      <div class="mo-boundary__pair">
+        <div class="mo-note">
+          <h3 class="ac-type-h3-home-route">Cleaning can help with</h3>
+          <ul class="mo-inline-list">
+            {canHelp.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div class="mo-note">
+          <h3 class="ac-type-h3-home-route">Cleaning does not fix</h3>
+          <ul class="mo-inline-list">
+            {cannotFix.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      <p class="mo-statement mo-statement--wide">
+        If something is damaged, more scrubbing does not turn it into cleaning. We will tell you
+        when we see the difference.
+      </p>
+
+      <div class="mo-deposit">
+        <h3 class="ac-type-h3-home-feature">We will not promise your security deposit.</h3>
+        <p>
+          No cleaning company can control a lease, unpaid rent, normal wear, pre-existing damage,
+          or a landlord's inspection standards. A detailed move-out clean can address the cleaning
+          portion of the handoff. It cannot control damage-related deductions or a landlord's final
+          decision.
+        </p>
+        <p>
+          If you have a move-out inspection list or a landlord checklist, send it. It helps us
+          compare what you want cleaned against what the property manager is actually looking for.
+        </p>
+      </div>
+
+      <div class="mo-heavier">
+        <h3 class="ac-type-h3-home-route">If the condition is heavier than expected</h3>
+        <p>Sometimes a property turns out to need more than the first look suggested — for example:</p>
+        <ul class="mo-inline-list">
+          {heavierConditions.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="mo-statement">If the condition changes the job, we tell you before we do the extra work, not after.</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 06 · WHAT PROOF EXISTS + FIT + PRICE ═════════════════════════════════════════════════
+      §20A.15's honest evidence gap, combined with §20A.12 (basic-option reframe — here, that is
+      move-out cleaning vs. a property cleanout, not routine vs. detailed) and price logic. */}
+  <section class="mo-fit" aria-labelledby="fit-title">
+    <div class="mo-fit__inner">
+      <p class="mo-label">Evidence, fit and price</p>
+      <h2 id="fit-title" class="ac-type-h2-home-feature">Is this the right service for the property?</h2>
+      <p class="mo-lede">
+        There is no before/during/after gallery on this page yet. Aseptaclean has no photographed
+        move-out project to show, and a set of stock cleaning photos would tell you nothing true
+        about how this company works. What does exist is the written scope itself, applied to your
+        actual property rather than a generic checklist.
+      </p>
+
+      <div class="mo-fit__columns">
+        <div class="mo-fit__col">
+          <h3 class="ac-type-h3-home-route">Usually a fit</h3>
+          <ul class="mo-check-list">
+            {goodFit.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div class="mo-fit__col mo-fit__col--out">
+          <h3 class="ac-type-h3-home-route">Probably not a fit</h3>
+          <ul class="mo-minus-list">
+            {poorFit.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="mo-fit__aside">
+            If the property still holds too much to reach the surfaces, clearing has to happen
+            before cleaning can start — see <a href="/property-cleanouts-san-jose/">property
+            cleanouts</a>. If the main issue is a family estate transition rather than a
+            straightforward move-out, <a href="/estate-cleanout-san-jose/">estate cleanout</a> may
+            fit better. If there is no handoff deadline and you just want a detailed one-time
+            clean, see <a href="/deep-cleaning-san-jose/">detailed deep cleaning</a>. Not sure?
+            Send photos. We will say whether it sounds like a fit.
+          </p>
+        </div>
+      </div>
+
+      <div class="mo-price">
+        <div class="mo-price__copy">
+          <h3 class="ac-type-h3-home-feature">Size tells us how much property there is. Condition tells us how much work it needs.</h3>
+          <p>
+            A vacant two-bedroom in good shape and an occupied four-bedroom with heavy kitchen
+            buildup are not the same job at the same size. Occupancy status, condition, and how
+            much detail you want all move the price.
+          </p>
+          <p class="mo-price__fee">{site.offer.assessmentFraming(site.offer.assessmentFee)}</p>
+        </div>
+        <div class="mo-price__drivers">
+          <p class="mo-price__label">What moves the number</p>
+          <ul class="mo-rule-list mo-rule-list--tight">
+            {priceDrivers.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 07 · QUESTIONS ═══════════════════════════════════════════════════════════════════════
+      Open Q&A, not an accordion — same reasoning as the four prior rebuilds: no click between a
+      tenant and the answer to "will this guarantee my deposit back?" */}
+  <section class="mo-faq" aria-labelledby="faq-title">
+    <div class="mo-faq__inner">
+      <p class="mo-label">Questions</p>
+      <h2 id="faq-title" class="ac-type-h2-home-feature">The questions that decide this.</h2>
+      <p class="mo-lede">
+        Seven that come up on nearly every move-out job. The general ones — scheduling, payment,
+        what happens on the day — are on the <a href="/faq/">main FAQ</a>.
+      </p>
+
+      <div class="mo-faq__grid">
+        {faq.map(([question, answer]) => (
+          <article class="mo-qa">
+            <h3 class="ac-type-h3-home-route">{question}</h3>
+            {answer.map((paragraph) => <p>{paragraph}</p>)}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 08 · CLOSE ═══════════════════════════════════════════════════════════════════════════
+      Typographic on navy, same rhythm as the prior rebuilds' close — the hero already carries this
+      page's one photograph. */}
+  <section class="mo-close" aria-labelledby="close-title">
+    <div class="mo-close__inner">
+      <div class="mo-close__copy">
+        <h2 id="close-title" class="ac-type-h2-final">When does the property need to be ready?</h2>
+        <p class="mo-close__lede">
+          Tell us the size, the move-out date, the handoff date, and the current condition. Photos
+          help. We will review the job and tell you the next step.
+        </p>
+      </div>
+
+      <div class="mo-close__action">
+        <a class="mo-btn mo-btn--light" href={assessmentHref}>Get My Move-Out Estimate</a>
+        <div class="mo-close__secondary">
+          {phoneHref && <a href={phoneHref}>Call {site.business.phone}</a>}
+          {smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
+        </div>
+        <p class="mo-close__note">
+          Submitting a request does not authorize work or create a service agreement.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     Shared page primitives, same system the four prior rebuilds established (spacing, rule and
+     list treatment), reused under an `mo-` prefix so scoped styles never collide. NOTHING in this
+     file sets font-size on a heading tag or on a selector that resolves to one; heading sizes come
+     from .ac-type-* role classes and are tuned by overriding the role class's TOKEN on a container
+     (AGENTS.md §6 law 1).
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+
+  .mo-label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .mo-lede {
+    margin: 22px 0 0;
+    max-width: 60ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .mo-statement {
+    margin: 24px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-navy-900);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .mo-statement--wide {
+    max-width: 60ch;
+  }
+
+  .mo-inline-list {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: none;
+    margin: 14px 0 0;
+    padding: 0;
+    gap: 4px 10px;
+    list-style: none;
+  }
+
+  .mo-inline-list li {
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .mo-inline-list li:not(:last-child)::after {
+    margin-left: 10px;
+    color: var(--ac-color-line-strong);
+    content: "·";
+  }
+
+  .mo-rule-list {
+    display: grid;
+    max-width: none;
+    margin: 20px 0 0;
+    padding: 0;
+    gap: 0 44px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    list-style: none;
+  }
+
+  .mo-rule-list li {
+    max-width: none;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 12px 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .mo-rule-list--tight {
+    grid-template-columns: 1fr;
+  }
+
+  .mo-rule-list--tight li {
+    padding: 10px 0;
+  }
+
+  .mo-check-list,
+  .mo-minus-list {
+    max-width: none;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .mo-check-list li,
+  .mo-minus-list li {
+    position: relative;
+    max-width: none;
+    padding: 9px 0 9px 26px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .mo-check-list li + li,
+  .mo-minus-list li + li {
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .mo-check-list li::before,
+  .mo-minus-list li::before {
+    position: absolute;
+    top: 17px;
+    left: 0;
+    width: 12px;
+    height: 2px;
+    background: var(--ac-color-blue-deep);
+    content: "";
+  }
+
+  .mo-minus-list li::before {
+    background: var(--ac-color-exclusion-red);
+  }
+
+  .mo-btn {
+    display: inline-flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    padding-inline: 30px;
+    font-size: 0.9375rem;
+    font-weight: 750;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+
+  .mo-btn--light {
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+  }
+
+  .mo-btn--light:hover {
+    background: var(--ac-color-blue-pale);
+  }
+
+  .mo-btn--light:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 4px;
+  }
+
+  .mo-disclaimer {
+    margin: 28px 0 0;
+    max-width: 78ch;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 18px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  /* ══ 01 · HERO ══════════════════════════════════════════════════════════════════════════ */
+
+  .mo-hero {
+    --ac-text-h1-hub: 2.875rem;
+    position: relative;
+    min-height: 540px;
+    overflow: hidden;
+    padding: 0;
+    background: var(--ac-color-navy-950);
+  }
+
+  .mo-hero__media,
+  .mo-hero__overlay {
+    position: absolute;
+    inset: 0;
+  }
+
+  .mo-hero__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 50% 60%;
+  }
+
+  /* Flat overlay, doc 30 §20A.7 — no gradient, no vignette. This photograph is a bright,
+     window-lit empty room, so the overlay is measured deliberately dark rather than reused from
+     a different crop; verify with an equivalent contrast pass before launch if not already run
+     against this route's own crop. */
+  .mo-hero__overlay {
+    z-index: 1;
+    background: rgb(10 30 45 / 68%);
+  }
+
+  .mo-hero__shell {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    width: min(100% - 64px, 1320px);
+    min-height: inherit;
+    align-items: center;
+    margin-inline: auto;
+    padding-block: 72px;
+  }
+
+  .mo-hero__content {
+    max-width: 620px;
+    color: var(--ac-color-paper);
+  }
+
+  .mo-hero__eyebrow {
+    margin: 0 0 18px;
+    max-width: none;
+    color: rgb(255 255 255 / 92%);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .mo-hero__content h1 {
+    max-width: 12ch;
+    color: var(--ac-color-paper);
+  }
+
+  .mo-hero__lede {
+    margin: 20px 0 0;
+    max-width: 48ch;
+    color: #f1f5fa;
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .mo-hero__thesis {
+    margin: 16px 0 0;
+    max-width: 34ch;
+    color: var(--ac-color-paper);
+    font-size: 1.1875rem;
+    font-weight: 650;
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+
+  .mo-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 30px;
+    gap: 8px 26px;
+  }
+
+  .mo-hero__call {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-underline-offset: 5px;
+  }
+
+  .mo-hero__call:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .mo-hero__call:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 3px;
+  }
+
+  .mo-hero__development-note {
+    position: absolute;
+    z-index: 2;
+    right: 18px;
+    bottom: 14px;
+    left: 18px;
+    max-width: none;
+    white-space: nowrap;
+    margin: 0;
+    color: rgb(255 255 255 / 92%);
+    font-size: 0.625rem;
+    font-weight: 650;
+    letter-spacing: 0.055em;
+    line-height: 1.3;
+    text-align: right;
+    text-transform: uppercase;
+  }
+
+  /* ══ 02 · CLEAN FOR THE HANDOFF ═════════════════════════════════════════════════════════ */
+
+  .mo-handoff {
+    background: var(--ac-color-paper);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .mo-handoff__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .mo-ready {
+    margin-top: 36px;
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 22px;
+  }
+
+  .mo-ready__label {
+    max-width: none;
+    margin: 0;
+    color: var(--ac-color-ink-400);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .mo-ready__list {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: none;
+    margin: 14px 0 0;
+    padding: 0;
+    gap: 10px 14px;
+    list-style: none;
+  }
+
+  .mo-ready__list li {
+    max-width: none;
+    border: 1px solid var(--ac-color-line-strong);
+    padding: 8px 16px;
+    color: var(--ac-color-navy-900);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.4;
+  }
+
+  .mo-handoff__question {
+    margin: 20px 0 0;
+    max-width: 46ch;
+    color: var(--ac-color-navy-900);
+    font-size: 1.1875rem;
+    font-weight: 650;
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+
+  /* ══ 03 · EMPTY ACCESS ══════════════════════════════════════════════════════════════════ */
+
+  .mo-access {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .mo-access__inner {
+    display: grid;
+    width: min(100% - 64px, 1320px);
+    align-items: start;
+    margin-inline: auto;
+    gap: 48px 72px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+  }
+
+  .mo-access__lead h2 {
+    max-width: 18ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .mo-exposed {
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 24px;
+  }
+
+  .mo-exposed h3 {
+    max-width: 26ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .mo-access__note {
+    margin: 24px 0 0;
+    max-width: 44ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  /* ══ 04 · SCOPE + TIMING ════════════════════════════════════════════════════════════════ */
+
+  .mo-scope {
+    background: var(--ac-color-paper);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .mo-scope__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .mo-scope__grid {
+    display: grid;
+    margin-top: 40px;
+    gap: 32px 48px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .mo-scope__extras,
+  .mo-notauto,
+  .mo-sequence {
+    margin-top: 44px;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 32px;
+  }
+
+  .mo-sequence p {
+    margin: 14px 0 0;
+    max-width: 56ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .mo-sequence__list {
+    counter-reset: mo-step;
+    display: grid;
+    margin: 18px 0 0;
+    padding: 0;
+    gap: 0;
+    list-style: none;
+    max-width: 56ch;
+  }
+
+  .mo-sequence__list li {
+    counter-increment: mo-step;
+    position: relative;
+    max-width: none;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 10px 0 10px 34px;
+    color: var(--ac-color-navy-900);
+    font-weight: 550;
+    line-height: 1.5;
+  }
+
+  .mo-sequence__list li::before {
+    content: counter(mo-step) ".";
+    position: absolute;
+    top: 10px;
+    left: 0;
+    color: var(--ac-color-blue-deep);
+    font-weight: 750;
+  }
+
+  /* ══ 05 · CLEANING VS DAMAGE + DEPOSIT ══════════════════════════════════════════════════ */
+
+  .mo-boundary {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .mo-boundary__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .mo-boundary__pair {
+    display: grid;
+    margin-top: 36px;
+    gap: 32px 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mo-note h3 {
+    color: var(--ac-color-navy-900);
+  }
+
+  .mo-deposit {
+    margin-top: 44px;
+    border-top: 3px solid var(--ac-color-navy-800);
+    padding-top: 28px;
+  }
+
+  .mo-deposit h3 {
+    max-width: 30ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .mo-deposit p {
+    margin: 14px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .mo-heavier {
+    margin-top: 40px;
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 28px;
+  }
+
+  .mo-heavier h3 {
+    color: var(--ac-color-navy-900);
+  }
+
+  .mo-heavier p {
+    margin: 14px 0 0;
+    max-width: 56ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  /* ══ 06 · EVIDENCE + FIT + PRICE ════════════════════════════════════════════════════════ */
+
+  .mo-fit {
+    background: var(--ac-color-paper);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .mo-fit__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .mo-fit__columns {
+    display: grid;
+    margin-top: 40px;
+    gap: 32px 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mo-fit__aside {
+    margin-top: 18px;
+    max-width: 44ch;
+    color: var(--ac-color-ink-500);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .mo-price {
+    display: grid;
+    margin-top: 56px;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 40px;
+    gap: 32px 56px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .mo-price__copy p {
+    margin: 14px 0 0;
+    max-width: 48ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .mo-price__fee {
+    margin-top: 18px;
+    max-width: 48ch;
+    color: var(--ac-color-navy-900);
+    font-weight: 550;
+    line-height: 1.6;
+  }
+
+  .mo-price__label {
+    margin: 0 0 4px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  /* ══ 07 · QUESTIONS ═════════════════════════════════════════════════════════════════════ */
+
+  .mo-faq {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .mo-faq__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .mo-faq__grid {
+    display: grid;
+    margin-top: 40px;
+    gap: 40px 48px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .mo-qa {
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 18px;
+  }
+
+  .mo-qa p {
+    margin: 10px 0 0;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  /* ══ 08 · CLOSE ═════════════════════════════════════════════════════════════════════════ */
+
+  .mo-close {
+    background: var(--ac-color-navy-950);
+    padding-block: clamp(80px, 9vw, 120px);
+  }
+
+  .mo-close__inner {
+    display: grid;
+    width: min(100% - 64px, 1080px);
+    align-items: center;
+    margin-inline: auto;
+    gap: 32px 56px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .mo-close__copy :global(h2) {
+    max-width: 18ch;
+    color: var(--ac-color-paper);
+  }
+
+  .mo-close__lede {
+    margin: 20px 0 0;
+    max-width: 46ch;
+    color: #ccd9e8;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .mo-close__secondary {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    gap: 8px 22px;
+  }
+
+  .mo-close__secondary a {
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 650;
+  }
+
+  .mo-close__secondary a:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .mo-close__note {
+    margin-top: 20px;
+    max-width: 40ch;
+    color: rgb(255 255 255 / 55%);
+    font-size: 0.75rem;
+    line-height: 1.55;
+  }
+
+  /* ══ responsive ═════════════════════════════════════════════════════════════════════════ */
+
+  @media (max-width: 64rem) {
+    .mo-scope__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 56rem) {
+    .mo-access__inner {
+      grid-template-columns: 1fr;
+    }
+
+    .mo-price {
+      grid-template-columns: 1fr;
+    }
+
+    .mo-close__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 50rem) {
+    .mo-boundary__pair {
+      grid-template-columns: 1fr;
+    }
+
+    .mo-scope__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .mo-fit__columns {
+      grid-template-columns: 1fr;
+    }
+
+    .mo-faq__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .mo-hero__shell,
+    .mo-handoff__inner,
+    .mo-access__inner,
+    .mo-scope__inner,
+    .mo-boundary__inner,
+    .mo-fit__inner,
+    .mo-faq__inner {
+      width: calc(100% - 40px);
+    }
+
+    .mo-close__inner {
+      width: calc(100% - 40px);
+    }
+
+    .mo-rule-list {
+      grid-template-columns: 1fr;
+    }
+
+    .mo-hero__actions {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .mo-hero__actions .mo-btn {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 22.5rem) {
+    .mo-hero__content h1 {
+      max-width: 10ch;
+    }
+  }
+</style>

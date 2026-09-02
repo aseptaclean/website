@@ -1,15 +1,17 @@
 # 20 — Copy Voice: Humanization Rules & Verbatim Rewrites
 
-**Status:** Active. Owner-directed, 2026-08-09. Governs all customer-facing copy.
-**Repo location:** `docs/20-COPY-VOICE.md` · Sits below `01-QUALITY-GUARDRAILS.md`.
+**Status:** Active specialized voice and new-copy QA standard, owner-reconciled 2026-08-25.
+**Repo location:** `docs/20-COPY-VOICE.md` · Rank 6 under the root hierarchy.
 **Basis:** competitor voice research vs AI-pattern tells.
 
-**SUPERSEDED FOR HOMEPAGE/SERVICE COPY:** doc `27-COPY-CANONICAL.md` §9–15 now
-provides finished, human-voiced copy for the homepage and all service pages —
-its voice already meets the rules below. Part 2's verbatim rewrites are RETIRED
-in favor of doc 27. Part 1's RULES below remain the standard for any NEW copy
-(city pages, questions, quiz, future services) and for QA-checking doc 27's copy
-before publish.
+Specifically locked doc 27 copy outranks this file. Part 2's old verbatim homepage rewrites are
+historical and retired. Part 1 remains the voice standard for new copy and QA, always subject
+to verified facts, current owner decisions, claims law, locked copy, doc 30, and page briefs.
+
+**Owner reconciliation 2026-08-25.** Doc 30 governs the new homepage customer strategy and
+future page briefs. Part 2 remains historical and must not block that strategy or be applied as
+current canonical copy. The default visible primary CTA is **Tell Us About the Property**; final
+homepage H1 wording remains subject to approval in the homepage brief.
 
 ## Part 1 — The rules
 

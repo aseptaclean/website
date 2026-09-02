@@ -1,0 +1,463 @@
+---
+// OPERATING EVIDENCE / HOW ASEPTACLEAN WORKS — built 2026-08-25 to
+// docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md §12.
+//
+// THIS ONE SECTION REPLACES THREE. §12 asks for a single concentrated credibility movement in
+// place of the audited page's separate:
+//   HandoffRecord         — the record band, a card on a flat navy field with no photograph
+//   OperatorAccountability — the founder section, whose image column was an EMPTY BORDERED BOX
+//   (no Project Notes section ever shipped, and none is invented here)
+// Combined they ran 1,841px on desktop and 2,416px at 390px and asked the reader to accept the
+// same idea — this company documents what it does — three times.
+//
+// THE EMPTY FOUNDER PHOTO BOX IS GONE. §12: "Do not render an empty bordered founder-photo box.
+// That must disappear." No founder photograph exists in the repository and none is faked
+// (AGENTS.md §0.3). What survives is the accountability statement, which is the part that was
+// doing work; the slot that announced its own absence does not.
+//
+// NO FOUNDER BACKGROUND IS STATED HERE, deliberately, and that is why
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §2.4's verbatim founder-authority clause does not appear.
+// §2.4 binds "wherever the founder's background appears" — education, prior industry, prior
+// technical experience. This section states a ROLE and an ACCOUNTABILITY, not a background:
+// who reviews the scope, who stays responsible. §12 puts detailed credentials on About, and
+// /about/ renders all four homepage.founderCredentials lines with legal.founderAuthorityLimit
+// directly beneath them, which is where a reader who wants the background is sent.
+//
+// THE ARTIFACT IS INTEGRATED, NOT FLOATED. §12: "Do not place a small card in a huge empty navy
+// field. The artifact must be integrated into a composition that works with or without a
+// background photograph." It sits inside the copy column, on the same rhythm as the paragraphs
+// above it, sharing the column with the heading and the link — not centred in dead space.
+//
+// SAMPLE STATUS IS EXPLICIT AND MANDATORY. "Sample · not a client record" is doc 27 §9.9's
+// required label and AGENTS.md §0.3's hard line: this must never read as a real customer record.
+// legal.documentationDisclaimer travels with it — doc 21 §6 requires that disclaimer "wherever
+// the Property Handoff Record or any sample appears" — and is read from site data so it cannot
+// drift.
+//
+// NO PROJECT NOTES ARE FABRICATED. Zero completed documented projects exist (doc 21 §6). When a
+// real one does, §12 is where the page evolves toward real project evidence.
+import { Image } from "astro:assets";
+import evidenceImage from "../assets/homepage/service-development-cleanup-asurnipal.jpg";
+import { homepage, legal, site } from "@data/site";
+
+// TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPH — NOT Aseptaclean work, not a client property, and
+// not proof of a completed job. `[ATMOS]`-class under doc 21 §6's image rule: no crew, no
+// technician, no vehicle, no equipment and no work in progress, so nothing in it implies
+// Aseptaclean performed anything. It shows the KIND of property condition a handoff record gets
+// written about, which is what puts the artifact beside it in context.
+//   service-development-cleanup-asurnipal.jpg
+//     Asurnipal — CC BY-SA 4.0
+//     https://commons.wikimedia.org/wiki/File:Bregenz-Cluttered_interiors_(compulsive_hoarding)-dining_room-06ASD.jpg
+// Replace with owner-shot photography before launch (docs/06-ASSET-MANIFEST.md §5). A real
+// operator-at-work photograph is the highest-value replacement on the page.
+
+const record = homepage.sampleRecord;
+---
+
+{/* Copy is FIRST IN THE DOM and placed into the right-hand column by grid. Source order is the
+    reading order: the heading has to reach a screen reader before a decorative reference
+    photograph and its development caption do. The photograph still opens the section visually at
+    every width — left column on desktop, pulled to the top with `order` once the columns stack. */}
+<section class="evidence" id="record" aria-labelledby="evidence-title">
+  <div class="evidence__inner">
+    <div class="evidence__copy">
+      <h2 id="evidence-title" class="ac-type-h2-home-feature">Clear work. Documented handoff.</h2>
+
+      <p class="evidence__lede">
+        The condition is reviewed, the work is written down, and the property is handed back with
+        an account of what was decided and what was done.
+      </p>
+      <p class="evidence__accountability">
+        {site.founder.name} is {site.founder.title}. He reviews the scope on every project and
+        stays responsible for how the work is carried out — the same person on the assessment,
+        the scope and the closeout.
+      </p>
+
+      <div class="record">
+        <div class="record__head">
+          <p class="record__title">Property Handoff Record</p>
+          <p class="record__flag">Sample · not a client record</p>
+        </div>
+
+        <dl class="record__meta">
+          <div><dt>Project</dt><dd>{record.projectId}</dd></div>
+          <div><dt>Decision-maker</dt><dd>{record.decisionMaker}</dd></div>
+        </dl>
+
+        <table class="record__table">
+          <thead>
+            <tr>
+              <th scope="col">Area</th>
+              <th scope="col">Decision</th>
+              <th scope="col">Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            {record.rooms.map((room) => (
+              <tr>
+                <td>{room.area}</td>
+                <td>{room.disposition}</td>
+                <td>{room.note}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <p class="record__note">{legal.documentationDisclaimer}</p>
+      </div>
+
+      <a class="evidence__link" href="/handoff-standard/">
+        How a scope gets written <span aria-hidden="true">&rarr;</span>
+      </a>
+    </div>
+
+    <figure class="evidence__media">
+      <Image
+        src={evidenceImage}
+        alt="Reference photograph of a dining room where accumulated household contents cover the table, sideboard and floor."
+        widths={[520, 720, 960, 1240]}
+        sizes="(min-width: 64rem) 46vw, 92vw"
+        format="webp"
+        quality={74}
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>
+        Development reference photograph · not Aseptaclean project work · Asurnipal, Wikimedia
+        Commons, CC BY-SA 4.0
+      </figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  .evidence {
+    background: var(--ac-color-navy-900);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .evidence__inner {
+    display: grid;
+    width: min(100% - 64px, 1320px);
+    align-items: start;
+    margin-inline: auto;
+    gap: 48px 72px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.12fr);
+  }
+
+  /* Explicit placement puts the photograph back in the LEFT column while staying second in the
+     DOM. Sticky so it stays with the artifact through the taller copy column instead of running
+     out at the top of a long scroll — it is the section's largest element, which is what keeps
+     this a photographic moment rather than a document on a navy background. */
+  .evidence__media {
+    position: sticky;
+    top: 96px;
+    grid-column: 1;
+    grid-row: 1;
+    margin: 0;
+  }
+
+  .evidence__copy {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .evidence__media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    aspect-ratio: 4 / 5;
+    background: var(--ac-color-navy-950);
+    object-fit: cover;
+    object-position: 50% 54%;
+  }
+
+  .evidence__media figcaption {
+    margin-top: 12px;
+    color: rgb(255 255 255 / 52%);
+    font-size: 0.6875rem;
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  /* V3 §23: 36–42px, set on the token so the size still resolves through the role class
+     (AGENTS.md §6 law 1). */
+  .evidence__copy {
+    --ac-text-h2-home-feature: 2.5rem;
+  }
+
+  .evidence__copy h2 {
+    max-width: 16ch;
+    color: var(--ac-color-paper);
+  }
+
+  .evidence__lede {
+    margin: 24px 0 0;
+    max-width: 48ch;
+    color: #ccd9e8;
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .evidence__accountability {
+    margin: 18px 0 0;
+    max-width: 48ch;
+    color: #a9bdd4;
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  /* The artifact is drawn as a document: square edges, a ruled register, one accent rule at the
+     top. Not a rounded card, and not a floating panel — it is the next block in the column. */
+  .record {
+    border-top: 3px solid var(--ac-color-blue-on-navy);
+    margin-top: 32px;
+    background: var(--ac-color-paper);
+    padding: 22px 24px 24px;
+  }
+
+  .record__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px 18px;
+  }
+
+  .record__title {
+    margin: 0;
+    color: var(--ac-color-navy-900);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* doc 27 §9.9's REQUIRED label. Never remove it, never soften it, and never let it become
+     less legible than the record it labels. */
+  .record__flag {
+    margin: 0;
+    color: var(--ac-color-review);
+    font-size: 0.6875rem;
+    font-weight: 750;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .record__meta {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 14px 0 0;
+    gap: 4px 28px;
+  }
+
+  .record__meta > div {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .record__meta dt {
+    color: var(--ac-color-ink-400);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .record__meta dd {
+    margin: 0;
+    color: var(--ac-color-navy-900);
+    font-size: 0.8125rem;
+    font-weight: 650;
+  }
+
+  .record__table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    text-align: left;
+  }
+
+  .record__table th {
+    border-bottom: 2px solid var(--ac-color-navy-800);
+    padding: 0 14px 8px 0;
+    color: var(--ac-color-navy-900);
+    font-size: 0.6875rem;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .record__table td {
+    border-bottom: 1px solid var(--ac-color-line);
+    padding: 11px 14px 11px 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.875rem;
+    line-height: 1.45;
+    vertical-align: top;
+  }
+
+  .record__table td:first-child {
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+  }
+
+  .record__table th:last-child,
+  .record__table td:last-child {
+    padding-right: 0;
+  }
+
+  .record__note {
+    margin: 14px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .evidence__link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    margin-top: 26px;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-underline-offset: 5px;
+  }
+
+  .evidence__link:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .evidence__link:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 64rem) {
+    .evidence__inner {
+      width: min(100% - 52px, 1320px);
+      gap: 40px 44px;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1.2fr);
+    }
+
+    .evidence__copy {
+      --ac-text-h2-home-feature: 2.25rem;
+    }
+  }
+
+  @media (max-width: 50rem) {
+    /* Flex, not a one-column grid: the explicit grid-column/grid-row placement above would put
+       both children in the same cell and overlap them. `order` restores the photograph to the
+       top while the DOM keeps copy first. */
+    .evidence__inner {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    .evidence__media {
+      position: static;
+      order: -1;
+    }
+
+    .evidence__media :global(img) {
+      aspect-ratio: 3 / 2;
+    }
+
+    .evidence__copy h2 {
+      max-width: 20ch;
+    }
+
+    .evidence__lede,
+    .evidence__accountability {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .evidence {
+      padding-block: 60px;
+    }
+
+    .evidence__inner {
+      width: calc(100% - 40px);
+    }
+
+    .evidence__copy {
+      --ac-text-h2-home-feature: 2rem;
+    }
+
+    .record {
+      padding: 20px 18px 22px;
+    }
+
+    /* The three-column record table is the one element that cannot survive a 390px viewport as a
+       table — the Note column collapses to two words a line. Below 40rem each row becomes a
+       labelled block, which keeps the same reading order and the same <table> semantics for
+       assistive technology. */
+    .record__table thead {
+      position: absolute;
+      overflow: hidden;
+      width: 1px;
+      height: 1px;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .record__table tr {
+      display: block;
+      border-bottom: 1px solid var(--ac-color-line);
+      padding-block: 12px;
+    }
+
+    .record__table tr:last-child {
+      border-bottom: 0;
+    }
+
+    .record__table td {
+      display: block;
+      border: 0;
+      padding: 0;
+    }
+
+    .record__table td:first-child {
+      font-size: 0.9375rem;
+    }
+
+    .record__table td:nth-child(2) {
+      margin-top: 2px;
+      color: var(--ac-color-navy-800);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .record__table td:last-child {
+      margin-top: 4px;
+    }
+  }
+
+  /* NARROWEST BAND ONLY, 2026-08-26. At 320px "Clear work. Documented handoff." broke to three
+     lines with "handoff." alone on the last one — the one-word final line doc 30 §8.3 rejects.
+     §8.3's fix order was worked through in sequence: the container is already the section's own
+     `calc(100% - 40px)` and widening it cannot help (the phrase needs 320px at 32px type, which
+     is the whole viewport); there is no grid allocation to change at one column; `max-width:
+     20ch` is not the binding constraint; and the measure is set by the phrase itself. That
+     exhausts everything above "font size only when necessary", so the size steps — measured,
+     not guessed: 29px still wraps to three lines, 28px is the largest value that keeps
+     "Documented handoff." whole in the 280px available.
+     Set on the token, never on the heading (AGENTS.md §6 law 1) — the size still resolves
+     through .ac-type-h2-home-feature. 22.5rem matches the hero's existing narrow step. */
+  @media (max-width: 22.5rem) {
+    .evidence__copy {
+      --ac-text-h2-home-feature: 1.75rem;
+    }
+  }
+</style>

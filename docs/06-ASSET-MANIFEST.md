@@ -69,7 +69,10 @@ as unfinished.
 
 | Slot | Component | Class | Can it be filled by purchase? |
 | --- | --- | --- | --- |
-| Hero — South Bay exterior, dark overlay | `Hero.astro` | `[ATMOS]` | Yes. **May no longer exist** — v2's hero is a radial-gradient composition; verify. |
+| Hero — South Bay exterior, dark overlay | `Hero.astro` | `[ATMOS]` | Yes. **Filled 2026-08-25** with a temporary development photograph, visibly labelled. |
+| Recognition 1 — heavy buildup / neglected property | `ConditionRecognition.astro` | `[ATMOS]` | Yes. **Filled 2026-08-25**, temporary, visibly labelled. |
+| Recognition 2 — hoarding / overwhelming contents | `ConditionRecognition.astro` | `[ATMOS]` | Yes. **Filled 2026-08-25**, temporary, visibly labelled. |
+| Recognition 3 — estate / move-out / property reset | `ConditionRecognition.astro` | `[ATMOS]` | Yes. **Filled 2026-08-25**, temporary, visibly labelled. |
 | Service card 1 — process kit flat-lay | `ServiceCards.astro` | `[OWNED]` | **No** |
 | Service card 2 — kitchen or bath detail | `ServiceCards.astro` | `[ATMOS]` | Yes |
 | Service card 3 — completed job photo | `ServiceCards.astro` | `[OWNED]` | **No** — slot stays empty rather than substitute stock |
@@ -83,6 +86,41 @@ blocker. Per `18` §10, placeholders are a production release blocker.
 **Empty beats fake. Always.** The one test per slot: *does this image imply Aseptaclean
 performed this work?* Yes → owner-shot or empty. No → licensed or self-shot atmosphere,
 capped at three slots total.
+
+**Cap exceeded by one, knowingly, 2026-08-25.** Four atmosphere slots are now filled (hero plus
+the three recognition panels) against a cap of three. See the ruling in `05-DECISIONS-LOG.md`:
+resolved under `AGENTS.md` §1 in favour of an explicit owner instruction, on the conditions that
+every one of the four carries a visible development label and that all four are replaced by the
+Phase 0 owner shoot. **Do not add a fifth without a new owner decision.** Two questions on the
+current four are still open for the owner: whether CC BY-SA attribution is acceptable on a
+commercial page even temporarily, and whether the bare-room photograph in recognition slot 3
+reads as an implied "after".
+
+### 4.1 Reuse across routes — no new asset has been acquired since 2026-08-25
+
+Three route rebuilds have needed photography and none added a file. Each reuses an asset the owner
+has already accepted as temporary, in a different role and a different crop, because sourcing new
+CC BY-SA imagery would deepen the unresolved licensing question above rather than answer it.
+
+| File | `/` | `/services/` | `/hoarding-cleanup-san-jose/` |
+| --- | --- | --- | --- |
+| `hero-development-residence-asurnipal.jpg` | full-bleed hero | — | — |
+| `condition-development-hoarding-asurnipal.jpg` | 4:5 recognition panel | — | **full-bleed hero** (2026-08-26) |
+| `condition-development-neglected-kolforn.jpg` | 4:5 recognition panel | — | — |
+| `condition-development-reset-aismallard.jpg` | 4:5 recognition panel | — | **deliberately not used** — see below |
+| `service-development-cleanup-asurnipal.jpg` | 4:5 side figure | 21:9 hero | **3:2 editorial panel** (2026-08-26) |
+| `close-development-property-sanfranman59.jpg` | close-CTA image | — | — |
+
+**The empty-room photograph is barred from the hoarding page specifically.** The open owner
+question above — whether it reads as an implied "after" — becomes a hard failure on a route whose
+whole argument is *start → sorted → cleared → cleaned*. A bare room placed anywhere near that
+sequence reads as a fabricated after-shot, which `AGENTS.md` §0.3 forbids outright. It stays on `/`,
+where it sits beside two other conditions and carries no sequence, until the owner rules on it.
+
+**Reuse is a constraint being respected, not a design preference.** Two visitors following
+`/` → `/hoarding-cleanup-san-jose/`, or `/services/` → `/hoarding-cleanup-san-jose/`, will each see
+one photograph twice at different scales. That is a real cost and it is the Phase 0 owner shoot's
+to fix — not a reason to add a seventh licensed file against a cap already exceeded.
 
 ---
 

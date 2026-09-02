@@ -15,10 +15,18 @@ import RequestForm from "@components/RequestForm.astro";
 import { faqPage } from "@data/doc27CompanyPages";
 import { site } from "@data/site";
 
+// doc 21 §2.5: the insurance line is unverified against a current COI, so it is release-gated
+// the same way CredentialBar.astro's "Insured" cell and /about/'s insurance line are — suppress
+// the statement entirely rather than publish it unverified. Filtered once here so it drops from
+// both the visible answer list and the FAQPage JSON-LD together.
+const faqItems = site.business.insuranceStatus
+  ? faqPage.items
+  : faqPage.items.filter((item) => item.question !== "Are you insured?");
+
 const schema = [
   {
     "@type": "FAQPage",
-    mainEntity: faqPage.items.map((item) => ({
+    mainEntity: faqItems.map((item) => ({
       "@type": "Question",
       name: item.question,
       acceptedAnswer: { "@type": "Answer", text: item.answer }
@@ -27,7 +35,7 @@ const schema = [
   {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
       {
         "@type": "ListItem",
         position: 2,
@@ -57,7 +65,7 @@ const schema = [
     heading="Questions we answer before scheduling"
     headingId="faq-page-list-title"
     intro="These answers describe how a project is reviewed and scoped. The signed scope controls the actual work."
-    items={faqPage.items}
+    items={faqItems}
   />
 
   {/* §9.15.5 "FAQ / Projects connective" — sidebar label. Mockup page-faq.html:609-614 puts
@@ -72,6 +80,10 @@ const schema = [
         <a href="/handoff-standard/">The Handoff Standard →</a>
         <a href="/about/">About Aseptaclean →</a>
         <a href="/request-assessment/">{site.offer.primaryCta} →</a>
+        {/* doc 27 §8 — the secondary CTA appears everywhere the primary does. */}
+        {site.business.smsUri && (
+          <a href={site.business.smsUri}>{site.offer.secondaryCta} →</a>
+        )}
       </nav>
     </div>
   </section>

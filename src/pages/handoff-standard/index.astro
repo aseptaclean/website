@@ -29,7 +29,7 @@ const stageIntros = {
   Protect:
     "Keep areas are identified. Uncertain and important discovered items are separated and reported. We do not decide what mattered to your family.",
   Clear:
-    "Approved unwanted contents are consolidated, removed, or coordinated for disposal within the signed scope.",
+    "We sort, bag, stage, and clear approved unwanted contents from rooms, loading them into an approved container when that is part of the signed scope. We coordinate the applicable city-authorized or franchised provider, container placement, and disposal requirements; that provider handles off-site transport.",
   Reset:
     "The property receives the detailed cleaning included for its next handoff, including animal and organic conditions within lawful scope.",
   Verify:
@@ -127,7 +127,7 @@ const schema = [
   {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
       {
         "@type": "ListItem",
         position: 2,
@@ -317,8 +317,8 @@ const schema = [
     padding: 6px 10px;
     color: var(--ac-color-blue-deep);
     font-family: var(--ac-font-sans);
-    font-size: 0.64rem;
-    letter-spacing: 0.05em;
+    font-size: var(--ac-text-label);
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     white-space: nowrap;
   }
@@ -365,8 +365,8 @@ const schema = [
     margin-top: 3px;
     color: var(--ac-color-ink-400);
     font-family: var(--ac-font-sans);
-    font-size: 0.64rem;
-    letter-spacing: 0.05em;
+    font-size: var(--ac-text-label);
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
@@ -396,7 +396,7 @@ const schema = [
     margin-bottom: 7px;
     color: var(--ac-color-ink-400);
     font-family: var(--ac-font-sans);
-    font-size: 0.6rem;
+    font-size: var(--ac-text-label);
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
@@ -429,7 +429,7 @@ const schema = [
     margin: 0 0 14px;
     color: var(--ac-color-ink-400);
     font-family: var(--ac-font-sans);
-    font-size: 0.62rem;
+    font-size: var(--ac-text-label);
     letter-spacing: 0.06em;
     text-transform: uppercase;
   }
@@ -476,8 +476,8 @@ const schema = [
     border-radius: 5px;
     padding: 4px 9px;
     font-family: var(--ac-font-sans);
-    font-size: 0.6rem;
-    letter-spacing: 0.05em;
+    font-size: var(--ac-text-label);
+    letter-spacing: 0.06em;
     text-transform: uppercase;
     white-space: nowrap;
   }

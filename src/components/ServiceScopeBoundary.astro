@@ -1,0 +1,290 @@
+---
+// SCOPE / BOUNDARY NOTE — built 2026-08-26 to docs/30-WEBSITE-MASTER-SPEC.md §20A.13 ("scope and
+// exclusions are conversion content") and §20A.16 ("qualification is allowed — but do not build
+// a giant wall of rejection").
+//
+// THIS COMPONENT REPLACES ConfidenceAndFit.astro ON THIS ROUTE AND CARRIES ITS LOAD-BEARING
+// CONTENT FORWARD INTACT. That matters more than usual and is worth being exact about, because
+// the file it replaces carried a warning about exactly this: homepage.excludedScope and
+// homepage.qualification render in ONE place in the entire build, and that place is
+// `/services/`. The V3 homepage rebuild moved them here on 2026-08-25 specifically so that
+// deleting the homepage section would not delete the site's only sitewide exclusion list.
+// Losing them in a hub redesign would be the same mistake one pass later. All three of
+// ConfidenceAndFit's data sources therefore render here, verbatim and unedited:
+//
+//   homepage.qualification   → the "usually worth discussing" column (4 rows)
+//   homepage.excludedScope   → the "outside current scope" column (8 rows)
+//   legal.scopeDisclaimer    → the closing disclaimer, which doc 21 §6 puts "near exclusions
+//                              where practical" — which is here
+//   site.location            → the service geography and the /service-areas/ link
+//
+// ConfidenceAndFit.astro is deleted in the same commit. Nothing else imported it.
+//
+// WHAT IS NEW, AND WHY IT IS NOT A CLAIM. The framing sentences come from the landing-page
+// system §43's "we keep our scope clear" / "we do not want every job, we want the right job"
+// block. They state a posture, not a capability: no service, price, credential, geography or
+// regulated-scope statement is introduced here that is not already in the data above.
+//
+// NOT A RED-AND-GREEN PANEL PAIR. §20A.16 says the purpose is to help the wrong customer
+// self-select out, not to sound hostile — so the two columns are ruled lists on one surface with
+// no border box, no colour coding and no icon, exactly as the component it replaces resolved it.
+import { homepage, legal, site } from "@data/site";
+import { servicesHub } from "@data/servicePages";
+
+const { boundary } = servicesHub;
+const cities = site.location.cities;
+---
+
+<section class="boundary" id="scope" aria-labelledby="boundary-title">
+  <div class="boundary__inner">
+    <header class="boundary__header">
+      <p class="ac-eyebrow">{boundary.eyebrow}</p>
+      <h2 id="boundary-title" class="ac-type-h2-home-feature">{boundary.heading}</h2>
+      <p class="boundary__lede">{boundary.lede}</p>
+    </header>
+
+    <div class="boundary__columns">
+      <section class="column" aria-labelledby="boundary-fit">
+        <h3 id="boundary-fit" class="ac-type-label-head">{boundary.fitHeading}</h3>
+        <dl>
+          {homepage.qualification.map((item) => (
+            <div>
+              <dt>{item.label}</dt>
+              <dd>{item.detail}</dd>
+            </div>
+          ))}
+        </dl>
+      </section>
+
+      <section class="column column--outside" aria-labelledby="boundary-outside">
+        <h3 id="boundary-outside" class="ac-type-label-head">{boundary.outsideHeading}</h3>
+        <ul>
+          {homepage.excludedScope.map((item) => <li>{item}</li>)}
+        </ul>
+      </section>
+    </div>
+
+    <p class="boundary__close">{boundary.close}</p>
+
+    <div class="boundary__geography">
+      <h3 class="ac-type-label-head">Current service geography</h3>
+      <p class="boundary__cities">
+        {site.location.serviceArea} — {cities.join(", ")}.{" "}
+        <a href="/service-areas/">Where we work</a>
+      </p>
+      {/* legal.scopeDisclaimer — verbatim-mandatory, read from site data so it cannot drift. */}
+      <p class="boundary__disclaimer">{legal.scopeDisclaimer}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .boundary {
+    background: var(--ac-color-warm-white);
+    padding-block: clamp(64px, 6.5vw, 92px);
+  }
+
+  .boundary__inner {
+    width: min(100% - 64px, 1240px);
+    margin-inline: auto;
+  }
+
+  /* Token override rather than a size on the heading — AGENTS.md §6 law 1. */
+  .boundary__header {
+    --ac-text-h2-home-feature: 2.25rem;
+    display: grid;
+    align-items: end;
+    margin-bottom: 44px;
+    gap: 24px 72px;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 1.05fr);
+  }
+
+  .boundary__header h2 {
+    max-width: 14ch;
+    margin-top: 12px;
+    color: var(--ac-color-navy-900);
+  }
+
+  .boundary__header > .ac-eyebrow {
+    grid-column: 1;
+    margin-bottom: -8px;
+  }
+
+  .boundary__header h2 {
+    grid-column: 1;
+  }
+
+  .boundary__lede {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+    align-self: end;
+    margin: 0 0 4px;
+    max-width: 52ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .boundary__columns {
+    display: grid;
+    gap: 44px 80px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .column h3 {
+    border-bottom: 2px solid var(--ac-color-navy-800);
+    margin: 0 0 4px;
+    padding-bottom: 12px;
+    color: var(--ac-color-navy-900);
+    /* "Outside current scope — another provider handles it" broke to a second line carrying the
+       single word "it" at every width from 320 to 390. doc 30 §8.3's fix order puts wrapping
+       controls ahead of font size, and balance resolves it without touching either heading. */
+    text-wrap: balance;
+  }
+
+  /* The exclusion column reads quieter than the fit column: a lighter rule, not a warning
+     colour. §20A.16 — the boundary is a standard, not a refusal. */
+  .column--outside h3 {
+    border-bottom-color: var(--ac-color-steel-200);
+    color: var(--ac-color-ink-600);
+  }
+
+  .column dl {
+    margin: 0;
+  }
+
+  .column dl > div,
+  .column li {
+    border-bottom: 1px solid var(--ac-color-line-strong);
+    padding: 15px 0;
+    max-width: none;
+  }
+
+  .column dt {
+    color: var(--ac-color-navy-900);
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .column dd {
+    margin: 6px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .column ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .column--outside li {
+    color: var(--ac-color-ink-600);
+    line-height: 1.55;
+  }
+
+  .boundary__close {
+    margin: 36px 0 0;
+    max-width: 40ch;
+    color: var(--ac-color-navy-900);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-wrap: balance;
+  }
+
+  .boundary__geography {
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: 36px;
+    padding-top: 26px;
+  }
+
+  .boundary__geography h3 {
+    margin: 0;
+    color: var(--ac-color-navy-900);
+  }
+
+  .boundary__cities {
+    margin: 12px 0 0;
+    max-width: 84ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .boundary__cities a {
+    color: var(--ac-color-navy-800);
+    font-weight: 650;
+    text-underline-offset: 4px;
+    white-space: nowrap;
+  }
+
+  .boundary__disclaimer {
+    margin: 16px 0 0;
+    max-width: 92ch;
+    color: var(--ac-color-ink-400);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 64rem) {
+    .boundary__inner {
+      width: min(100% - 52px, 1240px);
+    }
+
+    .boundary__header {
+      --ac-text-h2-home-feature: 2.0625rem;
+      gap: 20px 48px;
+      grid-template-columns: minmax(0, 1fr) minmax(260px, 1fr);
+    }
+
+    .boundary__columns {
+      gap: 40px 52px;
+    }
+  }
+
+  @media (max-width: 50rem) {
+    .boundary__header {
+      display: block;
+    }
+
+    .boundary__header h2 {
+      max-width: 18ch;
+    }
+
+    .boundary__lede {
+      margin-top: 18px;
+      max-width: none;
+    }
+
+    .boundary__columns {
+      gap: 40px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .boundary__close {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .boundary {
+      padding-block: 60px;
+    }
+
+    .boundary__inner {
+      width: calc(100% - 40px);
+    }
+
+    .boundary__header {
+      --ac-text-h2-home-feature: 1.875rem;
+    }
+
+    .boundary__geography {
+      margin-top: 32px;
+    }
+  }
+</style>

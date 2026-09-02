@@ -28,6 +28,8 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import CredentialBar from "@components/CredentialBar.astro";
 import RequestForm from "@components/RequestForm.astro";
 import type { Doc27ServicePage } from "@data/doc27ServicePages";
+import type { ServiceSlug } from "@data/cityFacts";
+import { getServiceCityLinks } from "@data/serviceCityPages";
 import { sharedFourStep } from "@data/servicePages";
 import { legal, site } from "@data/site";
 
@@ -39,16 +41,69 @@ interface Props {
   /** Parent group for the breadcrumb — "Detailed Cleaning", "Specialty Cleaning", … */
   groupName?: string;
   groupHref?: string;
+  /**
+   * A7/L5 — renders the contextual link to /handoff-standard/ at the end of the "How this
+   * starts" rail. doc 19 §2's linking rules place this link on the estate and PM/turnover
+   * fiduciary blocks specifically ("/handoff-standard/ ← footer + estate/PM fiduciary blocks +
+   * letters"), so it is opt-in per route rather than sitewide on the template. Set on
+   * /estate-cleanout-san-jose/ and /property-cleanouts-san-jose/ only.
+   */
+  linkHandoffStandard?: boolean;
+  /**
+   * Renders the city-planning block — link map B1 in docs/city-pages-part2-UPDATED.md, which
+   * requires the three city pages for THIS service to carry a contextual inbound link from their
+   * parent. Opt-in per route for the same reason `linkHandoffStandard` is: only the two services
+   * that have city pages built (hoarding, estate) may set it. Pass the service slug; the links
+   * come from the route generator, never from copy written here.
+   *
+   * B1 also says, in bold, not to put these in the footer: nine keyword links in a footer is the
+   * pattern being avoided, and each link belongs in a block where it is useful to a reader.
+   */
+  alsoServing?: ServiceSlug;
 }
 
-const { page, serviceType, breadcrumbName, idPrefix, groupName, groupHref } = Astro.props;
+const {
+  page,
+  serviceType,
+  breadcrumbName,
+  idPrefix,
+  groupName,
+  groupHref,
+  linkHandoffStandard = false,
+  alsoServing
+} = Astro.props;
+
+// Empty unless the route opts in. A service whose city pages are later withdrawn from
+// serviceCityPages.ts loses this block automatically rather than linking into nothing.
+const alsoServingLinks = alsoServing ? getServiceCityLinks(alsoServing) : [];
 
 const s = page.section ?? {};
 const fitHeading = s.fitHeading ?? "This service may fit when";
 const outcomeHeading = page.outcomeHeading;
-const boundariesHeading = s.boundariesHeading ?? "What this scope does not include";
+const boundariesHeading = s.boundariesHeading ?? "What is not included";
+
+// FOUR NEW OVERRIDE SLOTS, added 2026-08-21 with the sitewide copy pass.
+//
+// These four strings were hardcoded in this file, which meant all fourteen service pages printed
+// the same hero pledge, the same scope-panel footer, the same pricing headline and the same
+// pricing paragraph — four identical sentences on every page in the largest template on the site,
+// and the pricing pair was also duplicated word for word in Pricing.astro on `/`. That is the
+// repetition the positioning brief calls out by name.
+//
+// The template is unchanged in shape and every page still renders all four slots. What changed is
+// that a record can now say the thing in its own words, and the defaults below are what a page
+// gets when it has nothing more specific to say. `section` already existed for exactly this
+// purpose — no new field, no new interface, no per-page markup.
+const pledge = s.pledge ?? "Rooms and detail levels are agreed before anyone arrives.";
+const scopeFooter = s.scopeFooter ?? "This is what we both mean by finished.";
+const quoteHeading = s.quoteHeading ?? "The quote comes from the property, not a package.";
+const quoteLede =
+  s.quoteLede ??
+  "Photos are usually enough to give you a range. If the condition or the access is complicated, we come and look before quoting a firm number.";
+const stepsHeading = s.stepsHeading ?? "How this starts";
 
 const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
 
 // Mockup .fit svg / .panel--in svg (check) and .panel--out svg (minus).
 const check = '<path d="m4 12 5 5L20 6"/>';
@@ -58,7 +113,7 @@ const schema = [
   {
     "@type": "Service",
     serviceType,
-    provider: { "@id": new URL("/#organization", site.urls.site).href },
+    provider: { "@id": new URL("/#business", site.urls.site).href },
     areaServed: site.location.cities.map((name) => ({ "@type": "City", name })),
     name: breadcrumbName
   },
@@ -73,7 +128,7 @@ const schema = [
   {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
       ...(groupName && groupHref
         ? [
             {
@@ -102,18 +157,21 @@ const schema = [
   noindex={!page.indexable}
   schema={schema}
 >
-  {page.gate && (
-    <section class="gate-note" aria-label="Internal launch gate — not visible copy guidance">
-      <div class="ac-shell">
-        <p><strong>LAUNCH GATE — not for publication:</strong> {page.gate}</p>
-      </div>
-    </section>
-  )}
+  {/* THE VISIBLE GATE BANNER IS GONE, 2026-08-21.
+      It rendered a pink strip above the hero reading "LAUNCH GATE — not for publication:" plus
+      the full internal gate note — crew-capacity status, compliance-release inputs, document
+      citations — as real public HTML on six routes, the text "not for publication" included.
+      `CURRENT-BUILD-AUDIT.md` lists it as highest-risk inconsistency #1.
+
+      Nothing about gating changed. `page.gate` still drives `indexable`, still keeps each route
+      out of sitemap.xml, and is still the field anyone reads to know why a page is held. It is
+      now emitted as an HTML comment, so `view-source` on a gated page still explains itself to a
+      developer while a visitor sees the page instead of a note about the page. */}
+  {page.gate && <Fragment set:html={`<!-- LAUNCH GATE (internal): ${page.gate.replace(/--+/g, "—")} -->`} />}
 
   <header class="ac-ph" aria-labelledby={`${idPrefix}-title`}>
     <div class="ac-ph__bg" aria-hidden="true"></div>
     <div class="ac-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
-    <p class="ac-slot-label" aria-hidden="true">Photo slot<br />2000 × 1100</p>
 
     <div class="ac-shell">
       {/* The group segment renders as plain text when no groupHref is passed. That is how a
@@ -129,12 +187,14 @@ const schema = [
       <p class="geo">{page.eyebrow}</p>
       <h1 id={`${idPrefix}-title`} class="ac-type-h1-hub">{page.h1}</h1>
       <p class="ac-ph__lede">{page.lead}</p>
-      {/* §9.15.1 service-page hero pledge line. */}
-      <p class="pledge">The scope names the rooms and the detail level before anyone arrives.</p>
+      {/* §9.15.1 service-page hero pledge line, now overridable per record — see `pledge` above. */}
+      <p class="pledge">{pledge}</p>
       <div class="ac-btns">
         <a class="btn btn--w" href="#request">
           {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
         </a>
+        {/* doc 27 §8 — the secondary CTA appears everywhere the primary does. */}
+        {smsHref && <a class="btn btn--o" href={smsHref}>{site.offer.secondaryCta}</a>}
         {phoneHref && <a class="btn btn--o" href={phoneHref}>Call {site.business.phone}</a>}
       </div>
     </div>
@@ -153,7 +213,12 @@ const schema = [
 
   <section class="ac-fit" aria-labelledby={`${idPrefix}-fit-title`}>
     <div class="ac-shell">
-      <h3 id={`${idPrefix}-fit-title`} class="ac-type-label-head">{fitHeading}</h3>
+      {/* a11 — was <h3>. This is the first heading after the page <h1> on all 14 service pages,
+          so h3 skipped a level at the top of every one of them. Element level only: the
+          `.ac-type-label-head` role class is unchanged, and `.ac-fit h3` in global.css was
+          renamed to `.ac-fit h2` in the same change so the margin and color it carries still
+          land. Text unchanged. */}
+      <h2 id={`${idPrefix}-fit-title`} class="ac-type-label-head">{fitHeading}</h2>
       <ul>
         {page.fitWhen.map((item) => (
           <li>
@@ -177,7 +242,7 @@ const schema = [
 
       <div class="ac-split">
         <div class="ac-panel ac-panel--in">
-          <div class="ac-panel__h"><span>Work can include</span><span>Per approved scope</span></div>
+          <div class="ac-panel__h"><span>Work can include</span><span>As approved</span></div>
           <ul>
             {page.workIncludes.map((item) => (
               <li>
@@ -186,13 +251,13 @@ const schema = [
               </li>
             ))}
           </ul>
-          <p class="ac-panel__f">The signed scope is the definition of finished for this project.</p>
+          <p class="ac-panel__f">{scopeFooter}</p>
         </div>
 
         <div class="ac-panel ac-panel--out" aria-labelledby={`${idPrefix}-boundaries-title`}>
           <div class="ac-panel__h">
             <span id={`${idPrefix}-boundaries-title`}>Stop / notify / refer</span>
-            <span>Outside this scope</span>
+            <span>Not included</span>
           </div>
           <ul>
             {page.boundaries.map((item) => (
@@ -211,20 +276,13 @@ const schema = [
   </section>
 
   <section class="ac-photoband" aria-labelledby={`${idPrefix}-quote-title`}>
-    <div class="ac-photoband__img ac-photoband__img--short">
-      <p class="ac-photoband__slot" aria-hidden="true">Photo slot<br />Mid-project detail<br />2000 × 900</p>
-    </div>
+    <div class="ac-photoband__img ac-photoband__img--short" aria-hidden="true"></div>
     <div class="ac-shell">
       <div class="ac-rec ac-rec--narrow">
         <div class="ac-rec__b">
           <p class="ac-label">What moves the number</p>
-          <h2 id={`${idPrefix}-quote-title`} class="ac-type-h2-overlay">
-            The quote comes from the property, not a package.
-          </h2>
-          <p class="ac-rec__lede">
-            Photos may support an initial range. Complicated conditions may require a walkthrough
-            before a firm scope and price.
-          </p>
+          <h2 id={`${idPrefix}-quote-title`} class="ac-type-h2-overlay">{quoteHeading}</h2>
+          <p class="ac-rec__lede">{quoteLede}</p>
           <ul class="ac-deps">
             {page.quoteVariables.map((item, index) => (
               <li>
@@ -233,6 +291,27 @@ const schema = [
               </li>
             ))}
           </ul>
+          {/* B3 — the $195 on-site assessment fee, propagated to every service page.
+              docs/19-SYSTEM-AND-SITEMAP.md §3.2 puts "drivers + $195 assessment credit" in the
+              PRICING HONESTY row of the service-page template, and AGENTS.md §4 is an explicit
+              owner decision that the fee "stays published … the only figure on the site". The
+              2026-08-18 port merged the old ServicePricing component's drivers into this block
+              but did not carry the fee across, so the drivers shipped with no number attached on
+              all 14 routes — the one place a reader is told what moves the price never said what
+              anything actually costs. /senior-downsizing-san-jose/ (excluded from that port) and
+              /private-residence-reset/ still show it, which is how the gap stayed invisible.
+              Both figure and terms read from src/data/site.ts; nothing is retyped.
+
+              2026-08-20: the "$195 on-site assessment" line is replaced by doc 27 §7's
+              owner-approved paragraph, which states the same figure inside the framing that
+              separates the free photo path from the paid walkthrough. The terms line stays —
+              §7 is silent on the credit and does not authorize dropping it. */}
+          {Number.isFinite(site.offer.assessmentFee) && (
+            <p class="ac-rec__fee">
+              <b>{site.offer.assessmentFraming(site.offer.assessmentFee)}</b>
+              <span>{site.offer.assessmentFeeTerms}</span>
+            </p>
+          )}
         </div>
         <a class="ac-rec__cta" href="#request">
           Send photos, get a straight answer <span aria-hidden="true">&rarr;</span>
@@ -243,7 +322,7 @@ const schema = [
 
   <section class="ac-sec ac-sec--tight" aria-labelledby={`${idPrefix}-steps-title`}>
     <div class="ac-shell">
-      <h2 id={`${idPrefix}-steps-title`} class="ac-hdr-lite ac-type-label-head">How this starts</h2>
+      <h2 id={`${idPrefix}-steps-title`} class="ac-hdr-lite ac-type-label-head">{stepsHeading}</h2>
       <ol class="ac-steps4 steps--flush">
         {sharedFourStep.map((step) => (
           <li class="ac-stage">
@@ -253,6 +332,16 @@ const schema = [
           </li>
         ))}
       </ol>
+      {/* The four steps above are the intake path; the five-stage standard is what the project
+          itself runs under, so this is where the link belongs contextually and it needs no
+          heading of its own — "How this starts" already covers it. Anchor text is "The Handoff
+          Standard", the §9.15.1 nav label already used in `megaNav` and on /about/. No string
+          here was written for this link. */}
+      {linkHandoffStandard && (
+        <p class="standard-link">
+          <a href="/handoff-standard/">The Handoff Standard <span aria-hidden="true">&rarr;</span></a>
+        </p>
+      )}
     </div>
   </section>
 
@@ -306,27 +395,56 @@ const schema = [
     </div>
   </section>
 
-  {/* §9.15.1 "Service pages (all 14)" Form callout heading + body — distinct from the
-      homepage pair RequestForm defaults to. */}
-  <RequestForm
-    calloutHeading="Matthew reads every request himself."
-    calloutBody="You'll hear back within one business day — a real answer about fit and next steps, not an autoresponder."
-  />
+  {/* Link map B1 — contextual planning links for each service×city page.
+      something other than an orphan. Placed after the scope, FAQ and related-services blocks so
+      a reader meets the city variants once the service itself has been explained, and kept out
+      of the footer per B1's explicit instruction.
+
+      The supporting line describes what is actually ON those pages — sourced container,
+      permit-timeline and street-access records — rather than asserting coverage. City
+      availability is not owner-confirmed (Part E), which is why all six targets ship
+      `noindex, follow`. The former "Also serving" label was an availability claim and was
+      retired on 2026-08-24 while that human gate remains open. */}
+  {alsoServingLinks.length > 0 && (
+    <section class="also-serving" aria-labelledby={`${idPrefix}-also-serving-title`}>
+      <div class="ac-shell">
+        <p class="ac-label">Local planning guides</p>
+        <h2 id={`${idPrefix}-also-serving-title`} class="ac-type-h3 also-serving__head">
+          Planning information for nearby cities
+        </h2>
+        <p class="also-serving__lede">
+          Container placement, permit review times, and street access are set by the city the
+          property sits in. These sourced guides do not confirm current service availability;
+          share the property address so Aseptaclean can confirm whether the project is in range.
+        </p>
+        <ul class="also-serving__list">
+          {alsoServingLinks.map((link) => (
+            <li>
+              <a href={link.href}>{link.anchor} <span aria-hidden="true">&rarr;</span></a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  {/* The §9.15.1 "Service pages (all 14)" callout pair is NO LONGER PASSED. Its heading
+      ("Matthew reads every request himself.") and body ("You'll hear back within one business
+      day — a real answer about fit and next steps, not an autoresponder.") are superseded by
+      doc 27 §8's fuller "What happens next" paragraph, which RequestForm now renders beside
+      every form on the site — including this one. Passing both would print the same sentence
+      twice on all 14 service pages.
+
+      The body string is struck in docs/27-SECTION-9-15-CONNECTIVE-COPY.md so gate 6 reports it
+      as struck rather than absent. The heading is not struck: §8's paragraph opens with that
+      exact sentence, so it still ships. Falling through to the default callout gives these
+      pages the homepage "bigger or more complicated property?" pair, which is approved copy
+      and is what every other RequestForm caller already shows. */}
+  <RequestForm />
 </BaseLayout>
 
 <style>
-  .gate-note {
-    border-bottom: 1px solid #e0b6b0;
-    background: #fbeeec;
-    padding-block: 14px;
-  }
-
-  .gate-note p {
-    margin: 0;
-    color: var(--ac-color-error);
-    font-size: 0.85rem;
-  }
-
+  /* `.gate-note` styles removed with the banner they painted (2026-08-21). */
   .compliance-clause {
     border-bottom: 1px solid var(--ac-color-line);
     background: var(--ac-color-warm-white);
@@ -343,7 +461,7 @@ const schema = [
   /* Mockup .geo — the category + geography line above the service H1. */
   .geo {
     margin-bottom: 14px;
-    color: var(--ac-color-blue-500);
+    color: var(--ac-color-blue-on-navy);
     font-family: var(--ac-font-sans);
     font-size: 10.5px;
     font-weight: 600;
@@ -387,6 +505,103 @@ const schema = [
     color: var(--ac-color-ink-600);
     font-size: 0.85rem;
     line-height: 1.5;
+  }
+
+  /* No `font-size` on `.also-serving__head` or any other selector here that resolves to a
+     heading element — it takes its size from the `.ac-type-h3` role class (AGENTS.md §6 law 1). */
+  .also-serving {
+    border-top: 1px solid var(--ac-color-line);
+    background: var(--ac-color-paper);
+    padding-block: var(--ac-space-7);
+  }
+
+  .also-serving__head {
+    margin: var(--ac-space-3) 0 0;
+  }
+
+  .also-serving__lede {
+    max-width: 58ch;
+    margin: var(--ac-space-4) 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+  }
+
+  .also-serving__list {
+    display: grid;
+    gap: 10px;
+    margin: var(--ac-space-5) 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .also-serving__list a {
+    color: var(--ac-color-navy-800);
+    font-family: var(--ac-font-sans);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .also-serving__list a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (min-width: 40rem) {
+    .also-serving__list {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px 24px;
+    }
+  }
+
+  .standard-link {
+    margin: var(--ac-space-5) 0 0;
+  }
+
+  .standard-link a {
+    color: var(--ac-color-navy-800);
+    font-family: var(--ac-font-sans);
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-decoration-thickness: 0.08em;
+    text-underline-offset: 0.18em;
+  }
+
+  .standard-link a:hover {
+    color: var(--ac-color-navy-900);
+  }
+
+  /* B3 assessment-fee line, inside the dark overlay card. No font-size lands on a heading tag
+     here — it is a <p>, sized like the card's other supporting copy. */
+  /* COLOURS CORRECTED 2026-08-20 — this block was styled for a dark band and rendered on a
+     white one. `.ac-rec` is `background: #fff` (global.css), so `color: #fff` on the figure
+     and `#b9c6d6` on the terms line made the fee invisible and the credit near-invisible on
+     all 14 service pages. It was not caught earlier because the string it hid was short
+     ("$195 on-site assessment"); doc 27 §7's paragraph turned the same bug into a blank
+     half-card, which is how it surfaced. Light-surface tokens now, matching `.ac-rec__lede`
+     directly above it. Layout is unchanged apart from the stack.
+
+     Not `display: flex` any more either: the framing is a paragraph and the credit a
+     footnote, so they stack rather than sharing a baseline row. */
+  .ac-rec__fee {
+    margin: var(--ac-space-5) 0 0;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 16px;
+  }
+
+  .ac-rec__fee b {
+    display: block;
+    color: var(--ac-color-ink-900);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+
+  .ac-rec__fee span {
+    display: block;
+    margin-top: 8px;
+    color: var(--ac-color-ink-500);
+    font-size: 0.8125rem;
   }
 
   .ac-relcol__pending b {

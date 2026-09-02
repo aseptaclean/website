@@ -23,22 +23,34 @@ export const faqItems = [
   {
     question: "What happens if a specialist condition is discovered?",
     answer:
-      "Work stops on that item. We document the condition and explain which qualified provider is needed before work continues."
+      "Work stops on that item. We document the condition and tell you which qualified provider is needed before work continues."
   },
   {
     question: "What can change the price?",
     answer:
-      "Concealed conditions or customer-requested additions that materially change the work — documented before work proceeds, never as a surprise invoice."
+      "Concealed conditions, or something you ask us to add. Either way it's written down and approved before we carry on — never a surprise on the invoice."
   },
   {
     question: "How quickly can the project begin?",
     answer:
       "Assessment requests are reviewed within one business day. Scheduling depends on scope, access, labor and the deadline."
   },
+  // Added 2026-08-21. The single most common misread of this business is that it is a junk-hauling
+  // company, and until now no FAQ on `/` said otherwise. The answer is the operating boundary
+  // confirmed by the owner in docs/city-pages-part2-UPDATED.md Part E, in plain words: everything
+  // on the property is ours, the drive to the landfill is not. It states no new capability.
   {
+    question: "Do you haul the stuff away?",
+    answer:
+      "Not in our own trucks. We do the work at the property — sorting, bagging, staging, clearing rooms out, and loading the container when that's part of the job. When a project needs a dumpster or debris box, we arrange it with the provider your city authorizes and handle placement and the disposal requirements. The drive off-site is theirs."
+  },
+  {
+    // Rewritten 2026-08-21. The old answer was one 120-word paragraph that inlined the entire
+    // seven-item exclusion list mid-sentence — the same list already rendered as its own panel
+    // higher up the page. Same facts, same boundaries, in the shape someone would say them.
     question: "Do you handle properties with heavy accumulation or hoarding conditions?",
     answer:
-      "Yes, within our current lawful and insured operating scope. Heavy accumulation and whole-house cleanouts go through the same written-scope process as every project: keep, remove, and review areas are identified before work begins, and nothing is discarded automatically. Some conditions remain outside our current scope: human blood, bodily fluids, or regulated medical waste; sewage cleanup or active mold remediation; asbestos, lead, unknown chemicals, or hazardous materials; structural repair, construction, or demolition; pest extermination or chemical treatment; and appraisal, estate-sale, legal, or habitability determinations. If we observe one of these conditions, work in the affected area stops and you are notified before the project moves forward."
+      "Yes, within our current lawful and insured scope. It runs the same way as any other project: keep, remove and review areas are agreed in writing first, and nothing gets discarded automatically. Some things are outside what we do — human blood or bodily fluids, regulated medical waste, sharps, sewage, active mold, asbestos, lead, unknown chemicals, structural work, and pest treatment. If we find one of them, work in that area stops and you hear from us before anything else happens."
   }
 ] as const;
 ---
@@ -53,7 +65,7 @@ export const faqItems = [
   <div class="ac-shell">
     <div class="ac-sec__head">
       <p class="ac-label">Common questions</p>
-      <h2 id="faq-title" class="ac-type-h2">Asked before almost every project.</h2>
+      <h2 id="faq-title" class="ac-type-h2">Common questions before a project starts.</h2>
     </div>
 
     <div class="ac-faq">

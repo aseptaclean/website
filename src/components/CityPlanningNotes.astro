@@ -1,0 +1,67 @@
+---
+// LOCAL PLANNING NOTES — the verified-fact section, shared by the city hubs and the six
+// service × city pages so one city's records read identically wherever they appear.
+//
+// Layout is a narrow rail (label, heading, orienting line) against a reading column, and each
+// fact is a hairline row rather than a card: the record's own `factType` in a fixed gutter, the
+// claim, then the publishing source. Nothing is added to a fact and nothing is concluded from
+// one here — docs/city-pages-part2-UPDATED.md D3 guard 6 keeps facts and operational
+// implications in separate records, and this section is the fact half of that split. The
+// interpretation half is the "What this changes here" field, on its own surface.
+//
+// `notes` carries prose that is NOT a city fact (the hub intro's continuation). It renders
+// above the fact list and inside the same reading column, but never inside the list, so a
+// visitor can see which statements carry a source and which do not.
+import type { CityFact } from "@data/cityFacts";
+import "@styles/city-pages.css";
+
+interface Props {
+  cityName: string;
+  facts: readonly CityFact[];
+  titleId: string;
+  /** Non-fact prose rendered above the sourced records. */
+  notes?: readonly string[];
+  /** Warm-white instead of white, when the section above this one is already white. */
+  tinted?: boolean;
+}
+
+const { cityName, facts, titleId, notes = [], tinted = false } = Astro.props;
+
+// The record's own factType, capitalised. A category label, not a claim, and not new copy:
+// it is the value already stored on the fact, shown so the list reads as a register.
+const typeLabel = (factType: CityFact["factType"]) =>
+  factType.charAt(0).toUpperCase() + factType.slice(1);
+---
+
+<section
+  class:list={["ac-sec", "cty-planning", { "cty-planning--tinted": tinted }]}
+  aria-labelledby={titleId}
+>
+  <div class="ac-shell cty-split">
+    <div class="cty-rail">
+      <p class="ac-label">Verified city information</p>
+      <h2 id={titleId} class="ac-type-h2">Local planning notes &mdash; {cityName}</h2>
+      <p class="cty-rail__note">
+        Container placement, right-of-way rules, and street access can change the project
+        sequence.
+      </p>
+    </div>
+
+    <div class="cty-read">
+      {notes.map((paragraph) => <p>{paragraph}</p>)}
+      <ol class:list={["cty-facts", { "cty-facts--after-prose": notes.length > 0 }]}>
+        {facts.map((fact) => (
+          <li class="cty-fact">
+            <p class="cty-fact__type">{typeLabel(fact.factType)}</p>
+            <div>
+              <p class="cty-fact__claim">{fact.claim}</p>
+              <a class="cty-fact__src" href={fact.sourceUrl} rel="external">
+                Source: {fact.sourceName}
+              </a>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </div>
+</section>

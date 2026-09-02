@@ -1,5 +1,25 @@
 # 04 — Release Checklist
 
+> **Current reconciliation — 2026-08-24.** This note supersedes contradictory historical status
+> text below. The current build has 46 deployable routes, no visible development placeholders on
+> ordinary pages, and no serious/critical Axe violations on ordinary pages in the 46-route audit.
+> `/data-request/` now has a complete email request path but remains noindex until a provider-backed
+> DSAR workflow is supplied. The former “Also serving” claims are now neutral local-planning links.
+> Open human/external gates are: C7 live redirect audit, C8 provider DSAR, C9 protected carrier-
+> review route verification, C10 crawl/publication decisions for links into gated content, C15 COI
+> verification, and final live-domain consent/inbox/performance checks. Image absence is handled by
+> finished text-first compositions; any future owned image still requires its own proof check.
+> Current evidence and route exceptions: `FULL-SITE-CURRENT-STATE-AUDIT.md`.
+
+> **Owner reconciliation — 2026-08-25.** Default visible primary CTA is **Tell Us About the
+> Property**; the future `/request-assessment/` redesign is situation-first. This approval does
+> not authorize website implementation in the documentation-reconciliation session and does not
+> authorize changes to protected consent, privacy, SMS, 10DLC, or regulated-condition language.
+> For gated routes, the conservative default is: keep `noindex`, keep out of `sitemap.xml`, do
+> not heavily promote through SEO-oriented links, publish no placeholder proof, and run an
+> individual publication check before any index flip. Insurance and endorsement claims remain
+> release-gated until matched to current verified documentation.
+
 **Reconciled 2026-08-11**, against `docs/20-ALIGNMENT-AUDIT-2026-08-11.md` Rev. 2 and a live
 re-verification of every item — code read, `curl -I` against a deployed Cloudflare Pages
 preview, and one real Lighthouse run. Every item is now labeled **LAUNCH-BLOCKING** or
@@ -55,7 +75,9 @@ mark done, move on.
 ## B. Corrected — these items were false as previously written
 
 - The old checklist read *"Primary CTA is consistently `Get My 24-Hour Handoff Plan` everywhere"*
-  and was **checked**. The sitewide CTA is **`Request an assessment`**.
+  and was **checked**. Its replacement, sitewide `Request an assessment`, is also superseded.
+  The 2026-08-25 owner decision is visible primary CTA **Tell Us About the Property** and
+  secondary CTA **Call Aseptaclean**; `/request-assessment/` remains the destination route.
 - The old five-send test required **owner SMS**. The approved launch configuration is
   **email-only**, with SMS gated behind `SMS_ALERTS_ENABLED` pending 10DLC. As written, the
   named release blocker could not be cleared under the approved configuration. Redefined in C1.

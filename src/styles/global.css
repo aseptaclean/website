@@ -30,7 +30,10 @@ body.has-mobile-cta {
 
 @media (max-width: 760px) {
   body.has-mobile-cta {
-    padding-bottom: 54px;
+    /* + the safe-area inset, 2026-08-26: the bar itself now pads its buttons down past the home
+       indicator (MobileCTA.astro), so the space reserved for it below the footer has to grow by
+       the same amount or the bar covers the last line of the legal text again. */
+    padding-bottom: calc(var(--ac-sticky-cta-height) + env(safe-area-inset-bottom, 0px));
   }
 }
 
@@ -57,8 +60,8 @@ a:active {
 /* Default section rhythm. Was `clamp(3.5rem, 7vw, 6rem)` (96px desktop / 56px mobile),
    inherited from docs/aseptaclean-FINAL-v2.html. The 2026-08-18 mockup port moved the
    section rhythm to `.sec` = 68px/60px but left this blanket rule in place, so every
-   section that does NOT carry `.ac-sec` kept the pre-port 96px — including the wrappers
-   the mockups give zero section padding (`.hero`, `.ac-cred`, `.ac-band`,
+   section that does NOT carry `.ac-sec` kept the pre-port 96px — including the four
+   wrappers the mockups give zero section padding (`.hero`, `.ac-cred`, `.ac-band`,
    `.ac-photoband`, `.ac-fit`, which each carry their own inner-shell rhythm instead).
    Corrected 2026-08-20 to the mockup `.sec` value; the zero-padding wrappers now say so
    explicitly below rather than relying on this rule not reaching them.
@@ -142,6 +145,46 @@ textarea {
   letter-spacing: -0.018em;
   line-height: 1.1;
   text-wrap: pretty;
+}
+
+/* Full-scale homepage hero introduced by the 2026-08-25 rebuild. Size remains on a type-role
+   class rather than on the h1 tag or a visual component selector (AGENTS.md typography law). */
+.ac-type-h1-home {
+  font-family: var(--ac-font-display);
+  font-size: var(--ac-text-h1-home);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.ac-type-h2-home-feature {
+  font-family: var(--ac-font-display);
+  font-size: var(--ac-text-h2-home-feature);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.06;
+  text-wrap: balance;
+}
+
+.ac-type-h3-home-route {
+  font-family: var(--ac-font-display);
+  font-size: var(--ac-text-h3-home-route);
+  font-weight: 650;
+  letter-spacing: -0.018em;
+  line-height: 1.15;
+  text-wrap: balance;
+}
+
+/* Homepage service-feature heading. Same family as the recognition route heading, one size
+   step up; size stays on this role class so nothing sizes a heading tag (type law #1). */
+.ac-type-h3-home-feature {
+  font-family: var(--ac-font-display);
+  font-size: var(--ac-text-h3-home-feature);
+  font-weight: 620;
+  letter-spacing: -0.022em;
+  line-height: 1.12;
+  text-wrap: balance;
 }
 
 /* Hub and service-page header H1 — mockup .ph h1 / .ph--split h1. Same 500 weight as the
@@ -325,7 +368,7 @@ textarea {
   background: var(--ac-color-blue-pale);
   color: var(--ac-color-navy-800);
   font-family: var(--ac-font-sans);
-  font-size: 11px;
+  font-size: var(--ac-text-label-chip);
   font-weight: 600;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -406,28 +449,6 @@ textarea {
   box-shadow: var(--ac-shadow-card);
 }
 
-/* Image slot — flat gray block with its label, per PORT-PROMPT §5. Photographs arrive later
-   by filename swap. The chevron clip is the mockup's polygon verbatim. Fill uses
-   --ac-color-line (#e3e9f0) rather than the mockup's #E7EBF1: a 4/2/1 delta, and §3 allows no
-   new colour, so the nearest existing token wins. The label uses --ac-color-ink-400 rather
-   than the mockup's #93A3B8, which measures 2.4:1 on that fill — the same AA correction this
-   file's own ink-400 note already records for the credential bar. */
-.ac-card__image {
-  position: relative;
-  display: flex;
-  align-items: flex-end;
-  height: 172px;
-  padding: 10px 12px;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 24px), 50% 100%, 0 calc(100% - 24px));
-  background: var(--ac-color-line);
-  color: var(--ac-color-ink-400);
-  font-family: var(--ac-font-sans);
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
 /* Mockup .card__b — the body is padded on three sides only; the CTA bar below it is flush to
    the card edge, so it supplies its own padding and the bottom gap. */
 .ac-card__body {
@@ -435,7 +456,8 @@ textarea {
   flex: 1;
   flex-direction: column;
   gap: 8px;
-  padding: 20px 20px 0;
+  border-top: 4px solid var(--ac-color-blue-deep);
+  padding: 24px 20px 0;
 }
 
 /* Status panel — docs/aseptaclean-FINAL-v2.html .panel / .panel-head / .prow. Shared by
@@ -636,7 +658,9 @@ textarea {
 /* mockup .pill--g */
 .ac-tag--clear {
   background: var(--ac-color-status-green-pale);
-  color: var(--ac-color-status-green);
+  /* status-green on its own pale fill measures 4.29:1 at 10px, just under AA; the legacy
+     success green is the same hue a shade darker and measures 4.57:1. */
+  color: var(--ac-color-clear);
 }
 
 /* mockup .pill--a */
@@ -755,6 +779,16 @@ textarea {
   padding-block: 68px;
 }
 
+/* 48px desktop / 40px mobile. The mobile step is declared in the 760px block below and must
+   stay after `.ac-sec` there — same specificity, so source order decides.
+
+   The mockups render this variant at 60px on mobile and 48px on desktop, i.e. LOOSER on the
+   small screen, because `@media(max-width:760px) .sec{padding:60px 0}` is declared after
+   `.sec--tight{padding:48px 0}` at equal specificity and silently captures it. That is a
+   media-query ordering bug, not a design decision — a variant whose whole purpose is to be
+   tighter cannot be the loosest thing on the page. Owner ruling 2026-08-20: do not reproduce
+   it. `docs/mockups/*.html` were corrected in the same change so the bug is not re-taught to
+   the next person who reads them as authority. */
 .ac-sec--tight {
   padding-block: 48px;
 }
@@ -826,20 +860,17 @@ textarea {
   line-height: 1.6;
 }
 
-/* Photo slot label, absolutely placed — mockup .ph__slot / .hero__slot / .ob__slot */
-.ac-slot-label {
-  position: absolute;
-  z-index: 2;
-  right: 24px;
-  bottom: 16px;
-  color: rgb(255 255 255 / 28%);
-  font-family: var(--ac-font-sans);
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  line-height: 1.7;
-  text-align: right;
-  text-transform: uppercase;
+/* §9.15.1 pledge line on the dark service-page header. Hero.astro styles a `.pledge` with
+   this same treatment, but that rule is Astro-scoped to Hero, so ServicePageLayout's copy of
+   the class inherited the default dark body ink and rendered near-invisible on the navy band
+   — measured 1.05:1 across all 14 service routes. The copy was in the DOM the whole time, so
+   the presence gate read PASS. Defined here, on .ac-ph, so both dark headers share one rule. */
+.ac-ph .pledge {
+  margin: 26px 0 0;
+  border-left: 3px solid var(--ac-color-amber);
+  padding: 11px 0 11px 16px;
+  color: #fff;
+  font-weight: 700;
 }
 
 /* Company / legal page header with the redaction-mark sweep — mockup .pgh */
@@ -987,7 +1018,10 @@ textarea {
 
 .ac-cred > .ac-shell {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
+  /* Was a hardcoded 4-column grid. The insurance/endorsement cells are now conditionally
+     suppressed (doc 21 §2.5), so the column count is 2-4 depending on verification state;
+     auto-fit keeps whatever cells render equal-width instead of leaving empty tracks. */
+  grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
 }
 
 .ac-cred > .ac-shell > div {
@@ -1007,7 +1041,7 @@ textarea {
   line-height: 1.5;
 }
 
-/* ---- homepage photo tiles (hover-reveal overlay) — mockup .tiles / .tile ---- */
+/* ---- homepage text-first service tiles ---- */
 .ac-tiles {
   display: grid;
   gap: 18px;
@@ -1025,27 +1059,12 @@ textarea {
   text-decoration: none;
 }
 
-.ac-tile__img {
-  display: flex;
-  height: 186px;
-  align-items: flex-start;
-  padding: 10px 12px;
-  clip-path: polygon(0 0, 100% 0, 100% calc(100% - 24px), 50% 100%, 0 calc(100% - 24px));
-  background: var(--ac-color-line);
-  color: var(--ac-color-ink-400);
-  font-family: var(--ac-font-sans);
-  font-size: 9.5px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-}
-
 .ac-tile__bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid var(--ac-color-line);
-  padding: 15px 18px;
+  border-top: 4px solid var(--ac-color-blue-deep);
+  padding: 20px 18px 12px;
   gap: 10px;
 }
 
@@ -1063,44 +1082,27 @@ textarea {
   transition: transform 0.16s ease;
 }
 
-.ac-tile__over {
-  position: absolute;
+.ac-tile__body {
   display: flex;
-  inset: 0;
   flex-direction: column;
-  justify-content: flex-end;
-  background: rgb(18 40 64 / 94%);
-  padding: 24px 22px;
-  color: #fff;
-  opacity: 0;
-  transition: opacity 0.18s ease;
-}
-
-.ac-tile:hover .ac-tile__over,
-.ac-tile:focus-visible .ac-tile__over {
-  opacity: 1;
+  min-height: 130px;
+  padding: 0 18px 18px;
 }
 
 .ac-tile:hover .ac-tile__bar i {
   transform: translateX(4px);
 }
 
-.ac-tile__over b {
-  display: block;
-  margin-bottom: 9px;
-  font-size: var(--ac-text-lead);
-  font-weight: 800;
-}
-
-.ac-tile__over p {
-  color: #b9c6d6;
+.ac-tile__body p {
+  color: var(--ac-color-ink-600);
   font-size: var(--ac-text-sm);
   line-height: 1.55;
 }
 
-.ac-tile__over span {
-  margin-top: 14px;
-  color: var(--ac-color-blue-500);
+.ac-tile__body span {
+  margin-top: auto;
+  padding-top: 14px;
+  color: var(--ac-color-blue-deep);
   font-family: var(--ac-font-sans);
   font-size: 10.5px;
   font-weight: 600;
@@ -1232,7 +1234,9 @@ textarea {
 
 .ac-band p {
   margin-top: 7px;
-  color: #5c4308;
+  /* On the amber band #5c4308 measures 3.34:1 at 10.5px. This is the same ink the band's own
+     h3 already uses one rule above, and measures 5.92:1. */
+  color: #2a1d02;
   font-family: var(--ac-font-sans);
   font-size: 10.5px;
   font-weight: 600;
@@ -1280,7 +1284,9 @@ textarea {
 
 .ac-stage b {
   display: block;
-  color: var(--ac-color-steel-300);
+  /* Large numeral, but use the normal-text-safe token so it remains compliant on both
+     paper and warm-white process surfaces: 5.03:1 on paper. */
+  color: var(--ac-color-ink-400);
   font-family: var(--ac-font-sans);
   font-size: 1.75rem;
   font-weight: 700;
@@ -1311,9 +1317,7 @@ textarea {
   text-transform: uppercase;
 }
 
-/* ---- overlay-card-on-photo-band — mockup .photoband/.rec and .ob/.ov ---- */
-/* Mockup `.photoband` carries no section padding: the image sets the band height and the
-   record card overlaps it with a negative top margin. */
+/* ---- overlay card on a deliberate navy field ---- */
 .ac-photoband {
   position: relative;
   padding-block: 0;
@@ -1337,18 +1341,6 @@ textarea {
 
 .ac-photoband__img--short {
   height: 400px;
-}
-
-.ac-photoband__slot {
-  padding: 0 26px 18px;
-  color: rgb(255 255 255 / 32%);
-  font-family: var(--ac-font-sans);
-  font-size: 10.5px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  line-height: 1.7;
-  text-align: right;
-  text-transform: uppercase;
 }
 
 .ac-rec {
@@ -1509,7 +1501,9 @@ textarea {
 
 .ac-deps b {
   padding-top: 3px;
-  color: var(--ac-color-steel-300);
+  /* steel-300 measures 3.096:1 on white; this is 11px text, so AA wants 4.5. ink-400 was
+     already darkened to #617087 for exactly this reason (see tokens.css) and gives 5.03:1. */
+  color: var(--ac-color-ink-400);
   font-family: var(--ac-font-sans);
   font-size: 11px;
   font-weight: 700;
@@ -1527,7 +1521,9 @@ textarea {
   padding-block: 34px 36px;
 }
 
-.ac-fit h3 {
+/* Renamed from `.ac-fit h3` 2026-08-20 with the a11 heading-level fix in
+   src/layouts/ServicePageLayout.astro — the tag changed, the treatment did not. */
+.ac-fit h2 {
   margin-bottom: 18px;
   color: var(--ac-color-navy-800);
 }
@@ -1582,7 +1578,12 @@ textarea {
 }
 
 .ac-panel__h span:last-child {
-  color: var(--ac-color-steel-300);
+  /* The panel header is navy-800 (and exclusion-red on the .ac-panel--out variant), so this is
+     light-on-dark. steel-300 measured 3.94:1 on navy and 2.43:1 on red at 10.5px. The binding
+     case is the red header, which needs a luminance above ~0.577 to clear 4.5:1; this is the
+     same on-dark text colour .ac-label--on-dark uses, and measures 5.25:1 there and 8.51:1 on
+     navy. */
+  color: #cbd9e8;
 }
 
 .ac-panel ul {
@@ -1677,7 +1678,8 @@ textarea {
 }
 
 .ac-rel span {
-  color: var(--ac-color-blue-500);
+  /* Same label role as .ac-relcol span above; blue-500 measured 3.05:1 at 10.5px. */
+  color: var(--ac-color-blue-deep);
   font-family: var(--ac-font-sans);
   font-size: 10.5px;
   font-weight: 600;
@@ -1708,7 +1710,9 @@ textarea {
 .ac-relcol span {
   display: block;
   margin-bottom: 5px;
-  color: var(--ac-color-blue-500);
+  /* 10px uppercase on white: blue-500 measures 4.12:1. blue-deep is the system's accent-text
+     token for exactly this (small blue type on a light surface) and measures 6.69:1. */
+  color: var(--ac-color-blue-deep);
   font-family: var(--ac-font-sans);
   font-size: 10px;
   font-weight: 600;
@@ -2001,7 +2005,8 @@ textarea {
   aspect-ratio: 4 / 5;
   background: #e1e7ee;
   padding: 16px;
-  color: var(--ac-color-ink-400);
+  /* 10px placeholder label: ink-400 measured 4.03:1 here; ink-600 is 6.02:1. */
+  color: var(--ac-color-ink-600);
   font-family: var(--ac-font-sans);
   font-size: 10px;
   font-weight: 600;
@@ -2245,6 +2250,12 @@ textarea {
     padding-block: 60px;
   }
 
+  /* Must stay after `.ac-sec` — equal specificity, so order decides. Reproducing the mockups'
+     ordering bug here would make tight sections 60px on mobile against 48px on desktop. */
+  .ac-sec--tight {
+    padding-block: 40px;
+  }
+
   .ac-cred {
     padding-block: 18px;
   }
@@ -2333,17 +2344,6 @@ textarea {
     height: 44px;
   }
 
-  .ac-tile__over {
-    position: static;
-    background: var(--ac-color-navy-900);
-    padding: 18px;
-    opacity: 1;
-  }
-
-  .ac-tile__bar {
-    display: none;
-  }
-
   .ac-stepform {
     grid-template-columns: 1fr;
   }
@@ -2373,5 +2373,38 @@ textarea {
   .ac-cut,
   .ac-cut-l {
     clip-path: none;
+  }
+}
+
+/* 320px polish. Size stays on the type-role classes (never the heading tags) and retains the
+   ≥1.9:1 H1:body floor: 34px homepage/campaign and 32px hub/service against 16px body. The
+   16px gutter recovers eight pixels per side from the desktop-derived 24px shell without
+   changing the layout above narrow phones. */
+@media (max-width: 360px) {
+  :root {
+    --ac-gutter: 1rem;
+  }
+
+  .ac-shell {
+    width: min(100% - 32px, var(--ac-measure-wide));
+  }
+
+  .ac-type-h1 {
+    font-size: 2.125rem;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  .ac-type-h1-hub {
+    max-width: none;
+    font-size: 2rem;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  .ac-type-h1-band {
+    max-width: none;
+    line-height: 1.1;
+    text-wrap: balance;
   }
 }

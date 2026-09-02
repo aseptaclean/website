@@ -23,9 +23,14 @@ const { heading, headingId, drivers } = Astro.props;
         {drivers.map((driver) => <li>{driver}</li>)}
       </ul>
     </div>
+    {/* Doc 27 §7, owner-approved verbatim 2026-08-20 — replaces the bare figure / "On-site
+        assessment" label pair. The number is inside the paragraph now and still interpolates
+        from site.offer.assessmentFee. The credit note is kept: §7 is silent on it and
+        docs/05-DECISIONS-LOG.md row 3 adopted it. See Pricing.astro for the full note. */}
     <div class="service-pricing__panel">
-      <p class="service-pricing__fee">${site.offer.assessmentFee}</p>
-      <p class="service-pricing__fee-label">On-site assessment</p>
+      <p class="service-pricing__framing">
+        {site.offer.assessmentFraming(site.offer.assessmentFee)}
+      </p>
       <p class="service-pricing__fee-note">{site.offer.assessmentFeeTerms}</p>
     </div>
   </div>
@@ -71,18 +76,11 @@ const { heading, headingId, drivers } = Astro.props;
     padding: 26px 24px;
   }
 
-  .service-pricing__fee {
+  .service-pricing__framing {
     margin: 0;
-    color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-display);
-    font-size: 2.4rem;
-    font-weight: 600;
-  }
-
-  .service-pricing__fee-label {
-    margin: 2px 0 0;
-    color: var(--ac-color-ink-500);
-    font-size: 0.85rem;
+    color: var(--ac-color-ink-900);
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
   }
 
   .service-pricing__fee-note {

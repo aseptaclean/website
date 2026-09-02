@@ -14,6 +14,15 @@
 
   --ac-color-blue-500: #4a7fc1;
   --ac-color-blue-deep: #2e5c9e;
+  /* blue-500 is a light-surface accent: on the navy-900 page headers it measures 3.82:1, and
+     the eyebrow that uses it there is 10.5px, so AA wants 4.5. This is the same accent
+     lightened to clear the dark field while staying the same hue — it is the on-navy
+     counterpart of blue-500, not a new accent colour. Sized against the LIGHTER of the two
+     dark surfaces it lands on (navy-800 on the service-tile overlay, not just navy-900 on the
+     page headers): measures 4.72:1 on navy-800 and 6.09:1 on navy-900. Used by the three
+     identical copies of the category/geography eyebrow rule (ServicePageLayout, PageHeader,
+     city-pages) and by other small text on navy surfaces. */
+  --ac-color-blue-on-navy: #77a4da;
   --ac-color-blue-pale: #e9f0f9;
   --ac-color-blue-ghost: #f4f8fc;
 
@@ -78,6 +87,7 @@
      --------------------------------------------------------------------- */
   --ac-font-sans: "Inter Variable", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --ac-font-display: var(--ac-font-sans);
+  --ac-font-mono: var(--ac-font-sans);
 
   /* ---------------------------------------------------------------------
      Type scale — v2 uses fixed clamp() sizes per selector rather than a
@@ -98,6 +108,17 @@
      docs/05-DECISIONS-LOG.md. Do not "fix" this token back up without a new owner ruling;
      it is a known, accepted deviation, not a regression. */
   --ac-text-h1: clamp(2.5rem, 4.6vw, 3.7rem);
+  /* Homepage rebuild hero role. The component overrides this variable—not font-size itself—at
+     mobile widths so type law #1 retains one role-class source for the heading's computed size. */
+  --ac-text-h1-home: clamp(3rem, 4vw, 3.625rem);
+  /* Capped below --ac-text-h1-home at every width. The previous clamp reached 63px at 1440,
+     which put the homepage section H2 above the 54px hero H1 and inverted the page hierarchy. */
+  --ac-text-h2-home-feature: clamp(2.25rem, 4vw, 3.25rem);
+  --ac-text-h3-home-route: clamp(1.375rem, 2vw, 1.75rem);
+  /* Service-feature heading on the rebuilt homepage. One step above the recognition-route H3
+     because the service compositions are the page's largest below-hero moment, and capped
+     below --ac-text-h2-home-feature at every width so the section H2 still outranks it. */
+  --ac-text-h3-home-feature: clamp(1.625rem, 2.4vw, 2rem);
 
   /* H2 has four distinct roles in the mockups rather than one size. */
   --ac-text-h2: clamp(1.85rem, 3.2vw, 2.5rem);        /* .sec__head h2, .formsec h2 */
@@ -129,6 +150,11 @@
   /* Pill chips, rail numerals, table headers, footer headings. */
   --ac-text-label: 10.5px;
   --ac-text-label-sm: 10px;
+  /* The section-label role: .ac-label / .ac-eyebrow's chip size, which those rules previously
+     hardcoded as the only copy of the value. Three routes render the same role *without* the
+     chip background (/data-request/, /thank-you/, /private-residence-reset/) and had each
+     invented their own 12px; they now read this token so the role has one source. */
+  --ac-text-label-chip: 11px;
   --ac-text-rail-numeral: 1.375rem;
 
   --ac-text-display: var(--ac-text-h1);

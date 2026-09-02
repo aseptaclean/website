@@ -26,11 +26,49 @@ import RequestForm from "@components/RequestForm.astro";
 import { checklist } from "@data/servicePages";
 import { site } from "@data/site";
 
+// S8 — ItemList. The page renders a five-section, 21-item checklist as an <ol> of <ol>s and had
+// no structured representation of it at all, on the one route in the sitemap whose entire reason
+// for existing is to be a citable, forwardable document (doc 19 §2.2: "link magnet, letter
+// destination").
+//
+// Nested, not flattened: the outer list carries the five sections in document order, each
+// section an ItemList of its own items. 5 section nodes + 21 item nodes = the 26 entries the
+// audit counted. Flattening to one 21-item list would lose the grouping, which is the part
+// executors actually navigate by.
+//
+// Every string below is read from `checklist` in src/data/servicePages.ts — the same object the
+// visible page renders — so the markup cannot drift from the copy. Nothing here is retyped.
+const checklistSchema = {
+  "@type": "ItemList",
+  "@id": new URL("/estate-cleanout-checklist/#checklist", site.urls.site).href,
+  name: checklist.title,
+  description: checklist.intro,
+  numberOfItems: checklist.sections.length,
+  itemListOrder: "https://schema.org/ItemListOrderAscending",
+  itemListElement: checklist.sections.map((section, sectionIndex) => ({
+    "@type": "ListItem",
+    position: sectionIndex + 1,
+    name: section.title,
+    item: {
+      "@type": "ItemList",
+      name: section.title,
+      numberOfItems: section.items.length,
+      itemListOrder: "https://schema.org/ItemListOrderAscending",
+      itemListElement: section.items.map((item, itemIndex) => ({
+        "@type": "ListItem",
+        position: itemIndex + 1,
+        name: item
+      }))
+    }
+  }))
+};
+
 const schema = [
+  checklistSchema,
   {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
       {
         "@type": "ListItem",
         position: 2,

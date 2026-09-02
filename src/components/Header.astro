@@ -1,573 +1,683 @@
 ---
-// 2026-08-18 visual port. Structure is docs/mockups/*.html .nav / .mega / .drawer, which is
-// identical across all 12 mockups: utility ribbon (StatusRibbon, rendered by BaseLayout) →
-// main nav with full-width mega panels → flush right-edge full-height CTA. Mobile ≤1050px is
-// the mockups' checkbox + <details> drawer with a bottom action bar — no JS in the open/close
-// path, so the drawer works before hydration and with scripting off.
-//
-// Group shape, and the three §8 items held out of it, are documented on `megaNav` in
-// src/data/site.ts. Nothing about which routes appear is decided in this file.
+import {
+  debrisRemovalPage,
+  deepCleaningPage,
+  estatePage,
+  extremeCleaningPage,
+  hoardingPage,
+  moveOutCleaningPage,
+  propertyCleanoutsPage
+} from "@data/doc27ServicePages";
 import { megaNav, site } from "@data/site";
 
-const phoneHref = site.business.phoneUri;
-const wordmarkUrl = site.business.logoUrl;
-
-// Mockup .mega__list svg paths, verbatim. Keyed by the `icon` field on each megaNav child so
-// the data file names an icon without carrying markup. Presentation only — every one is
-// aria-hidden and the link text beside it carries the meaning.
-const icons: Record<string, string> = {
-  home: '<path d="M4 20h16M7 20V9l5-5 5 5v11M10 20v-5h4v5"/>',
-  truck:
-    '<rect x="3" y="7" width="14" height="12" rx="1.5"/><path d="M17 11h4v8h-4M7 7V5h6v2"/>',
-  build: '<path d="M3 20h18M6 20V10l6-5 6 5v10"/><path d="M9 20v-6h6v6"/>',
-  window: '<rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M12 4v16M4 12h16"/>',
-  shield: '<path d="M12 3 5 6v6c0 4.2 2.9 7.9 7 9 4.1-1.1 7-4.8 7-9V6z"/>',
-  paw: '<circle cx="12" cy="12" r="8"/><path d="M9 10h.01M15 10h.01M9 15c1.8 1.2 4.2 1.2 6 0"/>',
-  box: '<rect x="4" y="7" width="16" height="13" rx="1.5"/><path d="M9 7V4h6v3M4 12h16"/>',
-  layers: '<path d="M3 20h18M5 20V12h4v8M10 20V8h4v12M15 20v-6h4v6"/>',
-  doc: '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/>',
-  haul: '<path d="M3 18h18M6 18l2-9h8l2 9M9 9V6h6v3"/>',
-  clock: '<rect x="4" y="4" width="16" height="16" rx="1.5"/><path d="M9 9l6 6M15 9l-6 6"/>',
-  person: '<circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-6 8-6s8 2 8 6"/>',
-  list: '<path d="M4 6h16M4 12h16M4 18h10"/>',
-  help:
-    '<circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 1 1 3.2 2.4c-.6.2-.7.6-.7 1.1v.4M12 16.5h.01"/>',
-  mail: '<path d="M4 6h16v12H4z"/><path d="m4 7 8 6 8-6"/>',
-  form:
-    '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 14h6"/>'
+const normalizePath = (value: string) => {
+  const path = value.split(/[?#]/, 1)[0] || "/";
+  return path === "/" ? "/" : `/${path.replace(/^\/+|\/+$/g, "")}/`;
 };
+const currentPath = normalizePath(Astro.url.pathname);
+const isCurrent = (href?: string) => Boolean(href && normalizePath(href) === currentPath);
+
+// Header service links are derived from current service records. Gated records never enter the
+// set, so the global header cannot advertise one merely because it remains in legacy megaNav.
+const currentServiceRecords = [
+  deepCleaningPage,
+  moveOutCleaningPage,
+  extremeCleaningPage,
+  propertyCleanoutsPage,
+  hoardingPage,
+  estatePage,
+  debrisRemovalPage
+];
+const indexableServicePaths = new Set(
+  currentServiceRecords.filter((page) => page.indexable).map((page) => page.slug)
+);
+const headerServiceGroups = megaNav
+  .filter((group) => group.children && group.hub)
+  .map((group) => ({
+    label: group.label,
+    hub:
+      group.hub && ["/detailed-cleaning/", "/property-clearing/"].includes(group.hub.href)
+        ? group.hub
+        : undefined,
+    children: group.children?.filter((child) => indexableServicePaths.has(child.href)) ?? []
+  }))
+  .filter((group) => group.hub || group.children.length > 0);
+
+const primaryLinks = [
+  { label: "What We Handle", href: "/who-we-help/" },
+  { label: "How We Work", href: "/handoff-standard/" },
+  { label: "About", href: "/about/" },
+  { label: "Service Areas", href: "/service-areas/" }
+] as const;
 ---
 
-<input type="checkbox" id="ac-mnav" class="mnav-toggle" aria-hidden="true" tabindex="-1" />
-
-<nav class="nav" aria-label="Primary navigation">
-  <div class="nav__in">
-    <a class="logo" href="/">
-      <img src={wordmarkUrl} alt={`${site.business.name} — home`} width="180" height="28" />
+<nav class="site-nav" aria-label="Primary navigation">
+  <div class="site-nav__inner">
+    <a class="site-nav__logo" href="/" aria-current={isCurrent("/") ? "page" : undefined}>
+      <img
+        src={site.business.logoUrl}
+        alt={`${site.business.name} — home`}
+        width="900"
+        height="215"
+      />
     </a>
 
-    <div class="menu">
-      {megaNav.map((group) =>
-        group.children && group.hub ? (
-          <div class="mi">
-            <button type="button" class="mi__trigger" aria-expanded="false">
-              {group.label}
-            </button>
-            <div class="mega">
-              <div class="mega__in">
-                <div class="mega__hub">
-                  <b>Hub</b>
-                  <h4 class="ac-type-h4">{group.hub.label}</h4>
-                  <p>{group.hub.blurb}</p>
-                  <a href={group.hub.href}>{group.hub.cta} <span aria-hidden="true">&rarr;</span></a>
-                </div>
-                <div class="mega__list">
+    <div class="site-nav__desktop">
+      <a href="/who-we-help/" aria-current={isCurrent("/who-we-help/") ? "page" : undefined}>
+        What We Handle
+      </a>
+
+      <details class="services-menu" data-services-menu>
+        <summary>Services</summary>
+        <div class="services-menu__panel">
+          <div class="services-menu__inner">
+            <div class="services-menu__intro">
+              <p>Current services</p>
+              <h2 class="ac-type-h4-mega">Property work with the scope defined first.</h2>
+              <a href="/services/" aria-current={isCurrent("/services/") ? "page" : undefined}>
+                View all current services
+              </a>
+            </div>
+
+            <div class="services-menu__groups">
+              {headerServiceGroups.map((group) => (
+                <section aria-label={group.label}>
+                  {group.hub ? (
+                    <a
+                      class="services-menu__group-heading"
+                      href={group.hub.href}
+                      aria-current={isCurrent(group.hub.href) ? "page" : undefined}
+                    >
+                      {group.hub.label}
+                    </a>
+                  ) : (
+                    <p class="services-menu__group-heading">{group.label}</p>
+                  )}
                   {group.children.map((child) => (
-                    <a href={child.href}>
-                      <svg viewBox="0 0 24 24" aria-hidden="true" set:html={icons[child.icon]} />
-                      <div>
-                        <strong>{child.label}</strong>
-                        <em>{child.note}</em>
-                      </div>
+                    <a href={child.href} aria-current={isCurrent(child.href) ? "page" : undefined}>
+                      <strong>{child.label}</strong>
+                      <span>{child.note}</span>
                     </a>
                   ))}
-                </div>
-              </div>
+                </section>
+              ))}
             </div>
           </div>
-        ) : (
-          <div class="mi mi--plain">
-            <a class="mi__trigger" href={group.href}>{group.label}</a>
-          </div>
-        )
-      )}
+        </div>
+      </details>
+
+      {primaryLinks.slice(1).map((link) => (
+        <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>
+          {link.label}
+        </a>
+      ))}
     </div>
 
-    <label for="ac-mnav" class="burger">
-      <span aria-hidden="true"></span>
-      <span class="visually-hidden">Open menu</span>
-    </label>
+    {/* DUPLICATE PHONE REMOVED 2026-08-25 — docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md
+        §8: "Do not show the same phone number twice inside the header hierarchy. Choose the most
+        useful location." The number rendered here AND in the utility bar directly above, both
+        visible at the same time on every route above 70rem.
 
-    <a class="nav__cta" href="/request-assessment/">
-      {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
-    </a>
+        The utility bar keeps it. It is the conventional location in the reference direction, it
+        is the first thing in the document, and it survives at every width — this slot did not,
+        because the whole actions group is hidden when the nav collapses. Removing it also buys
+        back ~117px of horizontal space, which is what lets the full navigation and the primary
+        CTA both survive at 1024px (see the breakpoint note in the style block). The phone is
+        still reachable from the mobile drawer, the footer, the closing CTA and the mobile bar. */}
+    <div class="site-nav__actions">
+      <a
+        class="site-nav__cta"
+        href="/request-assessment/"
+        aria-current={isCurrent("/request-assessment/") ? "page" : undefined}
+      >
+        {site.offer.primaryCta}
+      </a>
+    </div>
+
+    <details class="mobile-nav" data-mobile-nav>
+      <summary aria-label="Open navigation"><span aria-hidden="true"></span></summary>
+      <div class="mobile-nav__drawer">
+        <div class="mobile-nav__top">
+          <a href="/" aria-current={isCurrent("/") ? "page" : undefined}>
+            <img
+              src={site.business.logoUrl}
+              alt={`${site.business.name} — home`}
+              width="900"
+              height="215"
+            />
+          </a>
+        </div>
+
+        <div class="mobile-nav__content">
+          <a class="mobile-nav__primary-link" href="/who-we-help/">What We Handle</a>
+
+          <details class="mobile-nav__services">
+            <summary>Services</summary>
+            <div>
+              <a href="/services/">All current services</a>
+              {headerServiceGroups.map((group) => (
+                <section aria-label={group.label}>
+                  {group.hub ? (
+                    <a class="mobile-nav__group" href={group.hub.href}>{group.hub.label}</a>
+                  ) : (
+                    <p class="mobile-nav__group">{group.label}</p>
+                  )}
+                  {group.children.map((child) => <a href={child.href}>{child.label}</a>)}
+                </section>
+              ))}
+            </div>
+          </details>
+
+          {primaryLinks.slice(1).map((link) => (
+            <a class="mobile-nav__primary-link" href={link.href}>{link.label}</a>
+          ))}
+        </div>
+
+        <div class="mobile-nav__actions">
+          <a class="mobile-nav__cta" href="/request-assessment/">{site.offer.primaryCta}</a>
+          {site.business.phoneUri && (
+            <a class="mobile-nav__phone" href={site.business.phoneUri}>
+              Call {site.business.phone}
+            </a>
+          )}
+        </div>
+      </div>
+    </details>
   </div>
 </nav>
 
-<div class="drawer" id="ac-drawer">
-  <div class="drawer__top">
-    <a class="logo" href="/">
-      <img src={wordmarkUrl} alt={`${site.business.name} — home`} width="160" height="25" />
-    </a>
-    <label for="ac-mnav" class="drawer__close">
-      <span aria-hidden="true">&times;</span>
-      <span class="visually-hidden">Close menu</span>
-    </label>
-  </div>
-
-  {megaNav.map((group) =>
-    group.children && group.hub ? (
-      <details>
-        <summary>{group.label}</summary>
-        <a href={group.hub.href}>{group.hub.label} hub</a>
-        {group.children.map((child) => <a href={child.href}>{child.label}</a>)}
-      </details>
-    ) : (
-      <a class="flat" href={group.href}>{group.label}</a>
-    )
-  )}
-
-  <a class="drawer__cta" href="/request-assessment/">
-    {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
-  </a>
-  {phoneHref && (
-    <a class="drawer__call" href={phoneHref}>Call {site.business.phone}</a>
-  )}
-</div>
-
 <script>
-  // The drawer is pure CSS (checkbox + <details>). This script adds only what CSS cannot:
-  // Escape-to-close, and keyboard/touch operation of the desktop mega panels, which open on
-  // hover via CSS alone. Everything degrades to a working menu with JS off.
-  const toggle = document.querySelector<HTMLInputElement>("#ac-mnav");
+  const mobileNav = document.querySelector<HTMLDetailsElement>("[data-mobile-nav]");
+  const servicesMenu = document.querySelector<HTMLDetailsElement>("[data-services-menu]");
 
-  toggle?.addEventListener("change", () => {
-    document.body.style.overflow = toggle.checked ? "hidden" : "";
-  });
-
-  const closeAllPanels = () => {
-    document
-      .querySelectorAll<HTMLElement>(".mi__trigger[aria-expanded='true']")
-      .forEach((trigger) => {
-        trigger.setAttribute("aria-expanded", "false");
-        trigger.parentElement?.classList.remove("is-open");
-      });
-  };
-
-  document.querySelectorAll<HTMLButtonElement>(".mi__trigger").forEach((trigger) => {
-    if (trigger.tagName !== "BUTTON") return;
-
-    trigger.addEventListener("click", () => {
-      const wasOpen = trigger.getAttribute("aria-expanded") === "true";
-      closeAllPanels();
-      if (!wasOpen) {
-        trigger.setAttribute("aria-expanded", "true");
-        trigger.parentElement?.classList.add("is-open");
-      }
-    });
+  mobileNav?.addEventListener("toggle", () => {
+    document.body.classList.toggle("is-navigation-open", mobileNav.open);
+    const summary = mobileNav.querySelector<HTMLElement>(":scope > summary");
+    summary?.setAttribute("aria-label", mobileNav.open ? "Close navigation" : "Open navigation");
   });
 
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
-    closeAllPanels();
-    if (toggle?.checked) {
-      toggle.checked = false;
-      document.body.style.overflow = "";
+    if (servicesMenu?.open) servicesMenu.open = false;
+    if (mobileNav?.open) {
+      mobileNav.open = false;
+      mobileNav.querySelector<HTMLElement>(":scope > summary")?.focus();
     }
   });
 
   document.addEventListener("click", (event) => {
-    const target = event.target as HTMLElement | null;
-    if (!target?.closest(".mi")) closeAllPanels();
+    if (!servicesMenu?.open) return;
+    const target = event.target as Node | null;
+    if (target && !servicesMenu.contains(target)) servicesMenu.open = false;
+  });
+
+  // Must stay in step with the collapse breakpoint in the style block (max-width: 63.9375rem).
+  // If the drawer is open and the viewport grows past it, the desktop bar returns and the drawer
+  // has to close with it or focus is trapped behind an invisible overlay.
+  window.matchMedia("(min-width: 64rem)").addEventListener("change", (event) => {
+    if (event.matches && mobileNav?.open) mobileNav.open = false;
   });
 </script>
 
 <style>
-  /* docs/mockups .nav / .nav__in / .logo / .menu / .nav__cta — ported verbatim. */
-  .nav {
+  .site-nav {
     position: sticky;
-    z-index: 40;
+    z-index: 50;
     top: 0;
     border-bottom: 1px solid var(--ac-color-line);
-    background: #fff;
+    background: var(--ac-color-paper);
   }
 
-  .nav__in {
+  .site-nav__inner {
+    position: relative;
     display: flex;
-    max-width: var(--ac-measure-wide);
-    height: 66px;
-    align-items: stretch;
-    margin: 0 auto;
-    padding-left: 24px;
-  }
-
-  .logo {
-    display: flex;
+    width: min(100% - 64px, 1504px);
+    min-height: 68px;
     align-items: center;
-    text-decoration: none;
+    margin-inline: auto;
   }
 
-  .logo img {
+  .site-nav__logo {
+    display: flex;
+    flex: 0 0 auto;
+    min-height: 48px;
+    align-items: center;
+  }
+
+  .site-nav__logo img,
+  .mobile-nav__top img {
     width: auto;
-    height: 28px;
-    object-fit: contain;
+    height: 34px;
   }
 
-  .menu {
-    position: static;
+  .site-nav__desktop {
     display: flex;
-    align-items: center;
-    margin-left: 44px;
-    gap: 26px;
+    flex: 1 1 auto;
+    align-items: stretch;
+    justify-content: center;
+    margin-inline: clamp(28px, 4vw, 68px);
+    gap: clamp(24px, 2.4vw, 38px);
   }
 
-  .mi {
-    position: static;
-  }
-
-  /* Mockup `.mi>span`. A <button> here rather than the mockup's tabindex'd <span> so the
-     panel is reachable by keyboard and announced as a control; the visual box is identical. */
-  .mi__trigger {
+  .site-nav__desktop > a,
+  .services-menu > summary {
     display: flex;
-    height: 66px;
+    min-height: 68px;
     align-items: center;
-    border: 0;
-    border-bottom: 3px solid transparent;
-    margin-bottom: -1px;
-    padding: 0;
-    background: none;
-    color: #2a3b52;
-    font-family: var(--ac-font-sans);
-    font-size: 13.5px;
-    font-weight: 600;
+    border-bottom: 2px solid transparent;
+    color: var(--ac-color-ink-900);
+    font-size: 0.875rem;
+    font-weight: 650;
     white-space: nowrap;
-    cursor: pointer;
     text-decoration: none;
+    cursor: pointer;
   }
 
-  .mi:not(.mi--plain) .mi__trigger::after {
-    margin-left: 4px;
-    color: var(--ac-color-steel-300);
-    content: "⌄";
-    font-size: 11px;
-  }
-
-  .mi:hover > .mi__trigger,
-  .mi:focus-within > .mi__trigger,
-  .mi.is-open > .mi__trigger {
+  .site-nav__desktop > a:hover,
+  .site-nav__desktop > a[aria-current="page"],
+  .services-menu[open] > summary,
+  .services-menu > summary:hover {
     border-bottom-color: var(--ac-color-navy-800);
     color: var(--ac-color-navy-800);
   }
 
-  .nav__cta {
-    display: flex;
-    align-items: center;
-    margin-left: auto;
-    padding: 0 30px;
-    background: var(--ac-color-navy-800);
-    color: #fff;
-    font-size: 13.5px;
-    font-weight: 700;
-    white-space: nowrap;
-    text-decoration: none;
+  .services-menu {
+    position: static;
   }
 
-  .nav__cta:hover {
-    background: #16294a;
-    color: #fff;
+  .services-menu > summary {
+    list-style: none;
   }
 
-  /* ---- mega panel ---- */
-  .mega {
+  .services-menu > summary::-webkit-details-marker,
+  .mobile-nav > summary::-webkit-details-marker,
+  .mobile-nav__services > summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .services-menu > summary::after {
+    width: 7px;
+    height: 7px;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    margin: -4px 0 0 8px;
+    content: "";
+    transform: rotate(45deg);
+  }
+
+  .services-menu[open] > summary::after {
+    margin-top: 4px;
+    transform: rotate(225deg);
+  }
+
+  .services-menu__panel {
     position: absolute;
-    z-index: 60;
     right: 0;
     left: 0;
     top: 100%;
     border-top: 1px solid var(--ac-color-line);
     border-bottom: 1px solid var(--ac-color-line);
-    background: #fff;
-    box-shadow: var(--ac-shadow-pop);
-    padding: 34px 0 36px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-6px);
-    transition: opacity 0.14s ease, transform 0.14s ease, visibility 0.14s;
+    background: var(--ac-color-paper);
   }
 
-  .mi:hover .mega,
-  .mi:focus-within .mega,
-  .mi.is-open .mega {
-    opacity: 1;
-    visibility: visible;
-    transform: none;
-  }
-
-  .mega__in {
+  .services-menu__inner {
     display: grid;
-    max-width: var(--ac-measure-wide);
-    margin: 0 auto;
-    padding: 0 24px;
+    width: min(100% - 64px, 1504px);
+    margin-inline: auto;
+    padding-block: 42px 46px;
     gap: 52px;
-    grid-template-columns: 250px 1fr;
+    grid-template-columns: minmax(220px, 0.7fr) minmax(0, 2.3fr);
   }
 
-  .mega__hub {
+  .services-menu__intro {
     border-right: 1px solid var(--ac-color-line);
-    padding-right: 40px;
+    padding-right: 44px;
   }
 
-  .mega__hub b {
-    display: block;
-    margin-bottom: 10px;
-    color: var(--ac-color-blue-500);
-    font-family: var(--ac-font-sans);
-    font-size: 10.5px;
-    font-weight: 600;
-    letter-spacing: 0.06em;
+  .services-menu__intro > p {
+    margin: 0 0 16px;
+    color: var(--ac-color-ink-500);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
-  .mega__hub h4 {
-    margin-bottom: 8px;
+  .services-menu__intro > h2 {
+    max-width: 18ch;
   }
 
-  .mega__hub p {
-    color: var(--ac-color-ink-600);
-    font-size: 0.8125rem;
-    line-height: 1.55;
-  }
-
-  .mega__hub a {
-    display: inline-flex;
-    gap: 7px;
-    margin-top: 14px;
-    color: var(--ac-color-navy-800);
-    font-size: 0.8125rem;
-    font-weight: 700;
-    text-decoration: none;
-  }
-
-  .mega__list {
-    display: grid;
-    align-content: start;
-    gap: 4px 40px;
-    grid-template-columns: repeat(2, 1fr);
-  }
-
-  .mega__list a {
-    display: grid;
-    border-radius: 4px;
-    padding: 10px 12px 10px 0;
-    gap: 12px;
-    grid-template-columns: 20px 1fr;
-    text-decoration: none;
-  }
-
-  .mega__list a:hover {
-    background: var(--ac-color-warm-white);
-  }
-
-  .mega__list svg {
-    width: 20px;
-    height: 20px;
-    margin-top: 2px;
-    fill: none;
-    stroke: var(--ac-color-blue-500);
-    stroke-width: 1.6;
-    stroke-linecap: round;
-    stroke-linejoin: round;
-  }
-
-  .mega__list strong {
-    display: block;
-    color: var(--ac-color-ink-900);
+  .services-menu__intro > a {
+    display: inline-block;
+    margin-top: 22px;
     font-size: 0.875rem;
     font-weight: 700;
-    line-height: 1.3;
   }
 
-  .mega__list em {
+  .services-menu__groups {
+    display: grid;
+    gap: 44px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .services-menu__groups section {
+    min-width: 0;
+  }
+
+  .services-menu__group-heading {
     display: block;
-    margin-top: 2px;
-    color: var(--ac-color-ink-400);
+    min-height: 44px;
+    border-bottom: 1px solid var(--ac-color-line-strong);
+    margin: 0 0 10px;
+    padding: 0 0 12px;
+    color: var(--ac-color-navy-900);
+    font-size: 0.875rem;
+    font-weight: 800;
+    text-decoration: none;
+  }
+
+  .services-menu__groups section > a:not(.services-menu__group-heading) {
+    display: block;
+    border-bottom: 1px solid var(--ac-color-line);
+    padding: 12px 0;
+    color: var(--ac-color-ink-900);
+    text-decoration: none;
+  }
+
+  .services-menu__groups strong,
+  .services-menu__groups span {
+    display: block;
+  }
+
+  .services-menu__groups strong {
+    font-size: 0.875rem;
+  }
+
+  .services-menu__groups span {
+    margin-top: 3px;
+    color: var(--ac-color-ink-500);
     font-size: 0.75rem;
-    font-style: normal;
     line-height: 1.45;
   }
 
-  /* ---- mobile drawer ---- */
-  .mnav-toggle {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    opacity: 0;
-    pointer-events: none;
+  .services-menu__groups a:hover strong,
+  .services-menu__groups a[aria-current="page"] strong {
+    color: var(--ac-color-blue-deep);
   }
 
-  .burger {
-    display: none;
-    width: 56px;
-    flex: none;
+  .site-nav__actions {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    margin-left: auto;
+    gap: 16px;
+  }
+
+  .site-nav__cta {
+    display: flex;
+    min-height: 44px;
     align-items: center;
     justify-content: center;
-    cursor: pointer;
+    padding-inline: 20px;
+    background: var(--ac-color-navy-800);
+    color: var(--ac-color-paper);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    white-space: nowrap;
+    text-decoration: none;
   }
 
-  .burger span[aria-hidden] {
+  .site-nav__cta:hover {
+    background: var(--ac-color-navy-900);
+    color: var(--ac-color-paper);
+  }
+
+  .mobile-nav {
+    display: none;
+    margin-left: auto;
+  }
+
+  .mobile-nav > summary {
     position: relative;
-    display: block;
-    width: 22px;
-    height: 2px;
-    background: var(--ac-color-navy-900);
-  }
-
-  .burger span[aria-hidden]::before,
-  .burger span[aria-hidden]::after {
-    position: absolute;
-    left: 0;
-    width: 22px;
-    height: 2px;
-    background: var(--ac-color-navy-900);
-    content: "";
-  }
-
-  .burger span[aria-hidden]::before {
-    top: -7px;
-  }
-
-  .burger span[aria-hidden]::after {
-    top: 7px;
-  }
-
-  .drawer {
-    position: fixed;
-    z-index: 120;
-    inset: 0;
-    overflow-y: auto;
-    background: #fff;
-    padding: 0 0 40px;
-    transform: translateX(100%);
-    transition: transform 0.22s ease;
-    visibility: hidden;
-  }
-
-  .mnav-toggle:checked ~ .drawer {
-    transform: none;
-    visibility: visible;
-  }
-
-  .drawer__top {
-    position: sticky;
-    top: 0;
+    z-index: 112;
     display: flex;
-    height: 64px;
+    width: 48px;
+    min-height: 48px;
     align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid var(--ac-color-line);
-    background: #fff;
-    padding: 0 20px;
-  }
-
-  .drawer__close {
-    padding: 8px 10px;
-    color: var(--ac-color-navy-900);
-    font-size: 1.6rem;
-    line-height: 1;
-    cursor: pointer;
-  }
-
-  .drawer details {
-    border-bottom: 1px solid var(--ac-color-line);
-  }
-
-  .drawer summary {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 16px 20px;
-    color: var(--ac-color-ink-900);
-    font-size: 1rem;
-    font-weight: 700;
+    justify-content: center;
     list-style: none;
     cursor: pointer;
   }
 
-  .drawer summary::-webkit-details-marker {
-    display: none;
+  .mobile-nav > summary span,
+  .mobile-nav > summary span::before,
+  .mobile-nav > summary span::after {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--ac-color-navy-900);
+    content: "";
+    transition: transform 160ms ease, opacity 160ms ease;
   }
 
-  .drawer summary::after {
-    color: var(--ac-color-blue-500);
+  .mobile-nav > summary span {
+    position: relative;
+  }
+
+  .mobile-nav > summary span::before,
+  .mobile-nav > summary span::after {
+    position: absolute;
+    left: 0;
+  }
+
+  .mobile-nav > summary span::before {
+    top: -7px;
+  }
+
+  .mobile-nav > summary span::after {
+    top: 7px;
+  }
+
+  .mobile-nav[open] > summary {
+    position: fixed;
+    top: 15px;
+    right: max(20px, calc((100vw - 1320px) / 2));
+  }
+
+  .mobile-nav[open] > summary span {
+    background: transparent;
+  }
+
+  .mobile-nav[open] > summary span::before {
+    top: 0;
+    transform: rotate(45deg);
+  }
+
+  .mobile-nav[open] > summary span::after {
+    top: 0;
+    transform: rotate(-45deg);
+  }
+
+  .mobile-nav__drawer {
+    position: fixed;
+    z-index: 110;
+    inset: 0;
+    overflow-y: auto;
+    background: var(--ac-color-paper);
+  }
+
+  .mobile-nav__top {
+    display: flex;
+    min-height: 64px;
+    align-items: center;
+    border-bottom: 1px solid var(--ac-color-line);
+    padding-inline: 26px 84px;
+  }
+
+  .mobile-nav__top a {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+  }
+
+  .mobile-nav__content {
+    padding: 12px 26px 24px;
+  }
+
+  .mobile-nav__primary-link,
+  .mobile-nav__services > summary {
+    display: flex;
+    min-height: 58px;
+    align-items: center;
+    border-bottom: 1px solid var(--ac-color-line);
+    color: var(--ac-color-ink-900);
+    font-size: 1.0625rem;
+    font-weight: 700;
+    text-decoration: none;
+  }
+
+  .mobile-nav__services > summary {
+    justify-content: space-between;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .mobile-nav__services > summary::after {
     content: "+";
-    font-size: 1.2rem;
+    font-size: 1.4rem;
     font-weight: 400;
   }
 
-  .drawer details[open] summary::after {
-    content: "–";
+  .mobile-nav__services[open] > summary::after {
+    content: "−";
   }
 
-  .drawer details a {
-    display: block;
-    border-top: 1px solid #f0f3f7;
-    padding: 11px 20px 11px 32px;
-    color: #41526b;
+  .mobile-nav__services > div {
+    border-bottom: 1px solid var(--ac-color-line-strong);
+    padding: 10px 0 20px 18px;
+  }
+
+  .mobile-nav__services section {
+    margin-top: 18px;
+  }
+
+  .mobile-nav__services a,
+  .mobile-nav__group {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-ink-600);
     font-size: 0.9375rem;
     text-decoration: none;
   }
 
-  .drawer > a.flat {
-    display: block;
-    border-bottom: 1px solid var(--ac-color-line);
-    padding: 16px 20px;
-    color: var(--ac-color-ink-900);
-    font-size: 1rem;
-    font-weight: 700;
+  .mobile-nav__group {
+    margin: 0;
+    color: var(--ac-color-navy-900);
+    font-weight: 800;
+  }
+
+  .mobile-nav__actions {
+    display: grid;
+    padding: 8px 26px 36px;
+    gap: 10px;
+  }
+
+  .mobile-nav__cta,
+  .mobile-nav__phone {
+    display: flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 18px;
+    font-weight: 750;
+    text-align: center;
     text-decoration: none;
   }
 
-  .drawer__cta {
-    display: block;
-    border-radius: 4px;
-    margin: 20px;
+  .mobile-nav__cta {
     background: var(--ac-color-navy-800);
-    padding: 16px;
-    color: #fff;
-    font-weight: 700;
-    text-align: center;
-    text-decoration: none;
+    color: var(--ac-color-paper);
   }
 
-  .drawer__call {
-    display: block;
-    border-radius: 4px;
-    margin: 0 20px;
-    background: var(--ac-color-blue-pale);
-    padding: 15px;
-    color: var(--ac-color-navy-800);
-    font-weight: 700;
-    text-align: center;
-    text-decoration: none;
+  .mobile-nav__phone {
+    border: 1px solid var(--ac-color-navy-800);
+    color: var(--ac-color-navy-900);
   }
 
-  @media (max-width: 1050px) {
-    .menu {
+	:global(body.is-navigation-open .mbar) {
+		display: none;
+	}
+
+  /* COLLAPSE MOVED FROM 70rem (1120px) TO 63.9375rem (1023px), 2026-08-25 —
+     docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md §8: "Do not collapse the full
+     navigation too early. At approximately 1024px: preserve full navigation if it fits; keep the
+     primary CTA visible; drop/reduce less important phone duplication before collapsing the whole
+     nav." The audited header did the opposite — it dropped the entire navigation AND the primary
+     CTA at 1120px, so a 1024px tablet got a hamburger while 117px of the bar was spent on a phone
+     number the utility strip was already showing.
+
+     §8's order is followed literally: the phone came out first (see the markup note above), and
+     only then was the breakpoint lowered. Measured at 1024px the row needs ~905px of the 984px
+     available — logo 142, nav 521 incl. gaps, CTA 208, plus the 2×28px minimum side margins —
+     so the full navigation and the CTA both fit with headroom. Below 1024 it genuinely does not
+     fit, and the drawer takes over. 63.9375rem rather than 64rem so that exactly 1024px keeps
+     the desktop bar; the two queries must stay mutually exclusive. */
+  @media (max-width: 63.9375rem) {
+    .site-nav__inner {
+      width: min(100% - 40px, 1504px);
+      min-height: 64px;
+      align-items: center;
+    }
+
+    .site-nav__desktop,
+    .site-nav__actions {
       display: none;
     }
 
-    .mega {
-      display: none;
-    }
-
-    .burger {
-      display: flex;
-    }
-
-    .nav__cta {
-      display: none;
+    .mobile-nav {
+      display: block;
     }
   }
 
-  @media (min-width: 1051px) {
-    .drawer {
-      display: none;
+  @media (max-width: 30rem) {
+    .site-nav__inner {
+      width: calc(100% - 40px);
     }
-  }
 
-  @media (max-width: 760px) {
-    .nav__in {
+    .site-nav__logo img,
+    .mobile-nav__top img {
+      height: 30px;
+    }
+
+    .mobile-nav__top {
+      min-height: 64px;
       padding-left: 20px;
+    }
+
+    .mobile-nav__content,
+    .mobile-nav__actions {
+      padding-inline: 20px;
+    }
+
+    .mobile-nav[open] > summary {
+      top: 8px;
+      right: 16px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .mobile-nav > summary span,
+    .mobile-nav > summary span::before,
+    .mobile-nav > summary span::after {
+      transition: none;
+    }
+  }
+
+  @media print {
+    .site-nav,
+    .mobile-nav__drawer {
+      display: none;
     }
   }
 </style>

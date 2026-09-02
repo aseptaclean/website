@@ -9,13 +9,39 @@ import { site } from "@data/site";
 // "DNS cutover blockers." This page intentionally shows an honest not-configured state
 // rather than substitute legal/process text, matching the LegalPolicy.astro fallback
 // pattern used by /privacy/, /terms/, and /cookie-policy/.
+//
+// noindex, follow — the provider-hosted DSAR form is not wired, but the route now presents a
+// complete email-based request path instead of exposing an unfinished preview state. Keep it
+// noindex until the provider workflow is configured and verified; then flip robots and the
+// sitemap entry in the same change.
 const contactEmail = site.business.privacyContact || site.business.email;
+
+// A5 — BreadcrumbList. This route had none; every other non-root route on the site does, and a
+// crumb trail is how a leaf page tells a crawler where it sits. The "Home" item uses
+// `site.urls.home` (WITH the trailing slash) so it matches the homepage canonical exactly —
+// `site.urls.site` is a bare origin and produced a second URL for the same page.
+const schema = [
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Data Request",
+        item: new URL("/data-request/", site.urls.site).href
+      }
+    ]
+  }
+];
 ---
 
 <BaseLayout
   title="Data Request | Aseptaclean"
   description="Submit a data access, correction, or deletion request to Aseptaclean."
   canonicalPath="/data-request/"
+  schema={schema}
+  noindex={true}
   showMobileCta={false}
 >
   <div class="ac-measure-wide">
@@ -30,15 +56,19 @@ const contactEmail = site.business.privacyContact || site.business.email;
       </header>
 
       <section class="data-request__status" aria-labelledby="request-status">
-        <p class="data-request__label">Provider status</p>
-        <h2 id="request-status" class="ac-type-h2">Request form not published in this preview</h2>
+        <p class="data-request__label">How to submit</p>
+        <h2 id="request-status" class="ac-type-h2">Email a privacy request</h2>
         <p class="ac-type-body">
-          The provider-configured data request mechanism has not been added yet. No
-          substitute form or process is shown. To submit a data request now, contact
-          Aseptaclean directly.
+          Email Aseptaclean with your name, the email address or phone number connected to your
+          interactions with the company, and whether you are requesting access, correction, or
+          deletion. Do not include sensitive identification documents in the first message.
+        </p>
+        <p class="ac-type-body">
+          Aseptaclean will reply with any identity-verification steps and the information needed
+          to continue the request. The email link below opens a message with a descriptive subject.
         </p>
         <div class="data-request__actions">
-          <a href={`mailto:${contactEmail}`}>Email Aseptaclean about a data request</a>
+          <a href={`mailto:${contactEmail}?subject=Privacy%20data%20request`}>Email a privacy data request</a>
         </div>
       </section>
     </article>
@@ -73,9 +103,9 @@ const contactEmail = site.business.privacyContact || site.business.email;
     margin: 0;
     color: var(--ac-color-navy-800);
     font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-xs);
+    font-size: var(--ac-text-label-chip);
     font-weight: 700;
-    letter-spacing: 0.09em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
   }
 
@@ -98,9 +128,9 @@ const contactEmail = site.business.privacyContact || site.business.email;
     margin: 0;
     color: var(--ac-color-navy-800);
     font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-xs);
+    font-size: var(--ac-text-label-chip);
     font-weight: 700;
-    letter-spacing: 0.09em;
+    letter-spacing: 0.05em;
     text-transform: uppercase;
   }
 

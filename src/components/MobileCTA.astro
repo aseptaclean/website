@@ -7,13 +7,134 @@
 //
 // The amber half is the second and last use of --ac-color-amber on any page, alongside the
 // deadline band (owner ruling D1's "one rationed accent").
+// HOMEPAGE VARIANT ADDED 2026-08-25 —
+// docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md §18: the audited bar showed three
+// equal buttons, "That is not allowed for the homepage. The homepage must have a clear primary
+// action. Preferred mobile behavior: primary: Tell Us About the Property; secondary: Call."
+//
+// ADAPTED, NOT DISABLED, AND NOT CHANGED GLOBALLY. §18 offers both routes and says do not alter
+// shared behaviour for other pages without checking impact. This bar is imported once, by
+// BaseLayout, so it ships on 45 routes — a global edit would silently restyle all of them, and
+// switching it off on `/` would delete the most persistent conversion path the homepage has on
+// mobile, which V3 §3 keeps. So the variant is scoped by route here rather than by a prop
+// threaded through BaseLayout and every page that renders it.
+//
+// The text door is not deleted from the site. Doc 27 §8 requires the secondary CTA wherever the
+// primary appears; on `/` it appears in the closing CTA and the footer, both of which are on the
+// same page and both of which still render it. §18 explicitly permits it to "live inside
+// request-assessment or a lower-priority text link" rather than as a third equal button.
+// SERVICES-HUB VARIANT ADDED 2026-08-26, on the same reasoning and by the same mechanism as the
+// homepage variant above. docs/30-WEBSITE-MASTER-SPEC.md §20A.10 sets the rule for this bar in
+// one line — "only two actions" — and names the three-equal-button layout as the problem it
+// resolves. `/services/` was rendering all three.
+//
+// SCOPED BY ROUTE, NOT CHANGED GLOBALLY, for the reason the homepage note already gives: this
+// component is imported once by BaseLayout and ships on 45 routes, so editing the shared default
+// would silently restyle every one of them. Two routes now opt into the two-action bar; the other
+// 43 are untouched.
+//
+// The text door is not lost on `/services/`: doc 27 §8 requires the secondary CTA wherever the
+// primary appears, and ServicesClose.astro renders it beside the closing primary on the same
+// page — the same arrangement §18 permitted for `/`.
+// HOARDING VARIANT ADDED 2026-08-26, third route to opt in, by the same mechanism and for the
+// same reason. docs/30-WEBSITE-MASTER-SPEC.md §20A.10 governs this bar on a service page in one
+// line — "only two actions" — and names the three-equal-button layout as the problem it
+// resolves. `/hoarding-cleanup-san-jose/` was rendering all three, on the page where a nervous
+// buyer most needs one obvious next step rather than a choice of three.
+//
+// ESTATE CLEANOUT VARIANT ADDED for the /estate-cleanout-san-jose/ rebuild, fourth route to opt
+// in, same mechanism and same §20A.10 rule. This page's closing CTA also renders Call and the
+// SMS door beside the closing primary, so the text door is not lost here either.
+//
+// PROPERTY CLEANOUTS VARIANT ADDED for the /property-cleanouts-san-jose/ rebuild, fifth route to
+// opt in, same mechanism and same §20A.10 rule ("only two actions"). This page's closing CTA also
+// renders Call and the SMS door beside the closing primary, so the text door is not lost here
+// either.
+//
+// DEEP CLEANING VARIANT ADDED for the /deep-cleaning-san-jose/ rebuild, sixth route to opt in,
+// same mechanism and same §20A.10 rule. This page's closing CTA also renders Call and the SMS
+// door beside the closing primary, so the text door is not lost here either.
+//
+// MOVE-OUT CLEANING VARIANT ADDED for the /move-out-cleaning-san-jose/ rebuild, seventh route to
+// opt in, same mechanism and same §20A.10 rule ("only two actions"). This page's closing CTA also
+// renders Call and the SMS door beside the closing primary, so the text door is not lost here
+// either.
+//
+// RODENT DROPPINGS CLEANUP VARIANT ADDED for the /rodent-dropping-cleanup-san-jose/ rebuild,
+// eighth route to opt in, same mechanism and same §20A.10 rule ("only two actions"). This page's
+// closing CTA also renders Call and the SMS door beside the closing primary, so the text door is
+// not lost here either.
+//
+// ANIMAL WASTE CLEANUP VARIANT ADDED for the /animal-waste-cleanup-san-jose/ rebuild, ninth route
+// to opt in, same mechanism and same §20A.10 rule ("only two actions"). This page's closing CTA
+// also renders Call and the SMS door beside the closing primary, so the text door is not lost
+// here either.
+//
+// EXTREME CLEANING VARIANT ADDED pre-launch, tenth route to opt in. This page never joined the
+// two-action bar during its own rebuild — a tracked inconsistency, since every other rebuilt
+// service page already had — and pre-launch QA (§7 "two actions only, CALL | SERVICE-SPECIFIC
+// ACTION") flagged the surviving three-action bar as the defect it always was. Same mechanism,
+// same §20A.10 rule. This page's closing CTA also renders Call and the SMS door beside the
+// closing primary, so the text door is not lost here either.
+//
+// SCOPED BY ROUTE, NOT CHANGED GLOBALLY, for the reason both notes above already give: this
+// component is imported once by BaseLayout and ships on 45 routes, so editing the shared default
+// would silently restyle every one of them. Ten routes now opt into the two-action bar; the
+// other 35 are untouched. §20A.10's own example label set — "Call | Start Privately" — is not
+// used, because the visible primary label is a single owner-approved string in site data
+// (AGENTS.md §3) and re-labelling the button on one route would fork it.
+//
+// The text door is not lost on this route either: the hoarding page's closing CTA renders Call
+// and the SMS door beside the closing primary, on the same page, exactly as `/` and `/services/`
+// do.
 import { site } from "@data/site";
 
 const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
+
+const path = Astro.url.pathname.split(/[?#]/, 1)[0] || "/";
+const isHome = path === "/" || path === "/index.html";
+const isServicesHub = path === "/services/" || path === "/services/index.html";
+const isHoarding =
+  path === "/hoarding-cleanup-san-jose/" || path === "/hoarding-cleanup-san-jose/index.html";
+const isEstateCleanout =
+  path === "/estate-cleanout-san-jose/" || path === "/estate-cleanout-san-jose/index.html";
+const isPropertyCleanouts =
+  path === "/property-cleanouts-san-jose/" || path === "/property-cleanouts-san-jose/index.html";
+const isDeepCleaning =
+  path === "/deep-cleaning-san-jose/" || path === "/deep-cleaning-san-jose/index.html";
+const isMoveOutCleaning =
+  path === "/move-out-cleaning-san-jose/" || path === "/move-out-cleaning-san-jose/index.html";
+const isRodentDroppings =
+  path === "/rodent-dropping-cleanup-san-jose/" ||
+  path === "/rodent-dropping-cleanup-san-jose/index.html";
+const isAnimalWaste =
+  path === "/animal-waste-cleanup-san-jose/" || path === "/animal-waste-cleanup-san-jose/index.html";
+const isExtremeCleaning =
+  path === "/extreme-cleaning-san-jose/" || path === "/extreme-cleaning-san-jose/index.html";
+// All ten variants render one primary and one call. Kept as a single flag so the CSS has one
+// selector to target and an eleventh route can join by adding one comparison above.
+const isTwoAction =
+  isHome ||
+  isServicesHub ||
+  isHoarding ||
+  isEstateCleanout ||
+  isPropertyCleanouts ||
+  isDeepCleaning ||
+  isMoveOutCleaning ||
+  isRodentDroppings ||
+  isAnimalWaste ||
+  isExtremeCleaning;
 ---
 
-<div class="mbar">
+<div class:list={["mbar", isTwoAction && "mbar--duo"]}>
   <a href="/request-assessment/">{site.offer.primaryCta}</a>
+  {/* doc 27 §8 — the secondary CTA appears everywhere the primary does, and this bar is the
+      most persistent primary on the site. Three slots at 390px is tight, so the bar drops to
+      the short label below 400px (see the style block) rather than dropping the door.
+      Suppressed on the two-action routes per §18 and §20A.10: see the notes above for where the
+      door still appears on each of them. */}
+  {!isTwoAction && smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
   {/* Suppression rule (AGENTS.md §3): never render an empty phone link. */}
   {phoneHref && <a href={phoneHref}>Call now</a>}
 </div>
@@ -35,22 +156,73 @@ const phoneHref = site.business.phoneUri;
     }
 
     .mbar a {
+      display: flex;
+      min-height: 48px;
+      align-items: center;
+      justify-content: center;
       flex: 1;
+      box-sizing: border-box;
       padding: 15px 8px;
+      /* SAFE-AREA INSET, 2026-08-26. The bar is `bottom: 0` fixed, so on a device with a home
+         indicator its lower band sat under the system gesture area — on the homepage that band
+         is the bottom of the primary conversion action. The padding goes on the ANCHORS, not on
+         .mbar: each half carries its own fill, and padding the container would have left a
+         transparent strip of page showing through beneath both buttons. Each button therefore
+         keeps its own colour all the way to the physical screen edge while its tappable text
+         sits above the indicator. Zero on every device that reports no inset. */
+      padding-bottom: calc(15px + env(safe-area-inset-bottom, 0px));
       font-size: 0.875rem;
       font-weight: 700;
       text-align: center;
       text-decoration: none;
     }
 
+    /* The primary carries the longest label of the three and gets the extra width, so
+       "Request an assessment" stays on two lines at 390px instead of three. */
     .mbar a:first-child {
+      flex: 1.5;
       background: var(--ac-color-navy-800);
       color: #fff;
+    }
+
+    /* doc 27 §8 secondary. Between the navy primary and the amber call, on warm white so it
+       reads as the lighter-weight middle option rather than a third emphasis. Amber is still
+       used exactly once here — owner ruling D1's rationed accent is unaffected. */
+    .mbar a:nth-child(2) {
+      background: var(--ac-color-warm-white);
+      color: var(--ac-color-navy-900);
     }
 
     .mbar a:last-child {
       background: var(--ac-color-amber);
       color: #2a1d02;
+    }
+
+    /* TWO-ACTION ROUTES (`/`, `/services/` and `/hoarding-cleanup-san-jose/`): one primary, one
+       secondary — not two equal halves. The assessment CTA takes roughly two thirds of the bar
+       and keeps the filled navy; Call becomes an outlined navy-on-white action, so the hierarchy
+       is legible without a second saturated fill competing with it. Amber is not used here,
+       which on `/` leaves the deadline band as its only appearance on the page and keeps owner
+       ruling D1's rationed accent intact. */
+    .mbar--duo a:first-child {
+      flex: 2;
+    }
+
+    .mbar--duo a:last-child {
+      border-top: 1px solid var(--ac-color-navy-800);
+      background: var(--ac-color-paper);
+      color: var(--ac-color-navy-900);
+    }
+  }
+
+  /* Three slots below 400px. Tightening type and padding here keeps the bar one row tall on a
+     390px viewport; above that the 760px values already fit. */
+  @media (max-width: 400px) {
+    .mbar a {
+      padding: 12px 4px;
+      padding-bottom: calc(12px + env(safe-area-inset-bottom, 0px));
+      font-size: 0.78125rem;
+      line-height: 1.25;
     }
   }
 </style>

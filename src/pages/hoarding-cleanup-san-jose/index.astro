@@ -1,21 +1,2526 @@
 ---
-// Route generated 2026-08-16 from docs/27-COPY-CANONICAL.md via src/data/doc27ServicePages.ts.
-// All page copy lives in that data record; all structure lives in ServicePageLayout, which
-// implements doc 27 §11's shared service-page sequence. Nothing page-specific belongs in this
-// file beyond the four identity values below — if a sentence needs to change, change doc 27
-// and regenerate the data, do not hand-edit copy here.
+// HOARDING CLEANUP — `/hoarding-cleanup-san-jose/`. Rebuilt 2026-08-26 as the first
+// gold-standard individual service page (docs/30-WEBSITE-MASTER-SPEC.md §20 "Gold standard",
+// §20A, §21), with copy reconciled from docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md §35
+// under §20A.1's order: landing copy → map to current route → check active/gated state → check
+// claims, pricing and scope → check current copy authority → then implement.
 //
-// Ships noindex pending this page's own gate (see the record's `gate` field) and is excluded
-// from src/pages/sitemap.xml.ts. Do not bulk-flip.
-import ServicePageLayout from "@layouts/ServicePageLayout.astro";
-import { hoardingPage } from "@data/doc27ServicePages";
+//   01 SERVICE HERO             photograph + overlay, left-aligned, service confirmed on sight
+//   02 CONDITION + REFRAME      "We do not walk in and throw everything away." + a ruled
+//                               condition list, beside a large photograph
+//   03 CLIENT CONTROL           the five item decisions as a document register, on navy,
+//                               plus decision authority — this page's signature movement
+//   04 HOW THE JOB WORKS        goal first, six-step field procedure, clearing before cleaning,
+//                               the stop-and-tell rule, and the boundary panel
+//   05 WHAT PROOF EXISTS        the honest gap, stated, plus the sample Property Handoff Record
+//   06 FIT + PRICE              junk-truck reframe, two quiet columns, price drivers, local
+//                               planning guides
+//   07 QUESTIONS                seven, the ones that decide the purchase
+//   08 CLOSE                    "You do not have to solve the whole house today."
+//
+// THE SPECIALIST THESIS IS §20A.5's, unchanged: **you stay in control of what stays and what
+// leaves.** Every movement is built to reinforce it without repeating the sentence — the hero
+// states it, 02 explains why it needs stating, 03 is the mechanism, 04 shows it surviving
+// contact with the property, 05 is the document it produces, 06 is where it stops being worth
+// paying for, and 07 answers it as an objection.
+//
+// WHAT THIS REPLACES. The previous build: 1,929 words, one H1, EIGHTEEN H2s, 22 H3s, zero
+// photographs, 22 multi-column grids, 10,159px at 1440 and 18,364px at 390. §20A.6 is explicit
+// that the eleven conversion jobs are not eleven bands, and §7.1 rejects a page assembled from
+// repeated card grids. Nothing useful is deleted; the content is combined and re-composed. The
+// full accounting of retained / combined / shortened / moved copy is in docs/05-DECISIONS-LOG.md.
+//
+// ROUTE STATE IS UNCHANGED AND DELIBERATELY SO. Same slug, same canonical, same `index, follow`,
+// same sitemap membership, same BreadcrumbList trail through /property-clearing/. No route was
+// created, renamed, redirected or re-indexed, and no service's publishStatus moved. The SEO
+// title is doc 27 §14.2's verbatim; the meta description is the one the 2026-08-19 SEO pass
+// wrote for this route (commit c3dc0fd) and is preserved byte-for-byte rather than rewritten.
+//
+// THE H1 CHANGED, FROM "Hoarding Cleanup in San Jose" TO "Hoarding Cleanup". docs/27-COPY-
+// CANONICAL.md §14.2 (rank 4) locks the H1 as "Hoarding Cleanup" and that entry is not struck —
+// only its lead and outcome heading are, both superseded 2026-08-24. The landing-page system
+// §35 and doc 30 agree. The city is carried by the eyebrow, the title tag, the breadcrumb and
+// the body copy, so nothing is lost for search; §20A.22's "do not keyword stuff" and §20A.7's
+// "exact or unmistakable service H1" both point the same way.
+//
+// NO CredentialBar ON THIS ROUTE ANY MORE. Both rebuilt pages dropped it — `/` on 2026-08-25 and
+// `/services/` on 2026-08-26 — and the component's first two cells ("Insured · COI available on
+// request", "Endorsed · Organic pathogen endorsement") are held release-gated by AGENTS.md §3
+// until the wording is matched against a current COI. Taking a gated claim off an indexable page
+// is the conservative direction. THE COMPONENT IS UNTOUCHED and still ships on its other 14
+// routes; only this call site is removed.
+//
+// NO EMBEDDED FORM. The previous build ended in RequestForm — the full navy band with a live
+// QuickHandoffForm and Turnstile widget. §20A.8's destination rule and §20A.9's "one assessment
+// engine" both say to feed the existing system rather than duplicate lead infrastructure per
+// service page, which is the call `/services/` already made on 2026-08-26. The CTAs link to
+// /request-assessment/ instead. That also removes this route's Turnstile network calls.
+import { Image } from "astro:assets";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import heroImage from "../../assets/homepage/condition-development-hoarding-asurnipal.jpg";
+import contentsImage from "../../assets/homepage/service-development-cleanup-asurnipal.jpg";
+import { getServiceCityLinks } from "@data/serviceCityPages";
+import { homepage, legal, site } from "@data/site";
+
+// TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPHS — NOT Aseptaclean project work, NOT client
+// properties, and NOT proof of any completed job. Both are `[ATMOS]`-class under
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6's image rule: no crew, no technician, no vehicle, no
+// equipment, no work in progress and no before/after pair, so nothing in either frame implies
+// Aseptaclean performed anything.
+//
+//   condition-development-hoarding-asurnipal.jpg  (hero)
+//     Asurnipal — CC BY-SA 4.0
+//     https://commons.wikimedia.org/wiki/File:Bregenz-Cluttered_interiors_(compulsive_hoarding)-living_room-02ASD.jpg
+//   service-development-cleanup-asurnipal.jpg     (condition panel)
+//     Asurnipal — CC BY-SA 4.0
+//     https://commons.wikimedia.org/wiki/File:Bregenz-Cluttered_interiors_(compulsive_hoarding)-dining_room-06ASD.jpg
+//
+// BOTH ARE REUSED REPOSITORY ASSETS IN NEW ROLES, NOT NEW ACQUISITIONS, and that is a constraint
+// rather than a preference. docs/06-ASSET-MANIFEST.md §4 records the atmosphere-slot cap as
+// already knowingly exceeded, says "do not add a fifth without a new owner decision", and leaves
+// open whether CC BY-SA attribution is acceptable on a commercial page at all. Sourcing new
+// photography for this page would deepen an unresolved question. The hero frame is a 4:5 panel
+// on `/`; here it is a full-bleed hero. The contents frame is a 4:5 figure on `/` and a 21:9
+// hero on `/services/`; here it is a 3:2 editorial panel on white.
+//
+// THE EMPTY-ROOM PHOTOGRAPH (condition-development-reset-aismallard.jpg) IS DELIBERATELY NOT
+// USED HERE. docs/06-ASSET-MANIFEST.md §4 already flags an open owner question about whether it
+// reads as an implied "after". On a hoarding page — where the argument is literally start →
+// sorted → cleared → cleaned — placing a bare room anywhere after a clearing sequence would read
+// as a fabricated after-shot, which AGENTS.md §0.3 forbids outright. Replace all of this with
+// owner-shot photography before launch (docs/06-ASSET-MANIFEST.md §5).
+
+const canonicalPath = "/hoarding-cleanup-san-jose/";
+
+// PRESERVED BYTE-FOR-BYTE from the previous build. The title is doc 27 §14.2's canonical string;
+// the meta description is the one commit c3dc0fd wrote in the 2026-08-19 SEO pass, which is a
+// newer explicit decision than doc 27's own line for this field. Neither is rewritten here — a
+// composition rebuild is not licence to move a page's search metadata.
+const title = "Hoarding Cleanup in San Jose | Aseptaclean";
+const description =
+  "Hoarding cleanup in San Jose for heavily accumulated homes. Sorting, room-by-room clearing, important-item review, container coordination and follow-on cleaning.";
+
+// §20A.8's destination rule + §20A.9's service branch. `?service=hoarding-cleanup` is read by
+// AssessmentForm.astro, which maps it to an existing `property_situation` option and records the
+// real entry route on the lead. The key was NOT invented blind: see the note in that component
+// for the inspection and the whitelist.
+const assessmentHref = "/request-assessment/?service=hoarding-cleanup";
+const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
+
+// AGENTS.md §2 records these six service × city routes as deliberately linked from this
+// indexable page. Removing the block would change an audited crawl path, so it survives the
+// rebuild — relocated from a sidebar into the scope/price movement, where container placement
+// and permit lead times are actually a price and schedule driver rather than sidebar furniture.
+const cityLinks = getServiceCityLinks("hoarding-cleanup");
+
+// The sample Property Handoff Record. Read from site data, never retyped — its four rows already
+// carry Keep / Keep / Review / Remove, which is this page's decision system applied to areas.
+// That is why it is the proof movement: doc 21 §6 lists "sample documents visibly labeled
+// SAMPLE" as permitted proof, and zero completed documented projects exist to photograph.
+const record = homepage.sampleRecord;
+
+// What can be under the contents. §35's list, reordered so the items that make the argument
+// (records, documents, keys) sit early rather than after "clothes".
+const contents = [
+  "photographs",
+  "documents and mail",
+  "keys and identification",
+  "medication",
+  "cash and jewellery",
+  "family items and keepsakes",
+  "clothing",
+  "tools",
+  "furniture",
+  "things belonging to someone else",
+  "ordinary household contents",
+  "actual waste"
+] as const;
+
+// §35's "IS THE HOME GETTING HARD TO USE?" list. Rewritten from second-person imperatives into
+// property observations — doc 30 §3 designs for the adult child and the owner alike, and "you
+// cannot use part of a room" misreads when the reader is helping a parent.
+const conditions = [
+  "part of a room can no longer be used",
+  "walkways have narrowed",
+  "beds or chairs are covered",
+  "counters are not usable",
+  "doors are hard to reach or open",
+  "boxes and contents are stacked high",
+  "the kitchen is difficult to use",
+  "the bathroom is blocked or hard to reach",
+  "some rooms are not entered at all",
+  "the amount of contents feels too large to handle alone"
+] as const;
+
+// §35's KEEP / SET ASIDE / DONATE / REMOVE / NOT SURE. The five categories are the page's
+// central mechanism and §20A.14 rules out rendering them as five equal cards, so they ship as a
+// document register: a <dl>, because category → definition is what a description list is for.
+const decisions = [
+  ["Keep", "Stays with the property or goes with you. Not touched except as the scope says."],
+  ["Set aside", "Held somewhere agreed so it can be looked at again before anything happens to it."],
+  ["Donate", "Saved and routed to donation rather than into the removal pile."],
+  ["Remove", "Approved to leave the property. Nothing enters this category without approval."],
+  ["Not sure", "Waits. Nothing in this category moves until the person who decides has decided."]
+] as const;
+
+// §35's "HELPING A FAMILY MEMBER?" content, kept as operational rather than legalistic.
+const authority = [
+  "who owns or controls the property",
+  "who approves the work and the scope",
+  "who decides what stays",
+  "who decides what may leave",
+  "who the crew contacts when a decision is needed on site",
+  "whether the person living there takes part in those decisions"
+] as const;
+
+// §35's "START WITH THE GOAL" list, flattened out of its five sub-headings into one row of
+// plain examples. §20A.6: adopt the job, do not build a band — and certainly not a six-card grid.
+const goals = [
+  "make the key rooms usable again",
+  "open a safe path through the home",
+  "clear one room first",
+  "clear the whole property",
+  "get it ready for a sale, a repair, a rental or family use",
+  "clear first, then clean"
+] as const;
+
+// §35's five steps, plus a sixth. The source ends at "we clean the cleared areas"; the review and
+// handoff step is added because it is real current operating truth — homepage.sampleRecord's own
+// closeout row and /handoff-standard/ both describe it — and a process that stops before the
+// handoff contradicts the rest of the site. §20A.14: this is a field procedure, not four cards.
+const process = [
+  {
+    title: "Tell us what is going on",
+    detail:
+      "The property, how much of it is affected, what you need to happen, who can make decisions, and whether anyone is living there. Photos help. They are not required for the first call."
+  },
+  {
+    title: "We review the property",
+    detail:
+      "Photos are often enough to tell you whether this is our kind of job. Packed or larger properties usually need a walkthrough before a firm scope and a firm price."
+  },
+  {
+    title: "We set the plan and the scope, in writing",
+    detail:
+      "Where we start, which areas are included, how item decisions get made, where kept items go, how approved material leaves the property, what cleaning is included, what is not included, and roughly how many crew days it takes."
+  },
+  {
+    title: "You approve it",
+    detail: "Work does not begin until the scope is agreed. Nothing is assumed from a phone call."
+  },
+  {
+    title: "We work through the property",
+    detail:
+      "Area by area, against the approved plan. Not at random, and not by clearing whatever is nearest the door."
+  },
+  {
+    title: "We clean what has been cleared, then hand the property back",
+    detail:
+      "When cleaning is in the scope, the surfaces in an opened area are cleaned once they can be reached. Then the completed scope is reviewed with you, with the open items still listed as open."
+  }
+] as const;
+
+// What clearing exposes. §35's list, with one change: "mold-like growth" is kept as the source
+// wrote it and never becomes "mold", which doc 21 §2.1 forbids Aseptaclean from claiming to work
+// on in any direction.
+const discoveries = [
+  "animal waste",
+  "signs of pest activity",
+  "water damage",
+  "mold-like growth",
+  "damaged flooring or walls",
+  "sharp objects",
+  "unknown chemicals",
+  "human biological material"
+] as const;
+
+// Boundaries. doc 27 §14.2's four canonical boundaries, expanded with the exclusions the previous
+// build already shipped on this route — §20A.13 makes exclusions conversion content, so the
+// longer list is kept rather than trimmed to the canonical four.
+const boundaries = [
+  "forced removal without authorized direction",
+  "deciding who owns an item, or whether something has been abandoned",
+  "appraising jewellery, antiques or collectibles",
+  "pest inspection, identification, exclusion or treatment",
+  "structural repair, drywall, flooring or construction",
+  "transporting contents off the property",
+  "human biological material, regulated waste or sharps handling",
+  "mental-health treatment or clinical support",
+  "stating that a property is safe, cleared or fit to live in"
+] as const;
+
+const goodFit = [
+  "the amount of contents feels too large to handle alone",
+  "rooms are hard to use, or cannot be used",
+  "some things have to stay",
+  "important items are mixed in with things that can go",
+  "several rooms, or a whole property, are involved",
+  "more than one person is involved and the decisions need one clear process",
+  "cleaning is needed once the areas are open",
+  "the property has to reach a next use — sale, repair, rental, family use, handoff"
+] as const;
+
+const poorFit = [
+  "only a few items need picking up",
+  "everything is already approved to go and a truck is all this needs",
+  "construction, repair or demolition is the real work",
+  "an active pest problem is the main issue and has not been dealt with yet",
+  "the condition is outside our current scope"
+] as const;
+
+// AGENTS.md §4 keeps the cost drivers and forbids the figure. §35's list, plus the access and
+// deadline drivers the previous build carried.
+const priceDrivers = [
+  "size of the property and how many rooms are affected",
+  "how much is in it, and how densely",
+  "how much sorting and decision work the contents need",
+  "how much is staying",
+  "how much approved material is leaving",
+  "access — stairs, lifts, parking, carry distance",
+  "large or heavy items",
+  "crew size and number of days",
+  "cleaning after clearing, when it is included",
+  "disposal and container needs",
+  "conditions that were not visible at the start",
+  "your deadline"
+] as const;
+
+// §20A.18: 4–7 highest-value service-specific questions, chosen for effect on fit, scope and next
+// step. Seven ship. The previous build's other three — staging the work, whether you must be
+// present throughout, and family disagreement — are answered inside movements 03 and 04 in
+// stronger positions than an accordion at the bottom of the page, and the general ones belong on
+// /faq/. Answers stay as arrays of short paragraphs, which is how this site writes them.
+const faq = [
+  [
+    "Are you going to throw everything away?",
+    [
+      "No.",
+      "The removal rules are agreed before work begins. Anything you are unsure about goes to a review category and stays there until you decide."
+    ]
+  ],
+  [
+    "Do I have to decide about every item right now?",
+    [
+      "No. The plan includes somewhere for undecided things to sit.",
+      "What does have to be settled first is how decisions get made and who makes them. That is the part the crew cannot improvise."
+    ]
+  ],
+  [
+    "Can a family member set this up?",
+    [
+      "Yes, as long as we know who owns or controls the property and who is allowed to approve the work and the scope.",
+      "Where those are two different people, we need both before the crew starts moving anything."
+    ]
+  ],
+  [
+    "Can you look for specific items?",
+    [
+      "Tell us what matters before work starts — photographs, documents, identification, keys, jewellery, family items — and named items go into the job plan.",
+      "Anything important that turns up during the work is set aside and reported rather than removed.",
+      "We cannot promise that something missing will be found."
+    ]
+  ],
+  [
+    "Do you haul everything away?",
+    [
+      "No. Aseptaclean is not a hauling company and does not transport contents off the property.",
+      "Disposal and transport are handled by a City-authorized hauler engaged for the project. Aseptaclean can plan the container, coordinate its placement and load approved material into it when that work is in the scope."
+    ]
+  ],
+  [
+    "Do you clean the home after it is cleared?",
+    [
+      "Yes, when cleaning is written into the scope.",
+      "How much cleaning a property needs usually cannot be judged until the area is open, which is why clearing and cleaning are scoped and priced as separate phases."
+    ]
+  ],
+  [
+    "What happens if you find rodent droppings or another condition?",
+    [
+      "We stop in that area and tell you before going any further.",
+      "Some conditions may fit the cleaning work Aseptaclean already performs. Some need a different provider. Aseptaclean may clean accepted conditions left behind after an appropriately licensed pest operator has confirmed the active pest issue is resolved. Aseptaclean does not inspect for, identify, exclude, trap, or treat pests.",
+      "Cleaning only — not a decontamination, sterilization, or health-safety determination."
+    ]
+  ]
+] as const;
+
+// Service + BreadcrumbList + FAQPage, all three carried over from the previous build. The FAQPage
+// node is regenerated from the seven visible questions rather than kept at ten: doc 21 §6.1 —
+// schema must not describe content a visitor cannot see. §20A.18's "do not add FAQPage schema
+// merely to chase rich results" is a rule against ADDING one; this route already had it, the
+// questions are genuinely on the page, and removing it would be an indexation change this pass
+// is not making.
+const schema = [
+  {
+    "@type": "Service",
+    name: "Hoarding Cleanup in San Jose",
+    serviceType: "Hoarding cleanup",
+    provider: { "@id": new URL("/#business", site.urls.site).href },
+    areaServed: { "@type": "City", name: "San Jose" }
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Complex Property Cleanup",
+        item: new URL("/property-clearing/", site.urls.site).href
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Hoarding Cleanup",
+        item: new URL(canonicalPath, site.urls.site).href
+      }
+    ]
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: faq.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer.join("\n\n") }
+    }))
+  }
+];
 ---
 
-<ServicePageLayout
-  page={hoardingPage}
-  serviceType="Hoarding cleanup"
-  breadcrumbName="Hoarding Cleanup"
-  idPrefix="hoarding"
-  groupName="Property Clearing"
-  groupHref="/property-clearing/"
-/>
+<BaseLayout title={title} description={description} canonicalPath={canonicalPath} schema={schema}>
+  {/* ══ 01 · SERVICE HERO ═══════════════════════════════════════════════════════════════════
+      §20A.7: location context → unmistakable service H1 → specialist thesis → service CTA →
+      phone as secondary → service-relevant image. Left-aligned, not the centred homepage
+      composition, and 540px rather than 600 — a high-intent searcher needs the recognition
+      section in view on a laptop, not a full viewport of photograph. */}
+  <section class="hc-hero" aria-labelledby="hoarding-title">
+    <div class="hc-hero__media">
+      {/* alt="" matches Hero.astro and ServicesHero.astro: the photograph is atmosphere behind
+          the H1, which carries the meaning. */}
+      <Image
+        src={heroImage}
+        alt=""
+        layout="full-width"
+        widths={[480, 768, 1024, 1440, 1920]}
+        sizes="100vw"
+        format="webp"
+        quality={74}
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+      />
+    </div>
+
+    <div class="hc-hero__overlay" aria-hidden="true"></div>
+
+    <div class="hc-hero__shell">
+      <div class="hc-hero__content">
+        <p class="hc-hero__eyebrow">
+          Hoarding cleanup · San Jose · {site.location.serviceArea}
+        </p>
+        <h1 id="hoarding-title" class="ac-type-h1-hub">Hoarding Cleanup</h1>
+        <p class="hc-hero__lede">
+          A packed home can feel hard to even start. We help clear the property step by step.
+        </p>
+        {/* §20A.5's specialist thesis, given the weight of a statement. This is the sentence the
+            whole page exists to make credible. */}
+        <p class="hc-hero__thesis">You decide what stays. You decide what goes.</p>
+
+        <div class="hc-hero__actions">
+          <a class="hc-btn hc-btn--light" href={assessmentHref}>{site.offer.primaryCta}</a>
+          {/* Suppression rule (AGENTS.md §3): never render an empty phone link. */}
+          {phoneHref && (
+            <a class="hc-hero__call" href={phoneHref}>Call {site.business.phone}</a>
+          )}
+        </div>
+
+        <p class="hc-hero__reassurance">
+          Private cleanup. Clear plan. No pressure to decide everything at once.
+        </p>
+      </div>
+    </div>
+
+    <p class="hc-hero__development-note">
+      Development reference photograph · not Aseptaclean project work
+    </p>
+  </section>
+
+  {/* ══ 02 · CONDITION RECOGNITION + THE FIRST REFRAME ═══════════════════════════════════════
+      §20A.6's movement 02: recognition and reframe combined. The reframe leads, because it is
+      the thing a visitor googling this service has not been told by anyone else — and the
+      condition list underneath is what makes them believe the reframe is about their house. */}
+  <section class="hc-reframe" aria-labelledby="reframe-title">
+    <div class="hc-reframe__inner">
+      <div class="hc-reframe__copy">
+        <p class="hc-label">What we are looking at</p>
+        <h2 id="reframe-title" class="ac-type-h2-home-feature">
+          We do not walk in and throw everything away.
+        </h2>
+        <p class="hc-lede">
+          A packed home is not a pile of rubbish. It is a house with too much in it, and the
+          difference decides how the work has to be done.
+        </p>
+        <p>Under the contents there is usually a mix of:</p>
+        <ul class="hc-inline-list">
+          {contents.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="hc-statement">
+          Knowing which is which is part of the job, not an afterthought.
+        </p>
+        <p>
+          It is why the decisions come before the clearing rather than during it.
+        </p>
+      </div>
+
+      <figure class="hc-reframe__media">
+        <div class="hc-frame">
+          <Image
+            src={contentsImage}
+            alt="Reference photograph of a dining room where accumulated household contents, papers and boxes cover the table, sideboard and floor."
+            widths={[520, 760, 1000, 1320]}
+            sizes="(min-width: 64rem) 46vw, 92vw"
+            format="webp"
+            quality={74}
+            loading="lazy"
+            decoding="async"
+          />
+        </div>
+        <figcaption>
+          Development reference photograph · not Aseptaclean project work · Asurnipal, Wikimedia
+          Commons, CC BY-SA 4.0
+        </figcaption>
+      </figure>
+    </div>
+
+    <div class="hc-reframe__conditions">
+      <div class="hc-conditions__head">
+        <h3 class="ac-type-h3-home-feature">Is the home getting hard to use?</h3>
+        <p>
+          Heavy accumulation is usually noticed as a set of small losses rather than one event.
+          Any of these is a reasonable moment to ask for help:
+        </p>
+      </div>
+      <ul class="hc-rule-list">
+        {conditions.map((item) => <li>{item}</li>)}
+      </ul>
+      <p class="hc-statement hc-statement--wide">
+        You do not need to tidy the house before you call. That is the point of calling.
+      </p>
+    </div>
+  </section>
+
+  {/* ══ 03 · CLIENT CONTROL ══════════════════════════════════════════════════════════════════
+      The page's signature movement and its only full navy field. §20A.14 rules out five equal
+      cards; the categories ship as a document register — a <dl>, ruled, with the category names
+      set as record labels. Decision authority sits beside it because in practice the two
+      questions are one question: what happens to a thing, and who says so. */}
+  <section class="hc-control" aria-labelledby="control-title">
+    <div class="hc-control__inner">
+      <div class="hc-control__lead">
+        <p class="hc-label hc-label--dark">The decision process</p>
+        <h2 id="control-title" class="ac-type-h2-home-feature">
+          You stay in control of what stays and what leaves.
+        </h2>
+        <p class="hc-control__lede">
+          Before anything is moved, we agree how the contents get decided. Aseptaclean does not
+          decide what is valuable and does not decide what is rubbish. That belongs to you, or to
+          whoever is authorized to decide for the property.
+        </p>
+        <p class="hc-control__note">
+          If something important turns up mid-job — a document, a photograph, keys, jewellery,
+          cash — it is set aside and reported. It does not join the removal pile because of where
+          it happened to be found.
+        </p>
+      </div>
+
+      <dl class="hc-register">
+        {decisions.map(([term, definition]) => (
+          <div class="hc-register__row">
+            <dt>{term}</dt>
+            <dd>{definition}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div class="hc-authority">
+        <h3 class="ac-type-h3-home-route">Who decides</h3>
+        <p>
+          Family projects get complicated when three people want three different things. Before
+          work begins we need to know:
+        </p>
+        <ul class="hc-check-list">
+          {authority.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="hc-authority__close">
+          You do not need every answer on day one. You do need one clear way to make the calls —
+          it protects everyone, and it stops the crew guessing.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 04 · HOW THE JOB WORKS ═══════════════════════════════════════════════════════════════
+      §20A.14: vertical numbered sequence, thin rules, large numerals used sparingly. The goal
+      opens the movement because step 01 is meaningless without it — §35's "the goal changes the
+      job" is the reason the process is not a fixed package. Clearing-before-cleaning and the
+      stop-and-tell rule close it, because both are things that happen DURING the sequence. */}
+  <section class="hc-process" aria-labelledby="process-title">
+    <div class="hc-process__inner">
+      <div class="hc-process__head">
+        <p class="hc-label">How the job works</p>
+        <h2 id="process-title" class="ac-type-h2-home-feature">The goal changes the job.</h2>
+        <p class="hc-lede">
+          A path through the house, one usable kitchen, one cleared room, and a whole property
+          ready for sale are four different jobs with four different prices. We start with which
+          one you need.
+        </p>
+        <ul class="hc-inline-list hc-inline-list--goals">
+          {goals.map((goal) => <li>{goal}</li>)}
+        </ul>
+        <p>
+          You never have to choose between everything stays and everything goes. A large job can
+          be broken into parts when that is the sensible way to do it.
+        </p>
+      </div>
+
+      <ol class="hc-steps">
+        {process.map((step, index) => (
+          <li class="hc-step">
+            <span class="hc-step__index" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div class="hc-step__body">
+              <h3 class="ac-type-h3-home-route">{step.title}</h3>
+              <p>{step.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div class="hc-process__pair">
+        <div class="hc-note">
+          <h3 class="ac-type-h3-home-route">A cleared house is not always a clean house.</h3>
+          <p>
+            You cannot clean a floor you cannot reach. Clearing and cleaning are two phases and
+            two lines in the scope, and the second one cannot be judged honestly until the first
+            has happened — the real surface condition is not visible from the doorway.
+          </p>
+          <p>
+            Once an area is open, cleaning in scope can cover floors, baseboards, shelves,
+            counters, cabinets, reachable hard surfaces, kitchens and bathrooms. It is included
+            when it is written into the scope. It is not automatic, and a hoarding project does
+            not silently become a whole-home deep clean.
+          </p>
+          <a class="hc-link" href="/deep-cleaning-san-jose/">
+            <span>Detailed deep cleaning</span> <span aria-hidden="true">&rarr;</span>
+          </a>
+        </div>
+
+        <div class="hc-note hc-note--stop">
+          <h3 class="ac-type-h3-home-route">
+            If the job changes, we tell you before we change the work.
+          </h3>
+          <p>
+            Packed properties hide things. Once the contents start to move, an area can show a
+            condition nobody could see from the doorway:
+          </p>
+          <ul class="hc-inline-list">
+            {discoveries.map((item) => <li>{item}</li>)}
+          </ul>
+          <p>
+            We do not keep going and hope. We stop in that area, tell you what is there, and
+            decide the next step with you. A new condition is a new decision — not a quiet
+            expansion of the job and not a surprise on the invoice.
+          </p>
+          <p>
+            Some of it may fit the cleaning work Aseptaclean already performs. Some needs a
+            different provider, and some is outside our scope entirely. You will be told which.
+          </p>
+          <p class="hc-clause">
+            Cleaning only — not a decontamination, sterilization, or health-safety determination.
+          </p>
+        </div>
+      </div>
+
+      <div class="hc-boundaries">
+        <h3 class="ac-type-h3-home-route">What Aseptaclean does not do</h3>
+        <ul class="hc-minus-list">
+          {boundaries.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="hc-boundaries__clause">
+          Aseptaclean may clean accepted conditions left behind after an appropriately licensed
+          pest operator has confirmed the active pest issue is resolved. Aseptaclean does not
+          inspect for, identify, exclude, trap, or treat pests.
+        </p>
+        <p class="hc-boundaries__clause">
+          Disposal and transport are handled by a City-authorized hauler engaged for the project.
+        </p>
+        <p class="hc-disclaimer">{legal.scopeDisclaimer}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 05 · WHAT PROOF EXISTS ═══════════════════════════════════════════════════════════════
+      §20A.15 asks for START → SORTED → CLEARED → CLEANED. There are zero completed documented
+      projects (doc 21 §6) and AGENTS.md §0.3 is absolute: the slot ships empty rather than
+      filled with stock captioned as work. So the gap is stated in the page's own voice and the
+      real artifact takes the slot — which, on this route, is the stronger asset anyway: the
+      record's four rows ARE the decision system from movement 03, applied to areas, with an open
+      item still open. */}
+  <section class="hc-proof" aria-labelledby="proof-title">
+    <div class="hc-proof__inner">
+      <div class="hc-proof__copy">
+        <p class="hc-label">Evidence</p>
+        <h2 id="proof-title" class="ac-type-h2-home-feature">What we can show you today.</h2>
+        <p class="hc-lede">
+          There is no photo gallery on this page. Aseptaclean has no photographed hoarding project
+          to show yet, and a set of stock before-and-after images would tell you nothing true
+          about how this company works.
+        </p>
+        <p>
+          What does exist is the document the work produces. Every area carries a decision, every
+          decision is written down, and the things still undecided stay visibly undecided rather
+          than quietly resolving themselves while the crew is on site.
+        </p>
+        <a class="hc-link" href="/handoff-standard/">
+          <span>How a scope gets written and closed out</span> <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+
+      <div class="hc-record">
+        <div class="hc-record__head">
+          <p class="hc-record__title">Property Handoff Record</p>
+          {/* doc 27 §9.9's REQUIRED label. Never removed, never softened. */}
+          <p class="hc-record__flag">Sample · not a client record</p>
+        </div>
+
+        <dl class="hc-record__meta">
+          <div><dt>Project</dt><dd>{record.projectId}</dd></div>
+          <div><dt>Decision-maker</dt><dd>{record.decisionMaker}</dd></div>
+        </dl>
+
+        <table class="hc-record__table">
+          <thead>
+            <tr>
+              <th scope="col">Area</th>
+              <th scope="col">Decision</th>
+              <th scope="col">Note</th>
+            </tr>
+          </thead>
+          <tbody>
+            {record.rooms.map((room) => (
+              <tr>
+                <td>{room.area}</td>
+                <td>{room.disposition}</td>
+                <td>{room.note}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <p class="hc-record__exception">{record.exceptionStatus}</p>
+        <p class="hc-record__note">{legal.documentationDisclaimer}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 06 · FIT + PRICE ═════════════════════════════════════════════════════════════════════
+      §20A.12 (explain the basic option first) and §20A.16 (qualify, do not build a wall of
+      rejection) combined with the price logic, because they are one decision: is this worth
+      paying a cleanup company for, and what would it cost. The junk-truck paragraph leads
+      because it is the honest version of the comparison and it earns the rest. */}
+  <section class="hc-fit" aria-labelledby="fit-title">
+    <div class="hc-fit__inner">
+      <div class="hc-fit__lead">
+        <p class="hc-label">Fit</p>
+        <h2 id="fit-title" class="ac-type-h2-home-feature">A junk truck is sometimes the right call.</h2>
+        <p class="hc-lede">
+          If everything in the property can go and nobody has to decide anything, a hauling
+          company is faster and cheaper and you should use one. That is a real answer, not a
+          setup for a sales line.
+        </p>
+        <p>
+          Aseptaclean is the better fit when there are still decisions inside the building — when
+          things are staying, when important items are mixed in with things that can go, or when
+          the property has to be cleaned once it is clear.
+        </p>
+      </div>
+
+      <div class="hc-fit__columns">
+        <div class="hc-fit__col">
+          <h3 class="ac-type-h3-home-route">Usually a fit</h3>
+          <ul class="hc-check-list">
+            {goodFit.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="hc-fit__aside">
+            If the property is part of an estate, the authority and deadline questions work a
+            little differently — <a href="/estate-cleanout-san-jose/">estate cleanouts</a> covers
+            that. Where most of the removal decisions are already settled,
+            <a href="/property-cleanouts-san-jose/"> property cleanouts</a> is usually the closer
+            match.
+          </p>
+        </div>
+        <div class="hc-fit__col hc-fit__col--out">
+          <h3 class="ac-type-h3-home-route">Probably not a fit</h3>
+          <ul class="hc-minus-list">
+            {poorFit.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="hc-fit__aside">
+            Where the problem is the state of the property rather than the amount in it,
+            <a href="/extreme-cleaning-san-jose/"> extreme-condition cleaning</a> is the closer
+            service. Not sure? Tell us what is going on. We will say whether it sounds like a fit,
+            and we will say so when it is not.
+          </p>
+        </div>
+      </div>
+
+      <div class="hc-price">
+        <div class="hc-price__copy">
+          <h3 class="ac-type-h3-home-feature">
+            We need to understand the property before we know the real price.
+          </h3>
+          <p>
+            A one-room clearing and a packed four-bedroom house are not the same job, and a
+            published starting figure would only ever be honest about one of them. Two properties
+            the same size can need very different amounts of work.
+          </p>
+          {/* doc 27 §7's fee framing, owner-approved verbatim. The $195 figure interpolates from
+              site data — AGENTS.md §3 forbids retyping it in a component, and §4 makes it the
+              only figure on the site. */}
+          <p class="hc-price__fee">{site.offer.assessmentFraming(site.offer.assessmentFee)}</p>
+        </div>
+        <div class="hc-price__drivers">
+          <p class="hc-price__label">What moves the number</p>
+          <ul class="hc-rule-list hc-rule-list--tight">
+            {priceDrivers.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      {cityLinks.length > 0 && (
+        <div class="hc-local">
+          <p class="hc-price__label">Local planning notes</p>
+          <p>
+            Container placement, permit review times and street access are set by the city the
+            property sits in, and on a high-volume project they are a schedule driver rather than
+            a detail. These sourced guides do not confirm current service availability — share
+            the address so Aseptaclean can confirm the project is in range.
+          </p>
+          <ul class="hc-local__links">
+            {cityLinks.map((link) => (
+              <li>
+                <a href={link.href}>{link.anchor} <span aria-hidden="true">&rarr;</span></a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {/* ══ 07 · QUESTIONS ═══════════════════════════════════════════════════════════════════════
+      Open Q&A, not an accordion. §20A.18 caps the list at the questions that decide the
+      purchase, and at seven the answers are worth reading rather than worth hiding — an
+      accordion here would put a click between a nervous buyer and the answer to "are you going
+      to throw everything away". No JS, nothing to fail, everything findable by browser search. */}
+  <section class="hc-faq" aria-labelledby="faq-title">
+    <div class="hc-faq__inner">
+      <div class="hc-faq__head">
+        <p class="hc-label">Questions</p>
+        <h2 id="faq-title" class="ac-type-h2-home-feature">The questions that decide this.</h2>
+        <p class="hc-lede">
+          Seven that come up on nearly every hoarding project. The general ones — scheduling,
+          payment, what happens on the day — are on the <a href="/faq/">main FAQ</a>.
+        </p>
+      </div>
+
+      <div class="hc-faq__grid">
+        {faq.map(([question, answer]) => (
+          <article class="hc-qa">
+            <h3 class="ac-type-h3-home-route">{question}</h3>
+            {answer.map((paragraph) => <p>{paragraph}</p>)}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 08 · CLOSE ═══════════════════════════════════════════════════════════════════════════
+      §35's approved closing direction. Typographic on navy rather than image-led: the page has
+      already spent two large photographs, `/`'s close is image-led, and repeating that
+      composition here would make the last thing a visitor sees on two different pages the same
+      shape (doc 30 §7.2, natural rhythm). */}
+  <section class="hc-close" aria-labelledby="close-title">
+    <div class="hc-close__inner">
+      <div class="hc-close__copy">
+        <h2 id="close-title" class="ac-type-h2-final">
+          You do not have to solve the whole house today.
+        </h2>
+        <p class="hc-close__lede">
+          Start by telling us what is going on. We will help work out what the first step should
+          be — including when the honest answer is that you do not need us.
+        </p>
+      </div>
+
+      <div class="hc-close__action">
+        <a class="hc-btn hc-btn--light" href={assessmentHref}>{site.offer.primaryCta}</a>
+        {/* doc 27 §8 — the secondary door appears wherever the primary does. This is also what
+            lets the mobile bar drop to two actions on this route: the text door still ships
+            here, on the same page. Both suppressed with the phone value they derive from. */}
+        <div class="hc-close__secondary">
+          {phoneHref && <a href={phoneHref}>Call {site.business.phone}</a>}
+          {smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
+        </div>
+        <p class="hc-close__note">
+          Submitting a request does not authorize work or create a service agreement.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     Shared page primitives. Declared once here rather than per section so the page has one
+     spacing, rule and list system — doc 30 §7.2 "D": vary composition, keep the system.
+     NOTHING in this file sets font-size on a heading tag or on a selector that resolves to
+     one; heading sizes come from .ac-type-* role classes and are tuned by overriding the
+     role class's TOKEN on a container (AGENTS.md §6 law 1).
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+
+  /* Flat uppercase section label, not the sitewide `.ac-label` tinted chip. doc 30 §7.1 rejects
+     pill eyebrows, and both rebuilt pages use a flat label for the same reason. The chip class
+     is untouched and still ships on its ~20 other call sites. */
+  .hc-label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .hc-label--dark {
+    color: var(--ac-color-blue-on-navy);
+  }
+
+  .hc-lede {
+    margin: 22px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  /* One sentence given the weight of a statement: a change of colour, size and weight on the
+     same measure. Not a pull quote, not a card, and never a billboard heading — the brief is
+     explicit that these lines must not each become their own giant band. */
+  .hc-statement {
+    margin: 24px 0 0;
+    max-width: 46ch;
+    color: var(--ac-color-navy-900);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .hc-statement--wide {
+    max-width: 52ch;
+  }
+
+  /* Contents / discoveries / goals: a wrapped run of short items. A twelve-item list is a list,
+     not twelve cards, and this keeps it one visual object at a fraction of the height a stacked
+     list would cost — which matters most at 390px, where these three lists stacked would have
+     added roughly 780px of scrolling to say the same twelve, eight and six things.
+     The separator is a TRAILING mark on every item but the last, not a leading border: a
+     leading separator orphans at the start of every wrapped line, which is the reason the
+     obvious `border-left` treatment does not survive a narrow viewport. */
+  .hc-inline-list {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: none;
+    margin: 16px 0 0;
+    padding: 0;
+    gap: 4px 10px;
+    list-style: none;
+  }
+
+  .hc-inline-list li {
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .hc-inline-list li:not(:last-child)::after {
+    margin-left: 10px;
+    color: var(--ac-color-line-strong);
+    content: "·";
+  }
+
+  .hc-inline-list--goals li {
+    color: var(--ac-color-navy-900);
+    font-weight: 550;
+  }
+
+  /* Ruled list — one item per row on a hairline. Two columns where there is room. */
+  .hc-rule-list {
+    display: grid;
+    max-width: none;
+    margin: 20px 0 0;
+    padding: 0;
+    gap: 0 44px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    list-style: none;
+  }
+
+  .hc-rule-list li {
+    max-width: none;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 12px 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .hc-rule-list--tight li {
+    padding: 10px 0;
+  }
+
+  .hc-check-list,
+  .hc-minus-list {
+    max-width: none;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .hc-check-list li,
+  .hc-minus-list li {
+    position: relative;
+    max-width: none;
+    padding: 9px 0 9px 26px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .hc-check-list li + li,
+  .hc-minus-list li + li {
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  /* Drawn as CSS marks rather than inline SVG: nine identical decorative glyphs in the markup
+     is nine things a screen reader has to be told to ignore, and doc 30 §7.1 warns off
+     icon-per-row treatments generally. These are rules, not icons. */
+  .hc-check-list li::before,
+  .hc-minus-list li::before {
+    position: absolute;
+    top: 17px;
+    left: 0;
+    width: 12px;
+    height: 2px;
+    background: var(--ac-color-blue-deep);
+    content: "";
+  }
+
+  .hc-minus-list li::before {
+    background: var(--ac-color-exclusion-red);
+  }
+
+  .hc-link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    margin-top: 18px;
+    gap: 0.4em;
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-underline-offset: 4px;
+  }
+
+  .hc-link:hover {
+    text-decoration: underline;
+  }
+
+  .hc-btn {
+    display: inline-flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    padding-inline: 30px;
+    font-size: 0.9375rem;
+    font-weight: 750;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+
+  .hc-btn--light {
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+  }
+
+  .hc-btn--light:hover {
+    background: var(--ac-color-blue-pale);
+  }
+
+  .hc-btn--light:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 4px;
+  }
+
+  /* Compliance clauses: doc 21 §2.3's animal/organic limiting clause and §3.1's pest boundary.
+     Ruled and bolder than body copy so they read as terms rather than as marketing. */
+  .hc-clause,
+  .hc-boundaries__clause {
+    margin: 18px 0 0;
+    max-width: 60ch;
+    border-left: 3px solid var(--ac-color-navy-800);
+    padding: 2px 0 2px 16px;
+    color: var(--ac-color-navy-900);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+
+  .hc-disclaimer {
+    margin: 24px 0 0;
+    max-width: 78ch;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 18px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  /* Image frame. Ratio lives on the wrapper and the img is stretched to fill it —
+     `aspect-ratio` on the <img> itself is ignored whenever astro:assets' width/height supply a
+     used height, which is how two images once shipped at full intrinsic height. */
+  .hc-frame {
+    overflow: hidden;
+    background: var(--ac-color-steel-200);
+  }
+
+  .hc-frame :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* ══ 01 · HERO ══════════════════════════════════════════════════════════════════════════ */
+
+  /* 46px at 1440, inside doc 30 §8.2's 42–52px desktop H1 band. Set on the token, never on the
+     heading — the size still resolves through .ac-type-h1-hub. */
+  .hc-hero {
+    --ac-text-h1-hub: 2.875rem;
+    position: relative;
+    min-height: 540px;
+    overflow: hidden;
+    padding: 0;
+    background: var(--ac-color-navy-950);
+  }
+
+  .hc-hero__media,
+  .hc-hero__overlay {
+    position: absolute;
+    inset: 0;
+  }
+
+  .hc-hero__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Pulled right and down: the copy column lands on the left third, and this frame's quietest
+       area is the wall and window above the contents on that side. */
+    object-position: 64% 58%;
+  }
+
+  /* ONE flat overlay, doc 30 §20A.7 — no gradient, no vignette, no scrim behind the copy.
+     0.64 rather than `/`'s 0.54, and MEASURED rather than chosen by eye. This frame carries
+     bright laundry and paper across its whole lower two thirds; there is no quiet corner for a
+     copy column that runs six elements deep, and no crop that avoids it without throwing away
+     the packed room the photograph exists to show.
+     `scripts/hoarding-hero-contrast.mjs` composites this overlay over the real pixels the
+     browser draws and walks every one inside each text element's box, so the number below is
+     the WORST case each string actually has to survive rather than an average. At 0.55 the
+     lede (4.35:1), the reassurance line (4.17:1) and the temporary-imagery label (3.45:1) all
+     failed AA against near-white fabric. At 0.64, with the four colour lifts below, all seven
+     hero strings clear AA at 320–1440: lowest measured is 4.71:1 against a 4.5 requirement.
+     The photograph still reads unmistakably as a packed room at this value — checked, not
+     assumed. Re-run that script if the crop, the overlay or any hero colour changes. */
+  .hc-hero__overlay {
+    z-index: 1;
+    background: rgb(10 30 45 / 64%);
+  }
+
+  .hc-hero__shell {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    width: min(100% - 64px, 1320px);
+    min-height: inherit;
+    align-items: center;
+    margin-inline: auto;
+    padding-block: 72px;
+  }
+
+  .hc-hero__content {
+    max-width: 620px;
+    color: var(--ac-color-paper);
+  }
+
+  .hc-hero__eyebrow {
+    margin: 0 0 18px;
+    max-width: none;
+    color: rgb(255 255 255 / 92%);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .hc-hero__content h1 {
+    max-width: 14ch;
+    color: var(--ac-color-paper);
+  }
+
+  .hc-hero__lede {
+    margin: 20px 0 0;
+    max-width: 44ch;
+    color: #f1f5fa;
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  /* The specialist thesis. One step up from the lede in size and weight, white rather than the
+     lede's tinted blue-white — it is the sentence the page is arguing for. */
+  .hc-hero__thesis {
+    margin: 14px 0 0;
+    max-width: 34ch;
+    color: var(--ac-color-paper);
+    font-size: 1.1875rem;
+    font-weight: 650;
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+
+  .hc-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 30px;
+    gap: 8px 26px;
+  }
+
+  /* Text link, not a second button — doc 30 §13.2's hierarchy. 44px keeps the touch target. */
+  .hc-hero__call {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-underline-offset: 5px;
+  }
+
+  .hc-hero__call:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .hc-hero__call:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 3px;
+  }
+
+  /* 86%, not 72%. This is the smallest text in the hero and it sits over the brightest part of
+     the crop; at 72% it was the one string on the page that had to be worked at. */
+  .hc-hero__reassurance {
+    margin: 22px 0 0;
+    max-width: 46ch;
+    color: rgb(255 255 255 / 95%);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  .hc-hero__development-note {
+    position: absolute;
+    z-index: 2;
+    right: 18px;
+    bottom: 14px;
+    left: 18px;
+    /* Opts out of global.css's 62ch prose measure, as both other heroes do: at 10px the cap
+       resolves narrower than the nowrap string, and the section's `overflow: hidden` would clip
+       the last word off a compliance label. */
+    max-width: none;
+    white-space: nowrap;
+    margin: 0;
+    color: rgb(255 255 255 / 92%);
+    font-size: 0.625rem;
+    font-weight: 650;
+    letter-spacing: 0.055em;
+    line-height: 1.3;
+    text-align: right;
+    text-transform: uppercase;
+  }
+
+  /* ══ 02 · CONDITION + REFRAME ═══════════════════════════════════════════════════════════ */
+
+  .hc-reframe {
+    background: var(--ac-color-paper);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .hc-reframe__inner {
+    display: grid;
+    width: min(100% - 64px, 1320px);
+    align-items: start;
+    margin-inline: auto;
+    gap: 48px 72px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+  }
+
+  /* 40px at 1440. doc 30 §8.2 puts desktop H2 at 34–42px and this page's H2s all sit at 40 so
+     the eight movements read as peers. Token override, not a size on the heading. */
+  .hc-reframe__copy,
+  .hc-process__head,
+  .hc-proof__copy,
+  .hc-fit__lead,
+  .hc-faq__head {
+    --ac-text-h2-home-feature: 2.5rem;
+  }
+
+  .hc-reframe__copy h2 {
+    max-width: 18ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .hc-reframe__copy p:not(.hc-label):not(.hc-lede):not(.hc-statement) {
+    margin: 20px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  .hc-reframe__media {
+    margin: 0;
+  }
+
+  .hc-reframe__media .hc-frame {
+    aspect-ratio: 3 / 2;
+  }
+
+  .hc-reframe__media .hc-frame :global(img) {
+    object-position: 50% 56%;
+  }
+
+  .hc-reframe__media figcaption {
+    max-width: none;
+    margin-top: 12px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.6875rem;
+    font-weight: 650;
+    letter-spacing: 0.05em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  /* The condition list runs the full container width beneath both columns — it is the section's
+     recognition moment and a reader is meant to scan it, not read it in a 52ch measure. */
+  .hc-reframe__conditions {
+    width: min(100% - 64px, 1320px);
+    border-top: 2px solid var(--ac-color-navy-800);
+    margin: clamp(48px, 5vw, 72px) auto 0;
+    padding-top: 32px;
+  }
+
+  .hc-conditions__head {
+    display: grid;
+    align-items: start;
+    gap: 12px 64px;
+    grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+  }
+
+  .hc-conditions__head h3 {
+    max-width: 20ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .hc-conditions__head p {
+    max-width: 54ch;
+    margin: 0;
+    color: var(--ac-color-ink-600);
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .hc-reframe__conditions .hc-rule-list {
+    margin-top: 28px;
+  }
+
+  /* ══ 03 · CLIENT CONTROL ════════════════════════════════════════════════════════════════ */
+
+  .hc-control {
+    background: var(--ac-color-navy-900);
+    padding-block: clamp(80px, 8vw, 120px);
+  }
+
+  .hc-control__inner {
+    --ac-text-h2-home-feature: 2.5rem;
+    display: grid;
+    width: min(100% - 64px, 1320px);
+    align-items: start;
+    margin-inline: auto;
+    gap: 52px 80px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  }
+
+  .hc-control__lead {
+    grid-column: 1;
+  }
+
+  .hc-control__lead h2 {
+    max-width: 17ch;
+    color: var(--ac-color-paper);
+  }
+
+  .hc-control__lede {
+    margin: 24px 0 0;
+    max-width: 46ch;
+    color: #ccd9e8;
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .hc-control__note {
+    margin: 18px 0 0;
+    max-width: 46ch;
+    color: #a9bdd4;
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  /* The register. A description list drawn as a document: the term in a fixed left column set as
+     a record label, the definition beside it, one hairline per row. */
+  .hc-register {
+    grid-column: 2;
+    grid-row: 1;
+    margin: 0;
+  }
+
+  .hc-register__row {
+    display: grid;
+    align-items: baseline;
+    border-top: 1px solid rgb(255 255 255 / 16%);
+    padding: 18px 0;
+    gap: 4px 28px;
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+  }
+
+  .hc-register__row:first-child {
+    border-top-color: rgb(255 255 255 / 42%);
+    border-top-width: 2px;
+  }
+
+  .hc-register dt {
+    color: var(--ac-color-paper);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    letter-spacing: 0.09em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .hc-register dd {
+    max-width: 52ch;
+    margin: 0;
+    color: #ccd9e8;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  /* Full-width beneath both columns rather than tucked under the lead. Whichever of the two top
+     columns runs shorter, a half-width block below it leaves a hollow quarter of a navy field —
+     and the authority questions are not a footnote to the register, they are the other half of
+     the same mechanism. Its own list runs two columns so six short lines do not become a
+     six-row ladder. */
+  .hc-authority {
+    display: grid;
+    grid-column: 1 / -1;
+    align-items: start;
+    border-top: 1px solid rgb(255 255 255 / 22%);
+    padding-top: 28px;
+    gap: 8px 80px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  }
+
+  .hc-authority h3 {
+    color: var(--ac-color-paper);
+  }
+
+  .hc-authority > p {
+    margin: 14px 0 0;
+    max-width: 44ch;
+    color: #ccd9e8;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .hc-authority .hc-check-list {
+    grid-column: 2;
+    grid-row: 1 / span 3;
+    margin-top: 0;
+  }
+
+  .hc-authority .hc-check-list li {
+    color: #ccd9e8;
+  }
+
+  .hc-authority .hc-check-list li + li {
+    border-top-color: rgb(255 255 255 / 14%);
+  }
+
+  .hc-authority .hc-check-list li::before {
+    background: var(--ac-color-blue-on-navy);
+  }
+
+  .hc-authority__close {
+    margin-top: 20px;
+    max-width: 46ch;
+    color: var(--ac-color-paper);
+    font-weight: 600;
+    line-height: 1.6;
+  }
+
+  /* ══ 04 · HOW THE JOB WORKS ═════════════════════════════════════════════════════════════ */
+
+  .hc-process {
+    background: var(--ac-color-paper);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .hc-process__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .hc-process__head {
+    max-width: 62ch;
+  }
+
+  .hc-process__head h2 {
+    max-width: 18ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .hc-process__head > p:last-child {
+    margin: 22px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  /* §20A.14's vertical numbered sequence. Two columns at desktop so six steps do not become six
+     screens; the numerals carry the order, and the rules carry the grouping.
+     TWO H3 TIERS ON THIS PAGE, and this is the lower one. Twenty-one H3s all rendering at 28px
+     flattened the hierarchy — a step title and a section sub-head are not peers. Movement-level
+     H3s ("Who decides", the two field notes, the fit columns) keep 28px; the repeating list-item
+     H3s here and in the FAQ drop to 24px, which is the bottom of doc 30 §8.2's 24–30px desktop
+     H3 band, not below it. Set on the token so the size still resolves through the role class. */
+  .hc-steps {
+    --ac-text-h3-home-route: 1.5rem;
+    display: grid;
+    margin: clamp(44px, 4.5vw, 64px) 0 0;
+    padding: 0;
+    gap: 0 72px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    list-style: none;
+  }
+
+  .hc-step {
+    display: grid;
+    max-width: none;
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding: 22px 0;
+    gap: 4px 24px;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .hc-step:nth-child(-n + 2) {
+    border-top: 2px solid var(--ac-color-navy-800);
+  }
+
+  .hc-step__index {
+    color: var(--ac-color-blue-deep);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    line-height: 1.9;
+  }
+
+  .hc-step__body h3 {
+    color: var(--ac-color-navy-900);
+  }
+
+  .hc-step__body p {
+    margin: 8px 0 0;
+    max-width: 48ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .hc-process__pair {
+    display: grid;
+    align-items: start;
+    margin-top: clamp(48px, 5vw, 72px);
+    gap: 40px 72px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hc-note {
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 24px;
+  }
+
+  .hc-note h3 {
+    max-width: 24ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .hc-note p {
+    margin: 16px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  .hc-note--stop {
+    border-top-color: var(--ac-color-exclusion-red);
+  }
+
+  .hc-boundaries {
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: clamp(48px, 5vw, 72px);
+    padding-top: 32px;
+  }
+
+  .hc-boundaries h3 {
+    color: var(--ac-color-navy-900);
+  }
+
+  /* Three columns here, two everywhere else this list treatment appears. Nine exclusions in two
+     columns is five rows of a list nobody reads sequentially — it is a reference block, and
+     three columns lets it be scanned in one glance instead of two. */
+  .hc-boundaries .hc-minus-list {
+    display: grid;
+    gap: 0 44px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  /* ══ 05 · WHAT PROOF EXISTS ═════════════════════════════════════════════════════════════ */
+
+  .hc-proof {
+    background: var(--ac-color-warm-white);
+    padding-block: clamp(72px, 7vw, 104px);
+  }
+
+  .hc-proof__inner {
+    display: grid;
+    width: min(100% - 64px, 1240px);
+    align-items: start;
+    margin-inline: auto;
+    gap: 44px 72px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  }
+
+  .hc-proof__copy h2 {
+    max-width: 16ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .hc-proof__copy > p:not(.hc-label):not(.hc-lede) {
+    margin: 20px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  /* Drawn as a document: square edges, one accent rule at the top, a ruled register. Not a
+     rounded card and not a floating panel. */
+  .hc-record {
+    border-top: 3px solid var(--ac-color-navy-800);
+    background: var(--ac-color-paper);
+    padding: 22px 24px 24px;
+  }
+
+  .hc-record__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px 18px;
+  }
+
+  .hc-record__title {
+    margin: 0;
+    max-width: none;
+    color: var(--ac-color-navy-900);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* doc 27 §9.9's REQUIRED label. Never removed, never softened, never less legible than the
+     record it labels. */
+  .hc-record__flag {
+    margin: 0;
+    max-width: none;
+    color: var(--ac-color-review);
+    font-size: 0.6875rem;
+    font-weight: 750;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .hc-record__meta {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 14px 0 0;
+    gap: 4px 28px;
+  }
+
+  .hc-record__meta > div {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+
+  .hc-record__meta dt {
+    color: var(--ac-color-ink-400);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .hc-record__meta dd {
+    margin: 0;
+    color: var(--ac-color-navy-900);
+    font-size: 0.8125rem;
+    font-weight: 650;
+  }
+
+  .hc-record__table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 16px;
+    text-align: left;
+  }
+
+  .hc-record__table th {
+    border-bottom: 2px solid var(--ac-color-navy-800);
+    padding: 0 14px 8px 0;
+    color: var(--ac-color-navy-900);
+    font-size: 0.6875rem;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .hc-record__table td {
+    border-bottom: 1px solid var(--ac-color-line);
+    padding: 11px 14px 11px 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.875rem;
+    line-height: 1.45;
+    vertical-align: top;
+  }
+
+  .hc-record__table td:first-child {
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+  }
+
+  .hc-record__table th:last-child,
+  .hc-record__table td:last-child {
+    padding-right: 0;
+  }
+
+  .hc-record__exception {
+    margin: 14px 0 0;
+    max-width: none;
+    color: var(--ac-color-review);
+    font-size: 0.8125rem;
+    font-weight: 650;
+    line-height: 1.5;
+  }
+
+  .hc-record__note {
+    margin: 12px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.75rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  /* ══ 06 · FIT + PRICE ═══════════════════════════════════════════════════════════════════ */
+
+  .hc-fit {
+    background: var(--ac-color-paper);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .hc-fit__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .hc-fit__lead h2 {
+    max-width: 20ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .hc-fit__lead > p:not(.hc-label):not(.hc-lede) {
+    margin: 20px 0 0;
+    max-width: 58ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  /* Two quiet columns, §20A.16 — not a hostile rejection wall. The only difference between them
+     is the colour of a 12px rule. */
+  .hc-fit__columns {
+    display: grid;
+    align-items: start;
+    margin-top: clamp(40px, 4vw, 60px);
+    gap: 40px 72px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hc-fit__col {
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 22px;
+  }
+
+  .hc-fit__col--out {
+    border-top-color: var(--ac-color-line-strong);
+  }
+
+  .hc-fit__col h3 {
+    color: var(--ac-color-navy-900);
+  }
+
+  .hc-fit__aside {
+    margin: 20px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .hc-fit__aside a {
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
+    text-underline-offset: 3px;
+  }
+
+  .hc-price {
+    display: grid;
+    align-items: start;
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: clamp(48px, 5vw, 72px);
+    padding-top: 36px;
+    gap: 36px 72px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  }
+
+  .hc-price__copy {
+    --ac-text-h3-home-feature: 1.75rem;
+  }
+
+  /* 27ch, not 22: at 22 this eleven-word heading broke to three lines with a short third, and
+     the column has the room for two. */
+  .hc-price__copy h3 {
+    max-width: 27ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .hc-price__copy p {
+    margin: 18px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  .hc-price__fee {
+    color: var(--ac-color-navy-900);
+    font-weight: 550;
+  }
+
+  .hc-price__label {
+    max-width: none;
+    margin: 0;
+    color: var(--ac-color-navy-900);
+    font-size: 0.75rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .hc-price__drivers .hc-rule-list {
+    margin-top: 12px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hc-local {
+    border-top: 1px solid var(--ac-color-line);
+    margin-top: clamp(40px, 4vw, 56px);
+    padding-top: 24px;
+  }
+
+  .hc-local > p:not(.hc-price__label) {
+    margin: 12px 0 0;
+    max-width: 74ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .hc-local__links {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: none;
+    margin: 8px 0 0;
+    padding: 0;
+    gap: 0 28px;
+    list-style: none;
+  }
+
+  .hc-local__links li {
+    max-width: none;
+  }
+
+  .hc-local__links a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 0.4em;
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-underline-offset: 4px;
+  }
+
+  /* ══ 07 · QUESTIONS ═════════════════════════════════════════════════════════════════════ */
+
+  .hc-faq {
+    background: var(--ac-color-warm-white);
+    padding-block: clamp(72px, 7vw, 104px);
+  }
+
+  .hc-faq__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .hc-faq__head h2 {
+    max-width: 20ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .hc-faq__head .hc-lede a {
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
+    text-underline-offset: 3px;
+  }
+
+  /* Lower H3 tier — see the note on .hc-steps. */
+  .hc-faq__grid {
+    --ac-text-h3-home-route: 1.5rem;
+    display: grid;
+    align-items: start;
+    margin-top: clamp(40px, 4vw, 56px);
+    gap: 0 72px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .hc-qa {
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding: 24px 0;
+  }
+
+  .hc-qa:nth-child(-n + 2) {
+    border-top: 2px solid var(--ac-color-navy-800);
+  }
+
+  .hc-qa h3 {
+    max-width: 30ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .hc-qa p {
+    margin: 12px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  /* ══ 08 · CLOSE ═════════════════════════════════════════════════════════════════════════ */
+
+  .hc-close {
+    background: var(--ac-color-navy-950);
+    padding-block: clamp(80px, 8vw, 116px);
+  }
+
+  .hc-close__inner {
+    --ac-text-h2-final: 2.75rem;
+    display: grid;
+    width: min(100% - 64px, 1320px);
+    align-items: start;
+    margin-inline: auto;
+    gap: 40px 88px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .hc-close__copy h2 {
+    max-width: 18ch;
+    color: var(--ac-color-paper);
+  }
+
+  .hc-close__lede {
+    margin: 22px 0 0;
+    max-width: 52ch;
+    color: #ccd9e8;
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .hc-close__action {
+    border-top: 2px solid rgb(255 255 255 / 40%);
+    padding-top: 26px;
+  }
+
+  .hc-close__secondary {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 6px;
+    gap: 4px 24px;
+  }
+
+  .hc-close__secondary a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-underline-offset: 5px;
+  }
+
+  .hc-close__secondary a:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .hc-close__secondary a:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 3px;
+  }
+
+  .hc-close__note {
+    margin: 22px 0 0;
+    max-width: 44ch;
+    color: #7f96b4;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 70rem / 1120px — laptop and large tablet
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 70rem) {
+    .hc-hero {
+      --ac-text-h1-hub: 2.625rem;
+      min-height: 500px;
+    }
+
+    .hc-hero__media :global(img) {
+      object-position: 60% 56%;
+    }
+
+    .hc-hero__shell {
+      width: min(100% - 52px, 1000px);
+    }
+
+    .hc-hero__content {
+      max-width: 560px;
+    }
+
+    .hc-reframe__copy,
+    .hc-process__head,
+    .hc-proof__copy,
+    .hc-fit__lead,
+    .hc-faq__head,
+    .hc-control__inner {
+      --ac-text-h2-home-feature: 2.25rem;
+    }
+
+    .hc-close__inner {
+      --ac-text-h2-final: 2.4rem;
+    }
+
+    .hc-reframe__inner,
+    .hc-process__inner,
+    .hc-fit__inner,
+    .hc-faq__inner,
+    .hc-control__inner,
+    .hc-close__inner,
+    .hc-reframe__conditions {
+      width: min(100% - 52px, 1320px);
+    }
+
+    .hc-proof__inner {
+      width: min(100% - 52px, 1240px);
+    }
+
+    .hc-reframe__inner,
+    .hc-control__inner,
+    .hc-proof__inner {
+      gap: 40px 48px;
+    }
+
+    .hc-steps,
+    .hc-process__pair,
+    .hc-fit__columns,
+    .hc-faq__grid,
+    .hc-price {
+      gap: 32px 48px;
+    }
+
+    .hc-register__row {
+      grid-template-columns: 7.5rem minmax(0, 1fr);
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 64rem / 1024px — the two-column comparisons stay two-column here; only the
+     asymmetric copy/media pairs collapse. §14: restructure, do not merely stack.
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 64rem) {
+    .hc-reframe__inner {
+      gap: 40px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hc-reframe__copy h2,
+    .hc-fit__lead h2,
+    .hc-faq__head h2 {
+      max-width: 24ch;
+    }
+
+    .hc-reframe__media .hc-frame {
+      aspect-ratio: 21 / 9;
+    }
+
+    .hc-conditions__head {
+      gap: 12px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hc-conditions__head h3 {
+      max-width: 26ch;
+    }
+
+    /* The register moves ABOVE the authority block once the columns stack: the five decisions
+       are what a visitor scrolled here for, and making them read the authority list first is a
+       desktop layout stacked. */
+    .hc-control__inner {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .hc-control__lead h2 {
+      max-width: 22ch;
+    }
+
+    .hc-authority {
+      gap: 0;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hc-authority .hc-check-list {
+      grid-column: 1;
+      grid-row: auto;
+      margin-top: 18px;
+    }
+
+    .hc-control__lede,
+    .hc-control__note,
+    .hc-authority > p,
+    .hc-authority__close,
+    .hc-register dd {
+      max-width: 62ch;
+    }
+
+    .hc-proof__inner {
+      gap: 36px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hc-proof__copy h2 {
+      max-width: 22ch;
+    }
+
+    .hc-price {
+      gap: 32px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hc-price__drivers .hc-rule-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 0 40px;
+    }
+
+    .hc-boundaries .hc-minus-list {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 50rem / 800px — tablet portrait and below. The paired grids collapse here, not before.
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 50rem) {
+    .hc-hero {
+      --ac-text-h1-hub: 2.5rem;
+      min-height: 500px;
+    }
+
+    .hc-hero__media :global(img) {
+      object-position: 56% 54%;
+    }
+
+    .hc-hero__shell {
+      width: calc(100% - 64px);
+      padding-block: 60px;
+    }
+
+    .hc-hero__content {
+      max-width: none;
+    }
+
+    .hc-hero__lede,
+    .hc-hero__thesis,
+    .hc-hero__reassurance {
+      max-width: 48ch;
+    }
+
+    .hc-reframe__inner,
+    .hc-process__inner,
+    .hc-fit__inner,
+    .hc-faq__inner,
+    .hc-control__inner,
+    .hc-close__inner,
+    .hc-reframe__conditions,
+    .hc-proof__inner {
+      width: calc(100% - 64px);
+    }
+
+    /* The two PROSE columns collapse here; the LIST columns do not — see the ≤44rem block.
+       768px is a tablet, and two 360px columns of short list items or a numbered step title
+       read perfectly well at that width. Collapsing everything at 800px is how a service page
+       becomes 700px taller on a tablet than it has any reason to be (doc 30 §14: restructure,
+       do not merely stack). */
+    .hc-process__pair {
+      gap: 36px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hc-process__head,
+    .hc-step__body p,
+    .hc-note p,
+    .hc-fit__aside,
+    .hc-price__copy p,
+    .hc-qa p,
+    .hc-proof__copy > p:not(.hc-label):not(.hc-lede),
+    .hc-reframe__copy p:not(.hc-label):not(.hc-lede):not(.hc-statement) {
+      max-width: none;
+    }
+
+    .hc-close__inner {
+      gap: 36px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hc-close__copy h2 {
+      max-width: 22ch;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 44rem / 704px — the last two-column layouts go single-column. Deliberately BELOW the
+     768px QA width so a tablet keeps the numbered process, the fit comparison and the question
+     grid side by side, which is what they were composed as.
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 44rem) {
+    .hc-rule-list,
+    .hc-boundaries .hc-minus-list,
+    .hc-price__drivers .hc-rule-list,
+    .hc-steps,
+    .hc-fit__columns,
+    .hc-faq__grid {
+      gap: 0;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* With one column the "first two get the heavy rule" pattern would put a 2px rule on rows
+       one and two; only the first row opens the sequence now. */
+    .hc-step:nth-child(-n + 2),
+    .hc-qa:nth-child(-n + 2) {
+      border-top: 1px solid var(--ac-color-line-strong);
+    }
+
+    .hc-step:first-child,
+    .hc-qa:first-child {
+      border-top: 2px solid var(--ac-color-navy-800);
+    }
+
+    .hc-fit__columns {
+      gap: 36px;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 40rem / 640px — phones
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 40rem) {
+    .hc-hero {
+      --ac-text-h1-hub: 2.375rem;
+      min-height: 520px;
+    }
+
+    /* The frame is 4:3 and the slot is roughly 3:4 here, so a centred crop throws away the wall
+       the copy sits against and puts the headline on contents. */
+    .hc-hero__media :global(img) {
+      object-position: 48% 46%;
+    }
+
+    .hc-hero__shell {
+      width: calc(100% - 44px);
+      padding-block: 52px 60px;
+    }
+
+    .hc-hero__actions {
+      align-items: stretch;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 28px;
+    }
+
+    .hc-hero__call {
+      justify-content: center;
+    }
+
+    .hc-hero__development-note {
+      right: 12px;
+      bottom: 10px;
+      left: 12px;
+      font-size: 0.5625rem;
+      white-space: normal;
+      text-align: center;
+    }
+
+    .hc-reframe,
+    .hc-process,
+    .hc-fit {
+      padding-block: 60px;
+    }
+
+    .hc-control {
+      padding-block: 66px;
+    }
+
+    .hc-proof,
+    .hc-faq {
+      padding-block: 58px;
+    }
+
+    .hc-close {
+      padding-block: 66px;
+    }
+
+    .hc-reframe__inner,
+    .hc-process__inner,
+    .hc-fit__inner,
+    .hc-faq__inner,
+    .hc-control__inner,
+    .hc-close__inner,
+    .hc-reframe__conditions,
+    .hc-proof__inner {
+      width: calc(100% - 40px);
+    }
+
+    .hc-reframe__copy,
+    .hc-process__head,
+    .hc-proof__copy,
+    .hc-fit__lead,
+    .hc-faq__head,
+    .hc-control__inner {
+      --ac-text-h2-home-feature: 2rem;
+    }
+
+    .hc-close__inner {
+      --ac-text-h2-final: 2.125rem;
+    }
+
+    .hc-price__copy {
+      --ac-text-h3-home-feature: 1.5rem;
+    }
+
+    .hc-reframe__media .hc-frame {
+      aspect-ratio: 4 / 3;
+    }
+
+    /* The register's fixed label column cannot hold "Set aside" beside a sentence at 390px; the
+       term becomes a label above its definition and keeps the same reading order. */
+    .hc-register__row {
+      gap: 6px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .hc-record {
+      padding: 20px 18px 22px;
+    }
+
+    /* The three-column record table cannot survive a 390px viewport as a table — the Note column
+       collapses to two words a line. Each row becomes a labelled block, keeping the same reading
+       order and the same <table> semantics for assistive technology. */
+    .hc-record__table thead {
+      position: absolute;
+      overflow: hidden;
+      width: 1px;
+      height: 1px;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .hc-record__table tr {
+      display: block;
+      border-bottom: 1px solid var(--ac-color-line);
+      padding-block: 12px;
+    }
+
+    .hc-record__table tr:last-child {
+      border-bottom: 0;
+    }
+
+    .hc-record__table td {
+      display: block;
+      border: 0;
+      padding: 0;
+    }
+
+    .hc-record__table td:first-child {
+      font-size: 0.9375rem;
+    }
+
+    .hc-record__table td:nth-child(2) {
+      margin-top: 2px;
+      color: var(--ac-color-navy-800);
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .hc-record__table td:last-child {
+      margin-top: 4px;
+    }
+
+    .hc-local__links {
+      display: block;
+    }
+
+    .hc-close__action .hc-btn,
+    .hc-hero__actions .hc-btn {
+      width: 100%;
+    }
+
+    .hc-close__secondary {
+      justify-content: center;
+      margin-top: 8px;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 22.5rem / 360px — narrowest band. global.css hard-sets `.ac-type-h1-hub` to 2rem below
+     360px, which beats the token above; "Hoarding Cleanup" is two words and holds one line
+     there, and the H1:body ratio stays above the ≥1.9:1 floor.
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 22.5rem) {
+    .hc-hero {
+      min-height: 540px;
+    }
+
+    .hc-hero__shell,
+    .hc-reframe__inner,
+    .hc-process__inner,
+    .hc-fit__inner,
+    .hc-faq__inner,
+    .hc-control__inner,
+    .hc-close__inner,
+    .hc-reframe__conditions,
+    .hc-proof__inner {
+      width: calc(100% - 32px);
+    }
+
+    .hc-reframe__copy,
+    .hc-process__head,
+    .hc-proof__copy,
+    .hc-fit__lead,
+    .hc-faq__head,
+    .hc-control__inner {
+      --ac-text-h2-home-feature: 1.75rem;
+    }
+
+    .hc-close__inner {
+      --ac-text-h2-final: 1.875rem;
+    }
+
+    .hc-btn {
+      padding-inline: 20px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hc-btn {
+      transition: none;
+    }
+  }
+</style>

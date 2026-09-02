@@ -1,0 +1,182 @@
+---
+// ONE generator for the three city hubs at /service-areas/{city}/, sitting between
+// /service-areas/ and the six service × city pages its sibling generator produces.
+//
+// 2026-08-21 design pass. The hub was built structurally correct but composed as a stack of
+// same-shaped sections: a compact .ac-pgh band, prose, a two-up fact-card grid, two flat
+// featured cards, a link row, the shared form section, and a closing band — nine near-identical
+// geometries. The composition below is the owner-approved 2026-08-20 city layout:
+//   hero with the intake form in it → credential strip → planning-notes rail →
+//   two large photo-topped service tiles → a quiet secondary list → dark closing band.
+// Structure, routing, copy, facts, schema and indexation are unchanged by that pass; what
+// changed is which of them are shared components and how they are laid out. The visual layer is
+// src/styles/city-pages.css, shared with the service × city generator.
+//
+// NOT BUILT, deliberately: the neighbourhood strip. docs/city-pages-part2-UPDATED.md marks its
+// names "VERIFY before publish", docs/25CITYPAGESPEC.md forbids a standalone neighbourhood list
+// outright, and the 2026-08-21 log entry omitted it on both grounds. Nothing here reinstates it.
+import CityCloseBand from "@components/CityCloseBand.astro";
+import CityHero from "@components/CityHero.astro";
+import CityPlanningNotes from "@components/CityPlanningNotes.astro";
+import CredentialBar from "@components/CredentialBar.astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { cityHubPages } from "@data/cityHubPages";
+import { getCityFacts } from "@data/cityFacts";
+import { builtOnly, isIndexable } from "@data/publication";
+import { getBuiltServiceCityPage } from "@data/serviceCityPages";
+import { site } from "@data/site";
+import "@styles/city-pages.css";
+
+// `draft` hubs produce no route at all — see src/data/publication.ts. `noindex` hubs are built.
+export function getStaticPaths() {
+  return builtOnly(cityHubPages).map((page) => ({
+    params: { city: page.slug },
+    props: { page }
+  }));
+}
+
+const { page } = Astro.props;
+const facts = getCityFacts(page.slug);
+// Each featured card points at this city's own service page. `parentHref` is the fallback, so a
+// service withdrawn from a city — or held at `draft`, where no route exists — degrades to the
+// parent link instead of rendering a dead card.
+const featured = page.featuredServices.map((entry) => {
+  const cityPage = getBuiltServiceCityPage(page.slug, entry.service);
+  return {
+    name: entry.name,
+    description: entry.description,
+    href: cityPage?.path ?? entry.parentHref,
+    anchor: cityPage ? `${entry.name} in ${page.city}` : `${entry.name} — how the work is scoped`
+  };
+});
+// The hub intro is one approved block; the composition splits it. The opening paragraph is the
+// hero lead, the rest opens the planning-notes reading column above the sourced records. No
+// sentence is added, dropped or reordered — docs/city-pages-part2-UPDATED.md A1 to A3.
+const [heroLead, ...introNotes] = page.intro;
+const canonicalUrl = new URL(page.path, site.urls.site).href;
+const cityArea = {
+  "@type": "City",
+  name: page.city,
+  address: {
+    "@type": "PostalAddress",
+    addressRegion: "CA",
+    addressCountry: "US"
+  }
+};
+const schema = [
+  {
+    "@type": "CollectionPage",
+    "@id": `${canonicalUrl}#collection`,
+    name: page.h1,
+    url: canonicalUrl,
+    description: page.metaDescription,
+    about: cityArea,
+    isPartOf: { "@id": new URL("/#website", site.urls.site).href }
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Service Areas",
+        item: new URL("/service-areas/", site.urls.site).href
+      },
+      { "@type": "ListItem", position: 3, name: page.city, item: canonicalUrl }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title={page.seoTitle}
+  description={page.metaDescription}
+  canonicalPath={page.path}
+  noindex={!isIndexable(page.publishStatus)}
+  schema={schema}
+>
+  <CityHero
+    crumbs={[
+      { label: "Home", href: "/" },
+      { label: "Service Areas", href: "/service-areas/" },
+      { label: page.city }
+    ]}
+    eyebrow={site.location.regionLabel}
+    h1={page.h1}
+    titleId="city-title"
+    lead={heroLead ?? page.metaDescription}
+    panelMeta={page.city}
+    formId={`city-${page.slug}-form`}
+    entryRoute={page.path}
+  />
+
+  <CredentialBar />
+
+  <CityPlanningNotes
+    cityName={page.city}
+    facts={facts}
+    titleId="local-planning-title"
+    notes={introNotes}
+  />
+
+  {/* Two text-first service tiles. No project photography exists, so the cards use a structural
+      accent instead of reserving or labeling an empty image area. */}
+  <section class="ac-sec cty-featured" aria-labelledby="featured-title">
+    <div class="ac-shell">
+      <div class="ac-sec__head">
+        <p class="ac-label">Complex property work</p>
+        <h2 id="featured-title" class="ac-type-h2">Featured complex cleanup in {page.city}</h2>
+      </div>
+      <div class="cty-ftiles">
+        {featured.map((service) => (
+          <a class="cty-ftile" href={service.href}>
+            <div class="cty-ftile__b">
+              <p class="cty-ftile__meta">Featured service</p>
+              <h3 class="ac-type-h3-band">{service.name}</h3>
+              <p class="cty-ftile__d">{service.description}</p>
+              <span class="cty-ftile__cta">
+                {service.anchor} <i aria-hidden="true">&rarr;</i>
+              </span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* Quieter by design — a hairline name list on the shared .ac-citylist, so it cannot compete
+      with the two tiles above. The names are NOT links: three of the six parent services
+      (/post-construction-cleaning-san-jose/, /animal-waste-cleanup-san-jose/,
+      /rodent-dropping-cleanup-san-jose/) are compliance- or capacity-gated `noindex` routes, and
+      the last of those is deliberately kept free of inbound links from indexable pages. Linking
+      the list would open exactly the crawl paths the route register warns about the moment this
+      hub is flipped to index. The two group hubs beside the heading are indexable and are the
+      approved way through to those services. */}
+  <section class="ac-sec ac-sec--tight cty-more" aria-labelledby="future-services-title">
+    <div class="ac-shell cty-split">
+      <div class="cty-rail">
+        <p class="ac-label">As city pages are cleared</p>
+        <h2 id="future-services-title" class="ac-type-h2">
+          Detailed and specialty cleaning in {page.city}
+        </h2>
+        {/* The approved paragraph sits in the rail, beside the list rather than under it: the
+            same six nouns stacked immediately below their own list read as a stutter. */}
+        <p class="cty-more__note">{page.futureServices}</p>
+        <div class="cty-rail__links">
+          <a href="/detailed-cleaning/">Explore detailed cleaning <span aria-hidden="true">&rarr;</span></a>
+          <a href="/specialty-cleaning/">Explore specialty cleaning <span aria-hidden="true">&rarr;</span></a>
+        </div>
+      </div>
+      <div class="cty-read">
+        <div class="ac-citylist">
+          {page.futureServiceNames.map((name) => (
+            <div><b>{name}</b></div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <CityCloseBand titleId="city-close-title" />
+</BaseLayout>

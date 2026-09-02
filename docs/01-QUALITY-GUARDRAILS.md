@@ -10,9 +10,8 @@
 
 ## Precedence
 
-The operative precedence chain lives in the repository root `AGENTS.md`. This file is rank 3
-in that chain — below current law/business facts and `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md`,
-above everything else. Do not maintain a duplicate chain here; the list that previously
+The operative precedence chain lives in the repository root `AGENTS.md`. This is a specialized
+rank-6 quality document. Do not maintain a duplicate chain here; the list that previously
 appeared in this section named four files that never existed and ranked this file 7th. See
 `docs/05-DECISIONS-LOG.md` for the resolution.
 
@@ -21,9 +20,15 @@ Where this file conflicts with a higher authority, the higher authority wins. Re
 Claims are governed by `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md`. It outranks this file on every
 question of what may be said publicly — read it before writing or reviewing any copy.
 
-`docs/27-COPY-CANONICAL.md` (rank 7) is the copy authority for the routes it covers; §18.1
-below promotes its §3 operating constraints and §30 "what should not be done next" into this
-file's release-blocking review.
+`docs/30-WEBSITE-MASTER-SPEC.md` is the active website/design authority. This file supplies
+execution-quality, accessibility, performance, and anti-generic QA; it does not preserve an
+older design direction, CTA, page strategy, or redesign freeze against the master. Default
+visible primary CTA is **Tell Us About the Property**, the primary homepage customer is the
+family decision-maker defined in doc 30, and the approved public process is
+**Scope → Protect → Clear → Reset → Verify**.
+
+Specifically locked copy in `docs/27-COPY-CANONICAL.md` is rank 4. Its useful quality controls
+are repeated below as rank-6 release checks; historical strategy in doc 27 is not promoted.
 
 ---
 
@@ -104,7 +109,7 @@ The page must reflect the buyer's actual decision problem, not merely describe s
 
 The site must have a discernible visual point of view that could be identified without seeing the logo.
 
-For Aseptaclean, that point of view is **premium operational editorial**:
+For Aseptaclean, that point of view is doc 30's **Clinical Field Editorial**:
 
 - calm, not soft
 - structured, not bureaucratic
@@ -927,9 +932,9 @@ A page also fails immediately for any one of these critical signs:
 
 ## 18.1 Promoted from `docs/27-COPY-CANONICAL.md` (added 2026-08-16)
 
-Doc 27 (precedence rank 7 — see `AGENTS.md` §1) is the copy authority for the routes it
-covers. Its §3 "Operating constraints" and §30 "What should not be done next" are promoted
-into this release-blocking review, not left as text living only inside doc 27. The two
+Specifically locked doc 27 copy is rank 4. Its useful §3 operating constraints and §30 quality
+checks are repeated in this release-blocking review, without promoting doc 27's historical
+strategy or implementation sections. The two
 critical signs added above are drawn directly from §3 — they are the two catches every
 prior guardrail pass missed.
 
@@ -955,7 +960,8 @@ prior guardrail pass missed.
 
 **From doc 27 §30 — check once per release, not just once per page:**
 
-- No site redesign before conversion and proof data exist
+- No unapproved redesign outside doc 30 and an approved page brief. The older blanket redesign
+  freeze is superseded by the 2026-08-25 owner approval of the master strategy.
 - No stock photography added merely to fill space
 - No testimonial section added without real testimonials
 - No more than one thin city page published at a time

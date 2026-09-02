@@ -1,0 +1,775 @@
+/* =============================================================================
+   CITY PAGES — shared visual layer
+   Imported by the two generators that own the nine city routes:
+     src/pages/service-areas/[city]/index.astro        3 city hubs
+     src/pages/service-areas/[city]/[service].astro    6 service × city pages
+   and by the three components those two share (CityHero, CityPlanningNotes,
+   CityCloseBand).
+
+   WHY A STYLESHEET AND NOT TWO SCOPED <style> BLOCKS
+   Before this file the hero, the fact list, and the closing band were written
+   twice — once in each generator — and had already drifted apart in gap and
+   padding values. Every rule below is used by at least two of the five files
+   above. Nothing route-specific lives here.
+
+   WHAT THIS FILE DOES NOT REDEFINE
+   Buttons (.btn, .btn--w, .btn--o), the shell, section rhythm (.ac-sec,
+   .ac-sec--tight), form controls (.ac-stepform, .quick-form), the fit strip
+   (.ac-fit), the scope panels (.ac-panel), the step rail (.ac-steps4), the FAQ
+   disclosure (.ac-faq), the related-link column (.ac-relcol), the two-column
+   tail (.ac-dual), the hairline name list (.ac-citylist) and the operational
+   header bar (.ac-panel__h) are all reused from global.css exactly as the rest
+   of the site uses them. The city pages get their own composition, not their
+   own component set.
+
+   TYPE LAW #1 (AGENTS.md §6): no `font-size` is declared on any selector in
+   this file that can resolve to a heading element. Headings carry .ac-type-*
+   role classes; the rules here set colour, margin and measure only.
+   ============================================================================= */
+
+/* -----------------------------------------------------------------------------
+   HERO — two-column navy field, copy left, intake panel right.
+
+   Composition follows Hero.astro (the homepage), not .ac-pgh: a form-bearing
+   hero with a white panel in the right column is the one place this site
+   already omits the .ac-marks sweep, because the panel occupies the area the
+   sweep is drawn into. 1.42fr/1fr against a 52px gap resolves to ~59/41 at the
+   1200px cap.
+   ----------------------------------------------------------------------------- */
+.cty-hero {
+  position: relative;
+  overflow: hidden;
+  padding-block: 0;
+  background: var(--ac-color-navy-900);
+}
+
+.cty-hero__bg {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(
+      100deg,
+      rgb(13 30 48 / 96%) 0%,
+      rgb(18 40 64 / 84%) 54%,
+      rgb(18 40 64 / 48%) 100%
+    ),
+    #1b3350;
+}
+
+/* `align-items: stretch` (the default) rather than `start`, so the copy column is as tall as the
+   intake panel beside it. The panel is ~880px and the copy runs ~470px, so under `start` the
+   hero closed on 400px of empty navy under the last line of copy — the largest single piece of
+   dead space on either template. Stretching the column lets the note below take the surplus as
+   margin instead (see `.cty-hero__next`), which anchors the composition top and bottom. */
+.cty-hero__in {
+  position: relative;
+  z-index: 2;
+  display: grid;
+  padding-block: 52px 58px;
+  gap: 52px;
+  grid-template-columns: minmax(0, 1.42fr) minmax(0, 1fr);
+}
+
+.cty-hero__copy {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+/* Breadcrumb takes its colour and scale from the shared .ac-crumb; this only
+   turns the mockup's inline trail into a real ordered list. */
+.ac-crumb.cty-crumb {
+  max-width: none;
+  margin-bottom: 18px;
+}
+
+.cty-crumb ol {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  gap: 7px;
+  list-style: none;
+}
+
+.cty-crumb li {
+  max-width: none;
+}
+
+.cty-crumb li:not(:last-child)::after {
+  margin-left: 7px;
+  content: "/";
+}
+
+.cty-crumb li[aria-current] {
+  color: #b9c6d6;
+}
+
+/* Was `.geo`, declared identically in both generators. */
+.cty-hero__eyebrow {
+  margin: 0 0 14px;
+  color: var(--ac-color-blue-on-navy);
+  font-family: var(--ac-font-sans);
+  font-size: var(--ac-text-label);
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cty-hero h1 {
+  max-width: 22ch;
+  color: #fff;
+}
+
+.cty-hero__lead {
+  margin: 22px 0 0;
+  max-width: 54ch;
+  color: #b9c6d6;
+  font-size: var(--ac-text-lead);
+  line-height: 1.6;
+}
+
+/* The service-page hero pledge, on the amber rule the site already uses for it. */
+.cty-hero__pledge {
+  border-left: 3px solid var(--ac-color-amber);
+  margin: 24px 0 0;
+  padding: 10px 0 10px 16px;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+}
+
+/* doc 27 §8 "What happens next — beside EVERY form". The form moved into the
+   hero, so this moved with it: a rule and a note in the left column rather than
+   a second boxed panel.
+
+   It stays with the copy rather than being pushed to the hero's bottom edge with `margin-top:
+   auto`. That was tried and reverted: it squared off the hero's bottom corners but moved the
+   note ~600px below the fields it is supposed to sit beside, which is the one thing doc 27 §8
+   asks of it, and it put a bigger void on the first screen than it removed from the last. */
+.cty-hero__next {
+  border-top: 1px solid rgb(255 255 255 / 18%);
+  margin-top: 28px;
+  padding-top: 18px;
+  max-width: 52ch;
+}
+
+.cty-hero__next p:last-child {
+  margin-top: 10px;
+  color: #a9bdd3;
+  font-size: var(--ac-text-sm);
+  line-height: 1.65;
+}
+
+/* -----------------------------------------------------------------------------
+   INTAKE PANEL — .ac-stepform (the site's form card) with the rail track
+   collapsed, an .ac-panel__h document bar on top, and a headed introduction
+   above the fields.
+   ----------------------------------------------------------------------------- */
+/* Both class selectors are required. `.ac-stepform` declares the 186px step-rail track at the
+   same specificity, and this stylesheet is not guaranteed to load after global.css — a single
+   `.cty-panel` selector lost the tie and rendered the form inside the 186px track. */
+.ac-stepform.cty-panel {
+  align-content: start;
+  grid-template-columns: 1fr;
+}
+
+/* `minmax(0, 1fr)`, not the implicit `auto` track the component declares. An `auto` track takes
+   its floor from min-content, and the Turnstile widget is a fixed 300px iframe — at a 320px
+   viewport that floor (300 + 60px of form padding = 360px) is wider than the 272px shell, so
+   every label, input and button in the form was being laid out 300px wide and clipped on the
+   right by `.ac-stepform`'s `overflow: hidden`.
+   This confines the problem to the widget itself, which still overhangs its cell. The root
+   cause is not here and is not city-specific: `/handoff-standard/` and every other route
+   carrying the compact form measure the same 360px form at 320px, because it comes from
+   `QuickHandoffForm` + Turnstile's fixed widget width. Fixing it there is a shared-form change,
+   not a city-page design change. */
+.ac-stepform.cty-panel .quick-form {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+/* The compact form ships a 32px gap between rows, which is right for the full-width form
+   section but leaves the hero panel taller than the hero needs to be. Three class selectors:
+   `.quick-form`'s own rule is component-scoped, which Astro compiles to two. */
+.ac-stepform.cty-panel .quick-form {
+  gap: 22px;
+}
+
+.cty-panel__head {
+  border-bottom: 1px solid var(--ac-color-line);
+  padding: 20px 30px 18px;
+}
+
+.cty-panel__head h2 {
+  color: var(--ac-color-ink-900);
+}
+
+.cty-panel__lede {
+  margin-top: 10px;
+  color: var(--ac-color-ink-600);
+  font-size: 0.875rem;
+  line-height: 1.55;
+}
+
+/* -----------------------------------------------------------------------------
+   LOCAL PLANNING NOTES — narrow rail + reading column.
+
+   The facts are a document, not a card grid: one hairline row per record, the
+   record's own factType in a fixed left gutter, the publishing source under the
+   claim. Six equal cards with an icon on each is the treatment this composition
+   exists to avoid.
+   ----------------------------------------------------------------------------- */
+.cty-planning {
+  background: var(--ac-color-paper);
+}
+
+.cty-planning--tinted {
+  background: var(--ac-color-warm-white);
+}
+
+.cty-split {
+  display: grid;
+  align-items: start;
+  gap: 56px;
+  grid-template-columns: minmax(0, 0.64fr) minmax(0, 1.36fr);
+}
+
+.cty-rail h2 {
+  margin-top: 12px;
+  max-width: 18ch;
+}
+
+.cty-rail__note {
+  margin-top: 16px;
+  max-width: 34ch;
+  color: var(--ac-color-ink-600);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.cty-rail__links {
+  display: grid;
+  margin-top: 18px;
+  gap: 0;
+  justify-items: start;
+}
+
+/* These are the only standalone navigation links on the hub that are not inside a card or a
+   button, and at 13px they measured 21px tall — half a comfortable touch target. The padding
+   takes them to 45px without changing their type role; the rail's row gap comes out to
+   compensate, so the visible spacing between the two is unchanged. */
+.cty-rail__links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 45px;
+  padding-block: 12px;
+  color: var(--ac-color-navy-800);
+  font-size: var(--ac-text-sm);
+  font-weight: 700;
+}
+
+.cty-read {
+  min-width: 0;
+}
+
+.cty-read > p {
+  margin: 0 0 18px;
+  color: var(--ac-color-ink-600);
+  font-size: var(--ac-text-lead);
+  line-height: 1.65;
+}
+
+.cty-facts {
+  border-top: 2px solid var(--ac-color-navy-900);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cty-facts--after-prose {
+  margin-top: 34px;
+}
+
+.cty-fact {
+  display: grid;
+  max-width: none;
+  border-bottom: 1px solid var(--ac-color-line);
+  padding: 20px 0;
+  gap: 4px 28px;
+  grid-template-columns: 108px minmax(0, 1fr);
+}
+
+.cty-fact__type {
+  margin: 0;
+  padding-top: 2px;
+  /* 10.5px/700 fact-type label on white: steel-300 measured 3.1:1 across 36 city routes. */
+  color: var(--ac-color-ink-400);
+  font-family: var(--ac-font-sans);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.cty-fact__claim {
+  margin: 0;
+  color: var(--ac-color-ink-900);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+.cty-fact__src {
+  display: inline-block;
+  margin-top: 10px;
+  color: var(--ac-color-ink-400);
+  font-size: var(--ac-text-xs);
+  font-weight: 600;
+}
+
+.cty-fact__src:hover {
+  color: var(--ac-color-navy-800);
+}
+
+/* -----------------------------------------------------------------------------
+   WHAT THIS CHANGES HERE — the interpretation field.
+
+   Deliberately a different surface from the fact section above it (pale blue
+   against white) and a different row geometry (numeral gutter, top rules), so
+   the page reads FACTS ABOVE → OPERATING IMPLICATIONS HERE without a caption
+   having to say so.
+   ----------------------------------------------------------------------------- */
+.cty-changes {
+  border-block: 1px solid #dce5f0;
+  background: var(--ac-color-blue-ghost);
+}
+
+/* The row is capped rather than run to the 1200px shell: a hairline that continues 400px past
+   the last word reads as an empty table column, not as a rule. 880px is the widest cap that
+   still holds — gutter 56 + gap 34 + a 62ch paragraph — and it takes 120px off the pale-blue
+   dead column the 760px version left down the right of a 1440px viewport. */
+.cty-impl {
+  display: grid;
+  max-width: 880px;
+  border-top: 1px solid #cdd9e8;
+  margin-top: 28px;
+  padding-top: 24px;
+  gap: 34px;
+  grid-template-columns: 56px minmax(0, 1fr);
+}
+
+.cty-impl > b {
+  /* 22px/700 numeral on blue-ghost: steel-300 fell below Axe's large-text threshold;
+     ink-400 keeps the secondary hierarchy and measures 4.71:1. */
+  color: var(--ac-color-ink-400);
+  font-family: var(--ac-font-sans);
+  font-size: var(--ac-text-rail-numeral);
+  font-weight: 700;
+  line-height: 1;
+}
+
+.cty-impl h3 {
+  margin: 0 0 10px;
+  color: var(--ac-color-ink-900);
+}
+
+/* One step up from the 15px used in the fact register and the tile descriptions. This is the
+   section the brief calls critical, and it is the only body copy on the page a reader is meant
+   to sit with rather than scan. */
+.cty-impl p {
+  margin: 0;
+  max-width: 62ch;
+  color: var(--ac-color-ink-600);
+  font-size: 1rem;
+  line-height: 1.7;
+}
+
+/* -----------------------------------------------------------------------------
+   FEATURED SERVICE TILES — hub only. Two large editorial tiles.
+
+   Text-first because no project photography exists. A strong top rule provides hierarchy
+   without reserving a blank media area.
+   ----------------------------------------------------------------------------- */
+.cty-featured {
+  background: var(--ac-color-warm-white);
+}
+
+.cty-ftiles {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.cty-ftile {
+  display: flex;
+  overflow: hidden;
+  flex-direction: column;
+  border: 1px solid var(--ac-color-line);
+  border-radius: var(--ac-radius-card);
+  background: var(--ac-color-paper);
+  box-shadow: var(--ac-shadow-card);
+  text-decoration: none;
+  border-top: 4px solid var(--ac-color-blue-deep);
+}
+
+.cty-ftile:hover {
+  border-color: var(--ac-color-navy-800);
+}
+
+.cty-ftile__b {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 26px;
+}
+
+.cty-ftile__meta {
+  margin: 0 0 12px;
+  color: var(--ac-color-blue-deep);
+  font-family: var(--ac-font-sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.cty-ftile h3 {
+  margin: 0 0 12px;
+  color: var(--ac-color-ink-900);
+}
+
+.cty-ftile__d {
+  margin: 0 0 22px;
+  color: var(--ac-color-ink-600);
+  font-size: 0.9375rem;
+  line-height: 1.6;
+}
+
+/* `margin-top: auto` rather than a fixed gap: the two descriptions are different lengths, and
+   without it the two CTA rules sit at different heights in cards the grid has already made
+   equal. */
+.cty-ftile__cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-top: 1px solid var(--ac-color-line);
+  margin-top: auto;
+  padding-top: 16px;
+  gap: 14px;
+  color: var(--ac-color-navy-800);
+  font-size: var(--ac-text-sm);
+  font-weight: 700;
+}
+
+.cty-ftile__cta i {
+  color: var(--ac-color-blue-500);
+  font-style: normal;
+  transition: transform var(--ac-transition-fast);
+}
+
+.cty-ftile:hover .cty-ftile__cta i {
+  transform: translateX(4px);
+}
+
+/* -----------------------------------------------------------------------------
+   SECONDARY SERVICES — hub only. Deliberately quieter than the two tiles
+   above: the shared hairline name list (.ac-citylist), not a second card grid.
+   ----------------------------------------------------------------------------- */
+.cty-more {
+  background: var(--ac-color-paper);
+}
+
+.cty-more__note {
+  border-left: 2px solid var(--ac-color-line-strong);
+  margin-top: 18px;
+  padding-left: 16px;
+  max-width: 42ch;
+  color: var(--ac-color-ink-600);
+  font-size: var(--ac-text-sm);
+  line-height: 1.65;
+}
+
+/* -----------------------------------------------------------------------------
+   SERVICE-PAGE SECTIONS that are not shared with the hub but belong to the same
+   layer: the editorial opening and the coordination-policy strip.
+   ----------------------------------------------------------------------------- */
+/* SECTION RHYTHM. The nine routes otherwise run 68px on every band, which is the "every section
+   looks identical" failure. Two deliberate exceptions, both on numbers the system already uses
+   (86px is the homepage hero's inner rhythm; 48px is `.ac-sec--tight`), so the page reads
+   loose → standard → tight from the editorial statement down to the link tail:
+     · the recognition opening gets the most air on the page — it is one heading and three
+       paragraphs, and it is the only place a visitor is asked to stop and read;
+     · the FAQ/related tail gets the least — it is navigation.
+   Two class selectors, because `.ac-sec` declares `padding-block` at equal specificity and this
+   stylesheet is not guaranteed to load after global.css. */
+.cty-opening {
+  background: var(--ac-color-paper);
+}
+
+.ac-sec.cty-opening {
+  padding-block: 86px;
+}
+
+.ac-sec.cty-tail {
+  padding-block: 48px;
+}
+
+.cty-opening__in {
+  max-width: 72ch;
+}
+
+.cty-opening h2 {
+  margin: 16px 0 26px;
+  max-width: 24ch;
+}
+
+.cty-opening p {
+  margin: 0 0 20px;
+  color: var(--ac-color-ink-600);
+  font-size: var(--ac-text-lead);
+  line-height: 1.7;
+}
+
+.cty-opening p:last-child {
+  margin-bottom: 0;
+}
+
+.cty-policy {
+  border-block: 1px solid var(--ac-color-line);
+  padding-block: 20px;
+  background: var(--ac-color-warm-white);
+}
+
+/* Marked as an annotation rather than left as loose grey text: this is a standing operating
+   boundary, not a sentence of body copy, and the left rule is how the rest of the site marks
+   one (`.cty-more__note`, the scope panels' footers). */
+.cty-policy p {
+  border-left: 2px solid var(--ac-color-line-strong);
+  margin: 0;
+  padding-left: 18px;
+  max-width: 92ch;
+  color: var(--ac-color-ink-600);
+  font-size: var(--ac-text-sm);
+  line-height: 1.65;
+}
+
+.cty-scope {
+  background: var(--ac-color-paper);
+}
+
+.cty-process {
+  border-top: 1px solid var(--ac-color-line);
+  background: var(--ac-color-warm-white);
+}
+
+/* Flush variant of the shared four-step rail, matching ServicePageLayout's. */
+.ac-steps4.cty-steps {
+  border-top: none;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.cty-tail {
+  background: var(--ac-color-paper);
+}
+
+.ac-hdr-lite.cty-head-flush {
+  border-bottom: none;
+  padding-bottom: 10px;
+}
+
+.cty-faq {
+  border-top: 2px solid var(--ac-color-navy-900);
+}
+
+.ac-hdr-lite.cty-rel-head {
+  margin-bottom: 16px;
+}
+
+/* -----------------------------------------------------------------------------
+   CLOSING BAND — the shared dark closing treatment (.ac-final) with the copy
+   column and the actions side by side at desktop.
+   ----------------------------------------------------------------------------- */
+.cty-close__layout {
+  display: grid;
+  align-items: end;
+  gap: 48px;
+  grid-template-columns: minmax(0, 1.35fr) minmax(280px, 0.65fr);
+}
+
+/* Stacked rather than wrapped. Three buttons do not fit on one line in this column, and
+   flex-wrap left a lone primary above two secondaries with ragged left edges; a right-aligned
+   column of three reads as an ordered set of doors instead. */
+.ac-btns.cty-close__actions {
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: flex-end;
+  margin: 0;
+}
+
+/* Two class selectors, because `.ac-final p` — which supplies the body copy's colour and lead
+   size — would otherwise outrank a single one. */
+.cty-close__layout .cty-close__sub {
+  margin-top: 26px;
+  max-width: 46ch;
+  color: #7f96b4;
+  font-size: 0.75rem;
+  line-height: 1.6;
+}
+
+/* -----------------------------------------------------------------------------
+   RESPONSIVE — the site's own two breakpoints, no new ones.
+   1050px: the hero and every rail/reading split become one column, matching the
+           width at which the mega nav and the homepage hero already collapse.
+   760px:  card grids, fact rows and the closing band go single column and the
+           hero tightens.
+   The 1051px rule below is the same breakpoint read from the other side, not a
+   third one: it is scoped to the widths at which the hero IS two columns.
+   ----------------------------------------------------------------------------- */
+@media (min-width: 1051px) {
+  /* Name and phone share a row inside the hero panel — and only inside it; the same form in
+     `RequestForm` keeps its single column. The hero's height is set by this panel, because the
+     copy column beside it is ~400px shorter, so a row taken out of the form is dead navy taken
+     out of the left column. Pairing the two shortest controls is worth ~90px and reads as an
+     intake document rather than a signup stack.
+     `:has()` rather than `:nth-child()`: the form opens with five hidden inputs, a honeypot and
+     an error region, so a positional selector here is one field away from being wrong. */
+  .ac-stepform.cty-panel .quick-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ac-stepform.cty-panel .quick-form > * {
+    grid-column: 1 / -1;
+  }
+
+  .ac-stepform.cty-panel .quick-form > .quick-form__field:has(input[name="full_name"]) {
+    grid-column: 1;
+  }
+
+  .ac-stepform.cty-panel .quick-form > .quick-form__field:has(input[name="phone"]) {
+    grid-column: 2;
+  }
+}
+
+@media (max-width: 1050px) {
+  .cty-hero__in {
+    gap: 40px;
+    grid-template-columns: 1fr;
+  }
+
+  .cty-hero h1 {
+    max-width: 24ch;
+  }
+
+  .ac-stepform.cty-panel {
+    max-width: 560px;
+  }
+
+  .cty-split {
+    gap: 34px;
+    grid-template-columns: 1fr;
+  }
+
+  .cty-rail h2,
+  .cty-rail__note {
+    max-width: 44ch;
+  }
+
+  .cty-rail__links {
+    grid-auto-flow: column;
+    justify-content: start;
+    gap: 24px;
+  }
+
+  .cty-ftiles {
+    gap: 20px;
+  }
+
+  .cty-close__layout {
+    gap: 34px;
+    grid-template-columns: 1fr;
+  }
+
+  .ac-btns.cty-close__actions {
+    flex-direction: row;
+    align-items: stretch;
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 760px) {
+  .cty-hero__in {
+    padding-block: 40px 44px;
+  }
+
+  .cty-hero h1 {
+    max-width: none;
+  }
+
+  /* The desktop 86/48 exceptions, stepped to the mobile scale the rest of the site uses
+     (`.ac-sec` 60px, `.ac-sec--tight` 40px) so the loose→tight relationship survives. */
+  .ac-sec.cty-opening {
+    padding-block: 64px;
+  }
+
+  .ac-sec.cty-tail {
+    padding-block: 40px;
+  }
+
+  .cty-policy p {
+    padding-left: 14px;
+  }
+
+  .ac-stepform.cty-panel {
+    max-width: none;
+  }
+
+  .cty-panel__head {
+    padding: 20px 22px 18px;
+  }
+
+  /* Matches the tightened head above; the desktop 30px comes from .ac-stepform.
+     Three class/element selectors: `.cty-panel > form` alone ties with `.ac-stepform > form`
+     in global.css and lost the tie on load order, so this rule was silently dead and the form
+     kept its 30px desktop gutter on a 272px phone. */
+  .ac-stepform.cty-panel > form {
+    padding: 24px 22px 26px;
+  }
+
+  .cty-fact {
+    gap: 8px;
+    grid-template-columns: 1fr;
+  }
+
+  .cty-impl {
+    gap: 12px;
+    grid-template-columns: 1fr;
+  }
+
+  .cty-impl > b {
+    line-height: 1.1;
+  }
+
+  .cty-ftiles {
+    grid-template-columns: 1fr;
+  }
+
+  .cty-ftile__b {
+    padding: 22px;
+  }
+
+  /* Back to a stack; the row gap stays 0 because the links now carry their own 12px block
+     padding for the touch target. */
+  .cty-rail__links {
+    grid-auto-flow: row;
+    gap: 0;
+  }
+}
+
+@media (max-width: 360px) {
+  /* Preserve the hub hierarchy while giving long city names enough measure to avoid
+     isolated words on the narrowest supported viewport. */
+  .cty-hero .ac-type-h1-hub {
+    font-size: 1.9375rem;
+  }
+}

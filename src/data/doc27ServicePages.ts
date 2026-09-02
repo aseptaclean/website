@@ -23,7 +23,19 @@ export interface Doc27ServicePage {
   readonly indexable: boolean;
   /** doc 27's literal H1, retained so the SEO divergence stays auditable. */
   readonly doc27H1: string;
-  /** Per-page overrides for ServicePageLayout's shared section framing. */
+  /**
+   * Per-page overrides for ServicePageLayout's shared section framing.
+   *
+   * Recognised keys: `fitHeading` · `scopeHeading` · `scopeNote` · `methodHeading` ·
+   * `pricingHeading` · `boundariesHeading` · `faqHeading` · `relatedHeading`, and — added
+   * 2026-08-21 — `pledge` · `scopeFooter` · `quoteHeading` · `quoteLede` · `stepsHeading`.
+   *
+   * The five new keys exist because those five strings were hardcoded in the layout and therefore
+   * identical on all fourteen pages. A record supplies one only where the page has something
+   * specific to say; the layout's defaults cover the rest, so the template still works with
+   * `section: null`. Do not fill all five on every page just because they exist — a page whose
+   * pricing genuinely has nothing distinctive to say should inherit the default.
+   */
   readonly section: Readonly<Record<string, string>> | null;
   readonly eyebrow: string;
   readonly seoTitle: string;
@@ -65,11 +77,15 @@ export const deepCleaningPage: Doc27ServicePage = {
     "pricingHeading": "What moves a deep-cleaning price",
     "boundariesHeading": "What deep cleaning does not include",
     "faqHeading": "Questions about scope and scheduling",
-    "relatedHeading": "If the property needs clearing first"
+    "relatedHeading": "If the property needs clearing first",
+    "pledge": "Every room on the list, and what clean means for each one, agreed in writing first.",
+    "scopeFooter": "If it is on the checklist it gets done. If it is not on the checklist, that is the conversation to have now rather than at the end.",
+    "quoteHeading": "Size sets the floor. Condition sets the price.",
+    "quoteLede": "Photos of the kitchen and the bathrooms tell us most of what we need. Square footage on its own rarely does."
   },
-  eyebrow: "Detailed Cleaning · San Jose & the South Bay",
+  eyebrow: "Detailed Cleaning · South Bay & Peninsula",
   seoTitle: "Deep Cleaning Services in San Jose | Aseptaclean",
-  metaDescription: "One-time deep cleaning for kitchens, bathrooms and whole homes in San Jose and the South Bay — quoted room by room from a written checklist, not a package.",
+  metaDescription: "One-time deep cleaning for kitchens, bathrooms and whole homes in the South Bay & Peninsula — quoted room by room from a written checklist, not a package.",
   h1: "Deep cleaning in San Jose, defined room by room before anyone starts",
   lead: "For homes that need substantially more detail than routine housekeeping—especially kitchens, bathrooms, fixtures, edges and the areas that are usually skipped.",
   fitWhen: [
@@ -129,11 +145,15 @@ export const moveOutCleaningPage: Doc27ServicePage = {
     "pricingHeading": "What moves a move-out cleaning price",
     "boundariesHeading": "What move-out cleaning does not include",
     "faqHeading": "Questions tenants, owners and agents ask before scheduling",
-    "relatedHeading": "If the unit still has contents in it"
+    "relatedHeading": "If the unit still has contents in it",
+    "pledge": "Scoped against your walkthrough date, not a generic turnover checklist.",
+    "quoteHeading": "Priced on what the last occupant left behind.",
+    "quoteLede": "Square footage, the date it has to be done, and how the place was left. Photos of the kitchen and bathrooms settle most of the rest.",
+    "scopeFooter": "The list is what the walkthrough gets checked against, which is the point of writing it down before the keys change hands."
   },
-  eyebrow: "Detailed Cleaning · San Jose & the South Bay",
+  eyebrow: "Detailed Cleaning · South Bay & Peninsula",
   seoTitle: "Move-In & Move-Out Cleaning in San Jose | Aseptaclean",
-  metaDescription: "Move-out and move-in cleaning in San Jose and Santa Clara County, scoped in writing before the crew arrives and timed to your walkthrough date. Owner-operated.",
+  metaDescription: "Move-out and move-in cleaning in the South Bay & Peninsula, scoped in writing before the crew arrives and timed to your walkthrough date. Owner-operated.",
   h1: "Move-out cleaning in San Jose, timed to your walkthrough date",
   lead: "Vacant-property cleaning built around the handoff: keys, listing photos, a final walkthrough, a lease turnover or a clean start in a new home.",
   fitWhen: [
@@ -176,7 +196,7 @@ export const moveOutCleaningPage: Doc27ServicePage = {
   related: [
     { label: "Estate Cleanouts", href: "/estate-cleanout-san-jose/" },
     { label: "Debris Removal", href: "/debris-removal-san-jose/" },
-    { label: "Property Clearing", href: "/property-clearing/" }
+    { label: "Complex Property Cleanup", href: "/property-clearing/" }
   ]
 } as const;
 
@@ -187,9 +207,9 @@ export const postConstructionPage: Doc27ServicePage = {
   indexable: false,
   doc27H1: "Post-Construction Cleaning",
   section: null,
-  eyebrow: "Detailed Cleaning · San Jose & the South Bay",
+  eyebrow: "Detailed Cleaning · South Bay & Peninsula",
   seoTitle: "Post-Construction Cleaning in San Jose | Aseptaclean",
-  metaDescription: "Post-construction and post-remodel cleaning for completed projects in San Jose and Santa Clara County.",
+  metaDescription: "Post-construction and post-remodel cleaning for completed projects in the South Bay & Peninsula.",
   h1: "Post-construction cleaning in San Jose, after the trades are done",
   lead: "Detailed removal of settled construction dust and surface residue after repairs or remodeling are complete and the trades are out of the work area.",
   fitWhen: [
@@ -238,9 +258,9 @@ export const windowCleaningPage: Doc27ServicePage = {
   indexable: false,
   doc27H1: "Window Cleaning",
   section: null,
-  eyebrow: "Detailed Cleaning · San Jose & the South Bay",
+  eyebrow: "Detailed Cleaning · South Bay & Peninsula",
   seoTitle: "Interior Window Cleaning in San Jose | Aseptaclean",
-  metaDescription: "Interior and accessible window cleaning for homes, turnovers and post-construction projects in Santa Clara County.",
+  metaDescription: "Interior and accessible window cleaning for homes, turnovers and post-construction projects in the South Bay & Peninsula.",
   h1: "Window cleaning in San Jose, tracks and frames included",
   lead: "Detail cleaning for interior glass, frames, sills and accessible tracks as a standalone project or part of a larger property reset.",
   fitWhen: [
@@ -296,9 +316,13 @@ export const extremeCleaningPage: Doc27ServicePage = {
     "pricingHeading": "What moves the price on a severe-condition property",
     "boundariesHeading": "Conditions we stop on and refer out",
     "faqHeading": "Questions asked before a walkthrough is scheduled",
-    "relatedHeading": "If the condition is really a contents problem"
+    "relatedHeading": "If the condition is really a contents problem",
+    "pledge": "Nobody should quote a property like this over the phone. We look first, then put it in writing.",
+    "scopeFooter": "Priority areas get named and sequenced. Anything we cannot take on is written down as an exclusion now, not discovered on day three.",
+    "quoteHeading": "Severity and access, far more than square footage.",
+    "quoteLede": "Send whatever photos you are comfortable sending. On a property in this condition we will almost always want to walk it before quoting a firm number."
   },
-  eyebrow: "Specialty Cleaning · San Jose & the South Bay",
+  eyebrow: "Specialty Cleaning · South Bay & Peninsula",
   seoTitle: "Extreme-Condition Cleaning in San Jose | Aseptaclean",
   metaDescription: "Condition-reviewed cleaning for heavily soiled San Jose properties. Priorities, exclusions and price agreed in writing before work — no package guesswork.",
   h1: "Extreme cleaning in San Jose for conditions that need a walkthrough first",
@@ -344,7 +368,7 @@ export const extremeCleaningPage: Doc27ServicePage = {
   related: [
     { label: "Hoarding Cleanup", href: "/hoarding-cleanup-san-jose/" },
     { label: "Estate Cleanouts", href: "/estate-cleanout-san-jose/" },
-    { label: "Property Clearing", href: "/property-clearing/" }
+    { label: "Complex Property Cleanup", href: "/property-clearing/" }
   ]
 } as const;
 
@@ -355,9 +379,9 @@ export const animalPage: Doc27ServicePage = {
   indexable: false,
   doc27H1: "Animal Waste Cleanup",
   section: null,
-  eyebrow: "Specialty Cleaning · San Jose & the South Bay",
+  eyebrow: "Specialty Cleaning · South Bay & Peninsula",
   seoTitle: "Animal Waste Cleanup in San Jose | Aseptaclean",
-  metaDescription: "Non-human animal waste cleanup for accepted residential and property conditions in Santa Clara County.",
+  metaDescription: "Non-human animal waste cleanup for accepted residential and property conditions in the South Bay & Peninsula.",
   h1: "Animal waste cleanup in San Jose, handled without judgment",
   lead: "Condition-based cleanup for accepted non-human animal waste, odor sources and heavily affected surfaces after the animal issue is controlled.",
   fitWhen: [
@@ -406,9 +430,9 @@ export const rodentPage: Doc27ServicePage = {
   indexable: false,
   doc27H1: "Rodent Dropping Cleanup",
   section: null,
-  eyebrow: "Specialty Cleaning · San Jose & the South Bay",
+  eyebrow: "Specialty Cleaning · South Bay & Peninsula",
   seoTitle: "Rodent Dropping Cleanup in San Jose | Aseptaclean",
-  metaDescription: "Condition-reviewed rodent dropping cleanup for homes and properties across Santa Clara County.",
+  metaDescription: "Condition-reviewed rodent dropping cleanup for homes and properties across the South Bay & Peninsula.",
   h1: "Rodent dropping cleanup in San Jose, after pest control has done its part",
   lead: "Cleanup of accepted rodent-dropping conditions after active pest control and entry-point work are handled by the appropriate provider.",
   fitWhen: [
@@ -457,9 +481,9 @@ export const pigeonPage: Doc27ServicePage = {
   indexable: false,
   doc27H1: "Pigeon Dropping Cleanup",
   section: null,
-  eyebrow: "Specialty Cleaning · San Jose & the South Bay",
+  eyebrow: "Specialty Cleaning · South Bay & Peninsula",
   seoTitle: "Pigeon Dropping Cleanup in San Jose | Aseptaclean",
-  metaDescription: "Condition-reviewed pigeon dropping cleanup for accessible residential and commercial property areas in Santa Clara County.",
+  metaDescription: "Condition-reviewed pigeon dropping cleanup for accessible residential and commercial property areas in the South Bay & Peninsula.",
   h1: "Pigeon dropping cleanup in San Jose for balconies, roofs and entryways",
   lead: "Cleanup for accepted pigeon-dropping conditions on safely accessible surfaces after roosting, exclusion and active bird issues are addressed.",
   fitWhen: [
@@ -515,11 +539,15 @@ export const propertyCleanoutsPage: Doc27ServicePage = {
     "pricingHeading": "What moves a cleanout price",
     "boundariesHeading": "What a cleanout does not include",
     "faqHeading": "Questions owners and managers ask first",
-    "relatedHeading": "If the situation is an estate or a hoarding condition"
+    "relatedHeading": "If the situation is an estate or a hoarding condition",
+    "pledge": "Keep, remove and review are agreed before a single box moves.",
+    "quoteHeading": "Volume, access, and how much sorting it takes.",
+    "quoteLede": "A unit you can walk through prices differently from one you cannot. A photo from the doorway of each room is the fastest way to tell us which one this is.",
+    "scopeFooter": "Keep, remove and do-not-touch are settled in the scope, so nobody on site is deciding on the day what your tenant’s belongings were."
   },
-  eyebrow: "Property Clearing · San Jose & the South Bay",
+  eyebrow: "Complex Property Cleanup · South Bay & Peninsula",
   seoTitle: "Property Cleanout Services in San Jose | Aseptaclean",
-  metaDescription: "Property cleanouts in San Jose and Santa Clara County. Keep, remove and review are agreed in writing — nothing leaves the property without your approval.",
+  metaDescription: "Property cleanouts in the South Bay & Peninsula. Keep, remove and review are agreed in writing — nothing leaves the property without your approval.",
   h1: "Property cleanouts in San Jose that keep a vacancy on schedule",
   lead: "Structured clearing for properties with unwanted contents, debris or accumulated material—organized around access, decision rights and the next use of the property.",
   fitWhen: [
@@ -533,9 +561,9 @@ export const propertyCleanoutsPage: Doc27ServicePage = {
   workIncludes: [
     "Walkthrough and contents-volume review",
     "Defined keep, remove and do-not-touch zones",
-    "Bagging, sorting and staging",
-    "Container or approved disposal coordination",
-    "Optional cleaning after clearing"
+    "Sorting, bagging, staging and clearing rooms out",
+    "Container coordination and loading, where a container is part of the job",
+    "Cleaning after clearing, when you want it in the same scope"
   ],
   quoteVariables: [
     "Volume, weight and material types",
@@ -548,11 +576,15 @@ export const propertyCleanoutsPage: Doc27ServicePage = {
     "Unknown hazardous materials",
     "Documents, valuables or keepsakes without direction",
     "Structural demolition",
-    "Unpermitted hauling or disposal"
+    "Transporting the load off-site — that is the authorized hauler's"
   ],
+  // 2026-08-21. The old first answer — "Disposal may use containers or appropriate third-party
+  // providers depending on the city, volume and material type." — answered a yes/no question
+  // without saying yes or no, on the page where the question gets asked most. It now starts with
+  // the word "No" and then describes what we do instead, which is most of the job.
   faq: [
-    { question: "Do you haul everything away yourself?", answer: "Disposal may use containers or appropriate third-party providers depending on the city, volume and material type." },
-    { question: "Can cleaning be added after the cleanout?", answer: "Yes. A separate cleaning phase can be scoped once surfaces and rooms become accessible." }
+    { question: "Do you haul everything away yourself?", answer: "No. We are not a hauling company and nothing leaves the property in our vehicles. We do the on-site work — sorting, bagging, staging, carrying it out, loading the container — and we arrange that container through whichever provider your city authorizes, including where it is allowed to sit and what the disposal rules are. The trip off-site is theirs." },
+    { question: "Can cleaning be added after the cleanout?", answer: "Yes. Once the rooms are clear, the floors and cabinets can be reviewed and cleaning can be included in the same plan, avoiding a separate mobilization later." }
   ],
   related: [
     { label: "Estate Cleanouts", href: "/estate-cleanout-san-jose/" },
@@ -575,11 +607,17 @@ export const hoardingPage: Doc27ServicePage = {
     "pricingHeading": "What moves the price on a heavy-contents property",
     "boundariesHeading": "Conditions we stop on and refer out",
     "faqHeading": "Questions families ask before requesting a plan",
-    "relatedHeading": "If this is also an estate or a landlord turnover"
+    "relatedHeading": "If this is also an estate or a landlord turnover",
+    // docs/20-COPY-VOICE.md rule 7 lists this exact sentence as untouchable — used verbatim,
+    // not reworded, and it belongs at the top of this page more than any other.
+    "pledge": "Nothing leaves the property without your written approval.",
+    "scopeFooter": "Anything anyone is unsure about goes to review and stays there until the authorized decision-maker resolves it.",
+    "quoteHeading": "Volume, decisions, and how many days it takes.",
+    "quoteLede": "Photos help. For this service, a walkthrough supports an honest price and gives the family a chance to meet the operator before work begins."
   },
-  eyebrow: "Property Clearing · San Jose & the South Bay",
-  seoTitle: "Hoarding Cleanup in San Jose | Aseptaclean",
-  metaDescription: "Structured hoarding cleanup in San Jose and Santa Clara County. Keep, remove and review decisions are agreed in writing — nothing leaves without your approval.",
+  eyebrow: "Complex Property Cleanup · South Bay & Peninsula",
+  seoTitle: "Hoarding Cleanup in San Jose & South Bay | Aseptaclean",
+  metaDescription: "Structured hoarding cleanup in the South Bay & Peninsula. Keep, remove and review decisions are agreed in writing — nothing leaves without your approval.",
   h1: "Hoarding cleanup in San Jose, without throwing away what matters",
   lead: "A staged clearing and cleaning process for heavily accumulated properties, with decisions, priorities and boundaries established before items are moved.",
   fitWhen: [
@@ -594,7 +632,7 @@ export const hoardingPage: Doc27ServicePage = {
     "Condition and access walkthrough",
     "Keep, remove and review categories",
     "Room-by-room clearing plan",
-    "Bagging, staging and disposal coordination",
+    "Sorting, bagging and staging, with container coordination when the volume needs one",
     "Cleaning of released areas when included"
   ],
   quoteVariables: [
@@ -648,11 +686,15 @@ export const estatePage: Doc27ServicePage = {
     "pricingHeading": "What moves the price on an estate property",
     "boundariesHeading": "What an estate cleanout does not include",
     "faqHeading": "Questions families and executors ask before requesting a plan",
-    "relatedHeading": "If the property also needs cleaning or has heavy accumulation"
+    "relatedHeading": "If the property also needs cleaning or has heavy accumulation",
+    "pledge": "The authorized decision-maker sets the rules, and they are written down before anything moves.",
+    "scopeFooter": "The signed scope is also the document you hand the sibling who asks what happened to something.",
+    "quoteHeading": "How much sorting the family wants is the biggest variable.",
+    "quoteLede": "A house where everything goes prices differently from one where every drawer gets reviewed first. Tell us which this is and roughly how big the property is."
   },
-  eyebrow: "Property Clearing · San Jose & the South Bay",
-  seoTitle: "Estate Cleanout Services in San Jose | Aseptaclean",
-  metaDescription: "Estate cleanout in San Jose and Santa Clara County, run to the authorized decision-maker's instructions. Nothing leaves the property without written approval.",
+  eyebrow: "Complex Property Cleanup · South Bay & Peninsula",
+  seoTitle: "Estate Cleanout in San Jose & South Bay | Aseptaclean",
+  metaDescription: "Estate cleanout in the South Bay & Peninsula, run to the authorized decision-maker's instructions. Nothing leaves the property without written approval.",
   h1: "Estate cleanout in San Jose without deciding everything today",
   lead: "A deliberate process for sorting, staging and clearing estate contents before sale, transfer, renovation or family handoff.",
   fitWhen: [
@@ -666,9 +708,9 @@ export const estatePage: Doc27ServicePage = {
   workIncludes: [
     "Authorized decision-maker walkthrough",
     "Keep, donate, remove and review zones",
-    "Contents staging and bagging",
-    "Container or disposal coordination",
-    "Optional post-clearout cleaning"
+    "Contents sorting, bagging and staging",
+    "Container coordination and loading, where a container is part of the job",
+    "Cleaning after the rooms are cleared, when you want it"
   ],
   quoteVariables: [
     "Property and contents volume",
@@ -713,37 +755,52 @@ export const debrisRemovalPage: Doc27ServicePage = {
   indexable: true,
   doc27H1: "Debris Removal",
   section: {
-    "fitHeading": "When debris is what is standing between you and the next phase",
+    "fitHeading": "When debris is the thing standing between you and the next phase",
     "scopeHeading": "What a debris removal scope covers",
-    "scopeNote": "Labor, containers, hauling and any follow-on cleaning are quoted as separate lines, so disposal cost is visible instead of buried in one cleanout number.",
+    "scopeNote": "Labor, the container, and any follow-on cleaning are quoted as separate lines, so you can see what the disposal actually costs instead of finding it buried in one number.",
     "methodHeading": "Five stages, so the disposal route is settled before anything is loaded",
     "pricingHeading": "What moves a debris removal price",
     "boundariesHeading": "Materials we do not take",
-    "faqHeading": "Questions asked about fees, materials and hauling",
-    "relatedHeading": "If the debris is part of a larger clearing job"
+    "faqHeading": "Questions about fees, materials and who does the hauling",
+    "relatedHeading": "If the debris is part of a larger cleanup",
+    // Per-page overrides added 2026-08-21 — see the interface note. This page is the one most
+    // likely to be misread as a hauling service, so it says the boundary in its own hero rather
+    // than inheriting the generic scope pledge.
+    "pledge": "We do the work at the property. The drive to the landfill belongs to the authorized hauler.",
+    "quoteHeading": "The container is a line you can see, not a number we bury.",
+    "quoteLede": "Send photos of what has to go and where it sits. Volume, weight and how far it has to travel to the container are what actually move this price.",
+    "scopeFooter": "What we load and what the hauler carries are separate lines in the scope, and they stay separate on the invoice."
   },
-  eyebrow: "Property Clearing · San Jose & the South Bay",
-  seoTitle: "Property Debris Removal in San Jose | Aseptaclean",
+  eyebrow: "Complex Property Cleanup · South Bay & Peninsula",
+  seoTitle: "Property Debris Removal | San Jose & South Bay | Aseptaclean",
   // Length trimmed 2026-08-18 by dropping the "and" before "disposal" and swapping the region
   // label — NOT by shortening the hauler clause. "engaged for the project" is doc 21 §4.2
   // permitted copy verbatim; without it the sentence reads as a standing disposal chain, which
   // is the "we handle disposal" self-performed phrasing §4.3 prohibits outright.
-  metaDescription: "Property debris removal in San Jose and the South Bay. Written scope, staged loading, disposal handled by a City-authorized hauler engaged for the project.",
+  metaDescription: "Property debris removal in the South Bay & Peninsula. Written scope, staged loading, disposal handled by a City-authorized hauler engaged for the project.",
   h1: "Debris removal in San Jose for whole-property projects",
-  lead: "Removal planning for loose, non-hazardous property debris that must be cleared before cleaning, turnover or the next phase of work.",
+  // 2026-08-21. OLD lead: "Removal planning for loose, non-hazardous property debris that must be
+  // cleared before cleaning, turnover or the next phase of work." Accurate, but "removal planning"
+  // is not a thing anyone searches for or says, and the sentence left the reader to guess who
+  // drives the load away. The boundary is now in the lead, in a sentence rather than a caveat.
+  lead: "Loose, non-hazardous debris cleared out of a property before cleaning, turnover or the next phase of work. We do the clearing and the loading on site; the container and the trip to the facility come from the hauler your city authorizes.",
   fitWhen: [
-    "Loose debris blocks cleaning or access",
-    "A turnover left approved discard material",
-    "A container or disposal route must be planned",
-    "The material can be identified before removal"
+    "Loose debris is blocking cleaning or access",
+    "A turnover left material the owner has approved for discard",
+    "The job needs a container and someone to sort out where it can sit",
+    "The material can be identified before it is moved"
   ],
-  outcomeHeading: "Debris removed through a defined and legal disposal plan.",
-  outcomeBody: "The quote separates labor, containers, third-party hauling and follow-on cleaning so disposal costs are not hidden inside a vague cleanout number.",
+  outcomeHeading: "Debris gone, through a disposal route that holds up.",
+  // OLD: "The quote separates labor, containers, third-party hauling and follow-on cleaning so
+  // disposal costs are not hidden inside a vague cleanout number." Kept the substance; added the
+  // sentence that names the split in responsibility, which is the thing this page most needs to
+  // be unambiguous about (docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §4.3).
+  outcomeBody: "Aseptaclean is not a hauling company. We sort, bag, stage, carry out and load; a City-authorized hauler engaged for the project supplies the container and takes the material off-site. The quote keeps those on separate lines so you can see what each one costs.",
   workIncludes: [
     "Material and volume review",
     "Bagging and staging of approved debris",
-    "Loading coordination",
-    "Container or appropriate hauler coordination",
+    "Carrying material out and loading the approved container",
+    "Coordinating the authorized container provider and placement",
     "Broom-clean or detailed cleaning when included"
   ],
   quoteVariables: [
@@ -754,14 +811,15 @@ export const debrisRemovalPage: Doc27ServicePage = {
     "Labor required for sorting"
   ],
   boundaries: [
+    "Hauling the load off-site — the authorized provider does that",
     "Hazardous or unknown materials",
     "Construction demolition",
-    "Unpermitted transport or disposal",
-    "Items not authorized for removal"
+    "Items nobody has authorized for removal"
   ],
   faq: [
-    { question: "Are disposal fees included?", answer: "The written quote states whether container, facility or third-party hauling fees are included, estimated or billed separately." },
-    { question: "Do you take hazardous materials?", answer: "No. Unknown chemicals, regulated waste and other hazardous materials require an appropriate disposal provider." }
+    { question: "Are disposal fees included?", answer: "The written quote says whether container, facility or hauling fees are included, estimated or billed to you separately. You will not find out afterward." },
+    { question: "So who actually hauls it away?", answer: "A City-authorized hauler engaged for the project. Nothing leaves a job site in an Aseptaclean vehicle. We arrange the container, sort out where it is allowed to sit, load it, and clean up after it — the transport itself is theirs." },
+    { question: "Do you take hazardous materials?", answer: "No. Unknown chemicals, regulated waste and other hazardous materials need a provider set up for them. We can identify and set that material aside so it does not end up in the container by accident." }
   ],
   // property-cleanouts and eviction-cleanouts are crew-gated noindex drafts; swapped for the
   // indexable clearing routes so this page stops spending 2 of 3 internal links on drafts
@@ -769,7 +827,7 @@ export const debrisRemovalPage: Doc27ServicePage = {
   related: [
     { label: "Estate Cleanouts", href: "/estate-cleanout-san-jose/" },
     { label: "Hoarding Cleanup", href: "/hoarding-cleanup-san-jose/" },
-    { label: "Property Clearing", href: "/property-clearing/" }
+    { label: "Complex Property Cleanup", href: "/property-clearing/" }
   ]
 } as const;
 
@@ -780,9 +838,9 @@ export const evictionCleanoutPage: Doc27ServicePage = {
   indexable: false,
   doc27H1: "Eviction Cleanouts",
   section: null,
-  eyebrow: "Property Clearing · San Jose & the South Bay",
+  eyebrow: "Complex Property Cleanup · South Bay & Peninsula",
   seoTitle: "Eviction Cleanout Services in San Jose | Aseptaclean",
-  metaDescription: "Eviction cleanout and turnover cleaning for property owners and managers in Santa Clara County.",
+  metaDescription: "Eviction cleanout and turnover cleaning for property owners and managers in the South Bay & Peninsula.",
   h1: "Eviction cleanouts in San Jose, documented for the owner file",
   lead: "Contents clearing and cleaning after lawful possession has been restored and the property owner or manager has authority to direct removal.",
   fitWhen: [
@@ -831,9 +889,9 @@ export const commercialPage: Doc27ServicePage = {
   indexable: false,
   doc27H1: "Commercial & Janitorial Cleaning",
   section: null,
-  eyebrow: "Commercial · San Jose & the South Bay",
+  eyebrow: "Commercial · South Bay & Peninsula",
   seoTitle: "Commercial Janitorial Cleaning in San Jose | Aseptaclean",
-  metaDescription: "Project-based and select recurring commercial janitorial cleaning for small facilities in Santa Clara County.",
+  metaDescription: "Project-based and select recurring commercial janitorial cleaning for small facilities in the South Bay & Peninsula.",
   h1: "Commercial cleaning in San Jose with a scope you can inspect",
   lead: "Defined cleaning programs for small commercial properties that need reliable scope, clear frequencies and direct owner communication.",
   fitWhen: [

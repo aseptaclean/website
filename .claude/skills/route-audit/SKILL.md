@@ -1,22 +1,25 @@
 ---
 name: route-audit
-description: Audits Aseptaclean's route architecture for the four failure modes that have already occurred in this repo — a _redirects source colliding with a route that now exists, an indexable page linking into a noindex draft, an orphaned route that redirects point into but nothing links to, and a built route no document records. Use this skill whenever you add, rename, or remove a page under src/pages; whenever you edit public/_redirects, src/pages/sitemap.xml.ts, Footer.astro, Header.astro, or the nav data in src/data/site.ts; and whenever asked to check routes, redirects, the sitemap, internal linking, crawl paths, noindex status, or what pages exist. Also run it before any DNS cutover. Route wiring in this repo has drifted ahead of every document that describes it, so assume the docs are wrong and the code is truth.
+description: Audits Aseptaclean route output, redirects, sitemap membership, internal links, and indexation against a fresh production build and the approved authority hierarchy. Use this skill whenever routes, redirects, sitemap files, navigation, crawl paths, or indexation change, or before DNS cutover. A build is evidence of current technical behavior; it does not override owner decisions, claims law, the active website master, or route publication gates.
 ---
 
 # Route audit
 
-This repo has 27 route files, a 9-route sitemap allowlist, a 32-rule redirect file, and three
-documents describing three different architectures. The code is ahead of all of them. Every
-finding below has actually happened here at least once.
+**Owner-reconciled snapshot, 2026-08-25:** the documented current state is 46 built routes,
+24 indexable routes, 23 routes in `sitemap.xml`, one indexable route deliberately absent from
+the sitemap, 22 `noindex` routes, and nine city routes held at `noindex`. Re-derive these
+figures from a fresh production build whenever a route-affecting change is authorized; do not
+reuse this snapshot as proof after such a change.
+
+The examples below are historical failure modes, not assertions that the same defects remain.
 
 ## The four failure modes
 
 ### 1. A redirect source that is now a real route
 
-`public/_redirects` was written during a route collapse. Pages were later rebuilt under names
-the redirect file still retires. Currently `/estate-cleanout-san-jose/` and
-`/hoarding-cleanup-san-jose/` are **both** 301'd to `/` at lines 21 and 24 **and** exist as
-built pages linked from `/services/`.
+At one point pages were rebuilt under names that the redirect file still retired;
+`/estate-cleanout-san-jose/` and `/hoarding-cleanup-san-jose/` were both redirect sources and
+built pages. That incident established the collision check below.
 
 A prior audit checked that every redirect *destination* resolves. Nobody checked whether a
 *source* collides with a route created later. That is the check.
@@ -28,8 +31,8 @@ asset wins, the rule is harmless but still misleading and should go.
 
 ### 2. An indexable page linking into a noindex draft
 
-`/services/` and `/who-we-help/` are indexable and in the sitemap. They link to eight `noindex`
-drafts, and `servicePages.ts` carries eleven `[OWNER INPUT: …]` strings across them.
+The repository has previously linked indexable hubs into gated `noindex` routes. Treat every
+such crawl path as an explicit finding and compare it with the route's publication gate.
 
 That is a crawl path from an indexed hub into unfinished content, and a user path from the
 main navigation into pages that may display `[OWNER INPUT: …]` on screen. Check whether those
@@ -38,15 +41,13 @@ harmless, and the distinction determines urgency.
 
 ### 3. An orphan that redirects point into
 
-`/service-areas/` is `noindex`, excluded from the sitemap, and has zero internal links
-anywhere in `src/` — while seven `_redirects` rules funnel old city URLs into it. Anyone
-following an old link lands on a noindex page nothing else references.
+The service-area hub has previously been an orphan while redirects pointed into it. The
+current documented state is indexable and sitemap-listed; verify rather than assuming either.
 
 ### 4. A route no document records
 
-`/services/` and `/who-we-help/` appear in no version of the sitemap documentation, despite
-being in the nav, the footer, and the sitemap allowlist. `19-SYSTEM-AND-SITEMAP.md` is the
-architecture authority and does not know they exist.
+Built routes have previously been absent from all route documentation. Compare the build with
+both `docs/19-SYSTEM-AND-SITEMAP.md` and `docs/SITEMAP-MASTER.md`.
 
 ## Procedure
 
@@ -71,14 +72,15 @@ an indexable page to a `noindex` page is a finding. Report the target's placehol
 redirects point at but nothing links to. Components in `src/components/` that no page imports —
 currently `CategoryContrast.astro`, `OutcomeComparison.astro`, and `Qualification.astro`.
 
-**5. Reconcile against `19-SYSTEM-AND-SITEMAP.md` Part 2.** Report routes in the code but not
-the doc, and routes in the doc but not the code. The doc is corrected to match the code, never
-the reverse — but a route that exists and should not is a separate and more serious finding.
+**5. Reconcile against both route authorities.** Report routes in the build but not the
+documents, and planned routes not in the build. Correct stale descriptions of current output;
+do not use existing code to override higher-ranked route strategy or publication gates.
 
 **6. Check the never-build list.** No route, draft, stub, sitemap entry, or nav link may exist
 for: `/biohazard-cleanup*`, `/blood-cleanup/`, `/unattended-death-cleanup/`,
 `/crime-scene-cleanup/`, `/human-waste-cleanup/`, `/sharps-cleanup/`, `/encampment-cleanup/`,
-`/vehicle-biohazard-cleanup/`, any `/locations/*` or `/projects/*` path, garage-cleanout,
+`/vehicle-biohazard-cleanup/`, any `/locations/*` path, any project-detail route without real
+permissioned proof, garage-cleanout,
 basement-cleanout, furniture-removal, mattress-disposal, or a reviews page. These are gated by
 owner decision and, for the biohazard set, by statute — see
 `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §5.
@@ -113,5 +115,5 @@ In doc 19, not in code: <list>
 point at `/` as an interim hop while a Phase 3 draft is gated. They are meant to be updated
 individually as each gate clears, never bulk-flipped.
 
-**Do not add a route to the sitemap because it exists.** Eighteen of twenty-seven routes are
-excluded on purpose. The allowlist is a decision, not an oversight.
+**Do not add a route to the sitemap because it exists.** Publication and indexation are gated
+per route. Exclusion is not an oversight merely because a page builds.

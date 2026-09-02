@@ -2,12 +2,10 @@
 // doc 19 §2.2 ABOUT + §3.5 wireframe. Founder-story copy assembled verbatim from
 // docs/06-APPROVED-HOMEPAGE-COPY.md §8.15 (paragraphs, quote, credential list) and
 // src/data/site.ts (legal.scopeDisclaimer, site.business.insuranceStatus) — no new
-// sentences invented. Founder portrait stays the labeled placeholder per
-// docs/02-OWNER-INPUTS.md ("not yet supplied... plain bordered placeholder").
+// sentences invented. No founder portrait has been supplied, so the section is text-first.
 // Copy migrated to docs/27-COPY-CANONICAL.md §17.3 on 2026-08-16 (title, meta, eyebrow, H1,
 // lead, founder heading/body, operating principles). Layout unchanged — the founder-story,
-// portrait-placeholder, and credentials composition below is doc 19 §3.5's and stays as built,
-// per the owner instruction not to change visual layout.
+// credentials composition below retains the current documented background and authority limit.
 import BaseLayout from "@layouts/BaseLayout.astro";
 import PageHeader from "@components/PageHeader.astro";
 import RequestForm from "@components/RequestForm.astro";
@@ -39,16 +37,14 @@ const schema = [
       name: "University of California, Riverside"
     }
   },
-  {
-    "@type": "LocalBusiness",
-    "@id": new URL("/#business", site.urls.site).href,
-    name: site.business.name,
-    founder: { "@id": new URL("/#founder", site.urls.site).href }
-  },
+  // The name-and-founder-only LocalBusiness stub that sat here is removed: the single business
+  // node in src/components/SeoHead.astro carries `founder` on every route, so this page-level
+  // fragment added nothing and was one of the three conflicting partial descriptions. The
+  // `worksFor` link above already resolves to it.
   {
     "@type": "BreadcrumbList",
     itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.site },
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
       {
         "@type": "ListItem",
         position: 2,
@@ -76,9 +72,6 @@ const schema = [
 
   <section class="founder-story" aria-labelledby="founder-story-title">
     <div class="ac-measure-wide founder-story__shell">
-      <div class="portrait" role="presentation">
-        <span class="portrait__label">[ Founder portrait — pending ]</span>
-      </div>
       <div>
         <p class="ac-eyebrow">Founder &amp; Principal Operator</p>
         <h2 id="founder-story-title" class="ac-type-h2">{aboutPage.founderHeading}</h2>
@@ -111,7 +104,11 @@ const schema = [
 
       <p class="disclaimer">{legal.scopeDisclaimer}</p>
       <p class="disclaimer">{legal.founderAuthorityLimit}</p>
-      <p class="insurance">{site.business.insuranceStatus}</p>
+      {/* AGENTS.md §3 / doc 21 §2.5: unverified against a current COI → suppress the statement
+          entirely rather than rendering a placeholder or a stale claim. */}
+      {site.business.insuranceStatus && (
+        <p class="insurance">{site.business.insuranceStatus}</p>
+      )}
     </div>
   </section>
 
@@ -191,37 +188,9 @@ const schema = [
 
   .founder-story__shell {
     display: grid;
+    max-width: 54rem;
     gap: clamp(2.5rem, 5vw, 4rem);
     align-items: start;
-  }
-
-  .portrait {
-    position: relative;
-    display: grid;
-    aspect-ratio: 4 / 5;
-    place-items: center;
-    overflow: hidden;
-    border-radius: var(--ac-r);
-    background: linear-gradient(160deg, #27436f, #0b1830);
-    box-shadow: var(--ac-shadow-card);
-  }
-
-  .portrait::after {
-    position: absolute;
-    inset: 0;
-    background-image: radial-gradient(circle at 1px 1px, rgba(255, 255, 255, 0.06) 1px, transparent 0);
-    background-size: 22px 22px;
-    content: "";
-  }
-
-  .portrait__label {
-    position: relative;
-    z-index: 1;
-    color: #6d8bb0;
-    font-family: var(--ac-font-sans);
-    font-size: 0.66rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
   }
 
   .founder-story h2 {
@@ -281,8 +250,8 @@ const schema = [
   .cr__k {
     color: var(--ac-color-ink-400);
     font-family: var(--ac-font-sans);
-    font-size: 0.64rem;
-    letter-spacing: 0.05em;
+    font-size: var(--ac-text-label);
+    letter-spacing: 0.06em;
     text-transform: uppercase;
   }
 
@@ -315,10 +284,13 @@ const schema = [
     color: var(--ac-color-warm-white);
   }
 
-  /* This section's own .ac-eyebrow sits on the navy-900 background, not the
-     light surface the shared class assumes (same fix as CategoryContrast.astro). */
+  /* This section's own .ac-eyebrow sits on the navy-900 background, not the light surface the
+     shared class assumes. Recolouring alone left the shared class's pale-blue chip painted
+     underneath, so light steel text sat on a near-white chip — measured 1.89:1. Take the
+     background from the on-dark modifier as well, matching .ac-eyebrow--on-dark. */
   .founder-links :global(.ac-eyebrow) {
-    color: var(--ac-color-steel-on-navy);
+    background: rgb(255 255 255 / 12%);
+    color: #cbd9e8;
   }
 
   .founder-links__shell {

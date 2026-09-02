@@ -34,8 +34,51 @@ const {
       <h3 id={headingId} class="ac-type-h3-band">{heading}</h3>
       <p>Assessment response {site.offer.responseTime}</p>
     </div>
-    <a href={ctaHref}>
-      {ctaLabel} <span aria-hidden="true">&rarr;</span>
-    </a>
+    <div class="ac-band__actions">
+      <a href={ctaHref}>
+        {ctaLabel} <span aria-hidden="true">&rarr;</span>
+      </a>
+      {/* doc 27 §8 — the secondary CTA appears everywhere the primary does. Suppressed with
+          the phone value it derives from (AGENTS.md §3). */}
+      {site.business.smsUri && (
+        <a class="ac-band__secondary" href={site.business.smsUri}>
+          {site.offer.secondaryCta}
+        </a>
+      )}
+    </div>
   </div>
 </section>
+
+<style>
+  /* The band's CTA used to be a bare anchor carrying `margin-left: auto` from global.css's
+     `.ac-band a`. With a second CTA beside it the auto margin moves to the wrapper, and the
+     anchors inside it get it reset — scoped selectors outrank the global rule, so nothing in
+     global.css is edited and every other `.ac-band` caller is unaffected. */
+  .ac-band__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-left: auto;
+    gap: 10px 18px;
+  }
+
+  .ac-band__actions a {
+    margin-left: 0;
+  }
+
+  /* Text-weight, not a second filled button: §8 calls this the low-commitment door, and two
+     navy blocks on the amber band would read as two equal demands. */
+  .ac-band__secondary {
+    background: transparent;
+    padding: 15px 4px;
+    color: #2a1d02;
+    font-weight: 600;
+  }
+
+  .ac-band__secondary:hover {
+    background: transparent;
+    color: #2a1d02;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+</style>

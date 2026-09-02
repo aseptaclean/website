@@ -1,6 +1,15 @@
-# MASTER SITEMAP — reconciled, single source of truth
-**2026-08-09. Merges owner's full nav tree + doc 27 copy + doc 19 SEO slugs + owner ungating.**
-**This table supersedes the sitemap in BOTH doc 19 §2.1 and doc 27 §7. Copy = doc 27 §9–17.**
+# MASTER SITEMAP — reconciled route-planning table
+
+**Owner-reconciled 2026-08-25.** This table preserves prior route planning and current-state
+comparisons. It does not independently override the approved authority hierarchy, doc 30's SEO
+strategy, claims restrictions, per-route gates, or a fresh build's evidence of current output.
+
+**Authority boundary — 2026-08-25.** This is the planning table for routes, waves, and
+publication gates. Doc 30 governs website and SEO strategy; verified facts, owner decisions,
+claims restrictions, and locked copy outrank both. Current source plus a fresh build establishes
+current technical state. Default visible primary CTA is **Tell Us About the Property**. No
+`/service-areas/san-jose/`, `/assessment/`, `/services/{slug}`, or `/locations/*` route is
+authorized.
 
 > **Reconciled against `dist/` 2026-08-19 after `npm run build:local`.** The **Planned** column
 > is what this document has always said — the publish intent, unchanged. **As built** is what
@@ -24,9 +33,9 @@
 | | `/window-cleaning-san-jose/` | Window Cleaning | index (gate: crew) | ⚠️ **noindex** | 27 §12.4 |
 | **Specialty Cleaning** | `/specialty-cleaning/` | Category hub | index | ⚠️ **noindex** | 27 §13 intro |
 | | `/extreme-cleaning-san-jose/` | Extreme Cleaning | index | ✅ index | 27 §13.1 |
-| | `/animal-waste-cleanup-san-jose/` | Animal Waste Cleanup | index ✅ ungated | ⚠️ **noindex** (P2) | 27 §13.2 |
-| | `/rodent-dropping-cleanup-san-jose/` | Rodent Dropping Cleanup | index ✅ ungated (PPE SOP before 1st job) | ⚠️ **noindex** | 27 §13.3 |
-| | `/pigeon-dropping-cleanup-san-jose/` | Pigeon Dropping Cleanup | index ✅ ungated | ⚠️ **noindex** | 27 §13.4 |
+| | `/animal-waste-cleanup-san-jose/` | Animal Waste Cleanup | gated; individual publication decision required | ⚠️ **noindex** (P2) | 27 §13.2 |
+| | `/rodent-dropping-cleanup-san-jose/` | Rodent Dropping Cleanup | gated; compliance, protocol, and publication decision required | ⚠️ **noindex** | 27 §13.3 |
+| | `/pigeon-dropping-cleanup-san-jose/` | Pigeon Dropping Cleanup | gated; individual publication decision required | ⚠️ **noindex** | 27 §13.4 |
 | **Property Clearing** | `/property-clearing/` | Category hub | index | ✅ index | 27 §14 intro |
 | | `/property-cleanouts-san-jose/` | Property Cleanouts | index | ✅ index | 27 §14.1 |
 | | `/hoarding-cleanup-san-jose/` | Hoarding Cleanup | index | ✅ index | 27 §14.2 |
@@ -36,7 +45,8 @@
 | | `/senior-downsizing-san-jose/` | Senior Downsizing | index | ⚠️ **noindex** (P1) | doc 19 (not in 27 — write to voice) |
 | **Commercial** | `/commercial-cleaning-san-jose/` | Commercial & Janitorial | index (gate: crew) | ⚠️ **noindex** | 27 §15 |
 | **Service Areas** | `/service-areas/` | Area hub (10 cities) | index | ✅ index | 27 §16 |
-| | `/service-areas/{city}/` | Per-city | as earned (real job + original content) | **not built** — `cityPages = []`, consistent with the gate | doc 19 gate |
+| | `/service-areas/[city]/` | City hub — Mountain View, Sunnyvale, Campbell | ~~as earned (real job + original content)~~ **gate superseded 2026-08-21** | ✅ **3 built** — `noindex, follow`, not in `sitemap.xml`; gate = owner city-availability confirmation | doc 19 §2.2 · `cityHubPages.ts` |
+| | `/service-areas/[city]/[service]/` | Service × city — hoarding-cleanup, estate-cleanout | *absent from this table until 2026-08-21* | ✅ **6 built** (3 × 2, complete) — `noindex, follow`, not in `sitemap.xml` | doc 19 §2.2 · `serviceCityPages.ts` |
 | **Company** | `/handoff-standard/` (= Process) | The Handoff Standard | index | ✅ index | doc 19 / 27 §17.1 |
 | | `/projects/` | Projects | publishes when real photos exist | ✅ noindex, gate unmet | 27 §22 |
 | | `/about/` | About | index | ✅ index | 27 §17 |
@@ -45,14 +55,23 @@
 | **Resources** | `/estate-cleanout-checklist/` | Ungated checklist asset | index | ✅ index, in `sitemap.xml`, 3 inbound links | doc 19 Part 6 |
 | | ~~`/assessment/`~~ | ~~Triage quiz~~ | ~~Phase 4~~ | ~~not built~~ — **CANCELLED 2026-08-20, owner ruling** | ~~doc 19 Part 4~~ |
 | **Legal** | `/privacy/` `/terms/` `/cookie-policy/` | | as configured | ✅ index, in `sitemap.xml` | existing |
-| | `/data-request/` `/sms-notification-consent/` | | as configured | ✅ index, **deliberately not in `sitemap.xml`** | existing |
+| | `/data-request/` | Privacy request utility | provider workflow gate | ✅ **noindex, follow**, not in `sitemap.xml` | existing |
+| | `/sms-notification-consent/` | Protected carrier-review utility | preserve current state | ✅ index, deliberately not in `sitemap.xml` | existing |
 | **Utility** | `/thank-you/` `/404` | | noindex / n/a | ✅ noindex | existing |
 | **Undocumented until now** | `/services/` | Services index — "What Aseptaclean handles" | *absent from this table* | ✅ index, in `sitemap.xml`, **0 inbound links** | — |
 | | `/who-we-help/` | Audience page | *absent from this table* | ✅ index, in `sitemap.xml`, **0 inbound links** | — |
-| | `/private-residence-reset/` | Campaign page | *absent from this table* | ✅ index, not in `sitemap.xml`, **0 inbound links** | doc 08 |
+| | `/private-residence-reset/` | Campaign page | index, low-emphasis crawl path | ✅ index, in `sitemap.xml`, footer-linked | doc 08 |
 
-**Totals as built: 37 routes** — 21 index + in `sitemap.xml`, 3 index + deliberately excluded,
-13 `noindex`.
+**Totals as built (2026-08-21): 46 routes** — 23 index + in `sitemap.xml`, 1 index + deliberately
+excluded (`/sms-notification-consent/`), 22 `noindex` including `/404`.
+
+> **Was 37 until 2026-08-21.** The nine `/service-areas/[city]/…` routes added that day are all
+> `noindex`, so the indexable set and `sitemap.xml` did not move — 13 `noindex` became 22.
+> Counts verified against `dist/` after `npm run build:local`; `AGENTS.md` §2 carries the same
+> figures from the same build. The earlier "21 index + 3 excluded" split predates the 2026-08-20
+> pass that put `/private-residence-reset/` into `sitemap.xml` and flipped `/data-request/` to
+> `noindex`; the current build emits **23 `<loc>` entries**, counted directly from
+> `dist/sitemap.xml`. Corrected here rather than carried forward.
 
 ### Unresolvable rows — need a decision, not a lookup
 
@@ -81,8 +100,8 @@ the record of what was open is worth as much as the answer.**
 **Gated pages (Phase 5, DO NOT BUILD):** all biohazard routes — doc 90 four gates / TSWMP.
 
 **Reconciliation notes:**
-- City suffix on every service slug (doc 19 wins over 27's bare slugs) — local SEO.
-- Category HUB pages kept (doc 27 wins over doc 19's omission) — needed for grouped nav.
+- Current owner-approved route decisions retain city suffixes on service slugs.
+- Current owner-approved route decisions retain the category hub pages.
 - ~~animal/rodent/pigeon indexable now (owner override 2026-08-09) — 27's "noindex pending gate" superseded.~~
   **✅ STRUCK 2026-08-20 — this note was the stale side, not the build.** All three ship
   `noindex`, correctly. `src/data/doc27ServicePages.ts` carries the reason in each route's

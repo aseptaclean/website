@@ -1,21 +1,2081 @@
 ---
-// Route generated 2026-08-16 from docs/27-COPY-CANONICAL.md via src/data/doc27ServicePages.ts.
-// All page copy lives in that data record; all structure lives in ServicePageLayout, which
-// implements doc 27 §11's shared service-page sequence. Nothing page-specific belongs in this
-// file beyond the four identity values below — if a sentence needs to change, change doc 27
-// and regenerate the data, do not hand-edit copy here.
+// ESTATE CLEANOUT — `/estate-cleanout-san-jose/`. Rebuilt following the same gold-standard
+// approach as `/hoarding-cleanup-san-jose/` (docs/30-WEBSITE-MASTER-SPEC.md §20, §20A), with
+// copy reconciled from docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md §39 under §20A.1's order:
+// landing copy → map to current route → check active/gated state → check claims, pricing and
+// scope → check current copy authority → then implement. The existing `estatePage` record in
+// src/data/doc27ServicePages.ts (owner-approved, route-audit-corrected copy) was mined for
+// approved language — "authorized decision-maker", the donation/appraisal boundary, the FAQ
+// answers — rather than discarded.
 //
-// Ships noindex pending this page's own gate (see the record's `gate` field) and is excluded
-// from src/pages/sitemap.xml.ts. Do not bulk-flip.
-import ServicePageLayout from "@layouts/ServicePageLayout.astro";
-import { estatePage } from "@data/doc27ServicePages";
+//   01 SERVICE HERO             photograph + overlay, left-aligned, service confirmed on sight
+//   02 PROTECT WHAT MATTERS     "We do not start by clearing." + the Save List, as a document —
+//                               this page's signature movement, on navy
+//   03 WHO DECIDES + WHAT NEXT  decision authority, then the property's end goal — the second
+//                               mechanism this page runs on
+//   04 THE CLEARING PLAN        six-step field procedure, stop-and-ask, hidden conditions
+//   05 CONTENTS + BOUNDARIES    disposal/donation/appraisal boundaries — what leaves, how, and
+//                               who decides value
+//   06 WHAT PROOF EXISTS        the honest gap, remote/out-of-area support, deadlines, fit + price
+//   07 QUESTIONS                seven, the ones that decide the purchase
+//   08 CLOSE                    "You do not have to decide everything today."
+//
+// THE SPECIALIST THESIS IS §20A.5's, unchanged: **protect what matters before the property gets
+// cleared.** This is deliberately NOT Hoarding's "you stay in control" argument, even though both
+// pages share a decision-authority mechanism — see the doc-precedence note below on why that
+// overlap is structural, not a copy failure. Every movement reinforces protection-before-clearing:
+// the hero states it, 02 is the mechanism (the Save List), 03 is who is allowed to act on it, 04
+// shows it surviving contact with the property, 05 is where approved material actually goes, 06 is
+// what it costs and what remote families can rely on, 07 answers it as an objection.
+//
+// DISTINCTION FROM HOARDING, BY DESIGN, NOT BY ACCIDENT:
+//   - Hoarding's signature movement is a five-category decision REGISTER (Keep/Set aside/Donate/
+//     Remove/Not sure) applied to accumulated CONTENTS. This page's signature movement is a SAVE
+//     LIST — named items and named categories an authorized person defines before clearing starts
+//     — applied to a property being HANDED OFF (sold, rented, returned to family, emptied). The
+//     document shape, wording and purpose are both different: a save list is instructions written
+//     in advance; Hoarding's register is a disposition applied room by room.
+//   - Hoarding's condition-recognition movement ("is the home getting hard to use?") has no
+//     equivalent here. This page has no condition-recognition movement — an estate property is not
+//     being diagnosed for a hoarding condition, it is being prepared for its next stage. In its
+//     place: property end-goal (sold / rented / returned to family / made usable / emptied), which
+//     doc 30 §20A names as this page's own second mechanism.
+//   - This page adds two movements with no Hoarding equivalent: remote/out-of-area decision-making
+//     and deadlines, both flagged in the brief as "especially relevant to Estate Cleanout" and
+//     absent from Hoarding entirely.
+//   - The appraisal/estate-sale boundary and the donation/disposal split are estate-specific
+//     objections Hoarding does not carry in this shape.
+// DISTINCTION FROM PROPERTY CLEANOUTS (`/property-cleanouts-san-jose/`, not rebuilt this pass):
+//   that route remains the broader landlord/turnover/general-clearing intent per
+//   docs/30-WEBSITE-MASTER-SPEC.md §20A.2's route table. This page does not absorb that scope —
+//   the fit section explicitly routes a landlord/turnover situation to Property Cleanouts rather
+//   than re-explaining it here.
+//
+// WHAT THIS REPLACES. The previous build: a 29-line wrapper around the shared
+// `ServicePageLayout.astro` template, fed by `estatePage` in doc27ServicePages.ts — the same
+// generic 14-page template `/property-cleanouts-san-jose/` still uses. That template's section
+// sequence is identical across all 14 pages with only the record's strings changing, which is
+// exactly the "one template, swap the noun" failure mode §20A.5 and §20A.25 Q14 rule out.
+//
+// ROUTE STATE IS UNCHANGED AND DELIBERATELY SO. Same slug, same canonical, same `index, follow`,
+// same sitemap membership. The BreadcrumbList trail changes from /property-clearing/ (unchanged
+// parent hub) through to this page's own H1. SEO title and meta description are rewritten here —
+// see the note beside those constants — because the previous template pulled them from
+// `estatePage.seoTitle` / `.metaDescription`, which described "Estate Cleanout in San Jose & South
+// Bay" using the OLD lead. New title/description describe the same route and the same service, in
+// this page's own words, per §20A.22 ("do not create a second page for a keyword variation" — this
+// is one page, one route, refreshed copy).
+//
+// NO CredentialBar ON THIS ROUTE. Same reasoning as Hoarding: "Insured · COI available on request"
+// and "Endorsed · Organic pathogen endorsement" are release-gated by AGENTS.md §3 pending a
+// current COI match. Taking a gated claim off an indexable page is the conservative direction.
+//
+// NO EMBEDDED FORM. §20A.8's destination rule and §20A.9's "one assessment engine" — CTAs link to
+// /request-assessment/?service=estate-cleanout instead of duplicating lead infrastructure.
+import { Image } from "astro:assets";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import heroImage from "../../assets/homepage/hero-development-residence-asurnipal.jpg";
+import { getServiceCityLinks } from "@data/serviceCityPages";
+import { legal, site } from "@data/site";
+
+// TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPH — NOT Aseptaclean project work, NOT a client
+// property, and NOT proof of any completed job. `[ATMOS]`-class under
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6: no crew, no vehicle, no equipment, no work in progress,
+// no before/after pair.
+//
+//   hero-development-residence-asurnipal.jpg
+//     Asurnipal — CC BY-SA 4.0 — 3264×2448
+//     https://commons.wikimedia.org/wiki/File:Bregenz-Cluttered_interiors_(compulsive_hoarding)-living_room-04ASD.jpg
+//
+// REUSED, NOT NEWLY ACQUIRED. docs/06-ASSET-MANIFEST.md §4 records the atmosphere-slot cap as
+// already knowingly exceeded by one (four slots against a cap of three) and says "do not add a
+// fifth without a new owner decision." This file is already in the repository, already used as
+// the full-bleed hero on `/`, and is reused here in the same role rather than sourcing a new
+// asset — the same constraint Hoarding's rebuild operated under and the same choice it made
+// (reusing two existing files rather than acquiring a third and fourth).
+//
+// `condition-development-hoarding-asurnipal.jpg` and `service-development-cleanup-asurnipal.jpg`
+// are Hoarding's hero and editorial panel respectively and are not reused here — a shared
+// photograph across sibling service pages would blur the distinction both pages exist to make.
+// `condition-development-reset-aismallard.jpg` (the empty room) is NOT used, for the same reason
+// docs/06-ASSET-MANIFEST.md already bars it from Hoarding: it is an open owner question whether an
+// empty room reads as an implied "after", and this page's whole argument is about a property still
+// full of a family's belongings — placing that image anywhere on it risks exactly that misread.
+
+const canonicalPath = "/estate-cleanout-san-jose/";
+
+// REWRITTEN FROM `estatePage.seoTitle` / `.metaDescription` (doc27ServicePages.ts), which
+// described the page's OLD lead ("Estate cleanout in San Jose without deciding everything
+// today"). This rebuild's H1 and thesis differ from that lead, so the title/description are
+// brought into agreement with what the page now actually says, per §20A.22.
+const title = "Estate Cleanout in San Jose | Aseptaclean";
+const description =
+  "Estate cleanout in San Jose for families, executors and trustees. Important items are protected and a save list is agreed before any approved contents leave the property.";
+
+// §20A.8's destination rule + §20A.9's service branch. `?service=estate-cleanout` is read by
+// AssessmentForm.astro, added alongside this page (see that component's service-context block).
+// It maps to the existing "Inherited or estate property" `property_situation` option — already
+// present on the form, not invented for this page — and records the real entry route on the lead.
+const assessmentHref = "/request-assessment/?service=estate-cleanout";
+const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
+
+// AGENTS.md §2's crawl-path note records six service × city routes as deliberately linked from
+// this indexable page. `getServiceCityLinks("estate-cleanout")` is an existing, whitelisted call —
+// `ServiceSlug` in cityFacts.ts is `"hoarding-cleanup" | "estate-cleanout"` — the same mechanism
+// Hoarding's rebuild uses for its own three cities.
+const cityLinks = getServiceCityLinks("estate-cleanout");
+
+// §39's "what may be under the contents" list, reworded from the landing-page source's plain
+// nouns into the register a family or executor would actually use, and reordered so the
+// irreplaceable items lead rather than trail behind clothing and tools.
+const contents = [
+  "wills, deeds and titles",
+  "tax and insurance papers",
+  "identification and keys",
+  "photographs and letters",
+  "jewelry and cash",
+  "items named for a specific person",
+  "collectibles",
+  "clothing and furniture",
+  "tools and household items",
+  "ordinary contents with no remaining claim on them"
+] as const;
+
+// The Save List. §39's examples, kept as the range from a broad standing rule to a single named
+// object — that range is the point: a save list can be as short as one sentence.
+const saveListRules = [
+  { label: "Save all", detail: "family photographs, legal papers, keys, jewelry" },
+  { label: "Look for", detail: "a specific named item — “the red photo album,” a ring, a will" },
+  { label: "Do not enter", detail: "a room, closet or storage area held out of the scope entirely" },
+  { label: "Set aside", detail: "anything with a name on it, for later review" }
+] as const;
+
+// §20A the property's end goal. Doc 30 names this page's second mechanism explicitly: the end
+// goal changes the sequence, the scope and the deadline.
+const goals = [
+  { label: "Sold", detail: "cleared so the property can move toward listing and sale" },
+  { label: "Rented", detail: "cleared and cleaned ahead of repair and the next tenant" },
+  { label: "Returned to family", detail: "named items separated out before the rest is cleared" },
+  { label: "Made usable again", detail: "rooms, paths or storage areas cleared for present use" },
+  { label: "Emptied", detail: "approved contents removed, property ready for its next step" }
+] as const;
+
+// Decision-authority questions. §39's list, kept operational rather than legalistic — Aseptaclean
+// establishes a clear authorized contact; it does not determine ownership or legal authority.
+const authority = [
+  "who can approve the project",
+  "who decides what stays and what may leave",
+  "who the crew contacts when something is unclear",
+  "which areas, if any, are off-limits",
+  "whether other family members need access during the work"
+] as const;
+
+// §39's six-stage property plan, expanded to include the review/handoff close the source's
+// five-step list stops short of — homepage.sampleRecord and /handoff-standard/ both describe a
+// closeout step, and a process that stops before handoff would contradict the rest of the site.
+const process = [
+  {
+    title: "Protect important items",
+    detail:
+      "The save list is applied first — papers, photographs, valuables and any named items are set aside before anything else is touched."
+  },
+  {
+    title: "Confirm keep, review and remove rules",
+    detail:
+      "Categories are agreed in writing with the authorized decision-maker: what stays, what is held for review, what is approved to leave."
+  },
+  {
+    title: "Clear approved areas, one at a time",
+    detail: "Work moves room by room against the written plan, not at random and not by whichever area is nearest the door."
+  },
+  {
+    title: "Handle approved material the way the plan says",
+    detail:
+      "Where a container is part of the job, it is coordinated in advance — placement, timing and what it can legally hold."
+  },
+  {
+    title: "Clean cleared areas, when included",
+    detail: "Once a room is open, surfaces in scope are cleaned. Not automatic — written into the plan or it does not happen."
+  },
+  {
+    title: "Final review",
+    detail: "The completed scope is walked through against the plan, with any open items still listed as open."
+  }
+] as const;
+
+// What clearing can expose. Kept parallel to Hoarding's list — the same conditions can hide under
+// contents whether the property is an accumulation or an estate — with the identical rule that
+// "mold-like growth" is never shortened to "mold" (doc 21 §2.1).
+const discoveries = [
+  "rodent droppings",
+  "animal waste",
+  "water damage",
+  "mold-like growth",
+  "sharp objects",
+  "human biological material",
+  "damaged flooring or walls",
+  "heavy buildup not visible from the doorway"
+] as const;
+
+// Boundaries. Combines doc27ServicePages.ts's `estatePage.boundaries` (owner-reconciled,
+// route-audit-corrected) with §39's donation/appraisal detail the data record compresses.
+const boundaries = [
+  "valuation, appraisal or estate-sale services",
+  "legal decisions about ownership or who is entitled to an item",
+  "removal of anything without authorized direction",
+  "transporting contents off the property",
+  "structural repair, drywall, flooring or construction",
+  "human biological material, regulated waste or sharps handling",
+  "pest inspection, identification, exclusion or treatment",
+  "stating that a property is safe, cleared or fit to sell"
+] as const;
+
+const goodFit = [
+  "a family or representative is managing estate contents",
+  "important items are mixed in with things that can go",
+  "the property is being prepared for sale, rental or transfer",
+  "more than one person is involved and the decisions need one clear process",
+  "cleaning is needed once rooms are cleared",
+  "you want the scope in writing before work starts",
+  "a simple junk pickup would not cover what the property actually needs"
+] as const;
+
+const poorFit = [
+  "everything in the property is already approved to go and a truck is all this needs",
+  "you need an estate-sale company or an appraiser",
+  "the main need is construction, repair or renovation",
+  "the condition is outside our current scope"
+] as const;
+
+const priceDrivers = [
+  "size of the property and how many rooms are affected",
+  "how much sorting the family wants before removal",
+  "amount of contents and how densely a property is filled",
+  "access — stairs, parking, carry distance",
+  "crew size and number of days",
+  "cleaning after clearing, when it is included",
+  "disposal and container needs",
+  "conditions that were not visible at the start",
+  "your deadline"
+] as const;
+
+// §20A.18: 4–7 highest-value, service-specific questions. Answers reconciled from
+// doc27ServicePages.ts's `estatePage.faq` (owner-approved: "No" to appraisal, "Yes" to
+// post-clearing cleaning) plus §39's stronger objection set — remote/out-of-state, found money or
+// jewelry, donation acceptance — which the data record's two-question set does not cover.
+const faq = [
+  [
+    "Do you buy or appraise estate items?",
+    [
+      "No. Appraisal, resale and estate-sale services are separate from what Aseptaclean does.",
+      "If the family believes something may have value, have it reviewed before it is approved for removal — we follow the sorting and removal plan you set, not a valuation we make ourselves."
+    ]
+  ],
+  [
+    "What happens if you find money, jewelry or documents we did not know about?",
+    [
+      "The crew stops, sets it aside, and follows the job's contact process.",
+      "We do not make fast decisions about someone else's belongings. If it is on the save list or looks like it should be, it waits for you."
+    ]
+  ],
+  [
+    "Do we need to sort everything before you arrive?",
+    [
+      "No. But the more that is already decided — known keeps, items approved to leave, who can make the calls — the faster the clearing can move.",
+      "Tell us what you are looking for before work starts and named items go into the plan."
+    ]
+  ],
+  [
+    "Can family members take items while the crew is working?",
+    [
+      "This needs to be planned in advance. People arriving to take things while a crew is mid-clearing can cause real confusion about what was already approved to leave.",
+      "Tell us before the job if family members still need access, and we will build it into the plan."
+    ]
+  ],
+  [
+    "Can items be donated?",
+    [
+      "Donation can be part of the plan, but acceptance is controlled by the donation center — not by us.",
+      "Not everything is accepted; condition, type, size and the center's current needs all matter. Donation items stay separate from disposal items so nothing gets mixed up on site."
+    ]
+  ],
+  [
+    "Do you clean the property after it is cleared?",
+    [
+      "Yes, when cleaning is written into the scope.",
+      "How much a property needs usually cannot be judged until the area is open, which is why clearing and cleaning are scoped as separate phases rather than one assumed package."
+    ]
+  ],
+  [
+    "What if the family is not in California?",
+    [
+      "Tell us. Depending on the property and who holds authority to decide, the project can often run on photographs, a written scope and a clear remote contact person.",
+      "The clearer the rules are before work starts — save list, off-limit areas, who we call with a question — the easier that becomes."
+    ]
+  ]
+] as const;
+
+// Service + BreadcrumbList + FAQPage. Breadcrumb position 2 stays "Complex Property Cleanup" /
+// /property-clearing/, matching the megaNav grouping and Hoarding's own breadcrumb parent.
+// FAQPage regenerated from the seven visible questions — never padded beyond what renders
+// (doc 21 §6.1).
+const schema = [
+  {
+    "@type": "Service",
+    name: "Estate Cleanout in San Jose",
+    serviceType: "Estate cleanout",
+    provider: { "@id": new URL("/#business", site.urls.site).href },
+    areaServed: { "@type": "City", name: "San Jose" }
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Complex Property Cleanup",
+        item: new URL("/property-clearing/", site.urls.site).href
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Estate Cleanouts",
+        item: new URL(canonicalPath, site.urls.site).href
+      }
+    ]
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: faq.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer.join("\n\n") }
+    }))
+  }
+];
 ---
 
-<ServicePageLayout
-  page={estatePage}
-  serviceType="Estate cleanout"
-  breadcrumbName="Estate Cleanouts"
-  idPrefix="estate"
-  groupName="Property Clearing"
-  groupHref="/property-clearing/"
-/>
+<BaseLayout title={title} description={description} canonicalPath={canonicalPath} schema={schema}>
+  {/* ══ 01 · SERVICE HERO ═══════════════════════════════════════════════════════════════════
+      §20A.7: location context → unmistakable service H1 → specialist thesis → service CTA →
+      phone as secondary → service-relevant image. */}
+  <section class="ec-hero" aria-labelledby="estate-title">
+    <div class="ec-hero__media">
+      <Image
+        src={heroImage}
+        alt=""
+        layout="full-width"
+        widths={[480, 768, 1024, 1440, 1920]}
+        sizes="100vw"
+        format="webp"
+        quality={74}
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+      />
+    </div>
+
+    <div class="ec-hero__overlay" aria-hidden="true"></div>
+
+    <div class="ec-hero__shell">
+      <div class="ec-hero__content">
+        <p class="ec-hero__eyebrow">
+          Estate cleanout · San Jose · {site.location.serviceArea}
+        </p>
+        <h1 id="estate-title" class="ac-type-h1-hub">Estate Cleanout</h1>
+        <p class="ec-hero__lede">
+          A full home can hold years of papers, photos, furniture and family items. We build the
+          plan before anything is approved to leave the property.
+        </p>
+        {/* §20A.5's specialist thesis. This is the sentence the whole page exists to make
+            credible — the brief names it as the core service argument. */}
+        <p class="ec-hero__thesis">Protect what matters before the property gets cleared.</p>
+
+        <div class="ec-hero__actions">
+          <a class="ec-btn ec-btn--light" href={assessmentHref}>{site.offer.primaryCta}</a>
+          {phoneHref && (
+            <a class="ec-hero__call" href={phoneHref}>Call {site.business.phone}</a>
+          )}
+        </div>
+
+        <p class="ec-hero__reassurance">
+          We do not start by throwing things away. We start with what cannot be replaced.
+        </p>
+      </div>
+    </div>
+
+    <p class="ec-hero__development-note">
+      Development reference photograph · not Aseptaclean project work
+    </p>
+  </section>
+
+  {/* ══ 02 · PROTECT WHAT MATTERS ════════════════════════════════════════════════════════════
+      The page's signature movement and its only full navy field — mirroring Hoarding's placement
+      (a navy field as movement 02–03) without mirroring its content. Where Hoarding's navy
+      movement is a five-category register applied to accumulated contents, this one is a save
+      list: named instructions an authorized person writes before clearing starts. */}
+  <section class="ec-save" aria-labelledby="save-title">
+    <div class="ec-save__inner">
+      <div class="ec-save__lead">
+        <p class="ec-save__label">What we are protecting first</p>
+        <h2 id="save-title" class="ac-type-h2-home-feature">
+          We do not start by clearing.
+        </h2>
+        <p class="ec-save__lede">
+          Before anything leaves the property, we look for what cannot be replaced. Once something
+          is gone, getting it back may not be possible — so the plan starts with protecting it, not
+          with the truck.
+        </p>
+        <p>A full property usually holds a mix of:</p>
+        <ul class="ec-inline-list">
+          {contents.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="ec-statement">
+          A full house is not one big pile to be cleared. It is a house with things in it that
+          still matter to someone.
+        </p>
+      </div>
+
+      <div class="ec-savelist">
+        <div class="ec-savelist__head">
+          <p class="ec-savelist__title">Save List</p>
+          <p class="ec-savelist__flag">Sample · not a client record</p>
+        </div>
+        <p class="ec-savelist__intro">
+          Tell us what to watch for before work starts. Instructions can be as broad or as specific
+          as the family needs:
+        </p>
+        <dl class="ec-savelist__rules">
+          {saveListRules.map((rule) => (
+            <div class="ec-savelist__row">
+              <dt>{rule.label}</dt>
+              <dd>{rule.detail}</dd>
+            </div>
+          ))}
+        </dl>
+        <p class="ec-savelist__note">
+          Those rules go into the written plan. We cannot promise that every missing item will be
+          found — but the crew knows what matters before the clearing starts, not after.
+        </p>
+        <p class="ec-savelist__disclaimer">{legal.documentationDisclaimer}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 03 · WHO DECIDES + WHAT THE PROPERTY NEEDS TO BECOME ════════════════════════════════
+      Doc 30 §20A's two required movements for this page: decision authority, then the property's
+      end goal. Kept as one section because in practice they are asked together — who can approve
+      this, and what are we approving it toward. */}
+  <section class="ec-decide" aria-labelledby="decide-title">
+    <div class="ec-decide__inner">
+      <div class="ec-decide__copy">
+        <p class="ec-label">The decision process</p>
+        <h2 id="decide-title" class="ac-type-h2-home-feature">
+          One property needs one clear decision process.
+        </h2>
+        <p class="ec-lede">
+          Estate and family jobs get complicated when one person says keep it, another says
+          remove it, and a third says nobody should touch it yet. Before work starts, we need to
+          know:
+        </p>
+        <ul class="ec-check-list">
+          {authority.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="ec-decide__note">
+          Aseptaclean does not determine who owns a property or who is legally entitled to an
+          item. We need one authorized contact and one clear process — the family, executor or
+          trustee establishes both.
+        </p>
+      </div>
+
+      <div class="ec-goals">
+        <h3 class="ac-type-h3-home-route">What does the property need to become?</h3>
+        <p>
+          The end goal changes the sequence, the scope and the deadline. We need to know where the
+          property is going before we can plan how to get it there.
+        </p>
+        <dl class="ec-goals__list">
+          {goals.map((goal) => (
+            <div class="ec-goals__row">
+              <dt>{goal.label}</dt>
+              <dd>{goal.detail}</dd>
+            </div>
+          ))}
+        </dl>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 04 · THE CLEARING PLAN ═══════════════════════════════════════════════════════════════
+      §20A.14: vertical numbered sequence, not six equal cards. Stop-and-ask and hidden conditions
+      close it, because both are things that happen DURING the sequence rather than steps in it. */}
+  <section class="ec-process" aria-labelledby="process-title">
+    <div class="ec-process__inner">
+      <div class="ec-process__head">
+        <p class="ec-label">The clearing plan</p>
+        <h2 id="process-title" class="ac-type-h2-home-feature">We do not start at random.</h2>
+        <p class="ec-lede">
+          Protect first, then decide, then clear — in that order, not the reverse. A large
+          property can be broken into parts when that is the sensible way to run the job.
+        </p>
+      </div>
+
+      <ol class="ec-steps">
+        {process.map((step, index) => (
+          <li class="ec-step">
+            <span class="ec-step__index" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div class="ec-step__body">
+              <h3 class="ac-type-h3-home-route">{step.title}</h3>
+              <p>{step.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div class="ec-process__pair">
+        <div class="ec-note">
+          <h3 class="ac-type-h3-home-route">If we do not know, we ask.</h3>
+          <p>
+            The crew should not be making family decisions. Money, jewelry, legal papers, family
+            photographs, keys, IDs — anything on the save list or anything that may have value —
+            gets stopped, set aside and reported rather than moved.
+          </p>
+          <p>
+            The goal is not to make fast choices with someone else's things. It is to keep the job
+            moving without making careless ones.
+          </p>
+        </div>
+
+        <div class="ec-note ec-note--stop">
+          <h3 class="ac-type-h3-home-route">New condition. New decision.</h3>
+          <p>
+            Full properties can hide things. Once rooms begin to clear, we may find:
+          </p>
+          <ul class="ec-inline-list">
+            {discoveries.map((item) => <li>{item}</li>)}
+          </ul>
+          <p>
+            If something changes the scope, we stop in that area and tell you before going any
+            further. We do not quietly turn it into a bigger bill.
+          </p>
+          <p class="ec-clause">
+            Cleaning only — not a decontamination, sterilization, or health-safety determination.
+          </p>
+        </div>
+      </div>
+
+      <div class="ec-cleaning">
+        <h3 class="ac-type-h3-home-route">A cleared house is not always a clean house.</h3>
+        <p>
+          A bedroom full of furniture, boxes and papers cannot be fully cleaned yet — the floor,
+          baseboards, shelves and corners underneath are not visible from the doorway. Once
+          approved contents are addressed, cleaning in scope can cover floors, baseboards,
+          shelves, cabinets, counters, kitchens, bathrooms, closets and other reachable surfaces.
+          It is included when it is written into the plan. It is not automatic.
+        </p>
+        <a class="ec-link" href="/deep-cleaning-san-jose/">
+          <span>Detailed deep cleaning</span> <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 05 · CONTENTS, DISPOSAL, DONATION, BOUNDARIES ════════════════════════════════════════
+      §20A.13: boundaries are conversion content, not something to hide. This is the estate-
+      specific objection set Hoarding does not carry in this shape — appraisal, donation
+      acceptance, who actually hauls material off the property. */}
+  <section class="ec-boundaries" aria-labelledby="boundaries-title">
+    <div class="ec-boundaries__inner">
+      <div class="ec-boundaries__head">
+        <p class="ec-label">What happens to the contents</p>
+        <h2 id="boundaries-title" class="ac-type-h2-home-feature">
+          Removal is part of the plan, not a guess on the day.
+        </h2>
+        <p class="ec-lede">
+          Aseptaclean is not a hauling company. We sort, bag, stage, carry out and load approved
+          material; disposal and transport off the property are handled by a City-authorized
+          hauler engaged for the project. Where a container is part of the job, we coordinate its
+          placement in advance.
+        </p>
+      </div>
+
+      <div class="ec-boundaries__pair">
+        <div class="ec-donation">
+          <h3 class="ac-type-h3-home-route">If some items can be donated</h3>
+          <p>
+            Tell us before the job. Donation items stay separate from disposal items so nothing
+            gets mixed up on site.
+          </p>
+          <p>
+            Not everything can be donated. A donation center may decline an item based on
+            condition, type, size, or its current needs — we cannot promise every item will be
+            accepted, but if donation is part of the plan we need to know before clearing begins.
+          </p>
+        </div>
+
+        <div class="ec-appraisal">
+          <h3 class="ac-type-h3-home-route">If items may have value</h3>
+          <p>
+            Aseptaclean is not an estate-sale company or an appraiser. If the family believes
+            something may be worth having reviewed, have it evaluated before approving it for
+            removal — that boundary protects the estate, not just us.
+          </p>
+        </div>
+      </div>
+
+      <div class="ec-boundaries__list">
+        <h3 class="ac-type-h3-home-route">What an estate cleanout does not include</h3>
+        <ul class="ec-minus-list">
+          {boundaries.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="ec-boundaries__clause">
+          Aseptaclean may clean accepted conditions left behind after an appropriately licensed
+          pest operator has confirmed the active pest issue is resolved. Aseptaclean does not
+          inspect for, identify, exclude, trap, or treat pests.
+        </p>
+        <p class="ec-disclaimer">{legal.scopeDisclaimer}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 06 · WHAT PROOF EXISTS + REMOTE SUPPORT + FIT + PRICE ═══════════════════════════════
+      Combines §20A.15 (the honest evidence gap), the remote/out-of-area movement the brief flags
+      as especially relevant to this page, deadlines, and fit/price logic. Five jobs, one movement
+      — §20A.6 licenses combining jobs where that produces stronger rhythm rather than a page of
+      eleven bands. */}
+  <section class="ec-fit" aria-labelledby="fit-title">
+    <div class="ec-fit__inner">
+      <div class="ec-fit__lead">
+        <p class="ec-label">Evidence, remote support, and fit</p>
+        <h2 id="fit-title" class="ac-type-h2-home-feature">
+          You do not have to be at the property every day.
+        </h2>
+        <p class="ec-lede">
+          There is no photo gallery on this page. Aseptaclean has no photographed estate project
+          to show yet, and a set of stock before-and-after images would tell you nothing true
+          about how this company works. What we can offer instead is a clear plan a family does
+          not have to be present to run.
+        </p>
+        <p>
+          Some families are dealing with a Bay Area property while living somewhere else. If the
+          project allows it, we can work from an authorized contact, a written scope, a save list
+          and agreed off-limit areas — set before work starts rather than negotiated on site.
+          The clearer those rules are in advance, the easier remote coordination becomes. We do
+          not promise a remote capability beyond what the project and the authorized contact can
+          actually support.
+        </p>
+      </div>
+
+      <div class="ec-fit__columns">
+        <div class="ec-fit__col">
+          <h3 class="ac-type-h3-home-route">Usually a fit</h3>
+          <ul class="ec-check-list">
+            {goodFit.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="ec-fit__aside">
+            If the situation is a landlord or property-manager turnover rather than a family or
+            estate matter, <a href="/property-cleanouts-san-jose/">property cleanouts</a> is
+            usually the closer match. If the property's main issue is heavy accumulation rather
+            than an estate handoff, <a href="/hoarding-cleanup-san-jose/">hoarding cleanup</a>
+            covers that.
+          </p>
+        </div>
+        <div class="ec-fit__col ec-fit__col--out">
+          <h3 class="ac-type-h3-home-route">Probably not a fit</h3>
+          <ul class="ec-minus-list">
+            {poorFit.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="ec-fit__aside">
+            If a junk hauler is genuinely all the property needs, use one. We do not need to turn
+            a small pickup into a large project.
+          </p>
+        </div>
+      </div>
+
+      <div class="ec-deadline">
+        <p class="ec-price__label">If there is a deadline</p>
+        <p>
+          A sale date, a waiting buyer, a lease ending, or a dumpster with a fixed window can all
+          change crew size, work order, disposal plan, schedule and price. Tell us as early as
+          possible — not on the last day the home has to be empty.
+        </p>
+      </div>
+
+      <div class="ec-price">
+        <div class="ec-price__copy">
+          <h3 class="ac-type-h3-home-feature">The price depends on the property.</h3>
+          <p>
+            A one-bedroom condo and a four-bedroom house with a packed garage are not the same
+            job, and a published starting figure would only ever be honest about one of them.
+            Larger cleanouts usually need photographs and a walkthrough before a firm scope and
+            price.
+          </p>
+          <p class="ec-price__fee">{site.offer.assessmentFraming(site.offer.assessmentFee)}</p>
+        </div>
+        <div class="ec-price__drivers">
+          <p class="ec-price__label">What moves the number</p>
+          <ul class="ec-rule-list ec-rule-list--tight">
+            {priceDrivers.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+
+      {cityLinks.length > 0 && (
+        <div class="ec-local">
+          <p class="ec-price__label">Local planning notes</p>
+          <p>
+            Container placement, permit review times and street access are set by the city the
+            property sits in. These sourced guides do not confirm current service availability —
+            share the address so Aseptaclean can confirm the project is in range.
+          </p>
+          <ul class="ec-local__links">
+            {cityLinks.map((link) => (
+              <li>
+                <a href={link.href}>{link.anchor} <span aria-hidden="true">&rarr;</span></a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {/* ══ 07 · QUESTIONS ═══════════════════════════════════════════════════════════════════════
+      Open Q&A, not an accordion — same reasoning as Hoarding: a nervous buyer should not need to
+      click to find out whether Aseptaclean appraises jewelry. */}
+  <section class="ec-faq" aria-labelledby="faq-title">
+    <div class="ec-faq__inner">
+      <div class="ec-faq__head">
+        <p class="ec-label">Questions</p>
+        <h2 id="faq-title" class="ac-type-h2-home-feature">The questions that decide this.</h2>
+        <p class="ec-lede">
+          Seven that come up on nearly every estate project. The general ones — scheduling,
+          payment, what happens on the day — are on the <a href="/faq/">main FAQ</a>.
+        </p>
+      </div>
+
+      <div class="ec-faq__grid">
+        {faq.map(([question, answer]) => (
+          <article class="ec-qa">
+            <h3 class="ac-type-h3-home-route">{question}</h3>
+            {answer.map((paragraph) => <p>{paragraph}</p>)}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 08 · CLOSE ═══════════════════════════════════════════════════════════════════════════
+      §39's approved closing direction — start with what needs to stay, not how fast things can be
+      thrown away. Typographic on navy, not image-led: the hero already carries the one photograph
+      this page uses. */}
+  <section class="ec-close" aria-labelledby="close-title">
+    <div class="ec-close__inner">
+      <div class="ec-close__copy">
+        <h2 id="close-title" class="ac-type-h2-final">
+          You do not have to decide everything today.
+        </h2>
+        <p class="ec-close__lede">
+          Start with what needs to stay, what can leave, and what the property needs to become.
+          Then we can build the job.
+        </p>
+      </div>
+
+      <div class="ec-close__action">
+        <a class="ec-btn ec-btn--light" href={assessmentHref}>{site.offer.primaryCta}</a>
+        <div class="ec-close__secondary">
+          {phoneHref && <a href={phoneHref}>Call {site.business.phone}</a>}
+          {smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
+        </div>
+        <p class="ec-close__note">
+          Submitting a request does not authorize work or create a service agreement.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     Shared page primitives — the same system Hoarding's rebuild established (spacing, rule and
+     list treatment), reused under an `.ec-` prefix so the two pages' styles never collide even
+     though both ship as single scoped <style> blocks. NOTHING in this file sets font-size on a
+     heading tag or on a selector that resolves to one; heading sizes come from `.ac-type-*` role
+     classes and are tuned by overriding the role class's TOKEN on a container (AGENTS.md §6 law 1).
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+
+  .ec-label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .ec-lede {
+    margin: 22px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .ec-statement {
+    margin: 24px 0 0;
+    max-width: 46ch;
+    color: var(--ac-color-navy-900);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .ec-inline-list {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: none;
+    margin: 16px 0 0;
+    padding: 0;
+    gap: 4px 10px;
+    list-style: none;
+  }
+
+  .ec-inline-list li {
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .ec-inline-list li:not(:last-child)::after {
+    margin-left: 10px;
+    color: var(--ac-color-line-strong);
+    content: "·";
+  }
+
+  .ec-rule-list {
+    display: grid;
+    max-width: none;
+    margin: 20px 0 0;
+    padding: 0;
+    gap: 0 44px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    list-style: none;
+  }
+
+  .ec-rule-list li {
+    max-width: none;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 12px 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .ec-rule-list--tight li {
+    padding: 10px 0;
+  }
+
+  .ec-check-list,
+  .ec-minus-list {
+    max-width: none;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ec-check-list li,
+  .ec-minus-list li {
+    position: relative;
+    max-width: none;
+    padding: 9px 0 9px 26px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .ec-check-list li + li,
+  .ec-minus-list li + li {
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  /* CSS marks, not inline SVG — see Hoarding's identical note: these are rules, not icons, and
+     a decorative glyph per row is noise a screen reader has to be told to ignore. */
+  .ec-check-list li::before,
+  .ec-minus-list li::before {
+    position: absolute;
+    top: 17px;
+    left: 0;
+    width: 12px;
+    height: 2px;
+    background: var(--ac-color-blue-deep);
+    content: "";
+  }
+
+  .ec-minus-list li::before {
+    background: var(--ac-color-exclusion-red);
+  }
+
+  .ec-link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    margin-top: 18px;
+    gap: 0.4em;
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-underline-offset: 4px;
+  }
+
+  .ec-link:hover {
+    text-decoration: underline;
+  }
+
+  .ec-btn {
+    display: inline-flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    padding-inline: 30px;
+    font-size: 0.9375rem;
+    font-weight: 750;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+
+  .ec-btn--light {
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-btn--light:hover {
+    background: var(--ac-color-blue-pale);
+  }
+
+  .ec-btn--light:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 4px;
+  }
+
+  .ec-clause,
+  .ec-boundaries__clause {
+    margin: 18px 0 0;
+    max-width: 60ch;
+    border-left: 3px solid var(--ac-color-navy-800);
+    padding: 2px 0 2px 16px;
+    color: var(--ac-color-navy-900);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+
+  .ec-disclaimer {
+    margin: 24px 0 0;
+    max-width: 78ch;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 18px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  /* ══ 01 · HERO ══════════════════════════════════════════════════════════════════════════ */
+
+  .ec-hero {
+    --ac-text-h1-hub: 2.875rem;
+    position: relative;
+    min-height: 540px;
+    overflow: hidden;
+    padding: 0;
+    background: var(--ac-color-navy-950);
+  }
+
+  .ec-hero__media,
+  .ec-hero__overlay {
+    position: absolute;
+    inset: 0;
+  }
+
+  .ec-hero__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 62% 55%;
+  }
+
+  /* Flat overlay, doc 30 §20A.7 — no gradient, no vignette. Matches Hoarding's measured 0.64
+     value: this photograph carries similarly bright mid-tones and the copy column runs a
+     comparable number of elements deep, so the same opacity is the safe starting point.
+     Re-run scripts/hoarding-hero-contrast.mjs (or an equivalent pass) against this route's own
+     crop before launch if the value below has not been independently verified here. */
+  .ec-hero__overlay {
+    z-index: 1;
+    background: rgb(10 30 45 / 64%);
+  }
+
+  .ec-hero__shell {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    width: min(100% - 64px, 1320px);
+    min-height: inherit;
+    align-items: center;
+    margin-inline: auto;
+    padding-block: 72px;
+  }
+
+  .ec-hero__content {
+    max-width: 620px;
+    color: var(--ac-color-paper);
+  }
+
+  .ec-hero__eyebrow {
+    margin: 0 0 18px;
+    max-width: none;
+    color: rgb(255 255 255 / 92%);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .ec-hero__content h1 {
+    max-width: 12ch;
+    color: var(--ac-color-paper);
+  }
+
+  .ec-hero__lede {
+    margin: 20px 0 0;
+    max-width: 46ch;
+    color: #f1f5fa;
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .ec-hero__thesis {
+    margin: 14px 0 0;
+    max-width: 36ch;
+    color: var(--ac-color-paper);
+    font-size: 1.1875rem;
+    font-weight: 650;
+    line-height: 1.4;
+    text-wrap: balance;
+  }
+
+  .ec-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 30px;
+    gap: 8px 26px;
+  }
+
+  .ec-hero__call {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-underline-offset: 5px;
+  }
+
+  .ec-hero__call:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .ec-hero__call:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 3px;
+  }
+
+  .ec-hero__reassurance {
+    margin: 22px 0 0;
+    max-width: 46ch;
+    color: rgb(255 255 255 / 95%);
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  .ec-hero__development-note {
+    position: absolute;
+    z-index: 2;
+    right: 18px;
+    bottom: 14px;
+    left: 18px;
+    max-width: none;
+    white-space: nowrap;
+    margin: 0;
+    color: rgb(255 255 255 / 92%);
+    font-size: 0.625rem;
+    font-weight: 650;
+    letter-spacing: 0.055em;
+    line-height: 1.3;
+    text-align: right;
+    text-transform: uppercase;
+  }
+
+  /* ══ 02 · PROTECT WHAT MATTERS / SAVE LIST ═════════════════════════════════════════════ */
+
+  .ec-save {
+    background: var(--ac-color-navy-900);
+    padding-block: clamp(80px, 8vw, 120px);
+  }
+
+  .ec-save__inner {
+    --ac-text-h2-home-feature: 2.5rem;
+    display: grid;
+    width: min(100% - 64px, 1320px);
+    align-items: start;
+    margin-inline: auto;
+    gap: 52px 80px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+  }
+
+  .ec-save__label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-on-navy);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .ec-save__lead h2 {
+    max-width: 15ch;
+    color: var(--ac-color-paper);
+  }
+
+  .ec-save__lede {
+    margin: 24px 0 0;
+    max-width: 46ch;
+    color: #ccd9e8;
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .ec-save__lead > p:not(.ec-save__label):not(.ec-save__lede):not(.ec-statement) {
+    margin: 18px 0 0;
+    max-width: 46ch;
+    color: #a9bdd4;
+    line-height: 1.6;
+  }
+
+  .ec-save__lead .ec-inline-list li {
+    color: #ccd9e8;
+  }
+
+  .ec-save__lead .ec-inline-list li:not(:last-child)::after {
+    color: rgb(255 255 255 / 30%);
+  }
+
+  .ec-save__lead .ec-statement {
+    color: var(--ac-color-paper);
+    max-width: 44ch;
+  }
+
+  /* The Save List document — drawn as a physical artifact on the navy field, echoing Hoarding's
+     .hc-register document treatment but with its own content shape (rule → instruction, not
+     category → definition) and its own title. */
+  .ec-savelist {
+    border-top: 3px solid var(--ac-color-blue-on-navy);
+    background: rgb(255 255 255 / 6%);
+    padding: 26px 28px 28px;
+  }
+
+  .ec-savelist__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 6px 18px;
+  }
+
+  .ec-savelist__title {
+    margin: 0;
+    max-width: none;
+    color: var(--ac-color-paper);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .ec-savelist__flag {
+    margin: 0;
+    max-width: none;
+    color: #e3c675;
+    font-size: 0.6875rem;
+    font-weight: 750;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .ec-savelist__intro {
+    margin: 16px 0 0;
+    max-width: none;
+    color: #ccd9e8;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .ec-savelist__rules {
+    margin: 18px 0 0;
+  }
+
+  .ec-savelist__row {
+    display: grid;
+    align-items: baseline;
+    border-top: 1px solid rgb(255 255 255 / 16%);
+    padding: 16px 0;
+    gap: 4px 24px;
+    grid-template-columns: 8rem minmax(0, 1fr);
+  }
+
+  .ec-savelist__row:first-child {
+    border-top-color: rgb(255 255 255 / 42%);
+    border-top-width: 2px;
+  }
+
+  .ec-savelist__rules dt {
+    color: var(--ac-color-paper);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    letter-spacing: 0.07em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .ec-savelist__rules dd {
+    max-width: 44ch;
+    margin: 0;
+    color: #ccd9e8;
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .ec-savelist__note {
+    margin: 20px 0 0;
+    max-width: none;
+    border-top: 1px solid rgb(255 255 255 / 22%);
+    padding-top: 16px;
+    color: #ccd9e8;
+    font-size: 0.875rem;
+    line-height: 1.55;
+  }
+
+  .ec-savelist__disclaimer {
+    margin: 14px 0 0;
+    max-width: none;
+    color: #7f96b4;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  /* ══ 03 · WHO DECIDES + PROPERTY GOAL ══════════════════════════════════════════════════ */
+
+  .ec-decide {
+    background: var(--ac-color-paper);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .ec-decide__inner {
+    --ac-text-h2-home-feature: 2.5rem;
+    display: grid;
+    width: min(100% - 64px, 1320px);
+    align-items: start;
+    margin-inline: auto;
+    gap: 48px 72px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+  }
+
+  .ec-decide__copy h2 {
+    max-width: 18ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-decide__note {
+    margin: 20px 0 0;
+    max-width: 48ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .ec-goals {
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 28px;
+  }
+
+  .ec-goals h3 {
+    max-width: 22ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-goals > p {
+    margin: 14px 0 0;
+    max-width: 46ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .ec-goals__list {
+    margin: 20px 0 0;
+  }
+
+  .ec-goals__row {
+    display: grid;
+    align-items: baseline;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 14px 0;
+    gap: 2px 20px;
+    grid-template-columns: 9rem minmax(0, 1fr);
+  }
+
+  .ec-goals__row:first-child {
+    border-top-color: var(--ac-color-line-strong);
+  }
+
+  .ec-goals__list dt {
+    color: var(--ac-color-navy-900);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  .ec-goals__list dd {
+    max-width: 42ch;
+    margin: 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+
+  /* ══ 04 · THE CLEARING PLAN ═════════════════════════════════════════════════════════════ */
+
+  .ec-process {
+    background: var(--ac-color-warm-white);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .ec-process__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .ec-process__head {
+    --ac-text-h2-home-feature: 2.5rem;
+    max-width: 62ch;
+  }
+
+  .ec-process__head h2 {
+    max-width: 16ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-steps {
+    --ac-text-h3-home-route: 1.5rem;
+    display: grid;
+    margin: clamp(44px, 4.5vw, 64px) 0 0;
+    padding: 0;
+    gap: 0 72px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    list-style: none;
+  }
+
+  .ec-step {
+    display: grid;
+    max-width: none;
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding: 22px 0;
+    gap: 4px 24px;
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+
+  .ec-step:nth-child(-n + 2) {
+    border-top: 2px solid var(--ac-color-navy-800);
+  }
+
+  .ec-step__index {
+    color: var(--ac-color-blue-deep);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    line-height: 1.9;
+  }
+
+  .ec-step__body h3 {
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-step__body p {
+    margin: 8px 0 0;
+    max-width: 48ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .ec-process__pair {
+    display: grid;
+    align-items: start;
+    margin-top: clamp(48px, 5vw, 72px);
+    gap: 40px 72px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ec-note {
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 24px;
+  }
+
+  .ec-note h3 {
+    max-width: 24ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-note p {
+    margin: 16px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  .ec-note--stop {
+    border-top-color: var(--ac-color-exclusion-red);
+  }
+
+  .ec-cleaning {
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: clamp(48px, 5vw, 72px);
+    padding-top: 32px;
+  }
+
+  .ec-cleaning h3 {
+    max-width: 30ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-cleaning p {
+    margin: 16px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  /* ══ 05 · CONTENTS + BOUNDARIES ═════════════════════════════════════════════════════════ */
+
+  .ec-boundaries {
+    background: var(--ac-color-paper);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .ec-boundaries__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .ec-boundaries__head {
+    --ac-text-h2-home-feature: 2.5rem;
+    max-width: 66ch;
+  }
+
+  .ec-boundaries__head h2 {
+    max-width: 24ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-boundaries__pair {
+    display: grid;
+    align-items: start;
+    margin-top: clamp(44px, 4.5vw, 64px);
+    gap: 36px 72px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ec-donation,
+  .ec-appraisal {
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 22px;
+  }
+
+  .ec-donation h3,
+  .ec-appraisal h3 {
+    max-width: 24ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-donation p,
+  .ec-appraisal p {
+    margin: 14px 0 0;
+    max-width: 48ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .ec-boundaries__list {
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: clamp(48px, 5vw, 72px);
+    padding-top: 32px;
+  }
+
+  .ec-boundaries__list h3 {
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-boundaries__list .ec-minus-list {
+    display: grid;
+    gap: 0 44px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* ══ 06 · EVIDENCE + REMOTE + FIT + PRICE ══════════════════════════════════════════════ */
+
+  .ec-fit {
+    background: var(--ac-color-warm-white);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .ec-fit__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .ec-fit__lead {
+    --ac-text-h2-home-feature: 2.5rem;
+    max-width: 68ch;
+  }
+
+  .ec-fit__lead h2 {
+    max-width: 22ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-fit__lead > p:not(.ec-label):not(.ec-lede) {
+    margin: 18px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  .ec-fit__columns {
+    display: grid;
+    align-items: start;
+    margin-top: clamp(40px, 4vw, 60px);
+    gap: 40px 72px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ec-fit__col {
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 22px;
+  }
+
+  .ec-fit__col--out {
+    border-top-color: var(--ac-color-line-strong);
+  }
+
+  .ec-fit__col h3 {
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-fit__aside {
+    margin: 20px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .ec-fit__aside a {
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
+    text-underline-offset: 3px;
+  }
+
+  .ec-deadline {
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: clamp(44px, 4.5vw, 64px);
+    padding-top: 28px;
+  }
+
+  .ec-deadline > p:not(.ec-price__label) {
+    margin: 12px 0 0;
+    max-width: 66ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .ec-price {
+    display: grid;
+    align-items: start;
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: clamp(40px, 4vw, 56px);
+    padding-top: 32px;
+    gap: 36px 72px;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  }
+
+  .ec-price__copy {
+    --ac-text-h3-home-feature: 1.75rem;
+  }
+
+  .ec-price__copy h3 {
+    max-width: 27ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-price__copy p {
+    margin: 18px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  .ec-price__fee {
+    color: var(--ac-color-navy-900);
+    font-weight: 550;
+  }
+
+  .ec-price__label {
+    max-width: none;
+    margin: 0;
+    color: var(--ac-color-navy-900);
+    font-size: 0.75rem;
+    font-weight: 750;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .ec-price__drivers .ec-rule-list {
+    margin-top: 12px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .ec-local {
+    border-top: 1px solid var(--ac-color-line);
+    margin-top: clamp(40px, 4vw, 56px);
+    padding-top: 24px;
+  }
+
+  .ec-local > p:not(.ec-price__label) {
+    margin: 12px 0 0;
+    max-width: 74ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .ec-local__links {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: none;
+    margin: 8px 0 0;
+    padding: 0;
+    gap: 0 28px;
+    list-style: none;
+  }
+
+  .ec-local__links li {
+    max-width: none;
+  }
+
+  .ec-local__links a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    gap: 0.4em;
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-underline-offset: 4px;
+  }
+
+  /* ══ 07 · QUESTIONS ═════════════════════════════════════════════════════════════════════ */
+
+  .ec-faq {
+    background: var(--ac-color-paper);
+    padding-block: clamp(72px, 7vw, 104px);
+  }
+
+  .ec-faq__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .ec-faq__head {
+    --ac-text-h2-home-feature: 2.5rem;
+  }
+
+  .ec-faq__head h2 {
+    max-width: 20ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-faq__head .ec-lede a {
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
+    text-underline-offset: 3px;
+  }
+
+  .ec-faq__grid {
+    --ac-text-h3-home-route: 1.5rem;
+    display: grid;
+    align-items: start;
+    margin-top: clamp(40px, 4vw, 56px);
+    gap: 0 72px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ec-qa {
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding: 24px 0;
+  }
+
+  .ec-qa:nth-child(-n + 2) {
+    border-top: 2px solid var(--ac-color-navy-800);
+  }
+
+  .ec-qa h3 {
+    max-width: 30ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ec-qa p {
+    margin: 12px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  /* ══ 08 · CLOSE ═════════════════════════════════════════════════════════════════════════ */
+
+  .ec-close {
+    background: var(--ac-color-navy-950);
+    padding-block: clamp(80px, 8vw, 116px);
+  }
+
+  .ec-close__inner {
+    --ac-text-h2-final: 2.75rem;
+    display: grid;
+    width: min(100% - 64px, 1320px);
+    align-items: start;
+    margin-inline: auto;
+    gap: 40px 88px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .ec-close__copy h2 {
+    max-width: 18ch;
+    color: var(--ac-color-paper);
+  }
+
+  .ec-close__lede {
+    margin: 22px 0 0;
+    max-width: 48ch;
+    color: #ccd9e8;
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .ec-close__action {
+    border-top: 2px solid rgb(255 255 255 / 40%);
+    padding-top: 26px;
+  }
+
+  .ec-close__secondary {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 6px;
+    gap: 4px 24px;
+  }
+
+  .ec-close__secondary a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-underline-offset: 5px;
+  }
+
+  .ec-close__secondary a:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .ec-close__secondary a:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 3px;
+  }
+
+  .ec-close__note {
+    margin: 22px 0 0;
+    max-width: 44ch;
+    color: #7f96b4;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 70rem / 1120px — laptop and large tablet
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 70rem) {
+    .ec-hero {
+      --ac-text-h1-hub: 2.625rem;
+      min-height: 500px;
+    }
+
+    .ec-hero__media :global(img) {
+      object-position: 58% 54%;
+    }
+
+    .ec-hero__shell {
+      width: min(100% - 52px, 1000px);
+    }
+
+    .ec-hero__content {
+      max-width: 560px;
+    }
+
+    .ec-save__inner,
+    .ec-decide__inner {
+      --ac-text-h2-home-feature: 2.25rem;
+      width: min(100% - 52px, 1320px);
+      gap: 40px 48px;
+    }
+
+    .ec-process__head,
+    .ec-boundaries__head,
+    .ec-fit__lead,
+    .ec-faq__head {
+      --ac-text-h2-home-feature: 2.25rem;
+    }
+
+    .ec-close__inner {
+      --ac-text-h2-final: 2.4rem;
+    }
+
+    .ec-process__inner,
+    .ec-boundaries__inner,
+    .ec-fit__inner,
+    .ec-faq__inner,
+    .ec-close__inner {
+      width: min(100% - 52px, 1320px);
+    }
+
+    .ec-steps,
+    .ec-process__pair,
+    .ec-boundaries__pair,
+    .ec-fit__columns,
+    .ec-faq__grid,
+    .ec-price {
+      gap: 32px 48px;
+    }
+
+    .ec-savelist__row {
+      grid-template-columns: 7rem minmax(0, 1fr);
+    }
+
+    .ec-goals__row {
+      grid-template-columns: 8rem minmax(0, 1fr);
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 64rem / 1024px — asymmetric copy/media pairs collapse; two-column comparisons stay put
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 64rem) {
+    .ec-save__inner {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .ec-save__lead h2 {
+      max-width: 22ch;
+    }
+
+    .ec-decide__inner {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ec-decide__copy h2 {
+      max-width: 24ch;
+    }
+
+    .ec-boundaries__head h2,
+    .ec-fit__lead h2,
+    .ec-faq__head h2 {
+      max-width: 28ch;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 50rem / 800px — small tablet: process, boundary and FAQ two-columns collapse to one
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 50rem) {
+    .ec-steps,
+    .ec-boundaries__pair,
+    .ec-fit__columns,
+    .ec-faq__grid,
+    .ec-boundaries__list .ec-minus-list {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ec-step:nth-child(-n + 2) {
+      border-top: 1px solid var(--ac-color-line-strong);
+    }
+
+    .ec-step:first-child {
+      border-top: 2px solid var(--ac-color-navy-800);
+    }
+
+    .ec-qa:nth-child(-n + 2) {
+      border-top: 1px solid var(--ac-color-line-strong);
+    }
+
+    .ec-qa:first-child {
+      border-top: 2px solid var(--ac-color-navy-800);
+    }
+
+    .ec-price {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ec-close__inner {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 32px;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 44rem / 704px — phone: hero shell narrows, savelist/goals rows stack
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 44rem) {
+    .ec-hero {
+      --ac-text-h1-hub: 2.375rem;
+      min-height: 460px;
+    }
+
+    .ec-hero__shell {
+      width: min(100% - 40px, 1000px);
+      padding-block: 56px;
+    }
+
+    .ec-hero__content {
+      max-width: none;
+    }
+
+    .ec-hero__content h1 {
+      max-width: none;
+    }
+
+    .ec-hero__lede,
+    .ec-hero__thesis,
+    .ec-hero__reassurance {
+      max-width: none;
+    }
+
+    .ec-savelist {
+      padding: 22px 20px 24px;
+    }
+
+    .ec-savelist__row,
+    .ec-goals__row {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 4px;
+    }
+
+    .ec-donation,
+    .ec-appraisal {
+      max-width: none;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     ≤ 40rem / 640px — small phone
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 40rem) {
+    .ec-save__inner,
+    .ec-decide__inner,
+    .ec-process__inner,
+    .ec-boundaries__inner,
+    .ec-fit__inner,
+    .ec-faq__inner,
+    .ec-close__inner {
+      width: min(100% - 40px, 1320px);
+    }
+
+    .ec-save__lead h2,
+    .ec-decide__copy h2,
+    .ec-process__head h2,
+    .ec-boundaries__head h2,
+    .ec-fit__lead h2,
+    .ec-faq__head h2,
+    .ec-close__copy h2 {
+      max-width: none;
+    }
+
+    .ec-save__inner,
+    .ec-process__head,
+    .ec-boundaries__head,
+    .ec-fit__lead,
+    .ec-faq__head {
+      --ac-text-h2-home-feature: 2rem;
+    }
+
+    .ec-close__inner {
+      --ac-text-h2-final: 1.875rem;
+    }
+
+    .ec-hero__eyebrow {
+      font-size: 0.625rem;
+    }
+  }
+
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     Reduced motion
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+  @media (prefers-reduced-motion: reduce) {
+    .ec-btn,
+    .ec-hero__call,
+    .ec-close__secondary a {
+      transition: none;
+    }
+  }
+</style>

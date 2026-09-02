@@ -77,10 +77,9 @@ export interface ValidationResult {
 }
 
 // Fields every submission must have, regardless of which intake form was used: the short
-// homepage form (name, phone, optional description, consent) and the long assessment
-// questionnaire both collect these. Everything else below is optional so the short form's
-// request isn't rejected for fields it never asks about; the long-form/quiz fields are
-// preserved for when that flow is reintroduced (see docs/05-DECISIONS-LOG.md).
+// homepage form (name, phone, optional description, consent), the lean request-assessment
+// form, and the Private Residence Reset form all collect these. Everything else below is
+// optional so a given form's request isn't rejected for fields it never asks about.
 const commonRequiredFields = [
   "full_name",
   "phone",
@@ -89,9 +88,14 @@ const commonRequiredFields = [
   "idempotency_key"
 ] as const;
 
+// Required in addition to the common set on the lean request-assessment form (2026-09-02
+// rebuild) — AssessmentForm.astro's default, non-residence path.
+const leanRequiredFields = ["property_city", "property_situation"] as const;
+
 const commonOptionalFields = [
   "offer_type",
   "property_city",
+  "property_zip",
   "property_type",
   "vacant_status",
   "property_situation",
@@ -102,9 +106,20 @@ const commonOptionalFields = [
   "authority_to_approve",
   "property_address",
   "preferred_contact_method",
-  "scope_acknowledgment"
+  "scope_acknowledgment",
+  // The lean request-assessment form (2026-09-02 rebuild) asks each service at most one
+  // qualifying question. All six are optional scalars — the field that appears depends on
+  // which `?service=` context the visitor arrived with, and only one is ever shown at a time.
+  "belongings_must_be_kept",
+  "pest_control_involved",
+  "animal_waste_pattern",
+  "belongings_block_access",
+  "items_must_be_saved",
+  "items_must_remain"
 ] as const;
 
+// Required only on the retired long-form questionnaire, kept so old drafts/integrations that
+// still reference it are not silently rejected. The lean form (2026-09-02) never sends these.
 const handoffOptionalFields = [
   "contents_removal",
   "heavy_cleaning",
@@ -132,6 +147,7 @@ const residenceOptionalFields = [
 
 const allowedScalarFields = new Set([
   ...commonRequiredFields,
+  ...leanRequiredFields,
   ...commonOptionalFields,
   ...handoffOptionalFields,
   ...residenceOptionalFields,
@@ -202,6 +218,11 @@ const allowedValues: Record<string, Set<string>> = {
     "Seasonal or pre-event whole-home reset",
     "Second-home reopening",
     "Establishing a whole-home cleaning baseline",
+    // Added for the lean request-assessment form (2026-09-02) so a direct visitor's own
+    // situation choice ("Rodent droppings" / "Animal waste") is recorded as itself instead of
+    // falling back to "Other".
+    "Rodent droppings",
+    "Animal waste",
     "Other"
   ]),
   approximate_square_footage: new Set([
@@ -243,22 +264,16 @@ const allowedValues: Record<string, Set<string>> = {
   needles_sharps: yesNoUnsure,
   sewage: yesNoUnsure,
   mold: yesNoUnsure,
-  pest_activity: yesNoUnsure
+  pest_activity: yesNoUnsure,
+  // The five single service-qualifying questions on the lean request-assessment form
+  // (2026-09-02 rebuild) — one per service, each with its own small option set.
+  belongings_must_be_kept: new Set(["Yes", "No", "Not sure"]),
+  pest_control_involved: new Set(["Yes", "No", "Scheduled", "Not sure"]),
+  animal_waste_pattern: new Set(["One-time", "Repeated", "Not sure"]),
+  belongings_block_access: new Set(["Yes", "No", "Some areas", "Not sure"]),
+  items_must_be_saved: new Set(["Yes", "No", "Not sure"]),
+  items_must_remain: new Set(["Yes", "No", "Not sure"])
 };
-const allowedAreas = new Set([
-  "Whole interior",
-  "Kitchen",
-  "Bathrooms",
-  "Bedrooms",
-  "Living or common areas",
-  "Closets",
-  "Garage",
-  "Attic",
-  "Basement",
-  "Shed or storage area",
-  "Exterior contents",
-  "Other"
-]);
 
 const clean = (value: string, max = 4000) =>
   value.replace(/\u0000/g, "").trim().slice(0, max);
@@ -276,24 +291,30 @@ export function validateLead(formData: FormData): ValidationResult {
     errors.form = "Submission rejected.";
   }
 
-  data["areas_involved[]"] = formData
-    .getAll("areas_involved[]")
-    .filter((value): value is string => typeof value === "string")
-    .map((value) => clean(value, 120))
-    .filter(Boolean);
-
   const offerType = data.offer_type;
-  // Form-identity contract: AssessmentForm.astro (the long questionnaire) always sends a
-  // form_version hidden field; QuickHandoffForm.astro (the short homepage form) never sends
-  // one. That presence/absence — not offer_type — is what determines which fields beyond the
-  // common set are mandatory, so the short form's request isn't rejected for the full
-  // questionnaire's fields. Do not add form_version to the short form without updating this.
+  // Form-identity contract, three shapes:
+  //   1. QuickHandoffForm.astro (short homepage form) — never sends form_version. Only the
+  //      common fields are required.
+  //   2. AssessmentForm.astro, residence offer (offer_type=private_residence_reset) — sends
+  //      form_version and the residence baseline fields (residenceOptionalFields plus email;
+  //      see the `data-residence-required` attributes and the JS that flips `email.required`
+  //      true on this branch). The old long-form's commonOptionalFields set
+  //      (property_type, vacant_status, approximate_square_footage, relationship_to_property,
+  //      authority_to_approve, property_address, preferred_contact_method,
+  //      scope_acknowledgment) is NOT rendered on this branch and must not be required here —
+  //      requiring it made every residence-offer submission unsubmittable.
+  //   3. AssessmentForm.astro, default/lean path (2026-09-02 rebuild) — sends form_version and
+  //      a small required set: situation and city, beyond the common fields. This replaced the
+  //      old long-form questionnaire that required the full handoffOptionalFields set; that
+  //      list is kept in allowedScalarFields only so no longer-sent field is rejected if it
+  //      ever arrives from a stale cached page.
   const isDetailedSubmission = Boolean(data.form_version);
-  const requiredFields = isDetailedSubmission
-    ? offerType === "private_residence_reset"
-      ? [...commonRequiredFields, ...commonOptionalFields, ...residenceOptionalFields]
-      : [...commonRequiredFields, ...commonOptionalFields, ...handoffOptionalFields]
-    : commonRequiredFields;
+  const isResidenceOffer = offerType === "private_residence_reset";
+  const requiredFields = !isDetailedSubmission
+    ? commonRequiredFields
+    : isResidenceOffer
+    ? [...commonRequiredFields, ...residenceOptionalFields, "email"]
+    : [...commonRequiredFields, ...leanRequiredFields];
   for (const field of requiredFields) {
     if (!data[field] || (Array.isArray(data[field]) && !data[field].length)) {
       errors[field] = "This field is required.";
@@ -305,17 +326,9 @@ export function validateLead(formData: FormData): ValidationResult {
       errors[field] = "Select a valid option.";
     }
   }
-  if (isDetailedSubmission && offerType !== "private_residence_reset") {
-    if (!(data["areas_involved[]"] as string[]).length) {
-      errors["areas_involved[]"] = "Select at least one area.";
-    } else if (
-      (data["areas_involved[]"] as string[]).some((area) => !allowedAreas.has(area))
-    ) {
-      errors["areas_involved[]"] = "Select valid property areas.";
-    }
-  }
   if (
     typeof data.email === "string" &&
+    data.email &&
     !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(data.email)
   ) {
     errors.email = "Enter a valid email address.";
@@ -337,12 +350,6 @@ export function validateLead(formData: FormData): ValidationResult {
     errors.privacy_consent = "Consent is required.";
   }
   if (
-    isDetailedSubmission &&
-    data.scope_acknowledgment !== "yes"
-  ) {
-    errors.scope_acknowledgment = "Acknowledgment is required.";
-  }
-  if (
     typeof data.idempotency_key === "string" &&
     !/^[a-zA-Z0-9-]{8,100}$/.test(data.idempotency_key)
   ) {
@@ -350,6 +357,7 @@ export function validateLead(formData: FormData): ValidationResult {
   }
   if (
     typeof data.desired_completion_date === "string" &&
+    data.desired_completion_date &&
     !/^\d{4}-\d{2}-\d{2}$/.test(data.desired_completion_date)
   ) {
     errors.desired_completion_date = "Enter a valid completion date.";

@@ -1,21 +1,1354 @@
 ---
-// Route generated 2026-08-16 from docs/27-COPY-CANONICAL.md via src/data/doc27ServicePages.ts.
-// All page copy lives in that data record; all structure lives in ServicePageLayout, which
-// implements doc 27 §11's shared service-page sequence. Nothing page-specific belongs in this
-// file beyond the four identity values below — if a sentence needs to change, change doc 27
-// and regenerate the data, do not hand-edit copy here.
+// RODENT DROPPINGS CLEANUP — `/rodent-dropping-cleanup-san-jose/`. Rebuilt as the sixth
+// gold-standard individual service page (docs/30-WEBSITE-MASTER-SPEC.md §20, §20A, §21), same
+// approach as /hoarding-cleanup-san-jose/, /estate-cleanout-san-jose/,
+// /property-cleanouts-san-jose/, /deep-cleaning-san-jose/, /move-out-cleaning-san-jose/ and
+// /extreme-cleaning-san-jose/: copy reconciled from
+// docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md §34 under §20A.1's order — landing copy → map
+// to current route → check active/gated state → check claims, pricing and scope → check current
+// copy authority → then implement.
 //
-// Ships noindex pending this page's own gate (see the record's `gate` field) and is excluded
-// from src/pages/sitemap.xml.ts. Do not bulk-flip.
-import ServicePageLayout from "@layouts/ServicePageLayout.astro";
-import { rodentPage } from "@data/doc27ServicePages";
+//   01 SERVICE HERO             flat navy field, no photograph — see the image note below
+//   02 VISIBLE VS AFFECTED AREA the page's signature educational movement — the droppings you
+//                                can see may not be the whole affected area
+//   03 WHERE ACTIVITY OCCURS    editorial assessment: evidence location, access, surface,
+//                                contents, extent — how scope gets decided, not seven SaaS cards
+//   04 PEST CONTROL VS CLEANUP  quiet, unmistakable role separation — the SPCB boundary
+//   05 HOW THE CLEANUP IS SCOPED five-step field sequence + surfaces/contents boundary
+//   06 FIT + PRICE               the honest proof gap, qualification, price-driver logic
+//   07 QUESTIONS                 six, the ones that decide the purchase
+//   08 CLOSE                     "Found rodent droppings?"
+//
+// THE SPECIALIST THESIS IS doc 30 §20A.5's, unchanged: **the visible droppings may not be the
+// whole affected area.** Every movement reinforces it without repeating the sentence — the hero
+// states it, 02 makes the reframe explicit (visible evidence vs affected area, conditional
+// language, not "your whole home is contaminated"), 03 is how that reframe becomes a scoping
+// method, 04 draws the SPCB line this entire page depends on, 05 is the field sequence plus the
+// surfaces/contents/attic boundary, 06 is the honest evidence gap plus fit and price, 07 answers
+// the objections that decide whether this is the right service at all.
+//
+// WHAT THIS REPLACES. The previous build rendered through the generic `ServicePageLayout` +
+// `doc27ServicePages.rodentPage` record — the same "one template, swap the noun" pattern
+// §20A.5 and §20A.25 Q14 rule out, and the same pattern the six prior rebuilds already replaced.
+// Old record's `gate` field cited "docs/27-COPY-CANONICAL.md §21 release inputs... not on
+// record" as the reason this route ships noindex — that gate is about SEO PUBLICATION readiness
+// (insurance wording, disposal procedure, PPE limits, final claims review), not about whether
+// the service is operationally available. See the route-state note below.
+//
+// ROUTE STATE IS UNCHANGED AND DELIBERATELY SO. Same slug, same canonical, still `noindex,
+// follow`, still excluded from sitemap.xml.ts, still held out of `megaNav` (Footer.astro's own
+// comment: Cal. B&P §8550(a) + doc 21 §3, rank 3, unaffected by the operational-availability
+// clarification). No route was created, renamed, redirected or re-indexed. AGENTS.md §2's
+// 2026-08-26 owner clarification is explicit that `noindex` here is a publication decision, not
+// a statement that the service is unavailable — this file does not flip that flag, and this
+// comment does not recommend flipping it; see the final report for what would need to clear
+// first (doc 27 §21's release inputs, which are unrelated to this rebuild).
+//
+// OPERATIONAL SERVICE STATE — NOT INFERRED FROM INDEXATION. Per doc 30 §20A.4 and AGENTS.md §2's
+// 2026-08-26 owner clarification, rodent-droppings cleanup is NOT operationally gated. It is not
+// TSWMP-dependent work. The page below describes it as a real, current service — reviewed,
+// scoped and performed within Aseptaclean's current lawful and insured scope — at no point
+// implying "coming soon," "future service," or "pending launch."
+//
+// THE HANTAVIRUS / CDC / DRY-SWEEP RECONCILIATION — THE MOST IMPORTANT CONFLICT THIS PAGE
+// RESOLVES. docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md §34 (rank 6) contains three CDC
+// citations and repeated "do not dry sweep or vacuum" guidance ("FOUND DROPPINGS? START HERE" /
+// "Do Not Dry Sweep or Vacuum Them," plus two further CDC mentions in the process and FAQ
+// sections). AGENTS.md §7 (rank 1, "Never invent" / standing prohibitions) states verbatim: "No
+// hantavirus or rodent-specific handling language until written crew protocol exists." Doc 21
+// §3.4 (rank 3, Claims and Compliance Law) restates the same rule and explains why: hantavirus is
+// not a bloodborne pathogen, 8 CCR §5193 is not the operative standard for dry rodent-dropping
+// cleanup, and publishing CDC-attributed handling instructions without a written crew protocol
+// and PPE requirements on file is "a visible expertise failure to any informed buyer and a
+// competence claim we cannot support." Doc 21 (rank 3) outranks the landing-page file (rank 6)
+// per AGENTS.md §1's precedence chain — the CDC/dry-sweep material is dropped from this page in
+// full. It appears nowhere: not in the hero, not in the "found droppings" reframe, not in the
+// process, not in the FAQ. `specialty-cleaning/index.astro`'s own carried-forward wording law
+// ("no ... hantavirus / rodent-specific handling language anywhere on this page") independently
+// confirms this is the established sitewide rule, not a one-page judgment call. Recorded in
+// docs/05-DECISIONS-LOG.md.
+//
+// PEST CONTROL / SPCB BOUNDARY — THE SECOND MOST IMPORTANT GUARDRAIL. Doc 21 §3.1's hard scope
+// boundary ("Aseptaclean may clean accepted conditions left behind after an appropriately
+// licensed pest operator has confirmed the active pest issue is resolved. Aseptaclean does not
+// inspect for, identify, exclude, trap, or treat pests.") and §3.2's five barred constructions
+// (no "Post-Infestation Cleanup" as a service name, no exclusion/sealing work described as a
+// service, no infestation identification in an assessment report, no bait/repellent/trap/
+// rodenticide mention as something Aseptaclean does, no copy implying Aseptaclean resolves the
+// rodent problem) are both honored throughout. Movement 04 states the boundary directly. No word
+// from AGENTS.md §7's forbidden list (`remediation`, `biohazard`, `decontamination`,
+// `sanitization`, `sterilization`) appears anywhere on this page, and neither does `licensed` in
+// a credential context (doc 21 §2, "the credential chip may never say licensed"). Doc 21 §2.3's
+// animal/organic limiting clause ("Cleaning only — not a decontamination, sterilization, or
+// health-safety determination.") is verbatim, mandatory, and appears in movement 04 immediately
+// after the "we do not provide" list — this page describes animal/organic condition work, so the
+// clause is required here the same way it is on Extreme Cleaning and Specialty Cleaning.
+// `legal.scopeDisclaimer` appears in movement 05, same as the six prior rebuilds.
+//
+// ATTIC / CRAWLSPACE / INSULATION / HVAC — PRECISE, NOT EXPANDED. §34's own approved language
+// ("Attic cleanup does not include insulation removal or repair work," "Do you remove attic
+// insulation? No.") is preserved because it is a boundary statement, not a scope expansion.
+// Nothing on this page implies HVAC duct interior cleaning, structural access, demolition, or
+// contractor work — none of those are current scope and none are claimed. Dead-rodent/nesting-
+// material removal is not bundled into this service; if a job uncovers one, movement 05's "new
+// condition, new decision" language (carried from Extreme Cleaning's own precedent) applies.
+//
+// DISPOSAL — Doc 21 §4's operating rule applies identically to this page: nothing implying
+// self-performed hauling, transport, or disposal. No disposal claim appears on this page at all
+// (the six-prior-page pattern of stating the hauler-engaged sentence is reserved for pages where
+// disposal volume is a stated part of the job; rodent-droppings cleanup's waste volume is
+// materially smaller and the landing-page source itself does not raise disposal as a selling
+// point for this specific page).
+//
+// PRICING — AGENTS.md §4 IS ABSOLUTE. No price figure appears. Cost drivers replace a number,
+// same six-prior-page pattern.
+//
+// NO CredentialBar ON THIS ROUTE. Same reasoning as the six prior rebuilds — both gated
+// credential-bar claims are release-gated by AGENTS.md §3 pending a current COI match.
+//
+// MOBILE STICKY CTA — TWO ACTIONS, PER §20A.10. MobileCTA.astro's `isTwoAction` flag now
+// includes this route (eighth to opt in), rendering "Call | {primaryCta}" instead of the
+// three-action default. The task brief's "CALL | SEND PHOTOS" preference is realized through the
+// existing primary-CTA label rather than a route-specific relabel, same reasoning the seven prior
+// opt-ins already record — the visible primary label is a single owner-approved string in site
+// data (AGENTS.md §3).
+//
+// NO EMBEDDED FORM. CTAs link to /request-assessment/?service=rodent-droppings, which
+// AssessmentForm.astro now recognizes (added alongside this page) and maps to the "Other"
+// `property_situation` option — see that component's service-context block for why "Other" was
+// the honest choice rather than forcing a match onto an unrelated transition-based option.
+//
+// IMAGES — SAME HONEST PROOF GAP AS DETAILED DEEP CLEANING AND EXTREME PROPERTY CLEANUP, FOR A
+// STRONGER REASON HERE. docs/06-ASSET-MANIFEST.md §4's atmosphere-image cap (three) is already
+// knowingly exceeded by one, with an explicit "do not add a fifth without a new owner decision,"
+// and §6 permanently prohibits "hazmat or PPE theatre" and "any image implying a regulated
+// service" — both of which a stock rodent-droppings photo risks reading as. The task brief
+// independently rules out macro stock pellets, cartoon rats, dead-rat shock imagery, fake hazmat
+// crews and AI contamination. No real Aseptaclean rodent-cleanup photography exists yet. Rather
+// than force a mismatched or risky asset into the role, this page ships with no photograph, the
+// same precedent Detailed Deep Cleaning and Extreme Property Cleanup already set. Movement 06
+// states the gap in the page's own voice. Replace with real property-condition photography (wide
+// room shot + affected-area detail, same-area before/during/after) once it exists.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { legal, site } from "@data/site";
+
+const canonicalPath = "/rodent-dropping-cleanup-san-jose/";
+
+const title = "Rodent Droppings Cleanup in San Jose | Aseptaclean";
+const description =
+  "Found rodent droppings in a garage, kitchen, closet, or storage area in San Jose or the South Bay & Peninsula? Send photos and we will review the affected area before setting a cleanup scope.";
+
+// §20A.8's destination rule + §20A.9's service branch. `?service=rodent-droppings` is read by
+// AssessmentForm.astro (see that component's service-context block, added alongside this page).
+const assessmentHref = "/request-assessment/?service=rodent-droppings";
+const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
+
+// §34's "WHERE DID YOU FIND THEM?" list, reframed as evidence locations rather than a nine-card
+// grid, and trimmed to areas the current scope actually reaches. No attic/crawlspace claim is
+// made here beyond what §34 itself already approves as a boundary statement (movement 05).
+const evidenceAreas = [
+  "along walls and baseboards",
+  "inside cabinets and drawers",
+  "behind or beneath appliances",
+  "on shelving and stored items",
+  "inside boxes and storage bins",
+  "along garage perimeters",
+  "in closets",
+  "near food-storage areas"
+] as const;
+
+// §20A.6's editorial assessment movement — the factors that determine scope, combined into one
+// composition rather than seven equal cards.
+const scopeFactors = [
+  {
+    label: "Location of evidence",
+    detail: "Where are droppings, staining, or nesting material actually visible?"
+  },
+  {
+    label: "Access",
+    detail: "Can the affected surface or area actually be reached?"
+  },
+  {
+    label: "Surface",
+    detail: "Hard surface, porous material, flooring, shelving, or something else?"
+  },
+  {
+    label: "Contents",
+    detail: "Are stored items blocking access, or affected themselves?"
+  },
+  {
+    label: "Extent",
+    detail: "One localized area, or evidence in more than one place?"
+  },
+  {
+    label: "Pest status",
+    detail: "Has the active rodent problem itself already been addressed?"
+  }
+] as const;
+
+// §34's five-step "WHAT ASEPTACLEAN DOES" sequence, field-procedure format per §20A.14.
+const process = [
+  {
+    title: "Show us the problem",
+    detail:
+      "Send photos of the area — a wide shot of the room, closer photos of the droppings, nearby surfaces, and anything blocking access. Tell us where you found them and how much of the space looks affected."
+  },
+  {
+    title: "We review the job",
+    detail:
+      "We look at the location of the evidence, the surfaces involved, the contents in the way, and how reachable the area is. If photos are not enough, we may need to see the property."
+  },
+  {
+    title: "You get a written scope",
+    detail: "Before work starts, you know exactly which areas are included and what is not."
+  },
+  {
+    title: "We clean the approved areas",
+    detail: "The cleanup plan is based on what we found, not on a guess from one photo of the doorway."
+  },
+  {
+    title: "We review the completed work",
+    detail: "When the job is done, we review the cleaned area against the agreed scope."
+  }
+] as const;
+
+// Doc 21 §2.3's animal/organic limiting clause — verbatim, mandatory wherever animal or organic
+// condition work is described. Rodent-droppings cleanup is exactly that, so this is required
+// here the same way it is on Extreme Cleaning (`extremeCleaningPage.complianceClause`) and
+// Specialty Cleaning. Word-for-word from the source; do not paraphrase.
+const complianceClause =
+  "Cleaning only — not a decontamination, sterilization, or health-safety determination.";
+
+// Doc 21 §3.2's barred-constructions list, stated as what Aseptaclean does not provide — the
+// SPCB boundary this entire page depends on.
+const notProvided = [
+  "Pest control",
+  "Rodent trapping",
+  "Rodent exclusion or entry-point sealing",
+  "Rodenticide or repellent application",
+  "Infestation inspection or identification",
+  "Insulation removal or repair",
+  "Structural repair"
+] as const;
+
+const goodFit = [
+  "droppings are spread through part of a space, not just one spot",
+  "shelves, cabinets, or stored items are affected",
+  "you are not sure how far the affected area goes",
+  "a normal house cleaner has turned down the job",
+  "you want the scope defined before work starts",
+  "pest control has already been addressed or is being coordinated"
+] as const;
+
+const poorFit = [
+  "you found one or two droppings in a small, open area",
+  "you are looking for pest control, trapping, or exclusion",
+  "the main need is insulation removal or structural repair",
+  "the main need is HVAC duct work"
+] as const;
+
+const priceDrivers = [
+  "how much of the area is affected",
+  "how many surfaces or rooms are involved",
+  "how many items are in the way",
+  "how hard the area is to reach",
+  "surface type",
+  "whether pest control has already addressed the active problem"
+] as const;
+
+// §20A.18: 4–7 highest-value, service-specific questions. Answers reconciled from §34's FAQ set
+// with the CDC/dry-sweep sentences removed per the top-of-file reconciliation note.
+const faq = [
+  [
+    "I only see a few droppings. Do I need a full cleanup?",
+    [
+      "Maybe not. If the evidence is limited to one small, open area, this may be a smaller job than you expect — send photos and we will tell you.",
+      "The useful question is not how many droppings you can count. It is whether the spot you found is the affected area, or just where the evidence became visible."
+    ]
+  ],
+  [
+    "Should pest control come before cleanup?",
+    [
+      "If rodents are still actively entering the property, yes. Cleanup alone does not solve an active pest problem.",
+      "A pest-control or exclusion provider addresses the source. We clean what was left behind once the areas are safe to work in."
+    ]
+  ],
+  [
+    "Do you trap or remove the rodents?",
+    ["No. That is pest control. We do not trap, bait, exclude, or treat pests — see the section above."]
+  ],
+  [
+    "Do you clean inside cabinets, or behind and under stored items?",
+    [
+      "Accessible cabinet interiors and reachable surfaces can be part of the scope. If items are blocking an affected area, we will tell you whether they need to move first."
+    ]
+  ],
+  [
+    "Do you clean attics or crawlspaces?",
+    [
+      "Accessible areas can be reviewed within current scope. Attic cleanup does not include insulation removal or repair work — that stays outside what we do."
+    ]
+  ],
+  [
+    "What if you find more affected areas after the work starts?",
+    ["We stop and tell you before going further. New condition, new decision — we do not quietly expand the job."]
+  ],
+  [
+    "Can you give me a price from photos?",
+    [
+      "Sometimes. A single localized area is often understandable from photos alone. Larger or more complex properties usually need an in-person walkthrough before we can set a final scope and price."
+    ]
+  ]
+] as const;
+
+const schema = [
+  {
+    "@type": "Service",
+    name: "Rodent Droppings Cleanup in San Jose",
+    serviceType: "Rodent-droppings affected-area cleanup",
+    provider: { "@id": new URL("/#business", site.urls.site).href },
+    areaServed: { "@type": "City", name: "San Jose" }
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Rodent Droppings Cleanup",
+        item: new URL(canonicalPath, site.urls.site).href
+      }
+    ]
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: faq.map(([question, answer]) => ({
+      "@type": "Question",
+      name: question,
+      acceptedAnswer: { "@type": "Answer", text: answer.join("\n\n") }
+    }))
+  }
+];
 ---
 
-<ServicePageLayout
-  page={rodentPage}
-  serviceType="Rodent dropping cleanup"
-  breadcrumbName="Rodent Dropping Cleanup"
-  idPrefix="rodent"
-  groupName="Specialty Cleaning"
-  groupHref="/specialty-cleaning/"
-/>
+<BaseLayout title={title} description={description} canonicalPath={canonicalPath} noindex={true} schema={schema}>
+  {/* ══ 01 · SERVICE HERO ═══════════════════════════════════════════════════════════════════
+      §20A.7: location context → unmistakable service H1 → specialist thesis → service CTA →
+      phone as secondary. NO IMAGE — see the top-of-file note on the honest proof gap. */}
+  <section class="rc-hero" aria-labelledby="rc-title">
+    <div class="rc-hero__shell">
+      <div class="rc-hero__content">
+        <p class="rc-hero__eyebrow">
+          Rodent Droppings Cleanup · San Jose · {site.location.serviceArea}
+        </p>
+        <h1 id="rc-title" class="ac-type-h1-hub">Rodent Droppings Cleanup</h1>
+        <p class="rc-hero__lede">
+          Finding droppings in one spot does not always tell you how much of the property was
+          affected. We review where activity occurred, what surfaces are involved, and what needs
+          to be included before the cleanup scope is set.
+        </p>
+        <p class="rc-hero__thesis">The droppings you can see may not be the whole affected area.</p>
+
+        <div class="rc-hero__actions">
+          <a class="rc-btn rc-btn--light" href={assessmentHref}>Send Photos for Review</a>
+          {/* Suppression rule (AGENTS.md §3): never render an empty phone link. */}
+          {phoneHref && <a class="rc-hero__call" href={phoneHref}>Call {site.business.phone}</a>}
+        </div>
+        <p class="rc-hero__note">Not sure if you need a full cleanup? Send photos first. We will tell you what the next step should be.</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 02 · VISIBLE VS AFFECTED AREA ═══════════════════════════════════════════════════════
+      This page's signature movement. §34's "THE DROPPINGS MAY NOT BE THE WHOLE JOB" reframe,
+      combined with the "WHERE DID YOU FIND THEM?" evidence-location list per §20A.6 — one
+      composition, not nine location cards. Conditional language throughout: this is not "if you
+      see one dropping, your home is contaminated." */}
+  <section class="rc-reframe" aria-labelledby="reframe-title">
+    <div class="rc-reframe__inner">
+      <p class="rc-label">Start here</p>
+      <h2 id="reframe-title" class="ac-type-h2-home-feature">
+        Start with where the activity occurred — not just where you found one dropping.
+      </h2>
+      <p class="rc-lede">
+        What you see on the floor or shelf may only be part of the affected area. Rodents move
+        along the same paths repeatedly, so evidence can also turn up nearby:
+      </p>
+
+      <ul class="rc-check-list rc-check-list--grid">
+        {evidenceAreas.map((item) => <li>{item}</li>)}
+      </ul>
+
+      <p class="rc-statement">
+        A few visible droppings in one place can be a very different job from evidence across
+        several areas. That is why we do not price the job from one photo of a single pile — we
+        look at the area around it too.
+      </p>
+
+      <div class="rc-question">
+        <h3 class="ac-type-h3-home-route">The useful question</h3>
+        <p>
+          “There are only a few droppings in the kitchen” is a starting point, not an answer. The
+          question that actually sets the scope is:
+          <span class="rc-question__strong">Is the kitchen the affected area, or simply where the evidence became visible?</span>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 03 · WHERE WAS ACTIVITY ACTUALLY OCCURRING? ═════════════════════════════════════════
+      §20A.6's editorial field-assessment composition — the factors that determine scope, not
+      six equal SaaS cards. */}
+  <section class="rc-scope" aria-labelledby="scope-title">
+    <div class="rc-scope__inner">
+      <p class="rc-scope__label">How scope gets decided</p>
+      <h2 id="scope-title" class="ac-type-h2-home-feature">
+        Where was the activity actually occurring?
+      </h2>
+      <p class="rc-scope__lede">
+        We do not start with a mop and a guess. Before anything is cleaned, we work through the
+        same factors on every job:
+      </p>
+
+      <dl class="rc-factors">
+        {scopeFactors.map((factor) => (
+          <div class="rc-factors__row">
+            <dt>{factor.label}</dt>
+            <dd>{factor.detail}</dd>
+          </div>
+        ))}
+      </dl>
+
+      <div class="rc-photos">
+        <h3 class="ac-type-h3-home-route">Photos help. They do not replace a review when one is needed.</h3>
+        <p>
+          Useful photos: a wide shot of the room, closer photos of the droppings, nearby cabinets
+          or shelves, the floor and wall perimeter, and anything blocking access. Send what you
+          have — you do not need twenty photos before we can tell you the next step.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 04 · PEST CONTROL VS CLEANUP ═════════════════════════════════════════════════════════
+      Doc 21 §3.1's hard scope boundary, stated plainly. This is the page's most important
+      guardrail — see the top-of-file note. */}
+  <section class="rc-boundary" aria-labelledby="boundary-title">
+    <div class="rc-boundary__inner">
+      <p class="rc-label">Two different problems</p>
+      <h2 id="boundary-title" class="ac-type-h2-home-feature">
+        Pest control stops the rodent problem. Cleanup deals with what was left behind.
+      </h2>
+
+      <div class="rc-boundary__pair">
+        <div class="rc-note">
+          <h3 class="ac-type-h3-home-route">The rodents</h3>
+          <p>
+            A pest-control or exclusion provider identifies the active problem and addresses
+            trapping, entry points, and the source. That work is regulated, and it is not
+            something Aseptaclean performs.
+          </p>
+        </div>
+
+        <div class="rc-note rc-note--stop">
+          <h3 class="ac-type-h3-home-route">The mess left behind</h3>
+          <p>
+            Aseptaclean reviews the condition, defines the affected cleanup areas, and cleans
+            approved accessible surfaces within scope. If rodents are still actively entering the
+            property, we may ask that pest control address the source first — cleanup alone does
+            not solve that problem.
+          </p>
+        </div>
+      </div>
+
+      <div class="rc-notprovided">
+        <h3 class="ac-type-h3-home-feature">We do not provide</h3>
+        <ul class="rc-minus-list rc-minus-list--grid">
+          {notProvided.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="rc-statement rc-statement--wide">If the property needs one of these, we will tell you.</p>
+        <p class="rc-clause">{complianceClause}</p>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 05 · HOW THE CLEANUP IS SCOPED ═══════════════════════════════════════════════════════
+      §20A.14: vertical numbered sequence, not five cards. §34's "WHAT ASEPTACLEAN DOES" plus the
+      surfaces/contents/attic boundary from §20A.13's "boundaries are conversion content." */}
+  <section class="rc-plan" aria-labelledby="plan-title">
+    <div class="rc-plan__inner">
+      <p class="rc-plan__label">How the cleanup is scoped</p>
+      <h2 id="plan-title" class="ac-type-h2-home-feature">The exact steps depend on the job.</h2>
+      <p class="rc-plan__lede">
+        A few droppings in an open garage is not the same job as evidence across a packed storage
+        room. The work is built around the condition we find.
+      </p>
+
+      <ol class="rc-steps">
+        {process.map((step, index) => (
+          <li class="rc-step">
+            <span class="rc-step__index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            <div class="rc-step__body">
+              <h3 class="ac-type-h3-home-route">{step.title}</h3>
+              <p>{step.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div class="rc-surfaces">
+        <h3 class="ac-type-h3-home-feature">A surface cannot be cleaned if the crew cannot reach it.</h3>
+        <p>
+          If stored items are blocking an affected area — common in garages, pantries, and storage
+          rooms — the scope may need those items moved, reviewed individually, or handled under a
+          separate agreed scope. If a property needs significant clearing first, that may fit
+          better under <a href="/property-cleanouts-san-jose/">property cleanouts</a> or
+          <a href="/hoarding-cleanup-san-jose/"> hoarding cleanup</a>, and we will tell you.
+        </p>
+        <p>
+          Attic cleanup does not include insulation removal or repair work. If insulation is
+          affected, or the property needs HVAC duct work, that is a separate provider's scope —
+          we will tell you rather than take on work outside what we do.
+        </p>
+        <p class="rc-statement">New condition, new decision. If something changes the scope once work is underway, we stop and tell you before going further.</p>
+      </div>
+
+      <p class="rc-disclaimer">{legal.scopeDisclaimer}</p>
+    </div>
+  </section>
+
+  {/* ══ 06 · EVIDENCE + FIT + PRICE ══════════════════════════════════════════════════════════
+      §20A.15's honest evidence gap, §20A.16's qualification without a wall of rejection, and
+      §20A.17's price-driver logic instead of a published figure. */}
+  <section class="rc-fit" aria-labelledby="fit-title">
+    <div class="rc-fit__inner">
+      <div class="rc-evidence">
+        <p class="rc-label">What we can show you today</p>
+        <p class="rc-evidence__body">
+          There is no before/during/after gallery on this page yet. Aseptaclean has no
+          photographed rodent-droppings project to show, and a stock condition photo would tell
+          you nothing true about how this company works. What does exist is the review process
+          itself — the same-area assessment above, applied to your actual property.
+        </p>
+      </div>
+
+      <h2 id="fit-title" class="ac-type-h2-home-feature">The size of the house does not tell us the size of the affected area.</h2>
+
+      <div class="rc-fit__columns">
+        <div class="rc-fit__col">
+          <h3 class="ac-type-h3-home-route">Usually a fit</h3>
+          <ul class="rc-check-list">
+            {goodFit.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+        <div class="rc-fit__col rc-fit__col--out">
+          <h3 class="ac-type-h3-home-route">Probably not a fit</h3>
+          <ul class="rc-minus-list">
+            {poorFit.map((item) => <li>{item}</li>)}
+          </ul>
+          <p class="rc-fit__aside">
+            We would rather tell you that you do not need a large cleanup than sell you work you
+            do not need. Not sure? Send photos.
+          </p>
+        </div>
+      </div>
+
+      <div class="rc-price">
+        <div class="rc-price__copy">
+          <h3 class="ac-type-h3-home-feature">We price the job we see.</h3>
+          <p>
+            A few visible droppings in one place can be a very different job from evidence across
+            several rooms. There is no one price for rodent-droppings cleanup — send photos first,
+            and we can usually tell you what needs to happen next.
+          </p>
+          <p class="rc-price__fee">{site.offer.assessmentFraming(site.offer.assessmentFee)}</p>
+        </div>
+        <div class="rc-price__drivers">
+          <p class="rc-price__label">What moves the number</p>
+          <ul class="rc-rule-list rc-rule-list--tight">
+            {priceDrivers.map((item) => <li>{item}</li>)}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 07 · QUESTIONS ═══════════════════════════════════════════════════════════════════════
+      Open Q&A, not an accordion — same reasoning as the six prior rebuilds. */}
+  <section class="rc-faq" aria-labelledby="faq-title">
+    <div class="rc-faq__inner">
+      <p class="rc-label">Questions</p>
+      <h2 id="faq-title" class="ac-type-h2-home-feature">The questions that decide this.</h2>
+      <p class="rc-lede">
+        The ones that come up on nearly every rodent-droppings review. General questions —
+        scheduling, payment, what happens on the day — are on the <a href="/faq/">main FAQ</a>.
+      </p>
+
+      <div class="rc-faq__grid">
+        {faq.map(([question, answer]) => (
+          <article class="rc-qa">
+            <h3 class="ac-type-h3-home-route">{question}</h3>
+            {answer.map((paragraph) => <p>{paragraph}</p>)}
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 08 · CLOSE ═══════════════════════════════════════════════════════════════════════════
+      Typographic on navy, same close pattern as the six prior rebuilds. */}
+  <section class="rc-close" aria-labelledby="close-title">
+    <div class="rc-close__inner">
+      <div class="rc-close__copy">
+        <h2 id="close-title" class="ac-type-h2-final">Found rodent droppings?</h2>
+        <p class="rc-close__lede">
+          Do not guess how much of the property is affected. Send photos of the area, the
+          droppings, nearby surfaces, and any blocked or stored-item areas. We will review what
+          you are seeing and tell you the right next step.
+        </p>
+      </div>
+
+      <div class="rc-close__action">
+        <a class="rc-btn rc-btn--light" href={assessmentHref}>Send Photos for Review</a>
+        <div class="rc-close__secondary">
+          {phoneHref && <a href={phoneHref}>Call {site.business.phone}</a>}
+          {smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
+        </div>
+        <p class="rc-close__note">Submitting a request does not authorize work or create a service agreement.</p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* ─────────────────────────────────────────────────────────────────────────────────────────
+     Shared page primitives, same system the six prior rebuilds already established (spacing,
+     rule and list treatment), reused under an `rc-` prefix so scoped styles never collide.
+     NOTHING in this file sets font-size on a heading tag or on a selector that resolves to one;
+     heading sizes come from .ac-type-* role classes and are tuned by overriding the role class's
+     TOKEN on a container (AGENTS.md §6 law 1).
+     ───────────────────────────────────────────────────────────────────────────────────────── */
+
+  .rc-label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .rc-lede {
+    margin: 22px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .rc-statement {
+    margin: 24px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-navy-900);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .rc-statement--wide {
+    max-width: 62ch;
+  }
+
+  .rc-clause {
+    margin: 18px 0 0;
+    max-width: 60ch;
+    border-left: 3px solid var(--ac-color-navy-800);
+    padding: 2px 0 2px 16px;
+    color: var(--ac-color-navy-900);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+
+  .rc-check-list,
+  .rc-minus-list {
+    max-width: none;
+    margin: 18px 0 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .rc-check-list li,
+  .rc-minus-list li {
+    position: relative;
+    max-width: none;
+    padding: 9px 0 9px 26px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .rc-check-list li + li,
+  .rc-minus-list li + li {
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .rc-check-list li::before,
+  .rc-minus-list li::before {
+    position: absolute;
+    top: 17px;
+    left: 0;
+    width: 12px;
+    height: 2px;
+    background: var(--ac-color-blue-deep);
+    content: "";
+  }
+
+  .rc-minus-list li::before {
+    background: var(--ac-color-exclusion-red);
+  }
+
+  .rc-check-list--grid,
+  .rc-minus-list--grid {
+    display: grid;
+    gap: 0 44px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rc-rule-list {
+    display: grid;
+    max-width: none;
+    margin: 20px 0 0;
+    padding: 0;
+    gap: 0 44px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    list-style: none;
+  }
+
+  .rc-rule-list li {
+    max-width: none;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 12px 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .rc-rule-list--tight {
+    grid-template-columns: 1fr;
+  }
+
+  .rc-rule-list--tight li {
+    padding: 10px 0;
+  }
+
+  .rc-btn {
+    display: inline-flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 2px;
+    padding-inline: 30px;
+    font-size: 0.9375rem;
+    font-weight: 750;
+    line-height: 1;
+    text-decoration: none;
+    transition: background-color 150ms ease;
+  }
+
+  .rc-btn--light {
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+  }
+
+  .rc-btn--light:hover {
+    background: var(--ac-color-blue-pale);
+  }
+
+  .rc-btn--light:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 4px;
+  }
+
+  .rc-disclaimer {
+    margin: 32px 0 0;
+    max-width: 78ch;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 18px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  .rc-note p {
+    margin: 14px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .rc-note h3 {
+    max-width: 30ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  /* ── 01 hero ───────────────────────────────────────────────────────────────────────────── */
+  .rc-hero {
+    background: var(--ac-color-navy-900);
+    padding-block: clamp(88px, 10vw, 132px) clamp(64px, 7vw, 96px);
+  }
+
+  .rc-hero__shell {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .rc-hero__content {
+    max-width: 62ch;
+  }
+
+  .rc-hero__eyebrow {
+    margin: 0 0 18px;
+    color: var(--ac-color-blue-on-navy);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+
+  .rc-hero__content :global(h1) {
+    max-width: 15ch;
+    color: var(--ac-color-paper);
+  }
+
+  .rc-hero__lede {
+    margin: 22px 0 0;
+    color: #ccd9e8;
+    font-size: 1.1875rem;
+    line-height: 1.55;
+    text-wrap: pretty;
+  }
+
+  .rc-hero__thesis {
+    margin: 18px 0 0;
+    max-width: 40ch;
+    color: var(--ac-color-paper);
+    font-size: 1.1875rem;
+    font-weight: 650;
+    line-height: 1.45;
+    text-wrap: pretty;
+  }
+
+  .rc-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 32px;
+    gap: 20px 28px;
+  }
+
+  .rc-hero__call {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-underline-offset: 4px;
+  }
+
+  .rc-hero__call:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .rc-hero__note {
+    margin: 20px 0 0;
+    max-width: 46ch;
+    color: #a9bdd4;
+    font-size: 0.875rem;
+    font-style: italic;
+    line-height: 1.6;
+  }
+
+  /* ── 02 visible vs affected area ──────────────────────────────────────────────────────── */
+  .rc-reframe {
+    background: var(--ac-color-paper);
+    padding-block: clamp(76px, 8vw, 116px);
+  }
+
+  .rc-reframe__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .rc-check-list--grid {
+    margin-top: 28px;
+  }
+
+  .rc-question {
+    margin-top: clamp(48px, 5vw, 72px);
+    border-top: 2px solid var(--ac-color-navy-900);
+    padding-top: 28px;
+  }
+
+  .rc-question h3 {
+    max-width: none;
+    color: var(--ac-color-navy-900);
+  }
+
+  .rc-question p {
+    margin: 14px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  .rc-question__strong {
+    display: block;
+    margin-top: 8px;
+    color: var(--ac-color-navy-900);
+    font-weight: 650;
+  }
+
+  /* ── 03 where activity occurred ───────────────────────────────────────────────────────── */
+  .rc-scope {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(76px, 8vw, 116px);
+  }
+
+  .rc-scope__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .rc-scope__label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .rc-scope__lede {
+    margin: 22px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.125rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .rc-factors {
+    display: grid;
+    margin: 36px 0 0;
+    gap: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rc-factors__row {
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding: 18px 28px 20px 0;
+  }
+
+  .rc-factors dt {
+    color: var(--ac-color-navy-900);
+    font-size: 0.9375rem;
+    font-weight: 750;
+  }
+
+  .rc-factors dd {
+    margin: 8px 0 0;
+    max-width: 40ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .rc-photos {
+    margin-top: clamp(48px, 5vw, 72px);
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 32px;
+  }
+
+  .rc-photos h3 {
+    max-width: 36ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .rc-photos p {
+    margin: 14px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  /* ── 04 pest control vs cleanup ───────────────────────────────────────────────────────── */
+  .rc-boundary {
+    background: var(--ac-color-paper);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .rc-boundary__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .rc-boundary__pair {
+    display: grid;
+    margin-top: 40px;
+    gap: 32px 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rc-note--stop {
+    border-top: 2px solid var(--ac-color-blue-deep);
+    padding-top: 24px;
+  }
+
+  .rc-notprovided {
+    margin-top: clamp(48px, 5vw, 72px);
+    border-top: 2px solid var(--ac-color-exclusion-red);
+    padding-top: 28px;
+  }
+
+  .rc-notprovided h3 {
+    max-width: none;
+    color: var(--ac-color-navy-900);
+  }
+
+  .rc-notprovided .rc-minus-list--grid {
+    margin-top: 20px;
+  }
+
+  /* ── 05 how the cleanup is scoped ─────────────────────────────────────────────────────── */
+  .rc-plan {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .rc-plan__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .rc-plan__label {
+    max-width: none;
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.6875rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .rc-plan__lede {
+    margin: 22px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .rc-steps {
+    display: grid;
+    margin: 40px 0 0;
+    padding: 0;
+    gap: 0;
+    list-style: none;
+  }
+
+  .rc-step {
+    display: grid;
+    border-top: 1px solid var(--ac-color-line);
+    padding: 22px 0;
+    gap: 0 28px;
+    grid-template-columns: 56px 1fr;
+  }
+
+  .rc-step:last-of-type {
+    border-bottom: 1px solid var(--ac-color-line);
+  }
+
+  .rc-step__index {
+    color: var(--ac-color-blue-deep);
+    font-size: 1.5rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .rc-step__body p {
+    margin: 8px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .rc-surfaces {
+    margin-top: 48px;
+    border-top: 3px solid var(--ac-color-navy-800);
+    padding-top: 28px;
+  }
+
+  .rc-surfaces h3 {
+    max-width: 40ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .rc-surfaces p {
+    margin: 14px 0 0;
+    max-width: 66ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .rc-surfaces a {
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
+    text-underline-offset: 3px;
+  }
+
+  .rc-surfaces .rc-statement {
+    max-width: 60ch;
+  }
+
+  /* ── 06 evidence + fit + price ────────────────────────────────────────────────────────── */
+  .rc-fit {
+    background: var(--ac-color-paper);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .rc-fit__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .rc-evidence {
+    border-top: 3px solid var(--ac-color-navy-800);
+    padding-top: 24px;
+  }
+
+  .rc-evidence__body {
+    margin: 0;
+    max-width: 66ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .rc-fit .ac-type-h2-home-feature {
+    margin-top: 48px;
+    max-width: 30ch;
+  }
+
+  .rc-fit__columns {
+    display: grid;
+    margin-top: 40px;
+    gap: 32px 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rc-fit__aside {
+    margin-top: 18px;
+    max-width: 46ch;
+    color: var(--ac-color-ink-500);
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+
+  .rc-price {
+    display: grid;
+    margin-top: 56px;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 40px;
+    gap: 32px 56px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .rc-price__copy p {
+    margin: 14px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .rc-price__fee {
+    margin-top: 18px;
+    max-width: 48ch;
+    color: var(--ac-color-navy-900);
+    font-weight: 550;
+    line-height: 1.6;
+  }
+
+  .rc-price__label {
+    margin: 0 0 4px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  /* ── 07 questions ─────────────────────────────────────────────────────────────────────── */
+  .rc-faq {
+    background: var(--ac-color-steel-100);
+    padding-block: clamp(72px, 7.5vw, 108px);
+  }
+
+  .rc-faq__inner {
+    width: min(100% - 64px, 1080px);
+    margin-inline: auto;
+  }
+
+  .rc-faq__grid {
+    display: grid;
+    margin-top: 40px;
+    gap: 40px 48px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rc-qa {
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 18px;
+  }
+
+  .rc-qa p {
+    margin: 10px 0 0;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  /* ── 08 close ─────────────────────────────────────────────────────────────────────────── */
+  .rc-close {
+    background: var(--ac-color-navy-950);
+    padding-block: clamp(80px, 9vw, 120px);
+  }
+
+  .rc-close__inner {
+    display: grid;
+    width: min(100% - 64px, 1080px);
+    align-items: center;
+    margin-inline: auto;
+    gap: 32px 56px;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  }
+
+  .rc-close__copy :global(h2) {
+    max-width: 15ch;
+    color: var(--ac-color-paper);
+  }
+
+  .rc-close__lede {
+    margin: 20px 0 0;
+    max-width: 46ch;
+    color: #ccd9e8;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .rc-close__secondary {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 20px;
+    gap: 8px 22px;
+  }
+
+  .rc-close__secondary a {
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 650;
+  }
+
+  .rc-close__secondary a:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .rc-close__note {
+    margin-top: 20px;
+    max-width: 40ch;
+    color: rgb(255 255 255 / 55%);
+    font-size: 0.75rem;
+    line-height: 1.55;
+  }
+
+  /* ── responsive ───────────────────────────────────────────────────────────────────────── */
+  @media (max-width: 56rem) {
+    .rc-price {
+      grid-template-columns: 1fr;
+    }
+
+    .rc-close__inner {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 50rem) {
+    .rc-boundary__pair {
+      grid-template-columns: 1fr;
+    }
+
+    .rc-fit__columns {
+      grid-template-columns: 1fr;
+    }
+
+    .rc-faq__grid {
+      grid-template-columns: 1fr;
+    }
+
+    .rc-factors {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .rc-hero__shell,
+    .rc-reframe__inner,
+    .rc-scope__inner,
+    .rc-boundary__inner,
+    .rc-plan__inner,
+    .rc-fit__inner,
+    .rc-faq__inner {
+      width: calc(100% - 40px);
+    }
+
+    .rc-close__inner {
+      width: calc(100% - 40px);
+    }
+
+    .rc-check-list--grid,
+    .rc-minus-list--grid {
+      grid-template-columns: 1fr;
+    }
+
+    .rc-rule-list {
+      grid-template-columns: 1fr;
+    }
+
+    .rc-hero__actions {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .rc-hero__actions .rc-btn {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 22.5rem) {
+    .rc-hero__content :global(h1) {
+      max-width: 12ch;
+    }
+  }
+</style>
