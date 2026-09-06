@@ -49,6 +49,17 @@ PUBLIC_EMAIL = "info@aseptaclean.com"
 PUBLIC_FORM_ENABLED = "true"
 PUBLIC_FORM_ENDPOINT = "/api/lead"
 PUBLIC_FOUNDER_NAME = "Matthew Ruiz"
+# Google Tag Manager container. Public configuration by definition — it is compiled into every
+# shipped page and is readable by anyone who views source. It belongs here rather than in the
+# dashboard for the same reason as every other value in this block: this file sets
+# `pages_build_output_dir`, so Cloudflare ignores dashboard build variables entirely.
+#
+# THIS IS THE ONLY BASE TAG ON THE SITE. PUBLIC_GA_ID stays unset ON PURPOSE — GA4 G-40K4ETN1NX
+# is configured as a tag INSIDE this container, not as a second base installation.
+# src/components/AnalyticsHead.astro renders the standalone gtag.js loader only when
+# `gaId && !gtmId`, so setting both would silence the gtag branch rather than duplicate it — but
+# do not set both. One base tag, one `page_view`.
+PUBLIC_GTM_ID = "GTM-WSSQ62BN"
 # PUBLIC_INSURANCE_STATUS intentionally absent. doc 21 §2.5 / AGENTS.md §3: no current COI is
 # verified in this repository, so the insurance line and the "Organic Pathogen Endorsed" line
 # (both gated on this same value — see src/data/site.ts, CredentialBar.astro, about/index.astro,

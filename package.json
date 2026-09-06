@@ -9,6 +9,8 @@
     "validate:env": "node scripts/validate-env.mjs",
     "build": "npm run validate:env -- --mode production && node scripts/situation-enum-guard.mjs && astro build --mode production && node scripts/prune-dev-routes.mjs",
     "qa:situations": "node scripts/situation-enum-guard.mjs",
+    "qa:analytics": "node scripts/analytics-tagging-check.mjs",
+    "qa:analytics:events": "node scripts/analytics-events-check.mjs",
     "build:local": "astro build --mode production && node scripts/prune-dev-routes.mjs",
     "pages:dev": "npm run build && wrangler pages dev dist",
     "build:staging": "astro build --mode staging",

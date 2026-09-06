@@ -49,7 +49,17 @@ const phoneHref = site.business.phoneUri;
 >
   <section class="ppc-confirm" id="ppc-confirmation" aria-labelledby="confirm-title">
     <div class="ac-shell">
-      <div class="ppc-confirm__panel" tabindex="-1" data-confirm-panel>
+      {/* `data-lead-form-id` / `data-lead-offer-type` carry the two analytics constants this
+          route's recovery event needs, so neither string is retyped in a script. The form id is
+          the campaign's own; the offer type is the value PpcHeroForm posts in its hidden
+          `offer_type` input, so a recovered event is indistinguishable from a form-side one. */}
+      <div
+        class="ppc-confirm__panel"
+        tabindex="-1"
+        data-confirm-panel
+        data-lead-form-id={ppcHoarding.formId}
+        data-lead-offer-type="handoff_reset"
+      >
         <p class="ppc-confirm__eyebrow">{copy.eyebrow}</p>
 
         {/* Ships as the unconfirmed heading. Swapped to the confirmed one by the script below,
@@ -148,6 +158,48 @@ const phoneHref = site.business.phoneUri;
 
     if (back) back.hidden = true;
     if (boundary) boundary.hidden = false;
+
+    // ---- Lead-event recovery. EXPLICIT, ONCE-ONLY, AND NOT A PAGE VIEW. -------------------
+    //
+    // This does NOT count arriving here. It fires only when the URL carries BOTH the endpoint's
+    // confirmation flag and a structurally valid confirmation code — a code the form can only
+    // have put there after functions/api/lead.ts returned `ok: true` — and only when no event has
+    // already been recorded for that code.
+    //
+    // Why it exists: PpcHeroForm awaits GTM's `eventCallback` before redirecting, but a container
+    // that had not finished loading when the response came back has no callback to give. This is
+    // the second chance, on the same claim key, so the two paths can never both count.
+    //
+    // The claim is the same `ac_ppc_lead:<code>` key the form writes, keyed on the confirmation
+    // code the endpoint derives from the stored submission — so a refresh, a shared link, a
+    // back-and-forward, or a retry that the endpoint deduped all resolve to one lead. A refresh
+    // cannot reach this at all: `replaceState` below strips the query on first read. If storage is
+    // unavailable the event is NOT fired, because over-counting a conversion is the worse failure.
+    if (/^AC-[0-9A-HJKMNP-TV-Z]{6}$/.test(code)) {
+      let claimed = false;
+      try {
+        const key = `ac_ppc_lead:${code}`;
+        if (!window.sessionStorage.getItem(key)) {
+          window.sessionStorage.setItem(key, "1");
+          claimed = true;
+        }
+      } catch {
+        claimed = false;
+      }
+
+      if (claimed) {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "ppc_form_success",
+          form_id: panel?.dataset.leadFormId ?? "",
+          page_path: window.location.pathname,
+          offer_type: panel?.dataset.leadOfferType ?? "",
+          // Distinguishes the path taken, not the visitor. Useful for confirming the primary
+          // path works; carries nothing about who submitted.
+          recovered: true
+        });
+      }
+    }
 
     panel?.focus({ preventScroll: true });
 

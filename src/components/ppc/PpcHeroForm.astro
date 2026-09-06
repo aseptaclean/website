@@ -606,22 +606,139 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
         request.send(new FormData(form));
       });
 
-    // ---- Analytics ------------------------------------------------------------------------
-    // Two DISTINCT events, per the brief: an attempt is not a success. `ppc_form_success` fires
-    // only after a confirmed 2xx + ok:true. Neither event carries a name, phone, email, ZIP,
-    // description, filename or photo — only whether files were attached, as a boolean.
+    // ---- Analytics --------------------------------------------------------------------------
+    // THE CANONICAL FORM-TRACKING IMPLEMENTATION. No other file measures this form. Analytics.astro
+    // owns sitewide page and phone events and deliberately no longer looks for a form at all — its
+    // old `[data-assessment-form]` listener matched a component no page imports, so it produced
+    // nothing while this file produced the real events. One action, one script, one event.
+    //
+    // FOUR events, and the distinction between them is the point:
+    //   form_start               first meaningful interaction. Supporting only.
+    //   ppc_form_submit_attempt  a locally valid, Turnstile-satisfied attempt left the browser.
+    //                            DIAGNOSTIC. Not a lead.
+    //   ppc_form_success         the server ACCEPTED the lead: 2xx AND ok:true. This is the only
+    //                            event that may ever map to a conversion.
+    //   ppc_form_error           a real request came back rejected, or the network failed.
+    //                            DIAGNOSTIC. Never a conversion, and never counted as a lead.
+    // A click on Submit, a validation failure, a missing Turnstile token and a thank-you page view
+    // are none of them a lead, and none of them reaches ppc_form_success.
+    //
+    // NO PERSONAL INFORMATION LEAVES THIS FILE. Every parameter is a constant, a path, a boolean,
+    // or a fixed diagnostic category. Never a name, phone, email, ZIP, description, filename,
+    // photo, or raw server response text.
+    const pagePath = window.location.pathname;
+    const offerType =
+      (form.elements.namedItem("offer_type") as HTMLInputElement | null)?.value ?? "";
+
+    const payloadFor = (event: string, detail: Record<string, string | number | boolean>) => ({
+      event,
+      form_id: form.id,
+      page_path: pagePath,
+      ...(offerType ? { offer_type: offerType } : {}),
+      ...detail
+    });
+
     const track = (event: string, detail: Record<string, string | number | boolean> = {}) => {
       (window as Window & { dataLayer?: unknown[] }).dataLayer ??= [];
-      (window as Window & { dataLayer?: unknown[] }).dataLayer!.push({
-        event,
-        form_id: form.id,
-        ...detail
-      });
+      (window as Window & { dataLayer?: unknown[] }).dataLayer!.push(payloadFor(event, detail));
     };
+
+    // The success event has to have a real chance to leave the browser before the redirect
+    // replaces the document. GTM's own `eventCallback` is that mechanism: it fires once every tag
+    // triggered by the event has finished. `eventTimeout` bounds it inside GTM, and the timer
+    // below bounds it here in case no tag is bound to the event at all.
+    //
+    // When no container is loaded — the consent-declined case — there is nothing to wait for and
+    // nothing that could transmit, so this resolves immediately rather than making a visitor who
+    // refused tracking sit through a delay for it. The thank-you route's once-only recovery is
+    // what covers a container that loads late.
+    const containerLoaded = () => {
+      const containers = (window as Window & { google_tag_manager?: Record<string, unknown> })
+        .google_tag_manager;
+      return Boolean(
+        containers && Object.keys(containers).some((key) => key.startsWith("GTM-"))
+      );
+    };
+
+    const trackAndSettle = (event: string, detail: Record<string, string | number | boolean>) =>
+      new Promise<void>((resolve) => {
+        (window as Window & { dataLayer?: unknown[] }).dataLayer ??= [];
+        if (!containerLoaded()) {
+          (window as Window & { dataLayer?: unknown[] }).dataLayer!.push(payloadFor(event, detail));
+          resolve();
+          return;
+        }
+        let settled = false;
+        const settle = () => {
+          if (settled) return;
+          settled = true;
+          window.clearTimeout(timer);
+          resolve();
+        };
+        const timer = window.setTimeout(settle, 1000);
+        (window as Window & { dataLayer?: unknown[] }).dataLayer!.push({
+          ...payloadFor(event, detail),
+          eventTimeout: 1000,
+          eventCallback: settle
+        });
+      });
+
+    // ONCE-ONLY, KEYED ON THE EXISTING IDEMPOTENCY SYSTEM. The endpoint dedupes on
+    // `idempotency_key` and returns the SAME confirmation code for a repeat of a submission it has
+    // already stored (functions/api/lead.ts, the `duplicate` branch — the code is a pure function
+    // of the stored submission id). So the code identifies the LEAD, not the request, and claiming
+    // it here is what stops a double-click, a retry after a lost response, or the thank-you route's
+    // own recovery from producing a second lead event for one lead.
+    //
+    // A refusal to claim is a refusal to fire. If storage is unavailable we do not fire, because an
+    // over-count is worse than an under-count on the event a conversion is built from.
+    const claimLead = (code: string) => {
+      if (!code) return false;
+      try {
+        const key = `ac_ppc_lead:${code}`;
+        if (window.sessionStorage.getItem(key)) return false;
+        window.sessionStorage.setItem(key, "1");
+        return true;
+      } catch {
+        return false;
+      }
+    };
+
+    // Fixed categories, derived from the status line only. The server's prose is shown to the
+    // visitor, never sent to analytics.
+    const errorCategory = (status: number) => {
+      if (status === 400) return "verification_failed";
+      if (status === 403) return "origin_rejected";
+      if (status === 413) return "payload_too_large";
+      if (status === 422) return "server_validation";
+      if (status === 429) return "rate_limited";
+      if (status === 503) return "service_unavailable";
+      if (status >= 500) return "server_error";
+      if (status >= 400) return "request_rejected";
+      return "unexpected_response";
+    };
+
+    // FORM START — once per page load, on the first real interaction with a real field. `input`
+    // and `change` together cover typing, pasting, the consent checkbox and the file picker;
+    // focus alone is not an interaction and is deliberately not counted.
+    let startRecorded = false;
+    const recordStart = () => {
+      if (startRecorded) return;
+      startRecorded = true;
+      track("form_start");
+    };
+    form.addEventListener("input", recordStart);
+    form.addEventListener("change", recordStart);
+
+    // Guards the whole submit path, not just the button. `setSubmitting(true)` disables the
+    // control, but a second submit can still be queued by a fast double-click or by Enter in a
+    // field before that runs, and each one would otherwise raise its own attempt event.
+    let inFlight = false;
 
     form.addEventListener("submit", async (event) => {
       event.preventDefault();
       if (!form.action) return;
+      if (inFlight) return;
 
       if (!validateLocally()) return;
 
@@ -640,6 +757,7 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
       }
 
       const photoCount = uploadInput?.files?.length ?? 0;
+      inFlight = true;
       track("ppc_form_submit_attempt", { photos_attached: photoCount > 0 });
       setSubmitting(true, "Sending your request…");
 
@@ -656,7 +774,6 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
           //
           // NOTHING PERSONAL GOES IN THE URL. Only the derived display code and two state
           // flags — no name, phone, email address, ZIP or description.
-          track("ppc_form_success", { photos_attached: photoCount > 0 });
           // THREE email states, not two. The endpoint reports `confirmationEmailSent` as a
           // bare boolean, which is false both when the provider rejected the message AND when
           // there was no address to send to. Collapsing those into one flag made the thank-you
@@ -679,10 +796,36 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
                 : "attention"
           });
           const code = typeof payload.confirmationCode === "string" ? payload.confirmationCode : "";
-          if (/^AC-[0-9A-HJKMNP-TV-Z]{6}$/.test(code)) parameters.set("code", code);
+          const codeIsValid = /^AC-[0-9A-HJKMNP-TV-Z]{6}$/.test(code);
+          if (codeIsValid) parameters.set("code", code);
+
+          // THE ONLY PLACE A LEAD EVENT IS RAISED FROM THIS FORM, and only after the server said
+          // it accepted the lead. `duplicate: true` is NOT excluded here: the endpoint returns it
+          // for a resubmission of a lead it already stored, which is exactly the case where the
+          // first attempt's response was lost and no success was ever recorded. The claim below,
+          // not the flag, is what keeps the count at one.
+          //
+          // Awaited so the event has its transmission window before `assign()` tears the document
+          // down. If the code is unusable there is nothing to dedupe on across the redirect, so
+          // the event is raised without a claim and the thank-you route — which would have no
+          // `code` in its URL either — cannot double it.
+          if (!codeIsValid) {
+            await trackAndSettle("ppc_form_success", { photos_attached: photoCount > 0 });
+          } else if (claimLead(code)) {
+            await trackAndSettle("ppc_form_success", { photos_attached: photoCount > 0 });
+          }
+
           window.location.assign(`${thankYouRoute}?${parameters.toString()}`);
           return;
         }
+
+        // A REJECTED REQUEST IS NOT A LEAD. Diagnostic only, with a fixed category derived from
+        // the status line — never the server's prose, and never a submitted value.
+        inFlight = false;
+        track("ppc_form_error", {
+          error_type: errorCategory(status),
+          photos_attached: photoCount > 0
+        });
 
         // FAILURE — including the partial case where details stored but the files did not. The
         // server's own message is surfaced verbatim and every entered value stays in the form.
@@ -711,7 +854,13 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
           typeof payload.message === "string" ? payload.message : submissionErrorMessage
         );
         resetTurnstile();
-      } catch {
+      } catch (error) {
+        // The request never completed. `send()` rejects with exactly these two markers.
+        inFlight = false;
+        track("ppc_form_error", {
+          error_type: error instanceof Error && error.message === "timeout" ? "timeout" : "network",
+          photos_attached: photoCount > 0
+        });
         setSubmitting(false, submissionErrorMessage);
         resetTurnstile();
       }

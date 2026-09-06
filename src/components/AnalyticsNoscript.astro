@@ -1,0 +1,32 @@
+---
+// GTM <noscript> fallback — rendered immediately after the opening <body> of BaseLayout and
+// PpcLayout, which is where Google's standard installation puts it.
+//
+// It renders only when a container is configured, so a build without one emits nothing.
+//
+// CONSENT NOTE, stated rather than glossed: `<noscript>` content is parsed only when scripting is
+// disabled, and Termly's blocker is itself a script. A `data-categories` attribute on this iframe
+// would therefore have no effect in the only condition where the element exists at all. The
+// element is inert for measurement — GA4 and Google Ads tags require JavaScript and do not fire
+// from this iframe — so it collects nothing that consent would gate. It ships as the standard
+// snippet rather than as a modified one, and the residual behaviour is recorded in
+// docs/05-CURRENT-DECISIONS.md instead of being hidden behind an attribute that does nothing.
+import { site } from "@data/site";
+
+const gtmId = site.integrations.analytics.gtmId;
+const consentEnabled = site.integrations.termly.consentEnabled;
+---
+
+{
+  consentEnabled && gtmId && (
+    <noscript>
+      <iframe
+        src={`https://www.googletagmanager.com/ns.html?id=${encodeURIComponent(gtmId)}`}
+        height="0"
+        width="0"
+        style="display:none;visibility:hidden"
+        title="Google Tag Manager"
+      />
+    </noscript>
+  )
+}

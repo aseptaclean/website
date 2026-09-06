@@ -1,0 +1,73 @@
+---
+// TAG LOADERS — the ONLY place a Google tag is installed on this site.
+//
+// Rendered inside the shared <head> of BaseLayout and PpcLayout, immediately after the Termly
+// resource blocker and before everything else, so the container is as high in the document as
+// Termly's own blocking requires. Nothing else in `src/` may load a Google tag; the sitewide
+// behavioural events live in Analytics.astro and only push to `dataLayer`.
+//
+// EXACTLY ONE BASE INSTALLATION, ENFORCED IN CODE.
+// `gtmId` and `gaId` are mutually exclusive below. When a container is configured, the container
+// is the only base tag and GA4 is configured as a tag INSIDE it; the standalone gtag.js branch
+// then cannot render, so there is no window in which two GA4 base tags both emit `page_view`.
+// The gtag.js branch is retained only as the fallback for a deployment that has a measurement ID
+// but no container. Setting both is a configuration error, not a supported state.
+//
+// CONSENT — Termly gates the container, not a consent-mode signal.
+// The container carries Termly's documented manual-blocking pair: `type="text/plain"` plus
+// `data-categories`. Termly's blocker scans for `[data-categories]`, and re-inserts the script
+// with an executable type only once the visitor has consented to that category. Verified against
+// the live blocker bundle for this website UUID, which selects on `"[data-categories]"` and has
+// no handling for any other attribute name.
+//
+// The previous code here used `data-type="analytics"`, which Termly does not recognise. It never
+// misfired only because no ID was ever configured; with one configured it would have left the
+// script at `type="text/plain"` forever and loaded nothing at all.
+//
+// The region config in that same live bundle reports `"consent_mode": "opt_in"` and
+// `"enable_google_consent_mode": false` for every region. Two consequences, both deliberate:
+//   1. Termly does NOT emit gtag consent default/update signals today, so a Consent Mode v2
+//      default-denied stub would leave GA4 permanently denied with nothing to grant it. None is
+//      emitted here. The gate is the loader itself, which is strictly stronger than Consent Mode:
+//      on refusal the container is never fetched and no Google cookie is ever written.
+//   2. Termly's auto-blocker classifies `googletagmanager.com` `_default` as ESSENTIAL, so an
+//      ungated container would load before consent. The manual gate below is what prevents that.
+//      Do not remove it to "make the tag fire".
+//
+// The bare `dataLayer` initialiser is not a tracker and is not gated: it allocates an array. It
+// runs first so events raised before the container loads are queued rather than lost, and are
+// replayed by GTM if — and only if — consent is later granted.
+import { site } from "@data/site";
+
+const gaId = site.integrations.analytics.gaId;
+const gtmId = site.integrations.analytics.gtmId;
+const consentEnabled = site.integrations.termly.consentEnabled;
+
+const gtmSnippet = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',${JSON.stringify(gtmId)});`;
+
+const gtagSnippet = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config',${JSON.stringify(gaId)},{anonymize_ip:true});`;
+---
+
+{
+  consentEnabled && gtmId && (
+    <>
+      <script is:inline set:html="window.dataLayer=window.dataLayer||[];" />
+      <script is:inline type="text/plain" data-categories="analytics" set:html={gtmSnippet} />
+    </>
+  )
+}
+
+{
+  consentEnabled && gaId && !gtmId && (
+    <>
+      <script
+        is:inline
+        type="text/plain"
+        data-categories="analytics"
+        src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}`}
+        async
+      />
+      <script is:inline type="text/plain" data-categories="analytics" set:html={gtagSnippet} />
+    </>
+  )
+}

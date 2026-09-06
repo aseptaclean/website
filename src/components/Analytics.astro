@@ -1,52 +1,73 @@
 ---
-import { site } from "@data/site";
-
-const gaId = site.integrations.analytics.gaId;
-const gtmId = site.integrations.analytics.gtmId;
-const consentEnabled = site.integrations.termly.consentEnabled;
+// SITEWIDE BEHAVIOURAL EVENTS. This component pushes to `dataLayer` and loads nothing.
+//
+// The tag loaders moved to AnalyticsHead.astro (shared <head>) and AnalyticsNoscript.astro
+// (immediately after <body>) so the container installs where Google's standard snippet belongs.
+// Do not reinstate a loader here — one base installation, in one place, is what keeps `page_view`
+// from being counted twice.
+//
+// REMOVED 2026-09-06 — the `[data-assessment-form]` listener and its `assessment_start` /
+// `assessment_submit` events. That selector matched exactly one component, AssessmentForm.astro,
+// which no page has imported since /request-assessment/ was retired (docs/05-CURRENT-DECISIONS.md
+// records it as dead code). The listener therefore ran on every route, found nothing, and fired
+// nothing, while the live PPC form at `[data-ppc-form]` carried its own separate events — which
+// is exactly the "two scripts, one action, neither authoritative" shape this pass exists to end.
+// Form measurement is now owned solely by the form component: PpcHeroForm.astro raises
+// `form_start`, `ppc_form_submit_attempt`, `ppc_form_success` and `ppc_form_error`.
+//
+// NO PERSONAL INFORMATION IS PUSHED FROM THIS FILE. Every parameter below is either a path, a
+// campaign constant, or a structural placement string derived from the DOM. No field value, no
+// query string, and no element text is ever read.
 ---
-
-{consentEnabled && gaId && !gtmId && (
-  <>
-    <script
-      is:inline
-      type="text/plain"
-      data-type="analytics"
-      src={`https://www.googletagmanager.com/gtag/js?id=${encodeURIComponent(gaId)}`}
-      async
-    ></script>
-    <script is:inline type="text/plain" data-type="analytics">
-      {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date());gtag("config",${JSON.stringify(gaId)},{anonymize_ip:true});`}
-    </script>
-  </>
-)}
-
-{consentEnabled && gtmId && (
-  <script is:inline type="text/plain" data-type="analytics">
-    {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({"gtm.start":new Date().getTime(),event:"gtm.js"});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!="dataLayer"?"&l="+l:"";j.async=true;j.src="https://www.googletagmanager.com/gtm.js?id="+i+dl;f.parentNode.insertBefore(j,f)})(window,document,"script","dataLayer",${JSON.stringify(gtmId)});`}
-  </script>
-)}
 
 <script>
   window.dataLayer = window.dataLayer || [];
+
+  const pagePath = window.location.pathname;
   const offer =
     new URLSearchParams(window.location.search).get("offer") ===
     "private-residence-reset"
       ? "private_residence_reset"
-      : window.location.pathname === "/private-residence-reset/"
+      : pagePath === "/private-residence-reset/"
         ? "private_residence_reset"
         : "handoff_reset";
+
   const record = (event: string, detail: Record<string, string> = {}) => {
-    window.dataLayer?.push({ event, offer_type: offer, ...detail });
+    window.dataLayer?.push({
+      event,
+      page_path: pagePath,
+      offer_type: offer,
+      ...detail
+    });
   };
 
-  if (window.location.pathname === "/private-residence-reset/") {
+  // Structural placement only — which control was used, never who used it. Derived from the
+  // element's ancestors so no component markup has to change; an explicit
+  // `data-link-location` on any ancestor wins if one is ever added.
+  const placementOf = (element: HTMLElement): string => {
+    const explicit = element.closest<HTMLElement>("[data-link-location]");
+    if (explicit?.dataset.linkLocation) return explicit.dataset.linkLocation;
+    if (element.closest(".ppc-bar")) return "ppc_sticky_bar";
+    if (element.closest(".mbar")) return "mobile_cta_bar";
+    if (element.closest(".ppc-header, .site-nav")) return "header";
+    if (element.closest(".ppc-foot, .foot")) return "footer";
+    const section = element.closest<HTMLElement>("section[id]");
+    if (section?.id) return section.id.slice(0, 50);
+    return "page";
+  };
+
+  if (pagePath === "/private-residence-reset/") {
     record("private_residence_page_view");
   }
+
   document.addEventListener("click", (event) => {
     const link = (event.target as HTMLElement).closest<HTMLAnchorElement>("a");
     if (!link) return;
-    if (link.href.startsWith("tel:")) record("phone_click");
+    // A `tel:` click asks the device to open its dialler. It is INTENT, not a connected call,
+    // and it is never a lead — see docs/05-CURRENT-DECISIONS.md and the Google Ads handoff.
+    if (link.href.startsWith("tel:")) {
+      record("phone_click", { link_location: placementOf(link) });
+    }
     // /request-assessment/ was retired 2026-09-06 (docs/05-CURRENT-DECISIONS.md); every CTA
     // that used to point at it now points at a page's own embedded form anchor instead —
     // #hero-form (homepage + the five service pages' AcHeroWithForm, its default formId),
@@ -57,24 +78,9 @@ const consentEnabled = site.integrations.termly.consentEnabled;
       record(
         offer === "private_residence_reset"
           ? "private_residence_assessment_click"
-          : "handoff_plan_click"
+          : "handoff_plan_click",
+        { link_location: placementOf(link) }
       );
     }
   });
-  const assessment = document.querySelector<HTMLFormElement>(
-    "[data-assessment-form]"
-  );
-  if (assessment) {
-    let started = false;
-    assessment.addEventListener("input", () => {
-      if (started) return;
-      started = true;
-      record("assessment_start");
-    });
-    assessment.addEventListener("submit", () => record("assessment_submit"));
-  }
-</script>
-
-<script is:inline>
-  window.dataLayer = window.dataLayer || [];
 </script>

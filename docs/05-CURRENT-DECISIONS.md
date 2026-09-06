@@ -827,3 +827,133 @@ ACCEPTED, whitespace-only rejected with `{"property_detail":"This field is requi
   behaviour is correct.
 - **`src/components/AssessmentForm.astro` is dead code.** No page imports it. It contains no
   minimum-length rule either.
+
+---
+
+## Conversion measurement installed — 2026-09-06, GTM container + canonical lead event
+
+Google Tag Manager container `GTM-WSSQ62BN` is installed sitewide and the site now raises one
+authoritative lead event. Google Ads has not been launched and was not touched.
+
+### The architecture that was actually found — not what the documents implied
+
+Verified by reading `dist/`, by fetching five live routes from `https://aseptaclean.com`, and by
+reading the live Termly bundle for this website UUID. Recorded because three separate assumptions
+about it were wrong.
+
+- **There was no Google tag on the production site at all.** Not GA4, not GTM, not gtag.js, not
+  Cloudflare Zaraz. `PUBLIC_GA_ID` and `PUBLIC_GTM_ID` are both consumed by
+  `src/components/Analytics.astro`, and **neither was ever set** in `wrangler.toml [vars]` or
+  `.env.production`, so every conditional in that component rendered nothing. GA4 property
+  `G-40K4ETN1NX` appears nowhere in this repository and appears nowhere in the served HTML of `/`,
+  `/contact/`, `/hoarding-cleanup-san-jose/`, `/hoarding-cleanup-san-jose/assessment/` or
+  `/thank-you/`. Whatever traffic that property is reporting is **not arriving from this site's
+  production HTML**, and that is a finding for the owner, not something this change can fix from
+  the repository.
+- **`dataLayer` had producers and no consumer.** `Analytics.astro`, `PpcHeroForm.astro` and
+  `404.astro` all pushed events into an array that nothing ever read, because no container existed
+  to read it. This is the actual root cause of "zero key events in GA4": not a mis-mapped tag, but
+  no tag.
+- **The `[data-assessment-form]` mismatch was real and was worse than reported.** That selector
+  matched exactly one component, `AssessmentForm.astro`, which this log already records as dead
+  code that no page imports. So the sitewide listener ran on all 47 routes, found nothing, and
+  fired neither `assessment_start` nor `assessment_submit` — while the live PPC form at
+  `[data-ppc-form]` raised its own separate events. Two scripts, one user action, neither
+  authoritative.
+- **The Termly manual-block attribute in `Analytics.astro` was wrong.** It used
+  `data-type="analytics"`. Termly's blocker selects on `[data-categories]` and has no handling for
+  any other attribute name — confirmed by reading the live bundle. Had an ID ever been configured,
+  the script would have sat at `type="text/plain"` forever and loaded nothing. This never misfired
+  only because the feature was never switched on.
+
+### How Termly actually controls Google tags — measured, not assumed
+
+From the live resource-blocker bundle and from a real browser run against `dist/`:
+
+- Region config is `"consent_mode": "opt_in"` with `"enable_google_consent_mode": false`.
+- Termly's auto-blocker classifies `googletagmanager.com` `_default` as **essential**, so an
+  ungated container would have loaded *before* consent. The manual `data-categories="analytics"`
+  gate is what prevents that. It is not decoration and must not be removed to "make the tag fire".
+- Because `enable_google_consent_mode` is false, Termly emits **no** `consent default`. A
+  default-denied Consent Mode v2 stub was therefore deliberately **not** added: with nothing
+  granting it, GA4 would have been permanently denied. Gating the loader is stricter anyway — on
+  refusal the container is never requested and no Google cookie can exist.
+- Termly **does** push `gtag('consent', 'update', …)` when consent is saved, so a Consent Mode
+  signal reaches the container on the accept path regardless of the dashboard toggle. Observed
+  twice per save in a real run.
+
+Measured behaviour, all three states: **no decision yet** → container not requested, script stays
+`type="text/plain"`. **Decline** → container never requested, never loads. **Accept** → Termly
+rewrites the script, `gtm.js` is fetched, `google_tag_manager["GTM-WSSQ62BN"]` exists, consent
+update signals present.
+
+### Changed
+
+- `src/components/AnalyticsHead.astro` — **new.** The only place a Google tag is installed.
+  Renders in the shared `<head>` immediately after the Termly blocker. `gtmId` and `gaId` are
+  mutually exclusive in code, so a second GA4 base tag cannot be produced by configuration.
+- `src/components/AnalyticsNoscript.astro` — **new.** The standard GTM `<noscript>` iframe,
+  immediately after the opening `<body>`.
+- `src/components/Analytics.astro` — reduced to sitewide behavioural events. Tag loaders removed
+  (they moved to the head component). The dead `[data-assessment-form]` listener and its two
+  events are **deleted**. `phone_click` gains `page_path` and a derived `link_location`.
+- `src/components/ppc/PpcHeroForm.astro` — now the single canonical form-tracking implementation.
+  Adds `form_start` (once per page load, on first real interaction), `ppc_form_error` (fixed
+  diagnostic categories derived from the status line only), an `inFlight` guard, a `sessionStorage`
+  claim keyed on the endpoint's confirmation code, and an awaited `eventCallback` window before the
+  thank-you redirect. `ppc_form_success` still fires only on `2xx && ok === true`.
+- `src/pages/hoarding-cleanup-san-jose/assessment/thank-you.astro` — explicit once-only lead
+  recovery. Requires the confirmation flag **and** a structurally valid code **and** an unclaimed
+  key. A bare thank-you view is never a lead.
+- `src/layouts/BaseLayout.astro`, `src/layouts/PpcLayout.astro` — the two shared layouts render
+  both new components. No page installs a container of its own.
+- `wrangler.toml`, `.env.production` — `PUBLIC_GTM_ID = "GTM-WSSQ62BN"`. `PUBLIC_GA_ID` stays
+  unset on purpose: GA4 is a tag inside the container, not a second base installation.
+- `scripts/analytics-tagging-check.mjs`, `scripts/analytics-events-check.mjs` — **new**, wired as
+  `npm run qa:analytics` and `npm run qa:analytics:events`.
+
+### Not changed
+
+No page copy, heading, consent wording, layout, styling, imagery, navigation, service option or
+legal text. No route added, removed or reindexed. `functions/api/lead.ts` and `functions/_lib/`
+untouched — no endpoint, validation rule, Turnstile check, rate limit, upload path, HubSpot
+mapping, email or SMS behaviour was modified. No Google Ads campaign was created or altered.
+`/sms-notification-consent/` is byte-preserved under carrier review, does not use `BaseLayout`, and
+therefore carries no container — correct, and exempted explicitly in the tagging guard.
+
+### Conflict resolved
+
+| Conflict | Resolution |
+|---|---|
+| The task specifies a GA4 `form_start` event. GA4 Enhanced Measurement also emits an automatic `form_start`. | Implemented as specified. Neither is a conversion, so the overlap cannot corrupt `generate_lead`. Enhanced Measurement is **not** disabled — AGENTS-level guidance is to preserve it absent a verified technical conflict, and this is an overlap in a supporting event, not a conflict. The site's own event is distinguishable by its `form_id` parameter. |
+| A standard GTM install puts an ungated `<noscript>` iframe after `<body>`; the consent rule says advertising and analytics must respect consent state. | The standard snippet ships. `<noscript>` content is parsed only when scripting is off, which is the one condition in which Termly cannot run either, so a `data-categories` attribute there would do nothing. The iframe is inert for measurement — GA4 and Ads tags need JavaScript. Recorded here rather than papered over. |
+
+### Verified
+
+- `npm run build` — 51 pages, clean. `npm run check` — 0 errors.
+- `npm run qa:analytics` — 8/8. One container per page across 47 pages, in `<head>`, Termly-gated,
+  `<noscript>` immediately after `<body>`, and **no second GA4 base tag anywhere in the build**.
+- `npm run qa:analytics:events` — 34/34 in a real browser: the three consent states above;
+  `phone_click` once with `page_path` + `link_location`; `form_start` once across four
+  interactions and never on page view; a 422 and a network failure each raising `ppc_form_error`
+  with **no** `ppc_form_success`; a locally invalid submit raising nothing at all; three rapid
+  submits producing one request, one attempt, one success; the thank-you recovery firing once for
+  an unrecorded lead and never twice; no name, phone, email, ZIP, description or filename in any
+  event; and all five UTMs plus `gclid` surviving from the landing URL into the `/api/lead` body.
+- `scripts/ppc-interaction-check.mjs` — 51/51, unchanged. `qa:launch`, `qa:copy`, `qa:gate6`,
+  `qa:situations`, `qa:phase3:endpoint`, `type-law-check` all pass.
+- No non-environmental console errors on `/`, `/contact/`, `/hoarding-cleanup-san-jose/`, the PPC
+  route, its thank-you route, `/services/` or `/404`.
+- `npm run qa:seo` reports 42 publish blockers. **Pre-existing** — an identical build of `HEAD`
+  before this change reports the same 42. They are the city-route inbound-link gates left by the
+  2026-09-03 launch reduction, not a regression, and AGENTS.md §2's "9/9 clean, 0 publish
+  blockers" note is stale as of that reduction.
+
+### What is NOT done, and is not claimed to be
+
+The container is installed and the `dataLayer` contract is verified end to end. **No tag, trigger
+or variable exists inside the GTM workspace** — that needs the GTM UI, which is not reachable from
+this repository. Until that is done, GA4 still receives nothing from this site. The exact required
+configuration, the GA4 key-event step, and the Google Ads import steps are in the handoff delivered
+with this change. `generate_lead` must be **observed in GA4 before** it is marked a key event or
+imported into Google Ads.

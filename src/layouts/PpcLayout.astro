@@ -19,6 +19,8 @@
 // page so the intent is stated in source rather than only inherited. The same mechanism keeps
 // the route out of sitemap.xml, which is generated from `launchIndexablePaths`.
 import Analytics from "@components/Analytics.astro";
+import AnalyticsHead from "@components/AnalyticsHead.astro";
+import AnalyticsNoscript from "@components/AnalyticsNoscript.astro";
 import SeoHead from "@components/SeoHead.astro";
 import PpcHeader from "@components/ppc/PpcHeader.astro";
 import PpcFooter from "@components/ppc/PpcFooter.astro";
@@ -68,6 +70,8 @@ const effectiveNoindex = noindex || hiddenFromLaunch;
         data-name="termly-embed-banner"
       />
     )}
+    {/* Same position as BaseLayout — this layout reproduces that <head> exactly. */}
+    <AnalyticsHead />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#122840" />
     <link
@@ -93,6 +97,7 @@ const effectiveNoindex = noindex || hiddenFromLaunch;
     />
   </head>
   <body class="ac-ppc">
+    <AnalyticsNoscript />
     <a class="skip-link" href="#main-content">Skip to main content</a>
     <PpcHeader />
     <main id="main-content" tabindex="-1">
