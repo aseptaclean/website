@@ -11,10 +11,12 @@
 //                     entry_route, submitted_from — every one already validated by
 //                     functions/_lib/lead.ts. No field name is introduced here.
 //   required set      form_version present + offer_type !== private_residence_reset means the
-//                     server requires full_name, phone, privacy_consent, submission_timestamp,
-//                     idempotency_key, property_zip, property_situation, property_detail. The
-//                     client mirrors exactly that set. email stays optional and is validated
-//                     only when supplied, which is the server's own rule.
+//                     server requires full_name, phone, email, privacy_consent,
+//                     submission_timestamp, idempotency_key, property_zip, property_situation,
+//                     property_detail — email joined this set 2026-09-06 (owner requirement:
+//                     customer confirmation must be possible from every active form; it is now
+//                     part of functions/_lib/lead.ts's commonRequiredFields). The client mirrors
+//                     exactly that set.
 //   service value     "Hoarding or heavy clutter" — the FROZEN CRM enum from
 //                     src/data/assessment.ts, the same string HubSpot and the owner-notification
 //                     email already expect. Brief: "Fixed Hoarding service value; no redundant
@@ -177,13 +179,14 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
       </div>
 
       <div class="ppc-form__field">
-        <label for={`${formId}-email`}>Email <span class="ppc-form__optional">(optional)</span></label>
+        <label for={`${formId}-email`}>Email</label>
         <input
           id={`${formId}-email`}
           name="email"
           type="email"
           inputmode="email"
           autocomplete="email"
+          required
         />
       </div>
 
@@ -470,7 +473,7 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
       privacy_consent: "Check the consent box so we're allowed to call or text you back.",
       property_zip: "Add the property ZIP code so we can confirm the service area.",
       property_detail: "Tell us a little about what's going on.",
-      email: "Enter a valid email address, or leave it blank."
+      email: "Add a valid email address so we can send a confirmation."
     };
 
     const contactPhone = form.dataset.contactPhone ?? "";

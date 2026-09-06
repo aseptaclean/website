@@ -4,12 +4,16 @@
 // contact Aseptaclean" specifies the field set, the heading, and the submit label; doc 30 §3
 // and §4 specify the dark hero panel and the light body variant.
 //
-// FIELD CONTRACT UNCHANGED. This form posts the same field names functions/_lib/lead.ts already
-// validates for the lean assessment path (form_version present, offer_type !== residence):
-// full_name, phone, property_zip, property_situation, property_detail, plus the shared
-// commonRequiredFields (privacy_consent, submission_timestamp, idempotency_key). No new field
-// name is introduced, no required/optional state changed, and the situation values remain the
-// frozen CRM enum in src/data/assessment.ts — only their visible labels and order moved.
+// FIELD CONTRACT. This form posts field names functions/_lib/lead.ts already validates for the
+// lean assessment path (form_version present, offer_type !== residence): full_name, phone,
+// property_zip, property_situation, property_detail, plus the shared commonRequiredFields
+// (privacy_consent, submission_timestamp, idempotency_key). Every one of those is unchanged, and
+// the situation values remain the frozen CRM enum in src/data/assessment.ts — only their visible
+// labels and order moved.
+//
+// EMAIL ADDED 2026-09-06 (owner requirement: customer confirmation must be possible from every
+// active form). `email` is now part of commonRequiredFields in functions/_lib/lead.ts, so this
+// form requires it like every other active form on the site.
 //
 // The submit/validation/error/Turnstile script below is QuickHandoffForm's working contract,
 // extended with the two extra required inputs (property_zip, property_situation).
@@ -99,6 +103,18 @@ const endpointAvailable = Boolean(
         type="tel"
         inputmode="tel"
         autocomplete="tel"
+        required
+      />
+    </div>
+
+    <div class="hero-form__field">
+      <label for={`${formId}-email`}>Email</label>
+      <input
+        id={`${formId}-email`}
+        name="email"
+        type="email"
+        inputmode="email"
+        autocomplete="email"
         required
       />
     </div>
@@ -252,6 +268,7 @@ const endpointAvailable = Boolean(
 
       const approvedFieldMessage: Record<string, string> = {
         phone: "Add a phone number so Matthew can reach you about the property.",
+        email: "Add a valid email address so we can send a confirmation.",
         privacy_consent: "Check the consent box so we're allowed to call or text you back.",
         property_zip: "Add the property ZIP code so we can confirm the service area.",
         property_situation: "Select the option that sounds closest to what's happening."
@@ -370,13 +387,24 @@ const endpointAvailable = Boolean(
           }
 
           if (response.ok && payload.ok === true) {
+            // THREE email states, not two — "email" is required on this form, so the visitor
+            // supplied one on every real submission. Collapsing a provider failure into "none"
+            // would tell them we never had an address to send to, when we did and the send
+            // failed. Only this form knows whether an address was actually typed.
+            const emailSupplied = Boolean(
+              (form.elements.namedItem("email") as HTMLInputElement | null)?.value.trim()
+            );
             const parameters = new URLSearchParams({
               received: "1",
               callback:
                 typeof payload.callbackWindow === "string"
                   ? payload.callbackWindow
                   : "next-business-window",
-              email: payload.confirmationEmailSent === true ? "sent" : "none"
+              email: !emailSupplied
+                ? "none"
+                : payload.confirmationEmailSent === true
+                  ? "sent"
+                  : "attention"
             });
             const code =
               typeof payload.confirmationCode === "string" ? payload.confirmationCode : "";

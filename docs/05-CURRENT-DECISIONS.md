@@ -659,3 +659,81 @@ Fresh `npm run build:local`, then `npm run qa:launch`: PASS, and grep of the bui
 `/request-assessment` returns zero matches in any rendered HTML (see verification log for the
 full command and output). `astro check` and `npm run qa:copy` / `npm run qa:gate6` also re-run
 clean — no approved copy string changed, only link destinations.
+
+---
+
+## 2026-09-06 — Email required on every active form; HubSpot contact matching
+
+**Confirmed owner instruction**, given directly and explicitly: "Add a required Email field
+wherever it is missing… The lack of an email field is an implementation gap to fix, not an
+acceptable 'N/A.'" Scoped to the homepage, the available service pages, Contact, and the PPC
+hoarding landing page, with an explicit instruction to also find and fix any other currently
+live form missing the field.
+
+### The gap
+
+Three distinct form implementations exist, not one shared component:
+
+| Implementation | Component | Pages | Email before this fix |
+| --- | --- | --- | --- |
+| Form A | `src/components/ac/AcCompactForm.astro` | `/`, the 5 canonical service pages, `/contact/` | **Absent** |
+| Form B | `src/components/QuickHandoffForm.astro` (via `RequestForm.astro` and `CityHero.astro`) | 10 legacy pages (noindex, still built and live — see the full inventory in the 2026-09-06 handoff) plus the noindex dynamic city pages | **Absent** |
+| Form C | `src/components/ppc/PpcHeroForm.astro` | `/hoarding-cleanup-san-jose/assessment/` | Present but **optional** |
+
+Because Form A and Form B never sent `email`, `functions/_lib/providers.ts`'s
+`sendCustomerEmail()` skipped unconditionally on those paths — a customer confirmation email was
+structurally impossible from the homepage, any service page, Contact, or any Form B page.
+
+### What changed
+
+| File | Change |
+| --- | --- |
+| `functions/_lib/lead.ts` | `email` added to `commonRequiredFields`, which every submission shape includes — this makes it required on every branch (short/common, lean/detailed, residence) in one place instead of one branch at a time. The residence branch's own explicit `"email"` entry (already required there) was removed as now-redundant. |
+| `src/components/ac/AcCompactForm.astro` | Added a required `Email` field (`type="email"`, `autocomplete="email"`) between Phone and ZIP in the two-column grid. Added its client-side error message. Redirect to `/thank-you/` now reports three email states (`sent` / `attention` / `none`) instead of collapsing a delivery failure into `none`. |
+| `src/components/QuickHandoffForm.astro` | Same required `Email` field, added between Phone and the (optional) detail field. Same error-message and three-state redirect fix. This is Form B — the fix reaches all 10 live pages that render it through `RequestForm.astro`, plus `CityHero.astro`, from one component edit. |
+| `src/components/ppc/PpcHeroForm.astro` | Email's `(optional)` label and its absent `required` attribute are gone; the field is required like every other field on this form. Client-side message updated from "…or leave it blank" to reflect the new requirement. |
+| `functions/_lib/providers.ts` | HubSpot contact matching hardened — see below. |
+| `docs/03-INTEGRATION-CONTRACT.md` "Desired compact fields" | Not amended in this pass — the field list there predates this owner instruction and is superseded within its own stated boundary ("If the actual schema includes additional required fields, accommodate them rather than silently removing them"), which this change follows precisely. |
+
+### HubSpot contact matching — reviewed per explicit instruction
+
+The owner instruction included: "Review contact matching when email and phone point to different
+existing records. Do not overwrite an unrelated contact or merge records solely because a phone
+number matches." Before this fix, `syncHubSpot()` already searched by email when one was present
+(never by phone in that case) — but it unconditionally wrote the submitted phone onto whichever
+contact the email search matched, even if that phone number was already the identifying phone on
+a *different* contact record. `syncHubSpot()` now:
+
+1. Searches by email (the identifier, now that every active form collects one) and, separately,
+   by phone — purely to detect whether the phone belongs to a different existing contact.
+2. Never selects which contact to update based on a phone match alone (unchanged from before,
+   now the only live path since email is always present).
+3. **New:** skips writing `phone` onto the matched contact when that number is already the
+   identifying phone on a different contact, and appends a `Phone conflict: …` line to the
+   deal's `description` naming both HubSpot contact IDs, so the owner reconciles manually instead
+   of the pipeline silently merging or overwriting either record.
+4. The `!email` branch (search/update by phone) is kept only as a defensive fallback for a
+   submission that somehow arrives with no email — which no active form can produce after this
+   fix — rather than deleted, so such a request still reaches a CRM record instead of being
+   dropped.
+
+### Not changed
+
+- No page copy, heading, consent wording, service pricing, or campaign-specific wording (PPC's
+  "free walkthrough" framing, submit label, thank-you copy) — all preserved exactly.
+- No other required/optional field state, no endpoint, no service enum, no upload logic.
+- `src/components/AssessmentForm.astro` and `src/data/assessment.ts` — left exactly as the
+  2026-09-06 request-assessment retirement entry above described them: unimported by any live
+  route, so out of scope for an "active form" fix.
+
+### Verified
+
+Fresh `npm run build:local` — 51 pages, no errors. `npm run check` — 0 errors, 0 new warnings.
+`npm run qa:launch`, `npm run qa:copy`, `npm run qa:gate6` — all PASS, unchanged from before this
+change. A Playwright layout check across 5 representative pages (one per distinct implementation
+plus Contact) × 5 desktop/mobile breakpoints (390×844, 1280×800, 1366×768, 1440×900, 1536×864)
+confirmed the email field renders required, `type="email"`, `autocomplete="email"`, ≥44px control
+height, with consent and submit still fully visible and no horizontal overflow at every
+combination — 25/25 checks clean. `scripts/launch-e2e-form-check.mjs` extended with a fifth
+surface (`request-form`, Form B via `/faq/`) and a `confirmationEmailSent` assertion on every
+surface; see the launch verification log for the live production run.

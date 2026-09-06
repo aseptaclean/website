@@ -77,12 +77,18 @@ export interface ValidationResult {
 }
 
 // Fields every submission must have, regardless of which intake form was used: the short
-// homepage form (name, phone, optional description, consent), the lean request-assessment
+// homepage form (name, phone, email, description, consent), the lean request-assessment
 // form, and the Private Residence Reset form all collect these. Everything else below is
 // optional so a given form's request isn't rejected for fields it never asks about.
+//
+// `email` joined this set 2026-09-06 (owner requirement: customer confirmation must be possible
+// from every active form). It was previously required only on the residence-offer branch below;
+// adding it here makes it required on every branch instead of duplicating it there, and the
+// residence branch's own explicit "email" entry is now redundant but harmless.
 const commonRequiredFields = [
   "full_name",
   "phone",
+  "email",
   "privacy_consent",
   "submission_timestamp",
   "idempotency_key"
@@ -426,17 +432,18 @@ export function validateLead(formData: FormData): ValidationResult {
   const offerType = data.offer_type;
   // Form-identity contract, three shapes:
   //   1. QuickHandoffForm.astro (short homepage form) — never sends form_version. Only the
-  //      common fields are required.
+  //      common fields (now including email) are required.
   //   2. AssessmentForm.astro, residence offer (offer_type=private_residence_reset) — sends
-  //      form_version and the residence baseline fields (residenceOptionalFields plus email;
-  //      see the `data-residence-required` attributes and the JS that flips `email.required`
-  //      true on this branch). The old long-form's commonOptionalFields set
-  //      (property_type, vacant_status, approximate_square_footage, relationship_to_property,
+  //      form_version and the residence baseline fields (residenceOptionalFields; email is
+  //      already required by commonRequiredFields, so it is not repeated here — see the
+  //      `data-residence-required` attributes and the JS that flips `email.required` true on
+  //      this branch). The old long-form's commonOptionalFields set (property_type,
+  //      vacant_status, approximate_square_footage, relationship_to_property,
   //      authority_to_approve, property_address, preferred_contact_method,
   //      scope_acknowledgment) is NOT rendered on this branch and must not be required here —
   //      requiring it made every residence-offer submission unsubmittable.
   //   3. AssessmentForm.astro, default/short path (2026-09-03 rebuild) — sends form_version and
-  //      a nine-field required set beyond the common fields: ZIP, situation, and description
+  //      a required set beyond the common fields: ZIP, situation, and description
   //      (leanRequiredFields). This replaced an earlier long-form questionnaire that required
   //      the full handoffOptionalFields set; that list is kept in allowedScalarFields only so
   //      no longer-sent field is rejected if it ever arrives from a stale cached page.
@@ -445,7 +452,7 @@ export function validateLead(formData: FormData): ValidationResult {
   const requiredFields = !isDetailedSubmission
     ? commonRequiredFields
     : isResidenceOffer
-    ? [...commonRequiredFields, ...residenceOptionalFields, "email"]
+    ? [...commonRequiredFields, ...residenceOptionalFields]
     : [...commonRequiredFields, ...leanRequiredFields];
   for (const field of requiredFields) {
     if (!data[field] || (Array.isArray(data[field]) && !data[field].length)) {

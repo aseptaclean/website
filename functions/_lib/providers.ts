@@ -126,40 +126,53 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
     "content-type": "application/json"
   };
   const name = String(lead.data.full_name).trim().split(/\s+/);
-  // The short homepage form collects no email, so phone is the identifier on that path.
-  // Dropping the CRM write there would leave homepage leads in R2 and nowhere else.
+
+  const findContactByProperty = async (propertyName: string, value: string) => {
+    if (!value) return undefined;
+    const response = await fetch(
+      "https://api.hubapi.com/crm/v3/objects/contacts/search",
+      {
+        method: "POST",
+        headers,
+        body: JSON.stringify({
+          filterGroups: [{ filters: [{ propertyName, operator: "EQ", value }] }],
+          limit: 1
+        })
+      }
+    );
+    if (!response.ok) await providerError(response, "HubSpot contact search");
+    const result = (await response.json()) as { results?: Array<{ id: string }> };
+    return result.results?.[0]?.id;
+  };
+
+  // Email is now the identifier: every active form requires one (2026-09-06), so this is the
+  // match every submission dedupes on. Phone is looked up separately, ONLY to detect a
+  // conflict — matching (or overwriting) a contact by phone alone would let two different
+  // people's records collapse into one just because they share a phone number (a landline, a
+  // family member, a reused mobile number). See docs/05-CURRENT-DECISIONS.md 2026-09-06 "HubSpot
+  // contact matching".
+  const emailContactId = await findContactByProperty("email", email);
+  const phoneContactId = await findContactByProperty("phone", phone);
+  const phoneOnDifferentContact = Boolean(phoneContactId) && phoneContactId !== emailContactId;
+
+  // Defensive fallback only: every active form now requires email, so `email` is never empty
+  // here in practice. If it somehow is (a stale cached page posting an old form shape), fall
+  // back to the previous phone-match behavior rather than always creating a duplicate contact.
+  let contactId = emailContactId ?? (email ? undefined : phoneContactId);
   const contactProperties = {
     ...(email ? { email } : {}),
     firstname: name[0] ?? "",
     lastname: name.slice(1).join(" "),
-    phone,
+    // Skip writing phone onto a record when that exact number is already the identifying phone
+    // on a DIFFERENT contact — writing it here would either steal that contact's number or leave
+    // two contacts sharing one. The number still reaches the deal (see the conflict line added to
+    // `summary` below); it is just not force-written onto a possibly-unrelated contact record.
+    ...(phone && !phoneOnDifferentContact ? { phone } : {}),
     // The short request-assessment form (2026-09-03) collects a ZIP, not a city. field()
     // renders "Not supplied" for humans reading a summary; writing that into a real CRM
     // property would make it look like a ZIP named "Not supplied".
     ...(lead.data.property_zip ? { zip: String(lead.data.property_zip) } : {})
   };
-  // Dedupe on whichever identifier we have. Phone matching is an exact-value match, so it
-  // only collapses repeat submissions that share the site's own formatting — the long and
-  // short forms both post the digits as the visitor typed them.
-  const dedupeFilter = email
-    ? { propertyName: "email", operator: "EQ", value: email }
-    : { propertyName: "phone", operator: "EQ", value: phone };
-  const searchResponse = await fetch(
-    "https://api.hubapi.com/crm/v3/objects/contacts/search",
-    {
-      method: "POST",
-      headers,
-      body: JSON.stringify({
-        filterGroups: [{ filters: [dedupeFilter] }],
-        limit: 1
-      })
-    }
-  );
-  if (!searchResponse.ok) await providerError(searchResponse, "HubSpot contact search");
-  const search = (await searchResponse.json()) as {
-    results?: Array<{ id: string }>;
-  };
-  let contactId = search.results?.[0]?.id;
   const contactResponse = await fetch(
     contactId
       ? `https://api.hubapi.com/crm/v3/objects/contacts/${contactId}`
@@ -217,7 +230,18 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
           ...attributionLines(lead),
           ...uploadLines(lead)
         ]
-  ).join("\n");
+  )
+    .concat(
+      // Surfaced on the deal (not silently dropped) so the owner can manually confirm whether
+      // this is the same person before treating the two contacts as one — see the contact
+      // property write above, which deliberately did not merge them automatically.
+      phoneOnDifferentContact
+        ? [
+            `Phone conflict: ${phone} is already on a different HubSpot contact (id ${phoneContactId}) than the one matched by email (id ${contactId}). The phone number was NOT written to either contact record automatically — verify manually before treating these as the same person.`
+          ]
+        : []
+    )
+    .join("\n");
   const dealResponse = await fetch("https://api.hubapi.com/crm/v3/objects/deals", {
     method: "POST",
     headers,
