@@ -94,8 +94,10 @@
 // pending a current COI match. Taking a gated claim off an indexable page is the conservative
 // direction.
 //
-// NO EMBEDDED FORM. §20A.8's destination rule and §20A.9's "one assessment engine" — CTAs link to
-// /request-assessment/?service=property-cleanouts instead of duplicating lead infrastructure.
+// NO EMBEDDED FORM. /request-assessment/ (this page's former destination, with its
+// `?service=property-cleanouts` preselect into AssessmentForm.astro) was retired 2026-09-06 —
+// owner decision, docs/05-CURRENT-DECISIONS.md. This page still has no form of its own, so its
+// CTAs now follow the standing fallback rule and link to the Contact page's embedded form.
 //
 // NO getServiceCityLinks() CALL. `ServiceSlug` in cityFacts.ts is `"hoarding-cleanup" |
 // "estate-cleanout"` only — property-cleanouts is not a member, and widening that shared type to
@@ -144,7 +146,7 @@ const description =
 // AssessmentForm.astro, added alongside this page (see that component's service-context block).
 // It maps to the existing "Landlord turnover" `property_situation` option — already present on
 // the form, not invented for this page — and records the real entry route on the lead.
-const assessmentHref = "/request-assessment/?service=property-cleanouts";
+const assessmentHref = "/contact/#contact-form";
 const phoneHref = site.business.phoneUri;
 const smsHref = site.business.smsUri;
 

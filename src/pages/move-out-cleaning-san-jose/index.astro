@@ -99,12 +99,10 @@
 // AGENTS.md §3 pending a current COI match, and dropping a gated claim from an indexable page is
 // the conservative direction. The component is untouched; only this call site omits it.
 //
-// NO EMBEDDED FORM. §20A.8's destination rule and §20A.9's "one assessment engine": CTAs link to
-// /request-assessment/?service=move-out, which AssessmentForm.astro now recognizes (added
-// alongside this page) and maps to "Difficult move-out" — an existing `property_situation` option
-// (assessment.propertySituations) unclaimed by the four other service contexts already wired
-// (hoarding-cleanup → "Accumulated contents"; estate-cleanout → "Inherited or estate property";
-// property-cleanouts → "Landlord turnover"; deep-cleaning → "Already empty but requires detailed
+// NO EMBEDDED FORM. /request-assessment/ (this page's former destination, with its
+// `?service=move-out` preselect into AssessmentForm.astro) was retired 2026-09-06 — owner
+// decision, docs/05-CURRENT-DECISIONS.md. This page still has no form of its own, so its CTAs
+// now follow the standing fallback rule and link to the Contact page's embedded form instead.
 // cleaning"). No new option was added to the form.
 //
 // IMAGE — HERO REPOINTED 2026-09-05 to the owner image package, slot 02
@@ -144,7 +142,7 @@ const description =
 
 // §20A.8's destination rule + §20A.9's service branch. `?service=move-out` is read by
 // AssessmentForm.astro (see that component's service-context block, added alongside this page).
-const assessmentHref = "/request-assessment/?service=move-out";
+const assessmentHref = "/contact/#contact-form";
 const phoneHref = site.business.phoneUri;
 const smsHref = site.business.smsUri;
 

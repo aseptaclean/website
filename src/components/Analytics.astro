@@ -47,7 +47,13 @@ const consentEnabled = site.integrations.termly.consentEnabled;
     const link = (event.target as HTMLElement).closest<HTMLAnchorElement>("a");
     if (!link) return;
     if (link.href.startsWith("tel:")) record("phone_click");
-    if (link.href.includes("/request-assessment/")) {
+    // /request-assessment/ was retired 2026-09-06 (docs/05-CURRENT-DECISIONS.md); every CTA
+    // that used to point at it now points at a page's own embedded form anchor instead —
+    // #hero-form (homepage + the five service pages' AcHeroWithForm, its default formId),
+    // #request (RequestForm.astro / CityHero.astro), #contact-form (Contact), or
+    // #assessment-form (the PPC hero form). Match those instead of the dead route substring so
+    // this event keeps firing on the same visitor action it always measured.
+    if (/#(hero-form|request|contact-form|assessment-form)(&|$)/.test(link.href)) {
       record(
         offer === "private_residence_reset"
           ? "private_residence_assessment_click"

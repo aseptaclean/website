@@ -86,6 +86,17 @@ const htmlFiles = await findHtml(dist);
 const pages = new Map();
 for (const file of htmlFiles) pages.set(routeForFile(file), await readFile(file, "utf8"));
 
+// Owner decision 2026-09-06 (docs/05-CURRENT-DECISIONS.md): the standalone Request Assessment
+// page is retired outright, not merely noindexed. A future edit re-adding
+// src/pages/request-assessment.astro would satisfy every other check in this file (it is not in
+// expectedPublic, so nothing requires it to exist) but must still fail loudly here.
+if (pages.has("/request-assessment/")) {
+  failures.push(
+    "/request-assessment/ was rebuilt — the standalone assessment page must remain retired " +
+      "(owner decision 2026-09-06); it must return a real not-found response, not a rebuilt page"
+  );
+}
+
 for (const route of expectedPublic) {
   const html = pages.get(route);
   if (!html) {

@@ -117,9 +117,9 @@ export const site = {
     //   formHeading   the form's own title  → source wording
     //
     // `secondaryCta` changed 2026-09-04 from "Request an Assessment" → "Send a Message".
-    // /request-assessment/ survives as a working, indexable utility route (`assessmentUrl`
-    // below) but is no longer the default secondary action. The word "assessment" still
-    // appears in explanatory prose about how work is scoped — do not globally replace it.
+    // `/request-assessment/` was retired outright 2026-09-06 (owner decision) — see
+    // docs/05-CURRENT-DECISIONS.md. The word "assessment" still appears in explanatory prose
+    // about how work is scoped — do not globally replace it.
     primaryCta: "Call Aseptaclean",
     secondaryCta: "Send a Message",
     formSubmitCta: "Send Message",
@@ -135,8 +135,6 @@ export const site = {
     // would have labelled an SMS link "Request an Assessment". Splitting the field keeps each
     // action's label attached to the action it actually performs.
     smsCta: "Text a photo",
-    // The conversion destination. Unchanged by the CTA ruling — only the words moved.
-    assessmentUrl: "/request-assessment/",
     // Doc 27 §7 — the assessment-fee framing, owner-approved verbatim 2026-08-20 with the
     // ruling "photo review is free; the $195 applies only when an on-site walkthrough is
     // required". Ships as ONE paragraph at every fee surface, replacing four different
@@ -164,8 +162,12 @@ export const site = {
     name: "Private Residence Reset",
     category: "Structured whole-home deep reset",
     primaryCta: "Request a Private Residence Assessment",
-    assessmentUrl:
-      "/request-assessment/?offer=private-residence-reset"
+    // /request-assessment/ (this offer's original destination) was retired 2026-09-06. This
+    // page has no embedded form of its own, so the fallback rule applies: link to Contact.
+    // The offer_type=private_residence_reset backend branch in functions/_lib/lead.ts is
+    // unaffected but currently unreachable from any UI entry point — see
+    // docs/05-CURRENT-DECISIONS.md, 2026-09-06.
+    assessmentUrl: "/contact/#contact-form"
   },
   location: {
     // ONE service-area string, sitewide — owner ruling 2026-08-20 (B2). This is the NAP wording

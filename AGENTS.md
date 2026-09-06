@@ -195,11 +195,19 @@ preserved byte-for-byte. Apply only the transformations and placements in
 Homepage · Services hub · Hoarding Cleanup · Extreme Cleaning · Detailed Deep Cleaning ·
 Crime Scene & Trauma Cleanup · Rodent Droppings & Animal Waste Cleanup · About · Contact ·
 Privacy Policy · Terms and Conditions · Cookie Policy.
-`/request-assessment/`, `/thank-you/`, `/404`, `/data-request/` and
-`/sms-notification-consent/` remain working utility routes. `/request-assessment/` is **removed
-as the primary global CTA and from primary navigation** but stays a working, indexable form
-destination. Absence from the new navigation does not authorize deleting or deindexing any
-other existing route — that needs an explicit keep/redirect/retire mapping.
+`/thank-you/`, `/404`, `/data-request/` and `/sms-notification-consent/` remain working utility
+routes. Absence from the new navigation does not authorize deleting or deindexing any other
+existing route — that needs an explicit keep/redirect/retire mapping.
+
+**`/request-assessment/` is retired outright — owner decision, 2026-09-06, superseding this
+paragraph's earlier text.** It previously survived here as "removed from primary CTA/nav but
+stays a working, indexable form destination"; the owner has since ruled the standalone page
+"must be unavailable," `noindex` alone is insufficient, and it must return a real not-found
+response. `src/pages/request-assessment.astro` is deleted and the path is out of
+`launchPrimaryPaths`. Every CTA and link that pointed at it now points at the destination
+page's own embedded form or, where a page has none, at `/contact/`. Full resolution:
+`docs/05-CURRENT-DECISIONS.md`, 2026-09-06. `/hoarding-cleanup-san-jose/assessment/` is a
+**different route** — the approved PPC landing page — and is unaffected by this retirement.
 
 **7. The reference PDF is not a claims source.** It shows `LICENSED & INSURED`, OSHA, IICRC,
 CDPH, and Google-review badges belonging to other companies, plus 24/7 emergency language.
@@ -565,9 +573,9 @@ production build. Never infer a physical office from service-area coverage.
 **CTA decision, owner-approved 2026-09-04 — supersedes the 2026-08-25 ruling below.** The
 default visible primary CTA is `Call Aseptaclean`; the secondary is `Send a Message`, which
 scrolls/focuses the local form where one exists and otherwise links to `/contact/#contact-form`.
-`/request-assessment/` stays a working, indexable form destination but is no longer the primary
-CTA or a primary-navigation item. Form submit controls are labelled `Send Message` and always
-submit the form. See §2.2.2 and §2.2.3.
+Form submit controls are labelled `Send Message` and always submit the form. See §2.2.2 and
+§2.2.3. **`/request-assessment/` itself was retired outright 2026-09-06** (see §2.2.6) — it is
+no longer a CTA destination of any kind, primary or otherwise.
 
 *Superseded, kept for traceability — CTA decision, owner-approved 2026-08-25:*
 `Tell Us About the Property` superseded `Request an assessment` as the default visible primary

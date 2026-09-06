@@ -1,8 +1,21 @@
-# Page Brief — Tell Us About the Property (`/request-assessment/`)
+# Page Brief — Tell Us About the Property (`/request-assessment/`) — RETIRED 2026-09-06
 
-**Status:** Situation-first architecture approved 2026-08-25. This brief does not authorize a
-form rebuild. The current route, endpoint, protected consent/privacy/SMS/10DLC language,
-indexation, and integration remain unchanged until a separate implementation task.
+**Superseded in full.** The owner explicitly retired the standalone `/request-assessment/`
+route on 2026-09-06: "The standalone Request Assessment page, expected at `/request-assessment/`,
+must be unavailable." `src/pages/request-assessment.astro` is deleted, the route is removed from
+`src/data/launchArchitecture.ts`, and every internal link/CTA that pointed at it now points at a
+page's own embedded form (`#request` / `#contact-form` / `#assessment-form`) or `/contact/`.
+Full resolution: `docs/05-CURRENT-DECISIONS.md`, 2026-09-06, "Standalone Request Assessment page
+retired." This brief is kept for historical record only — do not build from it, and do not
+recreate this route under this or any other path.
+
+**Everything below this line describes the retired page and no longer applies.**
+
+---
+
+**Status (historical):** Situation-first architecture approved 2026-08-25. This brief does not
+authorize a form rebuild. The current route, endpoint, protected consent/privacy/SMS/10DLC
+language, indexation, and integration remain unchanged until a separate implementation task.
 
 ## 1. Page purpose
 

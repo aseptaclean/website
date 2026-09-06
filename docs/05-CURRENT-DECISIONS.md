@@ -569,3 +569,93 @@ Move-Out each open on a different photograph.
 
 No copy, heading, alt text (still `alt=""`, decorative, unchanged), route, canonical, or indexing
 change. `npm run build:local` — 52 pages, no errors.
+
+---
+
+## 2026-09-06 — Standalone Request Assessment page retired
+
+**Confirmed owner instruction**, given directly and explicitly: "The standalone Request
+Assessment page, expected at `/request-assessment/`, must be unavailable... `noindex` alone is
+insufficient... verify the standalone URL returns a proper not-found response." The owner also
+explicitly distinguished this from `/hoarding-cleanup-san-jose/assessment/` (the approved PPC
+landing page, unaffected) — a distinction prior verification reports had gotten wrong by
+conflating the two routes.
+
+### Conflict
+
+A: This session's live owner instruction, 2026-09-06 — "must be unavailable," no redirect, no
+noindex-only treatment, "remove it from production page output, navigation and internal links,
+CTA destinations, sitemap." (rank 2 — explicit current owner decision)
+
+B: `AGENTS.md` §2.2.6 and §3 — "`/request-assessment/` survives as a working, indexable utility
+route... is no longer the default secondary action" (owner decision, 2026-09-04). `docs/SITEMAP-
+MASTER.md` "Existing utility and legacy routes" — "Keep `/request-assessment/` working as an
+existing form destination." `docs/page-briefs/REQUEST-ASSESSMENT.md` — "Keep
+`/request-assessment/`; do not create a replacement route." `src/data/launchArchitecture.ts` —
+the path was included in `launchPrimaryPaths` (indexable, in `sitemap.xml`). (rank 2 — explicit
+owner decision, 2026-09-04, and the rank-6 documents implementing it)
+
+**Resolution: A wins, scoped to this one route.** Both sides are rank 2. This resolves the same
+way the 2026-09-06 free-walkthrough decision earlier in this log did: a later owner decision that
+names its own scope outranks an earlier one within that scope, because it is the same authority
+speaking again, not a different one. The scope named here is exactly one route.
+
+**Type:** violated rule → rule reversed, code and docs changed to match.
+
+### What changed
+
+| File | Change |
+| --- | --- |
+| `src/pages/request-assessment.astro` | Deleted. The route now returns Cloudflare Pages' real 404, unconditionally — no redirect, no noindexed stub. |
+| `src/data/launchArchitecture.ts` | `/request-assessment/` removed from `launchPrimaryPaths`; comment corrected. `sitemap.xml.ts` reads `launchIndexablePaths`, so the route left the sitemap automatically. |
+| `src/data/site.ts` | `offer.assessmentUrl` field removed (its only consumer, `Footer.astro`, now uses `offer.contactFormUrl`). `residenceOffer.assessmentUrl` repointed from `/request-assessment/?offer=private-residence-reset` to `/contact/#contact-form` — see note below. |
+| `src/components/Footer.astro` | Sitewide "Send a Message" footer link now points at `contactFormUrl` instead of the retired `assessmentUrl`. This was also a live label/destination mismatch (label already said "Send a Message" while linking to the assessment page) that this fix incidentally corrects. |
+| `src/components/ServiceHub.astro`, `AccentBand.astro` (default prop), `CityCloseBand.astro`, `src/pages/faq/index.astro` | CTA hrefs changed from `/request-assessment/` to `#request` — every caller of these components also renders `<RequestForm />` or an equivalent embedded form (`id="request"`) lower on the same page, so the fix is "scroll to the form that is already there," per the embedded-form-first fallback rule. |
+| `src/pages/{move-out-cleaning,animal-waste-cleanup,property-cleanouts,estate-cleanout}-san-jose/index.astro` | These four pages carry "NO EMBEDDED FORM" by design and linked out to `/request-assessment/?service=<x>` for a query-preselected intake. Changed to `/contact/#contact-form` per the explicit fallback rule ("if the current page has no form, link to the available Contact page"). The `?service=` preselect mechanism was local to `AssessmentForm.astro` (now unreferenced by any route) and is not reproduced on the Contact form. |
+| `src/pages/thank-you.astro` | "Start the assessment" fallback link (shown only when no valid submission is detected) now points at `/contact/#contact-form`. |
+| `scripts/launch-architecture-check.mjs` (`npm run qa:launch`) | Added an explicit failing check if `/request-assessment/` is ever rebuilt into `dist/`, so a future edit cannot silently resurrect the route. The existing broken-internal-link scanner in this same script also caught (by construction) any of the twelve launch pages that still pointed at the retired route. |
+| `AGENTS.md` §2.2.6, §3 | Amended in place: the "stays a working, indexable utility route" language is struck and replaced with the retirement, cross-referencing this entry. |
+| `docs/SITEMAP-MASTER.md` "Existing utility and legacy routes" | Amended: `/request-assessment/` removed from the preserve-list; retirement recorded with a pointer here. |
+| `docs/page-briefs/REQUEST-ASSESSMENT.md` | Marked retired/superseded at the top, kept as historical record, explicit "do not build from this" and "do not recreate this route." |
+
+### Not changed, and why
+
+- **`functions/_lib/lead.ts` and `functions/_lib/providers.ts`** — untouched. AGENTS.md §0.1: this
+  is the one lead endpoint and it is correct. Their comments describing "the lean
+  request-assessment form" name a `form_version`/`offer_type` validation branch
+  (`AssessmentForm.astro`'s field contract), not a live route; that branch is now unreachable from
+  any UI entry point but is harmless left in place, and touching the endpoint was out of scope and
+  against standing instruction.
+- **`src/components/AssessmentForm.astro` and `src/data/assessment.ts`** — left in the tree,
+  unimported by any route after this change. `assessment.ts` is shared CRM-contract data
+  (`situations` enum, upload limits) that other components' comments reference by name; deleting
+  it would risk an unrelated regression for a cosmetic dead-code cleanup that was not requested.
+  Reported here rather than silently removed.
+- **`site.residenceOffer.assessmentUrl` → `/contact/#contact-form` loses the
+  `offer=private-residence-reset` context.** `/private-residence-reset/` has no embedded form, so
+  the fallback rule applies, but the generic Contact form does not set `offer_type` and cannot
+  reproduce the backend's `private_residence_reset` branch. That branch in `functions/_lib/lead.ts`
+  is now unreachable from any UI entry point. This is a real fidelity loss (a residence-reset lead
+  submitted via Contact will not get that offer's distinct thank-you/confirmation wording); flagged
+  as a launch dependency rather than silently accepted. Owner call if reproducing the distinction
+  matters: either give `/private-residence-reset/` its own embedded form, or accept the Contact
+  fallback as final.
+- **Historical, non-gate audit/screenshot scripts** (`scripts/v3-homepage-check.mjs`,
+  `port-shots.mjs`, `design-fidelity-capture.mjs`, `full-site-audit.mjs`, `visual-capture.mjs`,
+  `hoarding-page-check.mjs`, `ppc-production-pipeline-check.mjs`,
+  `contact-quick-form-production-check.mjs`, and the `qa:phase*` / `qa:copy:browser` scripts still
+  wired into `package.json`) mention `/request-assessment/` in comments or as a probe target from
+  earlier phases of this project. They are not part of the enforced `qa:launch`/`qa:gate6` gate
+  and were not individually edited — `qa:launch`'s new check is the actual regression guard. Any
+  of these scripts that are re-run manually against a route that no longer exists will report it
+  as missing, which is the correct behavior, not a defect to fix.
+- **`/hoarding-cleanup-san-jose/assessment/` (the PPC landing page) is untouched.** It is a
+  different route, a different brief, and the owner's instruction named it explicitly as the one
+  to preserve.
+
+### Verified
+
+Fresh `npm run build:local`, then `npm run qa:launch`: PASS, and grep of the built `dist/` for
+`/request-assessment` returns zero matches in any rendered HTML (see verification log for the
+full command and output). `astro check` and `npm run qa:copy` / `npm run qa:gate6` also re-run
+clean — no approved copy string changed, only link destinations.

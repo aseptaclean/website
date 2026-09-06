@@ -70,8 +70,10 @@
 // and "Endorsed · Organic pathogen endorsement" are release-gated by AGENTS.md §3 pending a
 // current COI match. Taking a gated claim off an indexable page is the conservative direction.
 //
-// NO EMBEDDED FORM. §20A.8's destination rule and §20A.9's "one assessment engine" — CTAs link to
-// /request-assessment/?service=estate-cleanout instead of duplicating lead infrastructure.
+// NO EMBEDDED FORM. /request-assessment/ (this page's former destination, with its
+// `?service=estate-cleanout` preselect into AssessmentForm.astro) was retired 2026-09-06 —
+// owner decision, docs/05-CURRENT-DECISIONS.md. This page still has no form of its own, so its
+// CTAs now follow the standing fallback rule and link to the Contact page's embedded form.
 import { Image } from "astro:assets";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import heroImage from "../../assets/aseptaclean/hoarding-garage-contents.png";
@@ -120,7 +122,7 @@ const description =
 // AssessmentForm.astro, added alongside this page (see that component's service-context block).
 // It maps to the existing "Inherited or estate property" `property_situation` option — already
 // present on the form, not invented for this page — and records the real entry route on the lead.
-const assessmentHref = "/request-assessment/?service=estate-cleanout";
+const assessmentHref = "/contact/#contact-form";
 const phoneHref = site.business.phoneUri;
 const smsHref = site.business.smsUri;
 

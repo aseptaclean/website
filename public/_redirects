@@ -31,9 +31,16 @@
 
 # --- GSC redirect sweep, 2026-08-09 (docs/19-SYSTEM-AND-SITEMAP.md redirect law) ---
 # Mapped against indexed WordPress URLs the owner supplied from GSC. /, /thank-you/,
-# /privacy/, /terms/, /cookie-policy/, /request-assessment/, and /data-request/ and
-# /sms-notification-consent/ (added this pass, see docs/04-RELEASE-CHECKLIST.md) are live
-# routes already, not redirect targets, so they are intentionally absent below.
+# /privacy/, /terms/, /cookie-policy/, and /data-request/ and /sms-notification-consent/ (added
+# this pass, see docs/04-RELEASE-CHECKLIST.md) are live routes already, not redirect targets, so
+# they are intentionally absent below.
+#
+# /request-assessment/ was REMOVED from this "live route, not a redirect target" list 2026-09-06:
+# the owner retired the standalone page outright (docs/05-CURRENT-DECISIONS.md) and it must
+# return a real not-found response, not a redirect. No rule is added for it here deliberately —
+# a 301 would contradict "must be unavailable" / "not-found response" as explicitly as serving
+# the old page would. If external backlinks or old GSC-indexed URLs to it turn up later, that is
+# a fresh decision (redirect vs. hard 404) for the owner, not a default to apply silently.
 #
 # Targets marked "interim" point at pages that exist in this repo but are still noindex
 # and excluded from sitemap.xml.ts pending their own Phase 3 launch gate

@@ -51,7 +51,16 @@ PPC exceptions, not defects.
 
 ## Existing utility and legacy routes
 
-The twelve-page scope is not authorization to break auxiliary routes. Preserve functioning /request-assessment/, /thank-you/, /404, /data-request/, and protected /sms-notification-consent/ where present. Keep /request-assessment/ working as an existing form destination, but remove it as the primary global CTA and from primary navigation. A later deliberate redirect can consolidate it; do not redirect POST endpoints or form submissions blindly.
+The twelve-page scope is not authorization to break auxiliary routes. Preserve functioning /thank-you/, /404, /data-request/, and protected /sms-notification-consent/ where present. Do not redirect POST endpoints or form submissions blindly.
+
+**`/request-assessment/` is retired outright — owner decision, 2026-09-06.** It is no longer a
+"keep working" utility route. `src/pages/request-assessment.astro` is deleted, the path is out of
+`src/data/launchArchitecture.ts`, and the route must return a real not-found response (not a
+redirect, not a noindexed page). Every internal CTA that used to point at it now points at the
+destination page's own embedded form, or at `/contact/` when the page has none. Full resolution:
+`docs/05-CURRENT-DECISIONS.md`, 2026-09-06. This supersedes this file's earlier "keep
+`/request-assessment/` working" instruction and `docs/page-briefs/REQUEST-ASSESSMENT.md` in full;
+that brief is marked retired rather than deleted. Do not recreate this route.
 
 Do not add city pages, separate animal-waste duplicates, generic biohazard service families, standalone process pages, or new category hubs for this build. Existing pages outside the twelve-page redesign require an explicit keep/redirect/retire mapping before URL removal; absence from the new navigation does not automatically authorize deletion or deindexing.
 

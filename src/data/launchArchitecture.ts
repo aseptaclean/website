@@ -35,16 +35,18 @@ export const launchPrimaryNavLinks = [
   { label: "Contact", href: "/contact/" }
 ] as const;
 
-// The twelve public pages of docs/SITEMAP-MASTER.md, plus /request-assessment/, which stays a
-// working, indexable form destination after being removed as the primary CTA and from primary
-// navigation (AGENTS.md §2.2.6).
+// The twelve public pages of docs/SITEMAP-MASTER.md. /request-assessment/ was retired outright
+// 2026-09-06 by explicit owner decision — it previously stayed here as a working, indexable
+// utility route after losing the primary-CTA/nav slot (AGENTS.md §2.2.6, now superseded on this
+// point). See docs/05-CURRENT-DECISIONS.md, 2026-09-06, "Standalone Request Assessment page
+// retired." The route file no longer exists, so a real not-found response is unconditional here
+// — it does not depend on this array.
 export const launchPrimaryPaths = [
   "/",
   "/services/",
   "/about/",
   "/contact/",
   ...launchServiceLinks.map((link) => link.href),
-  "/request-assessment/",
   "/privacy/",
   "/terms/",
   "/cookie-policy/"

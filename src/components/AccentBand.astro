@@ -24,7 +24,9 @@ const {
   heading = "Working against a listing, transfer or family deadline?",
   headingId = "deadline-band-title",
   ctaLabel = site.offer.secondaryCta,
-  ctaHref = "/request-assessment/"
+  // Every current caller (`/service-areas/`, `/faq/`) also renders <RequestForm /> lower on
+  // the same page, id="request" — /request-assessment/ was retired 2026-09-06.
+  ctaHref = "#request"
 } = Astro.props;
 ---
 

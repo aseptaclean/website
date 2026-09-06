@@ -117,10 +117,10 @@
 // three-action default. Same reasoning as the eight prior opt-ins — the visible primary label is
 // a single owner-approved string in site data (AGENTS.md §3), not a route-specific relabel.
 //
-// NO EMBEDDED FORM. CTAs link to /request-assessment/?service=animal-waste, which
-// AssessmentForm.astro now recognizes (added alongside this page) and maps to the "Other"
-// `property_situation` option — same reasoning as rodent-droppings: animal waste is a condition,
-// not a transition, and none of the existing options describe it truthfully.
+// NO EMBEDDED FORM. /request-assessment/ (this page's former destination, with its
+// `?service=animal-waste` preselect into AssessmentForm.astro) was retired 2026-09-06 — owner
+// decision, docs/05-CURRENT-DECISIONS.md. This page still has no form of its own, so its CTAs
+// now follow the standing fallback rule and link to the Contact page's embedded form instead.
 //
 // IMAGES — SAME HONEST PROOF GAP AS RODENT DROPPINGS, EXTREME CLEANUP AND DETAILED DEEP CLEANING.
 // docs/06-ASSET-MANIFEST.md §4's atmosphere-image cap (three) is already knowingly exceeded by
@@ -143,7 +143,7 @@ const description =
 
 // §20A.8's destination rule + §20A.9's service branch. `?service=animal-waste` is read by
 // AssessmentForm.astro (see that component's service-context block, added alongside this page).
-const assessmentHref = "/request-assessment/?service=animal-waste";
+const assessmentHref = "/contact/#contact-form";
 const phoneHref = site.business.phoneUri;
 const smsHref = site.business.smsUri;
 
