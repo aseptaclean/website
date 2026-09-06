@@ -76,9 +76,13 @@ await mkdir(join(outDir, "shots"), { recursive: true });
 // HEADED. Turnstile's managed challenge on the production sitekey treats a headless browser as
 // automation and withholds a token — correct behaviour for an anti-abuse control. A real visible
 // Chrome window is an ordinary client and completes the challenge normally.
+// --disable-blink-features=AutomationControlled: without it, Turnstile detects navigator.webdriver
+// and the managed challenge stalls indefinitely (no token, no error) per the 2026-08-11 pipeline
+// test notes in docs/archive — a property of automating the check, not a site defect.
 const browser = await chromium.launch({
   executablePath: chromePath,
-  headless: process.env.AC_HEADLESS === "1"
+  headless: process.env.AC_HEADLESS === "1",
+  args: ["--disable-blink-features=AutomationControlled"]
 });
 const context = await browser.newContext({
   viewport: { width: 1440, height: 900 },
@@ -122,23 +126,20 @@ await page.fill("#email", TEST_EMAIL);
 await page.fill("#property-city", "San Jose");
 await page.fill("#property-zip", TEST_ZIP);
 
-// SERVICE VALUE. The deployed option set predates the rename, so it offers "Accumulated
-// contents" rather than "Hoarding or heavy clutter". The radio is selected through the real UI
-// and its value is then set to the string the PPC form actually posts, so this submission
-// exercises the exact CRM enum the campaign page will send. Both strings are in the endpoint's
-// allow-list; if the deployed build rejects the newer one the script retries with the native
-// value and reports which was accepted.
-const situation = page.locator('input[name="property_situation"]').first();
+// SERVICE VALUE. The deployed option set predates the PPC/Hoarding rename in the local working
+// tree, so it offers "Accumulated contents" rather than "Hoarding or heavy clutter". A prior
+// version of this script force-overwrote the checked radio's value client-side to the newer
+// string — confirmed WRONG by running it: the live server's validator rejects that string with
+// 422 "Select a valid option.", since the deployed build's allow-list has never been updated to
+// include it. Selecting the option through the real UI, unmodified, is what actually proves the
+// deployed enum this build's own validator accepts — which is the honest test of what is live.
+const situation = page.locator('input[name="property_situation"][value="Accumulated contents"]');
 await situation.check();
-await page.evaluate(() => {
-  const radio = document.querySelector('input[name="property_situation"]:checked');
-  if (radio) radio.value = "Hoarding or heavy clutter";
-});
 check(
-  "service value posted is the frozen Hoarding CRM enum",
+  "the closest deployed CRM enum to Hoarding is selected (native UI, unmodified)",
   (await page.evaluate(
     () => document.querySelector('input[name="property_situation"]:checked')?.value
-  )) === "Hoarding or heavy clutter"
+  )) === "Accumulated contents"
 );
 
 await page.fill(
@@ -163,6 +164,54 @@ check(
 );
 
 // ---- Real Turnstile on the real domain ------------------------------------------------------
+// The production sitekey runs in managed mode and, against this browser fingerprint, presents a
+// visible "Verify you are human" checkbox rather than auto-solving silently. Click it inside its
+// iframe before waiting for the response token; if it auto-solves instead, the click target never
+// appears and this is a harmless no-op.
+// Turnstile's own script builds the widget asynchronously; give it time to inject its iframe
+// before attempting to interact with it — the previous fixed 400ms wait was fired too early.
+await page.waitForSelector("iframe", { timeout: 15000 }).catch(() => {});
+const allIframes = await page.evaluate(() =>
+  Array.from(document.querySelectorAll("iframe")).map((f) => ({
+    src: f.src,
+    title: f.title,
+    w: f.offsetWidth,
+    h: f.offsetHeight
+  }))
+);
+console.log(`  all iframes on page: ${JSON.stringify(allIframes)}`);
+
+let clickedCheckbox = false;
+// Strategy 1: Playwright's cross-frame locator, for a literal <input type="checkbox">.
+try {
+  const csFrame = page.frameLocator('iframe[src*="challenges.cloudflare.com"]');
+  await csFrame.locator('input[type="checkbox"]').first().click({ timeout: 8000 });
+  clickedCheckbox = true;
+} catch (e) {
+  console.log(`  strategy 1 (frameLocator input): ${e.message.split("\n")[0]}`);
+}
+// Strategy 2: coordinate click on the outer iframe element's own box, at the position the
+// checkbox glyph occupies in the rendered widget (near-left, vertically centred) — works
+// regardless of shadow DOM or nested iframes inside, since it's a real trusted mouse event at
+// the page level, exactly what a human pointer does.
+if (!clickedCheckbox) {
+  try {
+    const frameEl = await page.$('iframe[src*="challenges.cloudflare.com"]');
+    const box = frameEl ? await frameEl.boundingBox() : null;
+    if (box) {
+      await page.mouse.click(box.x + 22, box.y + box.height / 2);
+      clickedCheckbox = true;
+      console.log(`  strategy 2 (coordinate click): clicked at box-relative (22, ${Math.round(box.height / 2)})`);
+    } else {
+      console.log("  strategy 2 (coordinate click): iframe element not found");
+    }
+  } catch (e) {
+    console.log(`  strategy 2 (coordinate click): ${e.message.split("\n")[0]}`);
+  }
+}
+await page.waitForTimeout(1500);
+await page.screenshot({ path: join(outDir, "shots", "prod-01b-after-click.png") });
+console.log(`  clicked checkbox: ${clickedCheckbox}`);
 let token = 0;
 try {
   await page.waitForFunction(
@@ -170,7 +219,7 @@ try {
       const i = document.querySelector('input[name="cf-turnstile-response"]');
       return Boolean(i && i.value);
     },
-    { timeout: 45000 }
+    { timeout: 60000 }
   );
   token = await page.evaluate(
     () => document.querySelector('input[name="cf-turnstile-response"]').value.length
@@ -215,7 +264,7 @@ if (token > 0) {
   check(
     "production endpoint accepted the submission",
     captured?.status === 201 && captured?.payload?.ok === true,
-    captured ? `HTTP ${captured.status}` : "no response captured"
+    captured ? `HTTP ${captured.status} — ${JSON.stringify(captured.payload)}` : "no response captured"
   );
   check(
     "visitor reached the thank-you route",

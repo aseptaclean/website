@@ -466,13 +466,13 @@ route: `condition-development-neglected-kolforn.jpg` (Kolforn, CC BY-SA 4.0),
 `service-development-cleanup-asurnipal.jpg` (Asurnipal, CC BY-SA 4.0) are also no longer reachable
 — see the dead-component note below.
 
-**STILL SHIPPING — one file, unattributed.** `hero-development-residence-asurnipal.jpg`
-(Asurnipal, Wikimedia Commons, **CC BY-SA 4.0**) is the full-bleed hero of
-`/estate-cleanout-san-jose/`. Its credit lives in a comment in that page's source and has never
-been rendered. **CC BY-SA attribution is owed wherever it ships, and this is a live exposure.**
-It was outside the ten assets this pass was scoped to audit, so it has not been repointed. Two
-routes forward, both needing an owner call: render the required attribution, or repoint the hero
-to a package image the way Property Cleanouts and Move-Out were repointed here.
+**RESOLVED 2026-09-06.** `hero-development-residence-asurnipal.jpg` (Asurnipal, Wikimedia
+Commons, CC BY-SA 4.0) was the full-bleed hero of `/estate-cleanout-san-jose/`, unattributed on
+the rendered page — the live exposure this entry originally flagged. It is repointed to the owner
+package's `hoarding-garage-contents` (belongings staged for sorting, matching this page's Save
+List mechanism), the same resolution already applied to Property Cleanouts and Move-Out above.
+Full reasoning in that page's own hero-import comment. The file is no longer imported by any
+built route; `dist/` was swept to confirm zero references.
 
 **Unchanged.** No licence file, receipt or permission record exists in this repository for any of
 the remaining legacy stock. That pre-existing sitewide gap is narrower than it was — the shipped

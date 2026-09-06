@@ -518,3 +518,54 @@ Evidence: `artifacts/trauma-hero-mobile-2026-09-06/` (screenshots + `measurement
   affected-surfaces (image C) all stand exactly as approved.
 - No other hero, on any route, at any width.
 - Nothing published or deployed. `npm run build:local` only; `dist/` is local output.
+
+---
+
+## 2026-09-06 — PPC mobile hero fix; estate-cleanout legacy hero closed out
+
+Two items from the "Reported, not fixed" / "STILL SHIPPING" backlog above, actioned during
+launch-preparation pass.
+
+### PPC stacked hero: media bounded to the copy region
+
+The gap flagged two entries up ("The PPC hero has the same class of crop problem and was left
+alone... keeps 13% of `hoarding-living-room`'s width") is fixed in `src/components/ppc/PpcHero.astro`,
+using the same bounded-grid mechanism already shipped for the trauma hero (`AcHeroWithForm`'s
+`.acx-hero--split`): below 1200px the media and overlay get a definite grid position (row 1 only)
+instead of spanning the whole stacked section, so `object-fit: cover` sizes against the copy
+column alone and the form drops to row 2 on the section's own solid navy. Desktop (>=1200px) is
+untouched — verified `display: block` at 1280/1366/1440/1536, unchanged from before.
+
+Measured via `scripts/trauma-hero-mobile-check.mjs ROUTES=ppc` against a fresh `dist/`: source
+width retained at 390px went from 13.9% to 36.1% (68px→68px hoarding row visible, boxes/bins/
+storage clearly legible in screenshots), 98% at 768px, 100% at 1024px; media bounded to copy at
+all three stacked widths (`mediaBoundedToCopy: true`); form follows copy in DOM and visual order;
+zero horizontal overflow; all 22 form fields and consent unchanged. `scripts/ppc-fold-audit.mjs`
+re-run clean: desktop 4/4 PASS, stacked 3/3 PASS — unchanged from the pre-fix baseline, confirming
+the desktop above-the-fold budget was not touched.
+
+No copy, field, consent, endpoint, or trauma-route change. Cross-link card images (home, Services
+hub, related-service cards) untouched, per the standing instruction not to make hero images match
+their card thumbnails.
+
+### Estate Cleanout hero: unattributed Commons file repointed
+
+`hero-development-residence-asurnipal.jpg` (Asurnipal, Wikimedia Commons, CC BY-SA 4.0) — flagged
+in `docs/06-ASSET-MANIFEST.md` as "STILL SHIPPING — one file, unattributed... a live exposure" —
+is repointed to the owner package's `hoarding-garage-contents.png`, the same treatment already
+applied to Property Cleanouts (`home-property-scope-detail`) and Move-Out
+(`property-interior-introduction`) in the 2026-09-05 image pass. Subject match: this page's
+mechanism is the Save List (protect named items before an authorized clearance), and the package
+image shows belongings staged for sorting — the same decision the Save List runs before clearing
+starts. The Commons file it replaces was actually a hoarding-condition living room (per its own
+Wikimedia filename), which this page's design notes say it deliberately does not run.
+
+The replaced file's justification for reuse ("already used as the full-bleed hero on `/`") was
+also stale: the 2026-09-05 owner image install had already moved the homepage hero to
+`home-hero-neglected-interior`, so by the time of this fix the Commons file was serving no other
+role on the site. `hero-development-residence-asurnipal.jpg` is no longer imported by any route;
+swept `dist/` for zero references. Sibling-hero distinctness holds: Estate, Property Cleanouts and
+Move-Out each open on a different photograph.
+
+No copy, heading, alt text (still `alt=""`, decorative, unchanged), route, canonical, or indexing
+change. `npm run build:local` — 52 pages, no errors.

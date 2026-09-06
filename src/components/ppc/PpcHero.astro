@@ -261,25 +261,74 @@ const {
   }
 
   /* Below 1200px the hero stacks. DOM order already puts the copy and the call ahead of the
-     form, and the brief forbids anything — trust strip, photo block, badges — between them. */
+     form, and the brief forbids anything — trust strip, photo block, badges — between them.
+
+     STACKED MEDIA FIX, 2026-09-06. `.ppc-hero__media`/`__overlay` stay `position: absolute;
+     inset: 0` against the whole section, which spans copy AND form once stacked. `object-fit:
+     cover` scales to the box's larger dimension, so at 390px the ~390x1575 combined box kept
+     only ~14% of hoarding-living-room's source width — recorded as a known gap in
+     docs/05-CURRENT-DECISIONS.md, 2026-09-06 ("Reported, not fixed"). This applies the same
+     bounded-box mechanism already shipped for the trauma hero split
+     (`AcHeroWithForm`'s `.acx-hero--split`): the media and overlay get a definite grid position
+     (row 1 only), which CSS Grid resolves their `inset: 0` against instead of the section, so
+     the box is sized to the copy alone. Row 2 (the form) sits on the section's own solid
+     navy-950 with no photo behind it. Desktop (>=1200px) is untouched — this block only fires
+     where the hero already stacked. */
   @media (max-width: 74.9375rem) {
-    .ppc-hero__grid {
-      gap: 28px;
+    .ppc-hero {
+      display: grid;
       grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto auto;
+    }
+
+    /* The shell and the grid stop generating boxes so copy and form become direct grid items
+       of the section and can occupy different rows. `ac-shell`'s width/margin-inline are
+       re-declared on the two items below so they keep the same horizontal alignment as every
+       other section. */
+    .ppc-hero__shell,
+    .ppc-hero__grid {
+      display: contents;
+    }
+
+    /* Both edges named: an `auto` grid line on an absolutely positioned grid child resolves to
+       the container's padding edge, not the implied second line, so `grid-row: 1` alone would
+       still span the media down to the bottom of the form. */
+    .ppc-hero__media,
+    .ppc-hero__overlay {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+
+    .ppc-hero__content,
+    .ppc-hero__form {
+      position: relative;
+      z-index: 2;
+      width: min(100% - 2 * var(--ac-gutter), var(--ac-measure-wide));
+      margin-inline: auto;
+    }
+
+    /* 36px top replicates the shell's former top padding; 28px bottom replicates the former
+       grid gap — the vertical rhythm between copy and form is unchanged. */
+    .ppc-hero__content {
+      grid-area: 1 / 1 / 2 / 2;
+      padding-block: 36px 28px;
     }
 
     .ppc-hero__content h1 {
       max-width: 26ch;
     }
 
+    /* 36px bottom replicates the shell's former bottom padding. No top padding — the 28px
+       above already provides the gap. */
     .ppc-hero__form {
+      grid-area: 2 / 1 / 3 / 2;
       max-width: 680px;
+      padding-block: 0 36px;
     }
   }
 
   @media (max-width: 40rem) {
-    .ppc-hero__shell {
-      padding-block: 32px 36px;
+    .ppc-hero__content {
+      padding-top: 32px;
     }
 
     .ppc-hero__content h1 {

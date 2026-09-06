@@ -74,33 +74,37 @@
 // /request-assessment/?service=estate-cleanout instead of duplicating lead infrastructure.
 import { Image } from "astro:assets";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import heroImage from "../../assets/homepage/hero-development-residence-asurnipal.jpg";
+import heroImage from "../../assets/aseptaclean/hoarding-garage-contents.png";
 import { getServiceCityLinks } from "@data/serviceCityPages";
 import { legal, site } from "@data/site";
 
-// TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPH — NOT Aseptaclean project work, NOT a client
-// property, and NOT proof of any completed job. `[ATMOS]`-class under
-// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6: no crew, no vehicle, no equipment, no work in progress,
-// no before/after pair.
+// HERO REPOINTED 2026-09-06 to the owner image package, `hoarding-garage-contents`.
 //
-//   hero-development-residence-asurnipal.jpg
-//     Asurnipal — CC BY-SA 4.0 — 3264×2448
-//     https://commons.wikimedia.org/wiki/File:Bregenz-Cluttered_interiors_(compulsive_hoarding)-living_room-04ASD.jpg
+// It replaces `hero-development-residence-asurnipal.jpg` (Asurnipal, Wikimedia Commons,
+// CC BY-SA 4.0), which shipped here as a full-bleed hero with its attribution living only in a
+// source comment — never on the rendered page. That is the licence exposure recorded in
+// docs/06-ASSET-MANIFEST.md ("STILL SHIPPING — one file, unattributed"), and removing the
+// placement is what closes it for this route. The comment also documented that file as "already
+// used as the full-bleed hero on `/`" — stale since the 2026-09-05 owner image install repointed
+// the homepage hero to `home-hero-neglected-interior`, so the shared-reuse rationale no longer
+// held either.
 //
-// REUSED, NOT NEWLY ACQUIRED. docs/06-ASSET-MANIFEST.md §4 records the atmosphere-slot cap as
-// already knowingly exceeded by one (four slots against a cap of three) and says "do not add a
-// fifth without a new owner decision." This file is already in the repository, already used as
-// the full-bleed hero on `/`, and is reused here in the same role rather than sourcing a new
-// asset — the same constraint Hoarding's rebuild operated under and the same choice it made
-// (reusing two existing files rather than acquiring a third and fourth).
+// SUBJECT MATCH. This page's mechanism is the Save List: protecting named items — documents,
+// photographs, jewelry, collectibles — before an authorized clearance. `hoarding-garage-contents`
+// shows belongings staged for sorting, matching "what stays, what goes, what needs review" — the
+// same decision the Save List runs before clearing starts. The Commons file it replaces was a
+// hoarding-condition living room, which this page's own design note above says it deliberately
+// does not run (no condition-recognition movement here).
 //
-// `condition-development-hoarding-asurnipal.jpg` and `service-development-cleanup-asurnipal.jpg`
-// are Hoarding's hero and editorial panel respectively and are not reused here — a shared
-// photograph across sibling service pages would blur the distinction both pages exist to make.
-// `condition-development-reset-aismallard.jpg` (the empty room) is NOT used, for the same reason
-// docs/06-ASSET-MANIFEST.md already bars it from Hoarding: it is an open owner question whether an
-// empty room reads as an implied "after", and this page's whole argument is about a property still
-// full of a family's belongings — placing that image anywhere on it risks exactly that misread.
+// STILL ORIGINAL ILLUSTRATIVE WORK, not Aseptaclean project documentation, not a client property
+// and not proof of a completed job. `[ATMOS]`-class under docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6:
+// no crew, no vehicle, no equipment, no work in progress, no before/after pair. Provenance is
+// recorded in docs/06-ASSET-MANIFEST.md and nowhere on the page.
+//
+// Sibling heroes stay distinct: Property Cleanouts keeps `home-property-scope-detail` and Move-Out
+// keeps `property-interior-introduction`, so no two of the three cleanout-family pages open on the
+// same photograph. Hoarding's own hero (package slot 03, `hoarding-living-room`) is a different
+// file from this one, so the PPC/SEO hoarding pages and this page still do not share an image.
 
 const canonicalPath = "/estate-cleanout-san-jose/";
 
