@@ -13,11 +13,23 @@ export const assessment = {
   // Map these labels to existing internal enum values."
   //
   // ****  `value` IS THE CRM CONTRACT AND IS FROZEN.  ****
-  // Every string below is byte-identical to what shipped before this change and to what
-  // functions/_lib/lead.ts, HubSpot, and the owner-notification email already expect. Only
-  // `label` (what a visitor reads) and the array order (display sequence) moved. Renaming a
-  // visible option does not authorize breaking the CRM contract — so do not "tidy" `value`
-  // to match `label`.
+  // `value` is what functions/_lib/lead.ts, HubSpot, and the owner-notification email expect.
+  // `label` is what a visitor reads. Renaming a visible option does not authorize breaking the
+  // CRM contract — so do not "tidy" `value` to match `label`.
+  //
+  // ****  ADDING AN OPTION HERE IS A TWO-FILE CHANGE.  ****
+  // A new `value` must ALSO be added to `allowedValues.property_situation` in
+  // functions/_lib/lead.ts, or the endpoint rejects it 422 "Select a valid option." before
+  // Turnstile, storage, HubSpot or either email — the lead is lost and the visitor sees an error
+  // on a dropdown they answered correctly.
+  //
+  // This comment previously asserted that every string below was "byte-identical to what
+  // functions/_lib/lead.ts ... already expect". That was false for
+  // "Crime scene or trauma cleanup", which the 2026-09-04 display-label change introduced as a
+  // genuinely NEW sixth option rather than a relabel of an existing one. It shipped live and
+  // broke every crime-scene submission until 2026-09-06. `npm run qa:situations`
+  // (scripts/situation-enum-guard.mjs, also wired into `npm run build`) now runs the real
+  // validator against this real list, so the two can no longer drift silently.
   //
   // `route` binds an option to the service page that preselects it. Used by the hero form on
   // each service page and by AssessmentForm.astro's `?service=` preselect.

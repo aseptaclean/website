@@ -230,11 +230,23 @@ const allowedValues: Record<string, Set<string>> = {
     "Not sure"
   ]),
   property_situation: new Set([
-    // Current short-form option set (2026-09-03), exact order the form renders them in.
+    // Current option set, exact order src/data/assessment.ts renders them in. THIS LIST AND
+    // `assessment.situations` MUST MATCH — a value the form can render but this set does not
+    // contain is a 422 on every submission that selects it, before Turnstile is ever reached.
+    //
+    // "Crime scene or trauma cleanup" was ADDED 2026-09-06. It shipped in
+    // src/data/assessment.ts as a sixth service option (rendered on the homepage hero,
+    // /contact/ and the five service-page heroes, and PRESELECTED on
+    // /crime-scene-trauma-cleanup-san-jose/) but was never added here, so every submission
+    // that chose it — and every submission from the crime-scene page that left the
+    // preselected dropdown alone — was rejected with "Select a valid option." The lead was
+    // lost before storage, HubSpot, or either email. `scripts/situation-enum-guard.mjs`
+    // now fails the build on any future drift between the two lists.
     "Rodent droppings or animal waste",
     "Hoarding or heavy clutter",
     "Severe property condition",
     "Detailed deep cleaning",
+    "Crime scene or trauma cleanup",
     "Not sure",
     // Retained for tolerance of stale cached pages / older campaign links that may still post
     // a prior form version's values. Not rendered as options by the current form.
