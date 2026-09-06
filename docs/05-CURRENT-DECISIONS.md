@@ -737,3 +737,93 @@ height, with consent and submit still fully visible and no horizontal overflow a
 combination — 25/25 checks clean. `scripts/launch-e2e-form-check.mjs` extended with a fifth
 surface (`request-form`, Form B via `/faq/`) and a `confirmationEmailSent` assertion on every
 surface; see the launch verification log for the live production run.
+
+---
+
+## Production incident and fix — 2026-09-06, crime-scene service value rejected
+
+### What was broken
+
+`src/data/assessment.ts` renders six service options in the `property_situation` `<select>`.
+`allowedValues.property_situation` in `functions/_lib/lead.ts` listed only five of them.
+**`"Crime scene or trauma cleanup"`** was never accepted by the endpoint.
+
+`validateLead()` runs *before* `verifyTurnstile()`, R2 storage, HubSpot and both emails, so every
+submission that selected that option returned `422 {"property_situation":"Select a valid
+option."}` and the lead was lost outright — no record, no CRM entry, no notification. The visitor
+saw a field error on a dropdown they had answered correctly.
+
+Blast radius: the option is selectable on the homepage hero, `/contact/`, and all five
+service-page heroes; and it is **preselected** on `/crime-scene-trauma-cleanup-san-jose/`, so that
+page's form failed for every visitor who did not change the dropdown.
+
+Reproduced in a headed browser on the live custom domain before the fix: Turnstile issued a valid
+token, `POST https://aseptaclean.com/api/lead` returned HTTP 422 with that error body.
+
+### Conflict resolved
+
+| Conflict | Resolution |
+|---|---|
+| The 2026-09-04 entry above records "Assessment situation labels vs. CRM enum → `value` strings are frozen and byte-identical to what HubSpot and the notification email already expect." `src/data/assessment.ts` carried the same assertion in a comment. | **The assertion was false for one value.** The 2026-09-04 display-label change introduced `"Crime scene or trauma cleanup"` as a genuinely NEW sixth option, not a relabel of an existing one, and did not add it to the endpoint. The form value stays frozen (it is the CRM contract, rank 1 fact); the **endpoint** moved to accept it. The false comment in `assessment.ts` is corrected in the same change. |
+
+### Changed
+
+- `functions/_lib/lead.ts` — `"Crime scene or trauma cleanup"` added to
+  `allowedValues.property_situation`. No other validation rule touched.
+- `scripts/situation-enum-guard.mjs` — **new.** Runs the real `validateLead()` against the real
+  `assessment.situations` list and exits non-zero on any drift. Wired into `npm run build` (so a
+  recurrence fails the Cloudflare Pages build instead of deploying) and exposed as
+  `npm run qa:situations`.
+- `package.json` — `esbuild` promoted from a transitive dependency of `astro` to an explicit
+  pinned devDependency (`0.28.1`, the version already resolved), because the build now depends on
+  it. Same resolved tree; the lockfile gained one line.
+- `src/data/assessment.ts` — comment corrected, and adding an option is now documented as the
+  two-file change it actually is.
+
+### Not changed
+
+- No page copy, heading, consent wording, layout, imagery, or campaign wording. The PPC hoarding
+  campaign's "free walkthrough" framing, its `Request a Free Walkthrough` submit label, its
+  campaign-scoped confirmation email and its "does not confirm an appointment" boundary are all
+  untouched and were re-verified live after deploy.
+- No form value renamed, no endpoint added or moved, no security control weakened. The origin
+  allowlist, honeypot, Turnstile verification and the 5-per-15-minute rate limit are all as they
+  were.
+
+### Minimum description length — did not exist
+
+The 2026-09-06 request asked for any minimum word/character count on "Tell us what's going on" and
+equivalent fields to be removed. **No such rule existed anywhere** and none was removed: no
+`minlength` attribute in any component or in `dist/`, no length or word-count logic in any client
+script, and no length check in `validateLead()`. The endpoint requires a non-empty
+`property_detail` on the `form_version` branches via `leanRequiredFields` and trims with `clean()`,
+so a single character already passed and whitespace-only already returned the required-field
+error. Verified on the live endpoint after deploy: 1-character ACCEPTED, short description
+ACCEPTED, whitespace-only rejected with `{"property_detail":"This field is required."}`.
+
+### Verified on https://aseptaclean.com after deploy (commit b917370, Pages deployment 9ad7adf1)
+
+- Isolated exhaustive `validateLead()` suite: 46/46 pass (2 failed before the fix, both the
+  crime-scene value).
+- Live endpoint, all six rendered options: every one accepted (validation passed, stopped at
+  Turnstile, no lead created).
+- Real browser submissions, all HTTP 201 with correct thank-you navigation, HubSpot deal and both
+  emails delivered: `AC-1PXDAZ` (crime-scene service page, preselected value, 1-char description),
+  `AC-M64XZD` (homepage, crime-scene selected from the dropdown), `AC-5E8REG` (`/faq/`, Form B
+  short-form branch), `AC-6QVAN6` (PPC landing page, photo upload, "We received your walkthrough
+  request" campaign email).
+
+### Observations recorded, not acted on
+
+- **Rate limit compounds a validation failure.** The 5-per-15-minute-per-IP limit is counted
+  *before* validation, so a visitor who hits a validation error five times is locked out for 15
+  minutes. During this incident, a crime-scene visitor retrying could reach that state. The limit
+  is a deliberate security control and was left alone.
+- **`QuickHandoffForm.astro`'s description field is inconsistent but harmless.** It is labelled
+  "(optional)", carries a `required` attribute, and is not server-required (that form sends no
+  `form_version`, so `leanRequiredFields` never applies). Because the script sets
+  `form.noValidate = true`, the attribute never fires and the field behaves as its label says. The
+  comment above it claiming a 422 risk is wrong. Left as-is: the label is approved copy and the
+  behaviour is correct.
+- **`src/components/AssessmentForm.astro` is dead code.** No page imports it. It contains no
+  minimum-length rule either.
