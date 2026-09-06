@@ -1,0 +1,98 @@
+---
+// Centred introduction block — reference page 24: an H2 on two lines, a bold lead paragraph,
+// then a lighter secondary paragraph, contained to ~900-1000px. Used once per page, near the
+// top, to carry the page's dominant idea before any routing or detail.
+import AcEyebrow from "./AcEyebrow.astro";
+
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  headingId?: string;
+  lead?: string;
+  body?: readonly string[];
+  align?: "start" | "center";
+  tone?: "light" | "soft";
+}
+
+const {
+  eyebrow,
+  heading,
+  headingId,
+  lead,
+  body = [],
+  align = "center",
+  tone = "light"
+} = Astro.props;
+---
+
+<section class:list={["acx-intro", `is-${align}`, `is-${tone}`]} aria-labelledby={headingId}>
+  <div class="ac-shell">
+    <div class="acx-intro__inner">
+      <div class="acx-intro__head">
+        {eyebrow && <AcEyebrow text={eyebrow} align={align} />}
+        <h2 id={headingId} class="ac-type-h2">{heading}</h2>
+        {lead && <p class="acx-intro__lead">{lead}</p>}
+        {body.map((paragraph) => <p class="acx-intro__body">{paragraph}</p>)}
+      </div>
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .acx-intro {
+    background: var(--ac-color-paper);
+  }
+
+  .is-soft {
+    background: var(--ac-color-warm-white);
+  }
+
+  /* The reading measure is applied to the TEXT, not to this wrapper. Slotted content — a card
+     grid, a process row, a two-column list — needs the full 1200px shell, and capping the
+     wrapper silently shrank every one of them to 992px. */
+  .acx-intro__inner {
+    max-width: none;
+  }
+
+  .acx-intro__head {
+    max-width: 62rem;
+  }
+
+  .is-center .acx-intro__head {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .is-center :global(.acx-eyebrow-rule) {
+    align-items: center;
+  }
+
+  .acx-intro h2 {
+    text-wrap: balance;
+  }
+
+  /* The reference's bold lead / lighter follow-on pair. Weight and colour carry the difference,
+     not size — a second size here would compete with the H2 directly above it. */
+  .acx-intro__lead {
+    margin: 22px auto 0;
+    max-width: 54rem;
+    color: var(--ac-color-ink-900);
+    font-size: 1.0625rem;
+    font-weight: 600;
+    line-height: 1.65;
+  }
+
+  .acx-intro__body {
+    margin: 16px auto 0;
+    max-width: 54rem;
+    color: var(--ac-color-ink-600);
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .is-start .acx-intro__lead,
+  .is-start .acx-intro__body {
+    margin-inline: 0;
+  }
+</style>

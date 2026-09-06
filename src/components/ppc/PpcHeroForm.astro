@@ -1,0 +1,1140 @@
+---
+// PPC INTAKE FORM — brief "HERO FORM". A scoped variant of the shared hero form family
+// (src/components/ac/AcCompactForm.astro), not a new integration.
+//
+// WHAT IS REUSED, UNCHANGED — this is the point of the component, so it is spelled out:
+//   endpoint          site.urls.formEndpoint  → functions/api/lead.ts (the ONE lead endpoint,
+//                     AGENTS.md §0.1). No new endpoint, no imitation, no fabricated success.
+//   field names       full_name, phone, property_zip, email, property_detail,
+//                     property_situation, property_media[], privacy_consent,
+//                     submission_timestamp, idempotency_key, form_version, offer_type,
+//                     entry_route, submitted_from — every one already validated by
+//                     functions/_lib/lead.ts. No field name is introduced here.
+//   required set      form_version present + offer_type !== private_residence_reset means the
+//                     server requires full_name, phone, privacy_consent, submission_timestamp,
+//                     idempotency_key, property_zip, property_situation, property_detail. The
+//                     client mirrors exactly that set. email stays optional and is validated
+//                     only when supplied, which is the server's own rule.
+//   service value     "Hoarding or heavy clutter" — the FROZEN CRM enum from
+//                     src/data/assessment.ts, the same string HubSpot and the owner-notification
+//                     email already expect. Brief: "Fixed Hoarding service value; no redundant
+//                     service selector", so it ships as a hidden input and the visible <select>
+//                     is dropped. The value is read from the data file, never retyped.
+//   upload            property_media[] with the real accepted types and the real published
+//                     limits from src/data/assessment.ts. Nothing about the limits is invented.
+//   consent           legal.consentBase + legal.consentAssessmentAppendix, verbatim, from
+//                     src/data/site.ts. The appendix is the approved wording for a form that
+//                     collects property media (owner ruling 2026-08-19), which this one does.
+//                     The brief's bracketed placeholder is not publishable copy and is not used.
+//   anti-spam         the existing honeypot (company_website) + Cloudflare Turnstile.
+//
+// WHAT IS SCOPED TO THIS ROUTE:
+//   - A campaign-specific thank-you destination,
+//     /hoarding-cleanup-san-jose/assessment/thank-you/, rather than the sitewide /thank-you/.
+//     Same query contract; different shell, because /thank-you/ renders the full site navigation
+//     that this campaign's PPC exception removes. The redirect fires ONLY on a confirmed
+//     `ok === true` — never on click, never on a network error, never optimistically — and
+//     because it is a GET, refreshing the destination cannot repost the form.
+//   - Two-column field rows plus the compact geometry, for the profile §7 fold budget.
+//
+// PARTIAL FAILURE IS REPORTED HONESTLY. functions/api/lead.ts returns 503 with `ok:false` and a
+// specific message when the details stored but the files did not. That message is surfaced
+// verbatim and the entered values are preserved — this form never claims photos were received.
+import { assessment } from "@data/assessment";
+import { legal, site } from "@data/site";
+
+interface Props {
+  formId: string;
+  /** Route recorded on the lead so a submission traces back to this campaign page. */
+  entryRoute: string;
+  /** Frozen CRM enum value for this campaign's service. */
+  situationValue: string;
+  title: string;
+  intro: string;
+  /**
+   * Visible label on the submit control. Defaults to the sitewide `site.offer.formSubmitCta`
+   * ("Send Message") so this component keeps behaving as it did; the hoarding campaign overrides
+   * it per AC-PPC-HERO-ROOMS-1.0. It labels a real <button type="submit"> and must never become
+   * a telephone link or promise a booking — see the role table in src/data/site.ts.
+   */
+  submitLabel?: string;
+  descriptionHelper: string;
+  photoHelper: string;
+  microcopy: string;
+  /** Where a CONFIRMED submission lands. Reached by GET, so a refresh cannot resubmit. */
+  thankYouRoute: string;
+}
+
+const {
+  formId,
+  entryRoute,
+  situationValue,
+  title,
+  intro,
+  submitLabel = site.offer.formSubmitCta,
+  descriptionHelper,
+  photoHelper,
+  microcopy,
+  thankYouRoute
+} = Astro.props;
+
+// Fail the build rather than post a value the CRM enum does not contain. A silent typo here
+// would be a 422 on every real lead.
+if (!assessment.situations.some((situation) => situation.value === situationValue)) {
+  throw new Error(
+    `PpcHeroForm: "${situationValue}" is not a value in src/data/assessment.ts situations.`
+  );
+}
+
+const endpointAvailable = Boolean(
+  site.integrations.formEnabled &&
+    site.urls.formEndpoint &&
+    site.integrations.turnstileSiteKey
+);
+
+const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
+---
+
+<div class="ppc-form-shell">
+  <form
+    id={formId}
+    class="ppc-form"
+    method="post"
+    enctype="multipart/form-data"
+    action={endpointAvailable ? site.urls.formEndpoint : undefined}
+    aria-labelledby={`${formId}-title`}
+    data-ppc-form
+    data-contact-phone={site.business.phone}
+    data-thank-you={thankYouRoute}
+  >
+    <input type="hidden" name="form_version" value={assessment.version} />
+    <input type="hidden" name="offer_type" value="handoff_reset" />
+    {/* The brief's "Fixed Hoarding service value; no redundant service selector". */}
+    <input type="hidden" name="property_situation" value={situationValue} />
+    <input type="hidden" name="entry_route" value={entryRoute} />
+    <input type="hidden" name="submitted_from" value={entryRoute} />
+    {/* Campaign attribution, populated client-side from the query string only, capped at 250
+        chars each, and never containing a name, phone, description, filename or photo. */}
+    <input type="hidden" name="utm_source" value="" />
+    <input type="hidden" name="utm_medium" value="" />
+    <input type="hidden" name="utm_campaign" value="" />
+    <input type="hidden" name="utm_term" value="" />
+    <input type="hidden" name="utm_content" value="" />
+    <input type="hidden" name="gclid" value="" />
+    <input type="hidden" name="landing_page" value="" />
+    <input type="hidden" name="referrer" value="" />
+    <input type="hidden" name="submission_timestamp" value="" />
+    <input type="hidden" name="idempotency_key" value="" />
+    <input
+      class="ppc-form__honeypot"
+      type="text"
+      name="company_website"
+      tabindex="-1"
+      autocomplete="off"
+      aria-hidden="true"
+    />
+
+    {/* Brief's `.ac-ppc .ac-form__header { display: grid; gap: 4px }` — the title and its
+        supporting line are one block, so the panel's own row gap does not sit between them. */}
+    <div class="ppc-form__header">
+      <h2 id={`${formId}-title`} class="ac-type-ppc-form-title ppc-form__title">{title}</h2>
+      <p class="ppc-form__intro">{intro}</p>
+    </div>
+
+    <div class="ppc-form__errors" tabindex="-1" role="alert" hidden data-ppc-form-errors>
+      <ul></ul>
+    </div>
+
+    <div class="ppc-form__grid">
+      <div class="ppc-form__field">
+        <label for={`${formId}-name`}>Full Name</label>
+        <input id={`${formId}-name`} name="full_name" type="text" autocomplete="name" required />
+      </div>
+
+      <div class="ppc-form__field">
+        <label for={`${formId}-phone`}>Phone Number</label>
+        <input
+          id={`${formId}-phone`}
+          name="phone"
+          type="tel"
+          inputmode="tel"
+          autocomplete="tel"
+          required
+        />
+      </div>
+
+      <div class="ppc-form__field">
+        <label for={`${formId}-zip`}>Property ZIP Code</label>
+        <input
+          id={`${formId}-zip`}
+          name="property_zip"
+          type="text"
+          inputmode="numeric"
+          autocomplete="postal-code"
+          pattern="[0-9]{5}(?:-[0-9]{4})?"
+          required
+        />
+      </div>
+
+      <div class="ppc-form__field">
+        <label for={`${formId}-email`}>Email <span class="ppc-form__optional">(optional)</span></label>
+        <input
+          id={`${formId}-email`}
+          name="email"
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+        />
+      </div>
+
+      <div class="ppc-form__field ppc-form__field--full">
+        <label for={`${formId}-detail`}>Tell us what&rsquo;s going on</label>
+        {/* rows="2" so the profile's compact 64px textarea minimum is the value that actually
+            renders. `rows` sets a used height that a smaller min-height cannot reduce, which is
+            why the shared form's rows="3" measures 87px in compact mode. Still resizable. */}
+        <textarea id={`${formId}-detail`} name="property_detail" rows="2" required></textarea>
+        <p class="ppc-form__helper" id={`${formId}-detail-help`}>{descriptionHelper}</p>
+      </div>
+
+      <div class="ppc-form__field ppc-form__field--full ppc-form__upload">
+        <label for={`${formId}-media`}>
+          Photos <span class="ppc-form__optional">(optional)</span>
+        </label>
+        {/* The compact accessible control the application already supports, not a dropzone —
+            the brief prefers it explicitly. Limits and accepted types come from
+            src/data/assessment.ts, which is the same configuration functions/_lib/lead.ts
+            enforces server-side. */}
+        <input
+          id={`${formId}-media`}
+          name="property_media[]"
+          type="file"
+          accept={assessment.upload.acceptedTypes}
+          aria-describedby={`${formId}-media-help`}
+          multiple
+          data-ppc-upload
+          data-max-files={assessment.upload.maxFiles}
+          data-max-image-bytes={assessment.upload.maxImageBytes}
+          data-max-video-bytes={assessment.upload.maxVideoBytes}
+          data-max-total-bytes={assessment.upload.maxTotalBytes}
+          data-allowed-extensions={assessment.upload.allowedExtensions.join(",")}
+          data-image-extensions={assessment.upload.imageExtensions.join(",")}
+        />
+        <p class="ppc-form__helper" id={`${formId}-media-help`}>{uploadHelp}</p>
+        <ul class="ppc-form__files" data-ppc-upload-list aria-label="Selected photos" hidden></ul>
+        <p class="ppc-form__file-error form-error" data-ppc-upload-error role="alert" hidden></p>
+        <p class="visually-hidden" data-ppc-upload-status role="status" aria-live="polite"></p>
+      </div>
+    </div>
+
+    {/* Verbatim from src/data/site.ts. 10DLC-relevant consent language — never reworded, never
+        retyped at a call site, never shrunk below 14px to win fold space. The appendix applies
+        because this form collects property media. */}
+    <label class="ppc-form__consent">
+      <input type="checkbox" name="privacy_consent" value="yes" required />
+      <span>
+        {legal.consentBase.lead}{" "}
+        <a class="ppc-form__link" href={site.urls.privacyPolicy}>
+          {legal.consentBase.privacyLabel}
+        </a>{legal.consentBase.tail}{" "}
+        {legal.consentAssessmentAppendix.lead}{" "}
+        <a class="ppc-form__link" href={site.urls.terms}>
+          {legal.consentAssessmentAppendix.termsLabel}
+        </a>{legal.consentAssessmentAppendix.tail}
+      </span>
+    </label>
+
+    {/* The anti-spam control and its two fallback notices share ONE panel row. A bare <noscript>
+        sitting directly in the form grid generates its own zero-height track plus an 8px gap —
+        space no specification asks for, and profile §7 repair step 1's "remove unintended
+        margins, spacers". Neither notice is dropped; they simply stop costing a row each. */}
+    <div class="ppc-form__verify">
+      {
+        site.integrations.turnstileSiteKey && (
+          <div class="ppc-form__turnstile">
+            <div
+              class="cf-turnstile"
+              data-sitekey={site.integrations.turnstileSiteKey}
+              data-theme="dark"
+              data-size="flexible"
+            />
+          </div>
+        )
+      }
+      <noscript>
+        <p class="ppc-form__note">
+          Security verification requires JavaScript. Please call Aseptaclean if you cannot enable
+          it.
+        </p>
+      </noscript>
+
+      {
+        !endpointAvailable && (
+          <p class="ppc-form__note" role="status">
+            Online submission is not fully configured in this preview. Your answers will not be
+            sent.
+          </p>
+        )
+      }
+    </div>
+
+    <button
+      class="button ppc-form__submit"
+      type="submit"
+      disabled={!endpointAvailable}
+      data-ppc-form-submit
+    >
+      <span data-ppc-form-submit-label>{submitLabel}</span>
+    </button>
+    <p class="ppc-form__microcopy">{microcopy}</p>
+    <p class="ppc-form__status" data-ppc-form-status role="status" aria-live="polite" hidden></p>
+  </form>
+</div>
+
+{
+  site.integrations.turnstileSiteKey && (
+    <script
+      is:inline
+      data-categories="essential"
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+    />
+  )
+}
+
+<script>
+  // Submit/validation/upload contract: the same shape AssessmentForm.astro and AcCompactForm
+  // already ship. Duplicated rather than imported because Astro component scripts are
+  // page-scoped and this variant has its own field set and its own inline success state.
+  type FormControl = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+
+  const form = document.querySelector<HTMLFormElement>("[data-ppc-form]");
+
+  if (form) {
+    const errorBox = form.querySelector<HTMLElement>("[data-ppc-form-errors]");
+    const errorList = errorBox?.querySelector("ul");
+    const statusEl = form.querySelector<HTMLElement>("[data-ppc-form-status]");
+    const submitButton = form.querySelector<HTMLButtonElement>("[data-ppc-form-submit]");
+    const submitLabel = form.querySelector<HTMLElement>("[data-ppc-form-submit-label]");
+    const defaultLabel = submitLabel?.textContent ?? "Send Message";
+    const thankYouRoute = form.dataset.thankYou || "/thank-you/";
+    const uploadInput = form.querySelector<HTMLInputElement>("[data-ppc-upload]");
+    const uploadList = form.querySelector<HTMLUListElement>("[data-ppc-upload-list]");
+    const uploadError = form.querySelector<HTMLElement>("[data-ppc-upload-error]");
+    const uploadStatus = form.querySelector<HTMLElement>("[data-ppc-upload-status]");
+    const timestampInput = form.elements.namedItem("submission_timestamp");
+    const idempotencyInput = form.elements.namedItem("idempotency_key");
+
+    form.noValidate = true;
+
+    if (idempotencyInput instanceof HTMLInputElement) {
+      idempotencyInput.value =
+        window.crypto?.randomUUID?.() ??
+        `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+    }
+
+    // ---- Campaign attribution -------------------------------------------------------------
+    // WHITELIST, not passthrough. Only these six parameters are read, each truncated, and none
+    // of them is ever written into the DOM. No submitted answer reaches an analytics event.
+    const sanitizeReferrer = (referrer: string) => {
+      if (!referrer) return "";
+      try {
+        const url = new URL(referrer);
+        return `${url.origin}${url.pathname}`;
+      } catch {
+        return "";
+      }
+    };
+
+    const parameters = new URLSearchParams(window.location.search);
+    for (const name of ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "gclid"]) {
+      const value = parameters.get(name);
+      const input = form.querySelector<HTMLInputElement>(`input[name="${name}"]`);
+      if (value && input) input.value = value.slice(0, 250);
+    }
+    const landingPageInput = form.querySelector<HTMLInputElement>('input[name="landing_page"]');
+    if (landingPageInput) landingPageInput.value = window.location.pathname;
+    const referrerInput = form.querySelector<HTMLInputElement>('input[name="referrer"]');
+    if (referrerInput) referrerInput.value = sanitizeReferrer(document.referrer);
+
+    // ---- Uploads --------------------------------------------------------------------------
+    const formatBytes = (bytes: number) => {
+      if (bytes < 1024 * 1024) return `${Math.max(1, Math.round(bytes / 1024))} KB`;
+      return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+    };
+
+    const renderUpload = () => {
+      if (!uploadInput || !uploadList || !uploadError || !uploadStatus) return [];
+
+      const files = Array.from(uploadInput.files ?? []);
+      const maxFiles = Number(uploadInput.dataset.maxFiles);
+      const maxImageBytes = Number(uploadInput.dataset.maxImageBytes);
+      const maxVideoBytes = Number(uploadInput.dataset.maxVideoBytes);
+      const maxTotalBytes = Number(uploadInput.dataset.maxTotalBytes);
+      const allowed = new Set(uploadInput.dataset.allowedExtensions?.split(",") ?? []);
+      const images = new Set(uploadInput.dataset.imageExtensions?.split(",") ?? []);
+      const perFile = new Map<number, string[]>();
+      const overall: string[] = [];
+      const totalBytes = files.reduce((sum, file) => sum + file.size, 0);
+
+      if (files.length > maxFiles) overall.push(`Select no more than ${maxFiles} files.`);
+      if (totalBytes > maxTotalBytes) {
+        overall.push(
+          `The combined selection is ${formatBytes(totalBytes)}; the limit is ${formatBytes(maxTotalBytes)}.`
+        );
+      }
+
+      files.forEach((file, index) => {
+        const extension = file.name.split(".").pop()?.toLowerCase() ?? "";
+        const problems: string[] = [];
+        if (!allowed.has(extension)) problems.push("Unsupported file type");
+        else if (file.size > (images.has(extension) ? maxImageBytes : maxVideoBytes)) {
+          problems.push(
+            `Exceeds the ${formatBytes(images.has(extension) ? maxImageBytes : maxVideoBytes)} limit`
+          );
+        }
+        if (problems.length) perFile.set(index, problems);
+      });
+
+      uploadList.replaceChildren();
+      files.forEach((file, index) => {
+        const item = document.createElement("li");
+        const details = document.createElement("span");
+        const name = document.createElement("strong");
+        const meta = document.createElement("small");
+        const remove = document.createElement("button");
+        const problems = perFile.get(index) ?? [];
+
+        item.dataset.state = problems.length ? "error" : "selected";
+        // textContent, never innerHTML: a filename is untrusted input. Long names wrap rather
+        // than being truncated, so nothing about the selection is hidden from the visitor.
+        name.textContent = file.name;
+        meta.textContent = `${formatBytes(file.size)}${problems.length ? ` · ${problems.join(" · ")}` : ""}`;
+        details.append(name, meta);
+
+        remove.type = "button";
+        remove.className = "ppc-form__file-remove";
+        remove.textContent = "Remove";
+        remove.setAttribute("aria-label", `Remove ${file.name}`);
+        remove.addEventListener("click", () => {
+          try {
+            const transfer = new DataTransfer();
+            files.forEach((candidate, candidateIndex) => {
+              if (candidateIndex !== index) transfer.items.add(candidate);
+            });
+            uploadInput.files = transfer.files;
+            renderUpload();
+            // Announce BOTH facts: which file went, and what is left. renderUpload() has already
+            // written the count, so appending the removal keeps the live region complete.
+            uploadStatus.textContent = `${file.name} removed. ${uploadStatus.textContent}`;
+          } catch {
+            uploadInput.value = "";
+            renderUpload();
+            uploadStatus.textContent =
+              "The file selection was cleared because this browser does not support removing one file.";
+          }
+        });
+
+        item.append(details, remove);
+        uploadList.append(item);
+      });
+
+      const all = [...overall, ...Array.from(perFile.values()).flat()];
+      uploadInput.setCustomValidity(all[0] ?? "");
+      uploadInput.setAttribute("aria-invalid", all.length ? "true" : "false");
+      uploadList.hidden = files.length === 0;
+      uploadError.hidden = all.length === 0;
+      uploadError.textContent = all.length
+        ? `${overall.join(" ")} ${perFile.size ? "Remove the files marked with an error before continuing." : ""}`.trim()
+        : "";
+      uploadStatus.textContent = files.length
+        ? `${files.length} file${files.length === 1 ? "" : "s"} selected.`
+        : "No files selected.";
+
+      return all;
+    };
+
+    uploadInput?.addEventListener("change", () => renderUpload());
+    renderUpload();
+
+    // ---- Validation -----------------------------------------------------------------------
+    const labelFor = (control: FormControl) => {
+      const label = form.querySelector<HTMLLabelElement>(`label[for="${CSS.escape(control.id)}"]`);
+      return label?.textContent?.replace("(optional)", "").replace("*", "").trim() ?? "Field";
+    };
+
+    // Approved wording, matching the messages the shared forms already use.
+    const approvedFieldMessage: Record<string, string> = {
+      full_name: "Add your name so we know who to ask for.",
+      phone: "Add a phone number so Matthew can reach you about the property.",
+      privacy_consent: "Check the consent box so we're allowed to call or text you back.",
+      property_zip: "Add the property ZIP code so we can confirm the service area.",
+      property_detail: "Tell us a little about what's going on.",
+      email: "Enter a valid email address, or leave it blank."
+    };
+
+    const contactPhone = form.dataset.contactPhone ?? "";
+    const submissionErrorMessage = contactPhone
+      ? `Something went wrong on our end and the form didn't send. Call or text ${contactPhone} and we'll take it from there.`
+      : "Something went wrong on our end and the form didn't send. Call or text us and we'll take it from there.";
+
+    const clearFieldErrors = () => {
+      form.querySelectorAll<HTMLElement>("[data-generated-error]").forEach((el) => el.remove());
+      form.querySelectorAll<FormControl>('[aria-invalid="true"]').forEach((control) => {
+        if (control !== uploadInput) control.removeAttribute("aria-invalid");
+      });
+    };
+
+    const attachError = (control: FormControl, message: string) => {
+      control.setAttribute("aria-invalid", "true");
+      if (control instanceof HTMLInputElement && control.type === "checkbox") {
+        const wrapper = control.closest("label");
+        if (!wrapper) return;
+        const inline = document.createElement("p");
+        inline.className = "form-error";
+        inline.dataset.generatedError = "";
+        inline.textContent = message;
+        wrapper.after(inline);
+        return;
+      }
+      const field = control.closest(".ppc-form__field");
+      if (!field) return;
+      const inline = document.createElement("p");
+      inline.className = "form-error";
+      inline.dataset.generatedError = "";
+      inline.textContent = message;
+      field.append(inline);
+    };
+
+    const showSummary = (messages: string[]) => {
+      if (!errorBox || !errorList) return;
+      errorList.replaceChildren();
+      if (!messages.length) {
+        errorBox.hidden = true;
+        return;
+      }
+      messages.forEach((message) => {
+        const item = document.createElement("li");
+        item.textContent = message;
+        errorList.append(item);
+      });
+      errorBox.hidden = false;
+      errorBox.focus({ preventScroll: true });
+      errorBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    };
+
+    // Client mirror of functions/_lib/lead.ts's required set for this form shape.
+    const validateLocally = () => {
+      clearFieldErrors();
+      const messages: string[] = [];
+      const controls = Array.from(
+        form.querySelectorAll<FormControl>("input, select, textarea")
+      ).filter((control) => !["hidden", "button", "submit"].includes(control.type));
+
+      for (const control of controls) {
+        if (control === uploadInput) continue;
+        if (control.validity.valid) continue;
+        const message =
+          approvedFieldMessage[control.name] ??
+          (control.validity.valueMissing
+            ? `${labelFor(control)} is required.`
+            : `Review ${labelFor(control).toLowerCase()}.`);
+        attachError(control, message);
+        messages.push(
+          control instanceof HTMLInputElement && control.type === "checkbox"
+            ? message
+            : `${labelFor(control)}: ${message}`
+        );
+      }
+
+      const uploadProblems = renderUpload();
+      if (uploadProblems.length) messages.push(...uploadProblems);
+
+      showSummary(messages);
+      return messages.length === 0;
+    };
+
+    const resetTurnstile = () => {
+      const turnstile = (
+        window as Window & { turnstile?: { reset: (widget?: string | HTMLElement) => void } }
+      ).turnstile;
+      const widget = form.querySelector<HTMLElement>(".cf-turnstile");
+      if (turnstile && widget) turnstile.reset(widget);
+    };
+
+    const setSubmitting = (submitting: boolean, message = "") => {
+      if (submitButton) submitButton.disabled = submitting;
+      form.setAttribute("aria-busy", String(submitting));
+      if (submitLabel) submitLabel.textContent = submitting ? "Sending…" : defaultLabel;
+      if (statusEl) {
+        statusEl.hidden = !message;
+        statusEl.textContent = message;
+      }
+    };
+
+    // XHR rather than fetch: it is the only way to report real upload progress, which matters
+    // when the visitor has attached 50 MB of room video over a phone connection.
+    const send = () =>
+      new Promise<{ status: number; payload: Record<string, unknown> }>((resolve, reject) => {
+        const request = new XMLHttpRequest();
+        request.open("POST", form.action);
+        request.setRequestHeader("Accept", "application/json");
+        request.timeout = 90_000;
+        request.upload.addEventListener("progress", (event) => {
+          if (!statusEl || !event.lengthComputable) return;
+          const percentage = Math.round((event.loaded / event.total) * 100);
+          statusEl.hidden = false;
+          statusEl.textContent =
+            percentage < 100
+              ? `Uploading property details and photos: ${percentage}%`
+              : "Upload complete. Confirming delivery…";
+        });
+        request.addEventListener("load", () => {
+          let payload: Record<string, unknown> = {};
+          try {
+            payload = JSON.parse(request.responseText) as Record<string, unknown>;
+          } catch {
+            payload = {};
+          }
+          resolve({ status: request.status, payload });
+        });
+        request.addEventListener("error", () => reject(new Error("network")));
+        request.addEventListener("timeout", () => reject(new Error("timeout")));
+        request.send(new FormData(form));
+      });
+
+    // ---- Analytics ------------------------------------------------------------------------
+    // Two DISTINCT events, per the brief: an attempt is not a success. `ppc_form_success` fires
+    // only after a confirmed 2xx + ok:true. Neither event carries a name, phone, email, ZIP,
+    // description, filename or photo — only whether files were attached, as a boolean.
+    const track = (event: string, detail: Record<string, string | number | boolean> = {}) => {
+      (window as Window & { dataLayer?: unknown[] }).dataLayer ??= [];
+      (window as Window & { dataLayer?: unknown[] }).dataLayer!.push({
+        event,
+        form_id: form.id,
+        ...detail
+      });
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      if (!form.action) return;
+
+      if (!validateLocally()) return;
+
+      const turnstileWidget = form.querySelector(".cf-turnstile");
+      const turnstileToken = form.elements.namedItem("cf-turnstile-response");
+      if (
+        turnstileWidget &&
+        (!(turnstileToken instanceof HTMLInputElement) || !turnstileToken.value)
+      ) {
+        setSubmitting(false, "Complete the security verification, then submit again.");
+        return;
+      }
+
+      if (timestampInput instanceof HTMLInputElement) {
+        timestampInput.value = new Date().toISOString();
+      }
+
+      const photoCount = uploadInput?.files?.length ?? 0;
+      track("ppc_form_submit_attempt", { photos_attached: photoCount > 0 });
+      setSubmitting(true, "Sending your request…");
+
+      try {
+        const { status, payload } = await send();
+
+        if (status >= 200 && status < 300 && payload.ok === true) {
+          // CONFIRMED — and only here. The visitor is sent to the campaign thank-you route.
+          //
+          // Redirecting rather than swapping in an inline panel is what makes a refresh safe:
+          // the browser lands on the thank-you page via GET, so reloading re-fetches a static
+          // document and cannot repost the form. Back-navigation returns to the form with the
+          // fields the browser restored, not to a resubmission.
+          //
+          // NOTHING PERSONAL GOES IN THE URL. Only the derived display code and two state
+          // flags — no name, phone, email address, ZIP or description.
+          track("ppc_form_success", { photos_attached: photoCount > 0 });
+          // THREE email states, not two. The endpoint reports `confirmationEmailSent` as a
+          // bare boolean, which is false both when the provider rejected the message AND when
+          // there was no address to send to. Collapsing those into one flag made the thank-you
+          // page tell a visitor who deliberately left email blank that we "could not send" one —
+          // describing a failure that never happened. Only this form knows which case it is,
+          // because only this form knows whether an address was typed.
+          const emailSupplied = Boolean(
+            (form.elements.namedItem("email") as HTMLInputElement | null)?.value.trim()
+          );
+          const parameters = new URLSearchParams({
+            received: "1",
+            callback:
+              typeof payload.callbackWindow === "string"
+                ? payload.callbackWindow
+                : "next-business-window",
+            email: !emailSupplied
+              ? "none"
+              : payload.confirmationEmailSent === true
+                ? "sent"
+                : "attention"
+          });
+          const code = typeof payload.confirmationCode === "string" ? payload.confirmationCode : "";
+          if (/^AC-[0-9A-HJKMNP-TV-Z]{6}$/.test(code)) parameters.set("code", code);
+          window.location.assign(`${thankYouRoute}?${parameters.toString()}`);
+          return;
+        }
+
+        // FAILURE — including the partial case where details stored but the files did not. The
+        // server's own message is surfaced verbatim and every entered value stays in the form.
+        if (payload.errors && typeof payload.errors === "object") {
+          const messages: string[] = [];
+          for (const [key, serverMessage] of Object.entries(
+            payload.errors as Record<string, string>
+          )) {
+            const message = approvedFieldMessage[key] ?? serverMessage;
+            const control = form.elements.namedItem(key);
+            if (
+              control instanceof HTMLInputElement ||
+              control instanceof HTMLTextAreaElement ||
+              control instanceof HTMLSelectElement
+            ) {
+              attachError(control, message);
+              messages.push(`${labelFor(control)}: ${message}`);
+            } else {
+              messages.push(message);
+            }
+          }
+          showSummary(messages);
+        }
+        setSubmitting(
+          false,
+          typeof payload.message === "string" ? payload.message : submissionErrorMessage
+        );
+        resetTurnstile();
+      } catch {
+        setSubmitting(false, submissionErrorMessage);
+        resetTurnstile();
+      }
+    });
+  }
+</script>
+
+<style>
+  /* Panel recipe is the shared hero form's, unchanged: semi-opaque deep navy, hairline white
+     border, restrained 8px radius (docs/styles/website-reference.css `.ac-form`). Only the
+     density differs, and only in the directions the profile's compact mode permits. */
+  .ppc-form {
+    display: grid;
+    /* `minmax(0, 1fr)`, not the implicit `auto` track. MEASURED DEFECT, 320px: Turnstile's
+       flexible widget carries a 300px minimum, and an auto-sized implicit column takes its width
+       from that max-content, which pushed the whole panel to 336px inside a 280px shell and put
+       a horizontal scrollbar on the document. Pinning the track to the container is the fix; the
+       widget itself is handled below. (The same condition exists on the shared hero form at
+       320px — that is a separate sitewide item, deliberately not "fixed" from here, because this
+       file must not change how any other page renders.) */
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+    border: 1px solid rgb(255 255 255 / 30%);
+    border-radius: var(--ac-r-panel);
+    background: rgb(18 40 64 / 94%);
+    padding: 22px;
+  }
+
+  .ppc-form[hidden] {
+    display: none;
+  }
+
+  .ppc-form__header {
+    display: grid;
+    gap: 4px;
+  }
+
+  .ppc-form__title {
+    margin: 0;
+    color: var(--ac-color-paper);
+  }
+
+  .ppc-form__intro,
+  .ppc-form__helper,
+  .ppc-form__microcopy {
+    margin: 0;
+    color: rgb(255 255 255 / 82%);
+    /* 14px — the profile's readable floor for helper copy. Never reduced to win fold space. */
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
+  .ppc-form__helper {
+    margin-top: 4px;
+  }
+
+  .ppc-form__grid {
+    display: grid;
+    align-items: start;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px 14px;
+  }
+
+  .ppc-form__field {
+    min-width: 0;
+  }
+
+  .ppc-form__field--full {
+    grid-column: 1 / -1;
+  }
+
+  .ppc-form__field label {
+    display: block;
+    margin-bottom: 4px;
+    color: rgb(255 255 255 / 92%);
+    font-size: 1rem;
+    line-height: 1.4;
+    font-weight: 650;
+  }
+
+  .ppc-form__optional {
+    color: rgb(255 255 255 / 70%);
+    font-weight: 400;
+  }
+
+  .ppc-form__field input,
+  .ppc-form__field textarea {
+    width: 100%;
+    min-width: 0;
+    /* >=44px control height and >=16px text — the profile's floors, and what stops iOS from
+       zooming the page on focus. Neither is reduced anywhere in this file. */
+    min-height: 44px;
+    border: 1px solid rgb(255 255 255 / 28%);
+    border-radius: var(--ac-r-sm);
+    background: rgb(255 255 255 / 12%);
+    padding: 10px 12px;
+    color: var(--ac-color-paper);
+    font: inherit;
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .ppc-form__field textarea {
+    min-height: 64px;
+    resize: vertical;
+  }
+
+  /* The file control keeps the same >=16px text and >=44px height floors as every other input.
+     It is an `input`, so the profile's "at least 16px text and 44px control height, excluding
+     checkbox/radio/hidden" applies to it and is not traded away for fold space. */
+  .ppc-form__field input[type="file"] {
+    max-width: 100%;
+    padding: 9px 12px;
+  }
+
+  .ppc-form__field input::file-selector-button {
+    margin-right: 12px;
+    border: 1px solid rgb(255 255 255 / 40%);
+    border-radius: var(--ac-r-sm);
+    background: rgb(255 255 255 / 12%);
+    padding: 5px 12px;
+    color: var(--ac-color-paper);
+    font: inherit;
+    font-size: 0.875rem;
+    font-weight: 650;
+    cursor: pointer;
+  }
+
+  .ppc-form__field input:focus-visible,
+  .ppc-form__field textarea:focus-visible {
+    outline: 2px solid var(--ac-color-paper);
+    outline-offset: 1px;
+  }
+
+  .ppc-form__files {
+    display: grid;
+    margin: 6px 0 0;
+    padding: 0;
+    list-style: none;
+    gap: 6px;
+  }
+
+  /* `display: grid` above would otherwise defeat the `hidden` attribute, leaving an empty list
+     contributing its 6px margin to the panel before any file is chosen. */
+  .ppc-form__files[hidden] {
+    display: none;
+  }
+
+  .ppc-form__files li {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    border: 1px solid rgb(255 255 255 / 22%);
+    border-radius: var(--ac-r-sm);
+    padding: 6px 10px;
+  }
+
+  .ppc-form__files li[data-state="error"] {
+    border-color: #ffb4ac;
+  }
+
+  /* Long filenames wrap instead of being truncated — nothing about the selection is hidden,
+     and the row cannot push the 560px form track wider than its budget. */
+  .ppc-form__files span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .ppc-form__files strong {
+    display: block;
+    color: var(--ac-color-paper);
+    font-size: 0.8125rem;
+    font-weight: 650;
+  }
+
+  .ppc-form__files small {
+    color: rgb(255 255 255 / 72%);
+    font-size: 0.75rem;
+  }
+
+  .ppc-form__file-remove {
+    flex: 0 0 auto;
+    border: 0;
+    background: none;
+    color: var(--ac-color-paper);
+    font: inherit;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: underline;
+  }
+
+  .ppc-form__consent {
+    display: grid;
+    grid-template-columns: 1.1rem minmax(0, 1fr);
+    gap: 10px;
+    cursor: pointer;
+    color: rgb(255 255 255 / 82%);
+    /* 14px. Consent text is never shrunk to make a hero fit. */
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
+  .ppc-form__consent input {
+    width: 1.05rem;
+    height: 1.05rem;
+    margin: 0.15rem 0 0;
+    accent-color: var(--ac-color-paper);
+  }
+
+  .ppc-form__link {
+    color: var(--ac-color-paper);
+    text-decoration: underline;
+  }
+
+  /* Turnstile's flexible widget will not render below 300px. From 390px up it fits the panel
+     with room to spare (390px viewport → 350px shell → 314px inside the 18px padding), so this
+     never engages at any viewport in the §7 matrix or on a normal phone. It exists for the 320px
+     accessibility-reflow state, where confining the scroll to the widget is what keeps the
+     DOCUMENT from scrolling horizontally — WCAG 1.4.10's actual requirement. The control is not
+     clipped, shrunk or hidden, and nothing else in the form scrolls. */
+  .ppc-form__verify {
+    display: grid;
+    min-width: 0;
+    gap: 6px;
+  }
+
+  .ppc-form__turnstile {
+    display: flex;
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: auto;
+  }
+
+  .ppc-form__note {
+    margin: 0;
+    color: rgb(255 255 255 / 78%);
+    font-size: 0.8125rem;
+  }
+
+  .ppc-form__submit {
+    display: inline-flex;
+    width: 100%;
+    /* Buttons keep the profile's >=48px minimum. */
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: var(--ac-r-sm);
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+    font-size: 0.9375rem;
+    font-weight: 750;
+    transition: background-color 150ms ease;
+  }
+
+  .ppc-form__submit:hover:not(:disabled) {
+    background: var(--ac-color-blue-pale);
+  }
+
+  .ppc-form__submit:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 3px;
+  }
+
+  .ppc-form__submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .ppc-form__microcopy {
+    text-align: center;
+  }
+
+  .ppc-form__status {
+    margin: 0;
+    color: rgb(255 255 255 / 85%);
+    font-size: 0.8125rem;
+    overflow-wrap: anywhere;
+  }
+
+  /* An empty status node would otherwise contribute a gap row to the panel grid. */
+  .ppc-form__status:empty,
+  .ppc-form__status[hidden] {
+    display: none;
+  }
+
+  .ppc-form__errors {
+    border: 2px solid var(--ac-color-error);
+    border-radius: var(--ac-r-sm);
+    background: rgb(163 57 47 / 22%);
+    padding: 12px 14px;
+    color: var(--ac-color-paper);
+  }
+
+  .ppc-form__errors[hidden] {
+    display: none;
+  }
+
+  .ppc-form__errors ul {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding-left: 1.1rem;
+    font-size: 0.8125rem;
+  }
+
+  .ppc-form :global(.form-error) {
+    margin: 4px 0 0;
+    color: #ffb4ac;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .ppc-form__file-error[hidden] {
+    display: none;
+  }
+
+  .ppc-form__honeypot {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+  }
+
+    /* COMPACT DESKTOP GEOMETRY — profile §7 "Compact desktop CSS and repair order".
+     Space only: 18px panel padding, 8px main gap, 8px/14px field gaps. Every readable floor
+     holds — inputs stay >=16px text and >=44px tall, the submit stays >=48px, helpers and
+     consent stay at 14px, and nothing is hidden, clipped or made to scroll internally.
+     Applied across the whole §7 desktop matrix (<=950px tall) rather than only below 850px:
+     this form carries an upload control and the wider media-consent scope that the shared hero
+     form does not, so it needs the documented compact density at 864px and 900px too. Recorded
+     in docs/05-CURRENT-DECISIONS.md. */
+  /* RETUNED 2026-09-06 for AC-PPC-HERO-ROOMS-1.1. The free-walkthrough subtext is one line longer
+     than the wording it replaced, which added 20.30px to the panel and cost 1440x900 its pass
+     (clearance 22.52px → 2.22px, measured). AC-PPC-HERO-COPY-UPDATE.md permits adjusting spacing
+     and padding to accommodate new wording; it forbids clipping, hiding, internal scrolling and
+     shrinking text below the readable floors. This is space only:
+       panel gap    8px → 6px   ·  5 visible row gaps  = 10px
+       panel pad   18px → 16px  ·  top and bottom      =  4px
+       grid rows    8px → 6px   ·  3 field row gaps    =  6px
+     Column gap stays 14px. Every floor holds untouched — inputs >=44px tall and >=16px text, the
+     submit >=48px, helper/consent/microcopy at 14px, nothing hidden or scrolled. */
+  @media (min-width: 75rem) and (max-height: 950px) {
+    .ppc-form {
+      gap: 6px;
+      padding: 16px;
+    }
+
+    .ppc-form__grid {
+      gap: 6px 14px;
+    }
+  }
+
+  /* SHORT DESKTOP — AC-PPC-HERO-ROOMS-1.2, 2026-09-06.
+     WHY THIS IS STRUCTURAL AND NOT MORE SPACING. Measured from dist/ at scrollY 0, the panel's
+     six in-flow rows come to 700.79px of CONTENT before a single pixel of padding or gap:
+       header 73.39 · field grid 404.72 · consent 81.19 · verify 73.19 · submit 48 · microcopy 20.30
+     The fold budget for the panel is V - header(73) - clearance(16) - hero padding(40):
+       1440x900 -> 771 (fits, untouched below)   1536x864 -> 735 (fits)
+       1280x800 -> 671 (content alone EXCEEDS by 29.79)
+       1366x768 -> 639 (content alone EXCEEDS by 61.79)
+     So at 1366x768 and 1280x800 the stacked panel cannot fit even with zero padding and zero
+     gaps. Tightening space further is arithmetically incapable of clearing it, and the remaining
+     alternatives — dropping a field, shrinking text under the readable floors, clipping, or an
+     inner scroller — are all forbidden. What is left is the panel's UNUSED HORIZONTAL ROOM: the
+     copy column beside it is 708px wide and only ~381px tall, and the panel itself stacks two
+     full-width blocks (description, photos) and two more (verify, submit) that each leave most of
+     a 528px line empty. This band pairs them. Nothing is removed, reworded, hidden or shrunk —
+     every field, label, helper, the consent and the microcopy still render in full at their
+     existing sizes, inputs stay >=44px tall with >=16px text, the submit stays >=48px, and
+     helper/consent/microcopy stay at 14px.
+
+     880px is the threshold because 1440x900 already passes with 22.22px of clearance and is left
+     exactly as it was; the band opens just under it, at the first size that fails. */
+  @media (min-width: 75rem) and (max-height: 880px) {
+    /* Two panel tracks. The left is floored at Turnstile's 300px flexible-widget minimum so the
+       widget never lands under its own render threshold; the right takes what is left for the
+       submit. Every other row still spans both tracks. */
+    .ppc-form {
+      grid-template-columns: minmax(300px, 1fr) minmax(0, 224px);
+      padding: 14px;
+    }
+
+    .ppc-form > * {
+      grid-column: 1 / -1;
+    }
+
+    /* The anti-spam control and the submit share ONE row instead of two. Saves the submit's own
+       row plus its gap; the button keeps its full label and stretches to the widget's height, so
+       it gets LARGER here, never smaller.
+
+       Both are matched through `.ppc-form >` rather than on the class alone. Astro scopes
+       `.ppc-form > *` by stamping its data attribute on BOTH sides of the combinator, which
+       leaves that rule at a higher specificity than a bare `.ppc-form__verify`; the child
+       combinator here restores the tie so source order decides, as intended. */
+    .ppc-form > .ppc-form__verify {
+      grid-column: 1;
+    }
+
+    .ppc-form > .ppc-form__submit {
+      grid-column: 2;
+      align-self: stretch;
+    }
+
+    /* The description and the photo upload stop being full-width rows and sit side by side, which
+       is the single largest saving available. Reading and tab order are unchanged — DOM order
+       still runs name, phone, ZIP, email, description, photos, so the pair simply becomes the
+       third row of the same left-to-right grid. */
+    .ppc-form__grid > .ppc-form__field--full {
+      grid-column: auto;
+    }
+  }
+
+  /* Reference CSS `.ac-form__grid` at <=540px: one field column, DOM order preserved
+     (name, phone, ZIP, email, description, upload, consent, submit). */
+  @media (max-width: 33.75rem) {
+    .ppc-form__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ppc-form {
+      padding: 18px;
+    }
+  }
+</style>

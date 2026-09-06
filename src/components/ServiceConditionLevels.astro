@@ -28,12 +28,7 @@ const { conditionLevels, reach } = servicesHub;
 <section class="levels" aria-labelledby="levels-title">
   <div class="levels__inner">
     <header class="levels__header">
-      <p class="ac-eyebrow">Normal cleaning, or something more</p>
-      <h2 id="levels-title" class="ac-type-h2-home-feature">Here is the difference.</h2>
-      <p class="levels__lede">
-        Most of the confusion about what we do comes down to one question: how much is the
-        property&rsquo;s condition changing the work?
-      </p>
+      <h2 id="levels-title" class="ac-type-h2-home-feature">Which service should I choose?</h2>
     </header>
 
     <div class="levels__grid">
@@ -56,6 +51,11 @@ const { conditionLevels, reach } = servicesHub;
         </article>
       ))}
     </div>
+
+    <p class="levels__unsure">
+      Still unsure? That is completely fine. <strong>You can send us the property without
+      choosing a service first.</strong>
+    </p>
 
     <div class="reach">
       <div class="reach__copy">
@@ -204,6 +204,17 @@ const { conditionLevels, reach } = servicesHub;
   .level__link:focus-visible {
     outline: 3px solid var(--ac-color-navy-800);
     outline-offset: 3px;
+  }
+
+  .levels__unsure {
+    margin: clamp(36px, 4vw, 48px) 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+  }
+
+  .levels__unsure strong {
+    color: var(--ac-color-navy-900);
   }
 
   .reach {

@@ -72,12 +72,15 @@ const { eyebrow, h1, lede } = servicesHub.hero;
         {lede.map((line) => <p>{line}</p>)}
       </div>
       <div class="svc-hero__actions">
-        <a class="svc-hero__primary" href="/request-assessment/">{site.offer.primaryCta}</a>
+        <a class="svc-hero__primary" href="/request-assessment/">Request an Assessment</a>
         {/* Suppression rule (AGENTS.md §3): never render an empty phone link. */}
         {phoneHref && (
           <a class="svc-hero__call" href={phoneHref}>Call {site.business.phone}</a>
         )}
       </div>
+      <p class="svc-hero__note">
+        Not sure which service you need? Send us photos and tell us what is happening.
+      </p>
     </div>
   </div>
 
@@ -222,6 +225,14 @@ const { eyebrow, h1, lede } = servicesHub.hero;
 
   .svc-hero__call:hover {
     color: var(--ac-color-blue-pale);
+  }
+
+  .svc-hero__note {
+    margin: 22px 0 0;
+    max-width: 46ch;
+    color: rgb(255 255 255 / 85%);
+    font-size: 0.875rem;
+    line-height: 1.55;
   }
 
   .svc-hero__call:focus-visible {

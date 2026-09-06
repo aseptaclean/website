@@ -1,119 +1,58 @@
-# MASTER SITEMAP — reconciled route-planning table
+# Twelve-page scope and route map
 
-**Owner-reconciled 2026-08-25.** This table preserves prior route planning and current-state
-comparisons. It does not independently override the approved authority hierarchy, doc 30's SEO
-strategy, claims restrictions, per-route gates, or a fresh build's evidence of current output.
+This table replaces the old city-page and category-hub launch plan for this redesign. Paths are grounded in the supplied documents, not freshly verified against live source. Retain the actual existing canonical path if it differs and record the mapping. Do not create a duplicate route just to match this table.
 
-**Authority boundary — 2026-08-25.** This is the planning table for routes, waves, and
-publication gates. Doc 30 governs website and SEO strategy; verified facts, owner decisions,
-claims restrictions, and locked copy outrank both. Current source plus a fresh build establishes
-current technical state. Default visible primary CTA is **Tell Us About the Property**. No
-`/service-areas/san-jose/`, `/assessment/`, `/services/{slug}`, or `/locations/*` route is
-authorized.
+| Page | Public label | Expected existing route | Content source |
+| --- | --- | --- | --- |
+| 1 | Homepage | / | Main copy → Homepage |
+| 2 | Services | /services/ | Main copy → Services + trauma summary |
+| 3 | Hoarding Cleanup | /hoarding-cleanup-san-jose/ | Main copy → Hoarding Cleanup |
+| 4 | Extreme Cleaning | /extreme-cleaning-san-jose/ | Main copy → Severe Property Cleanup |
+| 5 | Detailed Deep Cleaning | /deep-cleaning-san-jose/ | Main copy → Detailed Deep Cleaning |
+| 6 | Crime Scene & Trauma Cleanup | /crime-scene-trauma-cleanup-san-jose/ | Trauma copy |
+| 7 | Rodent Droppings & Animal Waste Cleanup | /rodent-dropping-cleanup-san-jose/ | Main copy → Rodent Droppings & Animal Waste Cleanup |
+| 8 | Contact | /contact/ | Main source form material + verified contact data + current dedicated copy |
+| 9 | About | /about/ | Main copy → Why Aseptaclean + current dedicated About copy |
+| 10 | Privacy Policy | /privacy/ | Actual existing policy provider document |
+| 11 | Terms and Conditions | /terms/ | Actual existing policy provider document |
+| 12 | Cookie Policy | /cookie-policy/ | Actual existing policy provider document |
 
-> **Reconciled against `dist/` 2026-08-19 after `npm run build:local`.** The **Planned** column
-> is what this document has always said — the publish intent, unchanged. **As built** is what
-> the current build actually emits. They disagree on **ten rows**, every one of them a page
-> planned as `index` that ships `noindex`.
->
-> **This document remains the planning authority** — waves, gates, and copy sources. It is not
-> the authority on current build state; `AGENTS.md` §2 now carries that, regenerated from the
-> same build. Where the two columns below disagree, **the build is the fact and the plan is the
-> intent.** Neither is a defect on its own: most of these are gates that have not cleared. What
-> would be a defect is reading the Planned column as a description of the live site, which is
-> what happened before this reconciliation.
+## Navigation
 
-| Group | Route (canonical, city-suffixed) | Page | Planned | As built (2026-08-19) | Copy source |
-|---|---|---|---|---|---|
-| Home | `/` | Homepage | index | ✅ index | 27 §9 |
-| **Detailed Cleaning** | `/detailed-cleaning/` | Category hub | index | ✅ index | 27 §12 intro |
-| | `/deep-cleaning-san-jose/` | Deep Cleaning | index | ✅ index | 27 §12.1 |
-| | `/move-out-cleaning-san-jose/` | Move-In & Move-Out | index | ✅ index | 27 §12.2 |
-| | `/post-construction-cleaning-san-jose/` | Post-Construction | index (gate: crew) | ⚠️ **noindex** | 27 §12.3 |
-| | `/window-cleaning-san-jose/` | Window Cleaning | index (gate: crew) | ⚠️ **noindex** | 27 §12.4 |
-| **Specialty Cleaning** | `/specialty-cleaning/` | Category hub | index | ⚠️ **noindex** | 27 §13 intro |
-| | `/extreme-cleaning-san-jose/` | Extreme Cleaning | index | ✅ index | 27 §13.1 |
-| | `/animal-waste-cleanup-san-jose/` | Animal Waste Cleanup | gated; individual publication decision required | ⚠️ **noindex** (P2) | 27 §13.2 |
-| | `/rodent-dropping-cleanup-san-jose/` | Rodent Dropping Cleanup | gated; compliance, protocol, and publication decision required | ⚠️ **noindex** | 27 §13.3 |
-| | `/pigeon-dropping-cleanup-san-jose/` | Pigeon Dropping Cleanup | gated; individual publication decision required | ⚠️ **noindex** | 27 §13.4 |
-| **Property Clearing** | `/property-clearing/` | Category hub | index | ✅ index | 27 §14 intro |
-| | `/property-cleanouts-san-jose/` | Property Cleanouts | index | ✅ index | 27 §14.1 |
-| | `/hoarding-cleanup-san-jose/` | Hoarding Cleanup | index | ✅ index | 27 §14.2 |
-| | `/estate-cleanout-san-jose/` | Estate Cleanouts | index ← highest value | ✅ index | 27 §14.3 |
-| | `/debris-removal-san-jose/` | Debris Removal | index (minimums framing) | ✅ index | 27 §14 + doc19 guard |
-| | `/eviction-cleanout-san-jose/` | Eviction Cleanouts | index (gate: crew) | ⚠️ **noindex** | 27 §14.5 |
-| | `/senior-downsizing-san-jose/` | Senior Downsizing | index | ⚠️ **noindex** (P1) | doc 19 (not in 27 — write to voice) |
-| **Commercial** | `/commercial-cleaning-san-jose/` | Commercial & Janitorial | index (gate: crew) | ⚠️ **noindex** | 27 §15 |
-| **Service Areas** | `/service-areas/` | Area hub (10 cities) | index | ✅ index | 27 §16 |
-| | `/service-areas/[city]/` | City hub — Mountain View, Sunnyvale, Campbell | ~~as earned (real job + original content)~~ **gate superseded 2026-08-21** | ✅ **3 built** — `noindex, follow`, not in `sitemap.xml`; gate = owner city-availability confirmation | doc 19 §2.2 · `cityHubPages.ts` |
-| | `/service-areas/[city]/[service]/` | Service × city — hoarding-cleanup, estate-cleanout | *absent from this table until 2026-08-21* | ✅ **6 built** (3 × 2, complete) — `noindex, follow`, not in `sitemap.xml` | doc 19 §2.2 · `serviceCityPages.ts` |
-| **Company** | `/handoff-standard/` (= Process) | The Handoff Standard | index | ✅ index | doc 19 / 27 §17.1 |
-| | `/projects/` | Projects | publishes when real photos exist | ✅ noindex, gate unmet | 27 §22 |
-| | `/about/` | About | index | ✅ index | 27 §17 |
-| | `/faq/` | FAQ | index | ✅ index | 27 §17 |
-| | `/contact/` | Contact | index | ✅ index | 27 §17 |
-| **Resources** | `/estate-cleanout-checklist/` | Ungated checklist asset | index | ✅ index, in `sitemap.xml`, 3 inbound links | doc 19 Part 6 |
-| | ~~`/assessment/`~~ | ~~Triage quiz~~ | ~~Phase 4~~ | ~~not built~~ — **CANCELLED 2026-08-20, owner ruling** | ~~doc 19 Part 4~~ |
-| **Legal** | `/privacy/` `/terms/` `/cookie-policy/` | | as configured | ✅ index, in `sitemap.xml` | existing |
-| | `/data-request/` | Privacy request utility | provider workflow gate | ✅ **noindex, follow**, not in `sitemap.xml` | existing |
-| | `/sms-notification-consent/` | Protected carrier-review utility | preserve current state | ✅ index, deliberately not in `sitemap.xml` | existing |
-| **Utility** | `/thank-you/` `/404` | | noindex / n/a | ✅ noindex | existing |
-| **Undocumented until now** | `/services/` | Services index — "What Aseptaclean handles" | *absent from this table* | ✅ index, in `sitemap.xml`, **0 inbound links** | — |
-| | `/who-we-help/` | Audience page | *absent from this table* | ✅ index, in `sitemap.xml`, **0 inbound links** | — |
-| | `/private-residence-reset/` | Campaign page | index, low-emphasis crawl path | ✅ index, in `sitemap.xml`, footer-linked | doc 08 |
+Desktop: logo linking home; Services; About; Contact; primary Call Aseptaclean button.
 
-**Totals as built (2026-08-21): 46 routes** — 23 index + in `sitemap.xml`, 1 index + deliberately
-excluded (`/sms-notification-consent/`), 22 `noindex` including `/404`.
+Services is a real /services/ link with a separate accessible dropdown toggle. Dropdown order: Hoarding Cleanup, Extreme Cleaning, Detailed Deep Cleaning, Crime Scene & Trauma Cleanup, Rodent Droppings & Animal Waste Cleanup. Mobile navigation exposes the same destinations and a clear call action. Do not put five service links alongside Services in the primary desktop navigation.
 
-> **Was 37 until 2026-08-21.** The nine `/service-areas/[city]/…` routes added that day are all
-> `noindex`, so the indexable set and `sitemap.xml` did not move — 13 `noindex` became 22.
-> Counts verified against `dist/` after `npm run build:local`; `AGENTS.md` §2 carries the same
-> figures from the same build. The earlier "21 index + 3 excluded" split predates the 2026-08-20
-> pass that put `/private-residence-reset/` into `sitemap.xml` and flipped `/data-request/` to
-> `noindex`; the current build emits **23 `<loc>` entries**, counted directly from
-> `dist/sitemap.xml`. Corrected here rather than carried forward.
+Footer: brand/contact; the five services; About/Contact; Privacy Policy/Terms and Conditions/Cookie Policy; Cookie Settings control where supported by the actual consent provider. Cookie Settings reopens preferences; it is not just a link to the policy page.
 
-### Unresolvable rows — need a decision, not a lookup
+## Campaign routes
 
-**All four were ruled on 2026-08-20. Kept here with their resolutions rather than deleted —
-the record of what was open is worth as much as the answer.**
+These are paid-traffic landing pages. They are **not** part of the twelve-page scope above, they
+are never added to the public navigation, and they never enter `sitemap.xml`. Each ships
+`noindex, follow`, which `src/data/launchArchitecture.ts` produces automatically by leaving the
+path out of `launchIndexablePaths` — the same mechanism that generates the sitemap, so the two
+cannot disagree.
 
-1. ~~**`/assessment/` (Triage quiz, doc 19 Part 4).**~~ ✅ **CANCELLED, owner ruling 2026-08-20.**
-   The row is struck above. `/request-assessment/` is the built and canonical route for this
-   intent, and it is indexable, in the sitemap, and linked. No triage quiz will be built. This
-   closes the *not yet* vs *abandoned* ambiguity that code alone could not resolve.
-2. **`/services/` and `/who-we-help/` — orphans.** ✅ **Ruled 2026-08-20: add both to the footer
-   Company column.** They stay indexable; the fix is the missing inbound link, not the index
-   status. Shipping as a `src/` change in its own commit.
-3. **`/services/` versus the standing prohibition.** ✅ **Narrow reading confirmed, owner ruling
-   2026-08-20.** `AGENTS.md` §2's prohibition now names `/services/{slug}` and `/locations/{city}`
-   explicitly, so a live `/services/` hub no longer reads as violating it. Child routes under
-   `/services/` remain forbidden, as does every `/locations/*` route including a bare index.
-4. **The ten planned-index / built-noindex rows.** ⏳ **Enumerated 2026-08-20 and referred to the
-   owner as a group.** See `docs/05-DECISIONS-LOG.md`, 2026-08-20, for the full table with each
-   route's shipped gate text. The headline correction: this document's "ungated ✅" marking on
-   the three animal/rodent/pigeon routes is **the stale side of that disagreement, not the
-   build.** `src/data/doc27ServicePages.ts` records that **owner decision 2026-08-16 chose the
-   gated path over this file's ungated column** — so the build is correct and the 2026-08-09
-   override was superseded seven days later. Corrected in the reconciliation notes below.
+| Route | Brief | Indexation | Notes |
+| --- | --- | --- | --- |
+| `/hoarding-cleanup-san-jose/assessment/` | `page-briefs/PPC-HOARDING-SAN-JOSE.md` | `noindex, follow`, absent from `sitemap.xml` | Hoarding PPC landing page, built 2026-09-05 |
+| `/private-residence-reset/` | `08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` | see `AGENTS.md` §2 | Pre-existing campaign page, footer-linked |
 
-**Gated pages (Phase 5, DO NOT BUILD):** all biohazard routes — doc 90 four gates / TSWMP.
+Additional campaign route: `/hoarding-cleanup-san-jose/assessment/`, a dedicated noindex PPC
+landing page. Uses AC-CP70-91130-1.1 with only the exceptions in
+`page-briefs/PPC-HOARDING-SAN-JOSE.md`: compact navigation/footer, approximate 55/45 hero and
+Hoarding-specific intake. Call Aseptaclean remains primary. Existing SEO routes remain unchanged.
 
-**Reconciliation notes:**
-- Current owner-approved route decisions retain city suffixes on service slugs.
-- Current owner-approved route decisions retain the category hub pages.
-- ~~animal/rodent/pigeon indexable now (owner override 2026-08-09) — 27's "noindex pending gate" superseded.~~
-  **✅ STRUCK 2026-08-20 — this note was the stale side, not the build.** All three ship
-  `noindex`, correctly. `src/data/doc27ServicePages.ts` carries the reason in each route's
-  `gate` field: *"Ships noindex per §21 'Current status' and §13 'gated'; **owner decision
-  2026-08-16 chose the gated path over SITEMAP-MASTER's ungated column**."* The 2026-08-09
-  override was superseded on 2026-08-16 and this line was never updated. Doc 27 §21's
-  compliance-release inputs — insurance wording for the specific terminology, the
-  pest-control/cleanup licensing boundary, disposal procedure, PPE and work-zone limits, final
-  claims review — are still not on record. **Do not flip these three to `index` on the strength
-  of the 2026-08-09 override; it no longer stands.**
-- Publish order still follows doc 19 waves; "gate: crew" pages hold until capacity confirmed.
-- Nav = grouped dropdowns per doc 27 §8 once Phase-2 pages publish; flat until then.
-  **Built state:** grouped dropdowns ship now, and the nav links **every** service page from
-  **every** page — so all 21 indexable routes link into the 11 `noindex` ones. Release
-  checklist C10. See `AGENTS.md` §2 "Crawl-path note".
+**The SEO route `/hoarding-cleanup-san-jose/` is untouched by the campaign page** and keeps its
+own copy record in `src/data/servicePageCopy.ts`. The two share no copy; the brief forbids
+duplicating either into the other. An audit of the campaign route must not restore the site
+navigation or the four-column footer to it — those omissions are the brief's explicit, deliberate
+PPC exceptions, not defects.
+
+## Existing utility and legacy routes
+
+The twelve-page scope is not authorization to break auxiliary routes. Preserve functioning /request-assessment/, /thank-you/, /404, /data-request/, and protected /sms-notification-consent/ where present. Keep /request-assessment/ working as an existing form destination, but remove it as the primary global CTA and from primary navigation. A later deliberate redirect can consolidate it; do not redirect POST endpoints or form submissions blindly.
+
+Do not add city pages, separate animal-waste duplicates, generic biohazard service families, standalone process pages, or new category hubs for this build. Existing pages outside the twelve-page redesign require an explicit keep/redirect/retire mapping before URL removal; absence from the new navigation does not automatically authorize deletion or deindexing.
+
+Requested service pages belong in the design scope. Resolve real current publication/indexation gates from source. An obsolete “TSW pending” note is not current proof, but an unresolved actual operational requirement also cannot be marked cleared by a design task. Record the specific remaining factual dependency and complete the rest of the page.

@@ -1,0 +1,71 @@
+---
+// HOME PROCESS — HOME 07 "PROCESS" per docs/aseptaclean-BUILD-EXACT-v3-STANDALONE.md §9,
+// verbatim four-step copy. Step titles and descriptions match the spec exactly (previously this
+// section used one-word titles — Assess/Define/Perform/Document — condensed from the copy doc's
+// five-step set; the v3 spec instead gives its own four full-sentence step titles, which this
+// now renders directly rather than through that condensation).
+import ProcessFour from "@components/ProcessFour.astro";
+
+const steps = [
+  {
+    number: "01",
+    title: "Show us the property.",
+    description:
+      "Send photos and a short description of what is happening. For many properties, that is enough for us to understand the general condition and determine the next step."
+  },
+  {
+    number: "02",
+    title: "We review the condition.",
+    description:
+      "We look at the affected areas, access, contents, visible waste or buildup, and anything else that may change the work. If the property is larger or more complicated, we may recommend an on-site assessment."
+  },
+  {
+    number: "03",
+    title: "We define the work.",
+    description:
+      "You receive a clear explanation of what we recommend, what is included, what is not included, and what the work will cost. Work does not begin based on assumptions — you know what you are agreeing to before the project starts."
+  },
+  {
+    number: "04",
+    title: "We complete and review the agreed work.",
+    description:
+      "We work against the approved scope. If we uncover something that materially changes the project, we explain it before additional work is performed."
+  }
+];
+---
+
+<section class="home-process" aria-labelledby="home-process-title">
+  <div class="home-process__inner">
+    <header class="home-process__head">
+      <h2 id="home-process-title" class="ac-type-h2">How it starts</h2>
+    </header>
+    <ProcessFour steps={steps} headingId="home-process-title" />
+  </div>
+</section>
+
+<style>
+  .home-process {
+    background: var(--ac-color-paper);
+    padding-block: 96px;
+  }
+
+  .home-process__inner {
+    width: min(100% - 64px, var(--ac-measure-wide));
+    margin-inline: auto;
+  }
+
+  .home-process__head h2 {
+    max-width: 20ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  @media (max-width: 40rem) {
+    .home-process {
+      padding-block: 64px;
+    }
+
+    .home-process__inner {
+      width: calc(100% - 40px);
+    }
+  }
+</style>

@@ -1,58 +1,35 @@
-# Documentation authority
+# Current website documentation — start here
 
-Start with the repository-root `AGENTS.md`. It contains the single operative hierarchy.
+Effective 2026-09-04. This file replaces the previous website-documentation authority index.
 
-## The two website documents
+## Scoped sources of truth
 
-```
-GOVERNING                docs/30-WEBSITE-MASTER-SPEC.md
-SUPPORTING SERVICE COPY  docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md
-```
+| Concern | Current source | Boundary |
+| --- | --- | --- |
+| Current task, page scope, CTA change | Owner instructions summarized in START-HERE.md | Later explicit owner instructions supersede this snapshot within their scope. |
+| Design, layout, responsive behavior | 30-WEBSITE-MASTER-SPEC.md | Single design authority. Reference CSS implements it. |
+| Visual measurement and CSS audit baseline | reference/aseptaclean-css-profile.md, profile **AC-CP70-91130-1.1**, with reference/aseptaclean-css-targets.json and styles/website-reference.css | Measurement and composition only. Copy, facts, routes, forms and policy requirements retain their current scoped authorities; the profile does not authorize new claims, changed services, rewritten policies or deployment. §7 above-the-fold fit is a release criterion, verified against a real build. |
+| Main marketing copy | aseptaclean-all-website-copy.md | Preserved original text, with explicit display transformations in 20-COPY-MAP.md. |
+| Trauma-specific copy | aseptaclean-crime-scene-trauma-cleanup.md | Supplements the main source for trauma and its routing summaries only. |
+| Page composition and source placement | page-briefs/ and 20-COPY-MAP.md | These implement the master; no independent design system or alternate copy source. |
+| Campaign (paid-traffic) landing pages | page-briefs/PPC-HOARDING-SAN-JOSE.md, with the route inventory in SITEMAP-MASTER.md § "Campaign routes" | Each campaign brief governs its own route only. It carries its own copy — never the SEO page's — and its scoped PPC exceptions (compact header/footer, no navigation, `noindex, follow`, out of `sitemap.xml`) are deliberate. It cannot change any other route's copy, indexation or navigation. |
+| Page names and route intent | SITEMAP-MASTER.md | Actual URL existence must be checked in the real repository. |
+| Company facts and factual restrictions | 02-CURRENT-FACTS.md | Copy does not establish a missing fact or remove an existing factual restriction. |
+| Forms, legal and integration preservation | 03-INTEGRATION-CONTRACT.md | Preserve real provider text, consent behavior, endpoints, and data mappings. |
+| Image requirements | 06-ASSET-MANIFEST.md | Current policy and inventory requirements; no fabricated proof. |
+| Release verification | 04-RELEASE-CHECKLIST.md | Evidence from the new build, never old logs. |
+| Change history | 05-CURRENT-DECISIONS.md | Brief current record only; accepted changes must also update the controlling file. |
 
-There is one governing website strategy/design document. Do not add a second. Page-specific work
-goes in `page-briefs/`, in data and copy, or in the working prompt — not in another master spec.
+The root AGENTS.md remains the repository instruction entry point. On installation, reconcile only its superseded website design/copy/CTA references with this current owner-directed package. Unrelated rules and actual factual, access, consent, and provider protections remain applicable.
 
-## Active governing set
+## Conflict resolution
 
-- `30-WEBSITE-MASTER-SPEC.md` — website and customer strategy, UX, UI, CRO, design system,
-  responsive behavior, evidence strategy, technical SEO, and AI implementation rules.
-- `ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` — service-page positioning, copy direction,
-  headlines, educational ideas, objection handling, FAQs, qualification language, CTA wording,
-  service-specific assessment questions, and proof/caption concepts. **Content, not authority.**
-  It never establishes a route, canonical URL, indexation state, service status, TSWMP scope,
-  published price, claim, credential, form endpoint, or service-area promise. Doc 30 §20A
-  reconciles it; read §20A first. Where the two disagree, doc 30 wins.
-- `21-CLAIMS-AND-COMPLIANCE-LAW.md` — public claims and regulated-service boundaries; it
-  outranks the website master on what may be said.
-- `27-COPY-CANONICAL.md` — specifically locked public copy only; its historical design,
-  sitemap, platform, and implementation sections are not authority.
-- `19-SYSTEM-AND-SITEMAP.md` plus `SITEMAP-MASTER.md` — route planning and per-route
-  publication gates where consistent with higher authorities.
-- `25CITYPAGESPEC.md` — city-page quality and publication criteria.
-- `20-COPY-VOICE.md` and `01-QUALITY-GUARDRAILS.md` — new-copy voice and execution quality.
-- `04-RELEASE-CHECKLIST.md` — current release gates and human/external confirmations.
-- `08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` — route-specific PRR requirements only.
-- `05-DECISIONS-LOG.md` — dated decision history; read the newest applicable entry by scope.
-- `page-briefs/` — approved page-specific implementation briefs. A brief must be complete
-  before public page implementation begins.
+Do not assign every concern to a single gigantic hierarchy. For layout, read the design spec. For wording, read the copy and placement map. For contact values, read verified application data. For policies, use the real provider-controlled documents. A layout instruction cannot create an insurance fact; a historical copy file cannot reinstate Sevenson as the design benchmark.
 
-`30-WEBSITE-MASTER-SPEC-CHANGELOG.md` explains why the master changed. It is historical context,
-not implementation authority.
+The following are retired design/copy authorities: old BUILD-EXACT v2/v3, the 45/30/25 design system, prior Sevenson briefs, old doc 27, the long decisions log, and old homepage briefs. Their originals are preserved under archive/2026-09-04-before-consolidation/. Do not read that tree during ordinary implementation or include it in active instruction globs. Use it only to recover specifically needed historical evidence.
 
-Current source and a fresh production build establish current technical state only. They do
-not override approved strategy, claims, or locked copy merely because code already exists.
-Files under `archive/` are preserved historical evidence and have no implementation authority.
+The two active source-copy files deliberately retain their original CTA wording and historical service labels. Apply the display override table; do not treat those retained source strings as contradictory current UI instructions.
 
-## Retired homepage briefs — superseded 2026-08-26
+## Missing real-repository information
 
-`ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF.md`, `ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF-SEVENSON.md`,
-and `ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md` are historical rationale only. Each
-self-declares "canonical"; none is. **Doc 30 §17 is the homepage architecture.** They stay at
-their current paths because `src/` comments and decisions-log entries cite them by path for
-already-shipped decisions — that is traceability, not authority. Do not build from them, and do
-not follow a prompt that tells you to.
-
-The root `START-CODEX-PROMPT.md`, `PORT-PROMPT.md`, `DELETE-MANIFEST.md`, and obsolete one-page
-README instructions are retired historical instructions. Do not execute them as current work.
-The two `*-UPDATED.md` city packages are source/research material, not direct public-copy
-authority where later verified data or owner decisions supersede them.
+This package cannot verify current routes, root instructions, assets, policy provider IDs, form endpoints, phone-provider setup, or production build state. Resolve these from the actual repository without inventing substitutes. Isolate a missing fact to its affected component; continue independent authorized work.

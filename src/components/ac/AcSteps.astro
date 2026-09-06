@@ -1,0 +1,111 @@
+---
+// Process section — doc 30 §6.0 item 7, reference page 25's four-step row, and
+// docs/aseptaclean-website-design-system.md §15: large step numerals, thin connecting rule,
+// no icons, no cards. The reference uses an icon per step; §15 explicitly says "do not rely on
+// icons", so the numeral does that work here.
+//
+// Takes any number of steps. The homepage copy has five, the service pages have four to six.
+interface Step {
+  title: string;
+  body: string;
+}
+
+interface Props {
+  steps: readonly Step[];
+  tone?: "light" | "soft";
+}
+
+const { steps, tone = "soft" } = Astro.props;
+---
+
+<ol class:list={["acx-steps", `is-${tone}`]} style={`--ac-steps-count: ${steps.length}`}>
+  {steps.map((step, index) => (
+    <li class="acx-steps__item">
+      <span class="acx-steps__num" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+      <h3 class="acx-steps__title ac-type-h3-band">{step.title}</h3>
+      <p class="acx-steps__body">{step.body}</p>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .acx-steps {
+    display: grid;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 32px;
+    grid-template-columns: repeat(var(--ac-steps-count), minmax(0, 1fr));
+  }
+
+  .acx-steps__item {
+    position: relative;
+    max-width: none;
+    /* The thin connecting rule of §15, drawn as a top border on each column rather than as a
+       separate element, so it cannot fall out of alignment with the numerals. */
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 22px;
+  }
+
+  /* Colour changed 2026-09-04. --ac-color-steel-300 (#8494a8) measured 2.90:1 against the
+     warm-white section surface — under AA even for large text, and axe flagged it as a serious
+     violation on six routes. --ac-color-ink-400 (#617087) measures 4.72:1 on warm white and
+     5.03:1 on paper, so it clears AA on both surfaces this component is used over.
+     doc 30 §2: "Slate accents must pass contrast against their actual background before use." */
+  .acx-steps__num {
+    display: block;
+    color: var(--ac-color-ink-400);
+    font-size: 2.75rem;
+    font-weight: 500;
+    letter-spacing: -0.02em;
+    line-height: 1;
+  }
+
+  .acx-steps__title {
+    margin: 14px 0 0;
+    color: var(--ac-color-navy-900);
+    text-wrap: balance;
+  }
+
+  .acx-steps__body {
+    margin: 10px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+  }
+
+  /* §15: a vertical rhythm on mobile, not a compressed timeline. */
+  @media (max-width: 68rem) {
+    .acx-steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 44rem) {
+    .acx-steps {
+      gap: 26px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .acx-steps__num {
+      font-size: 2.25rem;
+    }
+  }
+
+  /* Reference CSS `.ac-process`: two columns at tablet, one at narrow mobile. Without this the
+     five-column track stayed five columns and each step compressed to ~60px of text. */
+  @media (max-width: 74.9375rem) {
+    .acx-steps {
+      gap: 28px;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 33.75rem) {
+    .acx-steps {
+      gap: 22px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

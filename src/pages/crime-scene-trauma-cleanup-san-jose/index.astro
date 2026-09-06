@@ -1,0 +1,16 @@
+---
+// Rebuilt 2026-09-04 to the current owner decision (AGENTS.md §2.2) and doc 30 §6.0/§20.
+//
+// This route is composition + copy only: the page's sections, their order, their split
+// directions and their imagery all live in the record below, and AcServicePage renders them.
+// Doc 30 §20 forbids one universal service-page template, so no two records share a section
+// order — see the comment at the top of src/components/ac/AcServicePage.astro.
+//
+// The route, canonical URL, and every inbound link are unchanged.
+import AcServicePage from "@components/ac/AcServicePage.astro";
+import { findServicePage } from "@data/servicePageCopy";
+
+const page = findServicePage("/crime-scene-trauma-cleanup-san-jose/")!;
+---
+
+<AcServicePage page={page} />

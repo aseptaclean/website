@@ -1,0 +1,61 @@
+---
+// SERVICES INTRO — compact framing beat between the hero and the first editorial split. Built
+// for the 2026-09-03 `/services/` editorial-catalog rebuild (docs/05-DECISIONS-LOG.md, "Services
+// page rebuilt as an editorial catalog"). 680px text measure per the rebuild brief; no service
+// cards inside it — the brief is explicit that the catalog itself lives in the splits below, not
+// folded into this centered beat.
+//
+// COPY IS servicesHub.notSure, VERBATIM — docs/aseptaclean-all-website-copy.md's "You do not
+// need to know" passage, the same field ServiceProblemChooser previously rendered as its
+// "not sure?" close. Reused rather than reworded so the rebuild introduces no new claim.
+import { servicesHub } from "@data/servicePages";
+
+const { notSure } = servicesHub;
+---
+
+<section class="svc-intro" aria-labelledby="svc-intro-title">
+  <div class="svc-intro__inner">
+    <h2 id="svc-intro-title" class="ac-type-h2">{notSure.heading}</h2>
+    <p class="svc-intro__lede">{notSure.lede}</p>
+    <p>{notSure.close}</p>
+  </div>
+</section>
+
+<style>
+  .svc-intro {
+    background: var(--ac-color-paper);
+    padding-block: clamp(48px, 5vw, 64px);
+  }
+
+  .svc-intro__inner {
+    width: min(100% - 64px, 680px);
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .svc-intro__inner h2 {
+    color: var(--ac-color-navy-900);
+  }
+
+  .svc-intro__inner p {
+    margin: 16px 0 0;
+    color: var(--ac-color-ink-600);
+    line-height: 1.65;
+    text-wrap: pretty;
+  }
+
+  .svc-intro__lede {
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+  }
+
+  @media (max-width: 40rem) {
+    .svc-intro {
+      padding-block: 44px;
+    }
+
+    .svc-intro__inner {
+      width: calc(100% - 40px);
+    }
+  }
+</style>

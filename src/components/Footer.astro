@@ -1,29 +1,18 @@
 ---
-// 2026-08-18 visual port. docs/mockups .foot — five columns (brand + four link groups) over a
-// hairline legal bar. Structure and grouping follow doc 27 §23.
-//
-// LINK SET. The mockup's four columns list every service route. This footer lists the same
-// routes the sitewide mega-menu lists and no others, because footer and nav must agree — they
-// are both sitewide crawl surfaces, and a route that is unsafe to advertise in one is unsafe
-// in the other. The three held items are identical to the header's, for identical reasons
-// (see `megaNav` in src/data/site.ts): /rodent-dropping-cleanup-san-jose/ and
-// /pigeon-dropping-cleanup-san-jose/ on B&P §8505/§8550(a) plus docs/18-VISUAL-DIRECTION.md §7
-// and doc 27 §21, and /projects/ under its own 2026-08-18 removal note ("restore in the same
-// change that lifts the noindex — not before").
+// Owner-approved 2026-09-03 launch footer: brand/contact plus the four public services,
+// company/action links, and legal/consent utilities. Retained marketing routes are intentionally
+// absent because the footer is a sitewide discovery and crawl surface.
 //
 // The legal line is §9.15.5's approved footer legal line, verbatim. The two longer scope and
 // documentation disclaimers stay under it: they are verbatim-mandatory from
 // docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §2.3/§2.4 by way of src/data/site.ts, and §9.15.5 adds
 // a line rather than replacing them.
-import { legal, megaNav, site } from "@data/site";
+import { launchServiceLinks } from "@data/launchArchitecture";
+import { legal, site } from "@data/site";
 
 const year = new Date().getFullYear();
 const phoneHref = site.business.phoneUri;
-const smsHref = site.business.smsUri;
 const termlyConsentEnabled = site.integrations.termly.consentEnabled;
-
-const linkGroups = megaNav.filter((group) => group.children && group.hub);
-const directGroups = megaNav.filter((group) => !group.children);
 ---
 
 <footer class="foot">
@@ -67,58 +56,45 @@ const directGroups = megaNav.filter((group) => !group.children);
         <p class="foot__email"><a href={`mailto:${site.business.email}`}>{site.business.email}</a></p>
       </div>
 
-      {linkGroups.map((group) => (
-        <nav aria-label={group.label}>
-          <h2 class="ac-type-label-head foot__h">{group.label}</h2>
-          {group.hub && <a href={group.hub.href}>{group.hub.label} hub</a>}
-          {group.children?.map((child) => <a href={child.href}>{child.label}</a>)}
-        </nav>
-      ))}
+      {/* FOUR COLUMNS — doc 30 §6.0 item 11, read off reference page 27: brand and contact,
+          Services, Service Area, Company. Legal moved down to the utility bar with the cookie
+          control, per docs/aseptaclean-website-design-system.md §24 ("keep legal / privacy links
+          in the bottom utility row"). No route was added or removed by the move. */}
+      <nav aria-label="Services">
+        <h2 class="ac-type-label-head foot__h">Services</h2>
+        {launchServiceLinks.map((link) => <a href={link.href}>{link.label}</a>)}
+      </nav>
+
+      {/* The verified city list from src/data/site.ts, and nothing else. The reference footer
+          lists counties; Aseptaclean's own counties are NOT a verified fact in this repository
+          (AGENTS.md §3 explicitly rejects "Santa Clara County" as the region because Atherton is
+          San Mateo), and inventing a county list would be a service-coverage claim. Plain text,
+          not links: no /locations/* route exists and AGENTS.md §2 forbids one. */}
+      <div>
+        <h2 class="ac-type-label-head foot__h">Service Area</h2>
+        <ul class="foot__cities">
+          {site.location.cities.map((city) => <li>{city}</li>)}
+        </ul>
+        <p class="foot__cities-note">
+          Additional {site.location.serviceArea} locations reviewed by project.
+        </p>
+      </div>
+
+      <nav aria-label="Company">
+        <h2 class="ac-type-label-head foot__h">Company</h2>
+        <a href="/services/">Services</a>
+        <a href="/about/">About</a>
+        <a href="/contact/">Contact</a>
+        <a href={site.offer.assessmentUrl}>{site.offer.secondaryCta}</a>
+      </nav>
 
     </div>
 
-    {/* The mockup's .foot__g is exactly five tracks: brand + the four service/company groups.
-        The direct-link groups and the legal routes go in the bottom bar as an inline row, so
-        the grid keeps the mockup's shape instead of wrapping a sixth column under the brand. */}
+    {/* Legal and consent utilities stay in the low-emphasis bottom bar. */}
     <div class="foot__bot">
-      <nav class="foot__utility" aria-label="More">
-        {directGroups.map((group) => <a href={group.href}>{group.label}</a>)}
-        {/* Resource + campaign routes, deliberately in the low-emphasis utility row rather than
-            the five-column link grid above.
-
-            /estate-cleanout-checklist/ — docs/19-SYSTEM-AND-SITEMAP.md §2.1 lists it under
-            "RESOURCES (footer)" and §2's linking rules say "Checklist ← estate page + footer +
-            every letter." The estate-page link shipped with the 2026-08-20 launch; this is the
-            footer half of the same rule, and it was the missing one. Anchor text is the asset's
-            own approved title (src/data/servicePages.ts), not a written-for-SEO phrase.
-
-            /private-residence-reset/ — an 814-word commercial page with Service schema that had
-            ZERO inbound links anywhere in the build (register P13). AGENTS.md §2 records it as a
-            "campaign page, out of nav", so it does NOT go in megaNav: that export feeds both the
-            header mega-panel and the footer link grid, and putting it there would put a campaign
-            route into primary navigation. One low-emphasis crawlable link here satisfies
-            discoverability without contradicting the out-of-nav ruling. Anchor text is
-            site.residenceOffer.name, the label the page itself renders. */}
-        <a href="/estate-cleanout-checklist/">The Executor's Estate Cleanout Checklist</a>
-        <a href="/private-residence-reset/">{site.residenceOffer.name}</a>
-        {/* ONE LABEL FOR /request-assessment/, 2026-08-25 —
-            docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md §17: "Fix duplicate
-            destinations/labels. Do not list the assessment route twice under different names."
-            The footer was exposing one route twice: the Company column rendered megaNav's
-            "Request an assessment" child, and this row rendered site.offer.primaryCta, so the
-            same href shipped as two differently-named links a few hundred pixels apart on all 45
-            routes.
-
-            The megaNav child is the one that was removed (see src/data/site.ts) — it also fed the
-            header Company dropdown, where "Request an assessment" sat directly beneath a navy
-            button reading "Tell Us About the Property" pointing at the same place. This slot
-            survives because site.offer.primaryCta is the single owner-approved visible label for
-            this route (2026-08-25 ruling); the nav child was the stale spelling of it. */}
-        <a href="/request-assessment/">{site.offer.primaryCta}</a>
-        {/* doc 27 §8 — the secondary CTA appears everywhere the primary does. */}
-        {smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
-        <a href={site.urls.privacyPolicy}>Privacy</a>
-        <a href={site.urls.terms}>Terms</a>
+      <nav class="foot__utility" aria-label="Legal and preferences">
+        <a href={site.urls.privacyPolicy}>Privacy Policy</a>
+        <a href={site.urls.terms}>Terms &amp; Conditions</a>
         {site.urls.cookiePolicy && <a href={site.urls.cookiePolicy}>Cookie Policy</a>}
         {termlyConsentEnabled && (
           <button type="button" class="foot__button termly-display-preferences">
@@ -156,7 +132,27 @@ const directGroups = megaNav.filter((group) => !group.children);
   .foot__g {
     display: grid;
     gap: 36px;
-    grid-template-columns: 1.4fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 1.5fr repeat(3, minmax(0, 1fr));
+  }
+
+  .foot__cities {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .foot__cities-note {
+    margin: 14px 0 0;
+    max-width: 26ch;
+    color: #7f96b4;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  .foot__utility a {
+    display: inline;
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   .foot__h {

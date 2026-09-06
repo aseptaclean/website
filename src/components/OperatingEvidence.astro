@@ -12,16 +12,16 @@
 //
 // THE EMPTY FOUNDER PHOTO BOX IS GONE. §12: "Do not render an empty bordered founder-photo box.
 // That must disappear." No founder photograph exists in the repository and none is faked
-// (AGENTS.md §0.3). What survives is the accountability statement, which is the part that was
-// doing work; the slot that announced its own absence does not.
+// (AGENTS.md §0.3).
 //
-// NO FOUNDER BACKGROUND IS STATED HERE, deliberately, and that is why
-// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §2.4's verbatim founder-authority clause does not appear.
-// §2.4 binds "wherever the founder's background appears" — education, prior industry, prior
-// technical experience. This section states a ROLE and an ACCOUNTABILITY, not a background:
-// who reviews the scope, who stays responsible. §12 puts detailed credentials on About, and
-// /about/ renders all four homepage.founderCredentials lines with legal.founderAuthorityLimit
-// directly beneath them, which is where a reader who wants the background is sent.
+// COPY, 2026-09-03: this section's copy is docs/aseptaclean-all-website-copy.md's "Show us the
+// condition first." passage, verbatim. It carries no founder-background statement, so
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §2.4's verbatim founder-authority clause does not need to
+// appear here — §2.4 binds only "wherever the founder's background appears." The MD's own
+// founder-background passage ("Why Aseptaclean") is not rendered anywhere on the homepage in
+// the current reduced build; see docs/05-DECISIONS-LOG.md 2026-09-03 for that section-count
+// decision. /about/ still renders homepage.founderCredentials with legal.founderAuthorityLimit
+// directly beneath them for a reader who wants the background.
 //
 // THE ARTIFACT IS INTEGRATED, NOT FLOATED. §12: "Do not place a small card in a huge empty navy
 // field. The artifact must be integrated into a composition that works with or without a
@@ -38,7 +38,7 @@
 // real one does, §12 is where the page evolves toward real project evidence.
 import { Image } from "astro:assets";
 import evidenceImage from "../assets/homepage/service-development-cleanup-asurnipal.jpg";
-import { homepage, legal, site } from "@data/site";
+import { homepage, legal } from "@data/site";
 
 // TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPH — NOT Aseptaclean work, not a client property, and
 // not proof of a completed job. `[ATMOS]`-class under doc 21 §6's image rule: no crew, no
@@ -61,16 +61,20 @@ const record = homepage.sampleRecord;
 <section class="evidence" id="record" aria-labelledby="evidence-title">
   <div class="evidence__inner">
     <div class="evidence__copy">
-      <h2 id="evidence-title" class="ac-type-h2-home-feature">Clear work. Documented handoff.</h2>
+      <h2 id="evidence-title" class="ac-type-h2-home-feature">Show us the condition first.</h2>
 
       <p class="evidence__lede">
-        The condition is reviewed, the work is written down, and the property is handed back with
-        an account of what was decided and what was done.
+        Difficult property cleanup rarely fits a standard checklist. Two homes can look similar
+        and need completely different work.
+      </p>
+      <p>
+        One may need detailed cleaning. Another may have rodent waste inside cabinets and storage
+        areas. Another may have heavy clutter hiding years of buildup underneath. Another may
+        have conditions that require a different specialist before cleanup can continue.
       </p>
       <p class="evidence__accountability">
-        {site.founder.name} is {site.founder.title}. He reviews the scope on every project and
-        stays responsible for how the work is carried out — the same person on the assessment,
-        the scope and the closeout.
+        <strong>We look at what is actually there before deciding what the work should
+        involve.</strong>
       </p>
 
       <div class="record">
@@ -105,10 +109,6 @@ const record = homepage.sampleRecord;
 
         <p class="record__note">{legal.documentationDisclaimer}</p>
       </div>
-
-      <a class="evidence__link" href="/handoff-standard/">
-        How a scope gets written <span aria-hidden="true">&rarr;</span>
-      </a>
     </div>
 
     <figure class="evidence__media">
@@ -205,8 +205,8 @@ const record = homepage.sampleRecord;
   .evidence__accountability {
     margin: 18px 0 0;
     max-width: 48ch;
-    color: #a9bdd4;
-    line-height: 1.66;
+    color: var(--ac-color-paper);
+    line-height: 1.5;
     text-wrap: pretty;
   }
 
@@ -317,26 +317,6 @@ const record = homepage.sampleRecord;
     font-size: 0.75rem;
     line-height: 1.6;
     text-wrap: pretty;
-  }
-
-  .evidence__link {
-    display: inline-flex;
-    min-height: 44px;
-    align-items: center;
-    margin-top: 26px;
-    color: var(--ac-color-paper);
-    font-size: 0.9375rem;
-    font-weight: 700;
-    text-underline-offset: 5px;
-  }
-
-  .evidence__link:hover {
-    color: var(--ac-color-blue-pale);
-  }
-
-  .evidence__link:focus-visible {
-    outline: 3px solid var(--ac-color-paper);
-    outline-offset: 3px;
   }
 
   @media (max-width: 64rem) {

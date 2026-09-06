@@ -2,12 +2,23 @@
 import { site } from "@data/site";
 ---
 
-<div class="utility-bar" aria-label="Service category and phone">
+{/* Utility row — doc 30 §9: "small and quiet, factual information only".
+    THE PHONE MOVED OUT OF THIS ROW, 2026-09-04. The header's primary CTA is now
+    "Call Aseptaclean" (AGENTS.md §2.2.2), which put the same number in the ribbon and in the
+    button directly beneath it, both visible at once on every route above 74rem. Doc 30 §9
+    already forbids showing the same phone twice inside the header hierarchy, and reference
+    page 23 shows exactly one phone in the header.
+
+    The CTA button keeps it, not this row: the button is the action, it survives at every width
+    (this row's link did not carry a 44px touch target), and the number itself stays reachable
+    from the mobile drawer, the footer, the mobile bar, and every closing band.
+
+    The service descriptor stays. It is the one factual line §9 asks for, and it is the only
+    place the business category appears above the fold. */}
+<div class="utility-bar" aria-label="Service category">
   <div class="utility-bar__inner">
     <span>{site.offer.utilityLabel}</span>
-    {site.business.phoneUri && (
-      <a href={site.business.phoneUri}>{site.business.phone}</a>
-    )}
+    <span class="utility-bar__hours">{site.business.hours}</span>
   </div>
 </div>
 
@@ -32,19 +43,18 @@ import { site } from "@data/site";
     text-transform: uppercase;
   }
 
-  .utility-bar a {
-    display: flex;
-    min-height: 30px;
-    align-items: center;
+  .utility-bar__hours {
     color: var(--ac-color-paper);
-    font-variant-numeric: tabular-nums;
     white-space: nowrap;
-    text-decoration: none;
   }
 
-  .utility-bar a:hover {
-    text-decoration: underline;
-    text-underline-offset: 3px;
+  /* The hours string is the longer of the two items; below ~64rem it is the first thing that
+     would wrap the row to two lines, so it drops and the category line stands alone. Hours stay
+     on /contact/ and in the schema, which is where a visitor looks for them. */
+  @media (max-width: 64rem) {
+    .utility-bar__hours {
+      display: none;
+    }
   }
 
   /* Kept in step with Header.astro's collapse breakpoint, which moved from 70rem to 63.9375rem

@@ -1,11 +1,18 @@
 # AGENTS.md — Aseptaclean repository operating rules
 
-**Version:** 2026-08-25. Replaces `docs/AGENTS-PRECEDENCE-BLOCK.md` in full.
+**Version:** 2026-09-04b — documentation consolidation installed. Replaces
+`docs/AGENTS-PRECEDENCE-BLOCK.md` in full.
+**Website work starts at `START-HERE.md`, then `docs/README.md`.** The 2026-09-04 owner package
+consolidated the website documentation into scoped sources. `docs/README.md` is now the index
+for website design, copy, placement, facts, integrations, assets, and release verification.
+**Current owner decisions:** §2.2 below. Read it before §3, §4, or any website work — it is the
+newest rank-2 authority in this file and it moves the primary CTA, the secondary CTA, the public
+name of one service, the form submit label, the hero-form scope, and the visual direction.
 **Why this file exists:** an alignment audit on 2026-08-11 found five competing precedence
 chains in `docs/`, three of them pointing at files that do not exist, and a standing rule that
 forbade the only working lead endpoint in the repository. This file is the single operative
 chain. If any other document disagrees with this one, this one wins and the conflict goes in
-`docs/05-DECISIONS-LOG.md`.
+`docs/archive/2026-09-04-before-consolidation/05-DECISIONS-LOG.md`.
 
 ---
 
@@ -56,81 +63,151 @@ crews. If a proof slot has no real asset, **the slot ships empty**. Empty beats 
 ## 1. Precedence chain
 
 Conflicts resolve **up** this list. Never silently merge contradictory instructions; record
-every material resolution in `docs/05-DECISIONS-LOG.md`.
+every material resolution in `docs/05-CURRENT-DECISIONS.md`.
 
 | # | Authority | Governs |
 | --- | --- | --- |
 | 1 | Verified business, legal, licensing, insurance, and scope facts | What is true and permitted now |
-| 2 | Explicit current owner decisions, including the 2026-08-25 documentation reconciliation ruling in `docs/05-DECISIONS-LOG.md` | Current business and website direction |
+| 2 | Explicit current owner decisions, including §2.2 below (2026-09-04) and the 2026-08-25 documentation reconciliation ruling in `docs/archive/2026-09-04-before-consolidation/05-DECISIONS-LOG.md` | Current business and website direction |
 | 3 | `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` | Public claims and regulated-service boundaries |
-| 4 | Specifically locked approved canonical copy in `docs/27-COPY-CANONICAL.md` | Exact public wording not superseded by a rank 1–3 authority or an explicit newer copy approval |
-| 5 | `docs/30-WEBSITE-MASTER-SPEC.md` — **the single governing website document** | Customer and website strategy, UX, UI, CRO, design system, responsive behavior, evidence strategy, technical SEO standards, and AI implementation behavior |
-| 6 | Specialized route, city, system, release, voice, and route-specific specifications, including `docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` | Their named scope where consistent with ranks 1–5 |
+| 4 | The two owner-supplied copy sources — `docs/aseptaclean-all-website-copy.md` and `docs/aseptaclean-crime-scene-trauma-cleanup.md` — as placed by `docs/20-COPY-MAP.md` | Exact public wording not superseded by a rank 1–3 authority |
+| 5 | `docs/30-WEBSITE-MASTER-SPEC.md` — **the single governing website design document** | Layout, composition, responsive behavior, geometry, and the ClearPath/911 visual direction |
+| 6 | Scoped specifications named in `docs/README.md`, plus the twelve `docs/page-briefs/` | Their named scope where consistent with ranks 1–5 |
 | 7 | Current source plus a fresh production `dist/` build | Evidence of current technical state, not permission to override approved strategy |
 | 8 | AI, developer, or tool preference | Implementation discretion only where higher authorities are silent |
 
-`docs/30-WEBSITE-MASTER-SPEC-CHANGELOG.md` is historical context only. It is not an
-implementation authority.
+**Do not assign every concern to one hierarchy.** `docs/README.md` §"Scoped sources of truth"
+routes each question to its own controlling file: layout → doc 30 plus
+`docs/styles/website-reference.css`; wording and placement → the two copy sources plus
+`docs/20-COPY-MAP.md`; verified business facts → `docs/02-CURRENT-FACTS.md` and
+`src/data/site.ts`; forms, calls, policies and consent → `docs/03-INTEGRATION-CONTRACT.md`;
+imagery → `docs/06-ASSET-MANIFEST.md`; route scope → `docs/SITEMAP-MASTER.md`; verification →
+`docs/04-RELEASE-CHECKLIST.md`. A layout instruction cannot create an insurance fact, and a
+copy file cannot reinstate a retired design benchmark.
 
-Within rank 6, use each file only for its stated specialty: `docs/19-SYSTEM-AND-SITEMAP.md`
-and `docs/SITEMAP-MASTER.md` for route planning and publication gates;
-`docs/25CITYPAGESPEC.md` for city-page quality; `docs/20-COPY-VOICE.md` for new-copy voice;
+Within rank 6, use each file only for its stated specialty: `docs/SITEMAP-MASTER.md` for the
+twelve-page scope, navigation and route preservation; `docs/19-SYSTEM-AND-SITEMAP.md` and
+`docs/25CITYPAGESPEC.md` for city-page planning and quality **outside** the twelve-page
+redesign; `docs/20-COPY-VOICE.md` for new connective copy voice;
 `docs/01-QUALITY-GUARDRAILS.md` for execution quality; `docs/04-RELEASE-CHECKLIST.md` for
-release gates; `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` for that route only; and
-`docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` for service-page content only, under §1.1
-below.
+release gates; and `docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` for that route only.
 
-### 1.1 The two website documents — installed 2026-08-26
+### 1.1 The consolidated website documentation — installed 2026-09-04
 
 ```
-GOVERNING                docs/30-WEBSITE-MASTER-SPEC.md
-SUPPORTING SERVICE COPY  docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md
+ENTRY POINT   START-HERE.md  →  docs/README.md
+DESIGN        docs/30-WEBSITE-MASTER-SPEC.md  +  docs/styles/website-reference.css
+COPY          docs/aseptaclean-all-website-copy.md
+              docs/aseptaclean-crime-scene-trauma-cleanup.md
+PLACEMENT     docs/20-COPY-MAP.md  +  docs/page-briefs/  (twelve briefs)
+FACTS         docs/02-CURRENT-FACTS.md
+INTEGRATIONS  docs/03-INTEGRATION-CONTRACT.md
+SCOPE/ROUTES  docs/SITEMAP-MASTER.md
+ASSETS        docs/06-ASSET-MANIFEST.md
+VERIFICATION  docs/04-RELEASE-CHECKLIST.md
+HISTORY       docs/05-CURRENT-DECISIONS.md
 ```
 
-There is **one** governing website strategy/design document, and it is doc 30. Do not create a
-second one. A page that needs work gets an approved brief in `docs/page-briefs/`, a data or copy
-change, or a working prompt — not another competing website-standard MD.
+There is **one** governing website design document, and it is doc 30. Do not create a second
+one. A page that needs work gets its brief in `docs/page-briefs/`, a data or copy change, or a
+working prompt — not another competing website-standard MD.
 
-`docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md` survives because it holds detailed
-service-page **content**: positioning, copy direction, headlines, educational ideas, objection
-handling, FAQs, qualification language, CTA wording, service-specific assessment questions, and
-proof/caption concepts. Doc 30 §20A is where that content is reconciled into the standard; read
-§20A before implementing from the landing-page file.
+`docs/styles/website-reference.css` holds the numerical implementation targets for doc 30. It is
+a reference to map into the existing token/component system, **not a second global stylesheet**.
+Do not load it alongside `src/styles/global.css`, and do not duplicate its token names.
 
-**It is content, never authority.** It cannot, on its own, establish or change:
+### 1.2 Retired website authorities — do not build from them
 
-- a route, a route rename, a canonical URL, or a redirect;
-- indexation or sitemap membership;
-- operational service status or a gated-service launch;
-- TSWMP scope;
-- a published price — including its `$1,350` starting-price sentences, which appear ten times and
-  are barred by §4 below until an owner decision reverses §4. See doc 30 §20A.17 and §20A.23;
-- a health, safety, disinfection, or credential claim — doc 21 (rank 3) governs those;
-- a form endpoint, or a service-area promise beyond current verified geography.
-
-Where it conflicts with doc 30, **doc 30 wins**. Where doc 30 shows a shorter example of copy the
-landing-page file states at length, that is not a licence to rewrite approved service copy.
-
-### 1.2 Retired homepage briefs — do not build from them
-
-**Superseded 2026-08-26 by owner decision.** These three are historical rationale only. They keep
-their paths because roughly ten `src/` files and four `docs/05-DECISIONS-LOG.md` entries cite them
-by path as the reason a shipped decision was made; moving them would strand those pointers.
+**Superseded 2026-09-04 by the owner documentation consolidation.** Originals are preserved
+byte-for-byte under `docs/archive/2026-09-04-before-consolidation/`, and the two BUILD-EXACT
+specs under `docs/archive/2026-09-04-retired-build-specs/`.
 
 ```
-docs/ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF.md            Interdoor-first brief
-docs/ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF-SEVENSON.md   Sevenson-led brief
-docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md   V3 lean-Sevenson brief
+02-OWNER-INPUTS.md                                superseded by docs/02-CURRENT-FACTS.md
+05-DECISIONS-LOG.md                               superseded by docs/05-CURRENT-DECISIONS.md
+27-COPY-CANONICAL.md                              superseded by the two copy sources + 20-COPY-MAP
+30-WEBSITE-MASTER-SPEC-CHANGELOG.md               history of the retired master
+ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF.md       Interdoor-first brief
+ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF-SEVENSON.md   Sevenson-led brief
+ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md   V3 lean-Sevenson brief
+ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md        service-page content, retired as authority
+aseptaclean-website-design-system.md              the 45/30/25 split, retired
+aseptaclean-BUILD-EXACT-v2 / v3                   retired standalone build specs
 ```
 
-Each self-declares "canonical" or "governing"; none of them is, as of 2026-08-26. **Doc 30 §17 is
-the homepage architecture.** The 2026-08-25 log entry that elevated the V3 brief to rank 2 and
-ruled it above doc 30 is spent — it recorded a homepage build that has since shipped, and doc 30
-§17 now carries the same five-section order it produced. Do not re-cite it to outrank doc 30.
+Each of the three homepage briefs self-declares "canonical" or "governing"; none is. **The
+homepage architecture is `docs/page-briefs/HOME.md` under doc 30 §5.** Sevenson and Interdoor
+are no longer design benchmarks; the direction is 70% ClearPath / 30% 911 Bio Clean per
+doc 30 §1.
 
-The first brief additionally points at `ASEPTACLEAN-MASTER-WEBSITE-SITEMAP.md` and
-`Pasted markdown.md`, neither of which exists in this repository. Under "Missing or stale
-pointers" below, that alone disqualifies it from active use.
+**Do not read `docs/archive/` during ordinary implementation** and do not include it in active
+instruction globs. Some `src/` comments still cite retired paths as the historical reason a
+shipped decision was made; that is traceability, not authority. Where such a comment states a
+rule the consolidation reversed, correct the comment.
+
+### 2.2 Current owner decisions — 2026-09-04
+
+Rank 2. These supersede every lower-ranked statement of the same fact, including statements
+made earlier in this file. Source: the owner documentation consolidation installed 2026-09-04
+(`START-HERE.md`, `docs/README.md`, `docs/05-CURRENT-DECISIONS.md`).
+
+**1. Visual direction — 70% ClearPath / 30% 911 Bio Clean.**
+Reference: `docs/reference/clearpath-911-visual-reference.pdf` (34 screenshot pages; pages 1–22
+are 911 Bio Clean, 23–34 are ClearPath). Doc 30 §1 maps each element to its reference page. The
+reference is **visual evidence, not a copy or claims source** — see §2.2.7. This supersedes the
+Sevenson-primary / Interdoor-secondary direction and the retired 45/30/25 split. There is no
+third percentage: Aseptaclean's navy, logo, typography and source copy apply throughout.
+
+**2. Primary marketing CTA — `Call Aseptaclean`. Secondary — `Send a Message`.**
+Supersedes `Tell Us About the Property` (2026-08-25) *and* `Request an Assessment` as the
+default visible actions. The secondary action scrolls/focuses the local form on pages that have
+one, and links to `/contact/#contact-form` elsewhere. The phone is `(408) 785-7588` /
+`tel:+14087857588`, rendered from `src/data/site.ts` only. **Verified against the repository:
+`src/data/site.ts` and `.env.production` already carry exactly this number.**
+
+The word *assessment* may still appear in explanatory prose about how work is scoped. Do not
+globally replace it: headings, consent text, API names, enum values and provider content have
+distinct meanings. See `docs/20-COPY-MAP.md` "Explicit display transformations".
+
+**3. Form submit buttons — `Send Message`.**
+Every form submit control is a real `<button type="submit">` labelled `Send Message`. It
+submits its form. It is never a `tel:` link. Existing validation, consent, anti-spam, uploads,
+CRM mappings, required/optional states and submission behaviour are unchanged.
+
+**Hero-form scope — the homepage and all five service pages** share one responsive
+`HeroWithForm` (doc 30 §3). The Services hub and About use a compact photographic introduction
+with a secondary `Send a Message` link instead of a duplicate intake panel. Contact uses a
+compact title plus a details/form split. Legal pages use a text title only. *This supersedes the
+earlier "hero form on `/` only" rule.*
+
+**4. Public service name — `Extreme Cleaning`.**
+Source content is the `Severe Property Cleanup` section of
+`docs/aseptaclean-all-website-copy.md`. The canonical route `/extreme-cleaning-san-jose/` is
+retained. Display strings only — page title, eyebrow, nav, card title, form option label,
+service-name references. No `href` change and no internal enum rename.
+
+**5. Copy sources.** `docs/aseptaclean-all-website-copy.md` is the main public copy;
+`docs/aseptaclean-crime-scene-trauma-cleanup.md` is the supplemental trauma copy. Both are
+preserved byte-for-byte. Apply only the transformations and placements in
+`docs/20-COPY-MAP.md` and the twelve `docs/page-briefs/`.
+
+**6. The twelve public pages**, enumerated with their routes in `docs/SITEMAP-MASTER.md`:
+Homepage · Services hub · Hoarding Cleanup · Extreme Cleaning · Detailed Deep Cleaning ·
+Crime Scene & Trauma Cleanup · Rodent Droppings & Animal Waste Cleanup · About · Contact ·
+Privacy Policy · Terms and Conditions · Cookie Policy.
+`/request-assessment/`, `/thank-you/`, `/404`, `/data-request/` and
+`/sms-notification-consent/` remain working utility routes. `/request-assessment/` is **removed
+as the primary global CTA and from primary navigation** but stays a working, indexable form
+destination. Absence from the new navigation does not authorize deleting or deindexing any
+other existing route — that needs an explicit keep/redirect/retire mapping.
+
+**7. The reference PDF is not a claims source.** It shows `LICENSED & INSURED`, OSHA, IICRC,
+CDPH, and Google-review badges belonging to other companies, plus 24/7 emergency language.
+§0.3 and §7 are unchanged and unweakened: none of that is rendered on this site. Reproduce
+composition, not credentials, and never add availability language to fill a badge slot.
+
+**8. Retired website authorities** are listed in §1.2 above with their archive paths. Do not
+build from them and do not substitute their copy.
 
 ### Active versus historical material
 
@@ -144,7 +221,7 @@ pointers" below, that alone disqualifies it from active use.
   verified facts and current owner decisions; it does not outrank them. Route copy lives in
   approved page briefs and specifically locked canonical copy. Current source proves what ships
   now but is not permission to preserve superseded strategy merely because it already exists.
-- `docs/05-DECISIONS-LOG.md` records history. The newest valid entry wins only within the scope
+- `docs/archive/2026-09-04-before-consolidation/05-DECISIONS-LOG.md` records history. The newest valid entry wins only within the scope
   it actually decided; an old audit finding is not an instruction.
 
 ### Missing or stale pointers
@@ -156,6 +233,13 @@ pointer rather than acting on it. Historical mentions inside archived reports ma
 ---
 
 ## 2. Current route architecture
+
+**Scope note, 2026-09-04.** For the twelve redesigned public pages, `docs/SITEMAP-MASTER.md` is
+the current scope, navigation and route-preservation authority, and `src/data/launchArchitecture.ts`
+is the implementation source for indexation. This section remains the record of what the build
+actually emits across **all** routes, including the auxiliary and city routes outside the
+redesign. Absence from the new twelve-page navigation does not authorize deleting, redirecting
+or deindexing any route listed here.
 
 The site is **no longer one-page.** `19-SYSTEM-AND-SITEMAP.md` Part 2 supersedes the deleted
 one-page directive (see §1 "Files that do not exist").
@@ -182,8 +266,17 @@ Astro emits 48 pages and `scripts/prune-dev-routes.mjs` removes the two `/dev/*`
 `/api/lead` is a Cloudflare Pages Function, not an Astro route, and never appears in
 `sitemap.xml`.
 
-**Indexable, in `sitemap.xml` (23)** — unchanged by the city build; was 22 before
-`/private-residence-reset/` was added 2026-08-20
+**STALE as of 2026-09-03 — superseded by the launch-architecture reduction.** The 23-route list
+below predates `docs/archive/2026-09-04-before-consolidation/05-DECISIONS-LOG.md`'s "Public launch architecture reduced to the
+locked-copy pages" and "Full-site visual-redesign prompt reconciled..." entries (2026-09-03),
+which narrowed the public/indexable set to the twelve paths in `src/data/launchArchitecture.ts`
+(`launchIndexablePaths`): `/`, `/services/`, `/about/`, `/contact/`, the five current service
+routes (`/hoarding-cleanup-san-jose/`, `/extreme-cleaning-san-jose/`,
+`/rodent-dropping-cleanup-san-jose/`, `/deep-cleaning-san-jose/`,
+`/crime-scene-trauma-cleanup-san-jose/`), `/request-assessment/`, `/privacy/`, `/terms/`. Every
+route below not in that list is currently `noindex, follow` regardless of what this table says.
+Treat `launchArchitecture.ts` as the current source of truth for indexation; this table is kept
+for historical route-count context only and was not rewritten route-by-route.
 ```
 /                                   /faq/
 /about/                             /handoff-standard/
@@ -218,7 +311,7 @@ SEO pass targeted it — a `noindex` flip and a move onto the shared `SeoHead` p
 also have repointed its two `/terms-and-conditions/` links. Both were **stopped and reported**
 rather than executed: this page is byte-preserved under an ACTIVE carrier review, §6 below
 fences it explicitly, and the two links in question are consent disclosures the carrier reads.
-See `docs/05-DECISIONS-LOG.md`, 2026-08-20.
+See `docs/archive/2026-09-04-before-consolidation/05-DECISIONS-LOG.md`, 2026-08-20.
 
 **`noindex`, excluded from `sitemap.xml` (22)** — was 13; the nine city routes joined 2026-08-21
 ```
@@ -250,13 +343,23 @@ separate and decide each on its own evidence:
 
 So do not describe those three services as "future," "inactive," or "gated" because their routes
 are `noindex`, and do not read an indexable route as proof that TSWMP-dependent work is cleared.
-Full text: doc 30 §20A.4. This clarification changes **no** route's `publishStatus`, robots tag,
-or sitemap membership — every gate above stands until it is separately cleared.
+Full text: `docs/archive/2026-09-04-before-consolidation/30-WEBSITE-MASTER-SPEC.md` §20A.4
+(retired master, kept as the traceable source of this three-way separation). This clarification
+changes **no** route's `publishStatus`, robots tag, or sitemap membership on its own — each gate
+stands until it is separately cleared. `/rodent-dropping-cleanup-san-jose/`'s indexation is
+decided in §2.1's rodent entry, not here.
 
-This does not touch the separate reason `/rodent-dropping-cleanup-san-jose/` and
-`/pigeon-dropping-cleanup-san-jose/` are held out of `megaNav`: Business & Professions Code
-§8550(a) and doc 21 §3, which are rank 3 and unaffected by an operational-availability
-clarification.
+**The `megaNav`-exclusion sentence below is historical, describing retired code.** The
+`megaNav` object in `src/data/site.ts` that this paragraph refers to is no longer what renders
+primary navigation as of the 2026-09-03 launch-architecture reduction; current navigation comes
+from `src/data/launchArchitecture.ts`, whose `launchServiceLinks` deliberately **does** include
+Rodent Droppings & Animal Waste Cleanup in the Services dropdown/list (see
+`docs/archive/2026-09-04-before-consolidation/05-DECISIONS-LOG.md`, "Public launch architecture reduced to the locked-copy pages" and
+"Full-site visual-redesign prompt reconciled..."). Business & Professions Code §8550(a) and doc
+21 §3 still govern *wording* (no pest-identification or extermination claims on that page) but
+no longer justify omitting the route from primary navigation. This does not touch the separate
+reason `/pigeon-dropping-cleanup-san-jose/` remains out of the current nine/twelve-route
+allow-list entirely: it is not one of the five current public service routes.
 
 **The nine city routes are `noindex, follow` on ONE remaining gate: owner confirmation of city
 availability.** That is a business fact, not a machine decision, and it is the only thing left.
@@ -267,7 +370,7 @@ paragraph at the end of this section, which records that requirement's supersess
 **`/estate-cleanout-checklist/` left this list on 2026-08-20** — the first of P9's ten gated
 rows to clear. Its gate was an owner copy review, not an operational or compliance fact, which
 is why it could close inside the repository when the other nine cannot. **This sets no
-precedent for the remaining nine**; see `docs/05-DECISIONS-LOG.md` for their conditions.
+precedent for the remaining nine**; see `docs/archive/2026-09-04-before-consolidation/05-DECISIONS-LOG.md` for their conditions.
 
 **Crawl-path note — open. Scope corrected 2026-08-20.** The global nav and footer link every
 service page from every page, so the indexable set links into the gated set wholesale. Register
@@ -315,12 +418,23 @@ recorded the problem.
 **Do not build, in any form — no route, draft, stub, sitemap entry, or nav link**
 ```
 /biohazard-cleanup*/  /blood-cleanup/  /unattended-death-cleanup/
-/crime-scene-cleanup/ /human-waste-cleanup/  /sharps-cleanup/
-/encampment-cleanup/  /vehicle-biohazard-cleanup/
+/human-waste-cleanup/  /sharps-cleanup/
+/encampment-cleanup/
 garage-cleanout · basement-cleanout · furniture-removal · mattress-disposal
 any reviews page, until reviews exist
 /services/{slug}  and  /locations/{city}    (the superseded `site map` architecture)
 ```
+
+**Exception, 2026-09-03 — `/crime-scene-trauma-cleanup-san-jose/` and
+`/vehicle-biohazard-cleanup/` scope only.** Owner confirmed the California TSWMP registration
+(TSW #933) is now active and verified, lifting the Phase 5 gate for exactly one built route,
+`/crime-scene-trauma-cleanup-san-jose/` (Vehicle Biohazard Cleanup ships as a situation on that
+page, not as its own route). See `docs/archive/2026-09-04-before-consolidation/05-DECISIONS-LOG.md`, "TSWMP verified; Phase 5 gate
+lifted for Crime Scene & Trauma Cleanup only." `TSWMP` in §3 below is updated to reflect this.
+**The rest of this prohibition list is untouched** — `/biohazard-cleanup*/`, `/blood-cleanup/`,
+`/unattended-death-cleanup/`, `/human-waste-cleanup/`, `/sharps-cleanup/`, and
+`/encampment-cleanup/` remain fully forbidden. Do not cite this exception as precedent for any
+other route on this list; each would need its own owner verification of the underlying fact.
 
 **The `/services/*` prohibition was narrowed 2026-08-20 by owner ruling.** It previously read
 "any `/services/*` or `/locations/*` route", which on its face forbade `/services/` itself —
@@ -410,7 +524,7 @@ this supersession permits inventing the proof it makes optional.
 - It does **not** license bulk city expansion. Doc 25's "ship two or three, not ten" stands, as
   does doc 01's "no more than one thin city page published at a time."
 
-Full ruling and the reconciliation of every affected document: `docs/05-DECISIONS-LOG.md`,
+Full ruling and the reconciliation of every affected document: `docs/archive/2026-09-04-before-consolidation/05-DECISIONS-LOG.md`,
 2026-08-21, *"The completed-job prerequisite for city pages is superseded."*
 
 ---
@@ -430,12 +544,17 @@ address          service-area business — no published street address, ever
 region           South Bay & Peninsula        (NOT "Santa Clara County" — Atherton is San Mateo)
 insurance        wording recorded; current COI verification required before publication
 endorsement      wording recorded; current COI verification required before publication
-primary CTA      Tell Us About the Property
-secondary CTA    Call Aseptaclean
+primary CTA      Call Aseptaclean            (owner decision 2026-09-04, §2.2.2)
+secondary CTA    Send a Message              → local form, else /contact/#contact-form
+form submit      Send Message                (owner decision 2026-09-04, §2.2.3)
+form heading     Tell us about the property. (docs/03-INTEGRATION-CONTRACT.md)
 assessment fee   $195, credited toward an approved project booked within 7 days
 starting price   NOT PUBLISHED — see §4
 response         within one business day
-TSWMP            pending / unverified — never published in any form
+TSWMP            verified active 2026-09-03 — California Registered Trauma Scene Waste
+                 Management Practitioner, TSW #933. Published only on
+                 /crime-scene-trauma-cleanup-san-jose/ and its cross-links (footer, /services/,
+                 doc27ServicePages.ts). See docs/archive/2026-09-04-before-consolidation/05-DECISIONS-LOG.md.
 ```
 
 **Suppression rules — all six are absolute.** Unverified insurance wording → suppress the
@@ -443,11 +562,20 @@ insurance statement. Inactive social account → omit it. Never render an empty 
 Never show a success state against a non-working endpoint. Never expose a placeholder in a
 production build. Never infer a physical office from service-area coverage.
 
-**CTA decision, owner-approved 2026-08-25.** `Tell Us About the Property` supersedes
-`Request an assessment` as the default visible primary CTA. The route remains
-`/request-assessment/`, and “request an assessment” may still appear where that term is
-contextually required. Do not change protected SMS, 10DLC, legal-consent, privacy, or
-regulated-condition wording without verifying its controlling requirements.
+**CTA decision, owner-approved 2026-09-04 — supersedes the 2026-08-25 ruling below.** The
+default visible primary CTA is `Call Aseptaclean`; the secondary is `Send a Message`, which
+scrolls/focuses the local form where one exists and otherwise links to `/contact/#contact-form`.
+`/request-assessment/` stays a working, indexable form destination but is no longer the primary
+CTA or a primary-navigation item. Form submit controls are labelled `Send Message` and always
+submit the form. See §2.2.2 and §2.2.3.
+
+*Superseded, kept for traceability — CTA decision, owner-approved 2026-08-25:*
+`Tell Us About the Property` superseded `Request an assessment` as the default visible primary
+CTA. The route remained `/request-assessment/`, and “request an assessment” could still appear
+where that term was contextually required.
+
+Do not change protected SMS, 10DLC, legal-consent, privacy, or regulated-condition wording
+without verifying its controlling requirements.
 
 No current COI or equivalent policy document is present in the repository. Until the owner or
 broker verifies the exact insurance and endorsement wording against current documentation,
@@ -473,6 +601,14 @@ Implementation:
   schedule, concealed conditions — and then routes to the assessment.
 - The **$195 on-site assessment fee stays published.** It is a real, fixed, defensible number
   and it is the only figure on the site.
+  - **Scoped exception — owner decision 2026-09-06.** The walkthrough offered through the
+    hoarding PPC campaign at `/hoarding-cleanup-san-jose/assessment/` is free. That route
+    publishes no figure at all: it has never rendered `site.offer.assessmentFraming()`, and this
+    decision does not change `PUBLIC_ASSESSMENT_FEE`, the framing paragraph, or the fee on any
+    other surface. A later rank-2 owner decision outranks an earlier one within the scope it
+    actually decided, and the scope decided here is one campaign. Recorded in
+    `docs/05-CURRENT-DECISIONS.md`; wording lives in
+    `docs/page-briefs/ASEPTACLEAN-PPC-HERO-COPY-UPDATE.md` (AC-PPC-HERO-ROOMS-1.1).
 - `/private-residence-reset/`'s `$2,000` anchor is removed under the same rule.
 - Revisit once there are ≥5 completed projects with photographs and ≥5 Google reviews.
 
@@ -485,7 +621,10 @@ biohazard, trauma-scene, decomposition, rodent-droppings, rodent-urine, and post
 routes, plus a `/projects/` hub with named case studies. **All of it is superseded and parts
 of it are unlawful to publish.**
 
-- Biohazard/trauma routes violate the Phase 5 four-gate rule and the owner's TSWMP deferral.
+- Biohazard/trauma routes as this superseded doc describes them (a `/services/{slug}` or
+  `/locations/{city}` detail tree, decomposition and post-infestation named separately) remain
+  superseded regardless of the TSWMP exception above — that exception authorizes exactly the
+  one built route named in §2, not a return to this doc's architecture.
 - Rodent- and infestation-named service routes carry real Structural Pest Control Board
   exposure — see doc 21 §3.
 - The `/projects/` case studies do not exist. Zero completed jobs are documented.
@@ -528,10 +667,32 @@ byte-preserved under carrier review and loads Montserrat/Open Sans from Google. 
 - No `licensed` in any credential chip, bar, schema, or answering-service script.
 - No `remediation`, `biohazard`, `decontamination`, `sanitization`, `sterilization` as a
   service claim. See doc 21 for the exact permitted and forbidden constructions.
+  **Scoped exception 1, 2026-09-04:** on `/crime-scene-trauma-cleanup-san-jose/` only, the
+  trauma source's factual waste-pathway wording (`Regulated biohazard waste`, and the
+  situation names in its `Crime Scene & Trauma Cleanup Services` block) publishes under the
+  active TSW #933 registration — doc 21 §5 as reconciled. This authorizes the registered
+  trauma scope and nothing else.
+  **Scoped exception 2, 2026-09-04 — owner override.** The shared brand descriptor
+  **“Biohazard Remediation & Specialty Property Cleanup”** publishes in exactly three display
+  roles: the homepage hero eyebrow, the Services hub H1, and the shared brand descriptor. This
+  string was applied, auto-reverted on these prohibitions, escalated with every objection
+  quoted — including that the same pages' footer reads “not a … remediation contractor” — and
+  then **explicitly authorized by the owner**, which is rank 2 and outranks doc 21 at rank 3.
+  Full record: `docs/05-CURRENT-DECISIONS.md` 2026-09-04 item C, and the OWNER OVERRIDE section
+  of `docs/20-COPY-MAP.md`. **Do not revert it as a claims violation** — that has already
+  happened once. Outside these two exceptions `remediation`, `decontamination` and contractor
+  language stay forbidden everywhere, including the trauma page. Neither exception licenses a
+  new service, credential or capability claim.
 - No `hoarder` as a noun. No `gross filth` anywhere.
 - No hantavirus or rodent-specific handling language until written crew protocol exists.
 - No stat bar — no job counts, years in business, or review counts.
-- No `free assessment` or `free consultation` — the on-site assessment is $195.
+- No `free assessment` or `free consultation` — the on-site assessment is $195. Both phrases stay
+  banned everywhere, including on the PPC route below. **Scoped exception, owner decision
+  2026-09-06:** the walkthrough offered through the hoarding PPC campaign is free, and
+  `/hoarding-cleanup-san-jose/assessment/` (plus its thank-you route and its confirmation email
+  branch) says `free walkthrough` in its secondary CTA, form subtext, submit button, one FAQ
+  answer and its thank-you body. It is a walkthrough, never an "assessment" or a "consultation",
+  and the exception reaches no other route. See §4.
 - No retired mechanism names: `Assess → Define → Authorize → Clear → Document` is dead.
   The sequence is `Scope → Protect → Clear → Reset → Verify`.
 - No retired guarantee names. The block is the **Handoff Assurance**.
@@ -541,6 +702,6 @@ byte-preserved under carrier review and loads Montserrat/Open Sans from Google. 
 
 ## 8. Before you close a session
 
-Append to `docs/05-DECISIONS-LOG.md`: what changed, what conflicted, what you did not do and
+Append to `docs/05-CURRENT-DECISIONS.md`: what changed, what conflicted, what you did not do and
 why, and any rule in this file you had to work around. A conflict you resolved silently is a
 defect, even when the resolution was right.

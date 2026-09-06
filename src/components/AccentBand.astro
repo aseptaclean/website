@@ -23,7 +23,7 @@ interface Props {
 const {
   heading = "Working against a listing, transfer or family deadline?",
   headingId = "deadline-band-title",
-  ctaLabel = site.offer.primaryCta,
+  ctaLabel = site.offer.secondaryCta,
   ctaHref = "/request-assessment/"
 } = Astro.props;
 ---
@@ -42,7 +42,7 @@ const {
           the phone value it derives from (AGENTS.md §3). */}
       {site.business.smsUri && (
         <a class="ac-band__secondary" href={site.business.smsUri}>
-          {site.offer.secondaryCta}
+          {site.offer.smsCta}
         </a>
       )}
     </div>

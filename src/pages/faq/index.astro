@@ -79,10 +79,10 @@ const schema = [
       <nav class="faq-still__list" aria-label="Related pages">
         <a href="/handoff-standard/">The Handoff Standard →</a>
         <a href="/about/">About Aseptaclean →</a>
-        <a href="/request-assessment/">{site.offer.primaryCta} →</a>
+        <a href="/request-assessment/">{site.offer.secondaryCta} →</a>
         {/* doc 27 §8 — the secondary CTA appears everywhere the primary does. */}
         {site.business.smsUri && (
-          <a href={site.business.smsUri}>{site.offer.secondaryCta} →</a>
+          <a href={site.business.smsUri}>{site.offer.smsCta} →</a>
         )}
       </nav>
     </div>

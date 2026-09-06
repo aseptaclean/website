@@ -1,0 +1,74 @@
+---
+// HOME FOUNDER — founder-background credibility section. Built for the 2026-09-03 homepage
+// composition rebuild (docs/05-DECISIONS-LOG.md, "Homepage section count reopened"), which names
+// a founder section by name.
+//
+// COPY-ONLY, NO PHOTOGRAPH — DELIBERATE. No real founder photograph exists anywhere in this
+// repository (confirmed by OperatingEvidence.astro's own header comment, unchanged elsewhere in
+// this pass). AGENTS.md §0.3 and the 2026-09-03 log entry that reopened this section count are
+// both explicit: "the founder section may not invent a photograph or a portrait where none
+// exists — if no real founder photograph is available this session, the section must ship
+// copy-only... never a stock photo presented as Matthew Ruiz." EditorialSplit requires an image
+// prop, so this section uses AuthorityBand's two-column layout instead — a real, deliberate
+// component choice, not a placeholder box. When a real founder photograph is supplied, this can
+// move to EditorialSplit without a content rewrite.
+//
+// Copy: docs/aseptaclean-all-website-copy.md, "Why Aseptaclean" / "Built around careful work."
+// section, verbatim, plus the mandatory verbatim founder-authority-limit clause
+// (docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §2.4), read from site data so it cannot drift — the same
+// clause /about/ already renders beneath homepage.founderCredentials.
+import AuthorityBand from "@components/AuthorityBand.astro";
+import { legal, site } from "@data/site";
+---
+
+<AuthorityBand
+  eyebrow="Why Aseptaclean"
+  heading="Built around careful work."
+  headingId="home-founder-title"
+  layout="two-column"
+>
+  <div class="home-founder__lede">
+    <p>
+      Aseptaclean is founder-operated. {site.founder.name}&rsquo;s background includes
+      biochemistry, pharmaceutical manufacturing, and surgical pathology.
+    </p>
+  </div>
+  <div class="home-founder__body">
+    <p class="home-founder__statement">
+      Look closely. Understand what is happening. Define the work clearly. Then do the job in the
+      right order.
+    </p>
+    <p>
+      We do not treat a home like a laboratory, and we do not assume every difficult property is
+      a major remediation project. We bring a careful, condition-first mindset to the work and
+      explain what we see in plain English.
+    </p>
+    <p class="home-founder__limit">{legal.founderAuthorityLimit}</p>
+  </div>
+</AuthorityBand>
+
+<style>
+  .home-founder__lede p {
+    margin: 0;
+    max-width: 34ch;
+    font-size: 1.1875rem;
+    line-height: 1.5;
+  }
+
+  .home-founder__body p {
+    margin: 0 0 16px;
+    line-height: 1.6;
+  }
+
+  .home-founder__statement {
+    color: var(--ac-color-paper);
+    font-weight: 650;
+  }
+
+  .home-founder__limit {
+    margin-top: 20px;
+    color: rgb(255 255 255 / 55%);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+</style>

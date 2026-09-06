@@ -1,0 +1,111 @@
+---
+// The 911 Bio Clean restraint pattern (doc 30 §6.0, "what 30% means"): a checkmark benefit list
+// instead of another card grid. Used where the copy is genuinely a list of things that are true,
+// not a set of equally-weighted features.
+//
+// `tone="exclusion"` renders the same list with a rule mark instead of a check, for the
+// "what we do not provide" halves that doc 21 §4 requires be as visible as the inclusions.
+interface Props {
+  items: readonly string[];
+  /** `quiet` is the include mark recoloured for dark surfaces. */
+  tone?: "include" | "exclude" | "quiet";
+  columns?: 1 | 2;
+  compact?: boolean;
+}
+
+const { items, tone = "include", columns = 1, compact = false } = Astro.props;
+---
+
+<ul class:list={["acx-check", `is-${tone}`, `is-cols-${columns}`, { "is-compact": compact }]}>
+  {items.map((item) => (
+    <li>
+      <span class="acx-check__mark" aria-hidden="true">
+        {tone !== "exclude" ? (
+          <svg viewBox="0 0 16 16" width="14" height="14">
+            <path
+              d="M2.5 8.4l3.4 3.4 7.6-7.6"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2.2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+          </svg>
+        ) : (
+          <svg viewBox="0 0 16 16" width="14" height="14">
+            <path d="M3 8h10" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" />
+          </svg>
+        )}
+      </span>
+      <span class="acx-check__text">{item}</span>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .acx-check {
+    display: grid;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 14px 40px;
+  }
+
+  .is-cols-2 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .is-compact {
+    gap: 10px 32px;
+  }
+
+  .acx-check li {
+    display: grid;
+    max-width: none;
+    align-items: start;
+    gap: 12px;
+    grid-template-columns: 20px minmax(0, 1fr);
+  }
+
+  .acx-check__mark {
+    display: flex;
+    height: 1.6em;
+    align-items: center;
+    justify-content: flex-start;
+  }
+
+  /* Navy, never 911's green — doc 30 §6.0. */
+  .is-include .acx-check__mark {
+    color: var(--ac-color-navy-800);
+  }
+
+  .is-exclude .acx-check__mark {
+    color: var(--ac-color-ink-400);
+  }
+
+  /* Dark-surface variant: same mark, inherited light text. Used inside AcDarkBand. */
+  .is-quiet .acx-check__mark {
+    color: var(--ac-color-blue-on-navy);
+  }
+
+  .is-quiet .acx-check__text {
+    color: #d7e2f0;
+  }
+
+  .acx-check__text {
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .is-exclude .acx-check__text {
+    color: var(--ac-color-ink-500);
+  }
+
+  @media (max-width: 44rem) {
+    .is-cols-2 {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

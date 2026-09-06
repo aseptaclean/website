@@ -1,0 +1,72 @@
+---
+// PROCESS — four-step ProcessFour section for the 2026-09-03 `/services/` editorial-catalog
+// rebuild (docs/05-DECISIONS-LOG.md, "Services page rebuilt as an editorial catalog"). Same
+// Assess / Define / Perform / Document copy as HomeProcess.astro on `/` — see that component's
+// header comment for the doc 27 §12.1-14.1 → four-step reconciliation. Repeated as its own
+// component, not imported from HomeProcess, so this page's copy stays independently editable and
+// `/` is untouched by this pass.
+import ProcessFour from "@components/ProcessFour.astro";
+
+const steps = [
+  {
+    number: "01",
+    title: "Assess",
+    description:
+      "Send photos and a short description of what is happening. We review the affected areas, access, contents, and anything else that may change the work."
+  },
+  {
+    number: "02",
+    title: "Define",
+    description:
+      "You receive a clear explanation of what we recommend, what is included, what is not included, and what the work will cost."
+  },
+  {
+    number: "03",
+    title: "Perform",
+    description:
+      "Work does not begin based on assumptions. Once you approve the scope, we work against it — and explain anything that would materially change the project before doing it."
+  },
+  {
+    number: "04",
+    title: "Document",
+    description:
+      "Completion is reviewed and recorded, so there is a clear record of what was agreed and what was done."
+  }
+];
+---
+
+<section class="svc-process" aria-labelledby="svc-process-title">
+  <div class="svc-process__inner">
+    <header class="svc-process__head">
+      <h2 id="svc-process-title" class="ac-type-h2">How it works</h2>
+    </header>
+    <ProcessFour steps={steps} headingId="svc-process-title" />
+  </div>
+</section>
+
+<style>
+  .svc-process {
+    background: var(--ac-color-warm-white);
+    padding-block: 96px;
+  }
+
+  .svc-process__inner {
+    width: min(100% - 64px, var(--ac-measure-wide));
+    margin-inline: auto;
+  }
+
+  .svc-process__head h2 {
+    max-width: 20ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  @media (max-width: 40rem) {
+    .svc-process {
+      padding-block: 64px;
+    }
+
+    .svc-process__inner {
+      width: calc(100% - 40px);
+    }
+  }
+</style>

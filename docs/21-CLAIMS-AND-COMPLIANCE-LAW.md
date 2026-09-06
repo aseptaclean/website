@@ -50,6 +50,23 @@ active and verifiable.
 narrows scope — that is their only legitimate use. Any automated grep gate must whitelist the
 mandated negation clauses in §2.3 rather than fail them.
 
+**Owner override, 2026-09-04 — one affirmative exception to this list.** The shared brand
+descriptor **“Biohazard Remediation & Specialty Property Cleanup”** publishes in three display
+roles: the homepage hero eyebrow, the Services hub H1, and the shared brand descriptor. This is
+an affirmative use of two words this section bans, and it is not a negation. It ships because
+the owner, presented with §2.1, §2.2, §5, `AGENTS.md` §7 and the fact that `legal.scopeDisclaimer`
+renders “not a … remediation contractor” in the footer of the same pages, directed on 2026-09-04
+that it publish. An explicit current owner decision is rank 2 in the `AGENTS.md` §1 chain and
+outranks this document at rank 3.
+
+This exception is **exhaustive and does not generalize**: it covers that one string in those
+three roles. Everywhere else the list above stands unchanged, and §5's gate is untouched — TSW
+#933 still authorizes one registered scope, and this descriptor does not widen it. The
+underlying B&P §8550(a) exposure described in §3 is **recorded as accepted, not resolved**; if
+registration or insurance scope is reviewed, re-check this string first. Full record:
+`docs/05-CURRENT-DECISIONS.md` 2026-09-04 item C. Do not remove the descriptor as a claims
+violation without an owner decision — an earlier pass did exactly that.
+
 **Dignity language — migrated from `07-ONE-PAGE-DIRECTIVE.md` §4, 2026-08-11.** `hoarder`
 never appears as a noun, anywhere — situational language only ("heavy accumulation,"
 "hoarding conditions"). `gross filth` never appears at all, in any form. (Status: already
@@ -246,8 +263,18 @@ and make ticket handover a standard deliverable on permitted jobs.
 
 ## 5. Human biohazard — the gate
 
-TSWMP registration is **deliberately deferred** (owner, 2026-08-11). The deferral is sound.
-Two conditions make it safe:
+> **Reconciled 2026-09-04 — the deferral ended; the gate did not.** TSWMP registration is
+> **active**: California Registered Trauma Scene Waste Management Practitioner, **TSW #933**,
+> owner-confirmed and recorded in `AGENTS.md` §3 and `docs/02-CURRENT-FACTS.md`. §5.1's
+> pre-registration publication ban is therefore **satisfied**, not waived, and one trauma route
+> is authorized: `/crime-scene-trauma-cleanup-san-jose/`, plus its named cross-links (footer,
+> `/services/`). Everything else in §5 stands unchanged — §5.2's discovery trigger, the STOP
+> gate, and the referral relationship are unaffected by registration. Registration authorizes
+> **one registered scope**, not `remediation`, `decontamination`, contractor work, or an
+> unlimited biohazard service family. §4's forbidden-construction list is unchanged.
+
+TSWMP registration was **deliberately deferred** (owner, 2026-08-11). The deferral was sound.
+Two conditions made it safe:
 
 **5.1 Nothing publishes ahead of registration.** No trauma, unattended-death, blood, or
 decomposition service page. No GBP category. No service listing. No line in a capabilities

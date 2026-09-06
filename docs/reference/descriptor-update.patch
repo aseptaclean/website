@@ -1,0 +1,34 @@
+--- a/docs/20-COPY-MAP.md
++++ b/docs/20-COPY-MAP.md
+@@ -13,7 +13,8 @@
+ | Terms page label | Terms and Conditions | Preserve policy/provider text. |
+ | Contact H1 | Contact Aseptaclean | Current UI adaptation supporting the owner's call-first instruction. |
+ | Generic form heading | Tell us about the property. | Source wording from the main assessment block. |
+-| Main services hub H1 | Specialty Property Cleanup | Source Services heading; navigation label stays Services. |
++| Homepage hero eyebrow / shared brand descriptor | Biohazard Remediation & Specialty Property Cleanup | Owner-authorized replacement for the standalone Specialty Property Cleanup descriptor; preserve homepage main H1 and individual service names. |
++| Main services hub H1 | Biohazard Remediation & Specialty Property Cleanup | Owner-authorized display transformation of the source Services heading; navigation label stays Services. |
+ 
+ A normal sentence about reviewing a property or approving an assessment remains meaningful and must not be mechanically replaced with “call.” Consent/provider text is not transformed by this table. Preserve working Send Photos actions only where a real destination exists.
+ 
+--- a/docs/page-briefs/HOME.md
++++ b/docs/page-briefs/HOME.md
+@@ -5,7 +5,7 @@
+ | Order | Component | Exact content |
+ | --- | --- | --- |
+ | 1 | SiteHeader | Logo; Services; About; Contact; Call Aseptaclean |
+-| 2 | HeroWithForm | Eyebrow Specialty Property Cleanup; H1 “When a property needs more than a normal cleaning company.”; the two source hero paragraphs; call/message actions; compact form |
++| 2 | HeroWithForm | Eyebrow Biohazard Remediation & Specialty Property Cleanup; H1 “When a property needs more than a normal cleaning company.”; the two source hero paragraphs; call/message actions; compact form |
+ | 3 | Verified trust row | Source owner-operated/region wording; insurance only when current evidence supports it; TSW #933 only with current factual record |
+ | 4 | White image/text introduction | Entire source “Some properties need more than cleaning.”; one substantial relevant property photograph |
+ | 5 | Five-service photo grid | “What are you dealing with?” introductory sentences; card selections precisely defined in 20-COPY-MAP.md; five services in current navigation order |
+--- a/docs/page-briefs/SERVICES.md
++++ b/docs/page-briefs/SERVICES.md
+@@ -4,7 +4,7 @@
+ 
+ | Order | Component | Exact source content |
+ | --- | --- | --- |
+-| 1 | Compact photographic hero | Services opening block: Specialty Property Cleanup, outcome subheading, introductory body; call/message actions |
++| 1 | Compact photographic hero | Services opening block: Biohazard Remediation & Specialty Property Cleanup, outcome subheading, introductory body; call/message actions |
+ | 2 | Five image/text service rows | “What can we help with?” full four source service blocks, plus trauma hero and its “Crime Scene & Trauma Cleanup Services” block; current five-service order |
+ | 3 | White guidance section | “Not sure which category your property falls into?” and “We do not force every property into the same service.” |
+ | 4 | Compact five-step process | “How it works” |

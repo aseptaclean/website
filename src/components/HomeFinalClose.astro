@@ -1,0 +1,90 @@
+---
+// HOME FINAL CLOSE — deep-navy, large, quiet final CTA. Built for the 2026-09-03 homepage
+// composition rebuild (docs/05-DECISIONS-LOG.md, "Homepage section count reopened"), which asks
+// for a deep-navy, large, quiet finish rather than the prior image-led two-column close
+// (FinalCTA.astro, whose own header comment scopes it to "Used by `/` only" — retired from this
+// route by this pass, left in the tree for potential reuse rather than deleted, since no other
+// route imported it).
+//
+// COPY IS UNCHANGED — docs/aseptaclean-all-website-copy.md's closing passage, verbatim, the same
+// strings FinalCTA.astro rendered.
+//
+// SimpleFinalCTA supports one secondary link; doc 27 §8 requires the secondary "text a photo"
+// door to appear everywhere the primary does, and the existing sitewide hierarchy (FinalCTA's own
+// prior comment) is "primary, then call, then text-photos as contextual utility" — three tiers,
+// not two. This local wrapper adds the phone link as SimpleFinalCTA's one secondary slot and
+// appends the SMS link after it in the same row, rather than editing the shared primitive to grow
+// a second optional link it does not otherwise need.
+import SimpleFinalCTA from "@components/SimpleFinalCTA.astro";
+import { site } from "@data/site";
+
+const phoneHref = site.business.phoneUri;
+const smsHref = site.business.smsUri;
+---
+
+<div class="home-final-close">
+  <SimpleFinalCTA
+    heading="You do not need to know exactly what kind of cleanup you need."
+    headingId="final-cta-title"
+    lede="Show us the property. Send a few photos and tell us what is happening. We will review the condition and help you determine what the next step should be."
+    primaryLabel="Request an Assessment"
+    primaryHref="/request-assessment/"
+    secondaryLabel={phoneHref ? `Call ${site.business.phone}` : undefined}
+    secondaryHref={phoneHref || undefined}
+  />
+  <div class="home-final-close__foot">
+    {smsHref && (
+      <p class="home-final-close__sms">
+        <a href={smsHref}>{site.offer.smsCta}</a>
+      </p>
+    )}
+    <p class="home-final-close__note">
+      Submitting a request does not authorize work or create a service agreement.
+    </p>
+  </div>
+</div>
+
+<style>
+  .home-final-close {
+    position: relative;
+    background: var(--ac-color-navy-950);
+  }
+
+  .home-final-close__foot {
+    margin-top: -48px;
+    padding-bottom: 64px;
+    text-align: center;
+  }
+
+  .home-final-close__sms {
+    margin: 0 0 20px;
+  }
+
+  .home-final-close__sms a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-underline-offset: 5px;
+  }
+
+  .home-final-close__sms a:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .home-final-close__note {
+    width: min(100% - 64px, 520px);
+    margin: 0 auto;
+    color: #7f96b4;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 760px) {
+    .home-final-close__foot {
+      padding-bottom: 48px;
+    }
+  }
+</style>

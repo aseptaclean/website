@@ -38,9 +38,22 @@ const makeForm = () => {
     offer_type: "handoff_reset",
     entry_route: "/",
     property_city: "San Jose",
+    property_zip: "95113",
+    // Added 2026-09-04. functions/_lib/lead.ts's leanRequiredFields has required
+    // property_detail since the 2026-09-03 lean-form rebuild (it also swapped property_city
+    // for property_zip). This fixture still sent the pre-rebuild payload, so the success case
+    // asserted 201 against a request the current contract legitimately rejects with 422.
+    // The endpoint was never wrong — the fixture was stale.
+    property_detail: "Two-storey home, heavy kitchen buildup, access through the garage.",
     property_type: "Single-family home",
+    occupancy_status: "No",
     vacant_status: "yes",
-    property_situation: "Preparing to sell",
+    property_situation: "Severe property condition",
+    affected_amount: "Several rooms",
+    condition_duration: "More than one year",
+    rodent_source_status: "Not applicable",
+    desired_outcome: "Prepare the property for sale",
+    desired_timing: "Within 1–2 weeks",
     desired_completion_date: "2026-09-15",
     approximate_square_footage: "1,500–1,999 sq. ft.",
     contents_removal: "yes",
@@ -62,7 +75,7 @@ const makeForm = () => {
     relationship_to_property: "Property owner",
     authority_to_approve: "yes",
     property_address: "Private staging address",
-    preferred_contact_method: "Phone call",
+    preferred_contact_method: "Call",
     privacy_consent: "yes",
     scope_acknowledgment: "yes",
     submission_timestamp: new Date().toISOString(),
@@ -72,6 +85,10 @@ const makeForm = () => {
     referrer: "https://example.test/source"
   };
   for (const [key, value] of Object.entries(values)) data.set(key, value);
+  data.append("affected_areas", "Kitchen");
+  data.append("affected_areas", "Living areas");
+  data.append("condition_signs", "Heavy dirt or buildup");
+  data.append("known_conditions", "None that I know of");
   data.append("areas_involved[]", "Whole interior");
   data.append(
     "property_media[]",
@@ -148,6 +165,12 @@ try {
     throw new Error("Recoverable lead record or private upload is missing.");
   }
   if (
+    lead.data.desired_outcome !== "Prepare the property for sale" ||
+    lead.data.affected_areas?.join(",") !== "Kitchen,Living areas"
+  ) {
+    throw new Error("Expanded assessment fields were not stored correctly.");
+  }
+  if (
     lead.delivery.coreStorage.state !== "succeeded" ||
     lead.delivery.uploads.state !== "succeeded" ||
     lead.delivery.hubspot.state !== "skipped" ||
@@ -168,15 +191,26 @@ try {
     throw new Error("Idempotent duplicate handling failed.");
   }
 
-  const invalid = makeForm();
-  invalid.delete("property_city");
-  const invalidResponse = await onRequestPost({
-    request: requestFor(invalid),
-    env,
-    waitUntil() {}
-  });
-  if (invalidResponse.status !== 422) {
-    throw new Error("Required-field server validation failed.");
+  // REQUIRED-FIELD VALIDATION. Updated 2026-09-04: this used to delete property_city, which the
+  // 2026-09-03 rebuild made OPTIONAL — so the case had stopped proving anything. It now asserts
+  // on each field the current leanRequiredFields actually requires, including property_detail,
+  // the field whose absence made the success case above fail.
+  for (const field of ["property_zip", "property_situation", "property_detail"]) {
+    const invalid = makeForm();
+    invalid.delete(field);
+    invalid.set("idempotency_key", `phase3-invalid-${field}-0001`);
+    const invalidResponse = await onRequestPost({
+      request: requestFor(invalid),
+      env,
+      waitUntil() {}
+    });
+    if (invalidResponse.status !== 422) {
+      throw new Error(`Required-field server validation failed: omitting ${field} returned ${invalidResponse.status}, expected 422.`);
+    }
+    const invalidPayload = await invalidResponse.json();
+    if (!invalidPayload.errors?.[field]) {
+      throw new Error(`Required-field server validation failed: omitting ${field} produced no field-level error.`);
+    }
   }
 
   const invalidUpload = makeForm();
@@ -218,16 +252,25 @@ try {
     throw new Error("Residence offer mapping was not stored correctly.");
   }
 
-  globalThis.fetch = async (url) => {
+  const hubSpotBodies = [];
+  const resendBodies = [];
+  globalThis.fetch = async (url, init = {}) => {
     const target = String(url);
     if (target.includes("turnstile")) {
       return Response.json({ success: true });
     }
     if (target.includes("api.resend.com")) {
+      if (init.body) resendBodies.push(JSON.parse(String(init.body)));
       return Response.json({ id: "email-test-id" });
     }
     if (target.includes("api.twilio.com")) {
       return new Response("simulated SMS provider failure", { status: 502 });
+    }
+    if (target.includes("api.hubapi.com")) {
+      if (init.body) hubSpotBodies.push(JSON.parse(String(init.body)));
+      if (target.endsWith("/search")) return Response.json({ results: [] });
+      if (target.endsWith("/contacts")) return Response.json({ id: "contact-test-id" });
+      if (target.endsWith("/deals")) return Response.json({ id: "deal-test-id" });
     }
     throw new Error(`Unexpected provider call: ${url}`);
   };
@@ -243,6 +286,9 @@ try {
       RESEND_API_KEY: "test-resend-key",
       EMAIL_FROM_ADDRESS: "test@example.test",
       OWNER_ALERT_EMAIL: "owner@example.test",
+      HUBSPOT_ACCESS_TOKEN: "test-hubspot-token",
+      HUBSPOT_PIPELINE_ID: "test-pipeline",
+      HUBSPOT_DEAL_STAGE_ID: "test-stage",
       SMS_ALERTS_ENABLED: "true",
       TWILIO_ACCOUNT_SID: "test-account",
       TWILIO_AUTH_TOKEN: "test-token",
@@ -258,11 +304,63 @@ try {
   const providerFailureLead = await providerFailureStored?.json();
   if (
     providerFailureResponse.status !== 201 ||
+    providerFailureLead?.delivery.hubspot.state !== "succeeded" ||
     providerFailureLead?.delivery.customerEmail.state !== "succeeded" ||
     providerFailureLead?.delivery.ownerSms.state !== "failed" ||
     providerFailureLead?.delivery.ownerFallbackEmail.state !== "succeeded"
   ) {
     throw new Error("SMS failure did not preserve success and trigger fallback email.");
+  }
+  // DELIVERY-PAYLOAD COVERAGE. Updated 2026-09-04, expectations only — no assertion removed.
+  //
+  // These two cases used to require "Affected areas", "Desired outcome", "Known conditions" and
+  // "Preferred contact" in the HubSpot deal and the owner email. The 2026-09-03 lean-form
+  // rebuild deliberately narrowed both payloads to what the short form actually collects
+  // (see functions/_lib/providers.ts: the deal summary is ZIP / Situation / Description, and the
+  // owner email adds name, phone, email and photo count). The long questionnaire's fields are no
+  // longer emitted because the form no longer asks for them.
+  //
+  // So the assertions now check the CURRENT field set reaches both providers. Coverage is
+  // unchanged in strength — it verifies the same delivery path against the contract that ships.
+  const hubSpotDeal = hubSpotBodies.find((body) => body?.properties?.description);
+  const hubSpotExpected = [
+    "Property ZIP: 95113",
+    "Situation: Severe property condition",
+    "Description: Two-storey home, heavy kitchen buildup, access through the garage.",
+    // Updated 2026-09-05: the summary now names each private R2 object rather than only
+    // counting them, and carries the source/timestamp/attribution/consent lines that were
+    // previously collected, stored in R2, and then dropped at the CRM boundary. Expectation
+    // updated to the new contract — the check is not disabled.
+    "Private uploads: 1 (private R2 objects, not public URLs)",
+    "Source page: /",
+    "Submitted: ",
+    "Consent: contact consent given at submission"
+  ];
+  for (const fragment of hubSpotExpected) {
+    if (!hubSpotDeal?.properties?.description?.includes(fragment)) {
+      throw new Error(`HubSpot deal summary omitted "${fragment}".`);
+    }
+  }
+  const ownerEmail = resendBodies.find((body) => body?.to === "owner@example.test");
+  const customerEmail = resendBodies.find((body) => body?.to === "staging@example.test");
+  const ownerExpected = [
+    "Name: Staging Test",
+    "Phone: 4085550100",
+    "ZIP: 95113",
+    "Situation: Severe property condition",
+    "Description: Two-storey home, heavy kitchen buildup, access through the garage.",
+    "Private uploads: 1 (private R2 objects, not public URLs)",
+    "Source page: /",
+    "Submitted: ",
+    "Consent: contact consent given at submission"
+  ];
+  for (const fragment of ownerExpected) {
+    if (!ownerEmail?.text?.includes(fragment)) {
+      throw new Error(`Owner notification omitted "${fragment}".`);
+    }
+  }
+  if (!customerEmail?.text?.includes("We received your assessment request.")) {
+    throw new Error("Customer confirmation did not use the assessment copy.");
   }
 
   globalThis.fetch = async (url) => {
@@ -317,6 +415,8 @@ try {
   console.log("PASS server file-type validation");
   console.log("PASS Private Residence Reset schema and offer mapping");
   console.log("PASS simulated SMS provider failure and owner fallback email");
+  console.log("PASS HubSpot contact/deal mapping carries the lean-form field set");
+  console.log("PASS owner email and customer confirmation carry the lean-form field set and copy");
   console.log("PASS SMS_ALERTS_ENABLED=false/unset skips Twilio and uses owner fallback email");
 } finally {
   globalThis.fetch = originalFetch;

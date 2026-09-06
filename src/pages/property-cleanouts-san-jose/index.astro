@@ -105,32 +105,30 @@
 // carries no "Local planning notes" block as a result — an honest omission, not a broken link.
 import { Image } from "astro:assets";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import heroImage from "../../assets/homepage/condition-development-neglected-kolforn.jpg";
+import heroImage from "../../assets/aseptaclean/home-property-scope-detail.png";
+import { srcsetWidths } from "@components/imageWidths";
 import { legal, site } from "@data/site";
 
-// TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPH — NOT Aseptaclean project work, NOT a client
-// property, and NOT proof of any completed job. `[ATMOS]`-class under
-// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6: no crew, no vehicle, no equipment, no work in progress,
-// no before/after pair.
+// HERO REPOINTED 2026-09-05 to the owner image package, slot 18 `home-property-scope-detail`.
 //
-//   condition-development-neglected-kolforn.jpg
-//     Kolforn — CC BY-SA 4.0
-//     https://commons.wikimedia.org/wiki/File:2_Church_Cottage_West_Runton_30_01_2010_(14).JPG
+// It replaces `condition-development-neglected-kolforn.jpg` (Kolforn, Wikimedia Commons,
+// CC BY-SA 4.0), which shipped here as a full-bleed hero with its attribution living only in this
+// comment — never on the rendered page. That is the licence exposure recorded in
+// docs/06-ASSET-MANIFEST.md, and removing the placement is what closes it for this route.
 //
-// REUSED, NOT NEWLY ACQUIRED. docs/06-ASSET-MANIFEST.md §4 records the atmosphere-slot cap as
-// already knowingly exceeded by one (four slots against a cap of three) and says "do not add a
-// fifth without a new owner decision." This file is already in the repository — used today as a
-// recognition/directory panel on `/` and `/services/` — and is reused here as a full-bleed hero
-// in a different role and crop, the same choice Hoarding's and Estate's rebuilds made rather than
-// sourcing a new asset.
+// SUBJECT MATCH. The H1 lede is "when a property has too much left in it to move forward". Slot 18
+// shows a furnished room with belongings across a worn floor — a property with contents still in
+// it, which is precisely the condition this page addresses. The Commons file it replaces was a
+// dated galley kitchen: a neglected-surfaces photograph, not a property-full-of-contents one.
 //
-// `hero-development-residence-asurnipal.jpg` (Estate's hero) and
-// `condition-development-hoarding-asurnipal.jpg` (Hoarding's hero) are not reused here — a shared
-// photograph across sibling service pages would blur the distinction all three pages exist to
-// make. `condition-development-reset-aismallard.jpg` (the empty room) stays barred from this page
-// for the same reason it is barred from Hoarding: it is an open owner question whether an empty
-// room reads as an implied "after," and this page's hero needs to read as a property that has NOT
-// yet been addressed.
+// STILL ORIGINAL ILLUSTRATIVE WORK, not Aseptaclean project documentation, not a client property
+// and not proof of a completed job. `[ATMOS]`-class under docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6:
+// no crew, no vehicle, no equipment, no work in progress, no before/after pair. Provenance is
+// recorded in docs/06-ASSET-MANIFEST.md and nowhere on the page.
+//
+// Sibling heroes stay distinct: Estate keeps `hero-development-residence-asurnipal.jpg` and
+// Hoarding keeps package slot 03, so no two of the three cleanout-family pages open on the same
+// photograph.
 
 const canonicalPath = "/property-cleanouts-san-jose/";
 
@@ -396,7 +394,7 @@ const schema = [
         src={heroImage}
         alt=""
         layout="full-width"
-        widths={[480, 768, 1024, 1440, 1920]}
+        widths={srcsetWidths(heroImage, [480, 768, 1024, 1440, 1920])}
         sizes="100vw"
         format="webp"
         quality={74}
@@ -421,17 +419,13 @@ const schema = [
         <p class="pc-hero__thesis">Clear the property so it can move forward.</p>
 
         <div class="pc-hero__actions">
-          <a class="pc-btn pc-btn--light" href={assessmentHref}>{site.offer.primaryCta}</a>
+          <a class="pc-btn pc-btn--light" href={assessmentHref}>{site.offer.secondaryCta}</a>
           {phoneHref && (
             <a class="pc-hero__call" href={phoneHref}>Call {site.business.phone}</a>
           )}
         </div>
       </div>
     </div>
-
-    <p class="pc-hero__development-note">
-      Development reference photograph · not Aseptaclean project work
-    </p>
   </section>
 
   {/* ══ 02 · WHAT IS STOPPING THE PROPERTY FROM MOVING FORWARD ═══════════════════════════════
@@ -741,10 +735,10 @@ const schema = [
       </div>
 
       <div class="pc-close__action">
-        <a class="pc-btn pc-btn--light" href={assessmentHref}>{site.offer.primaryCta}</a>
+        <a class="pc-btn pc-btn--light" href={assessmentHref}>{site.offer.secondaryCta}</a>
         <div class="pc-close__secondary">
           {phoneHref && <a href={phoneHref}>Call {site.business.phone}</a>}
-          {smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
+          {smsHref && <a href={smsHref}>{site.offer.smsCta}</a>}
         </div>
         <p class="pc-close__note">
           Submitting a request does not authorize work or create a service agreement.
@@ -1073,24 +1067,6 @@ const schema = [
   .pc-hero__call:focus-visible {
     outline: 3px solid var(--ac-color-paper);
     outline-offset: 3px;
-  }
-
-  .pc-hero__development-note {
-    position: absolute;
-    z-index: 2;
-    right: 18px;
-    bottom: 14px;
-    left: 18px;
-    max-width: none;
-    white-space: nowrap;
-    margin: 0;
-    color: rgb(255 255 255 / 92%);
-    font-size: 0.625rem;
-    font-weight: 650;
-    letter-spacing: 0.055em;
-    line-height: 1.3;
-    text-align: right;
-    text-transform: uppercase;
   }
 
   /* ══ 02 · RECOGNITION ═══════════════════════════════════════════════════════════════════ */

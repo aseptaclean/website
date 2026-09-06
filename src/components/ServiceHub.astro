@@ -53,10 +53,10 @@ const count = cards.length;
     <p class="ac-ph__lede">{lead}</p>
     <div class="ac-btns">
       <a class="btn btn--w" href="/request-assessment/">
-        {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
+        {site.offer.secondaryCta} <span aria-hidden="true">&rarr;</span>
       </a>
       {/* doc 27 §8 — the secondary CTA appears everywhere the primary does. */}
-      {smsHref && <a class="btn btn--o" href={smsHref}>{site.offer.secondaryCta}</a>}
+      {smsHref && <a class="btn btn--o" href={smsHref}>{site.offer.smsCta}</a>}
       {phoneHref && <a class="btn btn--o" href={phoneHref}>Call {site.business.phone}</a>}
     </div>
   </div>

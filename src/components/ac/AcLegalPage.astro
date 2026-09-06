@@ -1,0 +1,185 @@
+---
+// LegalPageShell — docs/page-briefs/PRIVACY.md, TERMS.md and COOKIE.md, which are identical on
+// structure: "shared header → breadcrumb → one H1 → actual full provider policy → current
+// accessible fallback → footer."
+//
+// WHAT THIS SHELL DELIBERATELY DOES NOT DO (all three briefs, and doc 30 §5):
+//   - no photographic hero;
+//   - no trust strip, no service cards, no closing sales section inside the policy;
+//   - no fixed-height scrolling policy box;
+//   - no giant blank embed spacer. The previous shell reserved 480px for the embed, which
+//     rendered as a large empty gap above the fallback card whenever the provider script was
+//     blocked or slow.
+//
+// PROVIDER CONTENT IS PRESERVED EXACTLY. The embed element, its `data-id`, the policy script URL
+// and the hosted-URL and mailto fallbacks are unchanged from the previous implementation — this
+// is a wrapper change only. Nothing here authors or substitutes legal text.
+//
+// Consumer-facing copy contains no build notes: the previous lede ("This page is an integration
+// surface for Aseptaclean's provider-controlled policy document…") was implementation commentary
+// shown to visitors, which all three briefs forbid.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import { site } from "@data/site";
+
+interface Props {
+  /** The one page H1, e.g. "Privacy Policy". Also the breadcrumb leaf and the schema name. */
+  label: string;
+  canonicalPath: string;
+  seoTitle: string;
+  seoDescription: string;
+  /** Termly policy id. Empty string renders the fallback only. */
+  policyId: string;
+  hostedUrl: string;
+  headingId: string;
+}
+
+const { label, canonicalPath, seoTitle, seoDescription, policyId, hostedUrl, headingId } =
+  Astro.props;
+
+const contactEmail = site.business.privacyContact || site.business.email;
+
+const schema = [
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: label,
+        item: new URL(canonicalPath, site.urls.site).href
+      }
+    ]
+  }
+];
+---
+
+<BaseLayout
+  title={seoTitle}
+  description={seoDescription}
+  canonicalPath={canonicalPath}
+  schema={schema}
+  showMobileCta={false}
+>
+  <article class="legal">
+    <div class="legal__inner">
+      <nav class="legal__crumb" aria-label="Breadcrumb">
+        <a href="/">Home</a> <span aria-hidden="true">/</span> {label}
+      </nav>
+      <h1 id={headingId} class="ac-type-h1-band legal__title">{label}</h1>
+
+      {policyId ? (
+        <div class="legal__policy">
+          <div {...{ name: "termly-embed" }} data-id={policyId} data-type="iframe"></div>
+          <script is:inline src={site.integrations.termly.policyScriptUrl} async></script>
+        </div>
+      ) : (
+        <div class="legal__policy legal__policy--pending">
+          <p>
+            {hostedUrl
+              ? "This policy is published on our provider's secure hosted page."
+              : "This policy is not available on this page right now."}
+          </p>
+        </div>
+      )}
+
+      <aside class="legal__fallback" aria-labelledby={`${headingId}-fallback`}>
+        <h2 id={`${headingId}-fallback`} class="ac-type-h3-band">If the policy does not load</h2>
+        <p>
+          Provider content can be unavailable when JavaScript is disabled, a content blocker
+          intervenes, or the provider is temporarily unreachable.
+        </p>
+        <p class="legal__fallback-actions">
+          {hostedUrl && (
+            <>
+              <a href={hostedUrl} rel="external">Open the {label} on our provider's site</a>
+              <span aria-hidden="true"> · </span>
+            </>
+          )}
+          <a href={`mailto:${contactEmail}`}>Email {contactEmail}</a>
+        </p>
+        {policyId && (
+          <noscript>
+            <p>
+              JavaScript is disabled, so the embedded policy cannot load.
+              {hostedUrl ? " Use the provider link above." : ` Email ${contactEmail} for a copy.`}
+            </p>
+          </noscript>
+        )}
+      </aside>
+
+      <slot />
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal {
+    background: var(--ac-color-paper);
+  }
+
+  /* Readable ~880px column — all three briefs. Reference CSS `.ac-legal`. */
+  .legal__inner {
+    width: min(100% - 2 * var(--ac-gutter), var(--ac-measure-readable));
+    margin-inline: auto;
+    padding-block: 48px 72px;
+  }
+
+  .legal__crumb {
+    margin: 0 0 18px;
+    color: var(--ac-color-ink-500);
+    font-size: 0.875rem;
+  }
+
+  .legal__crumb a {
+    color: var(--ac-color-navy-800);
+  }
+
+  .legal__title {
+    margin: 0 0 28px;
+  }
+
+  /* NO min-height. The embed sizes itself; reserving space produced a large blank gap whenever
+     the provider was blocked. Provider-required iframe behaviour is untouched. */
+  .legal__policy {
+    min-width: 0;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 28px;
+  }
+
+  .legal__policy :global(iframe) {
+    width: 100%;
+    border: 0;
+  }
+
+  .legal__policy--pending p,
+  .legal__fallback p {
+    /* 16px+ wrapper body text — all three briefs. */
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .legal__fallback {
+    margin-top: 40px;
+    border: 1px solid var(--ac-color-line);
+    border-radius: var(--ac-r-media);
+    padding: 24px;
+    background: var(--ac-color-warm-white);
+  }
+
+  .legal__fallback h2 {
+    margin: 0 0 12px;
+  }
+
+  .legal__fallback p {
+    margin: 0 0 10px;
+    color: var(--ac-color-ink-600);
+  }
+
+  .legal__fallback-actions a {
+    display: inline-block;
+    min-height: 2.75rem;
+    line-height: 2.75rem;
+    color: var(--ac-color-navy-800);
+  }
+</style>

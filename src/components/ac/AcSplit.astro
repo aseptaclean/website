@@ -1,0 +1,246 @@
+---
+// ImageTextSplit — doc 30 §4, the primary reusable body pattern. Reference ClearPath p25-32.
+// Near 50/50 columns, 48-64px gap, substantial photography (doc 30 §2).
+//
+// `reverse` alternates the direction between substantial sections. doc 30 §4: "Image/text splits
+// alternate sides between substantial sections. Do not mechanically alternate after every
+// paragraph."
+//
+// NO EMPTY MEDIA COLUMN. Changed 2026-09-04: when a slot has no suitable asset this renders as a
+// single readable column and records the requirement on the section element, instead of holding
+// open a large blank rectangle. A missing image is an asset task (doc 30 §7) — but a visible
+// empty box is a defect, and doc 30 §5's founder guidance plus the owner instruction both
+// require removing the media column rather than shipping the placeholder.
+//
+// PORTRAIT RATIO, added 2026-09-05 for the founder photograph. The three existing ratios are all
+// landscape, and the real portrait of Matthew Ruiz is 1152x1536 (3:4). Cover-cropping a 3:4
+// source into a 4:3 or 5:4 box removes roughly half its height — which is where the face and the
+// embroidered logo are — so the owner package requires a "contained portrait crop", not a wide
+// banner. `3/4` renders the master at its native aspect (zero crop) inside a width-capped plate,
+// and mobile steps to 4:5, both of which the package's founder note names explicitly.
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import AcEyebrow from "./AcEyebrow.astro";
+import { srcsetWidths } from "../imageWidths";
+
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  /** Second heading line, set in the accent colour. Same contract as AcDarkBand. */
+  headingAccent?: string;
+  headingId?: string;
+  body?: readonly string[];
+  /** Rendered above the paragraphs, heavier — the reference's bold lead line. */
+  lead?: string;
+  /** Rendered last, heavier, as the section's closing statement. */
+  pullQuote?: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  /** Required subject for an unfilled slot. Collapses the media column and records the need. */
+  needsAsset?: string;
+  ratio?: "4/3" | "5/4" | "16/9" | "3/4";
+  reverse?: boolean;
+  tone?: "light" | "soft";
+}
+
+const {
+  eyebrow,
+  heading,
+  headingAccent,
+  headingId,
+  body = [],
+  lead,
+  pullQuote,
+  image,
+  imageAlt = "",
+  needsAsset,
+  ratio = "4/3",
+  reverse = false,
+  tone = "light"
+} = Astro.props;
+
+// Portrait keeps its own intrinsic box and a shorter ladder — a 360px-capped plate never needs a
+// 1320px rung, and the 1152px master has none to give. Landscape is untouched, so every split
+// that shipped before this change emits exactly what it emitted before.
+const isPortrait = ratio === "3/4";
+const box = isPortrait ? { width: 720, height: 960 } : { width: 1024, height: 768 };
+const mediaWidths = image
+  ? srcsetWidths(image, isPortrait ? [360, 540, 720] : [480, 768, 1024, 1320])
+  : [];
+---
+
+<section
+  class:list={["acx-split", `is-${tone}`, { "is-reverse": reverse, "is-copy-only": !image }]}
+  aria-labelledby={headingId}
+  data-needs-asset={!image ? needsAsset : undefined}
+>
+  <div class="ac-shell">
+    <div class="acx-split__grid">
+      {image && (
+        <figure
+          class:list={["acx-split__media", { "is-portrait": isPortrait }]}
+          style={`--ac-split-ratio: ${ratio}`}
+        >
+          <Image
+            src={image}
+            alt={imageAlt}
+            width={box.width}
+            height={box.height}
+            widths={mediaWidths}
+            sizes={isPortrait ? "(min-width: 62rem) 360px, 300px" : "(min-width: 75rem) 46vw, 92vw"}
+            format="webp"
+            quality={74}
+            loading="lazy"
+            decoding="async"
+          />
+        </figure>
+      )}
+
+      <div class="acx-split__copy">
+        {eyebrow && <AcEyebrow text={eyebrow} />}
+        {/* The space before the accent span is load-bearing — see AcDarkBand. */}
+        <h2 id={headingId} class="ac-type-h2">
+          {heading}
+          {headingAccent && <> <span class="acx-split__accent">{headingAccent}</span></>}
+        </h2>
+        {lead && <p class="acx-split__lead">{lead}</p>}
+        {body.map((paragraph) => <p class="acx-split__body">{paragraph}</p>)}
+        <slot />
+        {pullQuote && <p class="acx-split__pull">{pullQuote}</p>}
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .acx-split {
+    background: var(--ac-color-paper);
+  }
+
+  .is-soft {
+    background: var(--ac-color-warm-white);
+  }
+
+  /* doc 30 §2: "near 50/50 columns, 48-64px gap". Reference CSS `.ac-split` uses 56px. */
+  .acx-split__grid {
+    display: grid;
+    align-items: center;
+    gap: 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .acx-split__grid > * {
+    min-width: 0;
+  }
+
+  /* No image: one readable column, centred, rather than a blank half.
+
+     WIDTH CORRECTED 2026-09-05, from 62rem to the prose measure. 62rem is 992px, but global.css
+     caps `:where(p, li)` at `--ac-measure-read` (62ch ≈ 665px), so the heading spanned the full
+     992px while every paragraph stopped 330px short — the section read as a broken split with
+     dead space on the right, not as a deliberate column. Matching the grid to the same token the
+     paragraphs already obey makes the heading and the body share one edge. `ch` resolves against
+     this element's inherited body font-size, which is the size the capped paragraphs use. */
+  .is-copy-only .acx-split__grid {
+    grid-template-columns: minmax(0, 1fr);
+    max-width: var(--ac-measure-read);
+    margin-inline: auto;
+  }
+
+  .is-reverse .acx-split__media {
+    order: 2;
+  }
+
+  .acx-split__media {
+    margin: 0;
+  }
+
+  .acx-split__media :global(img) {
+    width: 100%;
+    /* height:auto is load-bearing. Astro <Image> emits width/height attributes; the height
+       presentational hint gives the element a used height, and aspect-ratio is ignored unless
+       height resolves to auto. Without this the images rendered at their intrinsic size. */
+    height: auto;
+    /* Restrained 6px on media — doc 30 §2. */
+    border-radius: var(--ac-r-media);
+    /* 4/3 at the 1320px shell puts the image at ~474px tall, inside doc 30 §2's documented
+       380-480px band. The reference CSS's 6/5 would render ~527px, above it. */
+    aspect-ratio: var(--ac-split-ratio);
+    object-fit: cover;
+  }
+
+  /* CONTAINED PORTRAIT PLATE. 360px wide at 3:4 renders 480px tall, which is the top of doc 30
+     §2's documented 380-480px split-image band — the same visual weight as the landscape splits
+     rather than an 843px tower, which is what an uncapped 3:4 image would become in a ~632px
+     column. Centred in its own half so it reads as a deliberate portrait, not a narrow crop of a
+     missing wide photo. */
+  .acx-split__media.is-portrait {
+    max-width: 360px;
+    margin-inline: auto;
+  }
+
+  .acx-split__copy h2 {
+    text-wrap: balance;
+  }
+
+  .acx-split__accent {
+    display: block;
+    color: var(--ac-color-navy-800);
+  }
+
+  .acx-split__lead {
+    margin: 20px 0 0;
+    color: var(--ac-color-ink-900);
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+
+  .acx-split__body {
+    margin: 16px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .acx-split__pull {
+    margin: 22px 0 0;
+    border-left: 2px solid var(--ac-color-navy-800);
+    padding-left: 18px;
+    color: var(--ac-color-navy-900);
+    font-size: 1.0625rem;
+    font-weight: 650;
+    line-height: 1.55;
+  }
+
+  /* Reference CSS stacks splits at 767px; this system stacks a little earlier because the
+     copy column carries lists and pull quotes that need more than half of a 900px viewport. */
+  @media (max-width: 62rem) {
+    .acx-split__grid {
+      gap: 36px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* §30: copy before image when the copy explains the section. Applies in both directions,
+       so a reversed split does not invert to image-first on a phone. */
+    .acx-split__media,
+    .is-reverse .acx-split__media {
+      order: 2;
+    }
+
+    .acx-split__copy {
+      order: 1;
+    }
+
+    /* Package founder note: "mobile may use a narrower 4:5 presentation". 4:5 from a 3:4 master
+       trims 6.25% of the height, centred — the face sits in the upper third and the embroidered
+       logo just below centre, so both survive the crop. */
+    .acx-split__media.is-portrait {
+      max-width: 300px;
+    }
+
+    .acx-split__media.is-portrait :global(img) {
+      aspect-ratio: 4 / 5;
+    }
+  }
+</style>

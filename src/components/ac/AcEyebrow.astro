@@ -1,0 +1,47 @@
+---
+// 911 Bio Clean restraint pattern (doc 30 §6.0, "what 30% means"): a small eyebrow with a short
+// rule above the section heading, in place of a filled pill chip. The rule is a plain 2px navy
+// bar, never the reference site's green underline.
+interface Props {
+  text: string;
+  align?: "start" | "center";
+  tone?: "light" | "dark";
+}
+
+const { text, align = "start", tone = "light" } = Astro.props;
+---
+
+<p class:list={["acx-eyebrow-rule", `is-${align}`, `is-${tone}`]}>{text}</p>
+
+<style>
+  .acx-eyebrow-rule {
+    display: flex;
+    max-width: none;
+    flex-direction: column;
+    margin: 0 0 18px;
+    color: var(--ac-color-navy-800);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    line-height: 1.3;
+    text-transform: uppercase;
+    gap: 10px;
+  }
+
+  .acx-eyebrow-rule::after {
+    display: block;
+    width: 40px;
+    height: 2px;
+    background: currentcolor;
+    content: "";
+  }
+
+  .is-center {
+    align-items: center;
+    text-align: center;
+  }
+
+  .is-dark {
+    color: var(--ac-color-blue-on-navy);
+  }
+</style>

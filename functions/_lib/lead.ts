@@ -88,9 +88,15 @@ const commonRequiredFields = [
   "idempotency_key"
 ] as const;
 
-// Required in addition to the common set on the lean request-assessment form (2026-09-02
-// rebuild) — AssessmentForm.astro's default, non-residence path.
-const leanRequiredFields = ["property_city", "property_situation"] as const;
+// Required in addition to the common set on the short request-assessment form (2026-09-03
+// rebuild) — AssessmentForm.astro's default, non-residence path. Nine fields total: name,
+// phone, optional email, ZIP, situation, and description are the whole first-contact ask;
+// everything else is gathered after submission. See docs/05-DECISIONS-LOG.md 2026-09-03.
+const leanRequiredFields = [
+  "property_zip",
+  "property_situation",
+  "property_detail"
+] as const;
 
 const commonOptionalFields = [
   "offer_type",
@@ -117,6 +123,8 @@ const commonOptionalFields = [
   "items_must_be_saved",
   "items_must_remain"
 ] as const;
+
+const allowedArrayFields = ["affected_areas", "condition_signs", "known_conditions"] as const;
 
 // Required only on the retired long-form questionnaire, kept so old drafts/integrations that
 // still reference it are not silently rejected. The lean form (2026-09-02) never sends these.
@@ -158,6 +166,11 @@ const allowedScalarFields = new Set([
   "best_contact_time",
   "additional_notes",
   "property_detail",
+  "affected_amount",
+  "condition_duration",
+  "rodent_source_status",
+  "desired_outcome",
+  "desired_timing",
   "important_finishes",
   "pets",
   "someone_present",
@@ -200,6 +213,10 @@ const allowedValues: Record<string, Set<string>> = {
   property_type: new Set([
     "Single-family home",
     "Townhome",
+    "Condo",
+    "Apartment",
+    "Multi-unit property",
+    "Commercial property",
     "Condominium",
     "Apartment or unit",
     "Duplex or multifamily property",
@@ -207,6 +224,18 @@ const allowedValues: Record<string, Set<string>> = {
     "Not sure"
   ]),
   property_situation: new Set([
+    // Current short-form option set (2026-09-03), exact order the form renders them in.
+    "Rodent droppings or animal waste",
+    "Hoarding or heavy clutter",
+    "Severe property condition",
+    "Detailed deep cleaning",
+    "Not sure",
+    // Retained for tolerance of stale cached pages / older campaign links that may still post
+    // a prior form version's values. Not rendered as options by the current form.
+    "Animal urine or feces",
+    "Move-in cleaning",
+    "Move-out cleaning",
+    "Strong odors",
     "Inherited or estate property",
     "Preparing to sell",
     "Landlord turnover",
@@ -218,9 +247,6 @@ const allowedValues: Record<string, Set<string>> = {
     "Seasonal or pre-event whole-home reset",
     "Second-home reopening",
     "Establishing a whole-home cleaning baseline",
-    // Added for the lean request-assessment form (2026-09-02) so a direct visitor's own
-    // situation choice ("Rodent droppings" / "Animal waste") is recorded as itself instead of
-    // falling back to "Other".
     "Rodent droppings",
     "Animal waste",
     "Other"
@@ -243,7 +269,58 @@ const allowedValues: Record<string, Set<string>> = {
     "Real estate professional",
     "Other authorized representative"
   ]),
-  preferred_contact_method: new Set(["Phone call", "Text message", "Email"]),
+  preferred_contact_method: new Set(["Call", "Text", "Email", "Phone call", "Text message"]),
+  occupancy_status: new Set([
+    "Yes",
+    "No",
+    "Partially",
+    "Occupied",
+    "Temporarily vacant",
+    "Move-in pending",
+    "Second home"
+  ]),
+  affected_amount: new Set([
+    "One small area",
+    "One room",
+    "Several rooms",
+    "Most of the property",
+    "Entire property",
+    "Not sure"
+  ]),
+  condition_duration: new Set([
+    "Less than one month",
+    "A few months",
+    "Six months to one year",
+    "More than one year",
+    "Several years",
+    "Not sure"
+  ]),
+  rodent_source_status: new Set([
+    "Pest-control work is complete",
+    "Pest-control work is underway",
+    "Rodents may still be active",
+    "I have not contacted pest control",
+    "Not sure",
+    "Not applicable"
+  ]),
+  desired_outcome: new Set([
+    "Make the property usable again",
+    "Clean rodent or animal contamination",
+    "Clear accumulated material and clean underneath",
+    "Prepare the property for move-in",
+    "Prepare the property for move-out",
+    "Prepare the property for sale",
+    "Deep clean neglected areas",
+    "Help me understand what the property needs",
+    "Other"
+  ]),
+  desired_timing: new Set([
+    "As soon as possible",
+    "Within the next few days",
+    "Within 1–2 weeks",
+    "Within the next month",
+    "I am still planning"
+  ]),
   authority_to_approve: new Set(["yes", "no"]),
   privacy_consent: new Set(["yes"]),
   scope_acknowledgment: new Set(["yes"]),
@@ -275,6 +352,50 @@ const allowedValues: Record<string, Set<string>> = {
   items_must_remain: new Set(["Yes", "No", "Not sure"])
 };
 
+const allowedArrayValues: Record<(typeof allowedArrayFields)[number], Set<string>> = {
+  affected_areas: new Set([
+    "Kitchen",
+    "Bathroom",
+    "Bedroom",
+    "Living areas",
+    "Garage",
+    "Closets",
+    "Cabinets or drawers",
+    "Storage areas",
+    "Entire property",
+    "Other"
+  ]),
+  condition_signs: new Set([
+    "Heavy clutter",
+    "Trash or accumulated material",
+    "Heavy dirt or buildup",
+    "Rodent droppings",
+    "Rodent nesting material",
+    "Animal urine",
+    "Animal feces",
+    "Strong odors",
+    "Spoiled food",
+    "Pest activity",
+    "Heavily soiled kitchen",
+    "Heavily soiled bathroom",
+    "Long-neglected rooms",
+    "Other"
+  ]),
+  known_conditions: new Set([
+    "Human waste",
+    "Blood or bodily fluids",
+    "Needles or sharps",
+    "Dead animal",
+    "Mold",
+    "Active insects",
+    "Active rodents",
+    "Structural damage",
+    "Sewage",
+    "None that I know of",
+    "Not sure"
+  ])
+};
+
 const clean = (value: string, max = 4000) =>
   value.replace(/\u0000/g, "").trim().slice(0, max);
 
@@ -285,6 +406,17 @@ export function validateLead(formData: FormData): ValidationResult {
   for (const field of allowedScalarFields) {
     const value = formData.get(field);
     if (typeof value === "string") data[field] = clean(value);
+  }
+  for (const field of allowedArrayFields) {
+    const values = formData
+      .getAll(field)
+      .filter((value): value is string => typeof value === "string")
+      .map((value) => clean(value, 250))
+      .filter(Boolean);
+    if (values.length) data[field] = values;
+    if (values.length > 20 || values.some((value) => !allowedArrayValues[field].has(value))) {
+      errors[field] = "Select valid options.";
+    }
   }
   const honeypot = formData.get("company_website");
   if (typeof honeypot === "string" && clean(honeypot)) {
@@ -303,11 +435,11 @@ export function validateLead(formData: FormData): ValidationResult {
   //      authority_to_approve, property_address, preferred_contact_method,
   //      scope_acknowledgment) is NOT rendered on this branch and must not be required here —
   //      requiring it made every residence-offer submission unsubmittable.
-  //   3. AssessmentForm.astro, default/lean path (2026-09-02 rebuild) — sends form_version and
-  //      a small required set: situation and city, beyond the common fields. This replaced the
-  //      old long-form questionnaire that required the full handoffOptionalFields set; that
-  //      list is kept in allowedScalarFields only so no longer-sent field is rejected if it
-  //      ever arrives from a stale cached page.
+  //   3. AssessmentForm.astro, default/short path (2026-09-03 rebuild) — sends form_version and
+  //      a nine-field required set beyond the common fields: ZIP, situation, and description
+  //      (leanRequiredFields). This replaced an earlier long-form questionnaire that required
+  //      the full handoffOptionalFields set; that list is kept in allowedScalarFields only so
+  //      no longer-sent field is rejected if it ever arrives from a stale cached page.
   const isDetailedSubmission = Boolean(data.form_version);
   const isResidenceOffer = offerType === "private_residence_reset";
   const requiredFields = !isDetailedSubmission

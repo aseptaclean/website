@@ -1,0 +1,196 @@
+---
+// CompactPhotoHero — doc 30 §3: "The hub and About use shorter photographic introductions
+// without the full intake panel." Reference ClearPath p24/p29 (hub) and p26/p32 (About).
+//
+// REBUILT 2026-09-04. This used to be a white text hero with a small contained photograph on the
+// right, which doc 30 §1 names as the thing NOT to do ("Do not substitute the old
+// white-copy/isolated-photo split"). It is now the same photographic composition as
+// AcHeroWithForm — full-bleed image, flat navy overlay, left copy — but SHORTER, and with a
+// secondary "Send a Message" link to Contact's form instead of an intake panel.
+//
+// Same geometry rules as the hero-with-form: no fixed height, no overflow:hidden, content sets
+// the height, and the call action sits directly under the headline.
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import AcActions from "./AcActions.astro";
+import { srcsetWidths } from "../imageWidths";
+
+interface Props {
+  eyebrow: string;
+  heading: string;
+  headingId?: string;
+  lead?: string;
+  body?: readonly string[];
+  /** Short factual lines under the actions. Verified facts only — never a badge wall. */
+  assurances?: readonly string[];
+  image?: ImageMetadata;
+  imageAlt?: string;
+  needsAsset?: string;
+  secondaryLabel?: string;
+  secondaryHref?: string;
+  showActions?: boolean;
+}
+
+const {
+  eyebrow,
+  heading,
+  headingId = "page-hero-title",
+  lead,
+  body = [],
+  assurances = [],
+  image,
+  imageAlt = "",
+  needsAsset,
+  secondaryLabel,
+  secondaryHref,
+  showActions = true
+} = Astro.props;
+
+// Clamped to the master — see src/components/imageWidths.ts.
+const heroWidths = image ? srcsetWidths(image, [480, 768, 1024, 1440, 1920]) : [];
+---
+
+<section class:list={["acx-phero", { "is-flat": !image }]} aria-labelledby={headingId}>
+  {image && (
+    <div class="acx-phero__media">
+      <Image
+        src={image}
+        alt={imageAlt}
+        layout="full-width"
+        widths={heroWidths}
+        sizes="100vw"
+        format="webp"
+        quality={76}
+        loading="eager"
+        decoding="async"
+        fetchpriority="high"
+      />
+    </div>
+  )}
+  <div class="acx-phero__overlay" aria-hidden="true" data-needs-asset={needsAsset}></div>
+
+  <div class="acx-phero__shell ac-shell">
+    <div class="acx-phero__copy">
+      <p class="acx-phero__eyebrow">{eyebrow}</p>
+      <h1 id={headingId} class="ac-type-h1-hub">{heading}</h1>
+      {lead && <p class="acx-phero__lead">{lead}</p>}
+      {body.map((paragraph) => <p class="acx-phero__body">{paragraph}</p>)}
+      {showActions && (
+        <div class="acx-phero__actions">
+          <AcActions tone="dark" secondaryLabel={secondaryLabel} secondaryHref={secondaryHref} />
+        </div>
+      )}
+      {assurances.length > 0 && (
+        <ul class="acx-phero__assurances">
+          {assurances.map((item) => <li>{item}</li>)}
+        </ul>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .acx-phero {
+    position: relative;
+    isolation: isolate;
+    background: var(--ac-color-navy-950);
+    color: #fff;
+  }
+
+  .acx-phero__media {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+  }
+
+  .acx-phero__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Same flat navy overlay as the hero-with-form. On `is-flat` (no photograph yet) the overlay
+     is the surface itself, so the composition holds and a future asset drop is a one-line
+     change rather than a layout change. */
+  .acx-phero__overlay {
+    position: absolute;
+    z-index: 1;
+    background: rgb(18 40 64 / 66%);
+    inset: 0;
+  }
+
+  .is-flat .acx-phero__overlay {
+    background: var(--ac-color-navy-900);
+  }
+
+  /* SHORTER than the hero-with-form: this is an introduction, not the page's conversion
+     surface. Reference p29's inner-page hero band is roughly two thirds the home hero's height. */
+  .acx-phero__shell {
+    position: relative;
+    z-index: 2;
+    padding-block: clamp(40px, 5vw, 64px);
+  }
+
+  .acx-phero__copy {
+    max-width: 46rem;
+  }
+
+  .acx-phero__eyebrow {
+    margin: 0 0 14px;
+    max-width: none;
+    color: var(--ac-color-blue-on-navy);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  /* Size comes from .ac-type-h1-hub — no font-size on a heading here (type law #1). */
+  .acx-phero__copy h1 {
+    color: #fff;
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+
+  .acx-phero__lead {
+    margin: 18px 0 0;
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  .acx-phero__body {
+    margin: 14px 0 0;
+    color: rgb(255 255 255 / 88%);
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  .acx-phero__actions {
+    margin-top: 26px;
+  }
+
+  .acx-phero__assurances {
+    display: flex;
+    max-width: none;
+    flex-wrap: wrap;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+    gap: 6px 26px;
+  }
+
+  .acx-phero__assurances li {
+    max-width: none;
+    color: rgb(255 255 255 / 78%);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 40rem) {
+    .acx-phero__shell {
+      padding-block: 32px 36px;
+    }
+  }
+</style>

@@ -1,0 +1,195 @@
+---
+// SECTIONS 03–04, COMBINED — brief section-composition table: "One white section. Intro copy
+// left, substantial photo right. KEEP / REMOVE / REVIEW row below both columns, with 32px
+// separation. Keep both section anchors; one main H2 for the band and subordinate heading for
+// the three-part row; no duplicate 88px padding between 03 and 04."
+//
+// The combination is the brief's own decision ("Combined sections 03–04 within one continuous
+// visual band to avoid two separate oversized introductions to the same idea"), so both section
+// anchors are kept on the same <section> and the row gets its own labelled group.
+//
+// Heading levels: the band H2, then an H3 for the row, then H4 labels on the three items. Only
+// "Hoarding Cleanup in San Jose" is an H1 on this page.
+//
+// Sizes come from .ac-type-* role classes exclusively — type law #1 (AGENTS.md §6). Nothing in
+// the style block below touches a heading's font-size.
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  id: string;
+  secondId: string;
+  heading: string;
+  body: readonly string[];
+  rowHeading: string;
+  row: readonly { title: string; body: string }[];
+  strongLine: string;
+  image: ImageMetadata;
+  imageAlt: string;
+}
+
+const { id, secondId, heading, body, rowHeading, row, strongLine, image, imageAlt } =
+  Astro.props;
+---
+
+<section class="ppc-decisions" id={id} aria-labelledby={`${id}-title`}>
+  <div class="ac-shell">
+    <div class="ppc-decisions__split">
+      <div class="ppc-decisions__copy">
+        <h2 id={`${id}-title`} class="ac-type-h2">{heading}</h2>
+        {body.map((paragraph) => <p class="ppc-decisions__body">{paragraph}</p>)}
+      </div>
+
+      <figure class="ppc-decisions__media">
+        <Image
+          src={image}
+          alt={imageAlt}
+          width={1024}
+          height={854}
+          widths={[480, 768, 1024]}
+          sizes="(min-width: 62rem) 46vw, 92vw"
+          format="webp"
+          quality={74}
+          loading="lazy"
+          decoding="async"
+        />
+      </figure>
+    </div>
+
+    <div class="ppc-decisions__plan" id={secondId} aria-labelledby={`${secondId}-title`} role="group">
+      <h3 id={`${secondId}-title`} class="ac-type-h3-band ppc-decisions__row-heading">
+        {rowHeading}
+      </h3>
+      <div class="ppc-decisions__row">
+        {row.map((item) => (
+          <div class="ppc-decisions__item">
+            <h4 class="ac-type-label-head ppc-decisions__item-title">{item.title}</h4>
+            <p class="ppc-decisions__item-body">{item.body}</p>
+          </div>
+        ))}
+      </div>
+      <p class="ppc-decisions__strong">{strongLine}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ppc-decisions {
+    background: var(--ac-color-paper);
+  }
+
+  /* Equal tracks, 56px gap — the shared `.acx-split` geometry, so this band reads as the same
+     component family the rest of the site uses. */
+  .ppc-decisions__split {
+    display: grid;
+    align-items: center;
+    gap: 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ppc-decisions__split > * {
+    min-width: 0;
+  }
+
+  .ppc-decisions__copy h2 {
+    text-wrap: balance;
+  }
+
+  .ppc-decisions__body {
+    margin: 16px 0 0;
+    max-width: 54ch;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .ppc-decisions__media {
+    margin: 0;
+  }
+
+  .ppc-decisions__media :global(img) {
+    width: 100%;
+    /* height:auto is load-bearing: Astro <Image> emits width/height attributes, and
+       aspect-ratio is ignored unless the used height resolves to auto. */
+    height: auto;
+    border-radius: var(--ac-r-media);
+    /* 6:5 desktop, per the brief's image-allocation table. */
+    aspect-ratio: 6 / 5;
+    object-fit: cover;
+  }
+
+  /* Brief: "KEEP / REMOVE / REVIEW row below both columns, with 32px separation". */
+  .ppc-decisions__plan {
+    margin-top: 32px;
+  }
+
+  .ppc-decisions__row-heading {
+    margin: 0;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ppc-decisions__row {
+    display: grid;
+    margin-top: 24px;
+    gap: 24px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .ppc-decisions__item {
+    min-width: 0;
+    /* A hairline rule, not a card. The brief forbids SaaS cards and oversized rounded panels. */
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 20px;
+  }
+
+  .ppc-decisions__item-title {
+    margin: 0;
+    color: var(--ac-color-navy-800);
+  }
+
+  .ppc-decisions__item-body {
+    margin: 10px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .ppc-decisions__strong {
+    margin: 28px 0 0;
+    max-width: 60ch;
+    border-left: 2px solid var(--ac-color-navy-800);
+    padding-left: 18px;
+    color: var(--ac-color-navy-900);
+    font-size: 1.0625rem;
+    font-weight: 650;
+    line-height: 1.55;
+  }
+
+  @media (max-width: 62rem) {
+    .ppc-decisions__split {
+      gap: 32px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* Brief: on mobile this section places its explanatory heading and copy BEFORE the
+       supporting photograph. */
+    .ppc-decisions__copy {
+      order: 1;
+    }
+
+    .ppc-decisions__media {
+      order: 2;
+    }
+
+    .ppc-decisions__media :global(img) {
+      aspect-ratio: 4 / 3;
+    }
+  }
+
+  /* Brief's scoped recipe: one column for the three-part row below 541px. */
+  @media (max-width: 33.75rem) {
+    .ppc-decisions__row {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

@@ -1,0 +1,200 @@
+---
+// PPC FOOTER — brief "Explicit PPC exceptions": "Compact brand/contact/legal footer; omit the
+// public site's four-column service directory", with the shared design retained: "Deep navy,
+// readable links, working policy and Cookie Settings controls".
+//
+// The four-column service directory is deliberately absent. An audit must not restore it.
+//
+// What is NOT dropped: the two verbatim-mandatory disclaimers from
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §2.3/§2.4 (via src/data/site.ts `legal`), the three real
+// policy routes, and the genuine Termly Cookie Preferences control — the same
+// `.termly-display-preferences` class the sitewide footer uses, which reopens the provider's
+// preference panel rather than navigating to the policy page.
+//
+// This footer previously rendered the page-level illustrative-photography disclosure. That
+// disclosure was removed 2026-09-05 at the owner's instruction along with the sitewide reference
+// captions (docs/06-ASSET-MANIFEST.md § "Caption removal"), so the component takes no props. The
+// scope and documentation disclaimers below are unrelated to that change and still ship.
+import { legal, site } from "@data/site";
+
+const year = new Date().getFullYear();
+const phoneHref = site.business.phoneUri;
+const termlyConsentEnabled = site.integrations.termly.consentEnabled;
+---
+
+<footer class="ppc-foot">
+  <div class="ac-shell">
+    <div class="ppc-foot__top">
+      <div class="ppc-foot__brand">
+        <a class="ppc-foot__logo" href="/">
+          <img
+            src={site.business.logoReversedUrl}
+            alt={`${site.business.name} — home`}
+            width="900"
+            height="215"
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
+        <p class="ppc-foot__tagline">
+          Specialty property cleaning and complex cleanup for the
+          {" "}{site.location.serviceArea}.
+        </p>
+      </div>
+
+      <div class="ppc-foot__contact">
+        {phoneHref && (
+          <p class="ppc-foot__phone"><a href={phoneHref}>{site.business.phone}</a></p>
+        )}
+        <p class="ppc-foot__email">
+          <a href={`mailto:${site.business.email}`}>{site.business.email}</a>
+        </p>
+        <p class="ppc-foot__hours">{site.business.hours}</p>
+      </div>
+    </div>
+
+    <div class="ppc-foot__bot">
+      <nav class="ppc-foot__utility" aria-label="Legal and preferences">
+        <a href={site.urls.privacyPolicy}>Privacy Policy</a>
+        <a href={site.urls.terms}>Terms &amp; Conditions</a>
+        {site.urls.cookiePolicy && <a href={site.urls.cookiePolicy}>Cookie Policy</a>}
+        {termlyConsentEnabled && (
+          <button type="button" class="ppc-foot__button termly-display-preferences">
+            Cookie Settings
+          </button>
+        )}
+      </nav>
+
+      <p>
+        © {year} {site.business.legalName} · Aseptaclean is not a licensed general contractor,
+        remediation contractor, pest-control operator, or appraiser.
+      </p>
+      <p>{legal.scopeDisclaimer} {legal.documentationDisclaimer}</p>
+      {termlyConsentEnabled && (
+        <noscript>
+          <p>
+            Cookie Settings requires JavaScript. The Cookie Policy remains available above, or
+            email {site.business.privacyContact || site.business.email} for help.
+          </p>
+        </noscript>
+      )}
+    </div>
+  </div>
+</footer>
+
+<style>
+  /* Same surface and type colours as the sitewide footer; only the column structure is compact.
+     Padding is 40px/24px rather than 64px/30px — the brief's `.ac-ppc .ac-footer` recipe. */
+  .ppc-foot {
+    background: #0a1725;
+    padding: 40px 0 0;
+    color: #8fa6bf;
+    font-size: var(--ac-text-sm);
+    line-height: 1.8;
+  }
+
+  .ppc-foot__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px 40px;
+  }
+
+  .ppc-foot__logo {
+    display: block;
+    margin-bottom: 12px;
+  }
+
+  .ppc-foot__logo img {
+    width: auto;
+    height: 26px;
+    object-fit: contain;
+  }
+
+  .ppc-foot__tagline {
+    max-width: 34ch;
+    margin: 0;
+  }
+
+  .ppc-foot__contact p {
+    margin: 0;
+  }
+
+  .ppc-foot__phone {
+    color: #fff;
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .ppc-foot a {
+    color: inherit;
+  }
+
+  .ppc-foot a:hover {
+    color: #fff;
+  }
+
+  .ppc-foot__hours {
+    margin-top: 6px !important;
+    font-size: 0.75rem;
+  }
+
+  .ppc-foot__button {
+    border: 0;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-size: 0.75rem;
+    cursor: pointer;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  .ppc-foot__button:hover {
+    color: #fff;
+  }
+
+  .ppc-foot__bot {
+    border-top: 1px solid rgb(255 255 255 / 12%);
+    margin-top: 28px;
+    padding: 18px 0 28px;
+    /* #7f96b4 clears 5.2:1 on #0a1725 — the same AA correction the sitewide footer records. */
+    color: #7f96b4;
+    font-size: 0.75rem;
+    line-height: 1.65;
+  }
+
+  .ppc-foot__bot p {
+    margin: 0;
+  }
+
+  .ppc-foot__bot p + p {
+    margin-top: 8px;
+  }
+
+  .ppc-foot__utility {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 14px;
+    gap: 10px 24px;
+  }
+
+  .ppc-foot__utility a {
+    font-size: 0.75rem;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  @media (max-width: 40rem) {
+    .ppc-foot__top {
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .ppc-foot__tagline {
+      max-width: none;
+    }
+  }
+</style>

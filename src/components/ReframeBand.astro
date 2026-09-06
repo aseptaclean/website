@@ -1,0 +1,91 @@
+---
+// REFRAME — homepage-only full-width dark statement band, added 2026-09-03 per the homepage
+// composition rebuild (docs/05-DECISIONS-LOG.md, "Homepage section count reopened," 2026-09-03).
+// This is the "Type B" full-width background / contained content section the design system
+// calls for between lighter photographic movements — a genuine composition change (dark field,
+// centered statement), not a navy rectangle wrapped around the same layout.
+//
+// Copy is new to this pass but follows the same discipline as every other homepage module: one
+// short statement plus one supporting sentence, no restored essay. It restates the site's
+// existing positioning (condition-first assessment, written scope) rather than introducing a new
+// claim — nothing here is a fact not already stated in WhatWeHandle or OperatingEvidence.
+---
+
+<section class="reframe" aria-labelledby="reframe-title">
+  <div class="reframe__inner">
+    <p class="reframe__eyebrow">How we think about a property</p>
+    <h2 id="reframe-title" class="ac-type-h2-home-feature">
+      The condition decides the work. Not the other way around.
+    </h2>
+    <p class="reframe__lede">
+      Two properties that look similar from the street can need completely different plans.
+      Aseptaclean looks at what is actually there before anything is scheduled, priced, or
+      promised.
+    </p>
+  </div>
+</section>
+
+<style>
+  .reframe {
+    background: var(--ac-color-navy-950);
+    padding-block: clamp(80px, 8vw, 116px);
+  }
+
+  .reframe__inner {
+    width: min(100% - 64px, 900px);
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .reframe__eyebrow {
+    margin: 0 0 18px;
+    color: var(--ac-color-blue-on-navy);
+    font-size: 0.75rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .reframe__inner {
+    --ac-text-h2-home-feature: 2.75rem;
+  }
+
+  .reframe__inner h2 {
+    margin-inline: auto;
+    max-width: 18ch;
+    color: var(--ac-color-paper);
+  }
+
+  .reframe__lede {
+    margin: 24px auto 0;
+    max-width: 56ch;
+    color: #ccd9e8;
+    font-size: 1.125rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 50rem) {
+    .reframe__inner {
+      --ac-text-h2-home-feature: 2.25rem;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .reframe {
+      padding-block: 64px;
+    }
+
+    .reframe__inner {
+      width: calc(100% - 40px);
+    }
+
+    .reframe__inner {
+      --ac-text-h2-home-feature: 2rem;
+    }
+
+    .reframe__lede {
+      font-size: 1.0625rem;
+    }
+  }
+</style>

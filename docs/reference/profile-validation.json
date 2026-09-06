@@ -1,0 +1,22 @@
+{
+  "profile_id": "AC-CP70-91130-1.1",
+  "validation_date": "2026-09-05",
+  "checks": {
+    "evidence_images": 16,
+    "packaged_image_sha256": "verified against extraction manifest",
+    "markdown_evidence_links": 16,
+    "json_files": "parsed",
+    "page_targets": 12,
+    "javascript_syntax": "Updated 1.1 collector passed Node --check",
+    "collector_mock_checks": "16px clearance boundary; 38px overflow; nonzero scroll flag; absent form remains UNVERIFIED",
+    "css": "balanced braces; manually reviewed media queries",
+    "fold_targets": "8 photographic-hero pages x 4 desktop viewport requirements; budget arithmetic verified",
+    "descriptor": "Exact approved display label recorded in profile, target JSON, audit prompt and patch for copy map plus two briefs"
+  },
+  "limitations": [
+    "Current website not available for rendered verification in this task",
+    "Updated reference CSS is not installed in the production website by this package update",
+    "Browser implementation must pass the complete section 7 matrix before above-fold fit is claimed"
+  ],
+  "revision": "1.1: mandatory desktop above-fold acceptance and compact form overrides"
+}

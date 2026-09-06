@@ -99,18 +99,20 @@
      --------------------------------------------------------------------- */
   --ac-text-xs: 0.75rem;
   --ac-text-sm: 0.8125rem;
-  --ac-text-body: 1rem;
-  --ac-text-lead: 1.0625rem;
+  /* 17px. doc 30 §2: "body 16-18px, line height 1.5-1.65". Reference CSS sets body to 17px.
+     Raised from 16px on 2026-09-04 with the documentation consolidation. */
+  --ac-text-body: 1.0625rem;
+  --ac-text-lead: 1.125rem;
 
-  /* H1. Ported verbatim from the mockups per owner ruling 2026-08-18. This value yields
-     3.70:1 against the 16px body at 1440px, BELOW type law #2's 4:1 floor — the owner was
-     shown the measurement and the 4rem alternative and chose the mockup value. Recorded in
-     docs/05-DECISIONS-LOG.md. Do not "fix" this token back up without a new owner ruling;
-     it is a known, accepted deviation, not a regression. */
-  --ac-text-h1: clamp(2.5rem, 4.6vw, 3.7rem);
-  /* Homepage rebuild hero role. The component overrides this variable—not font-size itself—at
-     mobile widths so type law #1 retains one role-class source for the heading's computed size. */
-  --ac-text-h1-home: clamp(3rem, 4vw, 3.625rem);
+  /* PAGE H1 ROLES — doc 30 §2: "H1: responsive 34-52px". All three roles below now resolve
+     inside that band at every width, replacing the retired mockups' 40-59px scale.
+     Reference CSS `.ac-title` is clamp(2.125rem, 3.65vw, 3.25rem) = 34px -> 52px; these
+     tokens carry it. Type law #1 still applies: only `.ac-type-*` role classes may size a
+     heading, and they read these variables. */
+  --ac-text-h1: clamp(2.125rem, 3.65vw, 3.25rem);
+  /* Homepage hero. Components may override this VARIABLE at a breakpoint — never `font-size`
+     on the heading itself — so one role class remains the heading's computed-size source. */
+  --ac-text-h1-home: clamp(2.125rem, 3.65vw, 3.25rem);
   /* Capped below --ac-text-h1-home at every width. The previous clamp reached 63px at 1440,
      which put the homepage section H2 above the 54px hero H1 and inverted the page hierarchy. */
   --ac-text-h2-home-feature: clamp(2.25rem, 4vw, 3.25rem);
@@ -136,8 +138,8 @@
   /* Inner-page H1s. The mockups run three distinct H1 sizes, not one: the homepage hero
      (--ac-text-h1 above), the hub / service-page header (.ph h1, weight 500) and the compact
      redaction-mark band on company and legal pages (.pgh h1, weight 700). Ported verbatim. */
-  --ac-text-h1-hub: clamp(2.2rem, 4vw, 3.1rem);       /* .ph h1, .ph--split h1 */
-  --ac-text-h1-band: clamp(1.9rem, 3.4vw, 2.6rem);    /* .pgh h1 */
+  --ac-text-h1-hub: clamp(2.125rem, 3.4vw, 3rem);     /* compact photo hero: hub, About */
+  --ac-text-h1-band: clamp(2.125rem, 3vw, 2.75rem);   /* legal/contact title band */
 
   /* H3/H4 are small and weight-led in this direction, not size-led. */
   --ac-text-h3: 1.0625rem;                            /* .stage h3, .faq summary, .princ h3 */
@@ -164,8 +166,14 @@
      --------------------------------------------------------------------- */
   --ac-measure-intimate: 46ch;
   --ac-measure-read: 62ch;
-  --ac-measure-wide: 1200px;
+  /* 1320px, doc 30 §2 / docs/styles/website-reference.css `--ac-max`. Was 1200px under the
+     retired master. `.ac-shell` in global.css is the single consumer of this plus the gutter
+     token below, so the whole site's content width moves from one place. */
+  --ac-measure-wide: 1320px;
   --ac-measure-bleed: 100vw;
+  /* Readable centred column for FAQ, legal policy, and long prose — reference CSS `.ac-faq`
+     and `.ac-legal` both cap at 880px. */
+  --ac-measure-readable: 880px;
 
   /* ---------------------------------------------------------------------
      Rhythm — v2 uses a single fluid section padding; kept as distinct
@@ -198,7 +206,17 @@
   --ac-space-7: var(--ac-s7);
   --ac-space-8: 4.5rem;
 
-  --ac-gutter: clamp(1.25rem, 4vw, 3rem);
+  /* doc 30 §2: 32px desktop, 24px tablet, 20px mobile. Stepped, not fluid, so the measured
+     gutter matches the spec exactly at each breakpoint instead of landing between values.
+     The tablet/mobile steps live in global.css's existing responsive blocks. */
+  --ac-gutter: 32px;
+  /* Combined header height. Bound to the real measured stack (utility ribbon + sticky nav),
+     never assumed — doc 30 §2 and reference CSS `--ac-header-stack`. Consumed by
+     scroll-padding so in-page anchors clear the sticky nav. */
+  --ac-header-stack: 72px;
+  /* Height reserved for the fixed mobile call bar, including safe-area inset. Set to 0 at
+     widths where the bar is not rendered so no page reserves space for an absent control. */
+  --ac-mobile-call-space: 0px;
   --ac-radius-small: var(--ac-r-sm);
   --ac-radius-control: var(--ac-r-sm);
   --ac-shadow-focus: 0 0 0 3px color-mix(in srgb, var(--ac-color-focus) 30%, transparent);
@@ -213,7 +231,12 @@
      section panels — see docs/RESTORATION-DESIGN-SCAN.md §5. Squaring the controls carries
      most of the industrial read without touching the palette. */
   --ac-r: 12px;
-  --ac-r-sm: 2px;
+  /* doc 30 §2, 2026-09-04: "Buttons: rectangular, modest 4px corner radius." The retired
+     design system's 2px squaring is superseded. Media and form panels get the restrained
+     6-8px the same section permits. */
+  --ac-r-sm: 4px;
+  --ac-r-media: 6px;
+  --ac-r-panel: 8px;
   /* 2026-08-18 visual port. Cards are 6px in every mockup (PORT-PROMPT §3); the token had one
      consumer (.ac-card) so this moves nothing else. The two shadows below are the mockups'
      own values — `0 2px 10px rgba(18,40,64,.06)` is used 22 times across all 12 files and is

@@ -8,6 +8,7 @@
 import {
   animalPage,
   commercialPage,
+  crimeScenePage,
   deepCleaningPage,
   estatePage,
   extremeCleaningPage,
@@ -262,22 +263,19 @@ export const servicesHub = {
   slug: "/services/",
   gate: null as string | null,
   seoTitle: "Property Cleanup Services in San Jose | Aseptaclean",
-  // 151 characters. The landing-page system's own meta for this route ends "in San Jose and
-  // Santa Clara County", which is struck under item 2 above.
   metaDescription:
     "Not sure what kind of cleanup the property needs? Detailed cleaning, complex property cleanup and severe-condition work across the South Bay & Peninsula.",
+  // Locked copy's exact hero — docs/aseptaclean-all-website-copy.md, "PAGE: Services".
+  // The profile AC-CP70-91130-1.1 descriptor swap is BLOCKED here on claims grounds; see the
+  // note on `home.hero` in src/data/publicCopy.ts and docs/05-CURRENT-DECISIONS.md 2026-09-04.
   hero: {
-    eyebrow: "Property cleanup services · South Bay & Peninsula",
-    h1: "What kind of cleanup do you need?",
-    // Landing-page system §43's hero lines, reconciled: its third line reads "Some have animal
-    // waste, rodent droppings, or years of buildup." Rodent droppings are struck here under item
-    // 1 above, and animal waste is held back to the one place on this page that carries doc 21
-    // §2.3's mandatory limiting clause with it — the chooser's `condition` row.
+    eyebrow: "Specialty Property Cleanup",
+    h1: "When the property needs more than a normal cleaning company.",
     lede: [
-      "Some homes need a detailed clean.",
-      "Some need to be cleared before cleaning can begin.",
-      "Some are past the point where a routine cleaning service will take them on.",
-      "Start with what you are dealing with."
+      "Some properties are simply dirty.",
+      "Others are harder to deal with.",
+      "There may be heavy buildup, accumulated belongings, rodent contamination, animal waste, neglected rooms, strong odors, or years of conditions that have made the property difficult to use.",
+      "Aseptaclean helps homeowners, families, property owners, and managers understand what needs attention and get the property back under control."
     ]
   },
   // PROBLEM CHOOSER. The doors themselves are homepage.routingDoors in src/data/site.ts —
@@ -286,88 +284,99 @@ export const servicesHub = {
   // deleted RoutingDoors.astro on 2026-08-25. That deletion removed a duplicate routing system
   // from `/`; it did not retire the copy, and doc 30 §18 makes routing this page's whole job.
   // Only the framing below is new.
+  // Locked copy's exact "Not sure which category your property falls into?" section —
+  // docs/aseptaclean-all-website-copy.md. The old six-door routing mechanism (estate cleanout,
+  // property cleanouts, move-out cleaning, commercial) pointed at routes the 2026-09-03 launch
+  // architecture no longer publishes, so `chooser.condition` (the one animal-waste addendum) is
+  // no longer rendered — see ServiceProblemChooser.astro's `showCondition` guard, unchanged.
   chooser: {
-    eyebrow: "Start with the problem",
-    heading: "What are you dealing with?",
-    lede: "You do not need the right service name. Pick the line that sounds like the property.",
-    // Held below the six doors as a quiet ruled row rather than promoted to a seventh door:
-    // /animal-waste-cleanup-san-jose/ ships noindex, and §20A.20 forbids using the hub as a
-    // workaround for a publication gate. doc 21 §2.3's clause is verbatim-mandatory here and
-    // travels with the row, never paraphrased.
+    eyebrow: "Not sure which category your property falls into?",
+    heading: "You do not need to know.",
+    lede: "That is one of the reasons we start with an assessment.",
     condition: {
       label: "Animal waste has affected floors, rooms, or surfaces",
       detail:
         "Repeated or heavy non-human animal urine or feces, after the animal issue itself has been dealt with.",
       linkLabel: "Animal waste cleanup",
-      href: animalPage.slug,
+      href: null as string | null,
       clause: animalPage.complianceClause
     }
   },
   notSure: {
-    heading: "Not sure which one fits?",
-    lede: "That is normal. A property does not always fit one clean service name.",
-    // Landing-page system §43, minus its "Clutter + rodent droppings" pair (item 1 above).
+    heading: "Our job is to understand the condition before recommending the work.",
+    lede: "A property may appear to need deep cleaning until rodent contamination is discovered. A cluttered home may also have sanitation problems underneath the contents. A property that looks severe in photos may turn out to need a much smaller scope once we see it.",
     combinations: [
-      "Animal waste and heavy buildup",
-      "A property cleanout and a deep clean",
-      "A move-out and a severe condition",
+      "Deep cleaning + rodent contamination",
+      "Heavy clutter + sanitation problems underneath",
+      "A property that looks severe but needs a smaller scope",
       "Several problems at the same time"
     ],
     close:
-      "You do not have to work that out before you contact us. Describe the property, send photos if you have them, and we will tell you which kind of job it is."
+      "There is no benefit to selling you more cleanup than the property needs. If the job is straightforward, we will tell you. If the property needs a more involved approach, we will explain why."
   },
-  // NORMAL vs DETAILED vs COMPLEX — landing-page system §43's qualifying block, reconciled to
-  // real route names. Its purpose is to let the wrong customer leave early, which is why the
-  // first level says outright that Aseptaclean is usually not the right fit.
+  // Locked copy's exact "Which service should I choose?" — docs/aseptaclean-all-website-copy.md.
+  // Repurposes the qualifying-column layout (numbered, editorial, no cards) for the four public
+  // services instead of the old three routine/detailed/complex tiers.
   conditionLevels: [
     {
-      name: "Routine house cleaning",
-      body: "The home is already being maintained and the job is keeping it that way.",
-      verdict: "Aseptaclean is usually not the right fit for this.",
-      fit: false,
-      href: null as string | null,
-      linkLabel: null as string | null,
+      name: "The home is overwhelmed with belongings.",
+      body: "Start with Hoarding Cleanup.",
+      verdict: "Belongings still need sorting and decisions still have to be made.",
+      fit: true,
+      href: hoardingPage.slug as string | null,
+      linkLabel: "Hoarding Cleanup" as string | null,
       examples: [] as readonly string[]
     },
     {
-      name: "Detailed deep cleaning",
-      body: "The home is usable and easy to move through. It needs more time and more detail than routine housekeeping.",
-      verdict: "This is the level most one-time resets land on.",
-      fit: true,
-      href: deepCleaningPage.slug as string | null,
-      linkLabel: "Deep cleaning" as string | null,
-      examples: [
-        "Grease and cooked-on buildup",
-        "Baseboards, trim, and doors",
-        "Window and door tracks",
-        "Cabinet and appliance interiors",
-        "Fixtures and hard-to-reach detail"
-      ]
-    },
-    {
-      name: "Complex property cleanup",
-      body: "The condition changes how the work has to be planned, sequenced, and priced. Square footage stops being a useful guide.",
-      verdict: "This is where Aseptaclean is usually the better fit.",
+      name: "The property is heavily neglected or unsanitary.",
+      body: "Start with Severe Property Cleanup.",
+      verdict: "Heavy buildup, trash, odors, and sanitation concerns change the job.",
       fit: true,
       href: extremeCleaningPage.slug as string | null,
-      linkLabel: "Extreme-condition cleaning" as string | null,
-      examples: [
-        "Contents that block the rooms",
-        "Heavy buildup across several rooms",
-        "Debris that has to be cleared first",
-        "Animal waste on affected surfaces",
-        "More than one of these at once"
-      ]
+      linkLabel: "Severe Property Cleanup" as string | null,
+      examples: [] as readonly string[]
+    },
+    {
+      name: "You found mouse or rat droppings, urine, or animal waste.",
+      body: "Start with Rodent Droppings & Animal Waste Cleanup.",
+      verdict: "Pest control stops the activity. We address what was left behind.",
+      fit: true,
+      href: rodentPage.slug as string | null,
+      linkLabel: "Rodent Droppings & Animal Waste Cleanup" as string | null,
+      examples: [] as readonly string[]
+    },
+    {
+      name: "The home is generally in good condition but needs a serious reset.",
+      body: "Start with Detailed Deep Cleaning.",
+      verdict: "For homes that need more than routine cleaning.",
+      fit: true,
+      href: deepCleaningPage.slug as string | null,
+      linkLabel: "Detailed Deep Cleaning" as string | null,
+      examples: [] as readonly string[]
+    },
+    {
+      name: "There has been a crime, trauma, or unattended death and the scene has been released.",
+      body: "Start with Crime Scene & Trauma Cleanup.",
+      verdict: "Blood, bodily fluids, and regulated waste require a different, dedicated process.",
+      fit: true,
+      href: crimeScenePage.slug as string | null,
+      linkLabel: "Crime Scene & Trauma Cleanup" as string | null,
+      examples: [] as readonly string[]
     }
   ],
-  // Landing-page system §43's reach block. It is the argument for why clearing and cleaning are
-  // one scope rather than two vendors, and doc 30 §20A.19 lists its opening line among the
-  // approved Aseptaclean sentences.
+  // Locked copy's "We do not force every property into the same service" — reuses the reach
+  // block's copy+sequence layout for a different argument since the new copy has no "you cannot
+  // clean a floor you cannot reach" content.
   reach: {
-    heading: "You cannot clean a floor you cannot reach.",
-    body: "You cannot clean a floor covered in boxes, a cabinet that is full, or a surface under debris nobody has moved. On some properties the order of the work is the plan:",
-    sequence: ["Decide what stays", "Clear what can leave", "Reach the surface", "Clean"],
-    close: "That is why some properties need more than a cleaning crew."
+    heading: "We do not force every property into the same service.",
+    body: "There is no benefit to selling you more cleanup than the property needs. If part of the problem belongs with another professional — such as pest control, structural repair, HVAC work, or another specialty — we will make that clear.",
+    sequence: [
+      "Show us what is happening",
+      "We assess the condition",
+      "We build the scope",
+      "We complete and review the agreed work"
+    ],
+    close: "A good scope starts with knowing where our responsibility begins and ends."
   },
   // ACTIVE SERVICE DIRECTORY. Grouped by the repository's real service families — the same three
   // groups megaNav uses — not by whatever grouping balances the layout (§20A.20's critical gate,
@@ -377,137 +386,197 @@ export const servicesHub = {
   // 2026-08-17 ruling recorded in docs/05-DECISIONS-LOG.md set it noindex precisely because its
   // cards name rodent and pigeon dropping cleanup. Linking it from an indexable hub would route
   // one click into the thing item 1 above exists to prevent.
+  // Locked copy's exact four services — docs/aseptaclean-all-website-copy.md, "What can we help
+  // with?" — the only services authorized by the current public launch architecture. One family
+  // group, since the reduced set no longer needs the old three-group split.
   families: [
     {
-      key: "clearing",
-      name: "Complex property cleanup",
-      summary:
-        "For properties where the contents have to come out, or be decided on, before anything else can happen.",
-      hub: { label: "Complex property cleanup", href: "/property-clearing/" } as {
-        label: string;
-        href: string;
-      } | null,
-      // The first entry in each group is the group's feature and gets the extra visual weight.
-      services: [
-        {
-          page: hoardingPage,
-          label: "Hoarding cleanup",
-          thesis: "You stay in control of what stays and what leaves.",
-          detail:
-            "For packed homes where belongings still need sorting and decisions still have to be made. Nothing leaves the property without your written approval."
-        },
-        {
-          page: estatePage,
-          label: "Estate cleanout",
-          thesis: "Protect what matters before the property gets cleared.",
-          detail:
-            "For families and executors working through a property before sale, transfer, or handoff."
-        },
-        {
-          page: propertyCleanoutsPage,
-          label: "Property cleanouts",
-          thesis: "One vendor, one scope, one closeout record.",
-          detail: "For owners and managers who need a vacancy back on schedule."
-        },
-        {
-          page: debrisRemovalPage,
-          label: "Debris removal",
-          thesis: "We do the work on the property. The trip off-site belongs to the hauler.",
-          detail:
-            "For loose, non-hazardous debris that has to be cleared before cleaning or turnover."
-        }
-      ]
-    },
-    {
-      key: "detailed",
-      name: "Detailed cleaning",
-      summary:
-        "For properties that are usable but need substantially more detail than routine housekeeping.",
-      hub: { label: "Detailed cleaning", href: "/detailed-cleaning/" } as {
-        label: string;
-        href: string;
-      } | null,
-      services: [
-        {
-          page: deepCleaningPage,
-          label: "Deep cleaning",
-          thesis: "More work and more detail than normal housekeeping.",
-          detail:
-            "Quoted room by room from a written checklist rather than sold as a package name."
-        },
-        {
-          page: moveOutCleaningPage,
-          label: "Move-in & move-out cleaning",
-          thesis: "Get the property ready for the next handoff.",
-          detail:
-            "Scoped against the walkthrough date, for a vacant or nearly vacant property."
-        }
-      ]
-    },
-    {
-      key: "specialty",
-      name: "Severe and specialty conditions",
-      summary:
-        "For properties that need a condition review before anyone can quote the work honestly.",
+      key: "current",
+      name: "What can we help with?",
+      summary: "Start with the condition. Build the right scope. Do the work in the right order.",
       hub: null as { label: string; href: string } | null,
       services: [
         {
-          page: extremeCleaningPage,
-          label: "Extreme-condition cleaning",
-          thesis: "The condition is past normal housekeeping and needs a property plan.",
+          page: hoardingPage,
+          label: "Hoarding Cleanup",
+          thesis: "When belongings and clutter have made the home difficult to manage.",
           detail:
-            "For heavily soiled properties where a normal cleaning quote would be unreliable."
+            "Hoarding cleanup is not just about removing things. Important belongings may be mixed into the clutter. Rooms may no longer be accessible. Years of buildup may be hidden underneath accumulated material. We help break the property into manageable steps, establish what stays and what goes, clear affected areas, and address the cleaning conditions underneath.",
+          bestFor: [
+            "Heavy clutter",
+            "Accumulated belongings",
+            "Rooms that are no longer usable",
+            "Trash mixed with personal property",
+            "Families helping a loved one",
+            "Properties requiring sorting before cleaning"
+          ]
         },
         {
-          page: animalPage,
-          label: "Animal waste cleanup",
-          thesis:
-            "The visible waste and the affected material underneath can be two different problems.",
+          page: extremeCleaningPage,
+          label: "Severe Property Cleanup",
+          thesis: "When the condition has gone beyond a normal deep clean.",
           detail:
-            "For accepted non-human animal waste, after the animal issue has been dealt with by the appropriate provider."
+            "Some properties need more than additional scrubbing. Heavy buildup, trash, animal waste, odors, neglected rooms, and sanitation concerns can turn an ordinary cleaning problem into a much larger project. We assess what is actually happening, define the affected areas, and build the cleanup around the condition of the property. These situations are sometimes described as gross filth cleanup or extreme cleaning — we call it severe property cleanup because the condition matters more than the label.",
+          bestFor: [
+            "Severely neglected homes",
+            "Heavy dirt and buildup",
+            "Animal urine or feces",
+            "Trash accumulation",
+            "Strong odors",
+            "Heavily soiled kitchens or bathrooms",
+            "Properties left in poor condition after an occupant"
+          ]
+        },
+        {
+          page: rodentPage,
+          label: "Rodent Droppings & Animal Waste Cleanup",
+          thesis: "Pest control stops the activity. We address what was left behind.",
+          detail:
+            "Rodents can leave more than visible droppings. Urine, nesting material, contaminated debris, odors, and affected surfaces may remain after the rodents have been removed. Aseptaclean focuses on the cleanup side of the problem — we assess where activity occurred, determine what accessible areas need attention, and clean the affected property according to the agreed scope. Aseptaclean does not provide trapping, extermination, or rodent exclusion.",
+          bestFor: [
+            "Mouse or rat droppings",
+            "Rodent urine",
+            "Nesting material",
+            "Contaminated garages or storage areas",
+            "Droppings inside cabinets or drawers",
+            "Animal feces",
+            "Properties requiring cleanup after pest-control work"
+          ]
+        },
+        {
+          page: deepCleaningPage,
+          label: "Detailed Deep Cleaning",
+          thesis: "For homes that need more than routine cleaning.",
+          detail:
+            "Not every difficult property is a severe-condition property. Sometimes the home simply needs significantly more attention than a normal maintenance cleaning allows. Aseptaclean provides condition-based detailed cleaning for homes with heavy buildup, neglected details, demanding kitchens and bathrooms, or properties that need a thorough reset. We look at the condition before deciding what the cleaning should involve.",
+          bestFor: [
+            "Homes that have not been thoroughly cleaned in a long time",
+            "Heavy kitchen or bathroom buildup",
+            "Move-in cleaning",
+            "Detailed move-out cleaning",
+            "Homes preparing for sale",
+            "High-detail residential cleaning",
+            "Properties where standard cleaning has not been enough"
+          ]
+        }
+      ]
+    },
+    // A separate family rather than a fifth tile in "current": this is a distinct, regulated
+    // service (TSW #933) with its own gate history (see doc27ServicePages.ts), not a variation
+    // on sort/clear/clean. Kept to one feature service so the section stays an asymmetric
+    // addition rather than a forced second grid — doc 30 §18 / the design system's "avoid tiny
+    // icon cards, use an asymmetric layout rather than forcing equal tiles" guidance.
+    {
+      key: "trauma",
+      name: "Crime scene, trauma, or unattended death",
+      summary: "Discreet cleanup after the scene has been released, with a defined regulated-waste pathway.",
+      hub: null as { label: string; href: string } | null,
+      services: [
+        {
+          page: crimeScenePage,
+          label: "Crime Scene & Trauma Cleanup",
+          thesis: "Professional cleanup after a traumatic event, once the scene has been released.",
+          detail:
+            "When law enforcement, emergency responders, or the coroner have completed their work and released the scene, blood, bodily fluids, affected belongings, and regulated waste may still remain. Aseptaclean provides discreet crime scene and trauma cleanup for homes, businesses, vehicles, and other accepted properties, and manages regulated trauma-scene waste through an authorized third-party transportation partner.",
+          bestFor: [
+            "Suicide or self-harm cleanup",
+            "Homicide and crime scene cleanup",
+            "Unattended death and decomposition",
+            "Blood and bodily fluid cleanup",
+            "Workplace and accident cleanup",
+            "Vehicle biohazard cleanup"
+          ]
         }
       ]
     }
   ],
+  // Locked copy's exact "Why Aseptaclean" section — docs/aseptaclean-all-website-copy.md.
+  // Verbatim, including the founder-background sentence — flagged for claims-law review in the
+  // implementation report rather than altered; see docs/05-DECISIONS-LOG.md 2026-09-03.
+  why: {
+    eyebrow: "Why Aseptaclean",
+    heading: "Difficult properties need more than a checklist.",
+    paragraphs: [
+      "Aseptaclean was built around work where condition, detail, and process matter.",
+      "Our founder's background includes biochemistry, pharmaceutical manufacturing, and surgical pathology.",
+      "That experience shaped the way we approach property cleanup today:"
+    ],
+    statement: "Look closely. Understand the problem. Build the right process. Then do the work.",
+    closing: [
+      "We are not trying to make every home sound hazardous.",
+      "And we are not trying to turn every cleaning request into a major remediation project.",
+      "We want to understand what is actually happening and recommend the level of work that makes sense."
+    ]
+  },
+  // Locked copy's exact "What Aseptaclean is not" section — docs/aseptaclean-all-website-copy.md.
+  // Four headed items, verbatim. homepage.qualification / homepage.excludedScope (rendered by
+  // ServiceScopeBoundary.astro's own columns below `notItems`) are a separate, older sitewide
+  // exclusion/fit list — see that component's header note on why they must not be edited or
+  // duplicated. They stay on the page; the MD's own four-item list is added alongside them
+  // rather than replacing them, since neither source supersedes the other.
   boundary: {
-    eyebrow: "Scope",
-    heading: "We keep our scope clear.",
-    lede: "Aseptaclean is a cleanup company. We do not pretend every property problem is ours to fix. If another provider is the right one, you hear it in the first conversation, with the name of the kind of provider who handles it.",
+    eyebrow: "Clear expectations matter",
+    heading: "What Aseptaclean is not",
+    lede: "Clear expectations matter.",
+    notItems: [
+      {
+        title: "We are not a recurring maid service.",
+        detail: "If you need weekly or biweekly maintenance cleaning, another company will probably be a better fit."
+      },
+      {
+        title: "We are not a pest-control company.",
+        detail: "We clean conditions left behind by rodent and animal activity. We do not provide extermination, trapping, or exclusion."
+      },
+      {
+        title: "We are not a junk-hauling company.",
+        detail: "Material removal may be part of certain cleanup projects, but the reason you hire Aseptaclean is to address the condition of the property—not simply to make items disappear."
+      },
+      {
+        title: "We are not a general contractor.",
+        detail: "If a property requires structural repairs or other licensed construction work, that work falls outside our cleanup scope."
+      }
+    ],
+    notClose: "We stay focused on the work we are there to perform.",
     fitHeading: "Usually worth discussing",
     outsideHeading: "Outside current scope — another provider handles it",
-    // Landing-page system §43's "We do not want every job. We want the right job." — kept because
-    // it is the sentence that makes the boundary read as a standard rather than a refusal.
-    close: "We do not want every job. We want the right job."
+    close: "We do not force every property into the same service."
   },
+  // Locked copy's exact "How it works" five-step sequence — docs/aseptaclean-all-website-copy.md.
   start: {
-    eyebrow: "How to start",
+    eyebrow: "How it works",
     heading: "You do not have to diagnose the property.",
     steps: [
       {
-        title: "Tell us what is going on",
-        detail: "You do not need the right service name. Describe what you are looking at."
+        title: "Show us what is happening.",
+        detail:
+          "Start with photos, video, or a short description of the property. For larger or more complicated situations, we may recommend an on-site assessment."
       },
       {
-        title: "Send photos when they help",
+        title: "We assess the condition.",
         detail:
-          "The whole room, the worst area, anything unusual, and roughly how much of the property is affected."
+          "We look at the affected areas, access, contents, buildup, contamination concerns, and anything else that may change the work."
       },
       {
-        title: "We review the condition",
+        title: "We build the scope.",
         detail:
-          "Which service fits, whether more photos are needed, whether the property needs a walkthrough, and whether the job is inside our scope."
+          "You receive a clear explanation of what we recommend, what is included, and what the work will cost."
       },
       {
-        title: "The scope is defined before work begins",
+        title: "We complete the agreed work.",
         detail:
-          "What is included, what is excluded, and what completion means, in writing, before a date goes in the calendar."
+          "The project is approached according to the condition of the property rather than a one-size-fits-all checklist."
+      },
+      {
+        title: "We review the result.",
+        detail:
+          "We identify what was completed and anything outside the agreed scope that may still require attention."
       }
-    ],
-    methodLink: { label: "See how we work", href: "/handoff-standard/" }
+    ]
   },
+  // Locked copy's exact close — docs/aseptaclean-all-website-copy.md, "Start with what you see."
   close: {
-    heading: "Still not sure what service you need?",
-    lede: "That is fine. Show us what is there and we will tell you what the next step should be — including when the answer is another provider.",
+    heading: "Start with what you see.",
+    lede: "Take a few photos of the areas that concern you. Tell us what has been happening and what you want help with. We will review the condition and help you determine the right next step.",
     note: "Submitting a request does not authorize work or create a service agreement."
   }
 } as const;

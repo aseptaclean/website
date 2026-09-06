@@ -1,18 +1,13 @@
 ---
-// Rebuilt 2026-09-02 for conversion — AssessmentForm is now a single lean page instead of a
-// three-step questionnaire (see docs/05-DECISIONS-LOG.md). The form keeps its endpoint,
-// Turnstile, consent, and honeypot wiring; only the field set and layout changed.
-//
-// The "What happens next" band below is unchanged from the prior build.
+// A5 — BreadcrumbList. This route had none; every other non-root route on the site does, and a
+// crumb trail is how a leaf page tells a crawler where it sits. The "Home" item uses
+// `site.urls.home` (WITH the trailing slash) so it matches the homepage canonical exactly —
+// `site.urls.site` is a bare origin and produced a second URL for the same page.
 import AssessmentForm from "@components/AssessmentForm.astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import CredentialBar from "@components/CredentialBar.astro";
 import { site } from "@data/site";
 
-// A5 — BreadcrumbList. This route had none; every other non-root route on the site does, and a
-// crumb trail is how a leaf page tells a crawler where it sits. The "Home" item uses
-// `site.urls.home` (WITH the trailing slash) so it matches the homepage canonical exactly —
-// `site.urls.site` is a bare origin and produced a second URL for the same page.
 const schema = [
   {
     "@type": "BreadcrumbList",
@@ -28,10 +23,13 @@ const schema = [
   }
 ];
 
+// Locked copy's exact four steps — docs/aseptaclean-all-website-copy.md, "What happens after
+// you contact us?"
 const nextSteps = [
-  "Send the details below — two or three phone photos help more than a long description.",
-  "If the property is complicated, we’ll say whether a walkthrough is needed before a firm number.",
-  "The scope and price come to you in writing before anything is scheduled."
+  "You tell us about the property. We ask a few questions about the condition, location, affected areas, and what you need help with.",
+  "You send photos or video when possible. Photos often help us understand whether the situation appears straightforward or whether an on-site assessment would be more appropriate.",
+  "We review the condition. We determine what type of cleanup appears to fit the property and whether we need additional information.",
+  "We explain the next step. That may be a preliminary scope, a request for additional photos, a phone call, an on-site assessment, or a recommendation for another type of professional if the condition falls outside our scope."
 ];
 ---
 
@@ -42,6 +40,18 @@ const nextSteps = [
   schema={schema}
   showMobileCta={false}
 >
+  <section class="assessment-intro ac-sec ac-sec--tight">
+    <div class="ac-shell assessment-intro__inner">
+      <p class="ac-label">Request an Assessment</p>
+      <h1 class="ac-type-h1">Show Us What You're Dealing With</h1>
+      <p>
+        You do not need to know exactly what service you need. Tell us what is happening and
+        send photos if you have them.
+      </p>
+      <a class="assessment-intro__cta" href="#assessment-form">Start Your Assessment</a>
+    </div>
+  </section>
+
   <AssessmentForm />
 
   <CredentialBar />
@@ -49,8 +59,8 @@ const nextSteps = [
   <section class="ac-sec ac-sec--tight next" aria-labelledby="next-title">
     <div class="ac-shell">
       <div class="ac-sec__head">
-        <p class="ac-label">What happens next</p>
-        <h2 id="next-title" class="ac-type-h2-record">Matthew reads every request himself.</h2>
+        <p class="ac-label">What happens after you contact us?</p>
+        <h2 id="next-title" class="ac-type-h2-record">You do not have to diagnose the property yourself.</h2>
       </div>
 
       <ol class="ac-steps4 next__steps">
@@ -63,17 +73,67 @@ const nextSteps = [
       </ol>
     </div>
   </section>
+
+  <section class="assessment-summary ac-sec ac-sec--tight">
+    <div class="ac-shell assessment-summary__inner">
+      <h2 class="ac-type-h2-record">What happens next?</h2>
+      <p>Once we receive your request, we review the information and photos you provided.</p>
+      <p>If we can determine the next step from what you sent, we will explain it.</p>
+      <p>If we need to see more, we may ask for additional photos, speak with you by phone, or recommend an on-site assessment.</p>
+      <p><strong>Our goal is to understand the property before telling you what it needs.</strong></p>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
+  .assessment-intro {
+    background: var(--ac-color-paper);
+  }
+
+  .assessment-intro__inner {
+    max-width: 48rem;
+  }
+
+  .assessment-intro__inner h1,
+  .assessment-intro__inner p {
+    max-width: 48rem;
+  }
+
+  .assessment-intro__inner p {
+    margin-top: 14px;
+    color: var(--ac-color-ink-600);
+    line-height: 1.65;
+  }
+
+  .assessment-intro__cta {
+    display: inline-flex;
+    min-height: 52px;
+    align-items: center;
+    justify-content: center;
+    margin-top: 24px;
+    border-radius: 2px;
+    background: var(--ac-color-navy-800);
+    padding-inline: 30px;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 750;
+    line-height: 1;
+    text-decoration: none;
+  }
+
+  .assessment-intro__cta:hover {
+    background: var(--ac-color-navy-900);
+  }
+
   .next {
+    border-top: 1px solid var(--ac-color-rule);
     background: var(--ac-color-warm-white);
   }
 
   .next__steps {
     margin: 0;
     padding: 0;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     list-style: none;
   }
 
@@ -81,9 +141,29 @@ const nextSteps = [
     margin-top: 12px;
   }
 
+  @media (max-width: 900px) {
+    .next__steps {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
   @media (max-width: 760px) {
     .next__steps {
       grid-template-columns: 1fr;
     }
+  }
+
+  .assessment-summary {
+    border-top: 1px solid var(--ac-color-rule);
+    background: var(--ac-color-paper);
+  }
+
+  .assessment-summary__inner {
+    max-width: 67.5rem;
+  }
+
+  .assessment-summary__inner h2,
+  .assessment-summary__inner p {
+    max-width: 48rem;
   }
 </style>

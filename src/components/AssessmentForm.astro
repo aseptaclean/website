@@ -1,13 +1,14 @@
 ---
-// Rebuilt 2026-09-02 for conversion. Service pages already explain the service, qualify the
-// customer, and set expectations — this form's only job is: situation, location, a short
-// description, optional photos, contact info, submit. One page, no wizard, no draft
-// persistence (nothing here takes long enough to need it).
+// Rebuilt 2026-09-03 for the short request-assessment form: identify the person, get a reliable
+// contact method, confirm the ZIP is in the service area, capture the general problem and a
+// short description, and collect photos if available. Everything else — address, property
+// type, occupancy, affected-area checklist, condition checklists, timing, preferred contact —
+// is gathered after submission, not on first contact. See docs/05-DECISIONS-LOG.md 2026-09-03.
 //
 // The Private Residence Reset offer (`?offer=private-residence-reset`) is a distinct premium
 // offer outside the main service taxonomy (doc 30 §33) and keeps its own longer residence-
-// baseline block, hidden by default and revealed by the same client-side branch this form
-// used before the rebuild. Nothing about that offer's fields or requirements changed.
+// baseline block, hidden by default and revealed by the same client-side branch this form has
+// used since before this rebuild. Nothing about that offer's fields or requirements changed.
 import { assessment } from "@data/assessment";
 import { legal, site } from "@data/site";
 
@@ -18,24 +19,9 @@ const endpointAvailable = Boolean(
 );
 ---
 
-<section class="assessment" aria-labelledby="assessment-title">
-  <div class="assessment__masthead ac-measure-wide">
-    <p class="assessment__eyebrow" data-offer-eyebrow>Request an Assessment</p>
-    <h1 id="assessment-title" class="ac-type-h1" data-offer-title>
-      Tell Us What Is Happening at the Property.
-    </h1>
-    <p class="assessment__lead" data-offer-lead>
-      You don&rsquo;t need to know the exact service or scope. Tell us what you&rsquo;re
-      dealing with, add photos if you have them, and we&rsquo;ll determine the right next
-      step.
-    </p>
-  </div>
-
+<section class="assessment" id="assessment-form" aria-label="Tell us about the property">
   <div class="assessment__body ac-measure-wide">
-    <p class="assessment__privacy-note">
-      Photos and property details are used to review your request.
-    </p>
-
+    <h2 class="ac-type-h2-record" data-handoff-only>Tell us about the property</h2>
     <form
       class="intake-form"
       action={endpointAvailable ? site.urls.formEndpoint : undefined}
@@ -77,74 +63,51 @@ const endpointAvailable = Boolean(
         <ul></ul>
       </div>
 
-      <fieldset class="form-group" data-handoff-only>
-        <legend>What are you dealing with? <span aria-hidden="true">*</span></legend>
+      <div class="form-grid">
+        <div class="form-field">
+          <label for="full-name">Full Name</label>
+          <input id="full-name" name="full_name" type="text" autocomplete="name" required />
+        </div>
+        <div class="form-field">
+          <label for="phone">Phone Number</label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required />
+        </div>
+        <div class="form-field form-field--wide">
+          <label for="email">Email (optional)</label>
+          <input id="email" name="email" type="email" autocomplete="email" inputmode="email" />
+        </div>
+        <div class="form-field">
+          <label for="property-zip">Property ZIP Code</label>
+          <input id="property-zip" name="property_zip" type="text" inputmode="numeric" autocomplete="postal-code" pattern="[0-9]{5}(?:-[0-9]{4})?" required />
+        </div>
+      </div>
+
+      <fieldset class="form-group">
+        <legend>What are you dealing with?</legend>
+        <p class="form-field__hint">Select the option that sounds closest.</p>
         <div class="choice-grid" data-situation-choices>
           {assessment.situations.map((situation) => (
             <label class="choice-control">
-              <input
-                type="radio"
-                name="property_situation"
-                value={situation.value}
-                required
-              />
+              <input type="radio" name="property_situation" value={situation.value} required />
               <span>{situation.label}</span>
             </label>
           ))}
         </div>
       </fieldset>
 
-      <div class="form-grid" data-service-question hidden></div>
-
-      <div class="form-grid">
-        <div class="form-field">
-          <label for="property-city">City <span aria-hidden="true">*</span></label>
-          <input
-            id="property-city"
-            name="property_city"
-            type="text"
-            autocomplete="address-level2"
-            required
-          />
-        </div>
-        <div class="form-field">
-          <label for="property-zip">
-            ZIP code <span class="form-field__optional">(optional)</span>
-          </label>
-          <input
-            id="property-zip"
-            name="property_zip"
-            type="text"
-            inputmode="numeric"
-            autocomplete="postal-code"
-            pattern="[0-9]{5}(?:-[0-9]{4})?"
-          />
-        </div>
+      <div class="form-field">
+        <label for="property-detail">Tell us what's going on</label>
+        <p class="form-field__hint">A few sentences are enough. Tell us what you found, which areas are affected, and anything else you think we should know.</p>
+        <textarea id="property-detail" name="property_detail" rows="5" required></textarea>
       </div>
 
-      <div class="form-field">
-        <label for="property-detail">Tell us what is going on at the property.</label>
-        <p class="form-field__hint">
-          A few sentences is enough. Tell us what you are seeing and what you need the
-          property to become.
-        </p>
-        <textarea
-          id="property-detail"
-          name="property_detail"
-          rows="4"
-          placeholder="Helping my dad with a packed 3-bedroom home. We need to keep family photos and clear most of the house before it can be sold."
-        ></textarea>
+      <div class="form-section-heading" id="photos">
+        <h2 class="ac-type-h2-record">Have photos? <span class="form-field__optional">Optional</span></h2>
+        <p>Photos can help us understand the property before deciding whether an on-site assessment is necessary.</p>
       </div>
 
       <div class="upload-field">
-        <label for="property-media">
-          Photos <span class="form-field__optional">(optional, but strongly encouraged)</span>
-        </label>
-        <p id="property-media-help">
-          Photos help us understand the condition faster. For most jobs, useful photos are
-          one wide photo of the area, a few closer photos of the main problem, and additional
-          rooms if several areas are affected.
-        </p>
+        <label for="property-media">Add Photos</label>
         <div class="upload-field__control">
           <input
             id="property-media"
@@ -152,7 +115,7 @@ const endpointAvailable = Boolean(
             type="file"
             accept={assessment.upload.acceptedTypes}
             capture="environment"
-            aria-describedby="property-media-help property-media-limits"
+            aria-describedby="property-media-limits"
             multiple
             data-upload-input
             data-max-files={assessment.upload.maxFiles}
@@ -164,16 +127,9 @@ const endpointAvailable = Boolean(
           />
           <p id="property-media-limits">{assessment.upload.visibleLimits}</p>
           <p class="upload-field__empty" data-upload-empty>No files selected.</p>
-          <ul
-            class="upload-field__files"
-            data-upload-list
-            aria-label="Selected property files"
-            hidden
-          ></ul>
-          <p class="upload-field__error form-error" data-upload-error role="alert" hidden
-          ></p>
-          <p class="visually-hidden" data-upload-status role="status" aria-live="polite"
-          ></p>
+          <ul class="upload-field__files" data-upload-list aria-label="Selected property files" hidden></ul>
+          <p class="upload-field__error form-error" data-upload-error role="alert" hidden></p>
+          <p class="visually-hidden" data-upload-status role="status" aria-live="polite"></p>
         </div>
       </div>
 
@@ -245,34 +201,6 @@ const endpointAvailable = Boolean(
         </div>
       </div>
 
-      <div class="form-grid">
-        <div class="form-field">
-          <label for="full-name">Name <span aria-hidden="true">*</span></label>
-          <input id="full-name" name="full_name" type="text" autocomplete="name" required />
-        </div>
-
-        <div class="form-field">
-          <label for="phone">Phone <span aria-hidden="true">*</span></label>
-          <input
-            id="phone"
-            name="phone"
-            type="tel"
-            autocomplete="tel"
-            inputmode="tel"
-            required
-          />
-          <p class="form-field__hint">We call this number back — usually same business day.</p>
-        </div>
-
-        <div class="form-field">
-          <label for="email">
-            Email <span class="form-field__optional" data-residence-only hidden aria-hidden="true">*</span>
-            <span class="form-field__optional" data-email-optional-label>(optional)</span>
-          </label>
-          <input id="email" name="email" type="email" autocomplete="email" inputmode="email" />
-        </div>
-      </div>
-
       <div class="intake-form__consent">
         <label class="consent-control">
           <input type="checkbox" name="privacy_consent" value="yes" required />
@@ -286,8 +214,7 @@ const endpointAvailable = Boolean(
         </label>
         <p>
           Submitting this form authorizes Aseptaclean to contact you. It does not authorize
-          work or create a service agreement. Private. No pressure to have everything figured
-          out.
+          work or create a service agreement.
         </p>
       </div>
 
@@ -326,7 +253,7 @@ const endpointAvailable = Boolean(
           disabled={!endpointAvailable}
           data-submit-button
         >
-          <span data-submit-label data-offer-submit>Send My Request</span>
+          <span data-submit-label data-offer-submit>{site.offer.formSubmitCta}</span>
         </button>
         <p class="intake-form__submit-status" data-submit-status role="status" aria-live="polite" hidden
         ></p>
@@ -358,13 +285,6 @@ const endpointAvailable = Boolean(
     existingError?: HTMLElement;
   }
 
-  interface ServiceQuestion {
-    name: string;
-    label: string;
-    type?: "date";
-    options?: string[];
-  }
-
   const form = document.querySelector<HTMLFormElement>("[data-assessment-form]");
 
   if (form) {
@@ -387,7 +307,9 @@ const endpointAvailable = Boolean(
           "[data-offer-lead]",
           "Share the residence, priority rooms, finish instructions, access, and completion details Aseptaclean needs to make a fit decision."
         ],
-        ["[data-offer-submit]", "Request My Residence Assessment"]
+        // Submit label deliberately absent. Owner decision 2026-09-04 (AGENTS.md §2.2.3): every
+        // form submit control reads "Send Message" on every branch. The residence branch keeps
+        // its own eyebrow, title, and lead — only the button label stopped varying.
       ]);
       copy.forEach((content, selector) => {
         const element = document.querySelector<HTMLElement>(selector);
@@ -438,7 +360,7 @@ const endpointAvailable = Boolean(
     const submitLabel = form.querySelector<HTMLElement>("[data-submit-label]");
     const submitStatus = form.querySelector<HTMLElement>("[data-submit-status]");
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-    const defaultSubmitLabel = submitLabel?.textContent ?? "Send My Request";
+    const defaultSubmitLabel = submitLabel?.textContent ?? "Send Message";
 
     const timestampInput = form.elements.namedItem("submission_timestamp");
     if (timestampInput instanceof HTMLInputElement) {
@@ -451,118 +373,23 @@ const endpointAvailable = Boolean(
         `${Date.now()}-${Math.random().toString(36).slice(2)}`;
     }
 
-    // SERVICE CONTEXT FROM THE REFERRING SERVICE PAGE — docs/30-WEBSITE-MASTER-SPEC.md
-    // §20A.8's destination rule and §20A.9's service branch: service page CTA →
-    // /request-assessment/?service=<verified-service-key> → this form recognizes the context
-    // and preselects the situation so the visitor never re-answers a question the page they
-    // came from already asked. A service may add AT MOST ONE qualifying question
-    // (assessment.serviceQuestions), rendered into the empty [data-service-question] slot.
-    //
-    // WHITELIST, NOT PASSTHROUGH. An unrecognized `service` value is a no-op — nothing from
-    // the query string is ever written into the DOM or a field verbatim. Skipped entirely for
-    // the residence offer, which owns `entry_route` on its own branch above.
+    // SERVICE CONTEXT FROM THE REFERRING SERVICE PAGE — service page CTA →
+    // /request-assessment/?service=<verified-service-key> → this form recognizes the context,
+    // preselects the matching situation, and records the referring route. The short form
+    // (2026-09-03 rebuild) has a fixed 5-option situation list with no per-service qualifying
+    // question slot, so the extra-question injection this used to do is gone — the situation
+    // preselect is the whole feature now. WHITELIST, NOT PASSTHROUGH: an unrecognized `service`
+    // value is a no-op — nothing from the query string is ever written into the DOM or a field
+    // verbatim. Skipped entirely for the residence offer, which owns `entry_route` on its own
+    // branch above.
     if (!isResidenceOffer) {
-      const serviceContexts = new Map<
-        string,
-        { entryRoute: string; situation: string; question?: ServiceQuestion }
-      >([
-        [
-          "hoarding-cleanup",
-          {
-            entryRoute: "/hoarding-cleanup-san-jose/",
-            situation: "Accumulated contents",
-            question: {
-              name: "belongings_must_be_kept",
-              label: "Are there belongings that must be kept?",
-              options: ["Yes", "No", "Not sure"]
-            }
-          }
-        ],
-        [
-          "estate-cleanout",
-          {
-            entryRoute: "/estate-cleanout-san-jose/",
-            situation: "Inherited or estate property",
-            question: {
-              name: "items_must_be_saved",
-              label: "Are there specific items or documents that must be saved?",
-              options: ["Yes", "No", "Not sure"]
-            }
-          }
-        ],
-        [
-          "property-cleanouts",
-          {
-            entryRoute: "/property-cleanouts-san-jose/",
-            // "Other" — not one of the six transition-based situations above. Every other
-            // entry describes why the property is being cleaned (hoarding, estate, deep
-            // clean, move-out, extreme cleanup); a landlord/property-manager cleanout doesn't
-            // fit any of those specifically and the direct-visitor situation list has no
-            // dedicated option for it. "Other" is the honest answer, same reasoning as the
-            // rodent-droppings/animal-waste entries below before they got their own options.
-            situation: "Other",
-            question: {
-              name: "items_must_remain",
-              label: "Does anything need to stay at the property?",
-              options: ["Yes", "No", "Not sure"]
-            }
-          }
-        ],
-        [
-          "deep-cleaning",
-          {
-            entryRoute: "/deep-cleaning-san-jose/",
-            situation: "Already empty but requires detailed cleaning"
-          }
-        ],
-        [
-          "move-out",
-          {
-            entryRoute: "/move-out-cleaning-san-jose/",
-            situation: "Difficult move-out",
-            question: {
-              name: "desired_completion_date",
-              label: "When does the property need to be ready?",
-              type: "date"
-            }
-          }
-        ],
-        [
-          "extreme-cleanup",
-          {
-            entryRoute: "/extreme-cleaning-san-jose/",
-            situation: "Overwhelmed property",
-            question: {
-              name: "belongings_block_access",
-              label: "Are belongings blocking access to the areas that need cleaning?",
-              options: ["Yes", "No", "Some areas", "Not sure"]
-            }
-          }
-        ],
-        [
-          "rodent-droppings",
-          {
-            entryRoute: "/rodent-dropping-cleanup-san-jose/",
-            situation: "Rodent droppings",
-            question: {
-              name: "pest_control_involved",
-              label: "Has pest control already been involved?",
-              options: ["Yes", "No", "Scheduled", "Not sure"]
-            }
-          }
-        ],
-        [
-          "animal-waste",
-          {
-            entryRoute: "/animal-waste-cleanup-san-jose/",
-            situation: "Animal waste",
-            question: {
-              name: "animal_waste_pattern",
-              label: "Is this a one-time accident or a repeated condition?",
-              options: ["One-time", "Repeated", "Not sure"]
-            }
-          }
-        ]
+      const serviceContexts = new Map<string, { entryRoute: string; situation: string }>([
+        ["hoarding-cleanup", { entryRoute: "/hoarding-cleanup-san-jose/", situation: "Hoarding or heavy clutter" }],
+        ["deep-cleaning", { entryRoute: "/deep-cleaning-san-jose/", situation: "Detailed deep cleaning" }],
+        ["extreme-cleanup", { entryRoute: "/extreme-cleaning-san-jose/", situation: "Severe property condition" }],
+        ["rodent-droppings", { entryRoute: "/rodent-dropping-cleanup-san-jose/", situation: "Rodent droppings or animal waste" }],
+        ["animal-waste", { entryRoute: "/animal-waste-cleanup-san-jose/", situation: "Rodent droppings or animal waste" }],
+        ["crime-scene-trauma-cleanup", { entryRoute: "/crime-scene-trauma-cleanup-san-jose/", situation: "Crime scene or trauma cleanup" }]
       ]);
       const serviceKey = new URLSearchParams(window.location.search).get("service") ?? "";
       const context = serviceContexts.get(serviceKey);
@@ -571,66 +398,11 @@ const endpointAvailable = Boolean(
         const entryRouteInput = form.querySelector<HTMLInputElement>('input[name="entry_route"]');
         if (entryRouteInput) entryRouteInput.value = context.entryRoute;
 
-        // Preselect and hide the situation question entirely — the visitor already told the
-        // service page what they're dealing with.
-        const situationGroup = form.querySelector<HTMLElement>("[data-situation-choices]");
-        const situationFieldset = situationGroup?.closest("fieldset");
         const matchingRadio = form.querySelector<HTMLInputElement>(
           `input[name="property_situation"][value="${CSS.escape(context.situation)}"]`
         );
         if (matchingRadio) {
           matchingRadio.checked = true;
-          if (situationFieldset) situationFieldset.hidden = true;
-          form
-            .querySelectorAll<HTMLInputElement>('input[name="property_situation"]')
-            .forEach((radio) => {
-              if (radio !== matchingRadio) radio.required = false;
-            });
-        }
-
-        const questionSlot = form.querySelector<HTMLElement>("[data-service-question]");
-        if (questionSlot && context.question) {
-          const question = context.question;
-          questionSlot.hidden = false;
-          const field = document.createElement("div");
-          field.className = "form-field";
-          const label = document.createElement("label");
-          const inputId = `service-question-${question.name}`;
-          label.setAttribute("for", inputId);
-          label.textContent = question.label;
-          field.append(label);
-
-          if (question.type === "date") {
-            const input = document.createElement("input");
-            input.type = "date";
-            input.id = inputId;
-            input.name = question.name;
-            field.append(input);
-          } else if (question.options) {
-            field.removeChild(label);
-            const fieldset = document.createElement("fieldset");
-            fieldset.className = "form-group";
-            const legend = document.createElement("legend");
-            legend.textContent = question.label;
-            fieldset.append(legend);
-            const row = document.createElement("div");
-            row.className = "choice-row choice-row--wrap";
-            question.options.forEach((option) => {
-              const optionLabel = document.createElement("label");
-              optionLabel.className = "choice-control choice-control--compact";
-              const radio = document.createElement("input");
-              radio.type = "radio";
-              radio.name = question.name;
-              radio.value = option;
-              const span = document.createElement("span");
-              span.textContent = option;
-              optionLabel.append(radio, span);
-              row.append(optionLabel);
-            });
-            fieldset.append(row);
-            field.append(fieldset);
-          }
-          questionSlot.append(field);
         }
       }
     }
@@ -796,7 +568,9 @@ const endpointAvailable = Boolean(
       phone: "Add a phone number so we can follow up.",
       full_name: "Add your name so we know who to ask for.",
       privacy_consent: "Check the consent box so we're allowed to call or text you back.",
-      property_situation: "Let us know what you're dealing with."
+      property_situation: "Let us know what you're dealing with.",
+      property_zip: "Add the property's ZIP code so we can confirm the service area.",
+      property_detail: "Tell us a little about what's going on."
     };
 
     const contactPhone = form.dataset.contactPhone ?? "";

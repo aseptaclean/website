@@ -1,0 +1,139 @@
+---
+// Dev-only preview of the 9 reusable layout primitives built this session. Pruned from
+// production builds by scripts/prune-dev-routes.mjs — visual QA scaffold only, not a real route.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import EditorialSplit from "@components/EditorialSplit.astro";
+import PhotoAuthorityBand from "@components/PhotoAuthorityBand.astro";
+import AuthorityBand from "@components/AuthorityBand.astro";
+import ProcessFour from "@components/ProcessFour.astro";
+import ServiceVisual from "@components/ServiceVisual.astro";
+import TrustStrip from "@components/TrustStrip.astro";
+import FaqAccordion from "@components/FaqAccordion.astro";
+import SimpleFinalCTA from "@components/SimpleFinalCTA.astro";
+import ServiceHero from "@components/ServiceHero.astro";
+
+import garageImage from "../../assets/stock/garage_cluttered.jpg";
+import residentialImage from "../../assets/stock/residential_exterior_1.jpg";
+import ppeImage from "../../assets/stock/ppe_technician_1.jpg";
+import equipmentImage from "../../assets/stock/equipment_gear.jpg";
+import wasteImage from "../../assets/stock/waste_disposal.jpg";
+
+const steps = [
+  { number: "01", title: "Assess", description: "We review the property and document the condition before anything is touched." },
+  { number: "02", title: "Define", description: "A written scope sets what is included, excluded and reviewed." },
+  { number: "03", title: "Perform", description: "Work proceeds against the approved scope, with changes documented as they happen." },
+  { number: "04", title: "Document", description: "Completion is recorded so there is a clear record of what was done." },
+];
+
+const faqItems = [
+  { question: "How quickly can work begin?", answer: "Assessment requests are reviewed within one business day." },
+  { question: "Do you handle every room?", answer: "Scope is agreed in writing before work starts, room by room." },
+  { question: "What if conditions change mid-project?", answer: "Changes are documented and approved before work continues." },
+];
+---
+
+<BaseLayout
+  title="Layout primitives preview"
+  description="Dev-only preview"
+  canonicalPath="/dev/layout-primitives/"
+  noindex={true}
+>
+  <ServiceHero
+    heading="Shared Service Hero component preview"
+    eyebrow="Component 9"
+    image={residentialImage}
+    imageAlt="Preview of the shared service hero image column."
+  >
+    <p>Copy area is vertically centered; the photograph fills its own grid column edge-to-edge.</p>
+    <div slot="actions">
+      <a class="btn btn-primary" href="#">Request an Assessment</a>
+    </div>
+  </ServiceHero>
+
+  <TrustStrip
+    items={[
+      { label: "TSW #933" },
+      { label: "Insured" },
+      { label: "Owner Operated" },
+      { label: "South Bay & Peninsula" },
+    ]}
+  />
+
+  <EditorialSplit
+    eyebrow="Component 1"
+    heading="EditorialSplit — image left"
+    image={garageImage}
+    imageAlt="Preview of an image-left editorial split."
+    imageSide="left"
+  >
+    <p>Desktop grid is minmax(0,1.03fr) minmax(0,.97fr) with a 72px gap, collapsing to one column at 850px.</p>
+  </EditorialSplit>
+
+  <EditorialSplit
+    eyebrow="Component 1"
+    heading="EditorialSplit — image right"
+    image={ppeImage}
+    imageAlt="Preview of an image-right editorial split."
+    imageSide="right"
+    tone="warm"
+  >
+    <p>Same component, reversed via the imageSide prop — no duplicated markup.</p>
+  </EditorialSplit>
+
+  <PhotoAuthorityBand image={equipmentImage} imageAlt="Preview of the photo authority band.">
+    <h2 class="ac-type-h2">PhotoAuthorityBand</h2>
+    <p>Full-cover image with a solid translucent navy overlay and contained content.</p>
+  </PhotoAuthorityBand>
+
+  <AuthorityBand heading="AuthorityBand — centered statement" layout="centered">
+    <p>Solid deep-navy full-width section. This variant is a centered statement.</p>
+  </AuthorityBand>
+
+  <AuthorityBand heading="AuthorityBand — two column" layout="two-column">
+    <p>This variant pairs the heading column with slotted content in a second column.</p>
+  </AuthorityBand>
+
+  <section class="ac-sec">
+    <div class="ac-shell">
+      <p class="ac-eyebrow">Component 4</p>
+      <h2 class="ac-type-h2">ProcessFour</h2>
+      <ProcessFour steps={steps} />
+    </div>
+  </section>
+
+  <section class="ac-sec" style="background: var(--ac-color-warm-white);">
+    <div class="ac-shell" style="display:grid; grid-template-columns: repeat(2,1fr); gap:48px;">
+      <ServiceVisual
+        image={wasteImage}
+        imageAlt="Preview of a service visual module."
+        title="ServiceVisual module"
+        description="Large photographic service module, 4:3, no card, no shadow."
+        href="#"
+      />
+      <ServiceVisual
+        image={garageImage}
+        imageAlt="Preview of a second service visual module."
+        title="Second module"
+        description="Body copy sits below the image with an 18-22px top pad."
+        href="#"
+      />
+    </div>
+  </section>
+
+  <section class="ac-sec">
+    <div class="ac-shell" style="max-width: 850px;">
+      <p class="ac-eyebrow">Component 7</p>
+      <h2 class="ac-type-h2">FaqAccordion</h2>
+      <FaqAccordion items={faqItems} />
+    </div>
+  </section>
+
+  <SimpleFinalCTA
+    heading="SimpleFinalCTA — centered close"
+    lede="Full-width deep navy, centered heading, short copy, primary CTA, optional secondary link."
+    primaryLabel="Request an Assessment"
+    primaryHref="#"
+    secondaryLabel="Call (555) 555-5555"
+    secondaryHref="#"
+  />
+</BaseLayout>

@@ -1,0 +1,102 @@
+---
+// One thin band of verified facts, immediately under the hero. Reference page 24 puts a badge
+// row here; this deliberately does not reproduce it.
+//
+// AGENTS.md §0.3 and §2.2.7: the reference's LICENSED & INSURED / OSHA / IICRC / CDPH / Google
+// Reviews row belongs to other companies. Nothing on this strip is a badge, an image, or a
+// credential Aseptaclean does not hold. Every item is either a business fact from
+// src/data/site.ts or an operating statement already made elsewhere on the site.
+//
+// "Insured" is NOT hard-coded here. It renders only when site.business.insuranceStatus carries
+// a value, which is gated on a verified COI (AGENTS.md §3). That value is currently empty, so
+// the segment does not ship — a copy document cannot supply a fact the business has not verified.
+import { site } from "@data/site";
+
+interface Props {
+  /** Extra verified items ahead of the standing ones, e.g. TSW #933 on the trauma route only. */
+  lead?: string[];
+}
+
+const { lead = [] } = Astro.props;
+
+const items = [
+  ...lead,
+  "Owner-operated",
+  ...(site.business.insuranceStatus ? [site.business.insuranceStatus] : []),
+  `Serving the ${site.location.serviceArea}`,
+  `Response ${site.offer.responseTime}`
+];
+---
+
+<section class="acx-trust" aria-label="Operating facts">
+  <div class="ac-shell">
+    <ul class="acx-trust__list">
+      {items.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .acx-trust {
+    border-bottom: 1px solid var(--ac-color-line);
+    background: var(--ac-color-warm-white);
+    padding-block: 0;
+  }
+
+  .acx-trust__list {
+    display: flex;
+    max-width: none;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    padding: 22px 0;
+    list-style: none;
+    gap: 12px 32px;
+  }
+
+  .acx-trust__list li {
+    display: flex;
+    max-width: none;
+    align-items: center;
+    color: var(--ac-color-navy-900);
+    font-size: 0.8125rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+
+  /* 1px vertical dividers, per docs/aseptaclean-website-design-system.md §17. Drawn with a
+     pseudo-element rather than a border so the last item never trails a rule, and suppressed
+     when the list wraps to one item per row. */
+  .acx-trust__list li + li::before {
+    display: block;
+    width: 1px;
+    height: 14px;
+    margin-right: 32px;
+    background: var(--ac-color-line-strong);
+    content: "";
+  }
+
+  @media (max-width: 60rem) {
+    .acx-trust__list {
+      gap: 10px 20px;
+    }
+
+    .acx-trust__list li + li::before {
+      margin-right: 20px;
+    }
+  }
+
+  /* Below ~34rem the row stacks; the dividers would then hang above each item. */
+  @media (max-width: 34rem) {
+    .acx-trust__list {
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .acx-trust__list li + li::before {
+      display: none;
+    }
+  }
+</style>

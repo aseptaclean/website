@@ -1,0 +1,92 @@
+---
+// ProcessFour — four-step editorial process. No cards, no icon boxes. Thin connecting rules
+// between steps on desktop, removed on mobile (single column).
+//
+// The existing global.css .ac-steps4/.ac-stage is close but numerals run 28px (spec wants
+// 48-54px) and it keeps a border on mobile (spec wants rules removed on mobile) — it also has
+// its markup hand-written inline in ServicePageLayout.astro rather than as a reusable component.
+// This is a new, correctly-specced component rather than an edit to .ac-steps4, which 14
+// already-shipped service pages still render through unchanged.
+interface Step {
+  number: string;
+  title: string;
+  description: string;
+}
+
+interface Props {
+  steps: Step[];
+  headingId?: string;
+}
+
+const { steps, headingId } = Astro.props;
+---
+
+<ol class="ac-process-four" aria-labelledby={headingId}>
+  {steps.map((step) => (
+    <li class="ac-process-four__step">
+      <span class="ac-process-four__number" aria-hidden="true">{step.number}</span>
+      <h3 class="ac-type-h3">{step.title}</h3>
+      <p>{step.description}</p>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .ac-process-four {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 34px;
+    margin: 52px 0 0;
+    padding: 0;
+    list-style: none;
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .ac-process-four__step {
+    padding-top: 24px;
+  }
+
+  .ac-process-four__step + .ac-process-four__step {
+    border-left: 1px solid var(--ac-color-line);
+    padding-left: 34px;
+    margin-left: -1px;
+  }
+
+  .ac-process-four__number {
+    display: block;
+    margin-bottom: 12px;
+    color: var(--ac-color-steel-300);
+    font-size: clamp(3rem, 3.2vw, 3.375rem);
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .ac-process-four__step h3 {
+    margin: 0 0 8px;
+  }
+
+  .ac-process-four__step p {
+    margin: 0;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  @media (max-width: 850px) {
+    .ac-process-four {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      border-top: 0;
+    }
+
+    .ac-process-four__step {
+      padding-top: 0;
+    }
+
+    .ac-process-four__step + .ac-process-four__step {
+      border-left: 0;
+      padding-left: 0;
+      margin-left: 0;
+    }
+  }
+</style>

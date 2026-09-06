@@ -1,0 +1,161 @@
+---
+// PROCESS — homepage-only four-step section, added 2026-09-03 per the homepage composition
+// rebuild (docs/05-DECISIONS-LOG.md, "Homepage section count reopened," 2026-09-03) and the
+// design system's process-section spec (docs/aseptaclean-website-design-system.md §15): large
+// step numerals, thin connecting rule, no icons, no cards.
+//
+// The four steps restate site.offer / OperatingEvidence's existing sequence in compact form —
+// assess, define, perform, document — the same mechanism every service page's own process
+// section already describes. No new claim, no new step, no numbers not already true sitewide.
+const steps = [
+  {
+    title: "Assess",
+    detail: "Tell us what is happening at the property. Photos help but are not required to start."
+  },
+  {
+    title: "Define",
+    detail: "We review the condition and provide a written scope — what is included, what is not, and the price."
+  },
+  {
+    title: "Perform",
+    detail: "Work proceeds against the approved scope. Nothing outside it happens without your sign-off first."
+  },
+  {
+    title: "Document",
+    detail: "You receive a record of what was done, room by room, when the work is complete."
+  }
+] as const;
+---
+
+<section class="process" aria-labelledby="process-title">
+  <div class="process__inner">
+    <p class="process__eyebrow">03 / Our Process</p>
+    <h2 id="process-title" class="ac-type-h2-home-feature">A clear process from first contact to handoff.</h2>
+
+    <ol class="process__steps">
+      {steps.map((step, index) => (
+        <li class="process__step">
+          <span class="process__index" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+          <h3 class="ac-type-h3-home-route">{step.title}</h3>
+          <p>{step.detail}</p>
+        </li>
+      ))}
+    </ol>
+  </div>
+</section>
+
+<style>
+  .process {
+    background: var(--ac-color-paper);
+    padding-block: clamp(80px, 8vw, 116px);
+  }
+
+  .process__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .process__eyebrow {
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.75rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .process__inner {
+    --ac-text-h2-home-feature: 2.5rem;
+  }
+
+  .process__inner h2 {
+    max-width: 20ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .process__steps {
+    display: grid;
+    margin: clamp(48px, 5vw, 72px) 0 0;
+    padding: 0;
+    gap: 0;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    list-style: none;
+  }
+
+  .process__step {
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding: 22px 28px 0 0;
+  }
+
+  .process__step:not(:first-child) {
+    border-left: 1px solid var(--ac-color-line-strong);
+    padding-left: 28px;
+  }
+
+  .process__index {
+    display: block;
+    color: var(--ac-color-steel-300);
+    font-size: 3.25rem;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  .process__step h3 {
+    margin-top: 18px;
+    color: var(--ac-color-navy-900);
+  }
+
+  .process__step p {
+    margin: 10px 0 0;
+    max-width: none;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 64rem) {
+    .process__inner {
+      width: min(100% - 52px, 1320px);
+    }
+
+    .process__steps {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 28px 32px;
+    }
+
+    .process__step:nth-child(2n + 1) {
+      border-left: 0;
+      padding-left: 0;
+    }
+
+    .process__step:nth-child(n + 3) {
+      border-top: 1px solid var(--ac-color-line-strong);
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .process {
+      padding-block: 64px;
+    }
+
+    .process__inner {
+      width: calc(100% - 40px);
+      --ac-text-h2-home-feature: 2rem;
+    }
+
+    .process__steps {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 24px;
+    }
+
+    .process__step {
+      border-left: 0 !important;
+      padding-left: 0 !important;
+    }
+
+    .process__step:nth-child(n + 2) {
+      border-top: 1px solid var(--ac-color-line-strong);
+    }
+  }
+</style>

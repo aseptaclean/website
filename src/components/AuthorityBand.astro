@@ -1,0 +1,84 @@
+---
+// AuthorityBand — solid deep-navy full-width section. Supports a centered statement or a
+// two-column layout (heading/lede in one column, slotted content in the other).
+//
+// Existing navy bands (.evidence, .hc-control, .cs-discreet, .svc-close, etc.) are each
+// page-local, use clamp()-based padding instead of fixed 88/56px breakpoints, and hardcode
+// either centered-only or two-column-only. This consolidates the shared shape without touching
+// those already-shipped, deliberately bespoke sections.
+interface Props {
+  eyebrow?: string;
+  heading?: string;
+  headingId?: string;
+  layout?: "centered" | "two-column";
+}
+
+const { eyebrow, heading, headingId, layout = "centered" } = Astro.props;
+---
+
+<section class="ac-authority-band" aria-labelledby={headingId}>
+  <div class:list={["ac-authority-band__inner", layout === "two-column" && "ac-authority-band__inner--split"]}>
+    {(eyebrow || heading) && (
+      <div class="ac-authority-band__head">
+        {eyebrow && <p class="ac-eyebrow ac-eyebrow--on-dark">{eyebrow}</p>}
+        {heading && <h2 id={headingId} class="ac-type-h2">{heading}</h2>}
+      </div>
+    )}
+    <div class="ac-authority-band__body">
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .ac-authority-band {
+    background: var(--ac-color-navy-900);
+    color: var(--ac-color-paper);
+    padding-block: 88px;
+  }
+
+  .ac-authority-band__inner {
+    width: min(100% - 64px, var(--ac-measure-wide));
+    margin-inline: auto;
+  }
+
+  .ac-authority-band__inner:not(.ac-authority-band__inner--split) {
+    max-width: 760px;
+    text-align: center;
+  }
+
+  .ac-authority-band__inner--split {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 48px 72px;
+  }
+
+  .ac-authority-band__head h2 {
+    color: var(--ac-color-paper);
+  }
+
+  .ac-authority-band__inner:not(.ac-authority-band__inner--split) .ac-authority-band__head {
+    margin-inline: auto;
+  }
+
+  .ac-authority-band__body {
+    margin-top: 16px;
+    color: var(--ac-color-steel-on-navy);
+  }
+
+  .ac-authority-band__inner--split .ac-authority-band__head {
+    margin-top: 0;
+  }
+
+  @media (max-width: 760px) {
+    .ac-authority-band {
+      padding-block: 56px;
+    }
+
+    .ac-authority-band__inner--split {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 32px;
+    }
+  }
+</style>

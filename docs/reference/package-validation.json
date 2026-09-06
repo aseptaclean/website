@@ -1,0 +1,30 @@
+{
+  "scope": "documentation only; no website code or live endpoint tested",
+  "page_briefs": 12,
+  "main_copy_byte_identical": true,
+  "trauma_copy_byte_identical": true,
+  "original_files_preserved": 70,
+  "service_source_coverage": {
+    "Hoarding Cleanup": {
+      "source_blocks": 12,
+      "assigned_blocks": 12
+    },
+    "Extreme Cleaning": {
+      "source_blocks": 14,
+      "assigned_blocks": 14
+    },
+    "Detailed Deep Cleaning": {
+      "source_blocks": 17,
+      "assigned_blocks": 17
+    },
+    "Rodent Droppings & Animal Waste Cleanup": {
+      "source_blocks": 15,
+      "assigned_blocks": 15
+    },
+    "Crime Scene & Trauma Cleanup": {
+      "source_blocks": 15,
+      "assigned_blocks": 15
+    }
+  },
+  "legal_policy_bodies": "not in supplied upload; preserve actual provider content"
+}

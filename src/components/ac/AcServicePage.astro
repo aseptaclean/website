@@ -1,0 +1,474 @@
+---
+// SERVICE PAGE RENDERER — one shared system, five different compositions.
+//
+// doc 30 §3: "Home and the five service pages share one responsive HeroWithForm component."
+// doc 30 §5: "Services use the common photo hero/form, then page-specific arrangements in their
+// briefs. Avoid duplicating the homepage architecture word for word on every page."
+//
+// This component renders a page's SECTION LIST. It does not define one. Each record in
+// src/data/servicePageCopy.ts chooses its own section kinds, order, split directions, image
+// ratios and surface tones, per that page's brief in docs/page-briefs/.
+//
+// HERO CHANGED 2026-09-04: these pages used AcPageHero — a white text hero with a small
+// contained photograph. Reference ClearPath p28 shows the same photo-background hero the
+// homepage uses, and doc 30 §1 says so explicitly: "Do not substitute the old
+// white-copy/isolated-photo split."
+import BaseLayout from "@layouts/BaseLayout.astro";
+import AcHeroWithForm from "./AcHeroWithForm.astro";
+import AcTrustStrip from "./AcTrustStrip.astro";
+import AcIntro from "./AcIntro.astro";
+import AcSplit from "./AcSplit.astro";
+import AcDarkBand from "./AcDarkBand.astro";
+import AcSteps from "./AcSteps.astro";
+import AcCheckList from "./AcCheckList.astro";
+import AcFinalCta from "./AcFinalCta.astro";
+import AcServiceCards from "./AcServiceCards.astro";
+import FaqAccordion from "@components/FaqAccordion.astro";
+import { launchServiceLinks } from "@data/launchArchitecture";
+import { legal, site } from "@data/site";
+import type { ServicePageRecord } from "@data/servicePageCopy";
+
+// Image registry. Keyed by the string names the copy records use, so a data file never imports
+// an asset and an asset swap is a one-line change here.
+//
+// LEGACY STOCK AND COMMONS FILES REMOVED FROM THIS REGISTRY 2026-09-05. Every service-page slot
+// that used one has been repointed to the owner image package below or, where the package has no
+// image of the section's subject, left copy-only. The registry is now the package plus nothing
+// else, so a copy record cannot reintroduce a stock person, a gloved hand or an unattributed
+// Commons photograph by naming one — the build throws on an unknown hero key and silently drops
+// an unknown section key, and neither name exists here any more. See docs/06-ASSET-MANIFEST.md.
+
+// OWNER IMAGE PACKAGE, installed 2026-09-05. Registered under their canonical package filenames
+// so a copy record names the same string the package's README-ASSET-MAP.md does, and the
+// placement is traceable from data to file without a translation table.
+import founderPortrait from "../../assets/aseptaclean/founder-matthew-ruiz.jpeg";
+import propertyIntroduction from "../../assets/aseptaclean/property-interior-introduction.png";
+import hoardingLivingRoom from "../../assets/aseptaclean/hoarding-living-room.png";
+import hoardingRestrictedWalkway from "../../assets/aseptaclean/hoarding-restricted-walkway.png";
+import hoardingGarageContents from "../../assets/aseptaclean/hoarding-garage-contents.png";
+import extremeKitchen from "../../assets/aseptaclean/extreme-cleaning-neglected-kitchen.png";
+import extremeBathroomBuildup from "../../assets/aseptaclean/extreme-cleaning-bathroom-buildup.png";
+import extremeFloorEdges from "../../assets/aseptaclean/extreme-cleaning-floor-edges.png";
+import deepCleaningKitchen from "../../assets/aseptaclean/detailed-deep-cleaning-kitchen.png";
+import deepCleaningShower from "../../assets/aseptaclean/deep-cleaning-shower-deposits.png";
+import deepCleaningWindowTrack from "../../assets/aseptaclean/deep-cleaning-window-track.png";
+import deepCleaningBaseboard from "../../assets/aseptaclean/deep-cleaning-baseboard-edge.png";
+import traumaContext from "../../assets/aseptaclean/trauma-residential-context.png";
+import traumaSurfaces from "../../assets/aseptaclean/trauma-residential-surfaces.png";
+// OWNER-APPROVED 2026-09-06, Crime & Trauma only. Three images were supplied separately from the
+// 2026-09-05 package and approved by name for this page. They are the first images on the site
+// that show a person, and the owner's approval is explicitly SCOPED: it supersedes the blanket
+// "no AI-generated people" restriction (AGENTS.md §0.3 / doc 21 §6) for these assets on this
+// route and nowhere else. It is not a licence to restore the stock technicians removed on
+// 2026-09-05 — those stay removed. The figures are service visuals, not Aseptaclean employees:
+// no logo, no "our team" caption, no project or before/after claim, and the alt text describes
+// only the visible activity. Recorded in docs/06-ASSET-MANIFEST.md.
+//
+// `trauma-affected-carpet-detail.png` is installed in src/assets/aseptaclean/ but is DELIBERATELY
+// ABSENT from this registry. It depicts carpet being cut out, and this page publishes no scope
+// line covering material removal, so registering it would let a copy record place it and silently
+// broaden the service offer. The owner ruled on 2026-09-06 that the image is supplied but NOT
+// selected for publication, and that no service, claim or exclusions section is to be added to
+// accommodate it — so this absence is settled, not pending. See docs/06-ASSET-MANIFEST.md.
+import traumaFloorCleanup from "../../assets/aseptaclean/trauma-residential-floor-cleanup.png";
+import traumaFloorSurface from "../../assets/aseptaclean/trauma-floor-surface-cleaning.png";
+import rodentUtilityRoom from "../../assets/aseptaclean/rodent-utility-room-context.png";
+import rodentSurfaceDetail from "../../assets/aseptaclean/rodent-hard-surface-detail.png";
+import rodentStorageContents from "../../assets/aseptaclean/rodent-storage-contents.png";
+
+const IMAGES: Record<string, ImageMetadata> = {
+  // Genuine company asset. The four "Why Aseptaclean" sections are about the founder's own
+  // background, so they carry his real photograph instead of the stock figures in coveralls that
+  // stood there before. Always ratio "3/4" — the contained portrait plate.
+  "founder-matthew-ruiz": founderPortrait,
+
+  // Owner package — placement-guide slots 02-17.
+  "property-interior-introduction": propertyIntroduction,
+  "hoarding-living-room": hoardingLivingRoom,
+  "hoarding-restricted-walkway": hoardingRestrictedWalkway,
+  "hoarding-garage-contents": hoardingGarageContents,
+  "extreme-cleaning-neglected-kitchen": extremeKitchen,
+  "extreme-cleaning-bathroom-buildup": extremeBathroomBuildup,
+  "extreme-cleaning-floor-edges": extremeFloorEdges,
+  "detailed-deep-cleaning-kitchen": deepCleaningKitchen,
+  "deep-cleaning-shower-deposits": deepCleaningShower,
+  "deep-cleaning-window-track": deepCleaningWindowTrack,
+  "deep-cleaning-baseboard-edge": deepCleaningBaseboard,
+  "trauma-residential-context": traumaContext,
+  "trauma-residential-surfaces": traumaSurfaces,
+
+  // Owner-supplied and owner-approved 2026-09-06 — Crime & Trauma only. See the import note.
+  "trauma-residential-floor-cleanup": traumaFloorCleanup,
+  "trauma-floor-surface-cleaning": traumaFloorSurface,
+  "rodent-utility-room-context": rodentUtilityRoom,
+  "rodent-hard-surface-detail": rodentSurfaceDetail,
+  "rodent-storage-contents": rodentStorageContents
+};
+
+// Image provenance — illustrative package art, licensed stock, or owner-shot — is recorded in
+// docs/06-ASSET-MANIFEST.md. It is deliberately NOT printed next to the image: the visitor-facing
+// reference captions were removed 2026-09-05 at the owner's instruction. Alt text still describes
+// what is visible and never claims a photo is Aseptaclean project work.
+
+interface Props {
+  page: ServicePageRecord;
+}
+
+const { page } = Astro.props;
+const img = (name?: string) => (name ? IMAGES[name] : undefined);
+
+// Hero imagery is required by doc 30 §1, so resolve it strictly: an unknown key is a data error
+// and should stop the build here rather than render a heroless page.
+const heroImage = IMAGES[page.heroImage];
+if (!heroImage) {
+  throw new Error(
+    `servicePageCopy: ${page.slug} names heroImage "${page.heroImage}", which is not in AcServicePage's image registry.`
+  );
+}
+
+// Related services: every current public service except this one. Photographic cards, so the
+// cross-link row matches the homepage routing treatment rather than being a bare link list.
+// Each card carries its own service's package main image, so a cross-link card and the page it
+// opens show the same scene — the same pairing the homepage and Services hub now use. A page
+// never lists itself, so its hero image can never repeat inside its own related row.
+const relatedImages: Record<string, ImageMetadata> = {
+  "/hoarding-cleanup-san-jose/": hoardingLivingRoom,
+  "/extreme-cleaning-san-jose/": extremeKitchen,
+  "/rodent-dropping-cleanup-san-jose/": rodentUtilityRoom,
+  "/deep-cleaning-san-jose/": deepCleaningKitchen,
+  "/crime-scene-trauma-cleanup-san-jose/": traumaContext
+};
+const relatedBlurbs: Record<string, string> = {
+  "/hoarding-cleanup-san-jose/":
+    "When belongings and clutter have made the home difficult to manage.",
+  "/extreme-cleaning-san-jose/": "When the condition has gone beyond a normal deep clean.",
+  "/rodent-dropping-cleanup-san-jose/":
+    "Pest control stops the activity. We address what was left behind.",
+  "/deep-cleaning-san-jose/": "For homes that need more than routine cleaning.",
+  "/crime-scene-trauma-cleanup-san-jose/":
+    "Discreet cleanup after the scene has been released."
+};
+
+const related = launchServiceLinks
+  .filter((link) => link.href !== page.slug)
+  .map((link) => ({
+    title: link.label,
+    description: relatedBlurbs[link.href] ?? "",
+    href: link.href,
+    image: relatedImages[link.href],
+    imageAlt: ""
+  }));
+
+// FAQPage JSON-LD only where the page actually renders an FAQ accordion (doc 21 §6.1: schema
+// must not describe content a visitor cannot see).
+const faqSection = page.sections.find((section) => section.kind === "faq");
+
+const schema: Record<string, unknown>[] = [
+  {
+    "@type": "Service",
+    serviceType: page.name,
+    name: page.name,
+    description: page.seoDescription,
+    url: new URL(page.slug, site.urls.site).href,
+    provider: { "@id": new URL("/#business", site.urls.site).href },
+    areaServed: site.location.cities.map((name) => ({ "@type": "City", name }))
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Services",
+        item: new URL("/services/", site.urls.site).href
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: page.name,
+        item: new URL(page.slug, site.urls.site).href
+      }
+    ]
+  }
+];
+
+if (faqSection && faqSection.kind === "faq") {
+  schema.push({
+    "@type": "FAQPage",
+    mainEntity: faqSection.items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  });
+}
+---
+
+<BaseLayout
+  title={page.seoTitle}
+  description={page.seoDescription}
+  canonicalPath={page.slug}
+  schema={schema}
+>
+  {/* docs/20-COPY-MAP.md "Placement rules": the hero carries the page name, its first outcome
+      subheading and the first two prose paragraphs; the remaining opening paragraphs move into
+      the first white section directly below, so compactness never deletes copy. The form
+      preselects this page's service via the frozen enum in src/data/assessment.ts. */}
+  <AcHeroWithForm
+    eyebrow={`${page.eyebrow} · San Jose · ${site.location.serviceArea}`}
+    heading={page.h1}
+    headingId="service-hero-title"
+    lead={page.heroLead}
+    body={page.heroBody}
+    image={heroImage}
+    imageAlt={page.heroImageAlt}
+    imagePosition={page.heroImagePosition}
+    stackedLayout={page.heroStackedLayout}
+    stackedImagePosition={page.heroStackedImagePosition}
+    trustLine={page.heroAssurances?.join(" · ")}
+    formId="service-form"
+    route={page.slug}
+  />
+
+  <AcTrustStrip lead={page.trustLead} />
+
+  {page.sections.map((section) => {
+    if (section.kind === "split") {
+      return (
+        <AcSplit
+          eyebrow={section.eyebrow}
+          heading={section.heading}
+          headingId={section.id}
+          lead={section.lead}
+          body={section.body}
+          pullQuote={section.pullQuote}
+          image={img(section.image)}
+          imageAlt={section.imageAlt}
+          needsAsset={section.needsAsset}
+          ratio={section.ratio}
+          reverse={section.reverse}
+          tone={section.tone}
+        >
+          {section.list && (
+            <div class="svc-list">
+              <AcCheckList
+                items={section.list}
+                tone={section.listTone}
+                columns={section.listColumns}
+                compact
+              />
+            </div>
+          )}
+          {section.closing?.map((paragraph) => <p class="svc-closing">{paragraph}</p>)}
+          {/* Mandatory wherever the founder's background appears —
+              docs/02-CURRENT-FACTS.md "Preserve factual boundaries". Never reworded. */}
+          {section.founderLimit && <p class="svc-limit">{legal.founderAuthorityLimit}</p>}
+        </AcSplit>
+      );
+    }
+
+    if (section.kind === "intro") {
+      return (
+        <AcIntro
+          eyebrow={section.eyebrow}
+          heading={section.heading}
+          headingId={section.id}
+          lead={section.lead}
+          body={section.body}
+          tone={section.tone}
+        >
+          {section.list && (
+            <div class="svc-list svc-list--wide">
+              <AcCheckList
+                items={section.list}
+                tone={section.listTone}
+                columns={section.listColumns}
+              />
+            </div>
+          )}
+        </AcIntro>
+      );
+    }
+
+    if (section.kind === "dark") {
+      return (
+        <AcDarkBand
+          eyebrow={section.eyebrow}
+          heading={section.heading}
+          headingAccent={section.headingAccent}
+          headingId={section.id}
+          body={section.body}
+          pullQuote={section.pullQuote}
+          image={img(section.image)}
+          imageAlt={section.imageAlt}
+          needsAsset={section.needsAsset}
+        />
+      );
+    }
+
+    if (section.kind === "steps") {
+      return (
+        <AcIntro
+          eyebrow={section.eyebrow}
+          heading={section.heading}
+          headingId={section.id}
+          lead={section.lead}
+          tone="soft"
+        >
+          <div class="svc-steps">
+            <AcSteps steps={section.steps} />
+          </div>
+        </AcIntro>
+      );
+    }
+
+    if (section.kind === "roomLists") {
+      return (
+        <AcSplit
+          eyebrow={section.eyebrow}
+          heading={section.heading}
+          headingId={section.id}
+          lead={section.lead}
+          body={section.body}
+          pullQuote={section.pullQuote}
+          image={img(section.image)}
+          imageAlt={section.imageAlt}
+        >
+          <div class="svc-rooms">
+            {section.groups.map((group) => (
+              <div class="svc-rooms__group">
+                <h3 class="ac-type-h3-band">{group.title}</h3>
+                <AcCheckList items={group.items} compact />
+              </div>
+            ))}
+          </div>
+          {section.close && <p class="svc-close">{section.close}</p>}
+        </AcSplit>
+      );
+    }
+
+    if (section.kind === "twoLists") {
+      return (
+        <AcIntro
+          eyebrow={section.eyebrow}
+          heading={section.heading}
+          headingId={section.id}
+          lead={section.lead}
+          body={section.body}
+        >
+          <div class="svc-two">
+            <div>
+              <h3 class="ac-type-h3-band">{section.includeTitle}</h3>
+              <AcCheckList items={section.include} />
+            </div>
+            <div>
+              <h3 class="ac-type-h3-band">{section.excludeTitle}</h3>
+              <AcCheckList items={section.exclude} tone="exclude" />
+            </div>
+          </div>
+          {section.close && <p class="svc-close">{section.close}</p>}
+        </AcIntro>
+      );
+    }
+
+    return (
+      <AcIntro heading={section.heading} headingId={section.id} tone="soft">
+        <div class="svc-faq">
+          <FaqAccordion items={section.items} headingId={section.id} />
+        </div>
+      </AcIntro>
+    );
+  })}
+
+  <AcIntro
+    eyebrow="Other services"
+    heading="Not the right service?"
+    headingId="related-title"
+    lead="Aseptaclean handles four other property conditions. If you are not sure which one fits, tell us what is happening and we will help you decide."
+  >
+    <div class="svc-related">
+      <AcServiceCards cards={related} layout="even" />
+    </div>
+  </AcIntro>
+
+  <AcFinalCta
+    heading={page.finalHeading}
+    headingId="service-final-title"
+    body={page.finalBody}
+  />
+</BaseLayout>
+
+<style>
+  .svc-list {
+    margin-top: 22px;
+  }
+
+  .svc-list--wide,
+  .svc-steps,
+  .svc-related {
+    margin-top: 40px;
+    text-align: left;
+  }
+
+  .svc-two {
+    display: grid;
+    margin-top: 40px;
+    gap: 40px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    text-align: left;
+  }
+
+  /* Named source lists inside a split's copy column: one per row, so each keeps its heading
+     and every line item stays readable next to the photograph. */
+  .svc-rooms {
+    display: grid;
+    margin-top: 26px;
+    gap: 24px;
+  }
+
+  .svc-rooms__group h3 {
+    margin: 0 0 12px;
+  }
+
+  .svc-two h3 {
+    margin-bottom: 18px;
+  }
+
+  .svc-closing {
+    margin: 14px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .svc-limit {
+    margin: 22px 0 0;
+    border-left: 2px solid var(--ac-color-line-strong);
+    padding-left: 18px;
+    color: var(--ac-color-ink-500);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .svc-close {
+    margin: 36px auto 0;
+    max-width: 46rem;
+    color: var(--ac-color-navy-900);
+    font-size: 1.0625rem;
+    font-weight: 650;
+    line-height: 1.6;
+  }
+
+  .svc-faq {
+    margin: 34px auto 0;
+    text-align: left;
+  }
+
+  @media (max-width: 44rem) {
+    .svc-two {
+      gap: 32px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

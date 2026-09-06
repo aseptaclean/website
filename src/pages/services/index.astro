@@ -1,50 +1,87 @@
 ---
-// SERVICES HUB — `/services/`. Rebuilt 2026-08-26 to docs/30-WEBSITE-MASTER-SPEC.md §18 (the
-// route's job and visual direction) and §20A.20 (problem-chooser first, active directory second),
-// with copy reconciled from docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md §43–44 under the
-// §20A.1 order: landing copy → map to current route → check active/gated state → check claims,
-// pricing and scope → check current copy authority → then implement.
+// SERVICES HUB — copy from docs/aseptaclean-all-website-copy.md `<!-- PAGE: Services -->` via
+// docs/20-COPY-MAP.md; composition from docs/page-briefs/SERVICES.md under doc 30 §5.
 //
-//   01 SERVICES HERO            ServicesHero            full-bleed photograph, left-aligned
-//   02 PROBLEM CHOOSER          ServiceProblemChooser   six doors + the "not sure?" routing beat
-//   03 CONDITION LEVELS         ServiceConditionLevels  routine vs detailed vs complex + reach
-//   04 SERVICE DIRECTORY        ServiceDirectory        three real families, three visual weights
-//   05 SCOPE / BOUNDARY         ServiceScopeBoundary    fit, exclusions, geography, disclaimer
-//   06 HOW TO START + CTA       ServicesClose           four steps into one action
+// docs/page-briefs/SERVICES.md: compact photographic hero → five image/text service rows →
+// white guidance → compact five-step process → dark approach section → readable scope and
+// chooser group → final call. "This is an editorial service catalog, not five nearly full
+// service pages concatenated."
 //
-// WHAT THIS REPLACES. The previous page was PageHeader + a three-up pillar card grid restating
-// homepage.serviceCards + ConfidenceAndFit + an embedded RequestForm: 568 words, zero images,
-// three H2s, and a full lead form with a live Turnstile widget on a page whose job is routing.
+// All FIVE services are editorial rows, alternating split direction. Crime Scene & Trauma
+// Cleanup joined them as a full row on 2026-09-04 (docs/20-COPY-MAP.md: "Services gains one
+// trauma row from the trauma hero and its Crime Scene & Trauma Cleanup Services block");
+// it was previously a lone card in a separate section.
 //
-// ROUTE STATE IS UNCHANGED AND DELIBERATELY SO. Same slug, same canonical, same sitemap
-// membership, still indexable, same BreadcrumbList. No route was created, renamed, redirected or
-// re-indexed by this pass, and no service's `publishStatus` moved. `/services/` remains the
-// canonical services hub; AGENTS.md §2's narrowing (the prohibition targets `/services/{slug}`,
-// not this hub) is what makes it legitimate, and nothing here adds a child route under it.
+// "Severe Property Cleanup" ships as "Extreme Cleaning" (docs/20-COPY-MAP.md display map) and
+// the source's "gross filth cleanup or extreme cleaning" sentence is dropped, not reworded —
+// AGENTS.md §7 bans that phrase anywhere.
 //
-// SCHEMA IS BreadcrumbList ONLY, unchanged from the previous build and deliberately not extended.
-// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6.1's recommended set for a supporting page is exactly
-// that, and doc 30 §20A.22 plus the task brief both say not to emit service schema for work
-// outside current authority. `/` already emits Service nodes for the three families and one of
-// them is under open owner review (see src/pages/index.astro) — adding a second, differently
-// scoped set here would make two pages disagree about what Aseptaclean sells while that review
-// is open.
-//
-// THE THREE RECONCILIATIONS THIS PAGE MAKES, all recorded in docs/05-DECISIONS-LOG.md 2026-08-26:
-//   1. No rodent-droppings or pigeon-droppings routing, despite both appearing in the
-//      landing-page system's chooser and directory. Cal. B&P §8550(a) + doc 21 §3, rank 3.
-//   2. "South Bay & Peninsula", never "Santa Clara County". Owner ruling 2026-08-09.
-//   3. No move-in route implied. Doc 30 §20A.3; move-in appears only inside the real route's
-//      real label, "Move-in & move-out cleaning".
+// The hub uses a secondary "Send a Message" link to /contact/#contact-form rather than a hero
+// intake panel (doc 30 §3, SERVICES.md).
 import BaseLayout from "@layouts/BaseLayout.astro";
-import ServiceConditionLevels from "@components/ServiceConditionLevels.astro";
-import ServiceDirectory from "@components/ServiceDirectory.astro";
-import ServiceProblemChooser from "@components/ServiceProblemChooser.astro";
-import ServiceScopeBoundary from "@components/ServiceScopeBoundary.astro";
-import ServicesClose from "@components/ServicesClose.astro";
-import ServicesHero from "@components/ServicesHero.astro";
-import { servicesHub } from "@data/servicePages";
-import { site } from "@data/site";
+import AcPageHero from "@components/ac/AcPageHero.astro";
+import AcTrustStrip from "@components/ac/AcTrustStrip.astro";
+import AcIntro from "@components/ac/AcIntro.astro";
+import AcSplit from "@components/ac/AcSplit.astro";
+import AcDarkBand from "@components/ac/AcDarkBand.astro";
+import AcSteps from "@components/ac/AcSteps.astro";
+import AcCheckList from "@components/ac/AcCheckList.astro";
+import AcFinalCta from "@components/ac/AcFinalCta.astro";
+import { servicesHub } from "@data/publicCopy";
+import { legal, site } from "@data/site";
+
+// IMAGERY — owner image package installed 2026-09-05. Its placement index assigns this page the
+// compact hero (02) and the five contextual service rows (03, 06, 09, 13, 15), which is also the
+// Services allocation in docs/06-ASSET-MANIFEST.md's slot table. The three remaining photographic
+// sections below — the choosing dark band, the honest-scope split and the why split — are NOT in
+// the package's placement index.
+//
+// REVISED 2026-09-05. Those three sections previously kept the stock files they shipped with:
+// `empty_clean_room.jpg`, `garage_cluttered.jpg` and `equipment_gear.jpg`. The last of those is a
+// gloved-hands photograph, which doc 21 §6 rules out on a public page, and none of the three was
+// covered by a recorded licence. Being outside the package's placement index is a reason not to
+// invent a numbered slot — it is not a reason to keep unattributed stock. So each was resolved on
+// its own subject: the choosing band takes the package's soiled-floor image because the copy is
+// about conditions that photograph as worse or better than they are; the why split takes the real
+// founder portrait because the copy is about the founder's background; and the honest-scope split
+// is now copy-only, because "we do not oversell scope" is a business practice, not a visible
+// property condition, and the package has no honest picture of one.
+import propertyIntroduction from "../../assets/aseptaclean/property-interior-introduction.png";
+import extremeFloorEdges from "../../assets/aseptaclean/extreme-cleaning-floor-edges.png";
+import founderPortrait from "../../assets/aseptaclean/founder-matthew-ruiz.jpeg";
+import hoardingLivingRoom from "../../assets/aseptaclean/hoarding-living-room.png";
+import extremeKitchen from "../../assets/aseptaclean/extreme-cleaning-neglected-kitchen.png";
+import deepCleaningKitchen from "../../assets/aseptaclean/detailed-deep-cleaning-kitchen.png";
+import traumaContext from "../../assets/aseptaclean/trauma-residential-context.png";
+import rodentUtilityRoom from "../../assets/aseptaclean/rodent-utility-room-context.png";
+
+// One image per service row, indexed against servicesHub.families, which follows
+// docs/SITEMAP-MASTER.md's public service order. `as const` plus the index guard below keeps
+// this a checked lookup rather than a possibly-undefined index access.
+const familyMedia = [
+  {
+    image: hoardingLivingRoom,
+    alt: "A living room where boxes, textiles and household belongings cover the sofa and floor, leaving a narrow walkway"
+  },
+  {
+    image: extremeKitchen,
+    alt: "A neglected kitchen with heavy grease buildup around the stove and grime along the floor edges"
+  },
+  {
+    image: deepCleaningKitchen,
+    alt: "An everyday residential kitchen with light grease around the cooking area and dust along the edges"
+  },
+  {
+    image: traumaContext,
+    alt: "A quiet, unoccupied residential room with plain flooring and an open doorway"
+  },
+  {
+    image: rodentUtilityRoom,
+    alt: "A residential utility room with a low shelf, cardboard boxes and a small scattering of rodent droppings near the wall"
+  }
+] as const;
+
+const mediaFor = (index: number) => familyMedia[index % familyMedia.length]!;
 
 const schema = [
   {
@@ -55,24 +92,333 @@ const schema = [
         "@type": "ListItem",
         position: 2,
         name: "Services",
-        item: new URL(servicesHub.slug, site.urls.site).href
+        item: new URL("/services/", site.urls.site).href
       }
     ]
+  },
+  {
+    "@type": "ItemList",
+    name: "Aseptaclean services",
+    // All five services are families now, so the list has one source and one shape — the
+    // `"title" in item ? item.title : item.title` narrowing this used to need is gone with it.
+    itemListElement: servicesHub.families.map((family, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: family.title,
+      url: new URL(family.href, site.urls.site).href
+    }))
   }
 ];
 ---
 
 <BaseLayout
-  title={servicesHub.seoTitle}
-  description={servicesHub.metaDescription}
-  canonicalPath={servicesHub.slug}
-  noindex={false}
+  title="Specialty Property Cleanup Services | San Jose | Aseptaclean"
+  description="Hoarding cleanup, extreme cleaning, rodent droppings and animal waste cleanup, detailed deep cleaning, and crime scene and trauma cleanup across the South Bay & Peninsula."
+  canonicalPath="/services/"
   schema={schema}
 >
-  <ServicesHero />
-  <ServiceProblemChooser />
-  <ServiceConditionLevels />
-  <ServiceDirectory />
-  <ServiceScopeBoundary />
-  <ServicesClose />
+  {/* The profile AC-CP70-91130-1.1 / copy-map descriptor swap to "Biohazard Remediation &
+      Specialty Property Cleanup" is BLOCKED on claims grounds — AGENTS.md §7 and doc 21 §2.2.
+      See src/data/publicCopy.ts `home.hero` and docs/05-CURRENT-DECISIONS.md 2026-09-04. */}
+  {/* HUB H1 IS THE APPROVED DESCRIPTOR — docs/20-COPY-MAP.md "Main services hub H1" and
+      profile AC-CP70-91130-1.1, applied via docs/reference/descriptor-update.patch. The
+      source Services heading, "When the property needs more than a normal cleaning company.",
+      is NOT deleted: it moves down one level to the outcome subheading the brief names, which
+      is exactly the shape docs/page-briefs/SERVICES.md row 1 asks for ("descriptor, outcome
+      subheading, introductory body"). Navigation still says Services.
+
+      The eyebrow drops the descriptor it used to carry, because repeating it directly above
+      the H1 that now IS the descriptor is the on-page duplication this pass exists to remove.
+      It keeps the region, which the H1 does not state.
+
+      The third source paragraph moved to the "01 / What we handle" intro directly below —
+      docs/20-COPY-MAP.md "Placement rules": hero copy stays compact and the remaining opening
+      paragraphs go in the introduction below. Measured reason: at 390x844 the primary call
+      sat 6.6px below the usable fold before this change, which profile §7 fails. No source
+      sentence is dropped. See the claims override note in src/data/publicCopy.ts. */}
+  <AcPageHero
+    eyebrow={site.location.serviceArea}
+    heading="Biohazard Remediation & Specialty Property Cleanup"
+    headingId="services-hero-title"
+    lead="When the property needs more than a normal cleaning company."
+    body={["Some properties are simply dirty. Others are harder to deal with."]}
+    assurances={[
+      "Start with the condition",
+      "Build the right scope",
+      "Do the work in the right order"
+    ]}
+    image={propertyIntroduction}
+    imageAlt="An unfurnished residential interior looking from the living room toward an adjoining hallway"
+  />
+
+  <AcTrustStrip />
+
+  {/* The two source opening paragraphs relocated out of the hero land here, verbatim, under
+      this section's existing guidance lead — docs/20-COPY-MAP.md "Placement rules": "move the
+      remaining opening paragraphs into the first white introduction directly below. Preserve
+      the remaining text there, rather than shrinking the entire page introduction into the
+      hero." Nothing is cut; the hero keeps the page name, outcome subheading and first
+      paragraph, and the rest is readable in the first section below it. */}
+  <AcIntro
+    eyebrow="01 / What we handle"
+    heading="What can we help with?"
+    headingId="services-families-title"
+    body={[
+      "There may be heavy buildup, accumulated belongings, rodent contamination, animal waste, neglected rooms, strong odors, or years of conditions that have made the property difficult to use.",
+      "Aseptaclean helps homeowners, families, property owners, and managers understand what needs attention and get the property back under control."
+    ]}
+    lead="Not sure which service you need? Send us photos and tell us what is happening."
+  />
+
+  {servicesHub.families.map((family, index) => (
+    <AcSplit
+      eyebrow={family.title}
+      heading={family.subtitle}
+      headingId={`family-${index}`}
+      lead={family.body[0]}
+      body={family.body.slice(1)}
+      image={mediaFor(index).image}
+      imageAlt={mediaFor(index).alt}
+      ratio={index % 2 === 0 ? "4/3" : "5/4"}
+      reverse={index % 2 === 1}
+      tone={index % 2 === 1 ? "soft" : "light"}
+    >
+      <div class="family-best">
+        <p class="family-best__title">Best for</p>
+        <AcCheckList items={family.bestFor} columns={2} compact />
+        <a class="family-best__link" href={family.href}>
+          {family.linkLabel} <span aria-hidden="true">&rarr;</span>
+        </a>
+      </div>
+    </AcSplit>
+  ))}
+
+  <AcDarkBand
+    eyebrow="03 / Choosing"
+    heading="Not sure which category"
+    headingAccent="your property falls into?"
+    headingId="services-unsure-title"
+    body={[
+      "You do not need to know. That is one of the reasons we start with an assessment.",
+      "A property may appear to need deep cleaning until rodent contamination is discovered. A cluttered home may also have sanitation problems underneath the contents. A property that looks severe in photos may turn out to need a much smaller scope once we see it."
+    ]}
+    pullQuote="Our job is to understand the condition before recommending the work."
+    image={extremeFloorEdges}
+    imageAlt="A room floor with heavy soiling and dark staining spreading across the carpet toward a doorway"
+  />
+
+  <AcSplit
+    eyebrow="04 / Honest scope"
+    heading="We do not force every property into the same service."
+    headingId="services-honest-title"
+    lead="There is no benefit to selling you more cleanup than the property needs."
+    body={[
+      "If the job is straightforward, we will tell you. If the property needs a more involved approach, we will explain why.",
+      "And if part of the problem belongs with another professional — such as pest control, structural repair, HVAC work, or another specialty — we will make that clear."
+    ]}
+    pullQuote="A good scope starts with knowing where our responsibility begins and ends."
+    reverse
+  />
+
+  <AcIntro
+    eyebrow="05 / How it works"
+    heading="How it works"
+    headingId="services-process-title"
+    tone="soft"
+  >
+    <div class="services-steps">
+      <AcSteps steps={servicesHub.steps} />
+    </div>
+  </AcIntro>
+
+  <AcSplit
+    eyebrow="06 / Why Aseptaclean"
+    heading="Difficult properties need more than a checklist."
+    headingId="services-why-title"
+    lead="Aseptaclean was built around work where condition, detail, and process matter."
+    body={[
+      "Our founder's background includes biochemistry, pharmaceutical manufacturing, and surgical pathology. That experience shaped the way we approach property cleanup today: look closely, understand the problem, build the right process, then do the work.",
+      "We are not trying to make every home sound hazardous. And we are not trying to turn every cleaning request into a major project. We want to understand what is actually happening and recommend the level of work that makes sense."
+    ]}
+    image={founderPortrait}
+    imageAlt="Matthew Ruiz, founder of Aseptaclean"
+    ratio="3/4"
+  >
+    {/* Mandatory wherever the founder's background appears — docs/21-CLAIMS-AND-COMPLIANCE-LAW.md
+        and docs/02-CURRENT-FACTS.md "Preserve factual boundaries". Never reworded.
+
+        ADDED 2026-09-05. This section has carried the biochemistry/pharmaceutical-manufacturing/
+        surgical-pathology paragraph since it was written, but not the clause that bounds it — the
+        four service pages render it through AcServicePage's `founderLimit` flag, and this hub page
+        composes AcSplit directly, so it never inherited that. A pre-existing gap, surfaced while
+        repointing this slot to the real founder portrait and fixed here rather than left. */}
+    <p class="services-limit">{legal.founderAuthorityLimit}</p>
+  </AcSplit>
+
+  <AcIntro
+    eyebrow="07 / Boundaries"
+    heading="What Aseptaclean is not"
+    headingId="services-not-title"
+    lead="Clear expectations matter."
+    tone="soft"
+  >
+    <div class="services-not">
+      {servicesHub.notList.map((item) => (
+        <div class="services-not__item">
+          <h3 class="ac-type-h3-band">{item.title}</h3>
+          <p>{item.body}</p>
+        </div>
+      ))}
+    </div>
+    <p class="services-not__close">We stay focused on the work we are there to perform.</p>
+  </AcIntro>
+
+  <AcIntro
+    eyebrow="08 / Choose"
+    heading="Which service should I choose?"
+    headingId="services-chooser-title"
+    lead="Still unsure? That is completely fine — you can send us the property without choosing a service first."
+  >
+    <ul class="services-chooser">
+      {servicesHub.chooser.map((row) => (
+        <li>
+          <p class="services-chooser__situation">{row.situation}</p>
+          <a href={row.href}>
+            Start with {row.service} <span aria-hidden="true">&rarr;</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+  </AcIntro>
+
+  <AcFinalCta
+    heading="Start with what you see."
+    headingId="services-final-title"
+    body={[
+      "Take a few photos of the areas that concern you. Tell us what has been happening and what you want help with.",
+      "We will review the condition and help you determine the right next step."
+    ]}
+  />
 </BaseLayout>
+
+<style>
+  .family-best {
+    margin-top: 24px;
+    border-top: 1px solid var(--ac-color-line);
+    padding-top: 22px;
+  }
+
+  .family-best__title {
+    margin: 0 0 14px;
+    color: var(--ac-color-navy-900);
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .family-best__link {
+    display: inline-block;
+    margin-top: 20px;
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 650;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .services-steps {
+    margin-top: 40px;
+    text-align: left;
+  }
+
+  /* Same treatment AcServicePage gives `.svc-limit`, so the founder-authority clause reads
+     identically on this hub and on the five service pages. */
+  .services-limit {
+    margin: 22px 0 0;
+    border-left: 2px solid var(--ac-color-line-strong);
+    padding-left: 18px;
+    color: var(--ac-color-ink-500);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .services-not {
+    display: grid;
+    margin-top: 40px;
+    gap: 32px 40px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    text-align: left;
+  }
+
+  .services-not__item p {
+    margin: 12px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.65;
+  }
+
+  .services-not__close {
+    margin: 36px auto 0;
+    color: var(--ac-color-navy-900);
+    font-size: 1.0625rem;
+    font-weight: 650;
+  }
+
+  .services-chooser {
+    display: grid;
+    max-width: none;
+    margin: 40px 0 0;
+    padding: 0;
+    list-style: none;
+    gap: 0;
+    border-top: 1px solid var(--ac-color-line);
+    text-align: left;
+  }
+
+  .services-chooser li {
+    display: flex;
+    max-width: none;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--ac-color-line);
+    padding: 20px 0;
+    gap: 8px 32px;
+  }
+
+  .services-chooser__situation {
+    margin: 0;
+    color: var(--ac-color-navy-900);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .services-chooser a {
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 650;
+    white-space: nowrap;
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  @media (max-width: 44rem) {
+    .services-not {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* `white-space: nowrap` keeps the "Start with …" link on one line beside its situation on
+       desktop. At 390px the longest of them ("Rodent Droppings & Animal Waste Cleanup") is
+       428px wide and pushed the whole document into horizontal overflow. The row stacks here,
+       so the link has the full column and no longer needs to stay on one line. */
+    .services-chooser li {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .services-chooser a {
+      white-space: normal;
+    }
+  }
+</style>

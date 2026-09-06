@@ -86,8 +86,15 @@ const hasProviderPolicy = Boolean(policyId || hostedUrl);
      `min-height` reserves the Termly embed slot so the page does not collapse to a stub and
      reflow when the provider script lands; the old 55vh was viewport-coupled (495px at 900,
      464px at 844) and off the 8px scale, so it is now a fixed 480px. */
+  /* ONE COLUMN, EXPLICITLY. This article carries `.ac-shell` as well as `.legal-policy`, and a
+     rule in global.css reaches `.ac-shell` with `grid-template-columns: repeat(auto-fit,
+     minmax(0, 1fr))`. Because `.legal-policy` sets `display: grid`, that template applied and
+     auto-fit produced TWO columns — the Termly embed and the provider-fallback aside sat side
+     by side in ~380px each, wrapping the fallback heading to five lines. Declaring the template
+     here pins it to one column no matter what else matches the shell class. */
   .legal-policy {
     display: grid;
+    grid-template-columns: minmax(0, 1fr);
     gap: var(--ac-space-5);
     min-height: 480px;
     padding-block: 0;
@@ -175,27 +182,14 @@ const hasProviderPolicy = Boolean(policyId || hostedUrl);
     font-size: var(--ac-text-sm);
   }
 
-  @media (min-width: 60rem) {
-    .legal-policy {
-      grid-template-columns: minmax(0, 7fr) minmax(16rem, 3fr);
-      column-gap: clamp(3rem, 7vw, 7rem);
-    }
-
-    .legal-policy__header,
-    .legal-policy__document,
-    .legal-policy__unavailable {
-      grid-column: 1;
-    }
-
-    .legal-policy__fallback {
-      grid-column: 2;
-      grid-row: 1 / span 2;
-      align-self: start;
-      margin-top: var(--ac-space-7);
-    }
-
-    .legal-policy__preview-note {
-      grid-column: 1;
-    }
+  /* THE 7fr / 3fr DESKTOP SPLIT WAS REMOVED 2026-09-04.
+     The three legal routes cap this article at 820px, so the 3fr sidebar resolved to its 16rem
+     floor — 256px — and the fallback panel's heading wrapped to five lines beside a 463px
+     policy column. The provider fallback is a footnote to the policy, not a companion column:
+     it now runs full width beneath the embed, capped by its own max-width, on every viewport.
+     Nothing about the Termly integration changed — same embed, same script, same policy IDs,
+     same hosted-URL and mailto fallbacks. */
+  .legal-policy__fallback {
+    margin-top: var(--ac-space-3);
   }
 </style>

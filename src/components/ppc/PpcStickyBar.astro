@@ -1,0 +1,235 @@
+---
+// PPC MOBILE STICKY ACTIONS — brief "MOBILE STICKY CTA".
+//
+// Contract implemented here, point by point:
+//   - Below 1200px only. "No desktop fixed bar is needed", so there is none: the media query
+//     removes it entirely rather than hiding it with opacity.
+//   - Shown only "after the complete hero has left the viewport" — an IntersectionObserver on
+//     the real hero element, not a scroll-offset guess.
+//   - Hidden "while the hero/form is visible or the user is editing a form field, and when a
+//     modal cookie panel needs that space". All three are separate suppressors, any one of which
+//     wins, so the bar can never sit on top of a focused control or the consent dialog.
+//   - "Reserve the actual bar height plus safe-area inset at the bottom of the document while
+//     shown." The height is MEASURED with a ResizeObserver and written to --ppc-bar-height; the
+//     reservation is applied to <body> only while the bar is actually visible, so no page ever
+//     reserves space for an absent control.
+//   - "Both actions have at least 48px tap height."
+//
+// The bar is NOT the primary conversion surface and carries no wording of its own: the call
+// label is site.offer.primaryCta and the form link is the campaign's own secondary label.
+//
+// A `tel:` click asks the device to open its dialler. It is not evidence of a connected call and
+// nothing here claims otherwise — see the `phone_click` intent event in Analytics.astro.
+import { site } from "@data/site";
+
+interface Props {
+  /** The element whose exit from the viewport reveals the bar. */
+  heroSelector: string;
+  /** Same-page target for the secondary action. */
+  formHref: string;
+  secondaryLabel: string;
+}
+
+const { heroSelector, formHref, secondaryLabel } = Astro.props;
+const phoneHref = site.business.phoneUri;
+---
+
+<div
+  class="ppc-bar"
+  data-ppc-bar
+  data-hero-selector={heroSelector}
+  hidden
+>
+  {phoneHref && (
+    <a class="ppc-bar__call" href={phoneHref}>{site.offer.primaryCta}</a>
+  )}
+  <a class="ppc-bar__message" href={formHref} data-ppc-bar-form>{secondaryLabel}</a>
+</div>
+
+<script>
+  const bar = document.querySelector<HTMLElement>("[data-ppc-bar]");
+
+  if (bar) {
+    const heroSelector = bar.dataset.heroSelector || "";
+    const hero = heroSelector ? document.querySelector<HTMLElement>(heroSelector) : null;
+    const desktop = window.matchMedia("(min-width: 75rem)");
+
+    // Three independent suppressors. The bar shows only when the hero has left the viewport AND
+    // none of them is active.
+    let heroVisible = true;
+    let editing = false;
+    let consentOpen = false;
+
+    const setReservation = () => {
+      const visible = !bar.hidden;
+      document.body.classList.toggle("ppc-has-bar", visible);
+      if (visible) {
+        // MEASURED, not assumed. The bar is two flex children with wrapping labels; at 320px it
+        // can be taller than at 414px, and the reservation has to match whatever it actually is.
+        document.documentElement.style.setProperty(
+          "--ppc-bar-height",
+          `${Math.ceil(bar.getBoundingClientRect().height)}px`
+        );
+      } else {
+        document.documentElement.style.removeProperty("--ppc-bar-height");
+      }
+    };
+
+    const update = () => {
+      const shouldShow = !desktop.matches && !heroVisible && !editing && !consentOpen;
+      if (bar.hidden === !shouldShow) {
+        // State unchanged; still refresh the reservation in case the bar's height changed.
+        if (shouldShow) setReservation();
+        return;
+      }
+      bar.hidden = !shouldShow;
+      setReservation();
+    };
+
+    if (hero && "IntersectionObserver" in window) {
+      // threshold 0 => "any part of the hero is in the viewport". The bar therefore appears only
+      // once the COMPLETE hero, including the form, has scrolled past.
+      new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) heroVisible = entry.isIntersecting;
+          update();
+        },
+        { threshold: 0 }
+      ).observe(hero);
+    } else if (hero) {
+      // Fallback for the no-IntersectionObserver case: same rule, read on scroll.
+      const check = () => {
+        const rect = hero.getBoundingClientRect();
+        heroVisible = rect.bottom > 0 && rect.top < window.innerHeight;
+        update();
+      };
+      window.addEventListener("scroll", check, { passive: true });
+      check();
+    } else {
+      heroVisible = false;
+    }
+
+    // EDITING — a focused text control usually means the software keyboard is open. Fixed
+    // positioning does not reliably avoid it, so the bar is removed from the flow entirely
+    // while a field has focus rather than being trusted to sit above it.
+    const isEditable = (node: EventTarget | null) =>
+      node instanceof HTMLElement &&
+      (node.matches("input:not([type=hidden]), textarea, select") ||
+        node.isContentEditable);
+
+    document.addEventListener("focusin", (event) => {
+      if (!isEditable(event.target)) return;
+      editing = true;
+      update();
+    });
+
+    document.addEventListener("focusout", (event) => {
+      if (!isEditable(event.target)) return;
+      // Deferred: focus moving between two fields fires focusout before focusin, and without
+      // the tick the bar would flash back in between every field.
+      window.setTimeout(() => {
+        editing = isEditable(document.activeElement);
+        update();
+      }, 0);
+    });
+
+    // CONSENT — the Termly prompt is a real bottom-anchored surface. While it is present it owns
+    // that space; the bar yields rather than stacking on top of it. Observed, never suppressed.
+    const CONSENT_SELECTOR = ".t-consentPrompt, [data-name='termly-embed-banner'] .t-consentPrompt";
+    const readConsent = () => {
+      const prompt = document.querySelector<HTMLElement>(CONSENT_SELECTOR);
+      consentOpen = Boolean(prompt && prompt.getBoundingClientRect().height > 0);
+    };
+    readConsent();
+    new MutationObserver(() => {
+      readConsent();
+      update();
+    }).observe(document.body, { childList: true, subtree: true });
+
+    if (typeof ResizeObserver !== "undefined") {
+      new ResizeObserver(() => {
+        if (!bar.hidden) setReservation();
+      }).observe(bar);
+    }
+
+    desktop.addEventListener("change", update);
+    window.addEventListener("resize", update, { passive: true });
+    update();
+  }
+</script>
+
+<style>
+  .ppc-bar {
+    position: fixed;
+    z-index: 80;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    border-top: 1px solid rgb(255 255 255 / 15%);
+  }
+
+  .ppc-bar[hidden] {
+    display: none;
+  }
+
+  .ppc-bar a {
+    display: flex;
+    /* Brief: "Both actions have at least 48px tap height." */
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+    box-sizing: border-box;
+    padding: 14px 8px;
+    /* The inset goes on the ANCHORS so each half keeps its fill to the physical screen edge
+       while its tappable label sits above the home indicator — the same correction
+       MobileCTA.astro records. Zero on every device reporting no inset. */
+    padding-bottom: calc(14px + env(safe-area-inset-bottom, 0px));
+    font-size: 0.875rem;
+    font-weight: 700;
+    line-height: 1.25;
+    text-align: center;
+    text-decoration: none;
+  }
+
+  /* The call is the primary marketing action: filled navy, and the wider slot. */
+  .ppc-bar__call {
+    flex: 1.6;
+    background: var(--ac-color-navy-800);
+    color: #fff;
+  }
+
+  /* The form link is clearly subordinate: quiet, on paper. */
+  .ppc-bar__message {
+    flex: 1;
+    border-left: 1px solid var(--ac-color-line-strong);
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+  }
+
+  .ppc-bar a:focus-visible {
+    outline: 3px solid var(--ac-color-focus);
+    outline-offset: -3px;
+  }
+
+  @media (max-width: 25rem) {
+    .ppc-bar a {
+      padding-inline: 4px;
+      font-size: 0.8125rem;
+    }
+  }
+
+  /* "No desktop fixed bar is needed." Removed outright at >=1200px, not merely hidden. */
+  @media (min-width: 75rem) {
+    .ppc-bar {
+      display: none;
+    }
+  }
+
+  @media print {
+    .ppc-bar {
+      display: none;
+    }
+  }
+</style>

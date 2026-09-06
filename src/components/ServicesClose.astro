@@ -52,10 +52,6 @@ const smsHref = site.business.smsUri;
           </li>
         ))}
       </ol>
-
-      <a class="svc-close__method" href={start.methodLink.href}>
-        {start.methodLink.label} <span aria-hidden="true">&rarr;</span>
-      </a>
     </div>
 
     <div class="svc-close__action">
@@ -63,14 +59,15 @@ const smsHref = site.business.smsUri;
       <p class="svc-close__lede">{close.lede}</p>
 
       <div class="svc-close__actions">
-        <a class="svc-close__primary" href="/request-assessment/">{site.offer.primaryCta}</a>
+        <a class="svc-close__primary" href="/request-assessment/">Request an Assessment</a>
         {/* doc 27 §8 — the secondary door appears wherever the primary does. Both suppressed
             with the phone value they derive from (AGENTS.md §3: never render an empty phone
             link). This is also why the mobile bar can drop to two actions on this route: the
             text door still ships here, on the same page. */}
         <div class="svc-close__secondary">
+          <a href="/request-assessment/#photos">Start With Photos</a>
           {phoneHref && <a href={phoneHref}>Call {site.business.phone}</a>}
-          {smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
+          {smsHref && <a href={smsHref}>{site.offer.smsCta}</a>}
         </div>
       </div>
 
@@ -152,27 +149,6 @@ const smsHref = site.business.smsUri;
     text-wrap: pretty;
   }
 
-  .svc-close__method {
-    /* inline-flex makes the label and the arrow flex items, which drops the whitespace
-       text node between them. `gap` puts the space back. */
-    gap: 0.4em;
-    display: inline-flex;
-    min-height: 44px;
-    align-items: center;
-    margin-top: 18px;
-    color: var(--ac-color-paper);
-    font-size: 0.9375rem;
-    font-weight: 700;
-    text-decoration: none;
-    text-underline-offset: 5px;
-  }
-
-  .svc-close__method:hover {
-    color: var(--ac-color-blue-pale);
-    text-decoration: underline;
-  }
-
-  .svc-close__method:focus-visible,
   .svc-close__primary:focus-visible,
   .svc-close__secondary a:focus-visible {
     outline: 3px solid var(--ac-color-paper);

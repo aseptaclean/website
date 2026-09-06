@@ -1,0 +1,457 @@
+---
+// HOARDING PPC LANDING PAGE — /hoarding-cleanup-san-jose/assessment/
+// docs/page-briefs/PPC-HOARDING-SAN-JOSE.md (AC-PPC-HOARDING-1.0), built on the shared visual
+// system AC-CP70-91130-1.1 (70% ClearPath / 30% 911 Bio Clean).
+//
+// ROUTE COLLISION CHECKED BEFORE CREATION. src/pages/hoarding-cleanup-san-jose/ contained only
+// index.astro; nothing built, redirected or linked to /hoarding-cleanup-san-jose/assessment/.
+// public/_redirects has no rule matching it. The SEO service page at
+// /hoarding-cleanup-san-jose/ is untouched by this file and keeps its own copy record in
+// src/data/servicePageCopy.ts.
+//
+// INDEXING: `noindex` is passed explicitly AND the route is absent from
+// src/data/launchArchitecture.ts `launchIndexablePaths`, which is what sitemap.xml.ts iterates.
+// So it is out of the sitemap and out of the primary navigation by construction, not by a rule
+// somebody has to remember. Verified in dist/, not assumed.
+//
+// SECTION MAP — every numbered section in the brief, in order:
+//   01 hero + form            PpcHero + PpcHeroForm
+//   02 trust strip            inline, slim paper band
+//   03–04 decisions band      PpcDecisions (combined, per the brief's own instruction)
+//   05 recognition            AcSplit (paper, image left) + AcCheckList
+//   06 process                AcIntro + AcSteps, all five steps
+//   07 hidden conditions      AcDarkBand (copy left, photo right)
+//   08 why Aseptaclean        AcSplit — copy-only, see the founder-portrait note below
+//   09 cost                   inline, 880px measure, two-column factor list
+//   10 FAQ                    AcIntro + FaqAccordion, six questions
+//   11 final action           inline deep-navy band, copy left, actions right
+//   footer                    PpcFooter (compact)
+//
+// PHOTOGRAPHY — REPOINTED 2026-09-05 to the owner image package. The four slots kept their
+// brief-specified subjects; only the file behind each one improved. The package's placement
+// index does not name this campaign route (it maps the numbered images to the twelve public
+// pages), so nothing here is a new image slot — this is the manifest's own standing rule,
+// "Reuse current verified assets before sourcing replacements", applied to a better inventory.
+// Each numbered image is still ORIGINAL ILLUSTRATIVE work; that provenance is recorded in
+// docs/06-ASSET-MANIFEST.md rather than printed on the page.
+//   hero        household accumulation across a room    package 03 hoarding-living-room
+//   decisions   belongings, sorting scale               package 05 hoarding-garage-contents
+//   recognition accumulation restricting movement       package 04 hoarding-restricted-walkway
+//   hidden      condition revealed under stored material package 08 extreme-cleaning-floor-edges
+//
+// SUBJECT-RELEVANCE CORRECTION 2026-09-06, at the owner's instruction. §05 recognition held
+// `extreme-cleaning-neglected-kitchen` — a grease-and-grime kitchen detail. The section's own
+// copy opens "Accumulated belongings may be only one part of the condition," so the slot's
+// subject is accumulation and restricted access, and a cleaning-detail photograph answered the
+// section's *list* while contradicting its heading and lead. Repointed to package 04
+// `hoarding-restricted-walkway`, which shows belongings narrowing a passage.
+//
+// The other three slots were re-checked for the same mismatch in the same pass and all three
+// stand:
+//   · hero and decisions are already hoarding subjects (accumulation, then belongings to sort).
+//   · §07 hidden KEEPS its cleaning-detail image. That is the one section whose copy is
+//     specifically about cleaning beneath removed contents — "A floor that has not been visible
+//     for years may look different once accumulated belongings are removed" — which is exactly
+//     the condition `extreme-cleaning-floor-edges` depicts. Swapping it to hoarding imagery
+//     would have been the same error in the other direction.
+// The hero photograph and the founder portrait are untouched.
+// The brief's Adobe IDs remain a CANDIDATE SHORTLIST, not licensed files; no Adobe preview is
+// used and nothing watermarked ships.
+//
+// FOUNDER PORTRAIT — DEPENDENCY CLOSED 2026-09-05. A real photograph of Matthew Ruiz now exists
+// in the repository (owner-supplied, 1152x1536, 3:4), so §08 renders its image track instead of
+// collapsing it and recording data-needs-asset. AGENTS.md §0.3 and profile CSS-10 forbid a stock
+// or generated person in a founder slot; this is the genuine article, which is what they were
+// holding the slot open for.
+import PpcLayout from "@layouts/PpcLayout.astro";
+import PpcHero from "@components/ppc/PpcHero.astro";
+import PpcHeroForm from "@components/ppc/PpcHeroForm.astro";
+import PpcDecisions from "@components/ppc/PpcDecisions.astro";
+import AcSplit from "@components/ac/AcSplit.astro";
+import AcDarkBand from "@components/ac/AcDarkBand.astro";
+import AcIntro from "@components/ac/AcIntro.astro";
+import AcSteps from "@components/ac/AcSteps.astro";
+import AcCheckList from "@components/ac/AcCheckList.astro";
+import AcActions from "@components/ac/AcActions.astro";
+import FaqAccordion from "@components/FaqAccordion.astro";
+import { legal, site } from "@data/site";
+import { ppcHoarding, ppcCallLabel } from "@data/ppcHoarding";
+
+import heroImage from "../../../assets/aseptaclean/hoarding-living-room.png";
+import decisionsImage from "../../../assets/aseptaclean/hoarding-garage-contents.png";
+import recognitionImage from "../../../assets/aseptaclean/hoarding-restricted-walkway.png";
+import hiddenImage from "../../../assets/aseptaclean/extreme-cleaning-floor-edges.png";
+import founderPortrait from "../../../assets/aseptaclean/founder-matthew-ruiz.jpeg";
+
+const copy = ppcHoarding;
+const formHref = `#${copy.formId}`;
+const trustCount = copy.trust.length;
+
+// PHOTO DISCLOSURE REMOVED 2026-09-05 at the owner's instruction, with the sitewide reference
+// captions. The footer previously carried a page-level note describing the four property
+// photographs as illustrative reference imagery; that provenance now lives only in
+// docs/06-ASSET-MANIFEST.md. No image here is presented as an Aseptaclean job, result or crew,
+// and the alt text still describes what is visible without claiming otherwise.
+---
+
+<PpcLayout
+  title={copy.seo.title}
+  description={copy.seo.description}
+  canonicalPath={copy.route}
+  noindex={true}
+  stickyHeroSelector="#ppc-hero"
+  stickyFormHref={formHref}
+  stickySecondaryLabel={copy.stickyBar.secondaryLabel}
+>
+  {/* 01 — HERO. One H1. Copy left, single intake form right. Below 1200px the form follows the
+      copy and the call immediately, with nothing in between. */}
+  <PpcHero
+    id="ppc-hero"
+    eyebrow={copy.hero.eyebrow}
+    heading={copy.hero.heading}
+    headingId="ppc-hero-title"
+    lead={copy.hero.lead}
+    body={copy.hero.body}
+    image={heroImage}
+    imageAlt="A living room where boxes, textiles, books and household belongings cover the sofa and floor, leaving a narrow walkway."
+    primaryLabel={ppcCallLabel}
+    secondaryLabel={copy.hero.secondaryLabel}
+    formHref={formHref}
+    supportingLine={copy.hero.supportingLine}
+  >
+    <PpcHeroForm
+      slot="form"
+      formId={copy.formId}
+      entryRoute={`${copy.route}#${copy.formId}`}
+      situationValue="Hoarding or heavy clutter"
+      title={copy.form.title}
+      intro={copy.form.intro}
+      submitLabel={copy.form.submitLabel}
+      descriptionHelper={copy.form.descriptionHelper}
+      photoHelper={copy.form.photoHelper}
+      microcopy={copy.form.microcopy}
+      thankYouRoute={copy.thankYou.route}
+    />
+  </PpcHero>
+
+  {/* 02 — TRUST STRIP. Slim paper band, four inline items when Insured is verified, three
+      otherwise, with equal tracks either way. Text only: no badges, no cards, no credential
+      Aseptaclean does not hold (AGENTS.md §0.3 / §2.2.7). */}
+  <section class="ppc-trust" aria-label="How Aseptaclean works">
+    <div class="ac-shell">
+      <ul class="ppc-trust__grid" style={`--ac-trust-count: ${trustCount}`}>
+        {copy.trust.map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+  </section>
+
+  {/* 03–04 — DECISIONS. One continuous white band. */}
+  <PpcDecisions
+    id="decisions"
+    secondId="decision-plan"
+    heading={copy.decisions.heading}
+    body={copy.decisions.body}
+    rowHeading={copy.decisions.rowHeading}
+    row={copy.decisions.row}
+    strongLine={copy.decisions.strongLine}
+    image={decisionsImage}
+    imageAlt="A residential garage holding boxes, storage tubs, folded bedding, shelving and a chair."
+  />
+
+  {/* 05 — RECOGNITION. Paper background, equal image/text split, image left on desktop and
+      after the copy on mobile. */}
+  <AcSplit
+    heading={copy.recognition.heading}
+    headingId="recognition"
+    lead={copy.recognition.lead}
+    body={copy.recognition.body}
+    pullQuote={copy.recognition.pullQuote}
+    image={recognitionImage}
+    imageAlt="Accumulated household belongings narrowing a passage through a home."
+    tone="soft"
+  >
+    <div class="ppc-list">
+      <AcCheckList items={copy.recognition.list} compact />
+    </div>
+    {copy.recognition.closing.map((paragraph) => <p class="ppc-closing">{paragraph}</p>)}
+  </AcSplit>
+
+  {/* 06 — PROCESS. White section, title above five compact horizontal steps. All five retained
+      (profile CSS-09 forbids deleting one to imitate a four-icon reference). */}
+  <AcIntro heading={copy.process.heading} headingId="process" align="start">
+    <div class="ppc-steps">
+      <AcSteps steps={copy.process.steps} tone="light" />
+    </div>
+  </AcIntro>
+
+  {/* 07 — HIDDEN CONDITIONS. Deep navy photo/text band, copy left, substantial photo right.
+      No emergency badge, no 24-hour promise (profile CSS-06). No action here: the closing band
+      carries the page's second call. */}
+  <AcDarkBand
+    heading={copy.hidden.heading}
+    headingId="hidden-conditions"
+    body={copy.hidden.body}
+    pullQuote={copy.hidden.pullQuote}
+    image={hiddenImage}
+    imageAlt="A low view into a neglected room showing dirty flooring, dusty baseboards and buildup along the perimeter."
+    showActions={false}
+  >
+    <p class="ppc-dark-closing">{copy.hidden.closing}</p>
+  </AcDarkBand>
+
+  {/* 08 — WHY ASEPTACLEAN. Founder image track RESTORED; see the note at the top of this file.
+      Contained 3:4 portrait plate, 4:5 on mobile — the package's own founder treatment. The
+      founder-authority limit is verbatim-mandatory wherever the background appears
+      (docs/02-CURRENT-FACTS.md "Preserve factual boundaries" / doc 21 §2.4). */}
+  <AcSplit
+    heading={copy.founder.heading}
+    headingId="why-aseptaclean"
+    body={copy.founder.body}
+    pullQuote={copy.founder.pullQuote}
+    image={founderPortrait}
+    imageAlt="Matthew Ruiz, founder of Aseptaclean"
+    ratio="3/4"
+  >
+    <p class="ppc-limit">{legal.founderAuthorityLimit}</p>
+    {copy.founder.credentials.length > 0 && (
+      <div class="ppc-credentials">
+        <h3 class="ac-type-h3-band">{copy.founder.credentialsHeading}</h3>
+        <AcCheckList items={copy.founder.credentials} compact />
+      </div>
+    )}
+  </AcSplit>
+
+  {/* 09 — COST. Paper background, 880px reading measure, compact two-column factor list on
+      desktop. No pricing card, no invented minimum, no figure of any kind (AGENTS.md §4). */}
+  <section class="ppc-cost" aria-labelledby="cost-title">
+    <div class="ac-shell">
+      <div class="ppc-cost__inner">
+        <h2 id="cost-title" class="ac-type-h2">{copy.cost.heading}</h2>
+        {copy.cost.body.map((paragraph) => <p class="ppc-cost__body">{paragraph}</p>)}
+        <div class="ppc-cost__factors">
+          <AcCheckList items={copy.cost.factors} columns={2} compact />
+        </div>
+        <p class="ppc-cost__body">{copy.cost.closing}</p>
+        <p class="ppc-cost__strong">{copy.cost.strongLine}</p>
+        <div class="ppc-cost__actions">
+          <AcActions
+            primaryLabel={ppcCallLabel}
+            secondaryLabel={copy.hero.secondaryLabel}
+            secondaryHref={formHref}
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* 10 — FAQ. Six real questions, 880px measure, separated rows. Native details/summary, so
+      the controls are keyboard-operable without any script. */}
+  <AcIntro heading={copy.faq.heading} headingId="faq" align="start" tone="soft">
+    <div class="ppc-faq">
+      <FaqAccordion items={copy.faq.items} headingId="faq" />
+    </div>
+  </AcIntro>
+
+  {/* 11 — FINAL ACTION. Deep navy contained band, copy left, actions right, stacked on mobile.
+      No second form: the secondary action returns to the single hero form, which preserves
+      whatever the visitor has already typed because the page never reloads. */}
+  <section class="ppc-final" aria-labelledby="final-title">
+    <div class="ac-shell">
+      <div class="ppc-final__grid">
+        <div class="ppc-final__copy">
+          <h2 id="final-title" class="ac-type-h2">{copy.final.heading}</h2>
+          <p class="ppc-final__sub">{copy.final.subheading}</p>
+          {copy.final.body.map((paragraph) => <p class="ppc-final__body">{paragraph}</p>)}
+        </div>
+        <div class="ppc-final__actions">
+          <AcActions
+            tone="dark"
+            primaryLabel={ppcCallLabel}
+            secondaryLabel={copy.hero.secondaryLabel}
+            secondaryHref={formHref}
+          />
+          <p class="ppc-final__note">
+            Contacting {site.business.name} does not authorize work or create a service agreement.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</PpcLayout>
+
+<style>
+  /* ---- 02 trust strip ------------------------------------------------------------------- */
+  .ppc-trust {
+    border-bottom: 1px solid var(--ac-color-line);
+    background: var(--ac-color-warm-white);
+  }
+
+  /* Equal tracks driven by the number of items ACTUALLY rendered, so the strip stays balanced
+     whether Insured is verified or suppressed (the brief's --ac-trust-count recipe). */
+  .ppc-trust__grid {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 16px 24px;
+    grid-template-columns: repeat(var(--ac-trust-count, 4), minmax(0, 1fr));
+  }
+
+  .ppc-trust__grid li {
+    min-width: 0;
+    color: var(--ac-color-navy-900);
+    font-size: 0.8125rem;
+    font-weight: 650;
+    letter-spacing: 0.06em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 767px) {
+    .ppc-trust__grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  /* ---- shared body-section helpers ------------------------------------------------------ */
+  .ppc-list,
+  .ppc-credentials {
+    margin-top: 22px;
+  }
+
+  .ppc-steps {
+    margin-top: 40px;
+  }
+
+  .ppc-closing {
+    margin: 18px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .ppc-dark-closing {
+    margin: 18px 0 0;
+    color: #c3d2e4;
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .ppc-limit {
+    margin: 22px 0 0;
+    border-left: 2px solid var(--ac-color-line-strong);
+    padding-left: 18px;
+    color: var(--ac-color-ink-500);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .ppc-credentials h3 {
+    margin: 0 0 14px;
+  }
+
+  /* ---- 09 cost ------------------------------------------------------------------------- */
+  .ppc-cost {
+    background: var(--ac-color-warm-white);
+  }
+
+  /* Brief: "readable copy max 880px". */
+  .ppc-cost__inner {
+    max-width: 880px;
+  }
+
+  .ppc-cost__body {
+    margin: 16px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .ppc-cost__factors {
+    margin-top: 22px;
+  }
+
+  .ppc-cost__strong {
+    margin: 24px 0 0;
+    border-left: 2px solid var(--ac-color-navy-800);
+    padding-left: 18px;
+    color: var(--ac-color-navy-900);
+    font-size: 1.0625rem;
+    font-weight: 650;
+    line-height: 1.55;
+  }
+
+  .ppc-cost__actions {
+    margin-top: 28px;
+  }
+
+  /* ---- 10 FAQ -------------------------------------------------------------------------- */
+  .ppc-faq {
+    margin-top: 34px;
+  }
+
+  /* ---- 11 final action ----------------------------------------------------------------- */
+  .ppc-final {
+    background: var(--ac-color-navy-950);
+    color: #fff;
+  }
+
+  /* Brief recipe: copy takes the fluid track, the actions take their own width. */
+  .ppc-final__grid {
+    display: grid;
+    align-items: center;
+    gap: 32px;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .ppc-final__grid > * {
+    min-width: 0;
+  }
+
+  .ppc-final__copy h2 {
+    color: #fff;
+    text-wrap: balance;
+  }
+
+  .ppc-final__sub {
+    margin: 16px 0 0;
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 650;
+    line-height: 1.5;
+  }
+
+  .ppc-final__body {
+    margin: 12px 0 0;
+    max-width: 56ch;
+    color: #c3d2e4;
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .ppc-final__actions {
+    display: grid;
+    min-width: 0;
+    gap: 14px;
+    justify-items: start;
+  }
+
+  .ppc-final__note {
+    margin: 0;
+    max-width: 34ch;
+    color: #8fa6bf;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 62rem) {
+    .ppc-final__grid {
+      gap: 28px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ppc-final__note {
+      max-width: none;
+    }
+  }
+</style>

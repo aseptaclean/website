@@ -1,0 +1,101 @@
+---
+// ServiceVisualCard — HOME 05's "SERVICE CARD GRID" component, per
+// docs/aseptaclean-BUILD-EXACT-v3-STANDALONE.md §7.6: photographic tile, 4:3 image, title + body
+// + link. No rounded outer card, no heavy shadow, no icon-first treatment — the spec's own rule
+// for this component ("No rounded outer card. No heavy shadow. No icon-first card.") is why this
+// stays square-cornered and border-free rather than becoming a boxed SaaS-style card; "card" here
+// names the section's grid arrangement (3+2, distinct tiles), not a bordered/shadowed container.
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  image: ImageMetadata;
+  imageAlt: string;
+  title: string;
+  description: string;
+  href: string;
+  linkLabel: string;
+}
+
+const { image, imageAlt, title, description, href, linkLabel } = Astro.props;
+---
+
+<article class="ac-service-card">
+  <a class="ac-service-card__media" href={href} tabindex="-1" aria-hidden="true">
+    <Image
+      src={image}
+      alt={imageAlt}
+      widths={[420, 640, 860]}
+      sizes="(min-width: 850px) 32vw, 92vw"
+      format="webp"
+      quality={72}
+      loading="lazy"
+      decoding="async"
+    />
+  </a>
+  <div class="ac-service-card__body">
+    <h3 class="ac-type-h3-card"><a href={href}>{title}</a></h3>
+    <p>{description}</p>
+    <a class="ac-service-card__link" href={href}>{linkLabel} →</a>
+  </div>
+</article>
+
+<style>
+  .ac-service-card {
+    display: block;
+    background: transparent;
+  }
+
+  .ac-service-card__media {
+    display: block;
+    margin: 0;
+    aspect-ratio: 4 / 3;
+    overflow: hidden;
+    background: var(--ac-color-steel-200);
+    border-radius: 2px;
+  }
+
+  .ac-service-card__media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ac-service-card__body {
+    padding-top: 18px;
+  }
+
+  .ac-service-card__body h3 {
+    margin: 0 0 8px;
+  }
+
+  .ac-service-card__body h3 a {
+    color: var(--ac-color-ink-900);
+    text-decoration: none;
+  }
+
+  .ac-service-card__body h3 a:hover {
+    text-decoration: underline;
+  }
+
+  .ac-service-card__body p {
+    margin: 0;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  .ac-service-card__link {
+    display: inline-flex;
+    margin-top: 14px;
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+
+  .ac-service-card__link:hover {
+    text-decoration: underline;
+  }
+</style>

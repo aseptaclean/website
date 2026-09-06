@@ -1,0 +1,170 @@
+---
+// PPC HEADER — docs/page-briefs/PPC-HOARDING-SAN-JOSE.md "Explicit PPC exceptions":
+// "Logo plus telephone/Call Aseptaclean; omit Services/About/Contact menus and dropdown", with
+// the shared design retained: "White header, existing logo, 72px desktop/64px mobile main-row
+// target, same container".
+//
+// This is a SCOPED VARIANT, not a fork of Header.astro. Every value it renders comes from the
+// same sources the sitewide header reads — src/data/site.ts for the logo, the display phone and
+// the `tel:` URI — so a change to the central business record moves both headers at once. The
+// only difference is what is omitted: the primary nav links and the Services dropdown.
+//
+// An audit must not "restore" the navigation here. The brief fences that explicitly.
+//
+// The logo keeps its real home link (brief: "do not make it an inert imitation").
+import { site } from "@data/site";
+
+const phoneHref = site.business.phoneUri;
+---
+
+<header class="ppc-header">
+  <div class="ppc-header__row">
+    <a class="ppc-header__logo" href="/">
+      <img
+        src={site.business.logoUrl}
+        alt={`${site.business.name} — home`}
+        width="900"
+        height="215"
+      />
+    </a>
+
+    {/* Suppression rule (AGENTS.md §3): never render an empty phone link. If the central phone
+        value is ever cleared, this whole block disappears rather than shipping a dead control. */}
+    {phoneHref && (
+      <div class="ppc-header__actions">
+        <a class="ppc-header__number" href={phoneHref}>{site.business.phone}</a>
+        <a class="ppc-header__cta" href={phoneHref}>
+          <svg class="ppc-header__cta-icon" aria-hidden="true" viewBox="0 0 16 16" width="14" height="14">
+            <path
+              d="M5.2 1.8 6.6 4.6 5.2 6a9.4 9.4 0 0 0 4.8 4.8l1.4-1.4 2.8 1.4v2.4c0 .6-.5 1-1.1 1A12.7 12.7 0 0 1 1.2 2.9c0-.6.4-1.1 1-1.1z"
+              fill="currentColor"
+            />
+          </svg>
+          <span>{site.offer.primaryCta}</span>
+        </a>
+      </div>
+    )}
+  </div>
+</header>
+
+<style>
+  /* Same surface, border, sticky behaviour and z-index as the sitewide `.site-nav`, so the
+     campaign route reads as the same website. */
+  .ppc-header {
+    position: sticky;
+    z-index: 50;
+    top: 0;
+    border-bottom: 1px solid var(--ac-color-line);
+    background: var(--ac-color-paper);
+  }
+
+  /* The shared container: `min(100% - 2 * gutter, 1320px)`, and the shared 72px main-row target
+     bound to --ac-header-stack so it steps to 64px with the rest of the site below 768px. */
+  .ppc-header__row {
+    display: flex;
+    width: min(100% - 2 * var(--ac-gutter), var(--ac-measure-wide));
+    min-height: var(--ac-header-stack);
+    align-items: center;
+    justify-content: space-between;
+    margin-inline: auto;
+    gap: 16px;
+  }
+
+  .ppc-header__logo {
+    display: flex;
+    flex: 0 0 auto;
+    min-height: 48px;
+    align-items: center;
+  }
+
+  .ppc-header__logo img {
+    width: auto;
+    height: 34px;
+  }
+
+  .ppc-header__actions {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 18px;
+  }
+
+  .ppc-header__number {
+    color: var(--ac-color-navy-900);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    white-space: nowrap;
+    text-decoration: none;
+  }
+
+  .ppc-header__number:hover {
+    color: var(--ac-color-navy-800);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* Identical control recipe to `.site-nav__cta` — 48px minimum, 4px radius, filled navy. */
+  .ppc-header__cta {
+    display: flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--ac-r-sm);
+    padding-inline: 20px;
+    background: var(--ac-color-navy-800);
+    color: var(--ac-color-paper);
+    font-size: 0.8125rem;
+    font-weight: 750;
+    white-space: nowrap;
+    gap: 8px;
+    text-decoration: none;
+  }
+
+  .ppc-header__cta:hover {
+    background: var(--ac-color-navy-900);
+    color: var(--ac-color-paper);
+  }
+
+  .ppc-header__cta-icon {
+    flex: 0 0 auto;
+  }
+
+  /* Below 30rem the standalone number and the button both fit only by shrinking one of them
+     under its readable/tap floor. The button wins because it IS the number — same `tel:` URI —
+     so nothing is lost by dropping the duplicate text. */
+  @media (max-width: 30rem) {
+    .ppc-header__number {
+      display: none;
+    }
+
+    .ppc-header__logo img {
+      height: 30px;
+    }
+  }
+
+  /* MEASURED DEFECT, 320px: logo (125px at 30px tall) + gap + the call button (172px) came to
+     313px inside a 280px shell, so the header pushed the document into horizontal scrolling.
+     Tightened here rather than by dropping the call — the button keeps its 48px tap height and
+     its label, and only the logo scale and the button's own padding give way. */
+  @media (max-width: 22.5rem) {
+    .ppc-header__row {
+      gap: 10px;
+    }
+
+    .ppc-header__logo img {
+      height: 26px;
+    }
+
+    .ppc-header__cta {
+      padding-inline: 12px;
+      font-size: 0.75rem;
+      gap: 6px;
+    }
+  }
+
+  @media print {
+    .ppc-header {
+      display: none;
+    }
+  }
+</style>

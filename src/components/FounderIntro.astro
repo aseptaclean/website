@@ -1,0 +1,109 @@
+---
+// FOUNDER — homepage-only compact founder section, added 2026-09-03 per the homepage composition
+// rebuild (docs/05-DECISIONS-LOG.md, "Homepage section count reopened," 2026-09-03). The prior
+// 2026-08-25 V3 lean pass removed the homepage's founder section specifically because it rendered
+// an EMPTY BORDERED PHOTO BOX — no founder photograph exists in the repository, and AGENTS.md
+// §0.3 forbids inventing one. That constraint is unchanged today: this section ships copy-only,
+// with no image slot, empty or otherwise. When a real founder portrait exists, this is the first
+// place it belongs.
+//
+// Copy is docs/data/doc27CompanyPages.ts's approved `founderHeading` / `founderBody`, verbatim —
+// the same strings /about/ already renders — plus the mandatory founderAuthorityLimit clause
+// (doc 21 §2.4) wherever the founder's background appears.
+import { aboutPage } from "@data/doc27CompanyPages";
+import { legal, site } from "@data/site";
+---
+
+<section class="founder" aria-labelledby="founder-title">
+  <div class="founder__inner">
+    <p class="founder__eyebrow">Founder &amp; Principal Operator</p>
+    <h2 id="founder-title" class="ac-type-h2-home-feature">{aboutPage.founderHeading}</h2>
+    <p class="founder__body">{aboutPage.founderBody}</p>
+    <p class="founder__limit">{legal.founderAuthorityLimit}</p>
+    <a class="founder__link" href="/about/">
+      More about {site.founder.name} <span aria-hidden="true">&rarr;</span>
+    </a>
+  </div>
+</section>
+
+<style>
+  .founder {
+    background: var(--ac-color-warm-white);
+    padding-block: clamp(76px, 7.5vw, 112px);
+  }
+
+  .founder__inner {
+    width: min(100% - 64px, 800px);
+    margin-inline: auto;
+  }
+
+  .founder__eyebrow {
+    margin: 0 0 16px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.75rem;
+    font-weight: 750;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .founder__inner {
+    --ac-text-h2-home-feature: 2.25rem;
+  }
+
+  .founder__inner h2 {
+    max-width: 22ch;
+    color: var(--ac-color-navy-900);
+  }
+
+  .founder__body {
+    margin: 22px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.0625rem;
+    line-height: 1.62;
+    text-wrap: pretty;
+  }
+
+  .founder__limit {
+    margin: 20px 0 0;
+    max-width: 60ch;
+    border-left: 3px solid var(--ac-color-navy-800);
+    padding: 2px 0 2px 16px;
+    color: var(--ac-color-navy-900);
+    font-size: 0.875rem;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+
+  .founder__link {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    margin-top: 24px;
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-decoration: none;
+    text-underline-offset: 4px;
+  }
+
+  .founder__link:hover {
+    text-decoration: underline;
+  }
+
+  .founder__link:focus-visible {
+    outline: 3px solid var(--ac-color-navy-800);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 40rem) {
+    .founder {
+      padding-block: 64px;
+    }
+
+    .founder__inner {
+      width: calc(100% - 40px);
+      --ac-text-h2-home-feature: 2rem;
+    }
+  }
+</style>

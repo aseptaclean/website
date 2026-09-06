@@ -18,17 +18,71 @@ const field = (value: LeadRecord["data"][string] | undefined) => {
 
 const isDetailedLead = (lead: LeadRecord) => Boolean(lead.data.form_version);
 
-// Any of the six service-specific qualifying questions the lean form (2026-09-02 rebuild) may
-// have shown — at most one is ever present on a given submission.
-const serviceAnswer = (lead: LeadRecord) =>
-  field(
-    lead.data.belongings_must_be_kept ||
-      lead.data.pest_control_involved ||
-      lead.data.animal_waste_pattern ||
-      lead.data.belongings_block_access ||
-      lead.data.items_must_be_saved ||
-      lead.data.items_must_remain
-  );
+// ---------------------------------------------------------------------------------------------
+// SOURCE, TIMESTAMP AND CAMPAIGN ATTRIBUTION — added 2026-09-05.
+//
+// MEASURED GAP, not a speculative one. Inspecting the real HubSpot deals this pipeline has
+// produced (portal 244919964, e.g. deal 345516376815 / AC-4XV8GS) showed the summary carried
+// Offer, code, request id, property, situation, description and an upload COUNT — and nothing
+// about where the lead came from or when it was submitted. For an organic lead that is merely
+// incomplete; for a paid-search lead it is disabling, because the deal cannot be attributed to
+// the campaign, ad group or keyword that paid for it.
+//
+// The form has always collected these fields and functions/_lib/lead.ts has always stored them
+// in R2 — they simply stopped at the CRM boundary. This closes that gap using the EXISTING deal
+// property (`description`); no new HubSpot property is created.
+//
+// Lines are omitted entirely when their value is absent, so an organic submission does not gain
+// a block of "Not supplied" noise.
+const attributionLines = (lead: LeadRecord) => {
+  const value = (key: string) => {
+    const raw = lead.data[key];
+    const text = typeof raw === "string" ? raw.trim() : "";
+    return text || "";
+  };
+  const lines: string[] = [];
+
+  const source = value("entry_route") || value("landing_page") || value("submitted_from");
+  if (source) lines.push(`Source page: ${source}`);
+  lines.push(`Submitted: ${lead.receivedAt}`);
+
+  const campaign = [
+    ["Source", value("utm_source")],
+    ["Medium", value("utm_medium")],
+    ["Campaign", value("utm_campaign")],
+    ["Term", value("utm_term")],
+    ["Content", value("utm_content")],
+    ["GCLID", value("gclid")]
+  ].filter(([, v]) => v);
+  if (campaign.length) {
+    lines.push(`Campaign: ${campaign.map(([k, v]) => `${k}=${v}`).join("; ")}`);
+  }
+
+  const referrer = value("referrer");
+  if (referrer) lines.push(`Referrer: ${referrer}`);
+
+  // Consent is a required field, so its presence is a fact worth recording on the record that
+  // sales actually works from — not just in the R2 blob.
+  if (value("privacy_consent") === "yes") {
+    lines.push(`Consent: contact consent given at submission (${lead.receivedAt})`);
+  }
+
+  return lines;
+};
+
+// Photo REFERENCES, not links. These are private R2 object keys: they are not URLs, they are not
+// publicly resolvable, and nothing here exposes an uploaded property photo on an unrestricted
+// address. They let the owner find the exact objects for a submission in the bucket.
+const uploadLines = (lead: LeadRecord) => {
+  if (!lead.files.length) return [`Private uploads: 0`];
+  return [
+    `Private uploads: ${lead.files.length} (private R2 objects, not public URLs)`,
+    ...lead.files.map(
+      (file, index) =>
+        `  ${index + 1}. ${file.key} — ${file.originalName} (${file.contentType}, ${file.size} bytes)`
+    )
+  ];
+};
 
 export async function verifyTurnstile(
   env: LeadEnvironment,
@@ -79,9 +133,10 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
     firstname: name[0] ?? "",
     lastname: name.slice(1).join(" "),
     phone,
-    // field() renders "Not supplied" for humans reading a summary; writing that into a
-    // real CRM property would make it look like a city named "Not supplied".
-    ...(lead.data.property_city ? { city: String(lead.data.property_city) } : {})
+    // The short request-assessment form (2026-09-03) collects a ZIP, not a city. field()
+    // renders "Not supplied" for humans reading a summary; writing that into a real CRM
+    // property would make it look like a ZIP named "Not supplied".
+    ...(lead.data.property_zip ? { zip: String(lead.data.property_zip) } : {})
   };
   // Dedupe on whichever identifier we have. Phone matching is an exact-value match, so it
   // only collapses repeat submissions that share the site's own formatting — the long and
@@ -128,7 +183,8 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
           `Confirmation code: ${lead.code}`,
           `Request ID: ${lead.id}`,
           `Description: ${field(lead.data.property_detail || lead.data.additional_notes)}`,
-          `Private uploads: ${lead.files.length}`
+          ...attributionLines(lead),
+          ...uploadLines(lead)
         ]
       : isResidence
       ? [
@@ -148,17 +204,18 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
           `Safety routing: ${field(lead.data.safety_routing)}`,
           `Investment: ${field(lead.data.investment_range)}`,
           `Authority: ${field(lead.data.authority_to_approve)}`,
-          `Private uploads: ${lead.files.length}`
+          ...attributionLines(lead),
+          ...uploadLines(lead)
         ]
       : [
           `Offer: Assessment request`,
           `Confirmation code: ${lead.code}`,
           `Request ID: ${lead.id}`,
-          `Property: ${field(lead.data.property_city)} ${field(lead.data.property_zip)}`,
+          `Property ZIP: ${field(lead.data.property_zip)}`,
           `Situation: ${field(lead.data.property_situation)}`,
           `Description: ${field(lead.data.property_detail)}`,
-          `Service question: ${serviceAnswer(lead)}`,
-          `Private uploads: ${lead.files.length}`
+          ...attributionLines(lead),
+          ...uploadLines(lead)
         ]
   ).join("\n");
   const dealResponse = await fetch("https://api.hubapi.com/crm/v3/objects/deals", {
@@ -166,12 +223,12 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
     headers,
     body: JSON.stringify({
       properties: {
-        // The short form never asks for a city, so append it only when there is one
-        // rather than naming the deal "… — Not supplied".
+        // Neither the short homepage form nor the short assessment form asks for a city, so
+        // append the ZIP only when there is one rather than naming the deal "… — Not supplied".
         dealname: [
-          isResidence ? "Private Residence Reset" : "Handoff Reset",
+          isResidence ? "Private Residence Reset" : "Assessment request",
           String(lead.data.full_name),
-          ...(lead.data.property_city ? [String(lead.data.property_city)] : [])
+          ...(lead.data.property_zip ? [String(lead.data.property_zip)] : [])
         ].join(" — "),
         pipeline: env.HUBSPOT_PIPELINE_ID,
         dealstage: env.HUBSPOT_DEAL_STAGE_ID,
@@ -210,6 +267,18 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
 // lands in the customer's inbox.
 const CUSTOMER_REPLY_TO = "info@aseptaclean.com";
 
+// HOARDING PPC CAMPAIGN ROUTE. Owner decision 2026-09-06: the walkthrough offered through this
+// campaign is free, and only through this campaign. The confirmation email is therefore scoped by
+// the route the submission came from rather than by `offer_type` — this campaign posts the SHARED
+// `handoff_reset` offer type, so keying on that would have rewritten the confirmation for every
+// other form on the site and repriced an assessment the owner did not reprice.
+const HOARDING_CAMPAIGN_ROUTE = "/hoarding-cleanup-san-jose/assessment/";
+
+const isHoardingCampaignLead = (lead: LeadRecord) =>
+  [lead.data.entry_route, lead.data.landing_page, lead.data.submitted_from].some(
+    (value) => typeof value === "string" && value.startsWith(HOARDING_CAMPAIGN_ROUTE)
+  );
+
 async function sendResend(
   env: LeadEnvironment,
   message: { to: string; subject: string; text: string; replyTo?: string }
@@ -244,6 +313,7 @@ export function sendCustomerEmail(env: LeadEnvironment, lead: LeadRecord) {
     });
   }
   const isResidence = lead.data.offer_type === "private_residence_reset";
+  const isHoardingCampaign = !isResidence && isHoardingCampaignLead(lead);
   const callback =
     lead.callbackWindow === "business-hours"
       ? "Because your request arrived during published business hours, our operating standard is to call within 5 minutes."
@@ -253,12 +323,21 @@ export function sendCustomerEmail(env: LeadEnvironment, lead: LeadRecord) {
     replyTo: CUSTOMER_REPLY_TO,
     subject: isResidence
       ? "We received your Private Residence Reset assessment"
-      : "We received your Aseptaclean Handoff Plan request",
+      : isHoardingCampaign
+        ? "We received your walkthrough request"
+        : "We received your Aseptaclean assessment request",
     // The customer sees the short code and not the UUID. Giving them two references for
     // one request invites them to quote the wrong one; the UUID stays internal.
+    //
+    // The campaign branch mirrors the campaign form's own subtext ("discuss the situation and
+    // arrange a free walkthrough") so the button, the thank-you page and this email say the same
+    // thing. It states the non-appointment boundary outright, because a visitor who just clicked
+    // "Request a Free Walkthrough" is the one most likely to read a confirmation as a booking.
     text: isResidence
       ? `Thank you, ${lead.data.full_name}.\n\nWe received your Private Residence Reset assessment. Your confirmation code is ${lead.code} — quote it if you call. ${callback}\n\nWithin one business day, Aseptaclean will review the residence, desired baseline, priority rooms, access, and whether an on-site walkthrough is required.\n\nSubmitting this request does not authorize work, create a service agreement, or reserve a project date.`
-      : `Thank you, ${lead.data.full_name}.\n\nWe received your request. Your confirmation code is ${lead.code} — quote it if you call. ${callback}\n\nWithin one business day, Aseptaclean will provide a fit decision, preliminary scope direction, and clear next step.\n\nSubmitting this request does not authorize work, create a service agreement, or reserve a project date.`
+      : isHoardingCampaign
+        ? `Thank you, ${lead.data.full_name}.\n\nWe received your request. Your confirmation code is ${lead.code} — quote it if you call. ${callback}\n\nAseptaclean will review the information and photos you provided, then contact you to discuss the situation and arrange a free walkthrough.\n\nThis request does not confirm an appointment. Submitting it does not authorize work, create a service agreement, or reserve a project date.`
+        : `Thank you, ${lead.data.full_name}.\n\nWe received your assessment request. Your confirmation code is ${lead.code} — quote it if you call. ${callback}\n\nAseptaclean will review the information and photos you provided. If we can determine the next step from what you sent, we will explain it. If we need to see more, we may ask for additional photos, speak with you by phone, or recommend an on-site assessment.\n\nSubmitting this request does not authorize work, create a service agreement, or reserve a project date.`
   });
 }
 
@@ -287,7 +366,7 @@ export async function sendOwnerSms(env: LeadEnvironment, lead: LeadRecord) {
       ? `New quick request ${lead.id}: ${lead.data.full_name}, ${field(lead.data.property_detail || lead.data.additional_notes)}. ${lead.receivedAt}. Source: ${source}. Call: tel:${callbackPhone}`
       : isResidence
       ? `New PRIVATE RESIDENCE RESET ${lead.id}: ${lead.data.full_name}, ${field(lead.data.property_city)}, ${field(lead.data.property_situation)}; priorities: ${field(lead.data.priority_rooms)}. ${lead.receivedAt}. Source: ${source}. Call: tel:${callbackPhone}`
-      : `New HANDOFF RESET ${lead.id}: ${lead.data.full_name}, ${field(lead.data.property_city)}, ${field(lead.data.property_situation)}. ${lead.receivedAt}. Source: ${source}. Call: tel:${callbackPhone}`
+      : `New ASSESSMENT REQUEST ${lead.id}: ${lead.data.full_name}, ZIP ${field(lead.data.property_zip)}, ${field(lead.data.property_situation)}. ${lead.receivedAt}. Source: ${source}. Call: tel:${callbackPhone}`
   });
   const response = await fetch(
     `https://api.twilio.com/2010-04-01/Accounts/${env.TWILIO_ACCOUNT_SID}/Messages.json`,
@@ -343,7 +422,7 @@ export function sendOwnerFallbackEmail(
   };
   const subject = [
     smsIsByDesign ? "New lead" : "SMS fallback",
-    subjectPart(lead.data.property_city, 24),
+    subjectPart(lead.data.property_zip, 24),
     subjectPart(lead.data.property_situation, 34) || offerLabel,
     lead.code
   ]
@@ -355,18 +434,14 @@ export function sendOwnerFallbackEmail(
     `Name: ${lead.data.full_name}`,
     `Phone: ${lead.data.phone}`,
     `Email: ${field(lead.data.email)}`,
-    `City: ${field(lead.data.property_city)}`,
     `ZIP: ${field(lead.data.property_zip)}`,
     `Situation: ${field(lead.data.property_situation)}`,
     ...(!isResidence
-      ? [
-          `Description: ${field(lead.data.property_detail || lead.data.additional_notes)}`,
-          `Service question: ${serviceAnswer(lead)}`
-        ]
+      ? [`Description: ${field(lead.data.property_detail || lead.data.additional_notes)}`]
       : []),
-    `Photos/files: ${lead.files.length}`,
+    ...uploadLines(lead),
     `Callback window: ${lead.callbackWindow}`,
-    `Submitted: ${lead.receivedAt}`,
+    ...attributionLines(lead),
     `Call: tel:${callbackPhone}`
   ].join("\n");
   return sendResend(env, {

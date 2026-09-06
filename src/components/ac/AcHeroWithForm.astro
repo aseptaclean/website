@@ -1,0 +1,443 @@
+---
+// HeroWithForm — doc 30 §3: "Home and the five service pages share one responsive HeroWithForm
+// component." Composed against reference ClearPath p23 (home) and p28 (service).
+//
+// Full-bleed photograph, FLAT navy overlay (never a gradient), left-aligned copy, compact intake
+// form on the right of the same hero. Desktop >=1200px is a fluid copy column plus a 520-560px
+// form column with a ~52px gap; below that the two stack, copy first.
+//
+// GEOMETRY RULES THAT DO NOT BEND (doc 30 §3):
+//   - No fixed height, no max-height, no overflow:hidden. Content sets the height and the page
+//     scrolls. "A fixed height with overflow:hidden is never an acceptable way to claim the hero
+//     fits."
+//   - The call action sits directly under the headline, above the form in DOM order, so mobile
+//     users reach the phone before scrolling the form.
+//   - Consent, helper and disclosure copy are never deleted or shrunk to hit a geometry target.
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import AcCompactForm from "./AcCompactForm.astro";
+import AcActions from "./AcActions.astro";
+import { srcsetWidths } from "../imageWidths";
+
+interface Props {
+  eyebrow: string;
+  heading: string;
+  headingId: string;
+  /** Source outcome subheading — the line directly under the page name. */
+  lead?: string;
+  /** The first two source prose paragraphs. The rest belongs in the intro section below. */
+  body?: readonly string[];
+  image: ImageMetadata;
+  imageAlt: string;
+  /**
+   * Focal point for the hero's `object-fit: cover` crop, as a CSS `object-position` value.
+   *
+   * Added 2026-09-06. Defaults to `50% 50%`, which is what every hero used before, so omitting it
+   * leaves a page's crop byte-identical — this is opt-in per page, not a new global treatment.
+   *
+   * It exists because the mobile crop is severe and the centre is not always where the subject
+   * is. The media box spans the whole hero, form panel included, so on a 390px viewport a
+   * 1672x941 master covers a ~390x1575 box: only a ~14% slice of the source WIDTH survives, and
+   * the form panel hides everything below ~47% of its HEIGHT. Vertically the scaled image is
+   * exactly the box height, so the Y term has no effect at that width — X is the only lever, and
+   * on desktop the full width is shown so X is a no-op there. Net: this moves the mobile slice
+   * and leaves desktop alone. Measure, do not guess.
+   */
+  imagePosition?: string;
+  /**
+   * Stacked-viewport hero geometry. `overlay` is the original behaviour and the default, so
+   * omitting it leaves a page byte-identical: one photo-backed box spanning copy AND form.
+   *
+   * `split-band` is the route-scoped exception added 2026-09-06 for
+   * `/crime-scene-trauma-cleanup-san-jose/` (doc 30 §3 exception, recorded in
+   * docs/30-WEBSITE-MASTER-SPEC.md and docs/06-ASSET-MANIFEST.md). Below 1200px — the width at
+   * which this hero already stacks — the photograph is sized against the COPY REGION ONLY and
+   * the form drops into normal flow beneath it on the section's own solid navy.
+   *
+   * WHY IT EXISTS: `object-fit: cover` scales to the taller of the two box dimensions. When the
+   * media box spans copy + form, a 390px viewport gives a ~390x1575 box for a 1672x941 master,
+   * so only ~14% of the source WIDTH survives and no `object-position` can recover the subject —
+   * the crop is a function of the box, not the focal point. Bounding the box to the copy region
+   * roughly triples the surviving width and shows the full source height.
+   *
+   * DESKTOP (>=1200px) IS UNTOUCHED by this value. It changes stacked widths only.
+   */
+  stackedLayout?: "overlay" | "split-band";
+  /** `split-band` only: `object-position` for the stacked crop, when it differs from desktop. */
+  stackedImagePosition?: string;
+  /** Short factual line under the actions, e.g. the source owner-operated/region wording. */
+  trustLine?: string;
+  /** Distinct per page so two forms never share an id; also the local "Send a Message" target. */
+  formId?: string;
+  /** Route recorded on the lead, and the service preselected in the form's situation field. */
+  route?: string;
+}
+
+const {
+  eyebrow,
+  heading,
+  headingId,
+  lead,
+  body = [],
+  image,
+  imageAlt,
+  imagePosition = "50% 50%",
+  stackedLayout = "overlay",
+  stackedImagePosition,
+  trustLine,
+  formId = "hero-form",
+  route = "/"
+} = Astro.props;
+
+const isSplitBand = stackedLayout === "split-band";
+
+// Clamped to the master so a 1672px hero source is never asked for a 1920px rung — see
+// src/components/imageWidths.ts.
+const heroWidths = srcsetWidths(image, [480, 768, 1024, 1440, 1920]);
+---
+
+<section
+  class:list={["acx-hero", { "acx-hero--split": isSplitBand }]}
+  aria-labelledby={headingId}
+  style={`--acx-hero-focal: ${imagePosition}; --acx-hero-focal-stacked: ${
+    stackedImagePosition ?? imagePosition
+  }`}
+>
+  <div class="acx-hero__media">
+    <Image
+      src={image}
+      alt={imageAlt}
+      layout="full-width"
+      widths={heroWidths}
+      sizes="100vw"
+      format="webp"
+      quality={76}
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+    />
+  </div>
+
+  <div class="acx-hero__overlay" aria-hidden="true"></div>
+
+  <div class="acx-hero__shell ac-shell">
+    <div class="acx-hero__grid">
+      <div class="acx-hero__content">
+        <p class="acx-hero__eyebrow">{eyebrow}</p>
+        <h1 id={headingId} class="ac-type-h1-home">{heading}</h1>
+        {lead && <p class="acx-hero__lead">{lead}</p>}
+        {body.map((paragraph) => <p class="acx-hero__body">{paragraph}</p>)}
+
+        {/* Call action immediately under the copy — doc 30 §3 "Keep the call action near the
+            headline; do not make mobile users scroll through the entire form before finding the
+            phone action." The secondary points at this page's own form. */}
+        <div class="acx-hero__actions">
+          <AcActions tone="dark" secondaryHref={`#${formId}`} />
+        </div>
+
+        {trustLine && <p class="acx-hero__trust">{trustLine}</p>}
+      </div>
+
+      <div class="acx-hero__form">
+        <AcCompactForm formId={formId} entryRoute={`${route}#${formId}`} preselectRoute={route} />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .acx-hero {
+    position: relative;
+    isolation: isolate;
+    background: var(--ac-color-navy-950);
+  }
+
+  .acx-hero__media {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+  }
+
+  .acx-hero__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: var(--acx-hero-focal, 50% 50%);
+  }
+
+  /* FLAT overlay, not a gradient. rgb(18 40 64 / .66) is the reference CSS value; the
+     photograph stays visible through it, which doc 30 §4 requires. */
+  .acx-hero__overlay {
+    position: absolute;
+    z-index: 1;
+    background: rgb(18 40 64 / 66%);
+    inset: 0;
+  }
+
+  /* 36px per side — profile AC-CP70-91130-1.1 CSS-02 ("Hero padding 36px top/bottom"). Was
+     44px, which predates the profile. The section itself now contributes zero padding
+     (global.css "special-role heroes opt out"), so this shell is the hero's only padding. */
+  .acx-hero__shell {
+    position: relative;
+    z-index: 2;
+    padding-block: 36px;
+  }
+
+  /* Reference CSS `.ac-hero__grid`: fluid copy column + minmax(520px, 560px) form column,
+     52px gap. `minmax` (not a fraction) is what pins the form to the documented 520-560px
+     band instead of letting it drift with viewport width. */
+  .acx-hero__grid {
+    display: grid;
+    align-items: center;
+    gap: 52px;
+    grid-template-columns: minmax(0, 1fr) minmax(520px, 560px);
+  }
+
+  .acx-hero__grid > * {
+    min-width: 0;
+  }
+
+  /* EYEBROW RECIPE — profile AC-CP70-91130-1.1 §"Approved descriptor update in version 1.1":
+     "14–16px, weight 650, line-height 1.35, normal letter spacing, sentence/title case; no
+     forced uppercase, nowrap, ellipsis or tiny text."
+
+     Was 13px / 700 / 0.11em / uppercase. That predates the profile and, with the longer
+     approved descriptor now in this slot, forced-uppercase tracked-out 13px would have set a
+     49-character label in caps across the hero. The profile's recipe is title case at 15px so
+     the label wraps naturally instead. `white-space: normal` is declared explicitly because
+     the profile forbids using nowrap/ellipsis to make the longer wording fit. */
+  .acx-hero__eyebrow {
+    margin: 0 0 12px;
+    color: var(--ac-color-blue-on-navy);
+    font-size: 0.9375rem;
+    font-weight: 650;
+    line-height: 1.35;
+    letter-spacing: normal;
+    text-transform: none;
+    white-space: normal;
+  }
+
+  /* Size comes from .ac-type-h1-home in global.css — type law #1 forbids a component from
+     declaring font-size on a heading element. Only colour, measure and leading live here. */
+  .acx-hero__content h1 {
+    max-width: 18ch;
+    color: #fff;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  .acx-hero__lead {
+    margin: 18px 0 0;
+    max-width: 52ch;
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 650;
+    line-height: 1.5;
+  }
+
+  .acx-hero__body {
+    margin: 14px 0 0;
+    max-width: 56ch;
+    color: rgb(255 255 255 / 88%);
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  .acx-hero__actions {
+    margin-top: 26px;
+  }
+
+  .acx-hero__trust {
+    margin: 20px 0 0;
+    max-width: none;
+    color: rgb(255 255 255 / 78%);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+  }
+
+  /* SHORT DESKTOP VIEWPORTS (1366x768, 1280x800). Reference CSS's own short-viewport rule:
+     tighten the shell padding and step the headline down so the call action and the whole form
+     clear the fold at the documented sizes. This removes SPACE only — no content is hidden, no
+     consent is dropped, nothing is clipped, and below these sizes the hero simply grows. */
+  @media (min-width: 75rem) and (max-height: 850px) {
+    .acx-hero__shell {
+      padding-block: 20px;
+    }
+
+    /* v1.1 COMPACT FORM GEOMETRY — profile §7 "Compact desktop CSS and repair order" and
+       docs/styles/website-reference.css's `@media (min-width:1200px) and (max-height:850px)`
+       block. These existed only in the reference stylesheet; the production form never
+       received them, which is §7 repair step 2 ("confirm the compact media query actually
+       wins in the production cascade").
+
+       Space only. Inputs keep >=16px text and >=44px height, the submit keeps >=48px, and
+       helper/consent copy stays at its readable size — the profile's own floor. Nothing is
+       hidden, clipped or made to scroll internally. */
+    .acx-hero :global(.hero-form) {
+      padding: 18px;
+      gap: 8px;
+    }
+
+    .acx-hero :global(.hero-form__grid) {
+      gap: 8px 14px;
+    }
+
+    .acx-hero :global(.hero-form__field textarea) {
+      min-height: 64px;
+    }
+
+    .acx-hero :global(.hero-form__title),
+    .acx-hero :global(.hero-form__consent),
+    .acx-hero :global(.hero-form__status) {
+      margin-block: 0;
+    }
+
+    .acx-hero {
+      --ac-text-h1-home: clamp(2.125rem, 3vw, 2.875rem);
+    }
+
+    .acx-hero__lead {
+      margin-top: 14px;
+      font-size: 1.0625rem;
+    }
+
+    .acx-hero__body {
+      margin-top: 10px;
+    }
+
+    .acx-hero__actions {
+      margin-top: 20px;
+    }
+
+    .acx-hero__trust {
+      margin-top: 14px;
+    }
+  }
+
+  /* Reference CSS stacks the hero below 1200px, where a 520px form column can no longer sit
+     beside readable copy. Copy (and therefore the call action) comes first. */
+  @media (max-width: 74.9375rem) {
+    .acx-hero__grid {
+      gap: 32px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .acx-hero__content h1 {
+      max-width: 22ch;
+    }
+
+    .acx-hero__form {
+      max-width: 680px;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .acx-hero__shell {
+      padding-block: 34px 40px;
+    }
+
+    .acx-hero__content h1 {
+      max-width: none;
+    }
+
+    .acx-hero__lead {
+      font-size: 1.0625rem;
+    }
+  }
+
+  /* =========================================================================
+     STACKED-VIEWPORT SPLIT — `.acx-hero--split`, opt-in via `stackedLayout`.
+     Route-scoped exception to doc 30 §3, owner-authorised 2026-09-06 for
+     /crime-scene-trauma-cleanup-san-jose/ only. Recorded in doc 30 §3 and
+     docs/06-ASSET-MANIFEST.md.
+
+     THE PROBLEM, MEASURED. `object-fit: cover` scales the source to the LARGER
+     of the two box ratios. With the media box spanning copy + form, a 390px
+     viewport gives a ~390x1575 box for a 1672x941 master: cover keeps ~14% of
+     the source width and the form panel covers everything past ~47% of the
+     height. `object-position` cannot recover that — the crop is a property of
+     the box, not the focal point.
+
+     THE FIX. Bound the media box to the copy region. Row 1 holds the media, the
+     overlay and the copy; row 2 holds the form on the section's own navy.
+
+     HOW THE MEDIA GETS BOUNDED. The media and overlay stay `position: absolute`
+     but are given a definite grid position. CSS Grid §9: an absolutely
+     positioned grid child whose containing block is the grid container resolves
+     its offsets against its GRID AREA, so `inset: 0` now means row 1. Such an
+     item also contributes nothing to track sizing, so row 1's height still
+     comes from the copy alone. `.acx-hero` is already `position: relative`,
+     which is the condition that makes this hold.
+
+     GEOMETRY RULES STILL HELD. No fixed height, no max-height, no
+     overflow:hidden on the hero; content sets both rows and the page scrolls.
+     The call action stays directly under the headline and still precedes the
+     form in DOM order. No field, consent line, helper text or disclosure is
+     removed, shrunk or reordered — only the box the photograph is measured
+     against changed. Desktop (>=1200px) never enters this block.
+     ========================================================================= */
+  @media (max-width: 74.9375rem) {
+    .acx-hero--split {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-rows: auto auto;
+    }
+
+    /* The shell and the grid stop generating boxes so the copy and the form
+       become direct grid items of the section and can occupy different rows.
+       Everything they contributed — the `ac-shell` measure and gutters, the
+       shell's block padding — is re-declared on the two items below, so the
+       copy and the form keep the same horizontal alignment as every other
+       section on the page. */
+    .acx-hero--split > .acx-hero__shell,
+    .acx-hero--split .acx-hero__grid {
+      display: contents;
+    }
+
+    /* BOTH edges must be named. For an absolutely-positioned grid child an `auto` grid line
+       resolves to the grid container's PADDING EDGE, not to the implied second line — so the
+       shorthand `grid-row: 1` would leave the media spanning down to the bottom of the form
+       and change nothing. `1 / 2` is what actually bounds it to row 1. Measured, not assumed:
+       scripts/trauma-hero-mobile-check.mjs asserts media.bottom <= form.top. */
+    .acx-hero--split .acx-hero__media,
+    .acx-hero--split .acx-hero__overlay {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+
+    /* Separate from `--acx-hero-focal` because the stacked crop and the desktop
+       crop no longer have the same shape: stacked now shows the full source
+       height and a wide middle band, where desktop shows the full width. */
+    .acx-hero--split .acx-hero__media :global(img) {
+      object-position: var(--acx-hero-focal-stacked, var(--acx-hero-focal, 50% 50%));
+    }
+
+    .acx-hero--split .acx-hero__content,
+    .acx-hero--split .acx-hero__form {
+      position: relative;
+      z-index: 2;
+      width: min(100% - 2 * var(--ac-gutter), var(--ac-measure-wide));
+      margin-inline: auto;
+    }
+
+    .acx-hero--split .acx-hero__content {
+      grid-area: 1 / 1 / 2 / 2;
+      padding-block: 36px 40px;
+    }
+
+    /* Row 2 sits on `.acx-hero`'s own navy-950 background — the same solid navy
+       the hero already falls back to — so the form panel reads as one
+       continuous dark band with the photo region above it. */
+    .acx-hero--split .acx-hero__form {
+      grid-area: 2 / 1 / 3 / 2;
+      max-width: none;
+      padding-block: 28px 40px;
+    }
+
+    /* The 680px cap the stacked hero already used, moved onto the form itself
+       now that its wrapper carries the shell measure. Left-aligned as before. */
+    .acx-hero--split .acx-hero__form :global(.hero-form) {
+      max-width: 680px;
+    }
+  }
+</style>

@@ -1,0 +1,47 @@
+---
+// HOME SCOPE AUTHORITY SPLIT — major credibility section on operating boundaries. Built for the
+// 2026-09-03 homepage composition rebuild (docs/05-DECISIONS-LOG.md, "Homepage section count
+// reopened").
+//
+// WHY THIS COPY, NOT TSW/REGULATED-WASTE CONTENT. The task's design-system spec calls this slot
+// "regulated / authority split" with a TSW / regulated-waste-pathway example. AGENTS.md §3 is
+// explicit that TSW #933 content is "Published only on /crime-scene-trauma-cleanup-san-jose/ and
+// its cross-links (footer, /services/, doc27ServicePages.ts)" — the homepage is not in that list,
+// so this section cannot lead with TSW/trauma-waste material without a fresh owner decision this
+// session does not have. It also cannot restore homepage.qualification/homepage.excludedScope:
+// the 2026-09-03 "Homepage section count reopened" entry says outright "ConfidenceAndFit's
+// exclusion list stays on /services/, not restored to the homepage." What this section uses
+// instead is docs/aseptaclean-all-website-copy.md's "We do not pretend every problem belongs to
+// us." passage — genuine, homepage-scoped, not rendered anywhere else on `/`, and exactly the
+// kind of honest-boundary credibility content this slot calls for. Verbatim, unedited.
+import EditorialSplit from "@components/EditorialSplit.astro";
+import boundaryImage from "../assets/stock/equipment_gear.jpg";
+---
+
+<EditorialSplit
+  eyebrow="What we handle"
+  heading="We do not pretend every problem belongs to us."
+  headingId="scope-authority-title"
+  image={boundaryImage}
+  imageAlt="Reference photograph of cleaning equipment and supplies staged for a project."
+  imageSide="right"
+  tone="warm"
+>
+  <p>
+    Sometimes the right next step is not more cleaning. If we see something that appears to
+    require pest control, structural repair, HVAC work, licensed contractor work, or another
+    specialty outside our scope, we will tell you. Aseptaclean stays focused on the work we are
+    there to perform.
+  </p>
+  <p class="home-scope-authority__statement">
+    The goal is not to sell you every service. The goal is to identify the work the property
+    actually needs.
+  </p>
+</EditorialSplit>
+
+<style>
+  .home-scope-authority__statement {
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+  }
+</style>

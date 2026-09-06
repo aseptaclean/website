@@ -1,0 +1,44 @@
+---
+// HOME DARK REFRAME — full-width photographic authority band. Built for the 2026-09-03 homepage
+// composition rebuild (docs/05-DECISIONS-LOG.md, "Homepage section count reopened"), which asks
+// for a full-width dark reframe section as a meaningful visual break, matching the reference
+// sites' (911 Bio Clean, ClearPath) alternating light/dark rhythm.
+//
+// Uses PhotoAuthorityBand (built same day) for the full-cover-image + solid-navy-overlay
+// treatment. COPY IS THE APPROVED LEDE FROM docs/aseptaclean-all-website-copy.md's "Show us the
+// condition first." passage — the same sentence OperatingEvidence.astro already used as its
+// section lede. Only the first paragraph (heading + lede) moves here; the Property Handoff
+// Record artifact and its supporting paragraphs stay in OperatingEvidence-derived content
+// elsewhere on the page (see HomeServiceArea/founder sections) rather than being duplicated.
+import PhotoAuthorityBand from "@components/PhotoAuthorityBand.astro";
+import reframeImage from "../assets/homepage/service-development-cleanup-asurnipal.jpg";
+---
+
+<PhotoAuthorityBand
+  image={reframeImage}
+  imageAlt="Reference photograph of a dining room where accumulated household contents cover the table, sideboard and floor."
+  headingId="dark-reframe-title"
+>
+  <h2 id="dark-reframe-title" class="ac-type-h2">Show us the condition first.</h2>
+  <p>
+    Difficult property cleanup rarely fits a standard checklist. Two homes can look similar and
+    need completely different work. We look at what is actually there before deciding what the
+    work should involve.
+  </p>
+  <p class="home-dark-reframe__note">
+    Development reference photograph &middot; not Aseptaclean project work &middot; Asurnipal,
+    Wikimedia Commons, CC BY-SA 4.0
+  </p>
+</PhotoAuthorityBand>
+
+<style>
+  .home-dark-reframe__note {
+    margin-top: 20px;
+    color: rgb(255 255 255 / 52%);
+    font-size: 0.6875rem;
+    font-weight: 650;
+    letter-spacing: 0.055em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+</style>

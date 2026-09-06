@@ -1,0 +1,197 @@
+---
+// DarkImageTextSplit — doc 30 §4, reference ClearPath p25 ("When You Call ClearPath, You're Not
+// Alone"): copy one side, photograph the other, one bold pull line, one action. Used sparingly —
+// doc 30 §4: "One or two dark breaks in a long service page are sufficient."
+//
+// The reference's second heading line is set in its brand blue. Here the accent is the
+// Aseptaclean on-navy blue token, contrast-checked against navy-900 — never ClearPath blue and
+// never 911 green.
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import AcActions from "./AcActions.astro";
+import AcEyebrow from "./AcEyebrow.astro";
+
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  /** Second heading line, set in the on-navy accent. Reference page 25 composition. */
+  headingAccent?: string;
+  headingId?: string;
+  /** Bold source lead line, rendered above the body paragraphs. */
+  lead?: string;
+  body?: readonly string[];
+  pullQuote?: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  needsAsset?: string;
+  showActions?: boolean;
+  secondaryLabel?: string;
+  secondaryHref?: string;
+}
+
+const {
+  eyebrow,
+  heading,
+  headingAccent,
+  headingId,
+  lead,
+  body = [],
+  pullQuote,
+  image,
+  imageAlt = "",
+  needsAsset,
+  showActions = true,
+  secondaryLabel,
+  secondaryHref
+} = Astro.props;
+---
+
+<section class="acx-dark" aria-labelledby={headingId}>
+  <div class="ac-shell">
+    <div class:list={["acx-dark__grid", { "has-media": Boolean(image) || Boolean(needsAsset) }]}>
+      <div class="acx-dark__copy">
+        {eyebrow && <AcEyebrow text={eyebrow} tone="dark" />}
+        {/* The space before the accent span is load-bearing: without it the heading's text
+            content (its accessible name, and anything derived from it) concatenated to
+            "…needmore than cleaning." The span still renders on its own line. */}
+        <h2 id={headingId} class="ac-type-h2">
+          {heading}
+          {headingAccent && <> <span class="acx-dark__accent">{headingAccent}</span></>}
+        </h2>
+        {lead && <p class="acx-dark__lead">{lead}</p>}
+        {body.map((paragraph) => <p class="acx-dark__body">{paragraph}</p>)}
+        <slot />
+        {pullQuote && <p class="acx-dark__pull">{pullQuote}</p>}
+        {showActions && (
+          <div class="acx-dark__actions">
+            <AcActions tone="dark" secondaryLabel={secondaryLabel} secondaryHref={secondaryHref} />
+          </div>
+        )}
+      </div>
+
+      {(image || needsAsset) && (
+        <figure class="acx-dark__media">
+          {image ? (
+            <Image
+              src={image}
+              alt={imageAlt}
+              width={1024}
+            height={768}
+            widths={[480, 768, 1024]}
+              sizes="(min-width: 62rem) 46vw, 92vw"
+              format="webp"
+              quality={74}
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <div class="acx-dark__pending" role="presentation" data-needs-asset={needsAsset}></div>
+          )}
+        </figure>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .acx-dark {
+    background: var(--ac-color-navy-900);
+    color: #fff;
+  }
+
+  /* doc 30 §2: near 50/50, 48-64px gap — same geometry as the light split so the two read as
+     one system with different surfaces. */
+  .acx-dark__grid {
+    display: grid;
+    align-items: center;
+    gap: 56px;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .acx-dark__grid.has-media {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  /* No image: one readable column, centred — the same correction AcSplit's `is-copy-only` carries,
+     added here 2026-09-05 when a band first shipped without one. Without it the single column is
+     the full 1320px shell, so the H2 stretched edge to edge while global.css held every paragraph
+     to `--ac-measure-read`, leaving half the band empty. */
+  .acx-dark__grid:not(.has-media) {
+    max-width: var(--ac-measure-read);
+    margin-inline: auto;
+  }
+
+  .acx-dark__grid > * {
+    min-width: 0;
+  }
+
+  .acx-dark__copy h2 {
+    color: #fff;
+    text-wrap: balance;
+  }
+
+  .acx-dark__accent {
+    display: block;
+    color: var(--ac-color-blue-on-navy);
+  }
+
+  .acx-dark__lead {
+    margin: 20px 0 0;
+    color: #fff;
+    font-size: 1.125rem;
+    font-weight: 600;
+    line-height: 1.55;
+  }
+
+  .acx-dark__body {
+    margin: 16px 0 0;
+    color: #c3d2e4;
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .acx-dark__pull {
+    margin: 22px 0 0;
+    color: #fff;
+    font-size: 1.0625rem;
+    font-weight: 650;
+    line-height: 1.55;
+  }
+
+  .acx-dark__actions {
+    margin-top: 30px;
+  }
+
+  .acx-dark__media {
+    margin: 0;
+  }
+
+  .acx-dark__media :global(img),
+  .acx-dark__pending {
+    width: 100%;
+    /* height:auto is load-bearing. Astro <Image> emits width/height attributes; the height
+       presentational hint gives the element a used height, and aspect-ratio is ignored unless
+       height resolves to auto. Without this the cards rendered at their intrinsic 2880px. */
+    height: auto;
+    border-radius: var(--ac-r-media);
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .acx-dark__pending {
+    border: 1px solid rgb(255 255 255 / 14%);
+    background: var(--ac-color-navy-950);
+  }
+
+  @media (max-width: 62rem) {
+    .acx-dark__grid,
+    .acx-dark__grid.has-media {
+      gap: 32px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .acx-dark__media {
+      order: 2;
+    }
+  }
+</style>

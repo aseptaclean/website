@@ -28,7 +28,7 @@
 import { Image } from "astro:assets";
 import directoryImage from "../assets/homepage/condition-development-neglected-kolforn.jpg";
 import { servicesHub } from "@data/servicePages";
-import { animalPage } from "@data/doc27ServicePages";
+import { animalPage, rodentPage } from "@data/doc27ServicePages";
 
 // TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPH — NOT Aseptaclean project work, not a client
 // property, and not proof of a completed job. `[ATMOS]`-class under doc 21 §6.
@@ -38,9 +38,17 @@ import { animalPage } from "@data/doc27ServicePages";
 // Reused from `/` rather than newly sourced — see ServicesHero.astro. Replace at the Phase 0
 // owner shoot (docs/06-ASSET-MANIFEST.md §5).
 
-// The one deliberate exception described above. A slug, not a boolean on the record, so the
+// The deliberate exceptions described above. A slug, not a boolean on the record, so the
 // service record itself stays an honest statement of publication state.
-const alwaysList = new Set<string>([animalPage.slug]);
+//
+// rodentPage added 2026-09-03: the "Public launch architecture reduced to the locked-copy
+// pages" owner decision (docs/05-DECISIONS-LOG.md) makes /rodent-dropping-cleanup-san-jose/
+// the one public/indexable canonical route for Rodent Droppings & Animal Waste Cleanup — a
+// newer rank-2 decision than the 2026-08-26 B&P §8550(a) directory exclusion this file
+// originally recorded. The route's own `noindex` sitewide default is superseded by
+// launchArchitecture.ts's allow-list, which BaseLayout reads directly; this directory listing
+// only needed to catch up to that.
+const alwaysList = new Set<string>([animalPage.slug, rodentPage.slug]);
 
 // The feature/rest split happens here rather than in the template so `feature` is a value the
 // type system knows exists: a family whose services all fail the filter is dropped entirely
@@ -61,8 +69,7 @@ const families = servicesHub.families
 <section class="directory" id="all-services" aria-labelledby="directory-title">
   <div class="directory__inner">
     <header class="directory__header">
-      <p class="ac-eyebrow">Everything currently available</p>
-      <h2 id="directory-title" class="ac-type-h2-home-feature">Services, by what the property needs.</h2>
+      <h2 id="directory-title" class="ac-type-h2-home-feature">What can we help with?</h2>
     </header>
 
     {families.map((family, familyIndex) => {
@@ -73,15 +80,13 @@ const families = servicesHub.families
           class:list={["family", isLead && "family--lead"]}
           aria-labelledby={`family-${family.key}`}
         >
-          <div class="family__head">
-            <h3 id={`family-${family.key}`} class="ac-type-h3-home-feature">{family.name}</h3>
-            <p class="family__summary">{family.summary}</p>
-            {family.hub && (
+          {family.hub && (
+            <div class="family__head">
               <a class="family__hub" href={family.hub.href}>
                 All {family.hub.label.toLowerCase()} <span aria-hidden="true">&rarr;</span>
               </a>
-            )}
-          </div>
+            </div>
+          )}
 
           <div class="family__body">
             {/* The lead family opens on a photograph; the other two open straight into their
@@ -118,6 +123,11 @@ const families = servicesHub.families
                 </h4>
                 <p class="service__thesis">{feature.thesis}</p>
                 <p class="service__detail">{feature.detail}</p>
+                {"bestFor" in feature && feature.bestFor.length > 0 && (
+                  <ul class="service__best-for">
+                    {feature.bestFor.map((item) => <li>{item}</li>)}
+                  </ul>
+                )}
                 {/* doc 21 §2.3 / §2.2 permitted negation — verbatim off the service record,
                     never retyped, so the clause cannot drift from the page it describes. */}
                 {feature.page.complianceClause && (
@@ -134,6 +144,9 @@ const families = servicesHub.families
                         <span class="row__thesis">{service.thesis}</span>
                         <span class="row__arrow" aria-hidden="true">&rarr;</span>
                       </a>
+                      {"bestFor" in service && service.bestFor.length > 0 && (
+                        <p class="row__best-for">Best for: {service.bestFor.join(", ")}</p>
+                      )}
                       {service.page.complianceClause && (
                         <p class="row__clause">{service.page.complianceClause}</p>
                       )}
@@ -188,29 +201,8 @@ const families = servicesHub.families
   }
 
   .family__head {
-    display: grid;
-    align-items: baseline;
+    display: flex;
     margin-bottom: 30px;
-    gap: 10px 60px;
-    grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr) auto;
-  }
-
-  .family__head h3 {
-    color: var(--ac-color-navy-900);
-    text-wrap: balance;
-  }
-
-  .family:not(.family--lead) .family__head {
-    --ac-text-h3-home-feature: 1.5rem;
-  }
-
-  .family__summary {
-    margin: 0;
-    max-width: 52ch;
-    color: var(--ac-color-ink-600);
-    font-size: 0.9375rem;
-    line-height: 1.6;
-    text-wrap: pretty;
   }
 
   .family__hub {
@@ -339,6 +331,36 @@ const families = servicesHub.families
     line-height: 1.5;
   }
 
+  .service__best-for {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: none;
+    margin: 14px 0 0;
+    padding: 0;
+    gap: 4px 10px;
+    list-style: none;
+  }
+
+  .service__best-for li {
+    color: var(--ac-color-ink-600);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
+  .service__best-for li:not(:last-child)::after {
+    margin-left: 10px;
+    color: var(--ac-color-line-strong);
+    content: "·";
+  }
+
+  .row__best-for {
+    margin: 0;
+    max-width: 58ch;
+    color: var(--ac-color-ink-400);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+
   .service__rows {
     margin: 0;
     padding: 0;
@@ -401,16 +423,6 @@ const families = servicesHub.families
       --ac-text-h2-home-feature: 2.1875rem;
     }
 
-    .family__head {
-      gap: 10px 40px;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-    }
-
-    .family__hub {
-      grid-column: 2;
-      justify-self: start;
-    }
-
     .family--lead .family__body {
       grid-template-columns: minmax(0, 0.7fr) minmax(0, 1fr);
       gap: 28px 40px;
@@ -418,15 +430,6 @@ const families = servicesHub.families
   }
 
   @media (max-width: 50rem) {
-    .family__head {
-      display: block;
-    }
-
-    .family__summary {
-      margin-top: 12px;
-      max-width: none;
-    }
-
     .family--lead .family__body {
       grid-template-columns: minmax(0, 1fr);
     }
@@ -470,10 +473,6 @@ const families = servicesHub.families
 
     .directory__header h2 {
       max-width: 22ch;
-    }
-
-    .family:not(.family--lead) .family__head {
-      --ac-text-h3-home-feature: 1.375rem;
     }
   }
 

@@ -8,7 +8,10 @@
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-top: 6rem;
+  /* Bound to the real measured header stack rather than a guessed 6rem, so a "Send a Message"
+     jump to #hero-form or #contact-form lands below the sticky nav at every width.
+     --ac-header-stack is stepped with the header itself in the responsive blocks below. */
+  scroll-padding-top: calc(var(--ac-header-stack) + 16px);
 }
 
 body {
@@ -74,6 +77,31 @@ main > section {
 @media (max-width: 760px) {
   main > section {
     padding-block: 60px;
+  }
+}
+
+/* SPECIAL-ROLE HEROES OPT OUT OF THE SECTION RHYTHM — profile AC-CP70-91130-1.1 §5
+   ("Normal section padding: clamp(48px, 6vw, 88px); special roles use their own padding")
+   and CSS-02 ("Hero padding 36px top/bottom; 20px in short desktop mode").
+
+   MEASURED DEFECT, 2026-09-04. The rule above reached `.acx-hero` and `.acx-phero`, which
+   already carry their documented padding on their own inner shells. Both heroes were
+   therefore rendering 68px + 68px = 136px of ADDITIONAL vertical padding that no
+   specification asks for, and the short-desktop compact query — which only ever touched the
+   inner shell — could not reach it. Measured before the fix at scroll zero: the homepage hero
+   ended 83px (1440x900), 119px (1536x864), 163px (1366x768) and 131px (1280x800) below the
+   §7 fold budget. This is repair step 1 in §7's ordered list, "remove unintended margins,
+   duplicate wrappers, empty utility rows, spacers". No content is hidden or clipped by this
+   rule; it removes space only. Evidence: output/evidence/fold-audit-before.json. */
+main > section.acx-hero,
+main > section.acx-phero {
+  padding-block: 0;
+}
+
+@media (max-width: 760px) {
+  main > section.acx-hero,
+  main > section.acx-phero {
+    padding-block: 0;
   }
 }
 
@@ -569,14 +597,14 @@ textarea {
   text-align: center;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: 0 2px 8px -2px rgba(28, 53, 94, 0.4);
-  transition: 0.18s;
+  box-shadow: none;
+  transition: background-color 0.18s ease;
 }
 
 .btn-primary {
   background: var(--ac-color-navy-800);
   color: #fff;
-  box-shadow: 0 2px 8px -2px rgba(28, 53, 94, 0.4);
+  box-shadow: none;
 }
 
 .button:hover,
@@ -584,12 +612,11 @@ textarea {
   background: var(--ac-color-navy-950);
   color: #fff;
   text-decoration: none;
-  transform: translateY(-1px);
-  box-shadow: 0 6px 16px -4px rgba(28, 53, 94, 0.45);
+  box-shadow: none;
 }
 
 .button:active {
-  transform: translateY(1px);
+  background: var(--ac-color-navy-950);
 }
 
 .button[aria-disabled="true"],
@@ -770,9 +797,36 @@ textarea {
    ===================================================================== */
 
 /* ---- shell + section rhythm ---- */
+/* THE single content-width rule for the site. doc 30 §2: max 1320px, gutters 32/24/20.
+   Both numbers come from tokens (--ac-measure-wide, --ac-gutter) so the width moves in one
+   place; the gutter steps down in the responsive blocks near the end of this file. Nothing
+   else may hardcode a shell width — that is how the 1200px/48px pair drifted before. */
 .ac-shell {
-  width: min(100% - 48px, var(--ac-measure-wide));
+  width: min(100% - 2 * var(--ac-gutter), var(--ac-measure-wide));
   margin-inline: auto;
+}
+
+/* Readable centred column: FAQ, legal policy body, long prose (doc 30 §2 / briefs). */
+.ac-readable {
+  width: min(100% - 2 * var(--ac-gutter), var(--ac-measure-readable));
+  margin-inline: auto;
+}
+
+/* GUTTER + HEADER STEPS — doc 30 §2, breakpoints from docs/styles/website-reference.css.
+   These are token-only overrides: every consumer (.ac-shell, .ac-readable, scroll-padding,
+   the header's own inner width) reads them, so the whole grid steps together and no component
+   needs its own copy of these numbers. */
+@media (max-width: 1199px) {
+  :root {
+    --ac-gutter: 24px;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --ac-gutter: 20px;
+    --ac-header-stack: 64px;
+  }
 }
 
 .ac-sec {
@@ -2376,18 +2430,12 @@ textarea {
   }
 }
 
-/* 320px polish. Size stays on the type-role classes (never the heading tags) and retains the
-   ≥1.9:1 H1:body floor: 34px homepage/campaign and 32px hub/service against 16px body. The
-   16px gutter recovers eight pixels per side from the desktop-derived 24px shell without
-   changing the layout above narrow phones. */
+/* 320px polish. Size stays on the type-role classes (never the heading tags).
+   The gutter and shell overrides that used to live here are GONE as of 2026-09-04: the token
+   steps above (32/24/20) are the documented doc 30 §2 values and now apply unbroken down to
+   320px, so the shell width has exactly one source. The H1 floors below are already the
+   34px doc 30 minimum, so they are kept only as explicit documentation of the narrow end. */
 @media (max-width: 360px) {
-  :root {
-    --ac-gutter: 1rem;
-  }
-
-  .ac-shell {
-    width: min(100% - 32px, var(--ac-measure-wide));
-  }
 
   .ac-type-h1 {
     font-size: 2.125rem;
@@ -2395,9 +2443,13 @@ textarea {
     text-wrap: balance;
   }
 
+  /* font-size REMOVED 2026-09-04. This pinned the hub/About/Contact H1 to 32px at 320px, which
+     against the new 17px body is 1.88:1 — under type law #2's 1.9:1 floor, and it was failing
+     qa:current on three routes. The token's own clamp already floors at 34px (2.125rem), the
+     doc 30 §2 minimum, giving 34/17 = 2.0:1. Letting the role class supply the size is also
+     what type law #1 asks for. */
   .ac-type-h1-hub {
     max-width: none;
-    font-size: 2rem;
     line-height: 1.08;
     text-wrap: balance;
   }

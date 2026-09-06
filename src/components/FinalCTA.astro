@@ -4,7 +4,7 @@
 //
 // COPY IS §20's, VERBATIM — the heading and the supporting paragraph are the approved strings in
 // docs/ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF-SEVENSON.md §20, and the primary CTA reads from
-// site.offer.primaryCta. The old heading ("Start with what you know…") and its body are retired
+// site.offer.secondaryCta. The old heading ("Start with what you know…") and its body are retired
 // with the composition; both were doc 20 Part 2 replacements for a slot §20 now covers.
 //
 // THREE ACTIONS BECAME ONE PLUS TWO. The previous band rendered three same-shaped buttons.
@@ -50,23 +50,18 @@ const smsHref = site.business.smsUri;
   <div class="close__inner">
     <div class="close__copy">
       <h2 id="final-cta-title" class="ac-type-h2-home-feature">
-        Tell us what is happening at the property.
+        You do not need to know exactly what kind of cleanup you need.
       </h2>
-      {/* Trimmed 2026-08-25 to V3 §16/§22 ("Supporting copy: Short"). The third sentence —
-          "We can determine whether it fits Aseptaclean's current scope and what the next step
-          should be" — is folded into the second rather than dropped; the fit answer is the
-          reason to send anything, so it earns its place, and a separate sentence did not. */}
       <p class="close__lede">
-        You do not need to know the service name. Send the details and photos if you have them,
-        and we will tell you whether it fits Aseptaclean&rsquo;s current scope and what the next
-        step is.
+        Show us the property. Send a few photos and tell us what is happening. We will review the
+        condition and help you determine what the next step should be.
       </p>
 
       <div class="close__actions">
-        <a class="close__primary" href="/request-assessment/">{site.offer.primaryCta}</a>
+        <a class="close__primary" href="/request-assessment/">Request an Assessment</a>
         <div class="close__secondary">
           {phoneHref && <a href={phoneHref}>Call {site.business.phone}</a>}
-          {smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
+          {smsHref && <a href={smsHref}>{site.offer.smsCta}</a>}
         </div>
       </div>
 

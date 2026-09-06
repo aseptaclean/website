@@ -1,0 +1,78 @@
+---
+// FaqAccordion — reusable, props-driven FAQ accordion. No cards, max-width 850px, border-top
+// rows, native <details>/<summary> for built-in keyboard accessibility.
+//
+// FAQ.astro (homepage, fixed question set) and ServiceFAQ.astro (bordered-card look, currently
+// unused by any shipped layout) already exist. Neither is a generic, card-free, 850px-capped
+// component matching this spec, and FAQ.astro's data/markup are intentionally coupled to the
+// homepage's own FAQPage JSON-LD. This is a new, minimal, reusable component for pages that need
+// the plain-rule accordion treatment without adopting FAQ.astro's homepage-specific content.
+interface FaqItem {
+  question: string;
+  answer: string;
+}
+
+interface Props {
+  items: readonly FaqItem[];
+  headingId?: string;
+}
+
+const { items, headingId } = Astro.props;
+---
+
+<div class="ac-faq-accordion" aria-labelledby={headingId}>
+  {items.map((item) => (
+    <details>
+      <summary>{item.question}</summary>
+      <p>{item.answer}</p>
+    </details>
+  ))}
+</div>
+
+<style>
+  .ac-faq-accordion {
+    max-width: 850px;
+    border-top: 1px solid var(--ac-color-line);
+  }
+
+  .ac-faq-accordion details {
+    border-bottom: 1px solid var(--ac-color-line);
+  }
+
+  .ac-faq-accordion summary {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 22px 0;
+    color: var(--ac-color-ink-900);
+    font-size: var(--ac-text-h3);
+    font-weight: 700;
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .ac-faq-accordion summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .ac-faq-accordion summary::after {
+    content: "+";
+    flex-shrink: 0;
+    color: var(--ac-color-navy-800);
+    font-weight: 500;
+  }
+
+  .ac-faq-accordion details[open] summary::after {
+    content: "\2212";
+  }
+
+  .ac-faq-accordion p {
+    margin: 0;
+    padding: 0 0 22px;
+    max-width: var(--ac-measure-intimate);
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+</style>

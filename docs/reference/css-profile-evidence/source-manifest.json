@@ -1,0 +1,153 @@
+{
+  "source_filename": "Untitled document (6)(1).pdf",
+  "source_sha256": "bbabe027aa198053f602a5a662d13d64a5bfa3360d5f43aeac4c4ab2a70df341",
+  "pdf_pages": 34,
+  "extraction": "Original embedded image bytes; no rescaling or image generation. Browser chrome and dock remain in source captures.",
+  "images": [
+    {
+      "id": "911-P01-TOP",
+      "page": 1,
+      "position": "top",
+      "file": "911-p01-top.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "82f754955ff5971e31abb9c9620b7429e48135ba721bda325bbe1f398749e0f5"
+    },
+    {
+      "id": "911-P02-TOP",
+      "page": 2,
+      "position": "top",
+      "file": "911-p02-top.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "2f7464de408747ba4c101b0fdb4f9387b1020d9ac8c3b84f5c73bfc142d9fc7b"
+    },
+    {
+      "id": "911-P03-BOTTOM",
+      "page": 3,
+      "position": "bottom",
+      "file": "911-p03-bottom.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "cc2c79c9f19c8fb4f447df41fe2e938d5f64636b6685f50e526e4138f9dabe35"
+    },
+    {
+      "id": "911-P04-BOTTOM",
+      "page": 4,
+      "position": "bottom",
+      "file": "911-p04-bottom.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "9261fb1e9283a0c7dbd0d2e43b42c84ab9395a77a1e8feeb5a73bbbda38c8a2c"
+    },
+    {
+      "id": "911-P08-BOTTOM",
+      "page": 8,
+      "position": "bottom",
+      "file": "911-p08-bottom.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "71f5b694670a1a98185b6c4628973a19b932e95dc21e1c84a950d9da986d479b"
+    },
+    {
+      "id": "CLEARPATH-P23-TOP",
+      "page": 23,
+      "position": "top",
+      "file": "clearpath-p23-top.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "77826ffa5c259ee0cd82ae95a36469d9090f4fa3d19a6bdf8a9bed1839dca377"
+    },
+    {
+      "id": "CLEARPATH-P23-BOTTOM",
+      "page": 23,
+      "position": "bottom",
+      "file": "clearpath-p23-bottom.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "0cf5cd2880ac250e78339d3c214eccd08a6daed72c5dcd1cbb33163cad9f8386"
+    },
+    {
+      "id": "CLEARPATH-P24-BOTTOM",
+      "page": 24,
+      "position": "bottom",
+      "file": "clearpath-p24-bottom.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "d3f15c3d1406f2878ded4173845c11d8e78bf3ca7139ba376a66afc892a3f00f"
+    },
+    {
+      "id": "CLEARPATH-P25-TOP",
+      "page": 25,
+      "position": "top",
+      "file": "clearpath-p25-top.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "cd8d52c85ce7578aa15dd4b0793a5018db1cc7eb45a7fc78a896f8ab676ccebd"
+    },
+    {
+      "id": "CLEARPATH-P25-BOTTOM",
+      "page": 25,
+      "position": "bottom",
+      "file": "clearpath-p25-bottom.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "a996df98ff3031b920a4445b5891f9503b3e82cd784924a39d285d60558b1460"
+    },
+    {
+      "id": "CLEARPATH-P26-BOTTOM",
+      "page": 26,
+      "position": "bottom",
+      "file": "clearpath-p26-bottom.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "5a853e71656ebd1ff05559fcd54a1141de92b2ff2369798eb73f381c375f812d"
+    },
+    {
+      "id": "CLEARPATH-P28-TOP",
+      "page": 28,
+      "position": "top",
+      "file": "clearpath-p28-top.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "1b4ecd08fe347aa15aad4d2dc14962b9cd36e905c0e2627d15072011d39833be"
+    },
+    {
+      "id": "CLEARPATH-P28-BOTTOM",
+      "page": 28,
+      "position": "bottom",
+      "file": "clearpath-p28-bottom.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "64a6c6f0b1e11828e84ed2b356260edd263a7647b142170cf2c08f79973f6ad0"
+    },
+    {
+      "id": "CLEARPATH-P29-TOP",
+      "page": 29,
+      "position": "top",
+      "file": "clearpath-p29-top.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "c28565ecd4b1e2beb3cef46066ec9244ec83bcadb644e6990c74c45cbeaa1f6f"
+    },
+    {
+      "id": "CLEARPATH-P30-TOP",
+      "page": 30,
+      "position": "top",
+      "file": "clearpath-p30-top.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "f2aaa83b10bb61ca4536977816f4026cbb81d44ec259c061111a8995f068cffd"
+    },
+    {
+      "id": "CLEARPATH-P33-TOP",
+      "page": 33,
+      "position": "top",
+      "file": "clearpath-p33-top.png",
+      "width": 2048,
+      "height": 1280,
+      "sha256": "21c89a05c5d1b602f93a927b3663d7e52ae52e59936774100d3ea0c3c748eef0"
+    }
+  ],
+  "source_hash_note": "PDF hash recorded when source images were extracted. Packaged image hashes independently verified before delivery."
+}

@@ -1,56 +1,40 @@
 ---
-// Question set per 05-DECISIONS-LOG.md (supersedes docs/06-APPROVED-HOMEPAGE-COPY.md's larger
-// set for this section). index.astro's FAQPage JSON-LD reads this same list, so schema and
-// visible copy cannot drift apart — required by docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6.1.
+// Question set per docs/aseptaclean-BUILD-EXACT-v3-STANDALONE.md §9 HOME 11 — owner-directed
+// 2026-09-04 ("follow instructions" on the FAQ-content question; see docs/05-DECISIONS-LOG.md).
+// Replaces the prior 8-question set (05-DECISIONS-LOG.md, superseded by this entry) with the v3
+// spec's 6 questions, verbatim. index.astro's FAQPage JSON-LD reads this same list, so schema and
+// visible copy cannot drift apart — required by docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6.1; the
+// schema block in index.astro needed no separate edit since it derives from this array directly.
 export const faqItems = [
   {
-    question: "Can I approve the project remotely?",
+    question: "I do not know which service I need. What should I choose?",
     answer:
-      "Yes, when access and decision authority are clear. Scope review, approvals, updates and closeout can be handled electronically."
+      "You do not have to choose one before contacting us. Send photos and tell us what is happening. We will help you determine which Aseptaclean service fits the property, if any."
   },
   {
-    question: "Will you throw anything away without asking?",
-    // doc 27 §9.15.2 amendment 1 (approved 2026-08-18) — replaces "Uncertain items are not
-    // automatically discarded." Same sentence swap applied to §9.6 in WhyAseptaclean.astro.
+    question: "Can I start by sending photos?",
     answer:
-      "No. The scope identifies keep, remove and review areas. Anything we’re not sure about goes into a labeled clear bag and waits for your decision."
+      "Yes. Photos are often the easiest place to start. Send wider photos of the affected rooms along with closer photos of the conditions you are concerned about. For more complicated properties, we may still recommend seeing the property in person."
   },
   {
-    question: "Do you handle animal or organic conditions?",
+    question: "Do I need to clean or move anything before you see the property?",
     answer:
-      "Yes — cleaning of animal-affected and organic conditions is included under our organic pathogen endorsement, as cleaning within lawful scope. Cleaning only — not a decontamination, sterilization, or health-safety determination."
+      "Usually, no. We would rather understand the property in its actual condition. If something needs to be moved before an assessment, we can tell you."
   },
   {
-    question: "What happens if a specialist condition is discovered?",
+    question: "What happens if you find more than expected?",
     answer:
-      "Work stops on that item. We document the condition and tell you which qualified provider is needed before work continues."
+      "If we uncover a condition that materially changes the approved work, we explain what we found before additional work is performed. We do not want major scope changes to show up as a surprise after the fact."
   },
   {
-    question: "What can change the price?",
+    question: "How do you determine the price?",
     answer:
-      "Concealed conditions, or something you ask us to add. Either way it's written down and approved before we carry on — never a surprise on the invoice."
+      "We look at the size, condition, access, contents, affected surfaces, waste, level of buildup, and amount of work required. For straightforward projects, photos may provide enough information to begin pricing. Larger or more complicated properties may need an on-site assessment."
   },
   {
-    question: "How quickly can the project begin?",
+    question: "What areas do you serve?",
     answer:
-      "Assessment requests are reviewed within one business day. Scheduling depends on scope, access, labor and the deadline."
-  },
-  // Added 2026-08-21. The single most common misread of this business is that it is a junk-hauling
-  // company, and until now no FAQ on `/` said otherwise. The answer is the operating boundary
-  // confirmed by the owner in docs/city-pages-part2-UPDATED.md Part E, in plain words: everything
-  // on the property is ours, the drive to the landfill is not. It states no new capability.
-  {
-    question: "Do you haul the stuff away?",
-    answer:
-      "Not in our own trucks. We do the work at the property — sorting, bagging, staging, clearing rooms out, and loading the container when that's part of the job. When a project needs a dumpster or debris box, we arrange it with the provider your city authorizes and handle placement and the disposal requirements. The drive off-site is theirs."
-  },
-  {
-    // Rewritten 2026-08-21. The old answer was one 120-word paragraph that inlined the entire
-    // seven-item exclusion list mid-sentence — the same list already rendered as its own panel
-    // higher up the page. Same facts, same boundaries, in the shape someone would say them.
-    question: "Do you handle properties with heavy accumulation or hoarding conditions?",
-    answer:
-      "Yes, within our current lawful and insured scope. It runs the same way as any other project: keep, remove and review areas are agreed in writing first, and nothing gets discarded automatically. Some things are outside what we do — human blood or bodily fluids, regulated medical waste, sharps, sewage, active mold, asbestos, lead, unknown chemicals, structural work, and pest treatment. If we find one of them, work in that area stops and you hear from us before anything else happens."
+      "Aseptaclean serves the South Bay, Santa Clara County, the Peninsula, and selected surrounding Bay Area communities. Contact us with the property location and we will confirm whether it falls within our current service area."
   }
 ] as const;
 ---
@@ -59,8 +43,7 @@ export const faqItems = [
     +/– affordance supplied by CSS (.ac-faq summary::after) rather than a span in the markup.
     Label and heading are §9.15.1's FAQ slots ("Common questions" / "Asked before almost every
     project."), which supersede both the mockup's wording and the FINAL-v2 strings here.
-    The seven-question set is unchanged — four are doc 27 §9.12, three have no doc 27
-    counterpart and are carried forward per the 2026-08-16 entry in 05-DECISIONS-LOG.md. */}
+    Question set replaced 2026-09-04 — see faqItems above for the current source and rationale. */}
 <section class="ac-sec faq" id="faq" aria-labelledby="faq-title">
   <div class="ac-shell">
     <div class="ac-sec__head">

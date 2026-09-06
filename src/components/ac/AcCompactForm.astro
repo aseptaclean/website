@@ -1,0 +1,674 @@
+---
+// COMPACT INTAKE FORM — the one form component shared by the homepage hero, all five service
+// heroes, and the Contact page. docs/03-INTEGRATION-CONTRACT.md "Forms remain a secondary way to
+// contact Aseptaclean" specifies the field set, the heading, and the submit label; doc 30 §3
+// and §4 specify the dark hero panel and the light body variant.
+//
+// FIELD CONTRACT UNCHANGED. This form posts the same field names functions/_lib/lead.ts already
+// validates for the lean assessment path (form_version present, offer_type !== residence):
+// full_name, phone, property_zip, property_situation, property_detail, plus the shared
+// commonRequiredFields (privacy_consent, submission_timestamp, idempotency_key). No new field
+// name is introduced, no required/optional state changed, and the situation values remain the
+// frozen CRM enum in src/data/assessment.ts — only their visible labels and order moved.
+//
+// The submit/validation/error/Turnstile script below is QuickHandoffForm's working contract,
+// extended with the two extra required inputs (property_zip, property_situation).
+import { assessment } from "@data/assessment";
+import { legal, site } from "@data/site";
+
+interface Props {
+  formId: string;
+  /**
+   * The route this form sits on, recorded on the lead so a submission can be traced to its
+   * page. Defaults to the homepage hero for backwards compatibility.
+   */
+  entryRoute?: string;
+  /**
+   * Preselect the situation matching this route (docs/03-INTEGRATION-CONTRACT.md: "Preselect
+   * the relevant service on its page while permitting correction"). The visitor can still
+   * change it — this sets the default option, it does not lock the field.
+   */
+  preselectRoute?: string;
+  /** `dark` sits over hero photography; `light` is the body-content variant (Contact). */
+  tone?: "dark" | "light";
+}
+
+const {
+  formId,
+  entryRoute = "/#hero-form",
+  preselectRoute,
+  tone = "dark"
+} = Astro.props;
+
+const preselectValue = preselectRoute
+  ? assessment.situations.find((situation) => situation.route === preselectRoute)?.value
+  : undefined;
+
+const endpointAvailable = Boolean(
+  site.integrations.formEnabled &&
+    site.urls.formEndpoint &&
+    site.integrations.turnstileSiteKey
+);
+---
+
+<form
+  id={formId}
+  class:list={["hero-form", `is-${tone}`]}
+  method="post"
+  action={endpointAvailable ? site.urls.formEndpoint : undefined}
+  aria-labelledby={`${formId}-title`}
+  data-quick-form
+  data-contact-phone={site.business.phone}
+>
+  <input type="hidden" name="form_version" value={assessment.version} />
+  <input type="hidden" name="offer_type" value="handoff_reset" />
+  <input type="hidden" name="entry_route" value={entryRoute} />
+  <input type="hidden" name="submitted_from" value={entryRoute} />
+  <input type="hidden" name="submission_timestamp" value="" />
+  <input type="hidden" name="idempotency_key" value="" />
+  <input
+    class="hero-form__honeypot"
+    type="text"
+    name="company_website"
+    tabindex="-1"
+    autocomplete="off"
+    aria-hidden="true"
+  />
+
+  {/* Heading and supporting line are the source wording named in
+      docs/03-INTEGRATION-CONTRACT.md "Forms", held in src/data/site.ts so every form surface
+      shares one string. */}
+  <h2 id={`${formId}-title`} class="ac-type-h4-mega hero-form__title">{site.offer.formHeading}</h2>
+  <p class="hero-form__lede">{site.offer.formLede}</p>
+
+  <div class="hero-form__errors" tabindex="-1" role="alert" hidden data-quick-form-errors>
+    <ul></ul>
+  </div>
+
+  <div class="hero-form__grid">
+    <div class="hero-form__field">
+      <label for={`${formId}-name`}>Full Name</label>
+      <input id={`${formId}-name`} name="full_name" type="text" autocomplete="name" required />
+    </div>
+
+    <div class="hero-form__field">
+      <label for={`${formId}-phone`}>Phone Number</label>
+      <input
+        id={`${formId}-phone`}
+        name="phone"
+        type="tel"
+        inputmode="tel"
+        autocomplete="tel"
+        required
+      />
+    </div>
+
+    <div class="hero-form__field">
+      <label for={`${formId}-zip`}>Property ZIP Code</label>
+      <input
+        id={`${formId}-zip`}
+        name="property_zip"
+        type="text"
+        inputmode="numeric"
+        autocomplete="postal-code"
+        pattern="[0-9]{5}(?:-[0-9]{4})?"
+        required
+      />
+    </div>
+
+    <div class="hero-form__field">
+      <label for={`${formId}-situation`}>What are you dealing with?</label>
+      <select id={`${formId}-situation`} name="property_situation" required>
+        <option value="" selected={!preselectValue} disabled={!preselectValue}>
+          Select an option
+        </option>
+        {assessment.situations.map((situation) => (
+          <option value={situation.value} selected={situation.value === preselectValue}>
+            {situation.label}
+          </option>
+        ))}
+      </select>
+    </div>
+
+    <div class="hero-form__field hero-form__field--full">
+      <label for={`${formId}-detail`}>Tell us what&rsquo;s going on</label>
+      <textarea
+        id={`${formId}-detail`}
+        name="property_detail"
+        rows="3"
+        required
+      ></textarea>
+    </div>
+  </div>
+
+  <label class="hero-form__consent">
+    <input type="checkbox" name="privacy_consent" value="yes" required />
+    <span>
+      {legal.consentBase.lead}{" "}
+      <a class="hero-form__link" href={site.urls.privacyPolicy}>
+        {legal.consentBase.privacyLabel}
+      </a>{legal.consentBase.tail}
+    </span>
+  </label>
+
+  {
+    site.integrations.turnstileSiteKey && (
+      <div class="hero-form__turnstile">
+        <div
+          class="cf-turnstile"
+          data-sitekey={site.integrations.turnstileSiteKey}
+          data-theme={tone === "light" ? "light" : "dark"}
+          data-size="flexible"
+        />
+      </div>
+    )
+  }
+  <noscript>
+    <p class="hero-form__note">
+      Security verification requires JavaScript. Please call Aseptaclean if you cannot enable it.
+    </p>
+  </noscript>
+
+  {
+    !endpointAvailable && (
+      <p class="hero-form__note" role="status">
+        Online submission is not fully configured in this preview. Your answers will not be sent.
+      </p>
+    )
+  }
+
+  <button class="button hero-form__submit" type="submit" disabled={!endpointAvailable} data-quick-form-submit>
+    <span data-quick-form-submit-label>{site.offer.formSubmitCta}</span>
+  </button>
+  <p class="hero-form__clarification">
+    Submitting this form authorizes Aseptaclean to contact you. It does not authorize work or
+    create a service agreement.
+  </p>
+  <p class="hero-form__status" data-quick-form-status role="status" aria-live="polite" hidden></p>
+</form>
+
+{
+  site.integrations.turnstileSiteKey && (
+    <script
+      is:inline
+      data-categories="essential"
+      src="https://challenges.cloudflare.com/turnstile/v0/api.js"
+      async
+      defer
+    />
+  )
+}
+
+<script>
+  // Identical submit/validation/error-rendering contract to QuickHandoffForm.astro — see that
+  // file for the field-by-field rationale. Duplicated here (not imported) because Astro scripts
+  // are page-scoped and this hero form has one extra field group (property_zip,
+  // property_situation) with its own approved-message overrides.
+  type FormControl = HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement;
+
+  document
+    .querySelectorAll<HTMLFormElement>("[data-quick-form]")
+    .forEach((form) => {
+      if (form.dataset.enhanced === "true") return;
+      form.dataset.enhanced = "true";
+      form.noValidate = true;
+
+      const errorBox = form.querySelector<HTMLElement>("[data-quick-form-errors]");
+      const errorList = errorBox?.querySelector("ul");
+      const statusEl = form.querySelector<HTMLElement>("[data-quick-form-status]");
+      const submitButton = form.querySelector<HTMLButtonElement>("[data-quick-form-submit]");
+      const submitLabel = form.querySelector<HTMLElement>("[data-quick-form-submit-label]");
+      const defaultLabel = submitLabel?.textContent ?? "Submit";
+      const timestampInput = form.elements.namedItem("submission_timestamp");
+      const idempotencyInput = form.elements.namedItem("idempotency_key");
+
+      if (idempotencyInput instanceof HTMLInputElement) {
+        idempotencyInput.value =
+          window.crypto?.randomUUID?.() ??
+          `${Date.now()}-${Math.random().toString(36).slice(2)}`;
+      }
+
+      const resetTurnstile = () => {
+        const turnstile = (
+          window as Window & {
+            turnstile?: { reset: (widget?: string | HTMLElement) => void };
+          }
+        ).turnstile;
+        const widget = form.querySelector<HTMLElement>(".cf-turnstile");
+        if (turnstile && widget) turnstile.reset(widget);
+      };
+
+      const clearFieldErrors = () => {
+        form.querySelectorAll<HTMLElement>("[data-generated-error]").forEach((el) => el.remove());
+        form
+          .querySelectorAll<FormControl>('[aria-invalid="true"]')
+          .forEach((control) => control.removeAttribute("aria-invalid"));
+      };
+
+      const labelFor = (control: FormControl) => {
+        const label = form.querySelector<HTMLLabelElement>(`label[for="${CSS.escape(control.id)}"]`);
+        return label?.textContent?.replace("*", "").trim() ?? "Field";
+      };
+
+      const approvedFieldMessage: Record<string, string> = {
+        phone: "Add a phone number so Matthew can reach you about the property.",
+        privacy_consent: "Check the consent box so we're allowed to call or text you back.",
+        property_zip: "Add the property ZIP code so we can confirm the service area.",
+        property_situation: "Select the option that sounds closest to what's happening."
+      };
+
+      const contactPhone = form.dataset.contactPhone ?? "";
+      const submissionErrorMessage = contactPhone
+        ? `Something went wrong on our end and the form didn't send. Call or text ${contactPhone} and we'll take it from there.`
+        : "Something went wrong on our end and the form didn't send. Call or text us and we'll take it from there.";
+
+      const renderErrors = (errors: Record<string, string>) => {
+        clearFieldErrors();
+        const messages: string[] = [];
+
+        for (const [key, serverMessage] of Object.entries(errors)) {
+          const message = approvedFieldMessage[key] ?? serverMessage;
+          if (key === "form") {
+            messages.push(message);
+            continue;
+          }
+          const control = form.elements.namedItem(key);
+          if (control instanceof HTMLInputElement && control.type === "checkbox") {
+            control.setAttribute("aria-invalid", "true");
+            const wrapper = control.closest("label");
+            if (wrapper) {
+              const inline = document.createElement("p");
+              inline.className = "form-error";
+              inline.dataset.generatedError = "";
+              inline.textContent = message;
+              wrapper.after(inline);
+            }
+            messages.push(message);
+            continue;
+          }
+          if (
+            control instanceof HTMLInputElement ||
+            control instanceof HTMLTextAreaElement ||
+            control instanceof HTMLSelectElement
+          ) {
+            control.setAttribute("aria-invalid", "true");
+            const field = control.closest(".hero-form__field");
+            if (field) {
+              const inline = document.createElement("p");
+              inline.className = "form-error";
+              inline.dataset.generatedError = "";
+              inline.textContent = message;
+              field.append(inline);
+            }
+            messages.push(`${labelFor(control)}: ${message}`);
+            continue;
+          }
+          messages.push(message);
+        }
+
+        if (errorBox && errorList) {
+          errorList.replaceChildren();
+          if (messages.length) {
+            messages.forEach((message) => {
+              const item = document.createElement("li");
+              item.textContent = message;
+              errorList.append(item);
+            });
+            errorBox.hidden = false;
+            errorBox.focus({ preventScroll: true });
+            errorBox.scrollIntoView({ behavior: "smooth", block: "start" });
+          } else {
+            errorBox.hidden = true;
+          }
+        }
+      };
+
+      const setSubmitting = (submitting: boolean, message = "") => {
+        if (submitButton) submitButton.disabled = submitting;
+        form.setAttribute("aria-busy", String(submitting));
+        if (submitLabel) submitLabel.textContent = submitting ? "Sending request…" : defaultLabel;
+        if (statusEl) {
+          statusEl.hidden = !message;
+          statusEl.textContent = message;
+        }
+      };
+
+      form.addEventListener("submit", async (event) => {
+        event.preventDefault();
+        if (!form.action) return;
+
+        clearFieldErrors();
+        if (errorBox) errorBox.hidden = true;
+
+        const turnstileWidget = form.querySelector(".cf-turnstile");
+        const turnstileToken = form.elements.namedItem("cf-turnstile-response");
+        if (
+          turnstileWidget &&
+          (!(turnstileToken instanceof HTMLInputElement) || !turnstileToken.value)
+        ) {
+          setSubmitting(false, "Complete the security verification, then submit again.");
+          return;
+        }
+
+        if (timestampInput instanceof HTMLInputElement) {
+          timestampInput.value = new Date().toISOString();
+        }
+
+        setSubmitting(true, "Sending your request…");
+
+        try {
+          const response = await fetch(form.action, {
+            method: "POST",
+            headers: { Accept: "application/json" },
+            body: new FormData(form)
+          });
+          let payload: Record<string, unknown> = {};
+          try {
+            payload = await response.json();
+          } catch {
+            payload = {};
+          }
+
+          if (response.ok && payload.ok === true) {
+            const parameters = new URLSearchParams({
+              received: "1",
+              callback:
+                typeof payload.callbackWindow === "string"
+                  ? payload.callbackWindow
+                  : "next-business-window",
+              email: payload.confirmationEmailSent === true ? "sent" : "none"
+            });
+            const code =
+              typeof payload.confirmationCode === "string" ? payload.confirmationCode : "";
+            if (code) parameters.set("code", code);
+            window.location.assign(`/thank-you/?${parameters.toString()}`);
+            return;
+          }
+
+          if (payload.errors && typeof payload.errors === "object") {
+            renderErrors(payload.errors as Record<string, string>);
+          }
+          setSubmitting(
+            false,
+            typeof payload.message === "string" ? payload.message : submissionErrorMessage
+          );
+          resetTurnstile();
+        } catch {
+          setSubmitting(false, submissionErrorMessage);
+          resetTurnstile();
+        }
+      });
+    });
+</script>
+
+<style>
+  /* DENSITY, NOT SUBTRACTION (owner correction 2026-09-04). The whole form including the submit
+     button has to clear the fold inside the first viewport. Every field, the SMS/contact consent,
+     both helper paragraphs and the 44px input touch targets are unchanged — the height comes out
+     of the space between rows (16px→13px, six gaps) and the shell padding (28px→22px) instead.
+     Type sizes are untouched for the same reason. */
+  /* doc 30 §2 "Hero form": dark readable panel with a subtle border over the background
+     photograph, solid/semitransparent navy surface, restrained 8px radius. Values from
+     docs/styles/website-reference.css `.ac-form`. Backdrop blur is explicitly not required and
+     is not used — the panel is opaque enough to hold AA text on its own. */
+  .hero-form {
+    display: grid;
+    gap: 12px;
+    border: 1px solid rgb(255 255 255 / 30%);
+    border-radius: var(--ac-r-panel);
+    background: rgb(18 40 64 / 94%);
+    padding: 22px;
+  }
+
+  /* Body-content variant (Contact). Light fields on a paper surface — doc 30 §2:
+     "Body content forms use light fields." */
+  .hero-form.is-light {
+    border-color: var(--ac-color-line-strong);
+    background: var(--ac-color-warm-white);
+  }
+
+  /* Size, family, weight and letter-spacing come from .ac-type-h4-mega (global.css), applied
+     alongside this class in the markup — type law #1 forbids a component from sizing a heading
+     tag itself, so only the color/margin additions this slot needs beyond that role live here. */
+  .hero-form__title {
+    margin: 0;
+    color: var(--ac-color-paper);
+  }
+
+  .hero-form__lede {
+    margin: -8px 0 0;
+    color: rgb(255 255 255 / 82%);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  .hero-form__grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .hero-form__field--full {
+    grid-column: 1 / -1;
+  }
+
+  .hero-form__field label {
+    display: block;
+    margin-bottom: 4px;
+    color: rgb(255 255 255 / 92%);
+    /* 16px. Reference CSS `.ac-form label`. Was 13px, under doc 30 §2's readable floor. */
+    font-size: 1rem;
+    line-height: 1.4;
+    font-weight: 650;
+  }
+
+  .is-light .hero-form__field label {
+    color: var(--ac-color-navy-900);
+  }
+
+  .hero-form__field input,
+  .hero-form__field select,
+  .hero-form__field textarea {
+    width: 100%;
+    min-height: 44px;
+    border: 1px solid rgb(255 255 255 / 28%);
+    border-radius: var(--ac-r-sm);
+    background: rgb(255 255 255 / 12%);
+    padding: 10px 12px;
+    color: var(--ac-color-paper);
+    font: inherit;
+    /* 16px keeps the control readable and stops iOS zooming the page on focus. */
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+
+  .is-light .hero-form__field input,
+  .is-light .hero-form__field select,
+  .is-light .hero-form__field textarea {
+    border-color: var(--ac-color-line-strong);
+    background: var(--ac-color-paper);
+    color: var(--ac-color-ink-900);
+  }
+
+  .hero-form__field select {
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23ffffff'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 13px center;
+    padding-right: 32px;
+  }
+
+  .hero-form__field select option {
+    color: var(--ac-color-ink-900);
+  }
+
+  .hero-form__field textarea {
+    min-height: 88px;
+    resize: vertical;
+  }
+
+  .hero-form__field input::placeholder,
+  .hero-form__field textarea::placeholder {
+    color: rgb(255 255 255 / 55%);
+  }
+
+  .hero-form__field input:focus-visible,
+  .hero-form__field select:focus-visible,
+  .hero-form__field textarea:focus-visible {
+    outline: 2px solid var(--ac-color-paper);
+    outline-offset: 1px;
+  }
+
+  .hero-form__consent {
+    display: grid;
+    grid-template-columns: 1.1rem minmax(0, 1fr);
+    gap: 10px;
+    cursor: pointer;
+    color: rgb(255 255 255 / 82%);
+    /* 14px. Reference CSS `.ac-form__consent`. Consent text is never shrunk to make a hero
+       fit — doc 30 §3. */
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
+
+  .is-light .hero-form__consent {
+    color: var(--ac-color-ink-600);
+  }
+
+  .hero-form__consent input {
+    width: 1.05rem;
+    height: 1.05rem;
+    margin: 0.15rem 0 0;
+    accent-color: var(--ac-color-paper);
+  }
+
+  .hero-form__link {
+    color: var(--ac-color-paper);
+    text-decoration: underline;
+  }
+
+  .hero-form__turnstile {
+    display: flex;
+  }
+
+  .hero-form__note {
+    margin: 0;
+    color: rgb(255 255 255 / 72%);
+    font-size: 0.75rem;
+  }
+
+  .hero-form__submit {
+    display: inline-flex;
+    width: 100%;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-radius: var(--ac-r-sm);
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+    font-size: 0.9375rem;
+    font-weight: 750;
+    transition: background-color 150ms ease;
+  }
+
+  .hero-form__submit:hover:not(:disabled) {
+    background: var(--ac-color-blue-pale);
+  }
+
+  .hero-form__submit:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 3px;
+  }
+
+  .hero-form__submit:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+
+  .hero-form__clarification {
+    margin: 0;
+    color: rgb(255 255 255 / 62%);
+    font-size: 0.6875rem;
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .hero-form__status {
+    margin: 0;
+    color: rgb(255 255 255 / 82%);
+    font-size: 0.8125rem;
+  }
+
+  .hero-form__errors {
+    border: 2px solid var(--ac-color-error);
+    border-radius: var(--ac-r-sm);
+    background: rgb(163 57 47 / 16%);
+    padding: 14px;
+    color: var(--ac-color-paper);
+  }
+
+  .hero-form__errors ul {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding-left: 1.1rem;
+    font-size: 0.8125rem;
+  }
+
+  .hero-form :global(.form-error) {
+    margin: 4px 0 0;
+    color: #ffb4ac;
+    font-size: 0.75rem;
+    font-weight: 700;
+  }
+
+  .is-light .hero-form__title,
+  .is-light .hero-form__lede,
+  .is-light .hero-form__note,
+  .is-light .hero-form__status,
+  .is-light .hero-form__clarification {
+    color: var(--ac-color-ink-600);
+  }
+
+  .is-light .hero-form__title {
+    color: var(--ac-color-navy-900);
+  }
+
+  .is-light .hero-form__link {
+    color: var(--ac-color-navy-800);
+  }
+
+  .is-light .hero-form__submit {
+    background: var(--ac-color-navy-800);
+    color: var(--ac-color-paper);
+  }
+
+  .is-light .hero-form__submit:hover:not(:disabled) {
+    background: var(--ac-color-navy-900);
+  }
+
+  .is-light .hero-form :global(.form-error),
+  .is-light :global(.form-error) {
+    color: var(--ac-color-error);
+  }
+
+  .hero-form__honeypot {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    white-space: nowrap !important;
+  }
+
+  @media (max-width: 40rem) {
+    .hero-form {
+      padding: 22px;
+    }
+
+    .hero-form__grid {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

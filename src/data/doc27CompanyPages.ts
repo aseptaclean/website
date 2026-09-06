@@ -210,7 +210,10 @@ export const contactPage = {
   metaDescription:
     "Request an Aseptaclean cleaning or property clearing assessment in the South Bay & Peninsula.",
   eyebrow: "Contact",
-  h1: "Start with the property details.",
+  // docs/20-COPY-MAP.md display map and docs/page-briefs/CONTACT.md both set this H1 explicitly:
+  // "Contact H1 → Contact Aseptaclean. Current UI adaptation supporting the owner's call-first
+  // instruction." Previous value: "Start with the property details."
+  h1: "Contact Aseptaclean",
   lead: "Share the city, approximate size, current condition, access and deadline. Clear photos help us decide whether a walkthrough is needed.",
   callNote: "For immediate questions about fit and timing.",
   // doc 27 §9.15.2 amendment 5 (approved 2026-08-18) — replaces "Send wide views and close

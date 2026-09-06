@@ -350,14 +350,14 @@ export const extremeCleaningPage: Doc27ServicePage = {
     "Crew size and project duration"
   ],
   boundaries: [
-    "Human biological material or trauma scenes",
-    "Regulated medical or hazardous waste",
+    "Regulated medical or hazardous waste outside the trauma-scene waste pathway",
     "Structural repair, demolition or pest treatment",
     "Conditions outside current training, insurance or lawful scope"
   ],
   faq: [
     { question: "Can you quote this from photos?", answer: "Photos can support an initial range. Severe or complicated conditions usually require an in-person walkthrough before a firm scope." },
-    { question: "Is every extreme-condition job accepted?", answer: "No. We decline or refer conditions that exceed our current legal, insurance, training or equipment scope." }
+    { question: "Is every extreme-condition job accepted?", answer: "No. We decline or refer conditions that exceed our current legal, insurance, training or equipment scope." },
+    { question: "What if the property involves blood or bodily fluids from a crime, trauma, or unattended death?", answer: "That work is handled under a separate, dedicated service — Crime Scene & Trauma Cleanup — once the scene has been released by the appropriate authority. Tell us what happened and we will route you correctly." }
   ],
   // Doc 27 §13.1 relates this to property-cleanouts (crew-gated draft) and animal-waste
   // (doc 27 §21 compliance gate). Both removed from this INDEXABLE page: the first is
@@ -368,7 +368,68 @@ export const extremeCleaningPage: Doc27ServicePage = {
   related: [
     { label: "Hoarding Cleanup", href: "/hoarding-cleanup-san-jose/" },
     { label: "Estate Cleanouts", href: "/estate-cleanout-san-jose/" },
-    { label: "Complex Property Cleanup", href: "/property-clearing/" }
+    { label: "Crime Scene & Trauma Cleanup", href: "/crime-scene-trauma-cleanup-san-jose/" }
+  ]
+} as const;
+
+// CRIME SCENE & TRAUMA CLEANUP — added 2026-09-03. Phase 5's biohazard/trauma build gate
+// (AGENTS.md §5, doc 21 §5) is lifted for this one route only, on owner confirmation that the
+// California TSWMP registration (TSW #933) is now active and verified — see
+// docs/05-DECISIONS-LOG.md, "TSWMP verified; Phase 5 gate lifted for Crime Scene & Trauma
+// Cleanup only". This record exists for cross-linking (`related`, `ServiceDirectory`,
+// `ServiceProblemChooser`) only — the route itself is hand-authored in its own .astro file,
+// matching the hoarding/extreme-cleaning gold-standard pattern, not the generic
+// ServicePageLayout template. Copy source: docs/aseptaclean-crime-scene-trauma-cleanup.md.
+export const crimeScenePage: Doc27ServicePage = {
+  slug: "/crime-scene-trauma-cleanup-san-jose/",
+  gate: null,
+  complianceClause: null,
+  indexable: true,
+  doc27H1: "Crime Scene & Trauma Cleanup",
+  section: null,
+  eyebrow: "Crime Scene & Trauma Cleanup · South Bay & Peninsula",
+  seoTitle: "Crime Scene & Trauma Cleanup | Aseptaclean",
+  metaDescription:
+    "Discreet crime scene and trauma cleanup for homes, businesses, and vehicles across the South Bay & Peninsula, after the scene has been released. TSW #933.",
+  h1: "Crime Scene & Trauma Cleanup",
+  lead:
+    "Professional cleanup after a traumatic event, once law enforcement, emergency responders, or the coroner have released the scene.",
+  fitWhen: [
+    "The scene has been released by the appropriate authority",
+    "Blood, bodily fluids, or affected belongings remain",
+    "The property is a home, business, vehicle, or other accepted property",
+    "You are not sure what to do next"
+  ],
+  outcomeHeading: "Cleanup handled discreetly, after the scene is released.",
+  outcomeBody:
+    "Aseptaclean assesses the affected area, defines the cleanup, performs the approved work, and manages regulated trauma-scene waste through an authorized third-party transportation partner.",
+  workIncludes: [
+    "Assessment of the affected area",
+    "Blood and bodily fluid cleanup",
+    "Cleaning and disinfection of accepted affected surfaces",
+    "Handling of affected personal contents",
+    "Packaging and coordinated disposal of regulated trauma-scene waste"
+  ],
+  quoteVariables: [
+    "Size of the affected area",
+    "Amount of blood or bodily fluid",
+    "Surface and material types",
+    "Personal contents involved",
+    "Waste volume and access"
+  ],
+  boundaries: [
+    "Active or unreleased crime scenes",
+    "Demolition or structural removal",
+    "Reconstruction or repair work",
+    "Pest inspection, identification, or treatment"
+  ],
+  faq: [
+    { question: "When can cleanup begin?", answer: "Aseptaclean begins after the scene has been released by the appropriate authority. We do not interfere with an active crime scene or investigation." },
+    { question: "Do I need to clean anything before you arrive?", answer: "No. You do not need to clean, move belongings, or prepare the affected area before contacting us." }
+  ],
+  related: [
+    { label: "Severe Property Cleanup", href: "/extreme-cleaning-san-jose/" },
+    { label: "Hoarding Cleanup", href: "/hoarding-cleanup-san-jose/" }
   ]
 } as const;
 

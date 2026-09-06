@@ -1,0 +1,89 @@
+---
+// TrustStrip — thin proof strip. Flex, centered, vertical dividers, border-top/bottom.
+//
+// CredentialBar.astro (.ac-cred) already covers sitewide credential content but is a grid with
+// left-border dividers and border-bottom only, with fixed hardcoded copy — used across 15
+// routes and left unchanged. This is a new, generic, item-driven component for the flex/
+// vertical-divider treatment the layout spec calls for, matching the closest prior art
+// (crime-scene-trauma-cleanup-san-jose's page-local .cs-trust) but as a reusable component.
+interface Item {
+  label: string;
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props;
+---
+
+<div class="ac-trust-strip">
+  <ul class="ac-trust-strip__list">
+    {items.map((item) => (
+      <li class="ac-trust-strip__item">{item.label}</li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .ac-trust-strip {
+    border-block: 1px solid var(--ac-color-line);
+  }
+
+  .ac-trust-strip__list {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 12px 32px;
+    margin: 0;
+    padding: 24px 0;
+    list-style: none;
+    width: min(100% - 48px, var(--ac-measure-wide));
+    margin-inline: auto;
+  }
+
+  .ac-trust-strip__item {
+    position: relative;
+    padding-inline: 32px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.875rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  .ac-trust-strip__item:first-child {
+    padding-left: 0;
+  }
+
+  .ac-trust-strip__item:last-child {
+    padding-right: 0;
+  }
+
+  .ac-trust-strip__item + .ac-trust-strip__item::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 50%;
+    height: 1.1em;
+    width: 1px;
+    background: var(--ac-color-line-strong);
+    transform: translateY(-50%);
+  }
+
+  @media (max-width: 760px) {
+    .ac-trust-strip__list {
+      gap: 14px 24px;
+      padding: 20px 0;
+    }
+
+    .ac-trust-strip__item {
+      padding-inline: 0;
+    }
+
+    .ac-trust-strip__item::before {
+      content: none !important;
+    }
+  }
+</style>

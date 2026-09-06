@@ -107,35 +107,31 @@
 // property-cleanouts → "Landlord turnover"; deep-cleaning → "Already empty but requires detailed
 // cleaning"). No new option was added to the form.
 //
-// IMAGE — condition-development-reset-aismallard.jpg (the empty room) IS USED HERE, the first
-// route to use it. Every prior rebuild (Hoarding, Estate, Property Cleanouts, Deep Cleaning)
-// deliberately withheld this exact file because docs/06-ASSET-MANIFEST.md §4 flags an open owner
-// question — does a bare room read as a fabricated "after" shot? — and on THOSE pages (whose
-// arguments are start→sorted→cleared→cleaned or buildup→detail) placing an empty room anywhere
-// near the sequence risks exactly that misread, since none of those pages' subject matter IS an
-// empty room. This page's subject matter IS an empty room: the core argument (movement 03) is
-// literally "the home is empty, and that access is the opportunity." Used here, the photograph is
-// not standing in for a before/after claim — it is not paired with any "before" image, it is not
-// captioned as a result, and the page's own body copy explicitly disclaims completed-work status
-// ("empty does not always mean clean"). It illustrates the CONDITION the page is discussing, the
-// same [ATMOS]-class role every other reused asset on the site already plays (AGENTS.md §0.3;
-// doc 21 §6). Development-label caption carried through unchanged from its prior uses. No new
-// asset acquired — docs/06-ASSET-MANIFEST.md §4's cap is not raised, an existing file gains a
-// fourth documented role.
+// IMAGE — HERO REPOINTED 2026-09-05 to the owner image package, slot 02
+// `property-interior-introduction`.
+//
+// It replaces `condition-development-reset-aismallard.jpg` (aismallard, Wikimedia Commons,
+// CC BY-SA 3.0), whose attribution lived only in this comment and never on the rendered page —
+// the licence exposure recorded in docs/06-ASSET-MANIFEST.md. Removing the placement closes it
+// for this route.
+//
+// SUBJECT MATCH IS UNCHANGED, and it is the reason this page can carry an empty room at all. The
+// core argument (movement 03) is literally "the home is empty, and that access is the
+// opportunity", so an unfurnished interior IS this page's subject rather than an implied "after"
+// shot: it is not paired with any "before" image, it is not captioned as a result, and the body
+// copy explicitly disclaims completed-work status ("empty does not always mean clean"). Slot 02
+// is the package's own introduction image — a bright unfurnished residential interior — and it
+// plays the same [ATMOS]-class role the Commons file played, with a provenance the manifest can
+// actually account for.
+//
+// Original illustrative work, NOT Aseptaclean project work, NOT a client property and NOT proof
+// of a completed job or a before/after pair. `[ATMOS]`-class under
+// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6: no crew, no vehicle, no equipment, no work in progress.
 import { Image } from "astro:assets";
 import BaseLayout from "@layouts/BaseLayout.astro";
-import heroImage from "../../assets/homepage/condition-development-reset-aismallard.jpg";
+import heroImage from "../../assets/aseptaclean/property-interior-introduction.png";
+import { srcsetWidths } from "@components/imageWidths";
 import { legal, site } from "@data/site";
-
-// TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPH — NOT Aseptaclean project work, NOT a client
-// property, and NOT proof of any completed job or a before/after pair. `[ATMOS]`-class under
-// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6: no crew, no vehicle, no equipment, no work in progress.
-//
-//   condition-development-reset-aismallard.jpg
-//     aismallard — CC BY-SA 3.0
-//     https://commons.wikimedia.org/wiki/File:Empty_apartment_room_with_corner_windows.jpg
-//
-// REUSED, NOT NEWLY ACQUIRED. See the top-of-file note on why this page is the first to use it.
 
 const canonicalPath = "/move-out-cleaning-san-jose/";
 
@@ -356,7 +352,7 @@ const schema = [
         src={heroImage}
         alt=""
         layout="full-width"
-        widths={[480, 768, 1024, 1440, 1920]}
+        widths={srcsetWidths(heroImage, [480, 768, 1024, 1440, 1920])}
         sizes="100vw"
         format="webp"
         quality={74}
@@ -388,10 +384,6 @@ const schema = [
         </div>
       </div>
     </div>
-
-    <p class="mo-hero__development-note">
-      Development reference photograph · not Aseptaclean project work
-    </p>
   </section>
 
   {/* ══ 02 · CLEAN FOR THE HANDOFF ═══════════════════════════════════════════════════════════
@@ -668,7 +660,7 @@ const schema = [
         <a class="mo-btn mo-btn--light" href={assessmentHref}>Get My Move-Out Estimate</a>
         <div class="mo-close__secondary">
           {phoneHref && <a href={phoneHref}>Call {site.business.phone}</a>}
-          {smsHref && <a href={smsHref}>{site.offer.secondaryCta}</a>}
+          {smsHref && <a href={smsHref}>{site.offer.smsCta}</a>}
         </div>
         <p class="mo-close__note">
           Submitting a request does not authorize work or create a service agreement.
@@ -956,24 +948,6 @@ const schema = [
   .mo-hero__call:focus-visible {
     outline: 3px solid var(--ac-color-paper);
     outline-offset: 3px;
-  }
-
-  .mo-hero__development-note {
-    position: absolute;
-    z-index: 2;
-    right: 18px;
-    bottom: 14px;
-    left: 18px;
-    max-width: none;
-    white-space: nowrap;
-    margin: 0;
-    color: rgb(255 255 255 / 92%);
-    font-size: 0.625rem;
-    font-weight: 650;
-    letter-spacing: 0.055em;
-    line-height: 1.3;
-    text-align: right;
-    text-transform: uppercase;
   }
 
   /* ══ 02 · CLEAN FOR THE HANDOFF ═════════════════════════════════════════════════════════ */

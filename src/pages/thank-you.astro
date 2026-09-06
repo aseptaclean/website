@@ -38,21 +38,16 @@ const schema = [
         class="confirmation__record"
         data-confirmation
       >
-        <p class="confirmation__eyebrow" data-confirmation-eyebrow>Handoff plan intake</p>
+        <p class="confirmation__eyebrow" data-confirmation-eyebrow>Assessment request</p>
         <h1 class="ac-type-h1" data-confirmation-title>This page does not confirm that a request was received.</h1>
         <div data-confirmed hidden>
           <p class="confirmation__status">Received</p>
-          <!-- §9.15.5 approved success string (doc 27 §18, verbatim). The email-delivery
-               paragraph below it stays: it reports which delivery states actually occurred,
-               which this line does not claim. -->
-          <p class="confirmation__success ac-type-lead">
-            Got it. I'll review the details and contact you about the next step.
-          </p>
+          <!-- Exact required copy — do not paraphrase. The email-delivery paragraph below it
+               stays: it reports which delivery states actually occurred, which this line does
+               not claim. -->
           <p class="confirmation__lead" data-confirmation-email>
-            A confirmation email is on its way. Aseptaclean will review the
-            property details and send your Handoff Plan—fit decision,
-            preliminary scope direction, and clear next step—within one business
-            day.
+            We'll review what you sent and contact you about the next step. If we need more
+            information or an on-site assessment before pricing the work, we'll let you know.
           </p>
           <p class="confirmation__callback" data-callback-message></p>
           <p class="confirmation__reference" data-submission-reference hidden></p>
@@ -135,7 +130,7 @@ const schema = [
     if (title) {
       title.textContent = isResidence
         ? "Your residence assessment is in the review queue."
-        : "Your request is in the review queue.";
+        : "Request received.";
     }
     confirmed.hidden = false;
     unconfirmed.hidden = true;
@@ -147,17 +142,18 @@ const schema = [
           : "Because this request arrived outside published business hours, Aseptaclean will call during the next business window.";
     }
     const emailState = parameters.get("email");
-    if (confirmationEmail && emailState === "none") {
-      // The short homepage form collects a phone number and no email address, so no
-      // confirmation email is ever attempted on that path. Reporting unverified
-      // delivery there would describe a message that was never sent.
+    if (isResidence && confirmationEmail) {
       confirmationEmail.textContent =
-        "No confirmation email was sent—this form collects a phone number, not an email address. Aseptaclean will call the number you provided and walk through the Handoff Plan—fit decision, preliminary scope direction, and clear next step—within one business day.";
+        "A confirmation email is on its way. Aseptaclean will review the residence, desired baseline, priority rooms, finish instructions, access, and whether an on-site walkthrough is required.";
+    } else if (confirmationEmail && emailState === "none") {
+      // No email was collected on this submission, so no confirmation email is ever
+      // attempted. Reporting unverified delivery here would describe a message that was
+      // never sent.
+      confirmationEmail.textContent =
+        "We'll review what you sent and contact you by phone about the next step. If we need more information or an on-site assessment before pricing the work, we'll let you know.";
     } else if (confirmationEmail && emailState !== "sent") {
       confirmationEmail.textContent =
-        isResidence
-          ? "Your residence assessment was received, but confirmation-email delivery could not be verified. Save the confirmation code below. Aseptaclean will still review the residence details within one business day."
-          : "Your request was received, but confirmation-email delivery could not be verified. Save the confirmation code below. Aseptaclean will still review the property details and provide the Handoff Plan within one business day.";
+        "We'll review what you sent and contact you about the next step. Save the confirmation code below in case you need to reference it. If we need more information or an on-site assessment before pricing the work, we'll let you know.";
     }
     // Six Crockford base32 characters, so the visitor can read this down the phone or
     // type it from a photo. The submission UUID stays internal and is never shown here.
@@ -220,14 +216,6 @@ const schema = [
     max-width: 43rem;
     margin: var(--ac-space-5) 0 0;
     font-size: var(--ac-text-lead);
-  }
-
-  /* Size comes from the .ac-type-lead role class on the element, not from here. */
-  .confirmation__success {
-    max-width: 43rem;
-    margin: var(--ac-space-5) 0 0;
-    color: var(--ac-color-navy-900);
-    font-weight: 600;
   }
 
   .confirmation__callback,

@@ -1,0 +1,289 @@
+---
+// PPC HERO — brief "SECTION 01 — HERO" plus the "Hero geometry and reading order" contract, and
+// profile AC-CP70-91130-1.1 CSS-02.
+//
+// Same hero family as AcHeroWithForm (full-bleed cover photograph, FLAT navy overlay, copy left,
+// dark intake panel right). Two things are scoped to this route:
+//
+//   1. GRID TRACK. The shared hero uses `minmax(0,1fr) minmax(520px,560px)`. The brief's recipe
+//      is `minmax(0, 1fr) clamp(520px, calc(45% - 23.4px), 560px)` with a 52px gap, which is
+//      what produces the requested ~55/45 relationship WITHOUT overflowing the container. The
+//      brief is explicit that a literal `55% 45%` plus a gap would overflow. Resolved widths at
+//      the §7 matrix, before scrollbar differences:
+//        1440 → shell 1320 → copy 708 / gap 52 / form 560   (55.8 / 44.2)
+//        1536 → shell 1320 → copy 708 / gap 52 / form 560   (55.8 / 44.2)
+//        1366 → shell 1302 → copy 690 / gap 52 / form 560   (55.2 / 44.8)
+//        1280 → shell 1216 → copy 640.2 / gap 52 / form 523.8 (55 / 45)
+//
+//   2. COMPACT BAND. The profile's compact desktop mode is `>=1200px and <=850px tall`. Here it
+//      runs to 950px tall. This hero's form carries an upload control and the wider media-consent
+//      scope the shared hero form does not, so it needs the documented compact density across the
+//      whole §7 matrix, not only below 850px. It is a SPACE-ONLY change — every readable floor in
+//      §7 holds (>=16px input text, >=44px controls, >=48px buttons, 14px helpers and consent),
+//      nothing is hidden, clipped, scaled or made to scroll. Recorded in
+//      docs/05-CURRENT-DECISIONS.md.
+//
+// GEOMETRY RULES THAT DO NOT BEND: no fixed height, no max-height, no overflow:hidden, no 100vh.
+// Content sets the height. Below 1200px the two columns stack in DOM order — eyebrow, H1, lead,
+// body, call action, then the form — with nothing between the copy and the form.
+//
+// The illustrative-photography disclosure is NOT rendered inside this hero. It ships in the
+// compact footer instead (docs/06-ASSET-MANIFEST.md keeps it out of the hero's horizontal grid,
+// and out of the hero entirely it also stops costing ~30px of the §7 fold budget).
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+import AcActions from "@components/ac/AcActions.astro";
+
+interface Props {
+  id: string;
+  eyebrow: string;
+  heading: string;
+  headingId: string;
+  lead: string;
+  body: readonly string[];
+  image: ImageMetadata;
+  imageAlt: string;
+  /** Campaign call label — built from src/data/site.ts by the caller, never typed in. */
+  primaryLabel: string;
+  secondaryLabel: string;
+  /** Same-page target for the subordinate action. */
+  formHref: string;
+  supportingLine: string;
+}
+
+const {
+  id,
+  eyebrow,
+  heading,
+  headingId,
+  lead,
+  body,
+  image,
+  imageAlt,
+  primaryLabel,
+  secondaryLabel,
+  formHref,
+  supportingLine
+} = Astro.props;
+---
+
+<section class="ppc-hero" id={id} aria-labelledby={headingId}>
+  <div class="ppc-hero__media">
+    <Image
+      src={image}
+      alt={imageAlt}
+      layout="full-width"
+      widths={[480, 768, 1024, 1440, 1920, 2400]}
+      sizes="100vw"
+      format="webp"
+      quality={76}
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+    />
+  </div>
+
+  {/* FLAT overlay, never a gradient. rgb(18 40 64 / .66) is the reference recipe. */}
+  <div class="ppc-hero__overlay" aria-hidden="true"></div>
+
+  <div class="ppc-hero__shell ac-shell">
+    <div class="ppc-hero__grid">
+      <div class="ppc-hero__content">
+        <p class="ppc-hero__eyebrow">{eyebrow}</p>
+        {/* The ONE H1 on this page. Size comes from .ac-type-h1-home; type law #1 forbids a
+            component declaring font-size on a heading, so the compact band below overrides the
+            --ac-text-h1-home VARIABLE instead. */}
+        <h1 id={headingId} class="ac-type-h1-home">{heading}</h1>
+        {/* The reassurance sentence is a LEAD PARAGRAPH, not a second oversized heading. */}
+        <p class="ppc-hero__lead">{lead}</p>
+        {body.map((paragraph) => <p class="ppc-hero__body">{paragraph}</p>)}
+
+        {/* The call sits directly under the copy and ABOVE the form in DOM order, so a phone
+            visitor reaches the primary action before scrolling the form. */}
+        <div class="ppc-hero__actions">
+          <AcActions
+            tone="dark"
+            primaryLabel={primaryLabel}
+            secondaryLabel={secondaryLabel}
+            secondaryHref={formHref}
+          />
+        </div>
+
+        <p class="ppc-hero__note">{supportingLine}</p>
+      </div>
+
+      <div class="ppc-hero__form">
+        <slot name="form" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ppc-hero {
+    position: relative;
+    isolation: isolate;
+    background: var(--ac-color-navy-950);
+  }
+
+  .ppc-hero__media {
+    position: absolute;
+    z-index: 0;
+    inset: 0;
+  }
+
+  .ppc-hero__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .ppc-hero__overlay {
+    position: absolute;
+    z-index: 1;
+    background: rgb(18 40 64 / 66%);
+    inset: 0;
+  }
+
+  /* 36px per side — profile CSS-02. The section itself contributes zero padding: `main >
+     section.ppc-hero` is zeroed in the page's own scoped rule, the same correction global.css
+     already records for `.acx-hero`. */
+  .ppc-hero__shell {
+    position: relative;
+    z-index: 2;
+    padding-block: 36px;
+  }
+
+  .ppc-hero__grid {
+    display: grid;
+    align-items: center;
+    gap: 52px;
+    grid-template-columns: minmax(0, 1fr) clamp(520px, calc(45% - 23.4px), 560px);
+  }
+
+  .ppc-hero__grid > * {
+    min-width: 0;
+  }
+
+  /* Profile eyebrow recipe: 14–16px, weight 650, line-height 1.35, normal tracking, title case.
+     No forced uppercase, no nowrap, no ellipsis. */
+  .ppc-hero__eyebrow {
+    margin: 0 0 12px;
+    color: var(--ac-color-blue-on-navy);
+    font-size: 0.9375rem;
+    font-weight: 650;
+    line-height: 1.35;
+    letter-spacing: normal;
+    text-transform: none;
+    white-space: normal;
+  }
+
+  /* 24ch, widened from 16ch on 2026-09-05 for AC-PPC-HERO-ROOMS-1.0. The headline went from 28
+     characters to 59, and 16ch broke it into five short lines inside a 708px copy column that had
+     the room for three. Wrapping only — no font-size is declared here (type law #1), the compact
+     band still overrides the --ac-text-h1-home variable, and 24ch at the 46px compact ceiling
+     resolves well inside the narrowest copy track in the §7 matrix (640px at 1280). */
+  .ppc-hero__content h1 {
+    max-width: 24ch;
+    color: #fff;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  /* Brief layout contract: "Hero lead 20–22px, about 1.35 line-height; a paragraph, not a
+     second large H1/H2." */
+  .ppc-hero__lead {
+    margin: 18px 0 0;
+    max-width: 46ch;
+    color: #fff;
+    font-size: clamp(1.25rem, 1.6vw, 1.375rem);
+    font-weight: 650;
+    line-height: 1.35;
+  }
+
+  .ppc-hero__body {
+    margin: 12px 0 0;
+    max-width: 58ch;
+    color: rgb(255 255 255 / 88%);
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  .ppc-hero__actions {
+    margin-top: 24px;
+  }
+
+  .ppc-hero__note {
+    margin: 14px 0 0;
+    color: rgb(255 255 255 / 82%);
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+
+  /* COMPACT DESKTOP — see the header note. Space only. */
+  @media (min-width: 75rem) and (max-height: 950px) {
+    .ppc-hero__shell {
+      padding-block: 20px;
+    }
+
+    /* The VARIABLE, not the heading: clamp(34px, 3vw, 46px), the profile's compact H1. */
+    .ppc-hero {
+      --ac-text-h1-home: clamp(2.125rem, 3vw, 2.875rem);
+    }
+
+    .ppc-hero__lead {
+      margin-top: 14px;
+      font-size: 1.25rem;
+    }
+
+    .ppc-hero__body {
+      margin-top: 10px;
+    }
+
+    .ppc-hero__actions {
+      margin-top: 16px;
+    }
+
+    .ppc-hero__note {
+      margin-top: 12px;
+    }
+  }
+
+  /* SHORT DESKTOP — AC-PPC-HERO-ROOMS-1.2, 2026-09-06. Pairs with the band of the same name in
+     PpcHeroForm.astro. Space only, and only the section's own outer padding: the copy column has
+     ~381px of content in a track the form makes ~765px tall, so trimming 8px per side costs the
+     composition nothing and returns 16px of fold budget at the three sizes that need it.
+     1440x900 passes as-is and stays on the 20px padding above. */
+  @media (min-width: 75rem) and (max-height: 880px) {
+    .ppc-hero__shell {
+      padding-block: 12px;
+    }
+  }
+
+  /* Below 1200px the hero stacks. DOM order already puts the copy and the call ahead of the
+     form, and the brief forbids anything — trust strip, photo block, badges — between them. */
+  @media (max-width: 74.9375rem) {
+    .ppc-hero__grid {
+      gap: 28px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .ppc-hero__content h1 {
+      max-width: 26ch;
+    }
+
+    .ppc-hero__form {
+      max-width: 680px;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .ppc-hero__shell {
+      padding-block: 32px 36px;
+    }
+
+    .ppc-hero__content h1 {
+      max-width: none;
+    }
+  }
+</style>

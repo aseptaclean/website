@@ -705,8 +705,10 @@ const schema = [
   @media (max-width: 360px) {
     /* The global mobile display size is intentionally retained elsewhere; this longer
        campaign headline needs one smaller step to keep whole phrases together at 320px. */
+    /* 2.125rem, not 2rem, as of 2026-09-04: the body token moved to 17px, and 32px/17px is
+       1.88:1 — under type law #2's 1.9:1 floor. 34px/17px is 2.0:1. */
     .residence-hero .ac-type-h1 {
-      font-size: 2rem;
+      font-size: 2.125rem;
     }
   }
 </style>

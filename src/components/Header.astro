@@ -1,14 +1,6 @@
 ---
-import {
-  debrisRemovalPage,
-  deepCleaningPage,
-  estatePage,
-  extremeCleaningPage,
-  hoardingPage,
-  moveOutCleaningPage,
-  propertyCleanoutsPage
-} from "@data/doc27ServicePages";
-import { megaNav, site } from "@data/site";
+import { launchPrimaryNavLinks, launchServiceLinks } from "@data/launchArchitecture";
+import { site } from "@data/site";
 
 const normalizePath = (value: string) => {
   const path = value.split(/[?#]/, 1)[0] || "/";
@@ -17,38 +9,12 @@ const normalizePath = (value: string) => {
 const currentPath = normalizePath(Astro.url.pathname);
 const isCurrent = (href?: string) => Boolean(href && normalizePath(href) === currentPath);
 
-// Header service links are derived from current service records. Gated records never enter the
-// set, so the global header cannot advertise one merely because it remains in legacy megaNav.
-const currentServiceRecords = [
-  deepCleaningPage,
-  moveOutCleaningPage,
-  extremeCleaningPage,
-  propertyCleanoutsPage,
-  hoardingPage,
-  estatePage,
-  debrisRemovalPage
-];
-const indexableServicePaths = new Set(
-  currentServiceRecords.filter((page) => page.indexable).map((page) => page.slug)
-);
-const headerServiceGroups = megaNav
-  .filter((group) => group.children && group.hub)
-  .map((group) => ({
-    label: group.label,
-    hub:
-      group.hub && ["/detailed-cleaning/", "/property-clearing/"].includes(group.hub.href)
-        ? group.hub
-        : undefined,
-    children: group.children?.filter((child) => indexableServicePaths.has(child.href)) ?? []
-  }))
-  .filter((group) => group.hub || group.children.length > 0);
-
-const primaryLinks = [
-  { label: "What We Handle", href: "/who-we-help/" },
-  { label: "How We Work", href: "/handoff-standard/" },
-  { label: "About", href: "/about/" },
-  { label: "Service Areas", href: "/service-areas/" }
-] as const;
+// Primary nav is Services / About / Contact, and Services is both a real link to /services/ and
+// a separate accessible dropdown toggle listing the five service routes — docs/SITEMAP-MASTER.md
+// "Navigation", which also forbids putting the five service links alongside Services in the
+// primary desktop nav. Dropdown order comes from launchServiceLinks.
+const publicLinks = launchPrimaryNavLinks;
+const serviceLinks = launchServiceLinks;
 ---
 
 <nav class="site-nav" aria-label="Primary navigation">
@@ -63,75 +29,62 @@ const primaryLinks = [
     </a>
 
     <div class="site-nav__desktop">
-      <a href="/who-we-help/" aria-current={isCurrent("/who-we-help/") ? "page" : undefined}>
-        What We Handle
-      </a>
-
-      <details class="services-menu" data-services-menu>
-        <summary>Services</summary>
-        <div class="services-menu__panel">
-          <div class="services-menu__inner">
-            <div class="services-menu__intro">
-              <p>Current services</p>
-              <h2 class="ac-type-h4-mega">Property work with the scope defined first.</h2>
-              <a href="/services/" aria-current={isCurrent("/services/") ? "page" : undefined}>
-                View all current services
-              </a>
-            </div>
-
-            <div class="services-menu__groups">
-              {headerServiceGroups.map((group) => (
-                <section aria-label={group.label}>
-                  {group.hub ? (
-                    <a
-                      class="services-menu__group-heading"
-                      href={group.hub.href}
-                      aria-current={isCurrent(group.hub.href) ? "page" : undefined}
-                    >
-                      {group.hub.label}
-                    </a>
-                  ) : (
-                    <p class="services-menu__group-heading">{group.label}</p>
-                  )}
-                  {group.children.map((child) => (
-                    <a href={child.href} aria-current={isCurrent(child.href) ? "page" : undefined}>
-                      <strong>{child.label}</strong>
-                      <span>{child.note}</span>
-                    </a>
-                  ))}
-                </section>
+      {publicLinks.map((link) =>
+        link.href === "/services/" ? (
+          <div class="services-nav" data-services-nav>
+            <a
+              class="services-nav__link"
+              href={link.href}
+              aria-current={isCurrent(link.href) ? "page" : undefined}
+            >
+              {link.label}
+            </a>
+            <button
+              type="button"
+              class="services-nav__toggle"
+              aria-expanded="false"
+              aria-controls="services-nav-panel"
+              data-services-toggle
+            >
+              <span class="visually-hidden">Show current services</span>
+              <svg aria-hidden="true" viewBox="0 0 10 6" width="10" height="6">
+                <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+            <div class="services-nav__panel" id="services-nav-panel" data-services-panel>
+              {serviceLinks.map((service) => (
+                <a href={service.href} aria-current={isCurrent(service.href) ? "page" : undefined}>
+                  {service.navLabel}
+                </a>
               ))}
             </div>
           </div>
-        </div>
-      </details>
-
-      {primaryLinks.slice(1).map((link) => (
-        <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>
-          {link.label}
-        </a>
-      ))}
+        ) : (
+          <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>
+            {link.label}
+          </a>
+        )
+      )}
     </div>
 
-    {/* DUPLICATE PHONE REMOVED 2026-08-25 — docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md
-        §8: "Do not show the same phone number twice inside the header hierarchy. Choose the most
-        useful location." The number rendered here AND in the utility bar directly above, both
-        visible at the same time on every route above 70rem.
-
-        The utility bar keeps it. It is the conventional location in the reference direction, it
-        is the first thing in the document, and it survives at every width — this slot did not,
-        because the whole actions group is hidden when the nav collapses. Removing it also buys
-        back ~117px of horizontal space, which is what lets the full navigation and the primary
-        CTA both survive at 1024px (see the breakpoint note in the style block). The phone is
-        still reachable from the mobile drawer, the footer, the closing CTA and the mobile bar. */}
+    {/* ONE header action, 2026-09-04. docs/SITEMAP-MASTER.md "Navigation" specifies
+        "logo linking home; Services; About; Contact; primary Call Aseptaclean button" — a single
+        button, exactly as reference page 23 shows. The outlined assessment action that used to
+        sit here is gone: it only appeared above 86rem (so it was absent at 1366px anyway),
+        /request-assessment/ is no longer the primary CTA, and the secondary "Send a Message"
+        action now belongs to the hero and closing sections where it has a form to reach. */}
     <div class="site-nav__actions">
-      <a
-        class="site-nav__cta"
-        href="/request-assessment/"
-        aria-current={isCurrent("/request-assessment/") ? "page" : undefined}
-      >
-        {site.offer.primaryCta}
-      </a>
+      {site.business.phoneUri && (
+        <a class="site-nav__cta" href={site.business.phoneUri}>
+          <svg class="site-nav__cta-icon" aria-hidden="true" viewBox="0 0 16 16" width="14" height="14">
+            <path
+              d="M5.2 1.8 6.6 4.6 5.2 6a9.4 9.4 0 0 0 4.8 4.8l1.4-1.4 2.8 1.4v2.4c0 .6-.5 1-1.1 1A12.7 12.7 0 0 1 1.2 2.9c0-.6.4-1.1 1-1.1z"
+              fill="currentColor"
+            />
+          </svg>
+          <span>{site.offer.primaryCta}</span>
+        </a>
+      )}
     </div>
 
     <details class="mobile-nav" data-mobile-nav>
@@ -149,37 +102,60 @@ const primaryLinks = [
         </div>
 
         <div class="mobile-nav__content">
-          <a class="mobile-nav__primary-link" href="/who-we-help/">What We Handle</a>
-
-          <details class="mobile-nav__services">
-            <summary>Services</summary>
-            <div>
-              <a href="/services/">All current services</a>
-              {headerServiceGroups.map((group) => (
-                <section aria-label={group.label}>
-                  {group.hub ? (
-                    <a class="mobile-nav__group" href={group.hub.href}>{group.hub.label}</a>
-                  ) : (
-                    <p class="mobile-nav__group">{group.label}</p>
-                  )}
-                  {group.children.map((child) => <a href={child.href}>{child.label}</a>)}
-                </section>
-              ))}
-            </div>
-          </details>
-
-          {primaryLinks.slice(1).map((link) => (
-            <a class="mobile-nav__primary-link" href={link.href}>{link.label}</a>
-          ))}
+          {publicLinks.map((link) =>
+            link.href === "/services/" ? (
+              <div class="mobile-services">
+                <a
+                  class="mobile-nav__primary-link mobile-services__link"
+                  href={link.href}
+                  aria-current={isCurrent(link.href) ? "page" : undefined}
+                >
+                  {link.label}
+                </a>
+                <button
+                  type="button"
+                  class="mobile-services__toggle"
+                  aria-expanded="false"
+                  aria-controls="mobile-services-panel"
+                  data-mobile-services-toggle
+                >
+                  <span class="visually-hidden">Show current services</span>
+                  <span aria-hidden="true">+</span>
+                </button>
+                <div class="mobile-services__panel" id="mobile-services-panel" data-mobile-services-panel>
+                  {serviceLinks.map((service) => (
+                    <a href={service.href} aria-current={isCurrent(service.href) ? "page" : undefined}>
+                      {service.navLabel}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              <a
+                class="mobile-nav__primary-link"
+                href={link.href}
+                aria-current={isCurrent(link.href) ? "page" : undefined}
+              >
+                {link.label}
+              </a>
+            )
+          )}
         </div>
 
+        {/* Drawer mirrors the desktop hierarchy, primary first: the phone is the filled control
+            and carries the number itself, because a visitor who opened the drawer on a phone is
+            one tap from dialling. "Send a Message" follows as the outlined action and goes to
+            Contact's form — it used to point at /request-assessment/, which stopped matching the
+            label when the secondary CTA changed on 2026-09-04. */}
         <div class="mobile-nav__actions">
-          <a class="mobile-nav__cta" href="/request-assessment/">{site.offer.primaryCta}</a>
           {site.business.phoneUri && (
-            <a class="mobile-nav__phone" href={site.business.phoneUri}>
-              Call {site.business.phone}
+            <a class="mobile-nav__cta" href={site.business.phoneUri}>
+              {site.offer.primaryCta} · {site.business.phone}
             </a>
           )}
+          <a class="mobile-nav__phone" href={site.offer.contactFormUrl}>
+            {site.offer.secondaryCta}
+          </a>
         </div>
       </div>
     </details>
@@ -188,7 +164,6 @@ const primaryLinks = [
 
 <script>
   const mobileNav = document.querySelector<HTMLDetailsElement>("[data-mobile-nav]");
-  const servicesMenu = document.querySelector<HTMLDetailsElement>("[data-services-menu]");
 
   mobileNav?.addEventListener("toggle", () => {
     document.body.classList.toggle("is-navigation-open", mobileNav.open);
@@ -196,25 +171,77 @@ const primaryLinks = [
     summary?.setAttribute("aria-label", mobileNav.open ? "Close navigation" : "Open navigation");
   });
 
+  // Desktop Services dropdown — link stays a normal navigable <a>; the toggle button owns
+  // open/close state so keyboard and mouse users both reach every service without either
+  // losing direct access to /services/ itself.
+  const servicesNav = document.querySelector<HTMLElement>("[data-services-nav]");
+  const servicesToggle = servicesNav?.querySelector<HTMLButtonElement>("[data-services-toggle]");
+  const servicesPanel = servicesNav?.querySelector<HTMLElement>("[data-services-panel]");
+
+  const setServicesOpen = (open: boolean) => {
+    if (!servicesNav || !servicesToggle) return;
+    servicesNav.classList.toggle("is-open", open);
+    servicesToggle.setAttribute("aria-expanded", String(open));
+  };
+
+  const openOnFocusIn = () => setServicesOpen(true);
+
+  if (servicesNav && servicesToggle && servicesPanel) {
+    servicesToggle.addEventListener("click", () => {
+      setServicesOpen(!servicesNav.classList.contains("is-open"));
+    });
+
+    servicesNav.addEventListener("mouseenter", () => setServicesOpen(true));
+    servicesNav.addEventListener("mouseleave", () => setServicesOpen(false));
+
+    servicesNav.addEventListener("focusin", openOnFocusIn);
+    servicesNav.addEventListener("focusout", (event) => {
+      const next = event.relatedTarget as Node | null;
+      if (!next || !servicesNav.contains(next)) setServicesOpen(false);
+    });
+
+    document.addEventListener("click", (event) => {
+      const target = event.target as Node | null;
+      if (target && !servicesNav.contains(target)) setServicesOpen(false);
+    });
+  }
+
+  // Mobile Services expand — same link-plus-toggle pattern inside the drawer.
+  const mobileServicesToggle = document.querySelector<HTMLButtonElement>(
+    "[data-mobile-services-toggle]"
+  );
+  const mobileServicesPanel = document.querySelector<HTMLElement>(
+    "[data-mobile-services-panel]"
+  );
+
+  mobileServicesToggle?.addEventListener("click", () => {
+    const open = mobileServicesToggle.getAttribute("aria-expanded") !== "true";
+    mobileServicesToggle.setAttribute("aria-expanded", String(open));
+    mobileServicesPanel?.classList.toggle("is-open", open);
+  });
+
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
-    if (servicesMenu?.open) servicesMenu.open = false;
+    if (servicesNav?.classList.contains("is-open")) {
+      // Moving focus to the toggle fires `focusin` on servicesNav, which would otherwise
+      // immediately reopen the panel setServicesOpen(false) just closed.
+      servicesNav.removeEventListener("focusin", openOnFocusIn);
+      setServicesOpen(false);
+      servicesToggle?.focus();
+      requestAnimationFrame(() => servicesNav?.addEventListener("focusin", openOnFocusIn));
+      return;
+    }
     if (mobileNav?.open) {
       mobileNav.open = false;
       mobileNav.querySelector<HTMLElement>(":scope > summary")?.focus();
     }
   });
 
-  document.addEventListener("click", (event) => {
-    if (!servicesMenu?.open) return;
-    const target = event.target as Node | null;
-    if (target && !servicesMenu.contains(target)) servicesMenu.open = false;
-  });
-
-  // Must stay in step with the collapse breakpoint in the style block (max-width: 63.9375rem).
+  // The reduced launch labels are wider than the baseline menu; 74rem is the first breakpoint
+  // where the same approved desktop spacing fits without clipping or compressing the CTA.
   // If the drawer is open and the viewport grows past it, the desktop bar returns and the drawer
   // has to close with it or focus is trapped behind an invisible overlay.
-  window.matchMedia("(min-width: 64rem)").addEventListener("change", (event) => {
+  window.matchMedia("(min-width: 74rem)").addEventListener("change", (event) => {
     if (event.matches && mobileNav?.open) mobileNav.open = false;
   });
 </script>
@@ -231,8 +258,8 @@ const primaryLinks = [
   .site-nav__inner {
     position: relative;
     display: flex;
-    width: min(100% - 64px, 1504px);
-    min-height: 68px;
+    width: min(100% - 2 * var(--ac-gutter), var(--ac-measure-wide));
+    min-height: var(--ac-header-stack);
     align-items: center;
     margin-inline: auto;
   }
@@ -259,10 +286,9 @@ const primaryLinks = [
     gap: clamp(24px, 2.4vw, 38px);
   }
 
-  .site-nav__desktop > a,
-  .services-menu > summary {
+  .site-nav__desktop > a {
     display: flex;
-    min-height: 68px;
+    min-height: var(--ac-header-stack);
     align-items: center;
     border-bottom: 2px solid transparent;
     color: var(--ac-color-ink-900);
@@ -274,135 +300,93 @@ const primaryLinks = [
   }
 
   .site-nav__desktop > a:hover,
-  .site-nav__desktop > a[aria-current="page"],
-  .services-menu[open] > summary,
-  .services-menu > summary:hover {
+  .site-nav__desktop > a[aria-current="page"] {
     border-bottom-color: var(--ac-color-navy-800);
     color: var(--ac-color-navy-800);
   }
 
-  .services-menu {
-    position: static;
-  }
-
-  .services-menu > summary {
-    list-style: none;
-  }
-
-  .services-menu > summary::-webkit-details-marker,
-  .mobile-nav > summary::-webkit-details-marker,
-  .mobile-nav__services > summary::-webkit-details-marker {
+  .mobile-nav > summary::-webkit-details-marker {
     display: none;
   }
 
-  .services-menu > summary::after {
-    width: 7px;
-    height: 7px;
-    border-right: 1.5px solid currentColor;
-    border-bottom: 1.5px solid currentColor;
-    margin: -4px 0 0 8px;
-    content: "";
-    transform: rotate(45deg);
+  /* Services — link + separate toggle, per docs/aseptaclean-website-design-system.md §10.
+     The panel is positioned from `.services-nav`, not `.site-nav__desktop > a`, so it never
+     inherits the plain link's border-bottom hover treatment. */
+  .services-nav {
+    position: relative;
+    display: flex;
+    align-items: stretch;
   }
 
-  .services-menu[open] > summary::after {
-    margin-top: 4px;
-    transform: rotate(225deg);
-  }
-
-  .services-menu__panel {
-    position: absolute;
-    right: 0;
-    left: 0;
-    top: 100%;
-    border-top: 1px solid var(--ac-color-line);
-    border-bottom: 1px solid var(--ac-color-line);
-    background: var(--ac-color-paper);
-  }
-
-  .services-menu__inner {
-    display: grid;
-    width: min(100% - 64px, 1504px);
-    margin-inline: auto;
-    padding-block: 42px 46px;
-    gap: 52px;
-    grid-template-columns: minmax(220px, 0.7fr) minmax(0, 2.3fr);
-  }
-
-  .services-menu__intro {
-    border-right: 1px solid var(--ac-color-line);
-    padding-right: 44px;
-  }
-
-  .services-menu__intro > p {
-    margin: 0 0 16px;
-    color: var(--ac-color-ink-500);
-    font-size: 0.75rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-  }
-
-  .services-menu__intro > h2 {
-    max-width: 18ch;
-  }
-
-  .services-menu__intro > a {
-    display: inline-block;
-    margin-top: 22px;
-    font-size: 0.875rem;
-    font-weight: 700;
-  }
-
-  .services-menu__groups {
-    display: grid;
-    gap: 44px;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .services-menu__groups section {
-    min-width: 0;
-  }
-
-  .services-menu__group-heading {
-    display: block;
-    min-height: 44px;
-    border-bottom: 1px solid var(--ac-color-line-strong);
-    margin: 0 0 10px;
-    padding: 0 0 12px;
-    color: var(--ac-color-navy-900);
-    font-size: 0.875rem;
-    font-weight: 800;
-    text-decoration: none;
-  }
-
-  .services-menu__groups section > a:not(.services-menu__group-heading) {
-    display: block;
-    border-bottom: 1px solid var(--ac-color-line);
-    padding: 12px 0;
+  .services-nav__link {
+    display: flex;
+    min-height: var(--ac-header-stack);
+    align-items: center;
+    border-bottom: 2px solid transparent;
     color: var(--ac-color-ink-900);
+    font-size: 0.875rem;
+    font-weight: 650;
+    white-space: nowrap;
     text-decoration: none;
   }
 
-  .services-menu__groups strong,
-  .services-menu__groups span {
-    display: block;
+  .services-nav__link:hover,
+  .services-nav__link[aria-current="page"] {
+    border-bottom-color: var(--ac-color-navy-800);
+    color: var(--ac-color-navy-800);
   }
 
-  .services-menu__groups strong {
-    font-size: 0.875rem;
+  .services-nav__toggle {
+    display: flex;
+    width: 26px;
+    min-height: var(--ac-header-stack);
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+    color: var(--ac-color-ink-900);
+    cursor: pointer;
   }
 
-  .services-menu__groups span {
-    margin-top: 3px;
-    color: var(--ac-color-ink-500);
-    font-size: 0.75rem;
-    line-height: 1.45;
+  .services-nav__toggle svg {
+    transition: transform 160ms ease;
   }
 
-  .services-menu__groups a:hover strong,
-  .services-menu__groups a[aria-current="page"] strong {
-    color: var(--ac-color-blue-deep);
+  .services-nav.is-open .services-nav__toggle svg {
+    transform: rotate(180deg);
+  }
+
+  .services-nav__panel {
+    position: absolute;
+    z-index: 60;
+    top: 100%;
+    left: 0;
+    display: none;
+    flex-direction: column;
+    width: 300px;
+    border: 1px solid var(--ac-color-line);
+    background: var(--ac-color-paper);
+    padding: 8px;
+  }
+
+  .services-nav.is-open .services-nav__panel {
+    display: flex;
+  }
+
+  .services-nav__panel a {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    padding-inline: 12px;
+    color: var(--ac-color-ink-900);
+    font-size: 0.9375rem;
+    text-decoration: none;
+  }
+
+  .services-nav__panel a:hover,
+  .services-nav__panel a[aria-current="page"] {
+    background: var(--ac-color-warm-white);
+    color: var(--ac-color-navy-800);
   }
 
   .site-nav__actions {
@@ -410,26 +394,36 @@ const primaryLinks = [
     flex: 0 0 auto;
     align-items: center;
     margin-left: auto;
-    gap: 16px;
+    gap: 12px;
   }
 
+  /* Rectangular control, 4px — doc 30 §2. The reference's pill button is not reproduced.
+     The outlined secondary that used to sit beside this was removed 2026-09-04; see the
+     markup note above. */
   .site-nav__cta {
     display: flex;
-    min-height: 44px;
+    /* doc 30 §2: "Buttons: ... minimum 48px touch height." Was 44px. */
+    min-height: 48px;
     align-items: center;
     justify-content: center;
+    border-radius: var(--ac-r-sm);
     padding-inline: 20px;
     background: var(--ac-color-navy-800);
     color: var(--ac-color-paper);
     font-size: 0.8125rem;
     font-weight: 750;
     white-space: nowrap;
+    gap: 8px;
     text-decoration: none;
   }
 
   .site-nav__cta:hover {
     background: var(--ac-color-navy-900);
     color: var(--ac-color-paper);
+  }
+
+  .site-nav__cta-icon {
+    flex: 0 0 auto;
   }
 
   .mobile-nav {
@@ -524,8 +518,7 @@ const primaryLinks = [
     padding: 12px 26px 24px;
   }
 
-  .mobile-nav__primary-link,
-  .mobile-nav__services > summary {
+  .mobile-nav__primary-link {
     display: flex;
     min-height: 58px;
     align-items: center;
@@ -536,45 +529,60 @@ const primaryLinks = [
     text-decoration: none;
   }
 
-  .mobile-nav__services > summary {
-    justify-content: space-between;
-    list-style: none;
+  /* Mobile Services — link stays full-width and navigable; the toggle is a separate control
+     so tapping "Services" never traps a visitor into only expanding the list. */
+  .mobile-services {
+    display: grid;
+    border-bottom: 1px solid var(--ac-color-line);
+    grid-template-columns: 1fr auto;
+  }
+
+  .mobile-services__link {
+    border-bottom: 0;
+  }
+
+  .mobile-services__toggle {
+    display: flex;
+    width: 58px;
+    min-height: 58px;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    background: transparent;
+    color: var(--ac-color-ink-900);
+    font-size: 1.5rem;
+    font-weight: 400;
     cursor: pointer;
   }
 
-  .mobile-nav__services > summary::after {
-    content: "+";
-    font-size: 1.4rem;
-    font-weight: 400;
+  .mobile-services__toggle[aria-expanded="true"] span[aria-hidden] {
+    display: inline-block;
+    transform: rotate(45deg);
   }
 
-  .mobile-nav__services[open] > summary::after {
-    content: "−";
+  .mobile-services__panel {
+    display: none;
+    grid-column: 1 / -1;
+    flex-direction: column;
+    padding: 0 0 12px 18px;
   }
 
-  .mobile-nav__services > div {
-    border-bottom: 1px solid var(--ac-color-line-strong);
-    padding: 10px 0 20px 18px;
-  }
-
-  .mobile-nav__services section {
-    margin-top: 18px;
-  }
-
-  .mobile-nav__services a,
-  .mobile-nav__group {
+  .mobile-services__panel.is-open {
     display: flex;
-    min-height: 44px;
+  }
+
+  .mobile-services__panel a {
+    display: flex;
+    min-height: 46px;
     align-items: center;
     color: var(--ac-color-ink-600);
     font-size: 0.9375rem;
     text-decoration: none;
   }
 
-  .mobile-nav__group {
-    margin: 0;
-    color: var(--ac-color-navy-900);
-    font-weight: 800;
+  .mobile-services__panel a[aria-current="page"] {
+    color: var(--ac-color-navy-800);
+    font-weight: 700;
   }
 
   .mobile-nav__actions {
@@ -609,21 +617,9 @@ const primaryLinks = [
 		display: none;
 	}
 
-  /* COLLAPSE MOVED FROM 70rem (1120px) TO 63.9375rem (1023px), 2026-08-25 —
-     docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md §8: "Do not collapse the full
-     navigation too early. At approximately 1024px: preserve full navigation if it fits; keep the
-     primary CTA visible; drop/reduce less important phone duplication before collapsing the whole
-     nav." The audited header did the opposite — it dropped the entire navigation AND the primary
-     CTA at 1120px, so a 1024px tablet got a hamburger while 117px of the bar was spent on a phone
-     number the utility strip was already showing.
-
-     §8's order is followed literally: the phone came out first (see the markup note above), and
-     only then was the breakpoint lowered. Measured at 1024px the row needs ~905px of the 984px
-     available — logo 142, nav 521 incl. gaps, CTA 208, plus the 2×28px minimum side margins —
-     so the full navigation and the CTA both fit with headroom. Below 1024 it genuinely does not
-     fit, and the drawer takes over. 63.9375rem rather than 64rem so that exactly 1024px keeps
-     the desktop bar; the two queries must stay mutually exclusive. */
-  @media (max-width: 63.9375rem) {
+  /* Baseline styling is unchanged. The content-only launch link set needs 160px more horizontal
+     room than the old compact labels, so the existing mobile treatment begins below 1184px. */
+  @media (max-width: 73.9375rem) {
     .site-nav__inner {
       width: min(100% - 40px, 1504px);
       min-height: 64px;

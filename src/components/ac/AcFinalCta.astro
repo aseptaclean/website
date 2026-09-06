@@ -1,0 +1,95 @@
+---
+// Closing band — doc 30 §6.0 item 10, reference page 27, and
+// docs/aseptaclean-website-design-system.md §22: one closing CTA band per page, deep navy,
+// centred, quiet. Not repeated after every section.
+//
+// The two actions are the sitewide pair from AcActions: Call Aseptaclean, then Send a Message.
+//
+// The closing disclaimer was reworded 2026-09-04 to describe what the secondary action now does.
+// It used to say "Submitting the assessment form…", which stopped being true when the secondary
+// stopped pointing at /request-assessment/. The substance — contacting Aseptaclean does not
+// authorize work or create a service agreement — is unchanged, and the same statement still
+// ships inside the form itself.
+import AcActions from "./AcActions.astro";
+
+interface Props {
+  heading: string;
+  headingId?: string;
+  body?: readonly string[];
+  secondaryLabel?: string;
+  secondaryHref?: string;
+  /** Set false on pages whose closing action is the phone alone. */
+  showSecondary?: boolean;
+}
+
+const {
+  heading,
+  headingId = "final-cta-title",
+  body = [],
+  secondaryLabel,
+  secondaryHref,
+  showSecondary = true
+} = Astro.props;
+---
+
+<section class="acx-final" aria-labelledby={headingId}>
+  <div class="ac-shell">
+    <div class="acx-final__inner">
+      <h2 id={headingId} class="ac-type-h2-final">{heading}</h2>
+      {body.map((paragraph) => <p class="acx-final__body">{paragraph}</p>)}
+      <slot />
+      <div class="acx-final__actions">
+        <AcActions
+          tone="dark"
+          align="center"
+          secondaryLabel={secondaryLabel}
+          secondaryHref={secondaryHref}
+          showSecondary={showSecondary}
+        />
+      </div>
+      {showSecondary && (
+        <p class="acx-final__disclaimer">
+          Contacting Aseptaclean does not authorize work or create a service agreement.
+        </p>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .acx-final {
+    background: var(--ac-color-navy-950);
+    color: #fff;
+  }
+
+  .acx-final__inner {
+    max-width: 46rem;
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .acx-final h2 {
+    color: #fff;
+    text-wrap: balance;
+  }
+
+  .acx-final__body {
+    margin: 18px auto 0;
+    max-width: 40rem;
+    color: #c3d2e4;
+    font-size: 1.0625rem;
+    line-height: 1.7;
+  }
+
+  .acx-final__actions {
+    margin-top: 32px;
+  }
+
+  .acx-final__disclaimer {
+    margin: 22px auto 0;
+    max-width: 36rem;
+    color: #8fa6bf;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+</style>

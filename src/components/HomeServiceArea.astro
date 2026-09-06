@@ -1,0 +1,139 @@
+---
+// HOME SERVICE AREA — two-column service-area section. Built for the 2026-09-03 homepage
+// composition rebuild (docs/05-DECISIONS-LOG.md, "Homepage section count reopened"), which names
+// a service-area section by name.
+//
+// LEFT COLUMN — NO MAP GRAPHIC EXISTS, AND NONE IS COPIED. No Bay Area map/graphic asset exists
+// anywhere in this repository. The 2026-09-03 log entry that reopened this section is explicit:
+// "The service-area section must use a real, original Bay Area graphic or the ten-city list
+// already in site.location.cities... not a copied map graphic from either reference site." A
+// copied reference-site map is unavailable by that rule, and no image-search/sourcing tool exists
+// in this session to originate a new one (same constraint recorded across this session's other
+// image-policy entries). This ships an original, code-drawn geography mark instead — a simple
+// pin/region glyph built from existing CSS, not a traced or copied map. RIGHT COLUMN — the real
+// ten-city list from site.location.cities, already used identically on AreasWeServe.astro and
+// ServiceScopeBoundary.astro, plus the copy doc's own "What areas do you serve?" answer.
+import { site } from "@data/site";
+
+const cities = site.location.cities;
+---
+
+<section class="home-service-area" aria-labelledby="home-service-area-title">
+  <div class="home-service-area__inner">
+    <div class="home-service-area__mark" aria-hidden="true">
+      <svg viewBox="0 0 220 220" role="img" aria-hidden="true">
+        <circle cx="110" cy="110" r="104" fill="none" stroke="var(--ac-color-line-strong)" stroke-width="1" />
+        <circle cx="110" cy="110" r="72" fill="none" stroke="var(--ac-color-line-strong)" stroke-width="1" />
+        <circle cx="110" cy="110" r="40" fill="none" stroke="var(--ac-color-steel-300)" stroke-width="1" />
+        <path d="M110 66a24 24 0 0 1 24 24c0 17-24 46-24 46s-24-29-24-46a24 24 0 0 1 24-24z" fill="var(--ac-color-navy-900)" />
+        <circle cx="110" cy="90" r="8" fill="var(--ac-color-paper)" />
+      </svg>
+    </div>
+
+    <div class="home-service-area__copy">
+      <p class="ac-eyebrow">Where we work</p>
+      <h2 id="home-service-area-title" class="ac-type-h2">{site.location.regionLabel}, one address at a time.</h2>
+      <p class="home-service-area__lede">
+        Aseptaclean serves the South Bay, Santa Clara County, the Peninsula, and selected
+        surrounding Bay Area communities. Contact us with the property location and we will
+        confirm whether it falls within our current service area.
+      </p>
+
+      <ul class="home-service-area__cities">
+        {cities.map((city) => (
+          <li>{city}</li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>
+
+<style>
+  .home-service-area {
+    background: var(--ac-color-warm-white);
+    padding-block: clamp(72px, 7vw, 100px);
+  }
+
+  .home-service-area__inner {
+    display: grid;
+    width: min(100% - 64px, var(--ac-measure-wide));
+    align-items: center;
+    margin-inline: auto;
+    gap: 56px 80px;
+    grid-template-columns: minmax(220px, 0.62fr) minmax(0, 1fr);
+  }
+
+  .home-service-area__mark {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .home-service-area__mark svg {
+    width: 100%;
+    max-width: 260px;
+    height: auto;
+  }
+
+  .home-service-area__copy h2 {
+    max-width: 18ch;
+    margin-top: 12px;
+    color: var(--ac-color-navy-900);
+  }
+
+  .home-service-area__lede {
+    margin: 20px 0 0;
+    max-width: 52ch;
+    color: var(--ac-color-ink-600);
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .home-service-area__cities {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 28px 0 0;
+    padding: 20px 0 0;
+    border-top: 1px solid var(--ac-color-line-strong);
+    gap: 10px 28px;
+    list-style: none;
+  }
+
+  .home-service-area__cities li {
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+  }
+
+  @media (max-width: 60rem) {
+    .home-service-area__inner {
+      grid-template-columns: minmax(0, 1fr);
+      text-align: center;
+    }
+
+    .home-service-area__mark svg {
+      max-width: 180px;
+    }
+
+    .home-service-area__copy h2 {
+      margin-inline: auto;
+    }
+
+    .home-service-area__lede {
+      margin-inline: auto;
+    }
+
+    .home-service-area__cities {
+      justify-content: center;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .home-service-area {
+      padding-block: 60px;
+    }
+
+    .home-service-area__inner {
+      width: calc(100% - 40px);
+    }
+  }
+</style>

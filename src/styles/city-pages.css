@@ -769,7 +769,9 @@
 @media (max-width: 360px) {
   /* Preserve the hub hierarchy while giving long city names enough measure to avoid
      isolated words on the narrowest supported viewport. */
+  /* 2.125rem, not 1.9375rem, as of 2026-09-04: the body token moved to 17px, and 31px/17px is
+     1.82:1 — under type law #2's 1.9:1 floor. 34px/17px is 2.0:1. */
   .cty-hero .ac-type-h1-hub {
-    font-size: 1.9375rem;
+    font-size: 2.125rem;
   }
 }

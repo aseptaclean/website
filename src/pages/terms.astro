@@ -1,70 +1,18 @@
 ---
-import BaseLayout from "@layouts/BaseLayout.astro";
-import LegalPolicy from "@components/LegalPolicy.astro";
-import PageHeader from "@components/PageHeader.astro";
+// TERMS AND CONDITIONS — docs/page-briefs/TERMS.md. Page label is "Terms and Conditions"
+// (docs/20-COPY-MAP.md display map); provider policy text is preserved exactly.
+import AcLegalPage from "@components/ac/AcLegalPage.astro";
 import { site } from "@data/site";
 
 const policy = site.integrations.termly.policies.terms;
-
-// A5 — BreadcrumbList. This route had none; every other non-root route on the site does, and a
-// crumb trail is how a leaf page tells a crawler where it sits. The "Home" item uses
-// `site.urls.home` (WITH the trailing slash) so it matches the homepage canonical exactly —
-// `site.urls.site` is a bare origin and produced a second URL for the same page.
-const schema = [
-  {
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Terms and Conditions",
-        item: new URL("/terms/", site.urls.site).href
-      }
-    ]
-  }
-];
 ---
 
-<BaseLayout
-  title="Terms and Conditions | Aseptaclean"
-  description="Read Aseptaclean’s Termly-managed Terms and Conditions or access the provider fallback."
+<AcLegalPage
+  label="Terms and Conditions"
+  headingId="terms-title"
   canonicalPath="/terms/"
-  schema={schema}
-  showMobileCta={false}
->
-  <PageHeader
-    headingId="terms-title"
-    eyebrow="Legal record · Managed by Termly"
-    h1={"Terms and Conditions"}
-    lede={"This page is an integration surface for Aseptaclean’s provider-controlled policy document. Aseptaclean does not replace the provider’s published policy with locally drafted legal text."}
-    crumb="Terms and Conditions"
-  />
-
-  <div class="legal-body">
-    <LegalPolicy
-      title="Terms and Conditions"
-      label="Terms and Conditions"
-      policyId={policy.id}
-      hostedUrl={policy.hostedUrl}
-    />
-  </div>
-</BaseLayout>
-
-<style>
-  /* Mockup template-legal.html body shell — 820px, narrower than the 1200px page shell. */
-  .legal-body {
-    padding-block: 68px;
-  }
-
-  /* `.legal-body` is a div, so the `main > section` mobile step does not reach it. */
-  @media (max-width: 760px) {
-    .legal-body {
-      padding-block: 60px;
-    }
-  }
-
-  .legal-body :global(.legal-policy) {
-    max-width: 820px;
-  }
-</style>
+  seoTitle="Terms and Conditions | Aseptaclean"
+  seoDescription="The terms that apply to using the Aseptaclean website and requesting service."
+  policyId={policy.id}
+  hostedUrl={policy.hostedUrl}
+/>

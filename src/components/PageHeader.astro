@@ -1,7 +1,21 @@
 ---
-// 2026-08-18 visual port. docs/mockups .pgh — the compact page-header band carrying the
-// Steri-Clean-geometry sweep marks (PORT-PROMPT §3: "sweep bands in every inner-page header";
-// owner ruling D4 keeps them for launch). Used by every company, resource and legal route.
+// 2026-08-18 visual port. docs/mockups .pgh — the compact page-header band. Used by every
+// company, resource and legal route.
+//
+// SWEEP MARKS REMOVED 2026-09-04. This band carried `.ac-marks`: four rotated, 24px-radius,
+// blue sweep bars, added under PORT-PROMPT §3 and kept by owner ruling D4 "for launch".
+//
+// Three current authorities now forbid exactly that shape, and all three outrank D4:
+//   - AGENTS.md §2.2.1 / doc 30 §6.0 "what stays distinctly Aseptaclean": square geometry,
+//     "no 12px+ card radii, no pills, no diagonal band geometry";
+//   - docs/aseptaclean-website-design-system.md §37: "Do not use ClearPath diagonal blue
+//     geometry" — the reference site's signature, which this element reproduced closely;
+//   - docs/README.md: PORT-PROMPT.md is a retired historical instruction and is not to be
+//     executed as current work, so §3 no longer requires the marks in the first place.
+//
+// The `.ac-marks` CSS stays in global.css because ServiceHub.astro still renders it on the
+// family-hub routes, which are outside this pass's twelve pages. Removing it there is a
+// separate change against those routes, not a silent side effect of this one.
 //
 // This is a NEW component rather than a restyle of CompactHero, and deliberately so: owner
 // ruling 3 excludes /senior-downsizing-san-jose/ from this port, and that page is a CompactHero
@@ -22,7 +36,6 @@ const { h1, headingId, lede, crumb, eyebrow } = Astro.props;
 ---
 
 <header class="ac-pgh" aria-labelledby={headingId}>
-  <div class="ac-marks" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
   <div class="ac-shell">
     {crumb && <p class="ac-crumb"><a href="/">Home</a> / {crumb}</p>}
     {eyebrow && <p class="geo">{eyebrow}</p>}

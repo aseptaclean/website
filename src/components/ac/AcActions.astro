@@ -1,0 +1,179 @@
+---
+// The sitewide CTA pair, in one place. Owner decision 2026-09-04 (AGENTS.md §2.2.2,
+// docs/03-INTEGRATION-CONTRACT.md "Call actions"):
+//   primary   = Call Aseptaclean  → site.business.phoneUri
+//   secondary = Send a Message    → the page's own form, else /contact/#contact-form
+//
+// Every marketing call to action on the site renders through this component so the pair cannot
+// drift, so the phone can never be rendered from anything but src/data/site.ts, and so the
+// AGENTS.md §3 suppression rule ("never render an empty phone link") holds everywhere at once:
+// if `phoneUri` is empty the primary is omitted and the message action is promoted to filled.
+//
+// A `tel:` link asks the device to open its calling handler. It is not evidence a call was
+// placed or answered, and nothing here may claim otherwise.
+import { site } from "@data/site";
+
+interface Props {
+  tone?: "light" | "dark";
+  align?: "start" | "center";
+  /**
+   * Replaces the call label where a route's approved wording appends the number, e.g. the
+   * Hoarding PPC page's "Call Aseptaclean · (408) 785-7588". The ACTION is unchanged — it is
+   * still `site.business.phoneUri` and still omitted entirely when that value is empty. Callers
+   * must build the string from src/data/site.ts, never from a typed-in number.
+   */
+  primaryLabel?: string;
+  /** Replaces the message label where a page's own wording is more useful. */
+  secondaryLabel?: string;
+  /**
+   * Where the message action goes. Pages that render their own form pass their local anchor
+   * (e.g. "#hero-form"); everything else falls back to Contact's form.
+   */
+  secondaryHref?: string;
+  /** Drop the secondary entirely where one action is the honest ask. */
+  showSecondary?: boolean;
+}
+
+const {
+  tone = "light",
+  align = "start",
+  primaryLabel = site.offer.primaryCta,
+  secondaryLabel = site.offer.secondaryCta,
+  secondaryHref = site.offer.contactFormUrl,
+  showSecondary = true
+} = Astro.props;
+
+const phoneHref = site.business.phoneUri;
+// Same-page anchors focus the form rather than only scrolling to it, so keyboard and screen
+// reader users land on the first field instead of somewhere above it.
+const isLocalAnchor = secondaryHref.startsWith("#");
+---
+
+<div class:list={["acx-actions", `is-${tone}`, `is-${align}`]}>
+  {phoneHref && (
+    <a class="acx-actions__primary" href={phoneHref}>
+      <svg aria-hidden="true" viewBox="0 0 16 16" width="15" height="15">
+        <path
+          d="M5.2 1.8 6.6 4.6 5.2 6a9.4 9.4 0 0 0 4.8 4.8l1.4-1.4 2.8 1.4v2.4c0 .6-.5 1-1.1 1A12.7 12.7 0 0 1 1.2 2.9c0-.6.4-1.1 1-1.1z"
+          fill="currentColor"
+        />
+      </svg>
+      <span>{primaryLabel}</span>
+    </a>
+  )}
+  {showSecondary && (
+    <a
+      class:list={["acx-actions__secondary", { "is-only": !phoneHref }]}
+      href={secondaryHref}
+      data-focus-target={isLocalAnchor ? secondaryHref : undefined}
+    >
+      {secondaryLabel}
+    </a>
+  )}
+</div>
+
+<script>
+  // Move focus into the form the local "Send a Message" action points at. The href still does
+  // the scrolling, so this degrades to plain anchor behaviour without JS.
+  document.querySelectorAll<HTMLAnchorElement>("[data-focus-target]").forEach((link) => {
+    link.addEventListener("click", () => {
+      const target = document.querySelector<HTMLElement>(link.dataset.focusTarget || "");
+      if (!target) return;
+      const field = target.querySelector<HTMLElement>(
+        "input:not([type=hidden]):not([tabindex='-1']), select, textarea"
+      );
+      window.requestAnimationFrame(() => field?.focus({ preventScroll: true }));
+    });
+  });
+</script>
+
+<style>
+  .acx-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .is-center {
+    justify-content: center;
+  }
+
+  .acx-actions__primary,
+  .acx-actions__secondary {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    /* 2px, not a pill — doc 30 §6.0 "square geometry". */
+    border-radius: var(--ac-r-sm);
+    padding-inline: 24px;
+    font-size: 0.9375rem;
+    font-weight: 650;
+    white-space: nowrap;
+    gap: 9px;
+    text-decoration: none;
+    transition: background-color 0.18s ease, border-color 0.18s ease;
+  }
+
+  .acx-actions__primary {
+    border: 1px solid var(--ac-color-navy-800);
+    background: var(--ac-color-navy-800);
+    color: #fff;
+  }
+
+  .acx-actions__primary:hover {
+    border-color: var(--ac-color-navy-950);
+    background: var(--ac-color-navy-950);
+    color: #fff;
+  }
+
+  .acx-actions__secondary {
+    border: 1px solid var(--ac-color-navy-800);
+    background: transparent;
+    color: var(--ac-color-navy-800);
+  }
+
+  .acx-actions__secondary:hover {
+    background: var(--ac-color-blue-pale);
+  }
+
+  .acx-actions__secondary.is-only {
+    background: var(--ac-color-navy-800);
+    color: #fff;
+  }
+
+  /* On dark surfaces the filled button inverts to white with navy type — doc 30 §8.5. */
+  .is-dark .acx-actions__primary {
+    border-color: #fff;
+    background: #fff;
+    color: var(--ac-color-navy-900);
+  }
+
+  .is-dark .acx-actions__primary:hover {
+    border-color: var(--ac-color-blue-pale);
+    background: var(--ac-color-blue-pale);
+    color: var(--ac-color-navy-900);
+  }
+
+  .is-dark .acx-actions__secondary {
+    border-color: rgb(255 255 255 / 45%);
+    color: #fff;
+  }
+
+  .is-dark .acx-actions__secondary:hover {
+    background: rgb(255 255 255 / 12%);
+  }
+
+  .is-dark .acx-actions__secondary.is-only {
+    background: #fff;
+    color: var(--ac-color-navy-900);
+  }
+
+  @media (max-width: 26rem) {
+    .acx-actions__primary,
+    .acx-actions__secondary {
+      width: 100%;
+    }
+  }
+</style>

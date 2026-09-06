@@ -1,0 +1,77 @@
+---
+// WHY ASEPTACLEAN — deep-navy AuthorityBand for the 2026-09-03 `/services/` editorial-catalog
+// rebuild (docs/05-DECISIONS-LOG.md, "Services page rebuilt as an editorial catalog").
+//
+// VERIFIED PROOF ONLY, NO TSW CONTENT HERE. AGENTS.md §3 scopes TSW #933 to
+// /crime-scene-trauma-cleanup-san-jose/ and its cross-links (footer, /services/'s crime-scene
+// split, doc27ServicePages.ts) — it does not license leading a sitewide-feeling "why us" band
+// with a credential that only one of the five services on this page carries. This band instead
+// uses the same operating-method and founder-background material HomeFounder.astro already
+// carries on `/` — real, owner-confirmed, and general to all five services — plus the insurance
+// line under the same site.business.insuranceStatus suppression CredentialBar.astro and the
+// crime-scene route use, so it never renders an unconfirmed claim.
+import AuthorityBand from "@components/AuthorityBand.astro";
+import { legal, site } from "@data/site";
+
+const insuranceVerified = Boolean(site.business.insuranceStatus);
+---
+
+<AuthorityBand
+  eyebrow="Why Aseptaclean"
+  heading="One accountable operator, from assessment to closeout."
+  headingId="svc-authority-title"
+  layout="two-column"
+>
+  <div class="svc-authority__lede">
+    <p>
+      Aseptaclean is founder-operated. {site.founder.name}&rsquo;s background includes
+      biochemistry, pharmaceutical manufacturing, and surgical pathology.
+    </p>
+    {insuranceVerified && <p class="svc-authority__credential">Insured.</p>}
+  </div>
+  <div class="svc-authority__body">
+    <p class="svc-authority__statement">
+      Every service on this page runs on the same method: assess the condition, define the scope
+      in writing, perform only what was approved, and document what was done.
+    </p>
+    <p>
+      We do not treat a property like a laboratory, and we do not assume every difficult
+      condition is a major remediation project. We bring a careful, condition-first mindset to
+      the work and explain what we see in plain English.
+    </p>
+    <p class="svc-authority__limit">{legal.founderAuthorityLimit}</p>
+  </div>
+</AuthorityBand>
+
+<style>
+  .svc-authority__lede p {
+    margin: 0;
+    max-width: 34ch;
+    font-size: 1.1875rem;
+    line-height: 1.5;
+  }
+
+  .svc-authority__credential {
+    margin-top: 14px !important;
+    color: var(--ac-color-steel-on-navy);
+    font-size: 0.9375rem !important;
+    font-weight: 650;
+  }
+
+  .svc-authority__body p {
+    margin: 0 0 16px;
+    line-height: 1.6;
+  }
+
+  .svc-authority__statement {
+    color: var(--ac-color-paper);
+    font-weight: 650;
+  }
+
+  .svc-authority__limit {
+    margin-top: 20px;
+    color: rgb(255 255 255 / 55%);
+    font-size: 0.8125rem;
+    line-height: 1.55;
+  }
+</style>

@@ -1,0 +1,195 @@
+---
+// PPC CAMPAIGN LAYOUT — the shared document shell with the two exceptions the Hoarding PPC
+// brief authorises, and nothing else.
+//
+// Identical to BaseLayout.astro in every respect that matters: the same <head> order, the same
+// Termly consent loader, the same self-hosted Inter preload, the same SeoHead (canonical, robots,
+// Open Graph), the same skip link, the same Analytics component, the same global stylesheet.
+//
+// TWO DIFFERENCES, both fenced by docs/page-briefs/PPC-HOARDING-SAN-JOSE.md:
+//   1. Header/Footer are the compact PPC variants — logo + call, and brand/contact/legal. The
+//      public site's navigation, Services dropdown and four-column service directory are
+//      deliberately absent from this route. An audit must not restore them.
+//   2. The sitewide MobileCTA bar is replaced by PpcStickyBar, which is hero-aware, keyboard-
+//      aware and consent-aware as the brief's "MOBILE STICKY CTA" section requires.
+//
+// INDEXING: this route is not in `launchIndexablePaths`, so `isLaunchPublicPath` already returns
+// false and BaseLayout's rule — which this layout reproduces exactly — resolves it to
+// `noindex, follow` with structured data suppressed. `noindex` is ALSO passed explicitly by the
+// page so the intent is stated in source rather than only inherited. The same mechanism keeps
+// the route out of sitemap.xml, which is generated from `launchIndexablePaths`.
+import Analytics from "@components/Analytics.astro";
+import SeoHead from "@components/SeoHead.astro";
+import PpcHeader from "@components/ppc/PpcHeader.astro";
+import PpcFooter from "@components/ppc/PpcFooter.astro";
+import PpcStickyBar from "@components/ppc/PpcStickyBar.astro";
+import { site } from "@data/site";
+import { isLaunchPublicPath } from "@data/launchArchitecture";
+import "@styles/fonts.css";
+import "@styles/global.css";
+import interFontUrl from "../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
+
+interface Props {
+  title: string;
+  description: string;
+  canonicalPath: string;
+  noindex?: boolean;
+  /** The element whose exit from the viewport reveals the sticky bar. */
+  stickyHeroSelector: string;
+  stickyFormHref: string;
+  stickySecondaryLabel: string;
+  /** Illustrative-photography disclosure, rendered in the footer rather than in the hero. */
+}
+
+const {
+  title,
+  description,
+  canonicalPath,
+  noindex = false,
+  stickyHeroSelector,
+  stickyFormHref,
+  stickySecondaryLabel,
+} = Astro.props;
+
+const termlyConsent = site.integrations.termly;
+const hiddenFromLaunch = !isLaunchPublicPath(Astro.url.pathname);
+const effectiveNoindex = noindex || hiddenFromLaunch;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    {termlyConsent.consentEnabled && (
+      <script
+        is:inline
+        id={termlyConsent.websiteUuid}
+        src={termlyConsent.consentScriptUrl}
+        data-name="termly-embed-banner"
+      />
+    )}
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#122840" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="512x512"
+      href={site.business.siteIconUrl}
+    />
+    <link rel="apple-touch-icon" href={site.business.siteIconUrl} />
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={interFontUrl}
+      crossorigin
+    />
+    <SeoHead
+      title={title}
+      description={description}
+      canonicalPath={canonicalPath}
+      noindex={effectiveNoindex}
+      structuredDataEnabled={!hiddenFromLaunch}
+    />
+  </head>
+  <body class="ac-ppc">
+    <a class="skip-link" href="#main-content">Skip to main content</a>
+    <PpcHeader />
+    <main id="main-content" tabindex="-1">
+      <slot />
+    </main>
+    <PpcFooter />
+    <PpcStickyBar
+      heroSelector={stickyHeroSelector}
+      formHref={stickyFormHref}
+      secondaryLabel={stickySecondaryLabel}
+    />
+    <Analytics />
+  </body>
+</html>
+
+<style is:global>
+  /* ROUTE-SCOPED GLOBAL RULES.
+     `is:global` is deliberate and narrow: Astro emits this block only into the stylesheet of a
+     route that renders this layout, so nothing here reaches any other page. Two of the three
+     rules below CANNOT be component-scoped, and the third must not be:
+
+     1. `.ac-type-ppc-form-title` — type law #1 (AGENTS.md §6) permits a heading to take its size
+        only from a bare `.ac-type-*` role class. An Astro-scoped style block would rewrite the
+        selector to `.ac-type-ppc-form-title[data-astro-cid-…]`, which is no longer a role class
+        and would be a live violation. It has to be declared unscoped. 24px/1.2 is the brief's
+        `.ac-ppc .ac-form__title` recipe, expressed through the sanctioned mechanism.
+
+     2. `main > section.ppc-hero` — global.css gives every `main > section` 68px of block padding.
+        The hero carries its own documented padding on its inner shell (36px, 20px compact), so
+        without this it would render 68px + 68px of padding no specification asks for. This is the
+        same correction global.css already records for `.acx-hero`, and it is profile §7 repair
+        step 1: "remove unintended margins, duplicate wrappers, empty utility rows, spacers."
+
+     3. `body.ppc-has-bar` — the reservation for the mobile sticky bar. The height is measured at
+        runtime by PpcStickyBar and written to --ppc-bar-height; the class is applied only while
+        the bar is actually visible, so no page reserves space for an absent control. */
+
+  .ac-type-ppc-form-title {
+    font-family: var(--ac-font-display);
+    font-size: 1.5rem;
+    font-weight: 700;
+    letter-spacing: -0.015em;
+    line-height: 1.2;
+  }
+
+  main > section.ppc-hero {
+    padding-block: 0;
+  }
+
+  /* Slim paper band — brief: "24px block padding". Its own role, not the section rhythm. */
+  main > section.ppc-trust {
+    padding-block: 24px;
+  }
+
+  @media (max-width: 760px) {
+    main > section.ppc-hero {
+      padding-block: 0;
+    }
+
+    main > section.ppc-trust {
+      padding-block: 24px;
+    }
+  }
+
+  body.ppc-has-bar {
+    padding-bottom: calc(
+      var(--ppc-bar-height, 0px) + env(safe-area-inset-bottom, 0px)
+    );
+  }
+
+  /* MEASURED DEFECT, 320px. This route's approved call label is the long form —
+     "Call Aseptaclean · (408) 785-7588" — and the shared AcActions button sets
+     `white-space: nowrap`, which at 320px gives the control a 310px max-content width inside a
+     280px shell and puts a horizontal scrollbar on the document. Letting the label wrap at the
+     narrowest widths is the smallest fix that keeps the whole approved string visible; the
+     control keeps its 48px minimum height and its full padding.
+
+     Scoped to `body.ac-ppc`, which only this layout emits, so the sitewide AcActions rendering
+     is untouched on every other route. */
+  @media (max-width: 26rem) {
+    body.ac-ppc .acx-actions {
+      max-width: 100%;
+      min-width: 0;
+    }
+
+    body.ac-ppc .acx-actions__primary,
+    body.ac-ppc .acx-actions__secondary {
+      max-width: 100%;
+      white-space: normal;
+      text-align: center;
+    }
+  }
+
+  /* The bar does not exist at >=1200px, so neither does its reservation. */
+  @media (min-width: 75rem) {
+    body.ppc-has-bar {
+      padding-bottom: 0;
+    }
+  }
+</style>

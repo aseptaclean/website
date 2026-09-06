@@ -1,0 +1,104 @@
+---
+// HOME REGULATED AUTHORITY SECTION — HOME 08 of docs/aseptaclean-BUILD-EXACT-v3-STANDALONE.md
+// §9: two-column dark authority section, TSW #933 / Insured left, Waste Handling + Project
+// Approach right.
+//
+// REPLACES HomeScopeAuthority.astro IN THIS SLOT, owner-directed 2026-09-04. That component's
+// own header comment records it was built specifically to AVOID this content: "AGENTS.md §3 is
+// explicit that TSW #933 content is... [not homepage-scoped], so this section cannot lead with
+// TSW/trauma-waste material without a fresh owner decision this session does not have." That
+// decision now exists (see HomeTrustStrip.astro's header comment and docs/05-DECISIONS-LOG.md).
+// HomeScopeAuthority.astro is left in the tree, unused by this route, rather than deleted — it
+// remains correct content, just not for this slot under the current instruction.
+//
+// "Insured" still suppressed pending COI verification — same rule as HomeTrustStrip.astro.
+import AuthorityBand from "@components/AuthorityBand.astro";
+import { site } from "@data/site";
+
+const insuranceVerified = Boolean(site.business.insuranceStatus);
+---
+
+<AuthorityBand headingId="regulated-authority-title" layout="two-column">
+  <div class="home-regulated-authority__left">
+    <h2 id="regulated-authority-title" class="ac-type-h2">
+      California Registered Trauma Scene Waste Management Practitioner
+    </h2>
+    <p class="home-regulated-authority__proof">TSW #933</p>
+    {insuranceVerified && <p class="home-regulated-authority__proof-sub">Insured</p>}
+  </div>
+
+  <div class="home-regulated-authority__right">
+    <h3 class="ac-type-h3">Waste Handling</h3>
+    <p>
+      Regulated waste transportation and disposal are coordinated through an authorized
+      third-party waste transportation partner. Waste documentation is retained as applicable to
+      the project.
+    </p>
+
+    <h3 class="ac-type-h3">Project Approach</h3>
+    <ul class="home-regulated-authority__list">
+      <li>Site assessment before production</li>
+      <li>Defined scope of work before cleanup begins</li>
+      <li>Project and waste documentation maintained as applicable</li>
+    </ul>
+  </div>
+</AuthorityBand>
+
+<style>
+  .home-regulated-authority__proof {
+    margin: 20px 0 0;
+    color: var(--ac-color-paper);
+    font-size: clamp(2rem, 3.6vw, 2.75rem);
+    font-weight: 750;
+    letter-spacing: -0.01em;
+    line-height: 1.1;
+  }
+
+  .home-regulated-authority__proof-sub {
+    margin: 8px 0 0;
+    color: var(--ac-color-steel-on-navy);
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .home-regulated-authority__right h3 {
+    margin: 0 0 12px;
+    color: var(--ac-color-paper);
+  }
+
+  .home-regulated-authority__right h3:not(:first-child) {
+    margin-top: 28px;
+  }
+
+  .home-regulated-authority__right p {
+    margin: 0;
+    color: var(--ac-color-steel-on-navy);
+    line-height: 1.6;
+  }
+
+  .home-regulated-authority__list {
+    display: grid;
+    gap: 10px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .home-regulated-authority__list li {
+    position: relative;
+    padding-left: 18px;
+    color: var(--ac-color-steel-on-navy);
+    line-height: 1.55;
+  }
+
+  .home-regulated-authority__list li::before {
+    content: "";
+    position: absolute;
+    top: 0.6em;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--ac-color-blue-on-navy);
+  }
+</style>

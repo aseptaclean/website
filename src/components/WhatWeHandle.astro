@@ -42,16 +42,7 @@ import { Image } from "astro:assets";
 import hoardingImage from "../assets/homepage/condition-development-hoarding-asurnipal.jpg";
 import neglectedImage from "../assets/homepage/condition-development-neglected-kolforn.jpg";
 import resetImage from "../assets/homepage/condition-development-reset-aismallard.jpg";
-import { megaNav } from "@data/site";
-import {
-  debrisRemovalPage,
-  deepCleaningPage,
-  estatePage,
-  extremeCleaningPage,
-  hoardingPage,
-  moveOutCleaningPage,
-  propertyCleanoutsPage
-} from "@data/doc27ServicePages";
+import serviceImage from "../assets/homepage/service-development-cleanup-asurnipal.jpg";
 
 // TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPHS — NOT Aseptaclean project work, not proof of any
 // completed job, and not client properties. All three are `[ATMOS]`-class under the image rule in
@@ -72,60 +63,67 @@ import {
 //     aismallard — CC BY-SA 3.0
 //     https://commons.wikimedia.org/wiki/File:Empty_apartment_room_with_corner_windows.jpg
 
-// §10's three customer-facing situations, verbatim. Each carries ONE short factual sentence and
-// ONE link, and each sentence states a condition rather than a capability — nothing here is a
-// new service claim.
+// Locked copy's exact four doors — docs/aseptaclean-all-website-copy.md, "What are you dealing
+// with?" — one per public service route.
 const situations = [
   {
     slug: "contents",
-    title: "Overwhelming contents & hoarding",
+    title: "Found rodent droppings or animal waste?",
     detail:
-      "The contents have to be sorted and decided before any cleaning can begin.",
-    linkLabel: "Hoarding cleanup",
-    page: hoardingPage,
+      "Droppings, urine, nesting material, animal waste, odors, or affected areas after pest activity may need more than a quick sweep or surface clean.",
+    detailTwo: "Aseptaclean handles the cleanup side after rodent or animal activity.",
+    linkLabel: "Rodent Droppings & Animal Waste Cleanup",
+    href: "/rodent-dropping-cleanup-san-jose/",
+    image: serviceImage,
+    alt: "Reference photograph of an affected area requiring specialty cleanup."
+  },
+  {
+    slug: "neglected",
+    title: "Has the home become difficult to manage?",
+    detail:
+      "Heavy clutter, accumulated belongings, blocked rooms, trash mixed with personal items, or years of contents can make it hard to know where to begin.",
+    detailTwo:
+      "We help break the property into clear steps so the work can move forward without treating everything inside as disposable.",
+    linkLabel: "Hoarding Cleanup",
+    href: "/hoarding-cleanup-san-jose/",
     image: hoardingImage,
     alt: "Reference photograph of a living room where accumulated household contents cover the floor and furniture."
   },
   {
-    slug: "neglected",
-    title: "Neglected & heavily soiled properties",
+    slug: "transition",
+    title: "Has the property gone beyond a normal deep clean?",
     detail:
-      "The condition has moved past routine upkeep and needs a defined one-time project.",
-    linkLabel: "Extreme-condition cleaning",
-    page: extremeCleaningPage,
+      "Heavy buildup, trash, animal waste, strong odors, neglected rooms, heavily soiled kitchens or bathrooms, and difficult sanitation conditions can change the job completely.",
+    detailTwo: "These properties need a cleanup plan built around their actual condition.",
+    linkLabel: "Severe Property Cleanup",
+    href: "/extreme-cleaning-san-jose/",
     image: neglectedImage,
     alt: "Reference photograph of a neglected residential kitchen with worn, long-unmaintained surfaces."
   },
   {
-    slug: "transition",
-    title: "Estate, move-out & property transitions",
+    slug: "detail",
+    title: "Does the home need much more detail than routine cleaning?",
     detail:
-      "A property has to become manageable for sale, occupancy or handoff, usually against a date.",
-    linkLabel: "Estate cleanouts",
-    page: estatePage,
+      "Some homes are not severely affected. They simply need more time, more hand work, and more attention than a normal cleaning appointment allows.",
+    detailTwo:
+      "Aseptaclean provides detailed one-time cleaning for major home resets, move-in preparation, move-out preparation, and properties with heavy kitchen, bathroom, or whole-home buildup.",
+    linkLabel: "Detailed Deep Cleaning",
+    href: "/deep-cleaning-san-jose/",
     image: resetImage,
     alt: "Reference photograph of an emptied residential room with bare walls and a clean wood floor."
   }
 ] as const;
 
-// §10's restrained secondary treatment: a plain row of text links, not a second card grid.
-// Labels come from megaNav rather than being retyped, so nav and homepage cannot disagree about
-// what a route is called.
-const navLabel = (href: string) =>
-  megaNav.flatMap((group) => group.children ?? []).find((child) => child.href === href)?.label ??
-  "";
-
-const moreServices = [deepCleaningPage, moveOutCleaningPage, propertyCleanoutsPage, debrisRemovalPage]
-  .filter((page) => page.indexable)
-  .map((page) => ({ label: navLabel(page.slug), href: page.slug }))
-  .filter((link) => link.label !== "");
 ---
 
 <section class="handle" id="service-cards" aria-labelledby="handle-title">
   <div class="handle__inner">
     <header class="handle__header">
-      <h2 id="handle-title" class="ac-type-h2-home-feature">What we handle</h2>
-      <p>You do not need to know the service name before you contact Aseptaclean.</p>
+      <h2 id="handle-title" class="ac-type-h2-home-feature">What are you dealing with?</h2>
+      <p>
+        You do not need to know the name of the service before you contact us. Start with what
+        is happening at the property.
+      </p>
     </header>
 
     <div class="handle__routes">
@@ -136,7 +134,7 @@ const moreServices = [deepCleaningPage, moveOutCleaningPage, propertyCleanoutsPa
               src={situation.image}
               alt={situation.alt}
               widths={[420, 620, 840, 1100]}
-              sizes="(min-width: 64rem) 30vw, (min-width: 40rem) 46vw, 92vw"
+              sizes="(min-width: 64rem) 23vw, (min-width: 40rem) 46vw, 92vw"
               format="webp"
               quality={76}
               loading="lazy"
@@ -146,11 +144,12 @@ const moreServices = [deepCleaningPage, moveOutCleaningPage, propertyCleanoutsPa
           <div class="route__copy">
             <h3 class="ac-type-h3-home-route">{situation.title}</h3>
             <p>{situation.detail}</p>
+            <p>{situation.detailTwo}</p>
             {/* Exactly one link per item, stretched over the whole article so the photograph is
                 clickable without adding a second anchor to the same destination. The heading is
                 deliberately NOT a link — two anchors to one route is what §10's "one simple text
                 link" rules out. */}
-            <a class="route__link" href={situation.page.slug}>
+            <a class="route__link" href={situation.href}>
               {situation.linkLabel} <span aria-hidden="true">&rarr;</span>
             </a>
           </div>
@@ -158,13 +157,9 @@ const moreServices = [deepCleaningPage, moveOutCleaningPage, propertyCleanoutsPa
       ))}
     </div>
 
-    {moreServices.length > 0 && (
-      <nav class="handle__more" aria-label="More services">
-        <span>More services</span>
-        {moreServices.map((link) => <a href={link.href}>{link.label}</a>)}
-        <a href="/services/">All current services</a>
-      </nav>
-    )}
+    <nav class="handle__more" aria-label="More services">
+      <a href="/services/">All current services</a>
+    </nav>
 
     <p class="handle__development-note">
       Development reference photographs · not Aseptaclean project work · Wikimedia Commons,
@@ -208,7 +203,7 @@ const moreServices = [deepCleaningPage, moveOutCleaningPage, propertyCleanoutsPa
   .handle__routes {
     display: grid;
     gap: 32px;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 
   .route {
@@ -247,6 +242,10 @@ const moreServices = [deepCleaningPage, moveOutCleaningPage, propertyCleanoutsPa
 
   .route--transition .route__media :global(img) {
     object-position: 58% 56%;
+  }
+
+  .route--detail .route__media :global(img) {
+    object-position: 50% 50%;
   }
 
   .route:hover .route__media :global(img) {
@@ -372,20 +371,6 @@ const moreServices = [deepCleaningPage, moveOutCleaningPage, propertyCleanoutsPa
     .handle__routes {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-
-    /* 2 + 1: the third situation takes the full row with a wider crop rather than being squeezed
-       into a half-width column on its own. */
-    .route:last-child {
-      display: grid;
-      align-items: end;
-      grid-column: 1 / -1;
-      gap: 0 32px;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-
-    .route:last-child .route__media {
-      aspect-ratio: 4 / 3;
-    }
   }
 
   @media (max-width: 40rem) {
@@ -411,18 +396,7 @@ const moreServices = [deepCleaningPage, moveOutCleaningPage, propertyCleanoutsPa
       grid-template-columns: minmax(0, 1fr);
     }
 
-    /* Undo the 2 + 1 tablet composition so the third situation stacks like the other two: copy
-       tight under its photograph, not separated by the grid's row gap. */
-    .route:last-child {
-      display: flex;
-      align-items: stretch;
-      flex-direction: column;
-      gap: 0;
-      grid-column: auto;
-    }
-
-    .route__media,
-    .route:last-child .route__media {
+    .route__media {
       aspect-ratio: 4 / 3;
     }
   }

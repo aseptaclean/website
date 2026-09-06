@@ -1,0 +1,214 @@
+---
+// ServiceCardGrid — doc 30 §4: "five cards across two rows on wide screens; use three on the
+// first row and two centered on the second... Two columns at tablet; one at narrow mobile.
+// Image ratio about 4:3. Consistent titles and short excerpts."
+// Reference: 911 p3-4 (restrained photo cards) and ClearPath p24 (card row composition).
+//
+// The 3 + 2-centred arrangement is a six-column grid: each card spans two columns, and the
+// fourth and fifth are explicitly placed at columns 2 and 4 so the second row centres under the
+// first. That is the reference CSS's own technique — it needs no filler card and no
+// invented sixth service.
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+export interface ServiceCard {
+  title: string;
+  description: string;
+  href: string;
+  image?: ImageMetadata;
+  imageAlt?: string;
+  /** Required subject for an unfilled slot — see docs/06-ASSET-MANIFEST.md. */
+  needsAsset?: string;
+}
+
+interface Props {
+  cards: readonly ServiceCard[];
+  /**
+   * `five` is the documented homepage arrangement (3 + 2 centred).
+   * `even` keeps a plain equal-column grid for sets that are not the five services.
+   */
+  layout?: "five" | "even";
+  /** Heading level for card titles, so each page keeps a correct document outline. */
+  headingLevel?: 2 | 3;
+}
+
+const { cards, layout = "five", headingLevel = 3 } = Astro.props;
+const Title = `h${headingLevel}` as "h2" | "h3";
+---
+
+<ul class:list={["acx-cards", `is-${layout}`]}>
+  {cards.map((card) => (
+    <li class="acx-cards__item">
+      <a class="acx-cards__link" href={card.href}>
+        <span class="acx-cards__media">
+          {card.image ? (
+            <Image
+              src={card.image}
+              alt={card.imageAlt ?? ""}
+              width={760}
+              height={570}
+              widths={[360, 560, 760]}
+              sizes="(min-width: 62rem) 30vw, (min-width: 40rem) 46vw, 92vw"
+              format="webp"
+              quality={72}
+              loading="lazy"
+              decoding="async"
+            />
+          ) : (
+            <span class="acx-cards__pending" data-needs-asset={card.needsAsset}></span>
+          )}
+        </span>
+        <span class="acx-cards__body">
+          {/* A real heading, not a span: the card title is the section's sub-heading and
+              belongs in the document outline. The whole card stays one link, so this adds no
+              second tab stop. */}
+          <Title class="acx-cards__title ac-type-h3-home-route">{card.title}</Title>
+          <span class="acx-cards__text">{card.description}</span>
+          <span class="acx-cards__more">
+            Learn more <span aria-hidden="true">&rarr;</span>
+          </span>
+        </span>
+      </a>
+    </li>
+  ))}
+</ul>
+
+<style>
+  .acx-cards {
+    display: grid;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 28px;
+  }
+
+  /* 3 + 2 centred. Reference CSS `.ac-service-grid`. */
+  .is-five {
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+  }
+
+  .is-five .acx-cards__item {
+    grid-column: span 2;
+  }
+
+  .is-five .acx-cards__item:nth-child(4) {
+    grid-column: 2 / span 2;
+  }
+
+  .is-five .acx-cards__item:nth-child(5) {
+    grid-column: 4 / span 2;
+  }
+
+  .is-even {
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  }
+
+  .acx-cards__item {
+    max-width: none;
+  }
+
+  .acx-cards__link {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid var(--ac-color-line);
+    border-radius: var(--ac-r-media);
+    background: var(--ac-color-paper);
+    color: inherit;
+    text-decoration: none;
+    /* No shadow — contrast, spacing and the 1px rule do the separating. */
+    box-shadow: none;
+    transition: border-color 0.18s ease;
+  }
+
+  .acx-cards__link:hover {
+    border-color: var(--ac-color-navy-800);
+  }
+
+  .acx-cards__media {
+    display: block;
+    overflow: hidden;
+    background: var(--ac-color-bg-soft);
+  }
+
+  .acx-cards__media :global(img),
+  .acx-cards__pending {
+    display: block;
+    width: 100%;
+    /* height:auto is load-bearing. Astro <Image> emits width/height attributes; the height
+       presentational hint gives the element a used height, and aspect-ratio is ignored unless
+       height resolves to auto. */
+    height: auto;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .acx-cards__pending {
+    border-bottom: 1px solid var(--ac-color-line);
+    background: var(--ac-color-bg-soft);
+  }
+
+  .acx-cards__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    padding: 20px;
+    gap: 10px;
+  }
+
+  .acx-cards__title {
+    display: block;
+    margin: 0;
+    color: var(--ac-color-navy-900);
+    font-weight: 650;
+    text-wrap: balance;
+  }
+
+  .acx-cards__text {
+    display: block;
+    flex: 1 1 auto;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  .acx-cards__more {
+    display: block;
+    margin-top: 6px;
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 650;
+  }
+
+  .acx-cards__link:hover .acx-cards__more {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+
+  /* Two columns at tablet. The fourth and fifth cards drop their explicit placement or they
+     would keep trying to sit at columns 2 and 4 of a grid that no longer has six. */
+  @media (max-width: 74.9375rem) {
+    .is-five {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .is-five .acx-cards__item,
+    .is-five .acx-cards__item:nth-child(4),
+    .is-five .acx-cards__item:nth-child(5) {
+      grid-column: auto;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .acx-cards {
+      gap: 20px;
+    }
+
+    .is-five,
+    .is-even {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

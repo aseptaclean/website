@@ -9,8 +9,27 @@ const value = (key: keyof ImportMetaEnv, fallback = "") =>
 const serviceAreaLabel = value("PUBLIC_SERVICE_AREA", "South Bay & Peninsula");
 
 const rawPhone = value("PUBLIC_PHONE", "(408) 785-7588");
-const phoneUri = rawPhone ? `tel:${rawPhone.replace(/[^\d+]/g, "")}` : "";
-const smsUri = rawPhone ? `sms:${rawPhone.replace(/[^\d+]/g, "")}` : "";
+
+// E.164, 2026-09-04. This stripped punctuation only, so "(408) 785-7588" produced
+// `tel:4087857588` — no country code. The owner instruction, AGENTS.md §3,
+// docs/02-CURRENT-FACTS.md and docs/03-INTEGRATION-CONTRACT.md all specify `tel:+14087857588`.
+// A bare 10-digit tel: URI is ambiguous outside the NANP and some handlers reject it.
+//
+// A leading `+` in the source value is preserved as-is; a bare 10-digit US number gains `+1`;
+// an 11-digit number starting with 1 gains `+`. Anything else passes through digits-only rather
+// than guessing a country code. `phone` (the DISPLAY string) is untouched.
+const toE164 = (input: string) => {
+  const trimmed = input.trim();
+  if (trimmed.startsWith("+")) return `+${trimmed.slice(1).replace(/\D/g, "")}`;
+  const digits = trimmed.replace(/\D/g, "");
+  if (digits.length === 10) return `+1${digits}`;
+  if (digits.length === 11 && digits.startsWith("1")) return `+${digits}`;
+  return digits;
+};
+
+const phoneE164 = rawPhone ? toE164(rawPhone) : "";
+const phoneUri = phoneE164 ? `tel:${phoneE164}` : "";
+const smsUri = phoneE164 ? `sms:${phoneE164}` : "";
 
 const termlyWebsiteUuid = value("PUBLIC_TERMLY_WEBSITE_UUID");
 const termlyPrivacyPolicyId = value("PUBLIC_TERMLY_PRIVACY_POLICY_ID");
@@ -86,15 +105,38 @@ export const site = {
     ),
     assessmentFee: Number(value("PUBLIC_ASSESSMENT_FEE", "195")),
     assessmentFeeTerms: "Credited toward an approved project booked within 7 days.",
-    // Owner-approved 2026-08-25 visible CTA. The technical route remains
-    // /request-assessment/; changing what the button says does not change form or endpoint
-    // behavior. Protected consent, privacy, SMS and carrier-reviewed wording is untouched.
-    primaryCta: "Tell Us About the Property",
-    // AGENTS.md §3 lists "secondary CTA — Text a photo" as a business fact, but it had no field
-    // here and was hardcoded in Hero.astro, which §3 forbids ("Never hardcode any of it in a
-    // component"). Doc 27 §8 (owner-approved 2026-08-20) puts it everywhere the primary appears,
-    // so it needed a single source before it could be rendered from more than one file.
-    secondaryCta: "Text a photo",
+    // CTA SYSTEM — owner decision 2026-09-04 (AGENTS.md §2.2.2/§2.2.3,
+    // docs/03-INTEGRATION-CONTRACT.md "Call actions" and "Forms", docs/20-COPY-MAP.md).
+    // Four distinct roles. They must stay separate: `formSubmitCta` labels a real
+    // <button type="submit"> and must never become a telephone link; `primaryCta` is a
+    // telephone link and must never label a submit control.
+    //
+    //   primaryCta    the marketing action  → site.business.phoneUri   "Call Aseptaclean"
+    //   secondaryCta  the message action    → local form, else /contact/#contact-form
+    //   formSubmitCta the form control      → submits the form         "Send Message"
+    //   formHeading   the form's own title  → source wording
+    //
+    // `secondaryCta` changed 2026-09-04 from "Request an Assessment" → "Send a Message".
+    // /request-assessment/ survives as a working, indexable utility route (`assessmentUrl`
+    // below) but is no longer the default secondary action. The word "assessment" still
+    // appears in explanatory prose about how work is scoped — do not globally replace it.
+    primaryCta: "Call Aseptaclean",
+    secondaryCta: "Send a Message",
+    formSubmitCta: "Send Message",
+    // Form title and supporting line, both source wording from the main copy's
+    // "Request an Assessment" block (docs/03-INTEGRATION-CONTRACT.md "Forms").
+    formHeading: "Tell us about the property.",
+    formLede: "You do not need to know exactly what service you need.",
+    // Where a "Send a Message" action goes when the page has no form of its own.
+    contactFormUrl: "/contact/#contact-form",
+    // The tertiary text/photo action, kept under its own name. Before 2026-09-04 this string
+    // lived in `secondaryCta` and was rendered on `sms:` links across ~20 routes; when the CTA
+    // ruling repointed `secondaryCta` at /request-assessment/, every one of those call sites
+    // would have labelled an SMS link "Request an Assessment". Splitting the field keeps each
+    // action's label attached to the action it actually performs.
+    smsCta: "Text a photo",
+    // The conversion destination. Unchanged by the CTA ruling — only the words moved.
+    assessmentUrl: "/request-assessment/",
     // Doc 27 §7 — the assessment-fee framing, owner-approved verbatim 2026-08-20 with the
     // ruling "photo review is free; the $195 applies only when an on-site walkthrough is
     // required". Ships as ONE paragraph at every fee surface, replacing four different

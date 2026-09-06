@@ -1,29 +1,56 @@
 ---
-// doc 19 §2.2 ABOUT + §3.5 wireframe. Founder-story copy assembled verbatim from
-// docs/06-APPROVED-HOMEPAGE-COPY.md §8.15 (paragraphs, quote, credential list) and
-// src/data/site.ts (legal.scopeDisclaimer, site.business.insuranceStatus) — no new
-// sentences invented. No founder portrait has been supplied, so the section is text-first.
-// Copy migrated to docs/27-COPY-CANONICAL.md §17.3 on 2026-08-16 (title, meta, eyebrow, H1,
-// lead, founder heading/body, operating principles). Layout unchanged — the founder-story,
-// credentials composition below retains the current documented background and authority limit.
+// ABOUT — recomposed 2026-09-04 onto the shared ClearPath/911 section system (doc 30 §6.0).
+//
+// COPY IS UNCHANGED. Neither copy document supplied by the owner has an About section
+// (docs/20-COPY-MAP.md §2), so nothing here was rewritten: the H1, lead, founder heading and
+// body, and the three operating principles are the approved strings already in
+// src/data/doc27CompanyPages.ts, and the founder-authority-limit clause is doc 21 §2.4 verbatim
+// via src/data/site.ts. This pass changed the page's composition, not its words.
+//
+// FOUNDER PORTRAIT INSTALLED 2026-09-05 — the asset dependency this file used to record is
+// closed. The owner supplied a genuine photograph of Matthew Ruiz (1152x1536, 3:4) in the
+// website image package; docs/page-briefs/ABOUT.md wants a real portrait at roughly half the
+// founder split, and docs/06-ASSET-MANIFEST.md requires a genuine asset for a real-proof role.
+// This is that asset, so the split renders its media column again instead of collapsing to one
+// readable column with a `needsAsset` note.
+//
+// It is a real company photograph; the other images on this page are licensed or generated
+// reference imagery. That distinction lives in docs/06-ASSET-MANIFEST.md — the visitor-facing
+// reference captions were removed 2026-09-05 at the owner's instruction, so no image on this
+// page carries a caption.
+//
+// Historical note kept for traceability: before this package there was no portrait in the
+// repository at all, and the only founder-named files were viewport screenshots under
+// artifacts/. A stock or generated person was never an acceptable substitute (AGENTS.md §0.3).
+// DEDUPLICATION PASS 2026-09-04, profile AC-CP70-91130-1.1 §7 + docs/page-briefs/ABOUT.md.
+// The brief draws About from BOTH Homepage → "Why Aseptaclean" AND the dedicated About copy, and
+// combining the two sources restated the founder's background three times in one section. Each
+// removal below is recorded in docs/page-briefs/ABOUT.md § "Intentional omissions" so a later
+// pass does not restore it. No unique fact, qualification or service boundary was dropped, and
+// no source document was edited — only which occurrence this page renders.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import PageHeader from "@components/PageHeader.astro";
-import RequestForm from "@components/RequestForm.astro";
+import AcPageHero from "@components/ac/AcPageHero.astro";
+import AcTrustStrip from "@components/ac/AcTrustStrip.astro";
+import AcIntro from "@components/ac/AcIntro.astro";
+import AcSplit from "@components/ac/AcSplit.astro";
+import AcDarkBand from "@components/ac/AcDarkBand.astro";
+import AcFinalCta from "@components/ac/AcFinalCta.astro";
 import { aboutPage } from "@data/doc27CompanyPages";
+import { home } from "@data/publicCopy";
 import { legal, site } from "@data/site";
 
-const credentials = [
-  { k: "Education", v: "B.S. Biochemistry, UC Riverside" },
-  { k: "Background", v: "Pharmaceutical manufacturing" },
-  { k: "Background", v: "Histology & surgical pathology" },
-  { k: "On project", v: "Scope, planning, operating oversight" }
-] as const;
-
-const links = [
-  { href: "/handoff-standard/", label: "The Handoff Standard" },
-  { href: "/#service-cards", label: "Services" },
-  { href: "/contact/", label: "Contact" }
-] as const;
+// The compact About hero is package slot 02 (`property-interior-introduction`), the same
+// introduction image the homepage and Services hub use for their own introduction roles. The
+// scope dark band below is not in the package's placement index.
+//
+// REVISED 2026-09-05. That band held `equipment_gear.jpg`, a gloved-hands stock photograph, which
+// doc 21 §6 rules out on a public page and which had no recorded licence. It now takes package
+// slot 18, `home-property-scope-detail`, which is the image the package itself assigns to the
+// homepage's scope dark band — the same section role, on a different route. That is deliberate
+// cross-route reuse of an assigned image, not the invention of a new numbered slot.
+import propertyIntroduction from "../../assets/aseptaclean/property-interior-introduction.png";
+import founderPortrait from "../../assets/aseptaclean/founder-matthew-ruiz.jpeg";
+import propertyScopeDetail from "../../assets/aseptaclean/home-property-scope-detail.png";
 
 const schema = [
   {
@@ -37,10 +64,6 @@ const schema = [
       name: "University of California, Riverside"
     }
   },
-  // The name-and-founder-only LocalBusiness stub that sat here is removed: the single business
-  // node in src/components/SeoHead.astro carries `founder` on every route, so this page-level
-  // fragment added nothing and was one of the three conflicting partial descriptions. The
-  // `worksFor` link above already resolves to it.
   {
     "@type": "BreadcrumbList",
     itemListElement: [
@@ -59,276 +82,168 @@ const schema = [
 <BaseLayout
   title={aboutPage.seoTitle}
   description={aboutPage.metaDescription}
-  canonicalPath={aboutPage.slug}
+  canonicalPath="/about/"
   schema={schema}
 >
-  <PageHeader
-    headingId="about-title"
+  {/* Compact photographic introduction — brief: "concise introduction to Aseptaclean".
+      Two things were removed here, both duplicates:
+
+      1. `assurances` rendered "Owner-operated" and "Serving the South Bay & Peninsula" as a list
+         directly above AcTrustStrip, which renders those same two strings verbatim plus the
+         response time. Same words, twice, ~30px apart. The trust strip is the stronger version
+         (it is the shared sitewide band and carries the third fact), so the hero copy goes.
+      2. An unsourced body paragraph ("We work on properties where the condition is the
+         problem…"). It resolved to no named source — docs/20-COPY-MAP.md § Copy trace requires
+         every visible marketing sentence to resolve to one — and it restated the condition-first
+         point that home.why.close makes in the founder section below.
+
+      Removing both is also what brings the hero inside the §7 desktop budget at 1366x768. */}
+  <AcPageHero
     eyebrow={aboutPage.eyebrow}
-    h1={aboutPage.h1}
-    lede={aboutPage.lead}
-    crumb="About"
+    heading={aboutPage.h1}
+    headingId="about-hero-title"
+    lead={aboutPage.lead}
+    image={propertyIntroduction}
+    imageAlt="An unfurnished residential interior looking from the living room toward an adjoining hallway"
   />
 
-  <section class="founder-story" aria-labelledby="founder-story-title">
-    <div class="ac-measure-wide founder-story__shell">
-      <div>
-        <p class="ac-eyebrow">Founder &amp; Principal Operator</p>
-        <h2 id="founder-story-title" class="ac-type-h2">{aboutPage.founderHeading}</h2>
-        <p class="founder-story__lead">{aboutPage.founderBody}</p>
-        <blockquote class="founder-story__quote">
-          <p>
-            &ldquo;Difficult properties are not handled well through vague promises. Before work
-            begins, I want you to know what is included, what is excluded, what happens when
-            something unexpected is found, and what you will receive when the job is closed.
-            That is the standard I built Aseptaclean around.&rdquo;
-          </p>
-        </blockquote>
-      </div>
+  <AcTrustStrip />
+
+  {/* Founder — brief: Matthew Ruiz, his relevant background, and how it informs the approach.
+      This section stated the same background THREE times before this pass:
+
+        a. aboutPage.founderBody — "…a B.S. in Biochemistry from UC Riverside, pharmaceutical
+           manufacturing, and histology and surgical pathology."                        RETAINED
+        b. home.why.body[0]      — "Our founder's background includes biochemistry,
+           pharmaceutical manufacturing, and surgical pathology."                        REMOVED
+        c. homepage.founderCredentials — the same four facts again as a check list.      REMOVED
+
+      (a) is the strongest: it is this page's own approved About copy, it names Matthew, and it
+      is the most specific (UC Riverside, histology). (b) is the homepage's generic third-person
+      restatement of (a) and added nothing on a page whose subject is already Matthew. (c) added
+      only the word "communication" over (a). Both are still rendered on `/` by HomeFounder.
+
+      home.why.body[1] is KEPT — "That experience shaped the way…" is the transition into the
+      pull quote and now refers to (a). home.why.close is KEPT: it is the only copy that says how
+      the background informs the work, which is this section's assigned purpose. */}
+  <AcSplit
+    eyebrow="01 / The operator"
+    heading={aboutPage.founderHeading}
+    headingId="about-founder-title"
+    lead={`${site.founder.name} — ${site.founder.title}`}
+    body={[aboutPage.founderBody, home.why.body[1]]}
+    pullQuote={home.why.pullQuote}
+    image={founderPortrait}
+    imageAlt="Matthew Ruiz, founder of Aseptaclean"
+    ratio="3/4"
+  >
+    {home.why.close.map((paragraph) => <p class="about-body">{paragraph}</p>)}
+    {/* doc 21 §2.4 — verbatim, mandatory wherever the founder's background appears. */}
+    <p class="about-limit">{legal.founderAuthorityLimit}</p>
+  </AcSplit>
+
+  <AcIntro
+    eyebrow="02 / How we operate"
+    heading="Operating principles"
+    headingId="about-principles-title"
+    lead="Three things are settled before a property is scheduled."
+    tone="soft"
+  >
+    <div class="about-principles">
+      {aboutPage.operatingPrinciples.map((principle) => (
+        <div class="about-principles__item">
+          <h3 class="ac-type-h3-band">{principle.title}</h3>
+          <p>{principle.body}</p>
+        </div>
+      ))}
     </div>
-  </section>
+  </AcIntro>
 
-  <section class="founder-credentials" aria-labelledby="credentials-title">
-    <div class="ac-measure-wide">
-      <h2 id="credentials-title" class="ac-type-h3">Verified background</h2>
-      <div class="creds">
-        {
-          credentials.map((item) => (
-            <div class="cr">
-              <span class="cr__k">{item.k}</span>
-              <span class="cr__v">{item.v}</span>
-            </div>
-          ))
-        }
-      </div>
+  {/* Company context — ONE section, per the brief's
+      "…→ OperatingPrinciples → factual company context → FinalCallSection" order.
 
-      <p class="disclaimer">{legal.scopeDisclaimer}</p>
-      <p class="disclaimer">{legal.founderAuthorityLimit}</p>
-      {/* AGENTS.md §3 / doc 21 §2.5: unverified against a current COI → suppress the statement
-          entirely rather than rendering a placeholder or a stale claim. */}
-      {site.business.insuranceStatus && (
-        <p class="insurance">{site.business.insuranceStatus}</p>
-      )}
-    </div>
-  </section>
+      There were two sections here. The first, "Real trust starts with clear expectations.",
+      is REMOVED as pure restatement — it carried no fact the page did not already state:
+        · "We are not going to turn every small problem into a large project."
+              = home.why.close "we do not assume every difficult property is a major
+                remediation project" (founder section, three paragraphs earlier)
+        · "explain what we believe needs attention" = "Written boundaries" (principles above)
+        · "…tell you where our responsibility begins and ends" was, verbatim, the HEADING of
+                the very next section.
+      docs/20-COPY-MAP.md already parks this block ("Do not render these as additional
+      sections"), and its source text is untouched in aseptaclean-all-website-copy.md.
 
-  <section class="principles" aria-labelledby="principles-title">
-    <div class="ac-measure-wide">
-      <p class="ac-eyebrow">Operating principles</p>
-      <h2 id="principles-title" class="ac-type-h2 principles__heading">How the work is decided before it starts</h2>
-      <div class="principles__grid">
-        {
-          aboutPage.operatingPrinciples.map((principle) => (
-            <div class="principle">
-              <h3 class="ac-type-h3">{principle.title}</h3>
-              <p class="principle__body">{principle.body}</p>
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
+      The second section held the only unique material — the scope and documentation
+      boundaries — so it keeps that content and inherits the removed band's dark treatment and
+      photograph, which preserves the 70/30 dark break and the page's second substantial image.
+      Its actions are off: hero and the closing band are the page's two CTAs, per
+      docs/20-COPY-MAP.md "one contextual call action where appropriate and a final call
+      section". legal.* appearing here and in the footer is the doc 21 §6 placement pattern
+      ("in the footer and near exclusions where practical") used on every service page, not
+      editorial repetition. */}
+  <AcDarkBand
+    eyebrow="03 / Scope"
+    heading="Where our responsibility"
+    headingAccent="begins and ends."
+    headingId="about-scope-title"
+    lead={legal.scopeDisclaimer}
+    body={[legal.documentationDisclaimer]}
+    image={propertyScopeDetail}
+    imageAlt="A residential living room with belongings across a worn floor, seen through to an adjoining hallway"
+    showActions={false}
+  />
 
-  <section class="founder-links" aria-labelledby="founder-links-title">
-    <div class="ac-measure-wide founder-links__shell">
-      <div>
-        <p class="ac-eyebrow">More about the operator</p>
-        <h2 id="founder-links-title" class="ac-type-h3">The standard, the services, and how to reach us</h2>
-      </div>
-      <nav class="founder-links__list" aria-label="Related pages">
-        {links.map((link) => <a href={link.href}>{link.label} →</a>)}
-      </nav>
-    </div>
-  </section>
-
-  <RequestForm />
+  <AcFinalCta
+    heading="Tell us what you are looking at."
+    headingId="about-final-title"
+    body={[
+      "You do not need to know which service you need, and you do not need to prepare the property first.",
+      "Send a few photos and tell us what is happening. We will help you determine the next step."
+    ]}
+  />
 </BaseLayout>
 
 <style>
-  .principles {
-    background: var(--ac-color-warm-white);
-    border-top: 1px solid var(--ac-color-line);
-  }
-
-  .principles__heading {
-    max-width: 32ch;
-    margin-top: var(--ac-space-3);
-  }
-
-  .principles__grid {
-    display: grid;
-    gap: var(--ac-space-5);
-    margin-top: var(--ac-space-6);
-  }
-
-  .principle {
-    border-top: 2px solid var(--ac-color-navy-900);
-    padding-top: 16px;
-  }
-
-  .principle h3 {
-    margin-bottom: 8px;
-  }
-
-  .principle__body {
-    max-width: 44ch;
+  .about-body {
+    margin: 14px 0 0;
     color: var(--ac-color-ink-600);
-    font-size: 0.92rem;
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
   }
 
-  @media (min-width: 40rem) {
-    .principles__grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
-  }
-
-  .founder-story {
-    background: var(--ac-color-paper);
-  }
-
-  .founder-story__shell {
-    display: grid;
-    max-width: 54rem;
-    gap: clamp(2.5rem, 5vw, 4rem);
-    align-items: start;
-  }
-
-  .founder-story h2 {
-    margin-bottom: 16px;
-  }
-
-  .founder-story__lead {
-    max-width: 54ch;
-    margin-bottom: 16px;
-    color: var(--ac-color-ink-600);
-    font-size: 1.02rem;
-  }
-
-  .founder-story p {
-    max-width: 54ch;
-    color: var(--ac-color-ink-600);
-  }
-
-  .founder-story__quote {
-    max-width: 52ch;
-    margin: 24px 0 0;
-    border-left: 3px solid var(--ac-color-gold);
-    padding-left: 18px;
-  }
-
-  .founder-story__quote p {
-    margin: 0;
-    color: var(--ac-color-navy-900);
-    font-family: var(--ac-font-display);
-    font-size: 1.15rem;
-    font-style: italic;
-    line-height: 1.45;
-  }
-
-  .founder-credentials {
-    background: var(--ac-color-warm-white);
-  }
-
-  .founder-credentials h2 {
-    margin-bottom: 20px;
-  }
-
-  .creds {
-    border-top: 1px solid var(--ac-color-line);
-    max-width: 40rem;
-  }
-
-  .cr {
-    display: grid;
-    grid-template-columns: 130px 1fr;
-    align-items: baseline;
-    gap: 16px;
-    border-bottom: 1px solid var(--ac-color-line);
-    padding: 13px 0;
-  }
-
-  .cr__k {
-    color: var(--ac-color-ink-400);
-    font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-label);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-  }
-
-  .cr__v {
-    color: var(--ac-color-navy-900);
-    font-size: 0.95rem;
-    font-weight: 500;
-  }
-
-  .disclaimer {
-    max-width: 64ch;
-    margin-top: 28px;
+  .about-limit {
+    margin: 22px 0 0;
     border-left: 2px solid var(--ac-color-line-strong);
-    padding-left: 14px;
+    padding-left: 18px;
     color: var(--ac-color-ink-500);
-    font-size: 0.85rem;
-    line-height: 1.55;
+    font-size: 0.875rem;
+    line-height: 1.65;
   }
 
-  .insurance {
-    max-width: 64ch;
-    margin-top: 12px;
-    color: var(--ac-color-navy-900);
-    font-weight: 600;
-    font-size: 0.92rem;
-  }
-
-  .founder-links {
-    background: var(--ac-color-navy-900);
-    color: var(--ac-color-warm-white);
-  }
-
-  /* This section's own .ac-eyebrow sits on the navy-900 background, not the light surface the
-     shared class assumes. Recolouring alone left the shared class's pale-blue chip painted
-     underneath, so light steel text sat on a near-white chip — measured 1.89:1. Take the
-     background from the on-dark modifier as well, matching .ac-eyebrow--on-dark. */
-  .founder-links :global(.ac-eyebrow) {
-    background: rgb(255 255 255 / 12%);
-    color: #cbd9e8;
-  }
-
-  .founder-links__shell {
+  .about-principles {
     display: grid;
-    gap: var(--ac-space-5);
+    margin-top: 40px;
+    gap: 32px 40px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    text-align: left;
   }
 
-  .founder-links h2 {
-    margin-top: 8px;
-    color: var(--ac-color-paper);
+  .about-principles__item {
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 20px;
   }
 
-  .founder-links__list {
-    display: flex;
-    flex-direction: column;
-    gap: 14px;
+  .about-principles__item p {
+    margin: 12px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.65;
   }
 
-  .founder-links__list a {
-    color: #cfe0f2;
-    font-weight: 600;
-    text-decoration: none;
-  }
-
-  .founder-links__list a:hover {
-    color: #fff;
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-
-  @media (min-width: 54rem) {
-    .founder-story__shell {
-      grid-template-columns: 0.85fr 1.35fr;
-    }
-
-    .founder-links__shell {
-      grid-template-columns: 1.4fr 1fr;
-      align-items: center;
+  @media (max-width: 56rem) {
+    .about-principles {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 26px;
     }
   }
 </style>

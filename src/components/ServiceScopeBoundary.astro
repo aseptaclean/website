@@ -31,9 +31,19 @@
 import { homepage, legal, site } from "@data/site";
 import { servicesHub } from "@data/servicePages";
 
-const { boundary } = servicesHub;
+const { boundary, why } = servicesHub;
 const cities = site.location.cities;
 ---
+
+<section class="why" aria-labelledby="why-title">
+  <div class="why__inner">
+    <p class="ac-eyebrow">{why.eyebrow}</p>
+    <h2 id="why-title" class="ac-type-h2-home-feature">{why.heading}</h2>
+    {why.paragraphs.map((paragraph) => <p>{paragraph}</p>)}
+    <p class="why__statement">{why.statement}</p>
+    {why.closing.map((paragraph) => <p>{paragraph}</p>)}
+  </div>
+</section>
 
 <section class="boundary" id="scope" aria-labelledby="boundary-title">
   <div class="boundary__inner">
@@ -42,6 +52,16 @@ const cities = site.location.cities;
       <h2 id="boundary-title" class="ac-type-h2-home-feature">{boundary.heading}</h2>
       <p class="boundary__lede">{boundary.lede}</p>
     </header>
+
+    <dl class="boundary__not">
+      {boundary.notItems.map((item) => (
+        <div>
+          <dt>{item.title}</dt>
+          <dd>{item.detail}</dd>
+        </div>
+      ))}
+    </dl>
+    <p class="boundary__not-close">{boundary.notClose}</p>
 
     <div class="boundary__columns">
       <section class="column" aria-labelledby="boundary-fit">
@@ -68,9 +88,12 @@ const cities = site.location.cities;
 
     <div class="boundary__geography">
       <h3 class="ac-type-label-head">Current service geography</h3>
+      {/* 2026-09-03: the "Where we work" link to /service-areas/ was removed — that route is
+          noindex under launchArchitecture.ts's public allow-list, and this page is indexable, so
+          the link was a promotional crawl path to a hidden route. The geography text itself
+          stays; only the link to the retired standalone page is gone. */}
       <p class="boundary__cities">
-        {site.location.serviceArea} — {cities.join(", ")}.{" "}
-        <a href="/service-areas/">Where we work</a>
+        {site.location.serviceArea} — {cities.join(", ")}.
       </p>
       {/* legal.scopeDisclaimer — verbatim-mandatory, read from site data so it cannot drift. */}
       <p class="boundary__disclaimer">{legal.scopeDisclaimer}</p>
@@ -79,6 +102,45 @@ const cities = site.location.cities;
 </section>
 
 <style>
+  .why {
+    background: var(--ac-color-paper);
+    padding-block: clamp(64px, 6.5vw, 92px);
+  }
+
+  .why__inner {
+    width: min(100% - 64px, 720px);
+    margin-inline: auto;
+  }
+
+  .why__inner h2 {
+    margin-top: 12px;
+    color: var(--ac-color-navy-900);
+  }
+
+  .why__inner p {
+    margin: 18px 0 0;
+    color: var(--ac-color-ink-600);
+    line-height: 1.66;
+    text-wrap: pretty;
+  }
+
+  .why__statement {
+    color: var(--ac-color-navy-900);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+
+  @media (max-width: 40rem) {
+    .why {
+      padding-block: 60px;
+    }
+
+    .why__inner {
+      width: calc(100% - 40px);
+    }
+  }
+
   .boundary {
     background: var(--ac-color-warm-white);
     padding-block: clamp(64px, 6.5vw, 92px);
@@ -123,6 +185,42 @@ const cities = site.location.cities;
     color: var(--ac-color-ink-600);
     line-height: 1.62;
     text-wrap: pretty;
+  }
+
+  .boundary__not {
+    display: grid;
+    margin: 0 0 28px;
+    gap: 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .boundary__not > div {
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding: 18px 32px 18px 0;
+  }
+
+  .boundary__not dt {
+    color: var(--ac-color-navy-900);
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .boundary__not dd {
+    margin: 6px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  .boundary__not-close {
+    margin: 0 0 44px;
+    max-width: 40ch;
+    color: var(--ac-color-navy-900);
+    font-size: 1.1875rem;
+    font-weight: 600;
+    line-height: 1.5;
+    text-wrap: balance;
   }
 
   .boundary__columns {
@@ -257,6 +355,18 @@ const cities = site.location.cities;
 
     .boundary__lede {
       margin-top: 18px;
+      max-width: none;
+    }
+
+    .boundary__not {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .boundary__not > div {
+      padding-right: 0;
+    }
+
+    .boundary__not-close {
       max-width: none;
     }
 

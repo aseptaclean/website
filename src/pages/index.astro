@@ -1,114 +1,326 @@
 ---
-// HOMEPAGE — V3 lean Sevenson architecture, rebuilt 2026-08-25.
+// HOMEPAGE — docs/page-briefs/HOME.md, under doc 30 §5 "Page architecture".
+// Composition from docs/reference/clearpath-911-visual-reference.pdf p23–27 and 911 p3–4/p8.
+// Copy from docs/aseptaclean-all-website-copy.md via docs/20-COPY-MAP.md.
 //
-// Section order is docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md §6, which the brief
-// itself declares supersedes the earlier section-order instructions in
-// docs/ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF-SEVENSON.md and docs/30-WEBSITE-MASTER-SPEC.md
-// §36.1 wherever they conflict. It is an explicit current owner decision (AGENTS.md §1 rank 2)
-// and therefore outranks the master spec's thirteen-beat list (rank 5). Recorded in
-// docs/05-DECISIONS-LOG.md.
+// BRIEF ORDER (HOME.md), one component per row:
+//   1  SiteHeader                  BaseLayout
+//   2  HeroWithForm                AcHeroWithForm
+//   3  Verified trust row          AcTrustStrip
+//   4  White image/text intro      AcSplit        "Some properties need more than cleaning."
+//   5  Five-service photo grid     AcServiceCards "What are you dealing with?" + card excerpts
+//   6  Dark image/text scope       AcDarkBand     "You should know what you are paying us…"
+//   7  Compact five-step process   AcSteps        "How it starts" — five steps, not four
+//   8  Founder split               AcSplit        "Why Aseptaclean"
+//   9  Verified service area       AcIntro        verified city list, no invented counties
+//  10  FAQ                         FaqAccordion   the complete source question set
+//  11  Final call section          AcFinalCta     "You do not need to know exactly what kind…"
+//  12  SiteFooter                  BaseLayout
 //
-//   01 Utility + Main Navigation   (StatusRibbon + Header, in BaseLayout)
-//   02 Hero
-//   03 What We Handle
-//   04 The Property Condition Changes the Work
-//   05 Operating Evidence / How Aseptaclean Works
-//   06 Final CTA
-//   07 Footer                      (in BaseLayout)
-//
-// WHY THIS IS A REDUCTION, NOT A RESTYLE. The 2026-08-25 audit measured the previous build at
-// 11,704px / 1,678 words / eight H2s / five repeats of one H2-left-content-right composition,
-// with two photographs below the hero. V3 §0 rules that the correction is to remove structure,
-// not to make the same page prettier. Eleven rendered sections became five.
-//
-// SECTIONS MERGED IN THIS PASS — content absorbed, not discarded:
-//   ConditionRecognition + ServiceFeatures  → WhatWeHandle
-//       V3 §10: the homepage does not need two routing systems for the same idea. One
-//       photographic section now does both jobs — "that looks like my situation" and "yes,
-//       Aseptaclean handles this".
-//   ScopeExplanation → ConditionChangesWork
-//       V3 §11: the standalone "A Clear Scope Before Work Begins" section is deleted and its
-//       load-bearing sentence ("The scope is defined before work begins") is absorbed into the
-//       differentiation section, which was already making the same argument.
-//   HandoffRecord + OperatorAccountability → OperatingEvidence
-//       V3 §12: one concentrated credibility movement instead of a record band, a founder
-//       section with an empty bordered photo slot, and a generic trust block.
-//
-// SECTIONS REMOVED FROM `/`, CONTENT PRESERVED ELSEWHERE — V3 §§7, 13, 14, 15:
-//   CostAndScope   → the cost DRIVERS and doc 27 §7's $195 assessment framing already render on
-//                    every service page through ServicePricing, and on /private-residence-reset/.
-//                    Nothing sitewide is lost. AGENTS.md §4 is untouched: no price figure moved,
-//                    appeared, or changed anywhere in this pass.
-//   ConfidenceAndFit → MOVED to /services/, which V3 §14 names as a correct home for fit and
-//                    boundaries. homepage.excludedScope and homepage.qualification rendered
-//                    NOWHERE else in the build, so deleting the section outright would have
-//                    deleted the site's only sitewide exclusion list. The component file is
-//                    unchanged; only its call site moved.
-//                    POINTER UPDATED 2026-08-26: ConfidenceAndFit.astro no longer exists. The
-//                    /services/ rebuild replaced it with ServiceScopeBoundary.astro, which
-//                    renders the same three sources — homepage.qualification,
-//                    homepage.excludedScope and legal.scopeDisclaimer — verbatim and unedited.
-//                    The sentence above still holds: those two arrays render on exactly one
-//                    route, and that route is still /services/.
-//   FAQ           → still the whole of /faq/, which emits its own FAQPage JSON-LD. The homepage
-//                    FAQPage node is removed with the section: schema must not describe content
-//                    a visitor cannot see (docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6.1).
-//
-// PRESERVED DELIBERATELY: canonical, robots, sitemap membership, redirects, the lead endpoint,
-// service-area generation, schema identity, and every publication gate. No route changed, no
-// gated service became visible, and no regulated future service is named.
+// EXPLICIT HOMEPAGE OMISSIONS — docs/20-COPY-MAP.md "Homepage selection". These source sections
+// are deliberately NOT rendered here, and must not be re-added because the source has more
+// headings: "Show us the condition first."; "We do not pretend every problem belongs to us.";
+// "Real trust starts with clear expectations."; "Who calls Aseptaclean?"; "What affects the
+// cost?" Their text is untouched in the source file, and the scope/process/cost detail lives on
+// the service and hub pages.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import ConditionChangesWork from "@components/ConditionChangesWork.astro";
-import FinalCTA from "@components/FinalCTA.astro";
-import Hero from "@components/Hero.astro";
-import OperatingEvidence from "@components/OperatingEvidence.astro";
-import WhatWeHandle from "@components/WhatWeHandle.astro";
-import { homepage, site } from "@data/site";
+import AcHeroWithForm from "@components/ac/AcHeroWithForm.astro";
+import AcTrustStrip from "@components/ac/AcTrustStrip.astro";
+import AcIntro from "@components/ac/AcIntro.astro";
+import AcServiceCards from "@components/ac/AcServiceCards.astro";
+import AcSplit from "@components/ac/AcSplit.astro";
+import AcDarkBand from "@components/ac/AcDarkBand.astro";
+import AcSteps from "@components/ac/AcSteps.astro";
+import AcCheckList from "@components/ac/AcCheckList.astro";
+import AcFinalCta from "@components/ac/AcFinalCta.astro";
+import FaqAccordion from "@components/FaqAccordion.astro";
+import { home } from "@data/publicCopy";
+import { legal, site } from "@data/site";
 
-// The Service nodes describe homepage.serviceCards. The LocalBusiness node remains defined once
-// in src/components/SeoHead.astro; do not re-add a business node here.
+// IMAGERY — docs/06-ASSET-MANIFEST.md, owner image package installed 2026-09-05.
+// Slots follow that package's README-ASSET-MAP.md and aseptaclean-image-placement-guide.md
+// placement index: 01 hero, 02 introduction, 03/06/09/13/15 the five service cards, 18 the dark
+// scope section. The numbered files are ORIGINAL ILLUSTRATIVE images, not company job
+// documentation. That provenance is recorded in the asset manifest, not printed on the page:
+// the visitor-facing reference captions were removed 2026-09-05 at the owner's instruction, so
+// no section is captioned at all. Nothing here is labelled as Aseptaclean project work.
+// No two adjacent sections share a photograph.
 //
-// CORRECTION 2026-08-26 — the claim this comment used to make is FALSE and was left standing for
-// a day. It read: "WhatWeHandle still renders those three families, so schema and visible copy
-// cannot drift." They have drifted, and by design on both sides:
-//
-//   serviceCards  Detailed cleaning · Complex property cleanup · Animal & organic condition cleaning
-//   WhatWeHandle  Overwhelming contents & hoarding · Neglected & heavily soiled properties ·
-//                 Estate, move-out & property transitions
-//
-// Those are three CONDITIONS a visitor recognises, not the three service families, and the animal
-// / organic family is deliberately absent from the visible page — WhatWeHandle's own header
-// comment records why (its only route ships `noindex`, and a gated service is not exposed here).
-// So `/` currently emits a Service node for a family the page does not describe or link to.
-//
-// NOT changed in this pass, deliberately. Deleting a Service node is a schema/representation
-// decision affecting how the site's services are described, and the same string also ships on
-// /services/ and /specialty-cleaning/, so a homepage-only edit would make the three disagree.
-// Raised for owner review instead; see docs/05-DECISIONS-LOG.md, 2026-08-26. The second reason it
-// needs a decision rather than a tidy-up: that node's `description` is the only place on `/` where
-// the "organic pathogen endorsement" wording appears, and AGENTS.md §3 holds every insurance and
-// endorsement claim release-gated until the wording is verified against a current COI.
-const serviceSchemas = homepage.serviceCards.map((card) => ({
+// The founder portrait is the only genuine company asset on this page: a real photograph of
+// Matthew Ruiz supplied by the owner.
+import heroNeglectedInterior from "../assets/aseptaclean/home-hero-neglected-interior.png";
+import propertyIntroduction from "../assets/aseptaclean/property-interior-introduction.png";
+import hoardingLivingRoom from "../assets/aseptaclean/hoarding-living-room.png";
+import extremeKitchen from "../assets/aseptaclean/extreme-cleaning-neglected-kitchen.png";
+import deepCleaningKitchen from "../assets/aseptaclean/detailed-deep-cleaning-kitchen.png";
+import traumaContext from "../assets/aseptaclean/trauma-residential-context.png";
+import rodentUtilityRoom from "../assets/aseptaclean/rodent-utility-room-context.png";
+import propertyScopeDetail from "../assets/aseptaclean/home-property-scope-detail.png";
+import founderPortrait from "../assets/aseptaclean/founder-matthew-ruiz.jpeg";
+
+// Card images, indexed against the SITEMAP-MASTER service order the copy data already uses:
+// Hoarding · Extreme Cleaning · Detailed Deep Cleaning · Crime Scene & Trauma · Rodent.
+// Each card now carries its own service's main package image (guide 03, 06, 09, 13, 15) rather
+// than a subject-adjacent stand-in, so the card and the page it links to open on the same scene.
+const cardMedia = [
+  {
+    image: hoardingLivingRoom,
+    alt: "A living room where boxes, textiles and household belongings cover the sofa and floor, leaving a narrow walkway"
+  },
+  {
+    image: extremeKitchen,
+    alt: "A neglected kitchen with heavy grease buildup around the stove and grime along the floor edges"
+  },
+  {
+    image: deepCleaningKitchen,
+    alt: "An everyday residential kitchen with light grease around the cooking area and dust along the edges"
+  },
+  {
+    image: traumaContext,
+    alt: "A quiet, unoccupied residential room with plain flooring and an open doorway"
+  },
+  {
+    image: rodentUtilityRoom,
+    alt: "A residential utility room with a low shelf, cardboard boxes and a small scattering of rodent droppings near the wall"
+  }
+];
+
+const serviceCards = home.serviceCards.map((card, index) => ({
+  title: card.title,
+  description: card.description,
+  href: card.href,
+  image: cardMedia[index]?.image,
+  imageAlt: cardMedia[index]?.alt ?? ""
+}));
+
+// The service-area FAQ answer is rebuilt from verified data rather than transcribed — the
+// source answer names "Santa Clara County", which docs/02-CURRENT-FACTS.md rejects because the
+// footprint includes Atherton (San Mateo County). See docs/20-COPY-MAP.md.
+const faqItems = [
+  ...home.faq,
+  {
+    question: "What areas do you serve?",
+    answer: `Aseptaclean serves the ${site.location.serviceArea}, including ${site.location.cities.slice(0, -1).join(", ")}, and ${site.location.cities.at(-1)}. Contact us with the property location and we will confirm whether it falls within our current service area.`
+  }
+];
+
+const serviceSchemas = home.serviceCards.map((card) => ({
   "@type": "Service",
   serviceType: card.title,
-  description: card.detail,
+  description: card.description,
+  url: new URL(card.href, site.urls.site).href,
   provider: { "@id": new URL("/#business", site.urls.site).href },
-  areaServed: site.location.cities.map((name) => ({
-    "@type": "City",
-    name
-  }))
+  areaServed: site.location.cities.map((name) => ({ "@type": "City", name }))
 }));
+
+// FAQPage JSON-LD describes the visible accordion below and is sourced from the same array, so
+// schema and rendered copy cannot drift.
+const faqSchema = {
+  "@type": "FAQPage",
+  mainEntity: faqItems.map((item) => ({
+    "@type": "Question",
+    name: item.question,
+    acceptedAnswer: { "@type": "Answer", text: item.answer }
+  }))
+};
+
+const schema = [...serviceSchemas, faqSchema];
 ---
 
 <BaseLayout
-  title="Deep Cleaning & Complex Property Cleanup | San Jose | Aseptaclean"
-  description="Deep cleaning, move-out cleaning, hoarding and estate cleanouts in the South Bay & Peninsula. Written scope first. Nothing removed without your approval."
+  title="Specialty Property Cleanup in San Jose | Aseptaclean"
+  description="Hoarding cleanup, extreme cleaning, detailed deep cleaning, crime scene and trauma cleanup, and rodent droppings and animal waste cleanup for properties that need more than a normal cleaning company. Serving the South Bay & Peninsula."
   canonicalPath="/"
-  schema={serviceSchemas}
+  schema={schema}
 >
-  <Hero />
-  <WhatWeHandle />
-  <ConditionChangesWork />
-  <OperatingEvidence />
-  <FinalCTA />
+  {/* 2 */}
+  <AcHeroWithForm
+    eyebrow={home.hero.eyebrow}
+    heading={home.hero.heading}
+    headingId="home-hero-title"
+    body={home.hero.body}
+    image={heroNeglectedInterior}
+    imageAlt="A modest living room with a worn sofa, cardboard boxes, scattered papers and a layer of household dust"
+    trustLine={`Owner-operated · Serving the ${site.location.serviceArea}`}
+    formId="hero-form"
+    route="/"
+  />
+
+  {/* 3 — verified facts only. "Insured" renders only when a current COI is recorded; TSW #933
+      is not published here (AGENTS.md §3 limits it to the trauma route and its cross-links). */}
+  <AcTrustStrip />
+
+  {/* 4 */}
+  <AcSplit
+    eyebrow="01 / The difference"
+    heading={home.intro.heading}
+    headingAccent={home.intro.headingAccent}
+    headingId="home-intro-title"
+    body={home.intro.body}
+    pullQuote={home.intro.pullQuote}
+    image={propertyIntroduction}
+    imageAlt="An unfurnished residential interior looking from the living room toward an adjoining hallway"
+  />
+
+  {/* 5 */}
+  <AcIntro
+    eyebrow="02 / What we handle"
+    heading={home.doorsIntro.heading}
+    headingId="home-services-title"
+    lead={home.doorsIntro.lead}
+    body={home.doorsIntro.body}
+    tone="soft"
+  >
+    <div class="home-services">
+      <AcServiceCards cards={serviceCards} layout="five" />
+    </div>
+  </AcIntro>
+
+  {/* 6 */}
+  <AcDarkBand
+    eyebrow="03 / Scope"
+    heading={home.scope.heading}
+    headingId="home-scope-title"
+    lead={home.scope.lead}
+    body={home.scope.body}
+    pullQuote={home.scope.pullQuote}
+    image={propertyScopeDetail}
+    imageAlt="A residential room with a worn chair, stacked boxes and visible dirt along the floor edges"
+  >
+    <div class="home-scope-list">
+      <AcCheckList items={home.scopeQuestions} tone="quiet" compact />
+    </div>
+  </AcDarkBand>
+
+  {/* 7 — five steps. doc 30 §4: "Process: five steps where the main copy has five." */}
+  <AcIntro
+    eyebrow="04 / How it starts"
+    heading="How it starts"
+    headingId="home-process-title"
+    tone="soft"
+  >
+    <div class="home-steps">
+      <AcSteps steps={home.steps} />
+    </div>
+  </AcIntro>
+
+  {/* 8 — founder. THE MISSING ASSET IS NO LONGER MISSING. The owner supplied a real photograph
+      of Matthew Ruiz on 2026-09-05, so this split now renders its media column instead of
+      collapsing to one readable column with a recorded `needsAsset`. It is a genuine company
+      asset, not illustration, so it carries NO illustrative caption — that disclosure exists to
+      stop a visitor reading a generated interior as documentation of a job, and applying it to
+      a real founder portrait would say the opposite of the truth.
+      Portrait 3:4, contained plate — see the portrait note in AcSplit. */}
+  <AcSplit
+    eyebrow="05 / Why Aseptaclean"
+    heading={home.why.heading}
+    headingId="home-founder-title"
+    lead={`${home.why.lead} ${site.founder.name} is ${site.founder.title}.`}
+    body={home.why.body}
+    pullQuote={home.why.pullQuote}
+    image={founderPortrait}
+    imageAlt="Matthew Ruiz, founder of Aseptaclean"
+    ratio="3/4"
+  >
+    {home.why.close.map((paragraph) => <p class="home-founder__body">{paragraph}</p>)}
+    {/* Mandatory wherever the founder's background appears — docs/02-CURRENT-FACTS.md. */}
+    <p class="home-founder__limit">{legal.founderAuthorityLimit}</p>
+  </AcSplit>
+
+  {/* 9 — verified service area. The real city list, not a directory of city buttons and not a
+      county promise the business has not verified (docs/02-CURRENT-FACTS.md "Geography"). */}
+  <AcIntro
+    eyebrow="06 / Service area"
+    heading={`Serving the ${site.location.serviceArea}`}
+    headingId="home-area-title"
+    lead="Contact us with the property location and we will confirm whether it falls within our current service area."
+  >
+    <ul class="home-cities">
+      {site.location.cities.map((city) => <li>{city}</li>)}
+    </ul>
+  </AcIntro>
+
+  {/* 10 */}
+  <AcIntro
+    eyebrow="07 / Questions"
+    heading="Frequently asked questions"
+    headingId="home-faq-title"
+    tone="soft"
+  >
+    <div class="home-faq">
+      <FaqAccordion items={faqItems} headingId="home-faq-title" />
+    </div>
+  </AcIntro>
+
+  {/* 11 */}
+  <AcFinalCta heading={home.final.heading} body={home.final.body} />
 </BaseLayout>
+
+<style>
+  .home-services,
+  .home-steps {
+    margin-top: 40px;
+    text-align: left;
+  }
+
+  .home-scope-list {
+    margin-top: 22px;
+  }
+
+  .home-founder__body {
+    margin: 14px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .home-founder__limit {
+    margin: 22px 0 0;
+    border-left: 2px solid var(--ac-color-line-strong);
+    padding-left: 18px;
+    color: var(--ac-color-ink-500);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .home-cities {
+    display: grid;
+    max-width: 60rem;
+    margin: 36px auto 0;
+    padding: 0;
+    list-style: none;
+    gap: 1px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    /* The 1px gap over a rule-coloured background draws the grid lines — no per-cell borders,
+       so no doubled rules where cells meet. Quiet, and not a row of city buttons. */
+    background: var(--ac-color-line);
+    border: 1px solid var(--ac-color-line);
+  }
+
+  .home-cities li {
+    max-width: none;
+    padding: 15px 12px;
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .home-faq {
+    margin: 34px auto 0;
+    text-align: left;
+  }
+
+  @media (max-width: 62rem) {
+    .home-cities {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 44rem) {
+    .home-cities {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+// HOME FAQ — shared FAQ, max-width 850px, centered. Built for the 2026-09-03 homepage
+// composition rebuild (docs/05-DECISIONS-LOG.md, "Homepage section count reopened"), which
+// restores a homepage FAQ section using the FaqAccordion primitive instead of the bespoke
+// `.ac-faq` markup FAQ.astro renders elsewhere on the site.
+//
+// SAME ARRAY, DIFFERENT SHELL. This renders whatever `faqItems` FAQ.astro currently exports
+// (as of 2026-09-04, HOME 11's six questions — see that file's header) and the same array
+// index.astro's FAQPage JSON-LD reads, so schema and visible copy cannot drift (doc 21 §6.1).
+// Only the container/accordion treatment is local to this component: FaqAccordion's plain-rule,
+// card-free, 850px-capped shape.
+import FaqAccordion from "@components/FaqAccordion.astro";
+import { faqItems } from "@components/FAQ.astro";
+---
+
+<section class="ac-sec home-faq" id="faq" aria-labelledby="home-faq-title">
+  <div class="ac-shell">
+    <div class="home-faq__head">
+      <p class="ac-label">Common questions</p>
+      <h2 id="home-faq-title" class="ac-type-h2">Common questions before a project starts.</h2>
+    </div>
+
+    <FaqAccordion items={faqItems} headingId="home-faq-title" />
+  </div>
+</section>
+
+<style>
+  .home-faq {
+    background: var(--ac-color-warm-white);
+  }
+
+  .home-faq__head {
+    max-width: 850px;
+    margin: 0 auto 32px;
+  }
+</style>

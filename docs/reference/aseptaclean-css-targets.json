@@ -1,0 +1,291 @@
+{
+  "profile_id": "AC-CP70-91130-1.1",
+  "date": "2026-09-05",
+  "units": "CSS px unless stated",
+  "origin": "Aseptaclean design targets; not extracted competitor styles",
+  "colors": {
+    "navy": "#1C355E",
+    "deep": "#122840",
+    "slate": "#6A9BC3",
+    "steel": "#A8B8C8",
+    "paper": "#F7F8FA"
+  },
+  "container": {
+    "max": 1320,
+    "gutters": [
+      {
+        "min_width": 1200,
+        "value": 32
+      },
+      {
+        "min_width": 768,
+        "max_width": 1199,
+        "value": 24
+      },
+      {
+        "max_width": 767,
+        "value": 20
+      }
+    ]
+  },
+  "type": {
+    "family": "Inter",
+    "h1": "clamp(34px, 3.65vw, 52px)",
+    "h1_line_height": 1.1,
+    "h1_weight": 700,
+    "compact_h1": "clamp(34px, 3vw, 46px)",
+    "h2": "clamp(28px, 2.8vw, 40px)",
+    "body_size_range": [
+      16,
+      18
+    ],
+    "body_line_height_range": [
+      1.5,
+      1.65
+    ]
+  },
+  "header": {
+    "desktop_nominal": 72,
+    "mobile_nominal": 64,
+    "utility": "measure separately"
+  },
+  "hero": {
+    "two_column_min_width": 1200,
+    "columns": "minmax(0,1fr) minmax(520px,560px)",
+    "gap": 52,
+    "normal_padding_block": 36,
+    "compact_padding_block": 20,
+    "compact_condition": {
+      "min_width": 1200,
+      "max_height": 850
+    },
+    "fixed_height": false,
+    "stack_order": [
+      "copy",
+      "call",
+      "form"
+    ],
+    "above_fold": {
+      "desktop_required": true,
+      "desktop_viewports": [
+        [
+          1440,
+          900
+        ],
+        [
+          1536,
+          864
+        ],
+        [
+          1366,
+          768
+        ],
+        [
+          1280,
+          800
+        ]
+      ],
+      "all_photo_hero_pages": true,
+      "scroll_y": 0,
+      "browser_zoom_percent": 100,
+      "bottom_clearance": 16,
+      "budget_formula": "viewportHeight - measuredHeroTop - persistentBottomObstruction - 16",
+      "hero_bottom_max_formula": "viewportHeight - persistentBottomObstruction - 16",
+      "includes": [
+        "headline",
+        "call",
+        "complete form",
+        "submit",
+        "consent",
+        "helpers",
+        "anti-spam",
+        "bottom padding"
+      ],
+      "below_fold_desktop_status": "FAIL",
+      "stacked_required": [
+        "headline",
+        "primary call"
+      ],
+      "stacked_form_may_extend_below_fold": true,
+      "persistent_obstructions": "measure; do not assume zero",
+      "modal_consent": "report separately; not a fit pass"
+    }
+  },
+  "form": {
+    "padding": 22,
+    "narrow_padding": 18,
+    "radius": 8,
+    "gap": 12,
+    "field_row_gap": 10,
+    "field_column_gap": 14,
+    "input_min_height": 44,
+    "input_min_font_size": 16,
+    "one_column_max_width": 540,
+    "compact_desktop_hero_override": {
+      "min_viewport_width": 1200,
+      "max_viewport_height": 850,
+      "padding": 18,
+      "gap": 8,
+      "field_row_gap": 8,
+      "field_column_gap": 14,
+      "textarea_min_height": 64,
+      "input_min_height": 44,
+      "input_min_font_size": 16,
+      "submit_min_height": 48
+    }
+  },
+  "button": {
+    "min_height": 48,
+    "padding_block": 12,
+    "padding_inline": 22,
+    "radius": 4,
+    "primary_label": "Call Aseptaclean",
+    "href": "tel:+14087857588",
+    "display_number": "(408) 785-7588"
+  },
+  "split": {
+    "desktop_columns": "1fr 1fr",
+    "desktop_gap": 56,
+    "below_1200_gap": 32,
+    "desktop_image_ratio": "6:5",
+    "mobile_image_ratio": "4:3",
+    "one_column_max_width": 767
+  },
+  "cards": {
+    "count": 5,
+    "desktop_layout": "3+2, last two centered",
+    "desktop_gap": 28,
+    "image_ratio": "4:3",
+    "source_observed_image_ratio": "approximately 3:2",
+    "two_column_range": [
+      541,
+      1199
+    ],
+    "one_column_max_width": 540
+  },
+  "process": {
+    "default_steps": 5,
+    "trauma_steps": 4,
+    "gap": 24,
+    "two_column_range": [
+      541,
+      1199
+    ],
+    "one_column_max_width": 540
+  },
+  "footer": {
+    "desktop_columns": 4,
+    "tablet_columns": 2,
+    "mobile_columns": 1,
+    "padding_top": 56,
+    "padding_bottom": 28
+  },
+  "faq_max_width": 880,
+  "legal_max_width": 880,
+  "pages": [
+    {
+      "page": "Homepage",
+      "hero": "photo_form",
+      "form_required": true
+    },
+    {
+      "page": "Hoarding Cleanup",
+      "hero": "photo_form",
+      "form_required": true
+    },
+    {
+      "page": "Extreme Cleaning",
+      "hero": "photo_form",
+      "form_required": true
+    },
+    {
+      "page": "Detailed Deep Cleaning",
+      "hero": "photo_form",
+      "form_required": true
+    },
+    {
+      "page": "Crime Scene & Trauma Cleanup",
+      "hero": "photo_form",
+      "form_required": true
+    },
+    {
+      "page": "Rodent Droppings & Animal Waste Cleanup",
+      "hero": "photo_form",
+      "form_required": true
+    },
+    {
+      "page": "Services hub",
+      "hero": "compact_photo",
+      "form_required": false
+    },
+    {
+      "page": "About",
+      "hero": "compact_photo",
+      "form_required": false
+    },
+    {
+      "page": "Contact",
+      "hero": "text_title",
+      "form_required": true
+    },
+    {
+      "page": "Privacy Policy",
+      "hero": "legal_text",
+      "form_required": false
+    },
+    {
+      "page": "Terms and Conditions",
+      "hero": "legal_text",
+      "form_required": false
+    },
+    {
+      "page": "Cookie Policy",
+      "hero": "legal_text",
+      "form_required": false
+    }
+  ],
+  "audit": {
+    "statuses": [
+      "PASS",
+      "FAIL",
+      "REVIEW",
+      "UNVERIFIED",
+      "N/A"
+    ],
+    "geometric_rounding_tolerance": 2,
+    "missing_selector_status": "UNVERIFIED",
+    "computed_values_alone_prove_pass": false,
+    "checks": {
+      "CSS-01": "Header and navigation",
+      "CSS-02": "Photographic HeroWithForm",
+      "CSS-03": "Compact photographic hero",
+      "CSS-04": "Form panel",
+      "CSS-05": "Contained white image/text split",
+      "CSS-06": "Dark image/text band",
+      "CSS-07": "Home service cards",
+      "CSS-08": "Services hub rows",
+      "CSS-09": "Process",
+      "CSS-10": "Founder and service area",
+      "CSS-11": "FAQ",
+      "CSS-12": "Closing action and footer",
+      "CSS-13": "Contact and legal shells"
+    }
+  },
+  "approved_descriptor": {
+    "text": "Biohazard Remediation & Specialty Property Cleanup",
+    "replaces": "Specialty Property Cleanup",
+    "locations": [
+      "homepage eyebrow",
+      "Services hub H1",
+      "exact shared brand descriptor"
+    ],
+    "homepage_main_h1": "preserved",
+    "individual_service_h1": "preserved",
+    "eyebrow_font_size_range": [
+      14,
+      16
+    ],
+    "eyebrow_line_height": 1.35,
+    "wrapping": "natural; include actual wrapped height in fold test"
+  }
+}

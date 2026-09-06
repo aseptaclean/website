@@ -8,6 +8,7 @@ interface Props {
   noindex?: boolean;
   image?: string;
   schema?: Record<string, unknown> | Array<Record<string, unknown>>;
+  structuredDataEnabled?: boolean;
 }
 
 const {
@@ -16,7 +17,8 @@ const {
   canonicalPath,
   noindex = false,
   image,
-  schema
+  schema,
+  structuredDataEnabled = true
 } = Astro.props;
 const canonical = new URL(canonicalPath, site.urls.site);
 const shouldNoindex = noindex || !site.deployment.isPublicProduction;
@@ -128,4 +130,4 @@ const jsonLd = JSON.stringify({
 <meta property="og:url" content={canonical} />
 {image && <meta property="og:image" content={new URL(image, site.urls.site)} />}
 <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
-<script is:inline type="application/ld+json" set:html={jsonLd}></script>
+{structuredDataEnabled && <script is:inline type="application/ld+json" set:html={jsonLd}></script>}

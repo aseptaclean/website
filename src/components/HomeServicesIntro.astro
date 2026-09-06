@@ -1,0 +1,57 @@
+---
+// HOME SERVICES INTRO — compact, centered intro that sits above HomeServiceGrid. Built for the
+// 2026-09-03 homepage composition rebuild (docs/05-DECISIONS-LOG.md, "Homepage section count
+// reopened"), which reintroduces real visual sections onto `/` including large photographic
+// service routing. Split from the routing grid itself (HomeServiceGrid.astro) because the
+// design-system spec asks for a compact centered intro with no service content inside it —
+// the services render as their own large-photography section directly below.
+//
+// Copy: docs/aseptaclean-all-website-copy.md, "What are you dealing with?" heading and lede,
+// verbatim — the same strings WhatWeHandle.astro (predecessor section) already rendered.
+---
+
+<section class="home-services-intro" aria-labelledby="home-services-title">
+  <div class="home-services-intro__inner">
+    <h2 id="home-services-title" class="ac-type-h2-home-feature">What are you dealing with?</h2>
+    <p>
+      You do not need to know the name of the service before you contact us. Start with what is
+      happening at the property.
+    </p>
+  </div>
+</section>
+
+<style>
+  .home-services-intro {
+    background: var(--ac-color-paper);
+    padding: 64px 0 44px;
+  }
+
+  .home-services-intro__inner {
+    width: min(100% - 64px, 720px);
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .home-services-intro__inner h2 {
+    color: var(--ac-color-navy-900);
+  }
+
+  .home-services-intro__inner p {
+    margin: 18px auto 0;
+    max-width: 56ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 40rem) {
+    .home-services-intro {
+      padding: 56px 0 36px;
+    }
+
+    .home-services-intro__inner {
+      width: calc(100% - 40px);
+    }
+  }
+</style>

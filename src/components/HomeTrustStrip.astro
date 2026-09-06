@@ -1,0 +1,31 @@
+---
+// HOME TRUST STRIP — thin proof strip immediately below the hero, per HOME 02 of
+// docs/aseptaclean-BUILD-EXACT-v3-STANDALONE.md §9: "Render exactly: California Registered
+// Trauma Scene Waste Management Practitioner / TSW #933 / Insured. No additional credential
+// claims."
+//
+// TSW #933 ON THE HOMEPAGE IS AN OWNER-DIRECTED EXCEPTION, 2026-09-04. AGENTS.md §3 otherwise
+// restricts TSW #933 to /crime-scene-trauma-cleanup-san-jose/ and its named cross-links (footer,
+// /services/, doc27ServicePages.ts) — the homepage was not on that list. Owner instruction this
+// session ("follow instructions") extends that cross-link list to include the homepage trust
+// strip and the HOME 08 regulated-authority section (HomeRegulatedAuthority.astro). See
+// docs/05-DECISIONS-LOG.md.
+//
+// "Insured" STILL SUPPRESSED — this is a verification gate, not a placement gate. No current COI
+// is on file (site.business.insuranceStatus is intentionally empty pending owner/broker
+// verification, per AGENTS.md §3 / doc 21 §2.5), so rendering "Insured" literally would publish
+// an unverified trust claim regardless of which page it appears on. The v3 spec's "render
+// exactly" instruction cannot manufacture a fact this repository does not have yet.
+import TrustStrip from "@components/TrustStrip.astro";
+import { site } from "@data/site";
+
+const insuranceVerified = Boolean(site.business.insuranceStatus);
+
+const items = [
+  { label: "California Registered Trauma Scene Waste Management Practitioner" },
+  { label: "TSW #933" },
+  ...(insuranceVerified ? [{ label: "Insured" }] : [])
+];
+---
+
+<TrustStrip items={items} />

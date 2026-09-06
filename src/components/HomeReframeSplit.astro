@@ -1,0 +1,112 @@
+---
+// HOME REFRAME SPLIT — HOME 03 "REFRAME SPLIT + THREE-IMAGE MOSAIC" per
+// docs/aseptaclean-BUILD-EXACT-v3-STANDALONE.md §9. Mosaic left, copy right. Rebuilt from a
+// single-image EditorialSplit to a ThreeImageMosaic + copy layout to match that section's
+// required geometry exactly (§8.1 checksum: "3 narrow vertical images ~48% / copy ~52%").
+//
+// COPY IS UNCHANGED. Same "Some properties need more than cleaning." passage, word for word —
+// docs/aseptaclean-all-website-copy.md / v3 spec HOME 03, verbatim. No bullets added, no new CTA
+// inside this section, per the spec's explicit instruction for this slot.
+//
+// Images: three already-approved homepage development photographs. No new asset was sourced.
+import ThreeImageMosaic from "@components/ThreeImageMosaic.astro";
+import neglectedImage from "../assets/homepage/condition-development-neglected-kolforn.jpg";
+import hoardingImage from "../assets/homepage/condition-development-hoarding-asurnipal.jpg";
+import resetImage from "../assets/homepage/condition-development-reset-aismallard.jpg";
+
+const mosaicImages = [
+  {
+    image: neglectedImage,
+    alt: "Reference photograph of a neglected residential kitchen with worn, long-unmaintained surfaces."
+  },
+  {
+    image: hoardingImage,
+    alt: "Reference photograph of a living room where accumulated household contents cover the floor and furniture."
+  },
+  {
+    image: resetImage,
+    alt: "Reference photograph of a residential room mid-reset."
+  }
+] as const;
+---
+
+<section class="home-reframe-split" aria-labelledby="reframe-title">
+  <div class="home-reframe-split__inner">
+    <div class="home-reframe-split__media">
+      <ThreeImageMosaic images={mosaicImages} />
+      <p class="home-reframe-split__note">
+        Development reference photographs &middot; not Aseptaclean project work
+      </p>
+    </div>
+
+    <div class="home-reframe-split__copy">
+      <h2 id="reframe-title" class="ac-type-h2">Some properties need more than cleaning.</h2>
+      <p>
+        A normal cleaning service works well when a home is already being maintained. That
+        changes when you are dealing with rodent waste, years of buildup, heavy clutter, animal
+        waste, inaccessible rooms, or a property that has been neglected for a long time.
+      </p>
+      <p class="home-reframe-split__statement">
+        At that point, the first question is not &ldquo;How fast can someone clean this?&rdquo;
+        It is &ldquo;What actually needs to happen to this property?&rdquo;
+      </p>
+      <p>That is where Aseptaclean starts.</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .home-reframe-split {
+    background: var(--ac-color-warm-white);
+    padding-block: clamp(56px, 8vw, 112px);
+  }
+
+  .home-reframe-split__inner {
+    display: grid;
+    width: min(100% - 64px, var(--ac-measure-wide));
+    align-items: center;
+    margin-inline: auto;
+    gap: 72px;
+    grid-template-columns: minmax(0, 0.92fr) minmax(0, 1.08fr);
+  }
+
+  .home-reframe-split__copy h2 {
+    color: var(--ac-color-navy-900);
+  }
+
+  .home-reframe-split__copy p {
+    margin: 18px 0 0;
+    max-width: var(--ac-measure-intimate);
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-lead);
+    line-height: 1.65;
+  }
+
+  .home-reframe-split__statement {
+    color: var(--ac-color-navy-900);
+    font-weight: 600;
+  }
+
+  .home-reframe-split__note {
+    margin-top: 16px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.6875rem;
+    font-weight: 650;
+    letter-spacing: 0.055em;
+    line-height: 1.5;
+    text-transform: uppercase;
+  }
+
+  @media (max-width: 850px) {
+    .home-reframe-split__inner {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 36px;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .home-reframe-split__inner {
+      width: calc(100% - 40px);
+    }
+  }
+</style>

@@ -1,0 +1,284 @@
+---
+// CAMPAIGN THANK-YOU — /hoarding-cleanup-san-jose/assessment/thank-you/
+//
+// Reached ONLY by redirect from PpcHeroForm after functions/api/lead.ts returns a confirmed
+// `ok: true`. Because that redirect is a GET, refreshing this page re-fetches a static document
+// and cannot resubmit anything — which is the whole reason the campaign form now navigates here
+// instead of swapping in an inline panel.
+//
+// ONE H1, TEXT SWAPPED — the convention src/pages/thank-you.astro already uses. The document
+// ships the HONEST DEFAULT ("this page does not confirm…") and the script upgrades it only when
+// the query says a submission was confirmed. That way a crawler, a share preview and a
+// JavaScript-less visitor all see the truthful state, and there is never a second heading in the
+// markup claiming something different.
+//
+// QUERY CONTRACT — identical to the sitewide /thank-you/, so one convention covers both:
+//   received=1                 the endpoint confirmed acceptance
+//   code=AC-XXXXXX             the derived display code (validated against a strict regex)
+//   email=sent|attention       whether a confirmation email was actually accepted by Resend
+//   callback=business-hours|…  read but deliberately NOT rendered — see below
+//
+// NO PERSONAL INFORMATION IS EVER IN THE URL. No name, phone, email address, ZIP or description.
+// `code` is a presentation string derived from the submission UUID; nothing is stored under it,
+// deduped on it or looked up by it (functions/_lib/lead.ts `confirmationCode`).
+//
+// NO RESPONSE-TIME PROMISE. The sitewide /thank-you/ renders a callback-window sentence. This
+// page does not: AGENTS.md §3 records the verified response as "within one business day", and
+// docs/02-CURRENT-FACTS.md forbids inventing response times. The parameter is accepted so the
+// contract matches, and then ignored.
+//
+// The query string is stripped with replaceState once read, so the confirmation cannot be
+// shared, bookmarked or refreshed into looking like a second request.
+import PpcLayout from "@layouts/PpcLayout.astro";
+import { site } from "@data/site";
+import { ppcHoarding, ppcCallLabel } from "@data/ppcHoarding";
+
+const copy = ppcHoarding.thankYou;
+const formUrl = `${ppcHoarding.route}#${ppcHoarding.formId}`;
+const phoneHref = site.business.phoneUri;
+---
+
+<PpcLayout
+  title={copy.seo.title}
+  description={copy.seo.description}
+  canonicalPath={copy.route}
+  noindex={true}
+  stickyHeroSelector="#ppc-confirmation"
+  stickyFormHref={formUrl}
+  stickySecondaryLabel={ppcHoarding.stickyBar.secondaryLabel}
+>
+  <section class="ppc-confirm" id="ppc-confirmation" aria-labelledby="confirm-title">
+    <div class="ac-shell">
+      <div class="ppc-confirm__panel" tabindex="-1" data-confirm-panel>
+        <p class="ppc-confirm__eyebrow">{copy.eyebrow}</p>
+
+        {/* Ships as the unconfirmed heading. Swapped to the confirmed one by the script below,
+            and only when the endpoint said so. */}
+        <h1
+          id="confirm-title"
+          class="ac-type-h1-home"
+          data-confirm-title
+          data-confirmed={copy.heading}
+        >{copy.unconfirmed.heading}</h1>
+
+        <p
+          class="ppc-confirm__body"
+          data-confirm-body
+          data-confirmed={copy.body[0]}
+        >{copy.unconfirmed.body}</p>
+
+        {/* Confirmed-only second paragraph, the code line, and the email state. Each carries its
+            copy on a data attribute so no string is retyped in the script. */}
+        <p class="ppc-confirm__body" data-confirm-extra data-confirmed={copy.body[1]} hidden></p>
+
+        <p
+          class="ppc-confirm__code"
+          data-confirm-code
+          data-label={copy.codeLabel}
+          data-note={copy.codeNote}
+          hidden
+        ></p>
+
+        <p
+          class="ppc-confirm__email"
+          data-confirm-email
+          data-sent={copy.emailSent}
+          data-pending={copy.emailPending}
+          hidden
+        ></p>
+
+        <div class="ppc-confirm__actions">
+          {/* Suppression rule (AGENTS.md §3): never render an empty phone link. */}
+          {phoneHref && <a class="ppc-confirm__call" href={phoneHref}>{ppcCallLabel}</a>}
+          {/* Only useful while nothing is confirmed; hidden once it is, so a visitor who has
+              just submitted is not invited straight back into a duplicate submission. */}
+          <a class="ppc-confirm__back" href={formUrl} data-confirm-back>
+            {copy.unconfirmed.backLabel}
+          </a>
+        </div>
+
+        <p class="ppc-confirm__boundary" data-confirm-boundary hidden>{copy.boundary}</p>
+      </div>
+    </div>
+  </section>
+</PpcLayout>
+
+<script>
+  const parameters = new URLSearchParams(window.location.search);
+
+  if (parameters.get("received") === "1") {
+    const panel = document.querySelector<HTMLElement>("[data-confirm-panel]");
+    const title = document.querySelector<HTMLElement>("[data-confirm-title]");
+    const body = document.querySelector<HTMLElement>("[data-confirm-body]");
+    const extra = document.querySelector<HTMLElement>("[data-confirm-extra]");
+    const codeEl = document.querySelector<HTMLElement>("[data-confirm-code]");
+    const emailEl = document.querySelector<HTMLElement>("[data-confirm-email]");
+    const back = document.querySelector<HTMLElement>("[data-confirm-back]");
+    const boundary = document.querySelector<HTMLElement>("[data-confirm-boundary]");
+
+    if (title?.dataset.confirmed) title.textContent = title.dataset.confirmed;
+    if (body?.dataset.confirmed) body.textContent = body.dataset.confirmed;
+    if (extra?.dataset.confirmed) {
+      extra.textContent = extra.dataset.confirmed;
+      extra.hidden = false;
+    }
+
+    // Strict shape check. The code is Crockford base32 without I, L, O or U; anything else in
+    // the query is ignored rather than written into the page.
+    const code = parameters.get("code") ?? "";
+    if (codeEl && /^AC-[0-9A-HJKMNP-TV-Z]{6}$/.test(code)) {
+      codeEl.hidden = false;
+      codeEl.textContent = `${codeEl.dataset.label}: ${code} — ${codeEl.dataset.note}`;
+    }
+
+    // THREE states, and "none" is not a failure:
+    //   sent      → Resend accepted the message
+    //   attention → an address was supplied but the provider did not accept it. Reported, not
+    //               glossed — but never used to describe a message that was never attempted.
+    //   none      → no address was given, so the page says nothing about email at all.
+    // Any other value is treated as "none" rather than guessed at.
+    const emailState = parameters.get("email");
+    if (emailEl && emailState === "sent") {
+      emailEl.hidden = false;
+      emailEl.textContent = emailEl.dataset.sent ?? "";
+    } else if (emailEl && emailState === "attention") {
+      emailEl.hidden = false;
+      emailEl.textContent = emailEl.dataset.pending ?? "";
+    }
+
+    if (back) back.hidden = true;
+    if (boundary) boundary.hidden = false;
+
+    panel?.focus({ preventScroll: true });
+
+    // Drop the query so the confirmation cannot be refreshed, bookmarked or shared into
+    // looking like a live request. replaceState, not pushState: the back button must not
+    // return to a URL that re-renders a confirmation.
+    window.history.replaceState({}, "", window.location.pathname);
+  }
+</script>
+
+<style>
+  .ppc-confirm {
+    background: var(--ac-color-navy-950);
+    color: #fff;
+  }
+
+  .ppc-confirm__panel {
+    max-width: 46rem;
+    padding-block: clamp(24px, 4vw, 48px);
+  }
+
+  .ppc-confirm__panel:focus {
+    outline: none;
+  }
+
+  .ppc-confirm__eyebrow {
+    margin: 0 0 12px;
+    color: var(--ac-color-blue-on-navy);
+    font-size: 0.9375rem;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+
+  .ppc-confirm h1 {
+    color: #fff;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  .ppc-confirm__body {
+    margin: 18px 0 0;
+    max-width: 54ch;
+    color: #c3d2e4;
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .ppc-confirm__body[hidden],
+  .ppc-confirm__code[hidden],
+  .ppc-confirm__email[hidden],
+  .ppc-confirm__boundary[hidden],
+  .ppc-confirm__back[hidden] {
+    display: none;
+  }
+
+  .ppc-confirm__code {
+    margin: 22px 0 0;
+    border-left: 2px solid var(--ac-color-blue-on-navy);
+    padding-left: 18px;
+    color: #fff;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  .ppc-confirm__email {
+    margin: 14px 0 0;
+    max-width: 54ch;
+    color: #c3d2e4;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .ppc-confirm__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 28px;
+    gap: 12px;
+  }
+
+  /* Same control recipe as the sitewide dark-surface action pair. */
+  .ppc-confirm__call,
+  .ppc-confirm__back {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--ac-r-sm);
+    padding-inline: 24px;
+    font-size: 0.9375rem;
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .ppc-confirm__call {
+    border: 1px solid #fff;
+    background: #fff;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ppc-confirm__call:hover {
+    border-color: var(--ac-color-blue-pale);
+    background: var(--ac-color-blue-pale);
+    color: var(--ac-color-navy-900);
+  }
+
+  .ppc-confirm__back {
+    border: 1px solid rgb(255 255 255 / 45%);
+    color: #fff;
+  }
+
+  .ppc-confirm__back:hover {
+    background: rgb(255 255 255 / 12%);
+    color: #fff;
+  }
+
+  .ppc-confirm__boundary {
+    margin: 26px 0 0;
+    max-width: 46ch;
+    color: #8fa6bf;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 26rem) {
+    .ppc-confirm__call,
+    .ppc-confirm__back {
+      width: 100%;
+      white-space: normal;
+      text-align: center;
+    }
+  }
+</style>

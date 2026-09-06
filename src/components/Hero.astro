@@ -1,28 +1,24 @@
 ---
 import { Image } from "astro:assets";
-import heroImage from "../assets/homepage/hero-development-residence-asurnipal.jpg";
+import heroImage from "../assets/stock/residential_exterior_1.jpg";
+import HomeHeroForm from "@components/ac/AcCompactForm.astro";
 import { site } from "@data/site";
 
-// TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPH — NOT Aseptaclean work, not a client property, and
-// not proof of a completed job.
-//   hero-development-residence-asurnipal.jpg
-//     Asurnipal — CC BY-SA 4.0 — 3264×2448
-//     https://commons.wikimedia.org/wiki/File:Bregenz-Cluttered_interiors_(compulsive_hoarding)-living_room-04ASD.jpg
-//
-// REPLACES hero-development-peter-herrmann.jpg, which is deleted from the repository.
-// docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md §9 rules the previous image out by
-// name: it showed a derelict, structurally abandoned building, which is the wrong message for a
-// company engaged by families to deal with a home that is still a home. §9 asks instead for a
-// real family property in an overwhelming or neglected condition, residential, serious without
-// implying demolition — which is what this room is. It is `[ATMOS]`-class under the image rule in
-// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §6: no crew, no technician, no vehicle, no equipment and
-// no work in progress, so nothing in the frame implies Aseptaclean performed anything.
-//
-// The crop is chosen for the composition, not just the subject: the pitched timber ceiling fills
-// the upper half of the frame and is the quietest area in it, so the centered headline lands on
-// wood rather than on contents at every width.
+// LICENSED ILLUSTRATIVE PHOTOGRAPH — added 2026-09-03 per the homepage composition rebuild
+// (docs/05-DECISIONS-LOG.md, "Homepage section count reopened," 2026-09-03) and the sitewide
+// illustrative-photography policy (docs/06-ASSET-MANIFEST.md §4.2). Pexels License (free
+// commercial use, no attribution required). Not Aseptaclean work, not a client property.
+//   residential_exterior_1.jpg — a modest single-family home exterior, daylight, no people.
+//     https://www.pexels.com/photo/front-exterior-of-a-family-home-8031873/
 //
 // Replace with owner-shot photography before launch (docs/06-ASSET-MANIFEST.md §5).
+//
+// TWO-COLUMN HERO-WITH-FORM — rebuilt per docs/aseptaclean-BUILD-EXACT-v3-STANDALONE.md §7.1
+// HomeHeroWithForm and §9 HOME 01 (owner-directed 2026-09-04: build the hero form as specified,
+// rather than the no-form hero this route shipped since the 2026-09-03 composition rebuild —
+// see docs/05-DECISIONS-LOG.md for the conflict this reopens with doc 30 §17, which excludes a
+// homepage lead form). Copy left ~60%, form right ~40%, per the v3 spec's §8.1 checksum.
+const smsHref = site.business.smsUri;
 ---
 
 <section class="home-hero" aria-labelledby="home-hero-title">
@@ -50,23 +46,38 @@ import { site } from "@data/site";
   <div class="home-hero__overlay" aria-hidden="true"></div>
 
   <div class="home-hero__shell">
-    <div class="home-hero__content">
-      <h1 id="home-hero-title" class="ac-type-h1-home">
-        When a family property has become too much to handle.
-      </h1>
-      <p class="home-hero__lede">
-        Aseptaclean helps families deal with cluttered, neglected, and difficult property
-        conditions with a clear scope before work begins.
-      </p>
-      <a class="home-hero__primary" href="/request-assessment/">
-        {site.offer.primaryCta}
-      </a>
-    </div>
-  </div>
+    <div class="home-hero__grid">
+      <div class="home-hero__content">
+        <p class="home-hero__eyebrow">Specialty Property Cleanup</p>
+        <h1 id="home-hero-title" class="ac-type-h1-home">
+          When a property needs more than a normal cleaning company.
+        </h1>
+        <p class="home-hero__lede">
+          Specialty cleanup for biological contamination, trauma, decomposition, severe property
+          conditions, rodent contamination, and animal waste throughout the San Francisco Bay
+          Area. Aseptaclean helps you understand what needs to happen and gets the property back
+          under control.
+        </p>
+        <div class="home-hero__actions">
+          <a class="home-hero__primary" href="/request-assessment/">
+            Request an Assessment
+          </a>
+          {smsHref && <a class="home-hero__secondary" href={smsHref}>Send Photos</a>}
+        </div>
+        <p class="home-hero__reassurance">
+          Owner-operated · Insured · Serving the South Bay &amp; Peninsula
+        </p>
+      </div>
 
-  <p class="home-hero__development-note">
-    Development reference photograph · not Aseptaclean project work
-  </p>
+      <div class="home-hero__form-wrap">
+        <HomeHeroForm formId="hero-form" />
+      </div>
+    </div>
+
+    <p class="home-hero__development-note">
+      Illustrative reference photograph · not Aseptaclean project work
+    </p>
+  </div>
 </section>
 
 <style>
@@ -76,10 +87,21 @@ import { site } from "@data/site";
      old scale. The variable is overridden per breakpoint rather than `font-size` on the h1 —
      AGENTS.md §6 law 1 requires the heading's computed size to come from its `.ac-type-*` role
      class, and that class reads this token. H1:body stays at 2.81:1, well over the ≥1.9:1 floor. */
+  /* HERO OCCUPIES THE REMAINING FIRST VIEWPORT (owner correction 2026-09-04). The prior fixed
+     690px min-height was set before the embedded form's real height was measured, and the hero
+     ran past the fold. The header stack above this section is two elements, not one: a
+     31px .utility-bar that scrolls away plus the 68px sticky .site-nav — 99px combined at first
+     paint, which is the offset the hero has to subtract to end at the fold. It is declared as a
+     local variable rather than inlined so the arithmetic is legible if either bar is re-sized.
+     `svh` (not `vh`) so a mobile URL bar cannot push the hero past the fold; the ≤70rem query
+     below drops this to `min-height: 0` anyway, so this expression is desktop-only in practice.
+     min-height is a floor, so a short desktop window still grows the hero to fit the form rather
+     than clipping it. */
   .home-hero {
     --ac-text-h1-home: 2.8125rem;
+    --home-hero-header-offset: 99px;
     position: relative;
-    min-height: 600px;
+    min-height: calc(100svh - var(--home-hero-header-offset));
     overflow: hidden;
     padding: 0;
     background: var(--ac-color-navy-950);
@@ -95,45 +117,96 @@ import { site } from "@data/site";
     width: 100%;
     height: 100%;
     object-fit: cover;
-    object-position: 50% 56%;
+    object-position: 62% 55%;
   }
 
+  /* Lightened from 54%→50%: the new exterior photograph has more natural contrast (sky, lawn,
+     dark roofline) than the previous busy interior shot, so a hair less overlay keeps the image
+     legible as a photograph rather than reading as a flat navy field with a picture ghosted
+     behind it. */
   .home-hero__overlay {
     z-index: 1;
-    background: rgb(10 30 45 / 54%);
+    background: rgb(10 30 45 / 50%);
   }
 
+  /* `flex-direction: column` is the fix for the defect that made the form narrow. The shell is a
+     flex container holding TWO children — .home-hero__grid and .home-hero__development-note — and
+     while it defaulted to `row`, the note was laid out BESIDE the grid rather than under it,
+     taking 323px of the 1320px shell. That left the grid 997px to divide, so the 0.72fr form track
+     resolved to 376px instead of the intended ~550px, and every label, the lede, the consent line
+     and the clarification line wrapped onto extra lines inside it. Narrow was causing tall.
+     (The note's own comment already described it as flowing "below the grid"; `row` is why it did
+     not. `justify-content: center` preserves the vertical centring `align-items: center` gave the
+     single row before.) */
   .home-hero__shell {
     position: relative;
     z-index: 2;
     display: flex;
+    flex-direction: column;
     width: min(100% - 64px, 1320px);
     min-height: inherit;
-    align-items: center;
     justify-content: center;
     margin-inline: auto;
-    padding-block: 64px;
+    padding-block: 48px;
+  }
+
+  /* Owner-directed form proportions, 2026-09-04: the form track is sized in px rather than as a
+     fraction so it cannot be squeezed again by whatever else shares the row — 520px floor, 560px
+     ceiling, landing at 560px against the 1320px shell. This supersedes the `1.08fr 0.72fr`
+     ratio in docs/aseptaclean-BUILD-EXACT-v3-STANDALONE.md §7.1 (rank 2 owner decision over a
+     rank 5/6 spec value); the §8.1 "LEFT ~60% / RIGHT ~40%" checksum still holds — 708px / 560px
+     across the 1320px shell reads 56/44, and the copy column stays capped at 640px by
+     .home-hero__content. minmax(0, 1fr) on the copy track keeps it from being forced wider than
+     its share by a long unbreakable word. */
+  .home-hero__grid {
+    display: grid;
+    width: 100%;
+    align-items: center;
+    gap: 52px;
+    grid-template-columns: minmax(0, 1fr) minmax(520px, 560px);
   }
 
   .home-hero__content {
-    width: 100%;
+    max-width: 640px;
     color: var(--ac-color-paper);
-    text-align: center;
+    text-align: left;
+  }
+
+  .home-hero__eyebrow {
+    margin: 0 0 14px;
+    color: var(--ac-color-blue-on-navy);
+    font-size: 0.75rem;
+    font-weight: 800;
+    letter-spacing: 0.11em;
+    line-height: 1.2;
+    text-transform: uppercase;
   }
 
   .home-hero__content h1 {
-    max-width: 920px;
-    margin-inline: auto;
+    max-width: 16ch;
+    margin-inline: 0;
     color: var(--ac-color-paper);
   }
 
   .home-hero__lede {
-    max-width: 790px;
-    margin: 26px auto 0;
+    max-width: 48ch;
+    margin: 24px 0 0;
     color: #f0f4f8;
     font-size: 1.1875rem;
     line-height: 1.55;
     text-wrap: pretty;
+  }
+
+  .home-hero__form-wrap {
+    min-width: 0;
+  }
+
+  .home-hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 34px;
+    gap: 10px 28px;
   }
 
   .home-hero__primary {
@@ -141,7 +214,6 @@ import { site } from "@data/site";
     min-height: 52px;
     align-items: center;
     justify-content: center;
-    margin-top: 34px;
     border-radius: 2px;
     background: var(--ac-color-paper);
     padding-inline: 30px;
@@ -163,27 +235,46 @@ import { site } from "@data/site";
     outline-offset: 4px;
   }
 
+  /* Secondary CTA, per the site's established hierarchy rule (FinalCTA.astro's own comment:
+     "primary, then call, then text-photos as contextual utility, not a competing sitewide
+     primary action") — a text link beside the button, not a second equal button. */
+  .home-hero__secondary {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-paper);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-underline-offset: 5px;
+  }
+
+  .home-hero__secondary:hover {
+    color: var(--ac-color-blue-pale);
+  }
+
+  .home-hero__secondary:focus-visible {
+    outline: 3px solid var(--ac-color-paper);
+    outline-offset: 3px;
+  }
+
+  .home-hero__reassurance {
+    margin: 26px 0 0;
+    color: rgb(255 255 255 / 85%);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+
+  /* Flows in-document below the grid rather than absolutely positioned over the photograph —
+     the hero no longer has a fixed pixel height (it grows with the embedded form), so a pinned
+     bottom-right label could overlap form content at some viewport/content combinations. This
+     still satisfies doc 30 §11.2 / AGENTS.md §0.3's requirement that the temporary-imagery label
+     be present and legible; it no longer needs to fight the same overflow-clipping bug the prior
+     absolute layout had, since normal flow cannot clip. */
   .home-hero__development-note {
-    position: absolute;
+    position: relative;
     z-index: 2;
-    right: 18px;
-    bottom: 14px;
-    left: 18px;
-    /* THE CAP THAT WAS CLIPPING THIS, found 2026-08-26. global.css sets
-       `:where(p, li) { max-width: var(--ac-measure-read) }` = 62ch, and at this element's 10px
-       font size 62ch resolves to 413px against a 433px nowrap string — so the hero's
-       `overflow: hidden` cut the last word off at EVERY width from 768px up. It rendered
-       "…NOT ASEPTACLEAN PROJECT WOR".
-       A truncated temporary-imagery label is a compliance failure, not a cosmetic one: doc 30
-       §11.2 and AGENTS.md §0.3 require this photograph to be documented as temporary, and this
-       sentence is the whole of that documentation. A prose measure is the right default for a
-       paragraph of prose and the wrong one for a single-line corner caption, so this opts out —
-       the `:where()` wrapper carries zero specificity precisely so a plain class can.
-       `left` is pinned alongside `right` for the same reason: the box spans the hero and the
-       right-aligned text ends where it always intended to, with room to get there. */
     max-width: none;
-    white-space: nowrap;
-    margin: 0;
+    margin: 28px 0 0;
     color: rgb(255 255 255 / 78%);
     font-size: 0.625rem;
     font-weight: 650;
@@ -196,7 +287,7 @@ import { site } from "@data/site";
   @media (max-width: 70rem) {
     .home-hero {
       --ac-text-h1-home: 2.625rem;
-      min-height: 570px;
+      min-height: 0;
     }
 
     .home-hero__media :global(img) {
@@ -205,6 +296,15 @@ import { site } from "@data/site";
 
     .home-hero__shell {
       width: min(100% - 52px, 1000px);
+    }
+
+    .home-hero__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 40px;
+    }
+
+    .home-hero__content {
+      max-width: none;
     }
 
     .home-hero__lede {
@@ -216,11 +316,10 @@ import { site } from "@data/site";
   @media (max-width: 50rem) {
     .home-hero {
       --ac-text-h1-home: 2.5rem;
-      min-height: 530px;
     }
 
     .home-hero__media :global(img) {
-      object-position: 46% 44%;
+      object-position: 68% 50%;
     }
 
     .home-hero__shell {
@@ -232,23 +331,15 @@ import { site } from "@data/site";
       margin-top: 24px;
       font-size: 1.0625rem;
     }
-
-    .home-hero__primary {
-      margin-top: 30px;
-    }
   }
 
   @media (max-width: 30rem) {
     .home-hero {
       --ac-text-h1-home: 2.375rem;
-      min-height: 570px;
     }
 
-    /* Portrait crop: the frame is 4:3 and the viewport slot is roughly 2:3, so a centred
-       object-position throws away the ceiling the headline needs. Pulling the focal point up
-       and left keeps the quiet timber area behind the copy and the contents below the CTA. */
     .home-hero__media :global(img) {
-      object-position: 40% 38%;
+      object-position: 72% 50%;
     }
 
     .home-hero__shell {
@@ -260,18 +351,19 @@ import { site } from "@data/site";
       font-size: 1rem;
     }
 
+    .home-hero__actions {
+      align-items: stretch;
+      flex-direction: column;
+      gap: 14px;
+    }
+
     .home-hero__primary {
       min-height: 52px;
       padding-inline: 26px;
     }
 
     .home-hero__development-note {
-      right: 12px;
-      bottom: 10px;
-      left: 12px;
-      font-size: 0.5625rem;
-      /* Centred across the full width on phones, where nowrap would push it off-screen. */
-      white-space: normal;
+      margin-top: 20px;
       text-align: center;
     }
   }
@@ -279,7 +371,6 @@ import { site } from "@data/site";
   @media (max-width: 22.5rem) {
     .home-hero {
       --ac-text-h1-home: 2.25rem;
-      min-height: 590px;
     }
 
     .home-hero__shell {

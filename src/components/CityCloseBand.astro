@@ -41,11 +41,11 @@ const smsHref = site.business.smsUri;
 
     <div class="ac-btns cty-close__actions">
       <a class="btn btn--w" href="/request-assessment/">
-        {site.offer.primaryCta} <span aria-hidden="true">&rarr;</span>
+        {site.offer.secondaryCta} <span aria-hidden="true">&rarr;</span>
       </a>
       {/* Suppression rule (AGENTS.md §3): never render an empty phone link. Both derive from
           the same business value, so both are gated on it. */}
-      {smsHref && <a class="btn btn--o" href={smsHref}>{site.offer.secondaryCta}</a>}
+      {smsHref && <a class="btn btn--o" href={smsHref}>{site.offer.smsCta}</a>}
       {phoneHref && (
         <a class="btn btn--o" href={phoneHref}>Call {site.business.phone}</a>
       )}

@@ -1,0 +1,196 @@
+---
+// HOME SERVICE GRID — HOME 05 "SERVICE CARD GRID" per
+// docs/aseptaclean-BUILD-EXACT-v3-STANDALONE.md §9: ServiceVisualCard, row 1 three cards, row 2
+// two centered cards. Card titles, bodies, and link labels are the spec's copy verbatim, in the
+// spec's own row order (Crime Scene & Trauma / Rodent / Hoarding in row one, Severe / Detailed
+// Deep Cleaning in row two).
+//
+// REPLACES the photo-only ServiceVisual grid this route shipped since the 2026-09-03 composition
+// rebuild, owner-directed 2026-09-04 ("follow instructions given" on the card-grid-vs-photography
+// question — see docs/05-DECISIONS-LOG.md for the conflict this reopens with doc 30 §17, which
+// calls for "no small equal cards" in this slot). ServiceVisual.astro is left in the tree, unused
+// by this route, rather than deleted.
+//
+// GATED ROUTES CANNOT BE LINKED FROM THIS FILE — same rule the predecessor grid enforced. All
+// five hrefs below are already-public/indexable routes in launchArchitecture.ts.
+import ServiceVisualCard from "@components/ServiceVisualCard.astro";
+import crimeSceneImage from "../assets/stock/ppe_technician_2.jpg";
+import rodentImage from "../assets/homepage/service-development-cleanup-asurnipal.jpg";
+import hoardingImage from "../assets/homepage/condition-development-hoarding-asurnipal.jpg";
+import severeImage from "../assets/stock/garage_cluttered.jpg";
+import detailImage from "../assets/stock/deep_cleaning_bathroom.jpg";
+
+const rowOne = [
+  {
+    title: "Crime Scene & Trauma Cleanup",
+    description:
+      "Aseptaclean provides discreet crime scene and trauma cleanup for homes, businesses, vehicles, and other accepted properties throughout the Bay Area.",
+    image: crimeSceneImage,
+    imageAlt:
+      "Illustrative reference photograph of a technician in protective coveralls preparing for a cleanup.",
+    href: "/crime-scene-trauma-cleanup-san-jose/",
+    linkLabel: "Crime Scene & Trauma Cleanup"
+  },
+  {
+    title: "Rodent Droppings & Animal Waste Cleanup",
+    description:
+      "Droppings, urine, nesting material, animal waste, odors, or affected areas after pest activity may need more than a quick sweep or surface clean. Aseptaclean handles the cleanup side after rodent or animal activity.",
+    image: rodentImage,
+    imageAlt: "Reference photograph of an affected area requiring specialty cleanup.",
+    href: "/rodent-dropping-cleanup-san-jose/",
+    linkLabel: "Rodent Droppings & Animal Waste Cleanup"
+  },
+  {
+    title: "Hoarding Cleanup",
+    description:
+      "Heavy clutter, accumulated belongings, blocked rooms, trash mixed with personal items, or years of contents can make it hard to know where to begin. We help break the property into clear steps so the work can move forward without treating everything inside as disposable.",
+    image: hoardingImage,
+    imageAlt:
+      "Reference photograph of a living room where accumulated household contents cover the floor and furniture.",
+    href: "/hoarding-cleanup-san-jose/",
+    linkLabel: "Hoarding Cleanup"
+  }
+] as const;
+
+const rowTwo = [
+  {
+    title: "Severe Property Cleanup",
+    description:
+      "Heavy buildup, trash, animal waste, strong odors, neglected rooms, heavily soiled kitchens or bathrooms, and difficult sanitation conditions can change the job completely. These properties need a cleanup plan built around their actual condition.",
+    image: severeImage,
+    imageAlt: "Reference photograph of a garage with heavy accumulated clutter.",
+    href: "/extreme-cleaning-san-jose/",
+    linkLabel: "Severe Property Cleanup"
+  },
+  {
+    title: "Detailed Deep Cleaning",
+    description:
+      "Some homes are not severely affected. They simply need more time, more hand work, and more attention than a normal cleaning appointment allows. Aseptaclean provides detailed one-time cleaning for major home resets, move-in preparation, move-out preparation, and properties with heavy kitchen, bathroom, or whole-home buildup.",
+    image: detailImage,
+    imageAlt: "Reference photograph of detailed bathroom cleaning in progress.",
+    href: "/deep-cleaning-san-jose/",
+    linkLabel: "Detailed Deep Cleaning"
+  }
+] as const;
+---
+
+<section class="home-service-grid" aria-labelledby="home-services-title">
+  <div class="home-service-grid__inner">
+    <div class="home-service-grid__row home-service-grid__row--three">
+      {rowOne.map((service) => (
+        <ServiceVisualCard
+          image={service.image}
+          imageAlt={service.imageAlt}
+          title={service.title}
+          description={service.description}
+          href={service.href}
+          linkLabel={service.linkLabel}
+        />
+      ))}
+    </div>
+
+    <div class="home-service-grid__row home-service-grid__row--two">
+      {rowTwo.map((service) => (
+        <ServiceVisualCard
+          image={service.image}
+          imageAlt={service.imageAlt}
+          title={service.title}
+          description={service.description}
+          href={service.href}
+          linkLabel={service.linkLabel}
+        />
+      ))}
+    </div>
+
+    <nav class="home-service-grid__more" aria-label="More services">
+      <a href="/services/">All current services</a>
+    </nav>
+  </div>
+</section>
+
+<style>
+  .home-service-grid {
+    background: var(--ac-color-paper);
+    padding: 0 0 clamp(76px, 7.5vw, 112px);
+  }
+
+  .home-service-grid__inner {
+    width: min(100% - 64px, 1320px);
+    margin-inline: auto;
+  }
+
+  .home-service-grid__row--three {
+    display: grid;
+    gap: 32px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .home-service-grid__row--two {
+    display: grid;
+    width: min(100%, 820px);
+    margin: 56px auto 0;
+    gap: 32px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .home-service-grid__more {
+    display: flex;
+    justify-content: center;
+    border-top: 1px solid var(--ac-color-line-strong);
+    margin-top: clamp(48px, 5vw, 64px);
+    padding-top: 24px;
+  }
+
+  .home-service-grid__more a {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    color: var(--ac-color-navy-800);
+    font-size: 0.9375rem;
+    font-weight: 700;
+    text-underline-offset: 4px;
+  }
+
+  .home-service-grid__more a:hover {
+    text-decoration: underline;
+  }
+
+  .home-service-grid__more a:focus-visible {
+    outline: 3px solid var(--ac-color-navy-800);
+    outline-offset: 3px;
+  }
+
+  @media (max-width: 64rem) {
+    .home-service-grid__inner {
+      width: min(100% - 52px, 1320px);
+    }
+
+    .home-service-grid__row--three {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .home-service-grid__row--two {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .home-service-grid {
+      padding-bottom: 64px;
+    }
+
+    .home-service-grid__inner {
+      width: calc(100% - 40px);
+    }
+
+    .home-service-grid__row--three,
+    .home-service-grid__row--two {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 40px;
+    }
+
+    .home-service-grid__row--two {
+      margin-top: 40px;
+    }
+  }
+</style>

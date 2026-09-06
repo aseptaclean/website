@@ -22,7 +22,7 @@ const endpointAvailable = Boolean(
   class="quick-form"
   method="post"
   action={endpointAvailable ? site.urls.formEndpoint : undefined}
-  aria-label={site.offer.primaryCta}
+  aria-label="Send Aseptaclean a message about the property"
   data-quick-form
   data-contact-phone={site.business.phone}
 >
@@ -78,10 +78,16 @@ const endpointAvailable = Boolean(
     <label for={`${formId}-detail`}>
       What are you looking at? <span class="quick-form__optional">(optional)</span>
     </label>
+    {/* `required` added 2026-09-04. functions/_lib/lead.ts has listed property_detail in
+        leanRequiredFields since the 2026-09-03 rebuild, but this control never carried the
+        attribute — so this form's remaining callers (RequestForm.astro, CityHero.astro) could
+        submit it empty and receive a 422 with no client-side guard. The server contract is
+        unchanged; the client now matches it. */}
     <textarea
       id={`${formId}-detail`}
       name="property_detail"
       rows="3"
+      required
       placeholder="A quick description of the property and what needs to happen."
     ></textarea>
   </div>
@@ -133,7 +139,11 @@ const endpointAvailable = Boolean(
     disabled={!endpointAvailable}
     data-quick-form-submit
   >
-    <span data-quick-form-submit-label>{site.offer.primaryCta}</span>
+    {/* OWNER DECISION 2026-09-04 (AGENTS.md §2.2.3): a form button submits the form and is
+        labelled "Send Message". It is never a telephone link. This used to render
+        site.offer.primaryCta, which the same decision repointed at the phone — so the label now
+        comes from its own field, and the two can no longer be confused for one another. */}
+    <span data-quick-form-submit-label>{site.offer.formSubmitCta}</span>
   </button>
   {/* doc 27 §18 "Submission clarification", shipped 2026-08-19; RESTATED by §8 "Directly under
       the submit button", owner-approved verbatim 2026-08-20. §18 read "This only starts the
@@ -151,7 +161,7 @@ const endpointAvailable = Boolean(
       renders site.offer.primaryCta directly above this. */}
   {site.business.smsUri && (
     <p class="quick-form__secondary ac-type-xs">
-      <a href={site.business.smsUri}>{site.offer.secondaryCta}</a>
+      <a href={site.business.smsUri}>{site.offer.smsCta}</a>
     </p>
   )}
   <p

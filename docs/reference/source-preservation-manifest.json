@@ -1,0 +1,352 @@
+[
+  {
+    "original": "docs/01-QUALITY-GUARDRAILS.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/01-QUALITY-GUARDRAILS.md",
+    "sha256": "0d644bde07ddfb2a033222a3bc6a082dd002318151388746f0bc947619ae0c32"
+  },
+  {
+    "original": "docs/02-OWNER-INPUTS.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/02-OWNER-INPUTS.md",
+    "sha256": "3d7b7413bd6b98158ca0fec8ad628fc5fd82ea0a83856051af249751dbaef5eb"
+  },
+  {
+    "original": "docs/04-RELEASE-CHECKLIST.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/04-RELEASE-CHECKLIST.md",
+    "sha256": "e98f8dc76ae08105e50a9dfefef683ad5e0b4ae451e3c7accf4f754e3c9dfce6"
+  },
+  {
+    "original": "docs/05-DECISIONS-LOG.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/05-DECISIONS-LOG.md",
+    "sha256": "124fbb980bdebd1a8dac86ae653dbeb5816f3e7cff035a99a04a9089e23c6e52"
+  },
+  {
+    "original": "docs/06-ASSET-MANIFEST.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/06-ASSET-MANIFEST.md",
+    "sha256": "7550f65155bea31696d00a9ab53c456230056e104053416a44f3a8f0d864839c"
+  },
+  {
+    "original": "docs/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md",
+    "sha256": "dc6fcbdc920ac5e2063d730437629bc57842521519a9fc81f63c2f13b4988030"
+  },
+  {
+    "original": "docs/19-SYSTEM-AND-SITEMAP.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/19-SYSTEM-AND-SITEMAP.md",
+    "sha256": "eeb61acb01c1191a78d6221188f825400cf2fac5a700663e9f8bf7914c4a6838"
+  },
+  {
+    "original": "docs/20-COPY-VOICE.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/20-COPY-VOICE.md",
+    "sha256": "029c5dd326bc23db22d4c912a02ba432c0ab3adf96d1d09372bf4d74023ea6c6"
+  },
+  {
+    "original": "docs/21-CLAIMS-AND-COMPLIANCE-LAW.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/21-CLAIMS-AND-COMPLIANCE-LAW.md",
+    "sha256": "4e83a268493d0ef36f72b4271def65b16291e7116569f5b13f928e50d9ad7527"
+  },
+  {
+    "original": "docs/25CITYPAGESPEC.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/25CITYPAGESPEC.md",
+    "sha256": "ee5deb8b66025f7fe6b8a9e936a6791519c6e6a10bd7b45e4321ff57da6c9f00"
+  },
+  {
+    "original": "docs/27-COPY-CANONICAL.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/27-COPY-CANONICAL.md",
+    "sha256": "8b083e2ec9c5359c1aa2e40b1c8fb248a14f006cac6fd3d1b92ba37950f7fd93"
+  },
+  {
+    "original": "docs/30-WEBSITE-MASTER-SPEC-CHANGELOG.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/30-WEBSITE-MASTER-SPEC-CHANGELOG.md",
+    "sha256": "f4c9fd4628420baf8fa717da6e94eb499d12a83321d92b806dc6ee5e4fff7de3"
+  },
+  {
+    "original": "docs/30-WEBSITE-MASTER-SPEC.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/30-WEBSITE-MASTER-SPEC.md",
+    "sha256": "1381b3b1fa7923d7009f83c1dc789ea67eda3c53271509664577e7a5cc1b25cd"
+  },
+  {
+    "original": "docs/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/ASEPTACLEAN-CODEX-HOMEPAGE-BRIEF-V3-LEAN-SEVENSON.md",
+    "sha256": "2c72a7c15c0f4683632d9206e021c619152b1c7a638323924adc9760abe83d89"
+  },
+  {
+    "original": "docs/ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF-SEVENSON.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF-SEVENSON.md",
+    "sha256": "d3fd0af24a57e2b898d9943041397234f47a5ed0688c2d72b25d1c5102939bd4"
+  },
+  {
+    "original": "docs/ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/ASEPTACLEAN-CODEX-HOMEPAGE-REBUILD-BRIEF.md",
+    "sha256": "a3be10e251c670533608a2e3115f0fa680949294d0158365f021ffe4b56b9806"
+  },
+  {
+    "original": "docs/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/ASEPTACLEAN-SERVICE-LANDING-PAGE-SYSTEM.md",
+    "sha256": "d12e7d9dc9ac4d8cbebbe3a5d8f50de3a199b00019ab49f78714648a7fafa4ee"
+  },
+  {
+    "original": "docs/ESTATE-CLEANOUT-CHECKLIST-COPY-20260820.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/ESTATE-CLEANOUT-CHECKLIST-COPY-20260820.md",
+    "sha256": "3cb4c4c133a0eb6f5a244e3cd67e9744a51bcb8e812e3262e5d18aaf2102b95d"
+  },
+  {
+    "original": "docs/README.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/README.md",
+    "sha256": "42008a5e5d15e70e3692a54fd1777b90860f6252878ee1c3e05c13784ce172a5"
+  },
+  {
+    "original": "docs/SITEMAP-MASTER.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/SITEMAP-MASTER.md",
+    "sha256": "8e602cb88b1ab8913dfaaddd4e00e60260a154f60392b7d77d08ef81c87c0214"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/Untitled document (3).pdf",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/Untitled document (3).pdf",
+    "sha256": "3bf3b1a78c342513dc1d40075f4739ebf21cf333d6ce4206547669a222132165"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/aseptaclean-FINAL-v2.html",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/aseptaclean-FINAL-v2.html",
+    "sha256": "58d9e57ad8ad3636d96ed1b32e252d2cc05c908e76fa86a4115e87f7c4a43361"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/baseline/home-1440.png",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/baseline/home-1440.png",
+    "sha256": "b3746861d734043eddb62b9b8ab310aecafa872ea7c469cd742ce9f7838c3b70"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/baseline/home-390.png",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/baseline/home-390.png",
+    "sha256": "a6c25a9515eec5fdebe85c28650bc8c31a6aed6172a75fb142a195a7e41a4544"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/mockups/aseptaclean-homepage-v3.html",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/mockups/aseptaclean-homepage-v3.html",
+    "sha256": "2249536409c678bd2cabf0b30b5db7f67187c782e906f383191412ebd58e6c67"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/mockups/page-about.html",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/mockups/page-about.html",
+    "sha256": "3c64b8664311d43f55c8e158a32001aa2ed889b795408c0212d6179352b89e65"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/mockups/page-contact.html",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/mockups/page-contact.html",
+    "sha256": "abef2e0305804da8f8e4843a347912dc31f9488df3a1beccd320732392fd4e7f"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/mockups/page-faq.html",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/mockups/page-faq.html",
+    "sha256": "9a1a457a2e5ae6c34828c259f503bf5cb12eab31d00687109888a4cd46b26ac8"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/mockups/page-process.html",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/mockups/page-process.html",
+    "sha256": "55f0d96d586fa23e907acd8cc89681204911d3e0e5f93b00359fa4cff8ad09b0"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/mockups/page-projects.html",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/mockups/page-projects.html",
+    "sha256": "63dfccc0d5740d845d7905f0a3b8f36b98ab3d6981f317d171dfa5ccd6f5bdb2"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/mockups/page-request-assessment.html",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/mockups/page-request-assessment.html",
+    "sha256": "a2b07e8b5605db5574d309b260f3e80ba3da3afa2f3977b3177cbc6677985f9a"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/mockups/page-service-areas.html",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/mockups/page-service-areas.html",
+    "sha256": "c5d371e43b35d1df1a0dfd74f44eeccbc05a2b2e860faf90e3d3602a60abf6aa"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/mockups/page-thank-you.html",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/mockups/page-thank-you.html",
+    "sha256": "7f97523998bd678acf1907436ee4a5d3c9362c4ff1816466e8aa266db38e12aa"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/mockups/template-legal.html",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/mockups/template-legal.html",
+    "sha256": "b3de944e6d4fbeb37830395b73d73bfe74d835f689668fa66774ba4af4785c52"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/mockups/template-service-hub.html",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/mockups/template-service-hub.html",
+    "sha256": "8a9e3bb85be9fd57c85746ff6eba6c3de70dba07b39400e3a3dd772a37c49226"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/references/mockups/template-service-page-v2.html",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/references/mockups/template-service-page-v2.html",
+    "sha256": "fbed0e9fa8994d20a8f510ea6617bf3473f97e32aeb09d97f59fbc846cb01009"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/reports/CITY-PAGES-BUILD-REPORT.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/reports/CITY-PAGES-BUILD-REPORT.md",
+    "sha256": "55260c2e7af766ca4fe5669f4c65d49c8e0136ebe69286285c4353d19d09c7df"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/reports/CURRENT-BUILD-AUDIT.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/reports/CURRENT-BUILD-AUDIT.md",
+    "sha256": "91fca910853dc50c507a7228bcb7e1dbd6508228b42dd60769ce0ecfa37c47e8"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/reports/CURRENT-DESIGN-SYSTEM.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/reports/CURRENT-DESIGN-SYSTEM.md",
+    "sha256": "0b67d5ed94d6ac6028de4fd4f3f33de46900d9112cb69dcdf278743cb92a3843"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/reports/CURRENT-SITE-MAP.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/reports/CURRENT-SITE-MAP.md",
+    "sha256": "b6b7ec2b22dfd91138115cbd7c1ab683283e6c91a029f3d9cd0d807914550ed6"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/reports/CURRENT-WEBSITE-COPY.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/reports/CURRENT-WEBSITE-COPY.md",
+    "sha256": "26adc8e229d4fa7807d59a8084cadf89b9108bb0b5cae85e7d965a5f892926dd"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/reports/FULL-SITE-POST-BUILD-AUDIT.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/reports/FULL-SITE-POST-BUILD-AUDIT.md",
+    "sha256": "419eb2802a6c09c770b185382e401696907e5fc81954298c772a19e7d45ba80f"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/reports/FULL-SITE-VISUAL-IMPLEMENTATION-REPORT.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/reports/FULL-SITE-VISUAL-IMPLEMENTATION-REPORT.md",
+    "sha256": "706c45104ca9acd90b516582534bc26f66737075f9880680f9ad77747678b836"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/reports/LOCAL-SOURCE-REPAIR-REPORT.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/reports/LOCAL-SOURCE-REPAIR-REPORT.md",
+    "sha256": "912bac5e683b09740f0d61b74557d042b3869b64961c3b31b590f62d40c34ecd"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/reports/SITEWIDE-COPY-UPDATE-REPORT.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/reports/SITEWIDE-COPY-UPDATE-REPORT.md",
+    "sha256": "a1deb797c18b95204e9d7fec5c735894b81443f839afb2ee64028dbb0003f78b"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/specifications/06-APPROVED-HOMEPAGE-COPY.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/specifications/06-APPROVED-HOMEPAGE-COPY.md",
+    "sha256": "f12f898f72803880d3dec9773fd017e386dc0c641df8d75589452185a33dc632"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/specifications/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/specifications/10-PHASE-4-DEEP-DIVE-REPAIR-AUDIT.md",
+    "sha256": "5c5b5379b3f9f45d4f2a7942bf64c12ff4eea9c90162c45b281c006d52defcd9"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/specifications/11-COMPOSITION-AND-TYPE.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/specifications/11-COMPOSITION-AND-TYPE.md",
+    "sha256": "c3d3f356fde7a8423b532f37c2f11413fc755a6e1a93deb855e58d2bc2cef90b"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/specifications/18-VISUAL-DIRECTION.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/specifications/18-VISUAL-DIRECTION.md",
+    "sha256": "647caee36f4e0b04882b464f23c2a1c55940551dbdcb2c9673e88e8d4dd89a38"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/specifications/20-ALIGNMENT-AUDIT-2026-08-11.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/specifications/20-ALIGNMENT-AUDIT-2026-08-11.md",
+    "sha256": "ecedcc17d2ca05f5fe73ed8c143a2d36be1da5a9ebb9653bb21211520ffcad34"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/specifications/23-BUILD-REQUIREMENTS-FROM-RESEARCH.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/specifications/23-BUILD-REQUIREMENTS-FROM-RESEARCH.md",
+    "sha256": "3801a08ae2971a371908e475549b0afd60d5fa6632575788720c9e32dc09ff49"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/specifications/27-CONVERSION-REWRITE.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/specifications/27-CONVERSION-REWRITE.md",
+    "sha256": "4000949a0d6ddda26caa3af7928befdba367a26e89d6c8555c4826e3653d8feb"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/specifications/27-SECTION-9-15-CONNECTIVE-COPY.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/specifications/27-SECTION-9-15-CONNECTIVE-COPY.md",
+    "sha256": "a38b9f7c63e7d9cec917ca19a3e33de0808989d0bf5737ddce73413e4f91902c"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/specifications/90-FUTURE-PHASE-BIOHAZARD-STRATEGY.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/specifications/90-FUTURE-PHASE-BIOHAZARD-STRATEGY.md",
+    "sha256": "9491c6ce3f35c162d6dd6b2a0c079950bae45c1ca179dfe704f2894c9ceb7ec8"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/specifications/BASELINE-CLAIMS-CHECK-20260811.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/specifications/BASELINE-CLAIMS-CHECK-20260811.md",
+    "sha256": "77beac7f105116654d4fe743bdb586284667039137ce1b43f8c9cc4d6208ed98"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/specifications/BASELINE-ROUTE-AUDIT-20260811.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/specifications/BASELINE-ROUTE-AUDIT-20260811.md",
+    "sha256": "9b94be1a07082a333cf5cdd58ecf3831dcd6be9527ad60172949a1c654d0d214"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/specifications/REPO-STATE.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/specifications/REPO-STATE.md",
+    "sha256": "dce3d593c224d7c071f8a3474aaf776558a5fcf26e1411aaddff0e773d8e521c"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/specifications/RESTORATION-DESIGN-SCAN.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/specifications/RESTORATION-DESIGN-SCAN.md",
+    "sha256": "55a0353a3fa7532a5a952d92c1e189cc0c07336d4e6d3460f53cb1e9c550d0fa"
+  },
+  {
+    "original": "docs/archive/2026-08-24-reconciliation/specifications/TOKEN-MAP.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/2026-08-24-reconciliation/specifications/TOKEN-MAP.md",
+    "sha256": "34a26c5dcae80f1d5a5698ec611bf39df020c1f027d2c9eb36cdd9f6e63849bf"
+  },
+  {
+    "original": "docs/archive/README.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/archive/README.md",
+    "sha256": "e53757cc2cddfd4c0090a89e4bfe0fa79125fe8dc31624a1be898d1bc44199ab"
+  },
+  {
+    "original": "docs/aseptaclean-BUILD-EXACT-v2-source-locked.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/aseptaclean-BUILD-EXACT-v2-source-locked.md",
+    "sha256": "2dae6f2b9686be06ff210dc073128685ac0d6160cbb1c3f838ea2190646ae90c"
+  },
+  {
+    "original": "docs/aseptaclean-BUILD-EXACT-v3-STANDALONE.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/aseptaclean-BUILD-EXACT-v3-STANDALONE.md",
+    "sha256": "7e19013a6f12796be408493915741aa44a9860ddbf1289e9716d768ae14f0faa"
+  },
+  {
+    "original": "docs/aseptaclean-all-website-copy.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/aseptaclean-all-website-copy.md",
+    "sha256": "df718e117b7fdba4cb985245618c1a7c4745e76609177d60ca8db8a1b0acd497"
+  },
+  {
+    "original": "docs/aseptaclean-crime-scene-trauma-cleanup.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/aseptaclean-crime-scene-trauma-cleanup.md",
+    "sha256": "27963745325158c7ee27b15e6967e2a6e618dd2fd62afbaf2026577b4e8b085a"
+  },
+  {
+    "original": "docs/aseptaclean-website-design-system.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/aseptaclean-website-design-system.md",
+    "sha256": "2035a9f8f3127080eaa8560e8dc7a2d6e5d3e58aaf5229b33233cbb00d0e93d2"
+  },
+  {
+    "original": "docs/city-pages-part2-UPDATED.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/city-pages-part2-UPDATED.md",
+    "sha256": "953ff2973b6478fa23b6c6e8bbaeb26f51c7ac65c4eee4882f472131bd88f005"
+  },
+  {
+    "original": "docs/city-service-data-UPDATED.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/city-service-data-UPDATED.md",
+    "sha256": "d13189bbe66a22238c93fa3066b2f5bba2a9f0ff69dba5e6c3dfef718da78bfc"
+  },
+  {
+    "original": "docs/isual reference PDF:screenshots I supplied showing 911 Bio Clean and ClearPath.pdf",
+    "preserved_as": "docs/reference/clearpath-911-visual-reference.pdf",
+    "sha256": "bbabe027aa198053f602a5a662d13d64a5bfa3360d5f43aeac4c4ab2a70df341"
+  },
+  {
+    "original": "docs/page-briefs/HOME.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/page-briefs/HOME.md",
+    "sha256": "31bd20195312e0ccfb5fcad15a52d0fadb2ddff0eeab26c6d912aa01c23fbca7"
+  },
+  {
+    "original": "docs/page-briefs/REQUEST-ASSESSMENT.md",
+    "preserved_as": "docs/archive/2026-09-04-before-consolidation/page-briefs/REQUEST-ASSESSMENT.md",
+    "sha256": "e16a5d7a348a3a7d9ce71204c50ca872b16c0e5cbcf0346555deab897bd4913a"
+  }
+]

@@ -1,0 +1,146 @@
+---
+// EditorialSplit — reusable large image/text split section.
+//
+// Consolidates the ad-hoc image/text split markup duplicated per page (OperatingEvidence's
+// .evidence__inner, hoarding's .hc-reframe__inner, crime-scene's .cs-recognition__inner /
+// .cs-scope__inner, rodent's .rc-scope__inner, deep-cleaning's .dc-scope__inner) into one
+// component with an imageSide prop instead of a second hand-mirrored copy of the section per
+// direction. Ratio/gap/breakpoint values follow this session's layout-primitives pass
+// (docs/aseptaclean-website-design-system.md §4, reconciled onto the existing --ac- token
+// system per 05-DECISIONS-LOG.md "New file docs/aseptaclean-website-design-system.md
+// reconciled against doc 30", 2026-09-03 — no new raw-hex tokens, existing --ac-color-navy-900
+// etc. used throughout).
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
+
+interface Props {
+  eyebrow?: string;
+  heading: string;
+  headingId?: string;
+  image: ImageMetadata;
+  imageAlt: string;
+  imageSide?: "left" | "right";
+  tone?: "white" | "warm" | "dark";
+}
+
+const {
+  eyebrow,
+  heading,
+  headingId,
+  image,
+  imageAlt,
+  imageSide = "left",
+  tone = "white",
+} = Astro.props;
+---
+
+<section class:list={["ac-editorial-split", `ac-editorial-split--${tone}`]} aria-labelledby={headingId}>
+  <div class:list={["ac-editorial-split__inner", imageSide === "right" && "ac-editorial-split__inner--reverse"]}>
+    <figure class="ac-editorial-split__media">
+      <Image
+        src={image}
+        alt={imageAlt}
+        widths={[480, 720, 960, 1240]}
+        sizes="(min-width: 850px) 51vw, 100vw"
+        format="webp"
+        quality={72}
+        loading="lazy"
+        decoding="async"
+      />
+    </figure>
+
+    <div class="ac-editorial-split__copy">
+      {eyebrow && <p class:list={["ac-eyebrow", tone === "dark" && "ac-eyebrow--on-dark"]}>{eyebrow}</p>}
+      <h2 id={headingId} class="ac-type-h2">{heading}</h2>
+      <div class="ac-editorial-split__body">
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .ac-editorial-split {
+    padding-block: clamp(56px, 8vw, 112px);
+    background: var(--ac-color-paper);
+  }
+
+  .ac-editorial-split--warm {
+    background: var(--ac-color-warm-white);
+  }
+
+  .ac-editorial-split--dark {
+    background: var(--ac-color-navy-900);
+  }
+
+  .ac-editorial-split__inner {
+    display: grid;
+    grid-template-columns: minmax(0, 1.03fr) minmax(0, 0.97fr);
+    align-items: center;
+    gap: 72px;
+    width: min(100% - 64px, var(--ac-measure-wide));
+    margin-inline: auto;
+  }
+
+  .ac-editorial-split__inner--reverse {
+    grid-template-columns: minmax(0, 0.97fr) minmax(0, 1.03fr);
+  }
+
+  .ac-editorial-split__inner--reverse .ac-editorial-split__media {
+    order: 2;
+  }
+
+  .ac-editorial-split__inner--reverse .ac-editorial-split__copy {
+    order: 1;
+  }
+
+  .ac-editorial-split__media {
+    margin: 0;
+    min-height: 420px;
+    height: 100%;
+  }
+
+  .ac-editorial-split__media :global(img) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    min-height: 420px;
+    object-fit: cover;
+    border-radius: 2px;
+  }
+
+  .ac-editorial-split--dark .ac-editorial-split__copy h2 {
+    color: var(--ac-color-paper);
+  }
+
+  .ac-editorial-split__body {
+    margin-top: 18px;
+    max-width: var(--ac-measure-intimate);
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-lead);
+    line-height: 1.65;
+  }
+
+  .ac-editorial-split--dark .ac-editorial-split__body {
+    color: var(--ac-color-steel-on-navy);
+  }
+
+  @media (max-width: 850px) {
+    .ac-editorial-split__inner,
+    .ac-editorial-split__inner--reverse {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 36px;
+    }
+
+    .ac-editorial-split__inner--reverse .ac-editorial-split__media,
+    .ac-editorial-split__inner--reverse .ac-editorial-split__copy {
+      order: initial;
+    }
+
+    .ac-editorial-split__media,
+    .ac-editorial-split__media :global(img) {
+      min-height: 260px;
+      max-height: 300px;
+    }
+  }
+</style>

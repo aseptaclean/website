@@ -4,8 +4,8 @@ import Analytics from "@components/Analytics.astro";
 import Header from "@components/Header.astro";
 import MobileCTA from "@components/MobileCTA.astro";
 import SeoHead from "@components/SeoHead.astro";
-import StatusRibbon from "@components/StatusRibbon.astro";
 import { site } from "@data/site";
+import { isLaunchPublicPath } from "@data/launchArchitecture";
 import "@styles/fonts.css";
 import "@styles/global.css";
 // One face as of the 2026-08-18 visual port. The display-serif and monospace preloads were
@@ -31,6 +31,8 @@ const {
 } = Astro.props;
 
 const termlyConsent = site.integrations.termly;
+const hiddenFromLaunch = !isLaunchPublicPath(Astro.url.pathname);
+const effectiveNoindex = noindex || hiddenFromLaunch;
 ---
 
 <!doctype html>
@@ -65,13 +67,23 @@ const termlyConsent = site.integrations.termly;
       title={title}
       description={description}
       canonicalPath={canonicalPath}
-      noindex={noindex}
-      schema={schema}
+      noindex={effectiveNoindex}
+      schema={hiddenFromLaunch ? undefined : schema}
+      structuredDataEnabled={!hiddenFromLaunch}
     />
   </head>
   <body class:list={{ "has-mobile-cta": showMobileCta }}>
     <a class="skip-link" href="#main-content">Skip to main content</a>
-    <StatusRibbon />
+    {/* UTILITY RIBBON REMOVED 2026-09-04. doc 30 §2 targets a combined header stack of ~72px
+        desktop / 64px mobile "accounting for any real utility bar"; the ribbon put the stack at
+        99px, and reference page 23 shows a single white header bar with no utility row above it.
+        It also rendered as an empty 28px navy strip below 30rem, because the rule that hid its
+        spans outlived the phone link that used to sit beside them.
+
+        Nothing factual is lost: the hours string still renders on /contact/ and in the
+        LocalBusiness JSON-LD, and the service descriptor is the homepage hero eyebrow.
+        StatusRibbon.astro is retained, unreferenced, rather than deleted — no route outside this
+        redesign imports it, but it is the only carrier of that descriptor pattern. */}
     <Header />
     <main id="main-content" tabindex="-1">
       <slot />

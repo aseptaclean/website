@@ -45,6 +45,7 @@ import {
   propertyCleanoutsPage
 } from "@data/doc27ServicePages";
 import { homepage } from "@data/site";
+import { isLaunchPublicPath } from "@data/launchArchitecture";
 
 // TEMPORARY DEVELOPMENT REFERENCE PHOTOGRAPH — NOT Aseptaclean project work, not a client
 // property, and not proof of a completed job. `[ATMOS]`-class under doc 21 §6: no crew, no
@@ -69,8 +70,15 @@ const pagesBySlug = new Map(
   ].map((page) => [page.slug, page])
 );
 
+// 2026-09-03: `page.indexable` reflects each route's OLD per-page SEO gate, not the newer
+// launchArchitecture.ts allow-list installed by the "Public launch architecture reduced to the
+// locked-copy pages" owner decision (docs/05-DECISIONS-LOG.md). Estate cleanout, property
+// cleanouts and move-out cleaning all still ship `indexable: true` on their own records but are
+// noindex in the actual built output under the launch architecture — the two systems now
+// disagree, and this filter has to defer to the newer one or it promotes crawl paths to pages
+// BaseLayout itself marks noindex. isLaunchPublicPath is the same check BaseLayout runs.
 const doors = homepage.routingDoors.filter(
-  (door) => pagesBySlug.get(door.slug)?.indexable === true
+  (door) => pagesBySlug.get(door.slug)?.indexable === true && isLaunchPublicPath(door.slug)
 );
 
 const { chooser, notSure } = servicesHub;

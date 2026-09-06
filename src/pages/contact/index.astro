@@ -1,25 +1,33 @@
 ---
-// doc 19 §2.2 CONTACT + §3.6 wireframe. Public phone number only (NAP law) — same
-// site.business.phone used everywhere else (footer, header, ribbon). No street address:
-// site.business.addressPolicy is "service-area business — no published street address",
-// so the map slot is a labeled placeholder rather than an embed built on a fabricated pin.
-// Title, meta, eyebrow, H1, and lead migrated to docs/27-COPY-CANONICAL.md §17.5 on
-// 2026-08-16. Layout and the contact-details/map-placeholder composition below are unchanged.
+// CONTACT — recomposed 2026-09-04 onto the shared section system (doc 30 §6.0).
+//
+// COPY IS UNCHANGED. Neither owner copy document has a Contact section
+// (docs/20-COPY-MAP.md §2), so the title, meta, eyebrow, H1, lead, and the call/text/service-area
+// notes are the approved strings already in src/data/doc27CompanyPages.ts.
+//
+// TWO STANDING RULES HELD HERE:
+//   - No street address. site.business.addressPolicy is "service-area business — no published
+//     street address", and AGENTS.md §3 forbids inferring an office from service-area coverage.
+//     There is no map embed, because a pin would be a fabricated location.
+//   - Never render an empty phone link. Every phone and SMS block below is gated on the value
+//     existing in src/data/site.ts.
+//
+// The form on this page is AcCompactForm — the shared compact form, same endpoint,
+// validation, consent, and anti-spam as before. Its submit button reads "Send Message"
+// (AGENTS.md §2.2.3).
 import BaseLayout from "@layouts/BaseLayout.astro";
-import PageHeader from "@components/PageHeader.astro";
-import RequestForm from "@components/RequestForm.astro";
+import AcPageHero from "@components/ac/AcPageHero.astro";
+import AcTrustStrip from "@components/ac/AcTrustStrip.astro";
+import AcIntro from "@components/ac/AcIntro.astro";
+import AcFinalCta from "@components/ac/AcFinalCta.astro";
+import AcCompactForm from "@components/ac/AcCompactForm.astro";
 import { contactPage } from "@data/doc27CompanyPages";
 import { site } from "@data/site";
 
+
 const phoneHref = site.business.phoneUri;
 const smsHref = site.business.smsUri;
-const pin =
-  '<path d="M12 21s7-5.7 7-11a7 7 0 1 0-14 0c0 5.3 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>';
 
-// The page-level LocalBusiness node is removed — see src/components/SeoHead.astro, which now
-// emits the single business entity (telephone included) on every route. This page's copy had
-// telephone but no geo; `/`'s had geo but no telephone. That split is what the consolidation
-// fixed, so do not re-add a local copy here to "make sure contact has the phone number."
 const schema = [
   {
     "@type": "BreadcrumbList",
@@ -39,113 +47,242 @@ const schema = [
 <BaseLayout
   title={contactPage.seoTitle}
   description={contactPage.metaDescription}
-  canonicalPath={contactPage.slug}
+  canonicalPath="/contact/"
   schema={schema}
 >
-  <PageHeader
-    headingId="contact-title"
+  {/* COMPACT TITLE, not a photographic hero — docs/page-briefs/CONTACT.md: "compact page
+      introduction". Passing no image renders AcPageHero's flat navy variant. */}
+  <AcPageHero
     eyebrow={contactPage.eyebrow}
-    h1={contactPage.h1}
-    lede={contactPage.lead}
-    crumb="Contact"
+    heading={contactPage.h1}
+    headingId="contact-hero-title"
+    lead={contactPage.lead}
+    assurances={[site.business.hours, `Response ${site.offer.responseTime}`]}
+    secondaryHref="#contact-form"
   />
 
-  {/* 2026-08-18 visual port. docs/mockups/page-contact.html .contactgrid / .cbox — the three
-      contact cards are doc 27 §17.5's Call / Text photos / Service area set, and rendering them
-      is what finally lands `callNote`, `textNote` and `serviceAreaNote`, which existed in
-      src/data/doc27CompanyPages.ts but had no render site. `textNote` carries §9.15.2
-      amendment 5 ("Stand in the doorway…"), so that amendment ships with this section.
+  <AcTrustStrip />
 
-      The city list below was a pill list. Owner ruling 5 scopes the pill treatment to section
-      labels and forbids it as a LIST MARKER, so it is now the mockup's .ac-iconrow, matching
-      the homepage's where-we-work row. */}
-  <section class="ac-sec ac-sec--tight contact-info" aria-labelledby="contact-info-title">
-    <div class="ac-shell">
-      <h2 id="contact-info-title" class="visually-hidden">Contact details</h2>
+  {/* DETAILS + FORM SPLIT — CONTACT.md: "Place the working form beside contact information on
+      desktop, below it on mobile." The details column is first in DOM order, so the phone
+      number and the call action precede the form on mobile without any ordering trick. */}
+  <section class="contact-split" aria-labelledby="contact-methods-title">
+    <div class="ac-shell contact-split__grid">
+      <div class="contact-split__details">
+        <p class="contact-split__eyebrow">01 / Reach us</p>
+        <h2 id="contact-methods-title" class="ac-type-h2">Three ways to reach Aseptaclean</h2>
+    <ul class="contact-methods">
+      {phoneHref && (
+        <li>
+          <h3 class="ac-type-h3-band">Call</h3>
+          <p><a href={phoneHref}>{site.business.phone}</a></p>
+          <p class="contact-methods__note">{contactPage.callNote}</p>
+        </li>
+      )}
+      {smsHref && (
+        <li>
+          <h3 class="ac-type-h3-band">Text a photo</h3>
+          <p><a href={smsHref}>{site.business.phone}</a></p>
+          <p class="contact-methods__note">{contactPage.textNote}</p>
+        </li>
+      )}
+      <li>
+        <h3 class="ac-type-h3-band">Email</h3>
+        <p><a href={`mailto:${site.business.email}`}>{site.business.email}</a></p>
+        <p class="contact-methods__note">
+          Attach photos if you have them. {site.business.hours}.
+        </p>
+      </li>
+    </ul>
 
-      <div class="ac-contactgrid">
-        {phoneHref && (
-          <div class="ac-cbox">
-            <b>Call</b>
-            <strong><a href={phoneHref}>{site.business.phone}</a></strong>
-            <p>{contactPage.callNote}</p>
-            <p class="cbox__hours">{site.business.hours}</p>
-          </div>
-        )}
-
-        {smsHref && (
-          <div class="ac-cbox">
-            <b>Text photos</b>
-            <strong><a href={smsHref}>{site.business.phone}</a></strong>
-            <p>{contactPage.textNote}</p>
-          </div>
-        )}
-
-        <div class="ac-cbox">
-          <b>Email</b>
-          <strong class="cbox__email">
-            <a href={`mailto:${site.business.email}`}>{site.business.email}</a>
-          </strong>
-          <p>Assessment requests are reviewed {site.offer.responseTime}.</p>
-        </div>
       </div>
 
-      <div class="contact-area">
-        <h3 class="ac-hdr-lite ac-type-label-head">Service area</h3>
-        <ul class="ac-iconrow">
-          {site.location.cities.map((city) => (
-            <li>
-              <svg viewBox="0 0 24 24" aria-hidden="true" set:html={pin} />
-              {city}
-            </li>
-          ))}
-        </ul>
-        <p class="ac-note-strip contact-area__note">
-          {contactPage.serviceAreaNote} {site.business.addressPolicy}.
-        </p>
+      {/* The compact field contract from docs/03-INTEGRATION-CONTRACT.md, light variant. This
+          replaced QuickHandoffForm, which carried only name/phone/details — the contract asks
+          for ZIP and the service question too, both already validated by the same endpoint.
+          Field names, required states, consent, anti-spam and the success route are unchanged. */}
+      <div class="contact-split__form">
+        <AcCompactForm formId="contact-form" entryRoute="/contact/" tone="light" />
       </div>
     </div>
   </section>
 
-  <RequestForm />
+  {/* Verified service area — CONTACT.md: "current verified data, not the broadest territory
+      mentioned in the old docs." */}
+  <AcIntro
+    eyebrow="02 / Service area"
+    heading={`Serving the ${site.location.serviceArea}`}
+    headingId="contact-area-title"
+    lead={contactPage.serviceAreaNote}
+    tone="soft"
+  >
+    <ul class="contact-cities">
+      {site.location.cities.map((city) => <li>{city}</li>)}
+    </ul>
+    {/* No street address and no map. A service-area business has no published address, and a
+        map pin here would invent one. */}
+    <p class="contact-note">
+      Aseptaclean is a service-area business and does not publish a street address.
+    </p>
+  </AcIntro>
+
+  <AcFinalCta
+    heading="Not sure it is the right kind of job for us?"
+    headingId="contact-final-title"
+    body={[
+      "Tell us anyway. If the property does not fit our scope, we will say so and point you at the kind of provider that does."
+    ]}
+  />
 </BaseLayout>
 
 <style>
-  .contact-info {
+  /* Details + form split. doc 30 §2 geometry: near-equal columns, 48-64px gap. */
+  .contact-split {
     background: var(--ac-color-paper);
+    padding-block: clamp(48px, 6vw, 88px);
   }
 
-  .ac-cbox strong a {
-    color: inherit;
-    text-decoration: none;
+  .contact-split__grid {
+    display: grid;
+    align-items: start;
+    gap: 56px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .cbox__email {
-    font-size: 1rem;
-    word-break: break-word;
+  .contact-split__grid > * {
+    min-width: 0;
   }
 
-  .cbox__hours {
-    margin-top: 8px;
-    color: var(--ac-color-ink-400);
+  .contact-split__eyebrow {
+    margin: 0 0 14px;
+    max-width: none;
+    color: var(--ac-color-navy-800);
     font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+  }
+
+  .contact-cities {
+    display: grid;
+    max-width: 60rem;
+    margin: 32px auto 0;
+    padding: 0;
+    list-style: none;
+    gap: 1px;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    background: var(--ac-color-line);
+    border: 1px solid var(--ac-color-line);
+  }
+
+  .contact-cities li {
+    max-width: none;
+    padding: 15px 12px;
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    text-align: center;
+  }
+
+  .contact-note {
+    margin: 22px auto 0;
+    color: var(--ac-color-ink-500);
+    font-size: 0.9375rem;
+  }
+
+  /* Stack details above form; details are already first in DOM order. */
+  @media (max-width: 62rem) {
+    .contact-split__grid {
+      gap: 36px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  @media (max-width: 62rem) {
+    .contact-cities {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+  }
+
+  @media (max-width: 44rem) {
+    .contact-cities {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .contact-methods {
+    display: grid;
+    max-width: none;
+    margin: 40px 0 0;
+    padding: 0;
+    list-style: none;
+    gap: 32px 40px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    text-align: left;
+  }
+
+  .contact-methods li {
+    max-width: none;
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 20px;
+  }
+
+  .contact-methods p {
+    margin: 12px 0 0;
+    color: var(--ac-color-navy-900);
+    font-size: 1.0625rem;
+    font-weight: 650;
+  }
+
+  .contact-methods a {
+    color: var(--ac-color-navy-800);
+    text-decoration: underline;
+    text-underline-offset: 4px;
+  }
+
+  .contact-methods__note {
+    color: var(--ac-color-ink-600) !important;
+    font-size: 0.875rem !important;
+    font-weight: 400 !important;
+    line-height: 1.6;
   }
 
   .contact-area {
-    margin-top: 56px;
+    margin-top: 44px;
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 20px;
+    text-align: left;
   }
 
-  .contact-area .ac-iconrow {
-    margin: 22px 0 0;
-    padding: 0;
-    list-style: none;
+  .contact-area__list {
+    margin: 12px 0 0;
+    max-width: 52rem;
+    color: var(--ac-color-navy-900);
+    font-size: 1rem;
+    font-weight: 600;
+    line-height: 1.7;
   }
 
-  .contact-area .ac-iconrow li {
-    max-width: none;
+  .contact-form {
+    max-width: 45rem;
+    margin: 40px auto 0;
+    border: 1px solid var(--ac-color-line);
+    padding: 32px;
+    background: var(--ac-color-paper);
+    text-align: left;
   }
 
-  .contact-area__note {
-    margin-top: 24px;
+  @media (max-width: 56rem) {
+    .contact-methods {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 26px;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .contact-form {
+      padding: 22px;
+    }
   }
 </style>
