@@ -494,3 +494,41 @@ folded into this image pass.
 `AcServicePage`'s image registry no longer contains any legacy key. A copy record cannot
 reintroduce one by naming it: an unknown hero key throws at build time, and an unknown section key
 renders copy-only.
+
+---
+
+## Inventory — `/estate-cleanout-san-jose/assessment/` (Estate PPC, 2026-09-09)
+
+Three slots. Two are owner-supplied illustrations delivered with
+`docs/aseptaclean-layout-refresh.md`; the third is the genuine founder portrait.
+
+| File (`src/assets/aseptaclean/…`) | Dimensions | Role | Placement | Alt text |
+| --- | --- | --- | --- | --- |
+| `estate-accumulation-illustration.png` | 1448×1086 (4:3) | **Illustration** | §01 "Get help with the whole cleanout." | `Illustration of a home with accumulated furniture, boxes, and belongings.` |
+| `estate-sorting-illustration.png` | 1448×1086 (4:3) | **Illustration** | §02 "Keep what matters." | `Illustration of family photographs and keepsakes being sorted into boxes.` |
+| `founder-matthew-ruiz.jpeg` | 1152×1536 (3:4) | **Real proof** | §05 "You'll know who to call." | `Matthew Ruiz, founder of Aseptaclean` |
+
+Source/owner: supplied by the owner with the layout refresh; generated illustrative origin.
+Neither scene is Aseptaclean project documentation, a result, a crew, or a before/after pair —
+they are two independent illustrations. Crop: CSS `object-fit: cover` inside a 4:3 box, 14px
+radius, capped at 400px tall on desktop and unconstrained on mobile. Delivered as WebP through the
+existing pipeline with explicit dimensions and responsive sources, lazy-loaded below the fold.
+The founder portrait uses `object-position: 50% 22%` so the face survives every crop; the likeness
+is never regenerated.
+
+**Captions — a scoped reversal of the 2026-09-05 removal.** The two illustrations carry a small
+visible `Illustrative image` caption, which the layout refresh requires. That is a later rank-2
+owner instruction over an earlier one, within the scope it decided: **these two images, this route,
+and nothing else.** No other image on this site regains a caption, and the founder portrait — real
+proof — never carried one and still does not.
+
+### Removed from this route by the refresh, and NOT deleted
+
+The route's first build used three existing package images. The refresh replaced all three. Every
+file still ships on the page that owns it, so none was deleted:
+
+| Was | Now | Still used by |
+| --- | --- | --- |
+| `home-hero-neglected-interior` — dark full-bleed hero | no hero photograph at all; the opening is warm white | `/` hero |
+| `hoarding-garage-contents` — §02 garage | `estate-sorting-illustration` | `/hoarding-cleanup-san-jose/` and its campaign route |
+| `home-property-scope-detail` — pricing band | that band has no photograph now | `/` §03 scope dark band |

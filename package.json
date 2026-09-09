@@ -18,6 +18,8 @@
     "qa:phase3:pass1": "node scripts/phase3-pass1-browser-check.mjs",
     "qa:phase3:pass2": "node scripts/phase3-pass2-browser-check.mjs",
     "qa:phase3:endpoint": "esbuild functions/api/lead.ts --bundle --platform=node --format=esm --outfile=/tmp/aseptaclean-lead-test.mjs && node scripts/phase3-endpoint-check.mjs",
+    "qa:estate": "esbuild functions/api/lead.ts --bundle --platform=node --format=esm --outfile=/tmp/aseptaclean-estate-lead-test.mjs && node scripts/estate-campaign-form-check.mjs",
+    "qa:estate:page": "node scripts/estate-campaign-page-check.mjs",
     "qa:gate6": "node scripts/gate6-copy-trace.mjs",
     "qa:seo": "node scripts/city-seo-guards.mjs",
     "qa:current": "node scripts/current-site-verification.mjs",

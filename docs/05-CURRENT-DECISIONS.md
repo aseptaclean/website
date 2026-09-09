@@ -957,3 +957,97 @@ this repository. Until that is done, GA4 still receives nothing from this site. 
 configuration, the GA4 key-event step, and the Google Ads import steps are in the handoff delivered
 with this change. `generate_lead` must be **observed in GA4 before** it is marked a key event or
 imported into Google Ads.
+
+---
+
+## 2026-09-09 — Estate campaign landing page, and its layout refresh
+
+Two owner documents arrived the same day and both are implemented:
+`docs/aseptaclean-estate-landing-page.md` (copy, offer, form, tracking, readiness table) and
+`docs/aseptaclean-layout-refresh.md`, which explicitly **supersedes the first document's layout
+and section order** while preserving its service boundaries, conditional offer claims, backend,
+consent and tracking requirements.
+
+### Route
+
+`/estate-cleanout-san-jose/assessment/` — new, plus its confirmation route
+`/estate-cleanout-san-jose/assessment/thank-you/`. Checked before creation: no equivalent estate
+assessment route existed (`/estate-cleanout-san-jose/`, `/estate-cleanout-checklist/`,
+`/property-cleanouts-san-jose/` and the three `/service-areas/{city}/estate-cleanout/` pages are
+different pages with different jobs), `public/_redirects` has no matching rule, and nothing linked
+to it. **`/hoarding-cleanup-san-jose/assessment/` is untouched** — its own copy record, its own
+dark hero, its own thank-you route, verified 34/34 and 51/51 on its existing browser checks after
+every shared-component change below.
+
+Indexation follows the existing policy and changes nothing sitewide: `noindex` is passed
+explicitly **and** the route is absent from `launchIndexablePaths`, which is what `sitemap.xml.ts`
+iterates. `npm run qa:launch` still reports exactly 11 indexable routes and no public page linking
+into a hidden marketing route.
+
+### Conflicts resolved
+
+| Conflict | Resolution |
+|---|---|
+| The copy writes the coverage area as "SAN JOSE & SANTA CLARA COUNTY". `AGENTS.md` §3 names the verified region string and explicitly rejects that wording ("Atherton is San Mateo"); `docs/02-CURRENT-FACTS.md` "Geography" forbids changing coverage from a copy document. | Both occurrences render `site.location.serviceArea`. Same resolution `src/data/ppcHoarding.ts` recorded for the same phrase. Rank 1/2 over rank 4. |
+| The copy's call CTA is "Call (408) 785-7588". `AGENTS.md` §2.2.2 fixes the primary marketing CTA as "Call Aseptaclean", rendered from `src/data/site.ts` only. | Assembled as "Call Aseptaclean · (408) 785-7588", the shape the hoarding campaign already uses, so the approved label and the visible number both ship and no number is typed into a component. The founder section's "Call Matthew · (408) 785-7588" is a distinct personal label and is preserved, also assembled from site data. |
+| **`free walkthrough` on a second route.** `AGENTS.md` §7's scoped exception (2026-09-06) says the free-walkthrough wording "reaches no other route" than the hoarding PPC page, and `free assessment` / `free consultation` stay banned everywhere. This brief's entire offer is built on "Request a Free Walkthrough" and supplies no fallback for it. | **Implemented on the hoarding exception's exact terms and no wider, and FLAGGED as the one release item needing explicit owner sign-off before this page goes public.** This route publishes no price figure at all; `site.offer.assessmentFee`, `assessmentFraming()` and the $195 on-site fee are untouched and still published everywhere else; nothing here calls the walkthrough an "assessment" or a "consultation"; and `site.offer.formSubmitCta` ("Send Message") still labels every other form on the site. |
+| Doc 21 §2.3 (animal/organic clause), §3.1 (pest boundary) and §4.2 (disposal wording) are mandatory wherever that work is described. The copy document describes a rodent-droppings condition and describes arranging disposal three times, and carries none of the three clauses. | All three added, verbatim, from the wording `/estate-cleanout-san-jose/` already publishes — not new formulations. Doc 21 is rank 3 and outranks the copy document at rank 4. §2.3 and §3.1 are appended to the rodent FAQ answer; §4.2 sits in the offer section, which is this page's scope section. The layout refresh independently asks for the same disposal distinction. |
+| The layout refresh requires a visible "Illustrative image" caption on each new scene. The 2026-09-05 owner instruction removed captions sitewide. | Captions restored **for these two images on this route only** — a later rank-2 owner instruction over an earlier one, within the scope it actually decided. No other image on this site regains a caption. |
+| The refresh specifies H1 36–54px and H2 28–38px. The site's role-class tokens resolve to 34–52px and 29.6–40px. | Tokens left alone. `AGENTS.md` §6 law 1 forbids declaring `font-size` on a heading anywhere, and law 2's note forbids raising a heading token to chase a number; both tokens are sitewide. Deltas are ≤2px at the extremes. `scripts/type-law-check.mjs` is clean on both laws for all four affected routes. |
+
+### Readiness fallbacks applied, and the evidence for each
+
+Recorded in full in `src/data/ppcEstate.ts` §B. Summary:
+
+- **Document shredding — omitted entirely.** No provider, approval process or destruction-record
+  deliverable exists anywhere in the repository. The shredding offer card, the shredding FAQ and
+  the shredding line in the completion package are all absent.
+- **Inventory and handoff records — omitted; belongings instructions retained.** The site
+  establishes that discovered items are isolated and reported; it does not establish a
+  designated-item photograph and list, labeled-box handoff, or a belongings handover record.
+- **Donation coordination — retained**, with the source's own hedges intact. Established by
+  `/estate-cleanout-san-jose/`'s owner-approved donation section.
+- **Completion photographs and work summary — retained** (the Property Handoff Record, published
+  sitewide). **Scheduled updates — omitted**; no update cadence is established anywhere.
+- **Missed-task correction — the brief's supplied fallback sentence ships instead.** No service
+  agreement exists in the repository to read, and the nearest published commitment is narrower
+  than the brief's ("no additional **labor** charge", inside a 24-hour window). The layout refresh
+  independently instructs that this not be reinstated.
+- **Financing — off.** No APR, approval odds, monthly payment or provider name anywhere.
+
+### Backend changes — additive, route-scoped, and guarded
+
+`functions/api/lead.ts` is untouched. In `functions/_lib/`:
+
+- `property_detail` is optional **only** for submissions whose entry route is this campaign
+  (`detailOptionalCampaignRoutes`), the same route-scoping `providers.ts` already uses for the
+  hoarding confirmation email. Keying on `offer_type` was rejected for the same reason it was
+  there: campaign forms post the shared `handoff_reset` value. No minimum length exists in the
+  browser or on the server. `scripts/estate-campaign-form-check.mjs` case 3 is the regression
+  guard — the identical payload from `/contact/` is still rejected.
+- `property_status` added as a new **optional** scalar with four allowed values, surfaced on the
+  HubSpot deal and the owner alert only when answered.
+- The service value is `"Inherited or estate property"` — already in
+  `allowedValues.property_situation` and already named as the estate mapping by
+  `/estate-cleanout-san-jose/`. It is now declared in `assessment.campaignSituations` and
+  `scripts/situation-enum-guard.mjs` runs the real validator against campaign-fixed values too:
+  a PPC form posts its service as a hidden input, so a mismatch there is invisible in the UI and
+  still loses every lead — the crime-scene failure mode minus its only visible clue.
+
+### Measurement
+
+No new tag, no second container, no new event name, no consent bypass. The estate form is the same
+`PpcHeroForm` and raises the same four events; `ppc_form_success` is still the only one that may
+map to a conversion and still fires only on `2xx && ok === true`, once, claimed on the endpoint's
+confirmation code and shared with the thank-you route's recovery path.
+`Analytics.astro`'s CTA-click matcher gained `request-walkthrough` (listed before `request` —
+alternation is first-match and `#request` followed by `-` fails the boundary), so estate CTA
+clicks are measured on the same intent event as every other form anchor. A phone click is still
+`phone_click` and still not a lead.
+
+### Not done, and not claimed
+
+`generate_lead` remains a **GTM-side mapping that does not exist yet** — the 2026-09-06 entry
+above records that no tag, trigger or variable has been created in the workspace. Nothing in this
+change alters that, and nothing here can verify it from the repository. Email delivery, HubSpot
+writes and GA4 receipt were exercised against stubs, not live accounts.

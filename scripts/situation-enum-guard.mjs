@@ -45,8 +45,19 @@ const bundle = (entry, out) => {
 
 let failed = false;
 try {
-  const { assessment } = await import(bundle("src/data/assessment.ts", "assessment.mjs"));
+  const { assessment, campaignSituations } = await import(
+    bundle("src/data/assessment.ts", "assessment.mjs")
+  );
   const { validateLead } = await import(bundle("functions/_lib/lead.ts", "lead.mjs"));
+
+  // Campaign-fixed values (2026-09-09) are covered too. A PPC form posts its service as a hidden
+  // input, so a mismatch there is INVISIBLE in the UI — there is no dropdown to look wrong — and
+  // still loses every lead from that campaign with a 422. Exactly the failure mode this guard
+  // exists for, minus the one clue that made the original incident findable.
+  const underTest = [
+    ...assessment.situations.map((situation) => ({ ...situation, kind: "rendered" })),
+    ...campaignSituations.map((situation) => ({ ...situation, kind: "campaign" }))
+  ];
 
   // A complete, otherwise-valid submission in the shape every <select>-bearing form posts
   // (AcCompactForm.astro: form_version present, offer_type !== private_residence_reset). Only
@@ -71,8 +82,11 @@ try {
     return data;
   };
 
-  console.log(`situation enum guard — ${assessment.situations.length} rendered option(s)`);
-  for (const { value, label, route } of assessment.situations) {
+  console.log(
+    `situation enum guard — ${assessment.situations.length} rendered option(s), ` +
+      `${campaignSituations.length} campaign-fixed value(s)`
+  );
+  for (const { value, label, route, kind } of underTest) {
     const { errors } = validateLead(payload(value));
     // Only property_situation is under test. Any other error means this guard's fixture drifted
     // from the required set, which is a bug in this script, not in the enum — say so plainly
@@ -88,18 +102,18 @@ try {
     if (errors.property_situation) {
       failed = true;
       console.error(
-        `  FAIL  "${value}" (shown as "${label}"${route ? `, preselected on ${route}` : ""}) ` +
-          `is rendered by a form but REJECTED by functions/_lib/lead.ts: ${errors.property_situation}`
+        `  FAIL  "${value}" (shown as "${label}"${route ? `, ${kind === "campaign" ? "posted by" : "preselected on"} ${route}` : ""}) ` +
+          `is ${kind === "campaign" ? "posted" : "rendered"} by a form but REJECTED by functions/_lib/lead.ts: ${errors.property_situation}`
       );
       continue;
     }
-    console.log(`  ok    "${value}" -> "${label}"`);
+    console.log(`  ok    [${kind}] "${value}" -> "${label}"`);
   }
 
   if (failed) {
     console.error(
-      "\nEvery value in src/data/assessment.ts situations must appear in " +
-        "allowedValues.property_situation in functions/_lib/lead.ts. Add the missing value(s) " +
+      "\nEvery value in src/data/assessment.ts `situations` and `campaignSituations` must appear " +
+        "in allowedValues.property_situation in functions/_lib/lead.ts. Add the missing value(s) " +
         "there — do NOT rename the form value to match, it is the frozen CRM contract."
     );
   } else {

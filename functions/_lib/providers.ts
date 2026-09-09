@@ -70,6 +70,14 @@ const attributionLines = (lead: LeadRecord) => {
   return lines;
 };
 
+// Optional property-description answer, added 2026-09-09 with the estate campaign. Rendered as
+// its own line ONLY when the visitor selected something, so no other form's summary gains a line.
+const propertyStatusLines = (lead: LeadRecord) => {
+  const value = lead.data.property_status;
+  const text = typeof value === "string" ? value.trim() : "";
+  return text ? [`Property status: ${text}`] : [];
+};
+
 // Photo REFERENCES, not links. These are private R2 object keys: they are not URLs, they are not
 // publicly resolvable, and nothing here exposes an uploaded property photo on an unrestricted
 // address. They let the owner find the exact objects for a submission in the bucket.
@@ -226,6 +234,10 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
           `Request ID: ${lead.id}`,
           `Property ZIP: ${field(lead.data.property_zip)}`,
           `Situation: ${field(lead.data.property_situation)}`,
+          // Estate campaign only, and only when the visitor actually chose one — the selector is
+          // optional and starts unselected, so an absent answer must not become a "Not supplied"
+          // line on every other assessment deal.
+          ...propertyStatusLines(lead),
           `Description: ${field(lead.data.property_detail)}`,
           ...attributionLines(lead),
           ...uploadLines(lead)
@@ -298,10 +310,20 @@ const CUSTOMER_REPLY_TO = "info@aseptaclean.com";
 // other form on the site and repriced an assessment the owner did not reprice.
 const HOARDING_CAMPAIGN_ROUTE = "/hoarding-cleanup-san-jose/assessment/";
 
-const isHoardingCampaignLead = (lead: LeadRecord) =>
+// ESTATE PPC CAMPAIGN ROUTE, added 2026-09-09 (docs/aseptaclean-estate-landing-page.md). Same
+// shape and same reasoning as the hoarding route above: this campaign also offers a free
+// walkthrough, it also posts the shared `handoff_reset` offer type, and its confirmation
+// therefore has to be scoped by route rather than by offer type. Its wording is the estate
+// campaign's own — the page, the thank-you route and this email say the same thing.
+const ESTATE_CAMPAIGN_ROUTE = "/estate-cleanout-san-jose/assessment/";
+
+const isFromRoute = (lead: LeadRecord, route: string) =>
   [lead.data.entry_route, lead.data.landing_page, lead.data.submitted_from].some(
-    (value) => typeof value === "string" && value.startsWith(HOARDING_CAMPAIGN_ROUTE)
+    (value) => typeof value === "string" && value.startsWith(route)
   );
+
+const isHoardingCampaignLead = (lead: LeadRecord) => isFromRoute(lead, HOARDING_CAMPAIGN_ROUTE);
+const isEstateCampaignLead = (lead: LeadRecord) => isFromRoute(lead, ESTATE_CAMPAIGN_ROUTE);
 
 async function sendResend(
   env: LeadEnvironment,
@@ -338,6 +360,7 @@ export function sendCustomerEmail(env: LeadEnvironment, lead: LeadRecord) {
   }
   const isResidence = lead.data.offer_type === "private_residence_reset";
   const isHoardingCampaign = !isResidence && isHoardingCampaignLead(lead);
+  const isEstateCampaign = !isResidence && !isHoardingCampaign && isEstateCampaignLead(lead);
   const callback =
     lead.callbackWindow === "business-hours"
       ? "Because your request arrived during published business hours, our operating standard is to call within 5 minutes."
@@ -347,7 +370,7 @@ export function sendCustomerEmail(env: LeadEnvironment, lead: LeadRecord) {
     replyTo: CUSTOMER_REPLY_TO,
     subject: isResidence
       ? "We received your Private Residence Reset assessment"
-      : isHoardingCampaign
+      : isHoardingCampaign || isEstateCampaign
         ? "We received your walkthrough request"
         : "We received your Aseptaclean assessment request",
     // The customer sees the short code and not the UUID. Giving them two references for
@@ -361,6 +384,13 @@ export function sendCustomerEmail(env: LeadEnvironment, lead: LeadRecord) {
       ? `Thank you, ${lead.data.full_name}.\n\nWe received your Private Residence Reset assessment. Your confirmation code is ${lead.code} — quote it if you call. ${callback}\n\nWithin one business day, Aseptaclean will review the residence, desired baseline, priority rooms, access, and whether an on-site walkthrough is required.\n\nSubmitting this request does not authorize work, create a service agreement, or reserve a project date.`
       : isHoardingCampaign
         ? `Thank you, ${lead.data.full_name}.\n\nWe received your request. Your confirmation code is ${lead.code} — quote it if you call. ${callback}\n\nAseptaclean will review the information and photos you provided, then contact you to discuss the situation and arrange a free walkthrough.\n\nThis request does not confirm an appointment. Submitting it does not authorize work, create a service agreement, or reserve a project date.`
+        // Mirrors the estate campaign form's own subtext and its thank-you body — "contact you to
+        // discuss the property and arrange the next step" — so the button, the confirmation page
+        // and this message say the same thing. It states the non-booking boundary outright,
+        // because someone who has just clicked "Request My Free Walkthrough" is the most likely
+        // to read a confirmation as a booked visit.
+        : isEstateCampaign
+        ? `Thank you, ${lead.data.full_name}.\n\nWe received your request. Your confirmation code is ${lead.code} — quote it if you call. ${callback}\n\nAseptaclean will review what you sent, then contact you to discuss the property and arrange a free walkthrough.\n\nNo need to sort or clean before we speak. This request does not book a crew or confirm an appointment. Submitting it does not authorize work, create a service agreement, or reserve a project date.`
         : `Thank you, ${lead.data.full_name}.\n\nWe received your assessment request. Your confirmation code is ${lead.code} — quote it if you call. ${callback}\n\nAseptaclean will review the information and photos you provided. If we can determine the next step from what you sent, we will explain it. If we need to see more, we may ask for additional photos, speak with you by phone, or recommend an on-site assessment.\n\nSubmitting this request does not authorize work, create a service agreement, or reserve a project date.`
   });
 }
@@ -460,6 +490,7 @@ export function sendOwnerFallbackEmail(
     `Email: ${field(lead.data.email)}`,
     `ZIP: ${field(lead.data.property_zip)}`,
     `Situation: ${field(lead.data.property_situation)}`,
+    ...propertyStatusLines(lead),
     ...(!isResidence
       ? [`Description: ${field(lead.data.property_detail || lead.data.additional_notes)}`]
       : []),

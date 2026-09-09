@@ -1,0 +1,881 @@
+---
+// ESTATE PPC LANDING PAGE — /estate-cleanout-san-jose/assessment/
+//
+// Copy source: docs/aseptaclean-estate-landing-page.md (owner handoff, 2026-09-09).
+// Layout source: docs/aseptaclean-layout-refresh.md (owner, 2026-09-09), which SUPERSEDES the
+// first document's layout and section order and explicitly preserves its service boundaries,
+// conditional offer claims, backend, consent and tracking requirements.
+// Copy record and the full substitution/omission log: src/data/ppcEstate.ts.
+//
+// 911 Bio Clean is a STRUCTURAL reference only — a clear introduction beside a form, relevant
+// text/photo pairings, an obvious contact path. Nothing of its page, imagery, wording, green
+// styling, certification logos or service promises appears here. The palette, type and components
+// are Aseptaclean's own: warm white, navy, slate blue, Inter, and the site's existing Ac*/Ppc*
+// components.
+//
+// ROUTE COLLISION CHECKED BEFORE CREATION.
+//   · src/pages/estate-cleanout-san-jose/ contained only index.astro. Nothing built, redirected
+//     or linked to /estate-cleanout-san-jose/assessment/, and public/_redirects has no rule
+//     matching it.
+//   · No equivalent estate assessment page exists — /estate-cleanout-san-jose/,
+//     /estate-cleanout-checklist/, /property-cleanouts-san-jose/ and the three
+//     /service-areas/{city}/estate-cleanout/ pages are all different pages with different jobs,
+//     and none is a campaign intake route.
+//   · /hoarding-cleanup-san-jose/assessment/ is UNTOUCHED — its own copy record, its own
+//     thank-you route, its own dark hero, its own form tone. Nothing here changes what it renders.
+//   · The SEO page at /estate-cleanout-san-jose/ is untouched and keeps its own copy record.
+//
+// INDEXING — the existing policy, applied, not changed. `noindex` is passed explicitly AND the
+// route is absent from src/data/launchArchitecture.ts `launchIndexablePaths`, which is what
+// sitemap.xml.ts iterates. Out of the sitemap and out of primary navigation by construction. No
+// sitewide robots or sitemap rule was altered, and no public page links here.
+//
+// SECTION MAP — the refresh's order:
+//   hero   bright opening, warm white, headline + intro beside a white outlined form
+//   01     "Get help with the whole cleanout."      accumulation illustration LEFT, offer rows
+//   02     "Keep what matters."                     explanation + Keep/Remove/Review LEFT,
+//                                                   sorting illustration RIGHT
+//   03     plan, price and commitments              ONE compact navy section, 60/40, no photo
+//   04     "A straightforward process."             three steps
+//   05     "You'll know who to call."               ~320px portrait beside the introduction
+//   06     "Questions families ask"                 accordions
+//   07     "Let's make a plan for the house."       compact close
+//   footer PpcFooter (compact)
+//
+// ONE FORM, IN THE OPENING. Every walkthrough CTA targets #request-walkthrough; the refresh
+// forbids duplicating the form later in the page, and PpcHeroForm's script binds to a single
+// [data-ppc-form].
+//
+// PHOTOGRAPHY — three slots. Two are the owner-supplied illustrations installed with this
+// refresh, each carrying the required visible "Illustrative image" caption; the third is the
+// genuine founder photograph, which never carried one. No image is presented as an Aseptaclean
+// job, result, crew or before/after, and the alt text describes only what is visible.
+//   01 offer      estate-accumulation-illustration   NEW
+//   02 decisions  estate-sorting-illustration        NEW
+//   05 founder    founder-matthew-ruiz               real proof, unchanged
+// REMOVED FROM THIS ROUTE by the refresh, and NOT deleted — each still ships where it belongs:
+//   home-hero-neglected-interior (dark hero)   → still `/`
+//   hoarding-garage-contents (garage)          → still /hoarding-cleanup-san-jose/ + its campaign
+//   home-property-scope-detail (dirty room)    → still `/`
+//
+// NO FOUNDER-BACKGROUND CLAIM appears in section 05, so doc 21 §2.4's verbatim authority-limit
+// clause is not triggered and is not added — it is mandatory "wherever the founder's background
+// appears", which is why the hoarding campaign's §08 carries it and this does not.
+import { Image } from "astro:assets";
+import PpcLayout from "@layouts/PpcLayout.astro";
+import PpcBrightHero from "@components/ppc/PpcBrightHero.astro";
+import PpcHeroForm from "@components/ppc/PpcHeroForm.astro";
+import AcActions from "@components/ac/AcActions.astro";
+import AcCheckList from "@components/ac/AcCheckList.astro";
+import FaqAccordion from "@components/FaqAccordion.astro";
+import { site } from "@data/site";
+import { ppcEstate, ppcEstateCallLabel, ppcEstateFounderCallLabel } from "@data/ppcEstate";
+
+import accumulationImage from "../../../assets/aseptaclean/estate-accumulation-illustration.png";
+import sortingImage from "../../../assets/aseptaclean/estate-sorting-illustration.png";
+import founderPortrait from "../../../assets/aseptaclean/founder-matthew-ruiz.jpeg";
+
+const copy = ppcEstate;
+const formHref = `#${copy.formId}`;
+
+// One shared recipe for the two illustrations: 4:3, explicit dimensions, WebP through the
+// project's own pipeline, responsive sources, lazy below the fold.
+const illustrationWidths = [480, 768, 1024];
+---
+
+<PpcLayout
+  title={copy.seo.title}
+  description={copy.seo.description}
+  canonicalPath={copy.route}
+  noindex={true}
+  stickyHeroSelector="#ppc-hero"
+  stickyFormHref={formHref}
+  stickySecondaryLabel={copy.stickyBar.secondaryLabel}
+>
+  {/* ══ HERO — bright opening. The one H1. No photograph, no dark overlay, no viewport-height
+      section. Copy left, white outlined form right, both columns top-aligned. ═══════════════ */}
+  <PpcBrightHero
+    id="ppc-hero"
+    eyebrow={copy.hero.eyebrow}
+    heading={copy.hero.heading}
+    headingId="ppc-hero-title"
+    lead={copy.hero.lead}
+    body={copy.hero.body}
+    points={copy.hero.points}
+    primaryLabel={ppcEstateCallLabel}
+    secondaryLabel={copy.hero.secondaryLabel}
+    formHref={formHref}
+    supportingLine={copy.hero.supportingLine}
+  >
+    <PpcHeroForm
+      slot="form"
+      formId={copy.formId}
+      entryRoute={`${copy.route}#${copy.formId}`}
+      situationValue="Inherited or estate property"
+      tone="light"
+      title={copy.form.title}
+      intro={copy.form.intro}
+      submitLabel={copy.form.submitLabel}
+      statusLabel={copy.form.statusLabel}
+      statusOptions={copy.form.statusOptions}
+      detailLabel={copy.form.detailLabel}
+      detailRequired={false}
+      optionalDisclosureLabel={copy.form.optionalDisclosureLabel}
+      photoHelper={copy.form.photoHelper}
+      microcopy={copy.form.microcopy}
+      thankYouRoute={copy.thankYou.route}
+    />
+  </PpcBrightHero>
+
+  {/* ══ 01 · GET HELP WITH THE WHOLE CLEANOUT ═════════════════════════════════════════════════
+      Accumulation illustration LEFT, service explanation RIGHT. One short introductory paragraph,
+      then compact service rows — five of the source's six parts; the sixth (document shredding)
+      is omitted on readiness grounds and the refresh independently confirms that layout editing
+      must not silently re-enable it. See src/data/ppcEstate.ts §B1. */}
+  <section class="est-offer" aria-labelledby="offer-title">
+    <div class="est-shell">
+      <div class="est-offer__grid">
+        <figure class="est-figure est-figure--sticky">
+          <Image
+            src={accumulationImage}
+            alt={copy.images.accumulationAlt}
+            width={1024}
+            height={768}
+            widths={illustrationWidths}
+            sizes="(min-width: 62rem) 46vw, 92vw"
+            format="webp"
+            quality={76}
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption class="est-figure__caption">{copy.images.caption}</figcaption>
+        </figure>
+
+        <div class="est-offer__copy">
+          <h2 id="offer-title" class="ac-type-h2 est-h2">{copy.offer.heading}</h2>
+          <p class="est-offer__lead">{copy.offer.lead}</p>
+
+          <ul class="est-offer__rows">
+            {copy.offer.items.map((item) => (
+              <li class="est-offer__row">
+                <h3 class="ac-type-h3-band est-offer__row-title">{item.title}</h3>
+                <p class="est-offer__row-body">{item.body}</p>
+              </li>
+            ))}
+          </ul>
+
+          {copy.offer.closing.map((paragraph) => <p class="est-offer__closing">{paragraph}</p>)}
+
+          {/* The proposal boundary stays with the list it bounds — the refresh asks for exactly
+              that placement, and it is what ties every record promise above to the written
+              proposal rather than to this page. */}
+          <p class="est-offer__strong">{copy.offer.strongLine}</p>
+
+          {/* doc 21 §4.2's permitted disposal wording, in the scope section as that rule
+              requires. Three strings above describe arranging disposal; this is what keeps them
+              coordination rather than self-performed transport (§4.3). */}
+          <p class="est-offer__boundary">{copy.offer.disposalBoundary}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 02 · KEEP WHAT MATTERS ═══════════════════════════════════════════════════════════════
+      Explanation and the three decisions TOGETHER on the left — the refresh is explicit that
+      Keep / Remove / Review sits beneath its explanation, not below a separate tall photo row.
+      Sorting illustration on the right. */}
+  <section class="est-decisions" aria-labelledby="decisions-title">
+    <div class="est-shell">
+      <div class="est-decisions__grid">
+        <div class="est-decisions__copy">
+          <h2 id="decisions-title" class="ac-type-h2 est-h2">{copy.decisions.heading}</h2>
+          {copy.decisions.body.map((paragraph) => (
+            <p class="est-decisions__body">{paragraph}</p>
+          ))}
+
+          <div class="est-decisions__row" role="group" aria-label={copy.decisions.rowLabel}>
+            {copy.decisions.row.map((item) => (
+              <div class="est-decisions__item">
+                <h3 class="ac-type-label-head est-decisions__item-title">{item.title}</h3>
+                <p class="est-decisions__item-body">{item.body}</p>
+              </div>
+            ))}
+          </div>
+
+          <p class="est-decisions__note">{copy.decisions.rowNote}</p>
+          <p class="est-decisions__strong">{copy.decisions.strongLine}</p>
+        </div>
+
+        <figure class="est-figure est-figure--sticky">
+          <Image
+            src={sortingImage}
+            alt={copy.images.sortingAlt}
+            width={1024}
+            height={768}
+            widths={illustrationWidths}
+            sizes="(min-width: 62rem) 42vw, 92vw"
+            format="webp"
+            quality={76}
+            loading="lazy"
+            decoding="async"
+          />
+          <figcaption class="est-figure__caption">{copy.images.caption}</figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 03 · PLAN, PRICE AND COMMITMENTS ═════════════════════════════════════════════════════
+      One compact navy section, 60/40, no photograph. Scope, price, schedule and exclusions left;
+      the three commitments right. Both contact actions at the end. No price figure of any kind
+      (AGENTS.md §4). */}
+  <section class="est-plan" aria-labelledby="plan-title">
+    <div class="est-shell">
+      <div class="est-plan__grid">
+        <div class="est-plan__main">
+          <h2 id="plan-title" class="ac-type-h2 est-h2">{copy.scope.heading}</h2>
+          {copy.scope.body.map((paragraph) => <p class="est-plan__body">{paragraph}</p>)}
+          <div class="est-plan__list">
+            <AcCheckList items={copy.scope.list} tone="quiet" compact />
+          </div>
+          <p class="est-plan__body">{copy.scope.closing}</p>
+          <p class="est-plan__pull">{copy.scope.pullQuote}</p>
+          <div class="est-plan__actions">
+            <AcActions
+              tone="dark"
+              primaryLabel={ppcEstateCallLabel}
+              secondaryLabel={copy.hero.secondaryLabel}
+              secondaryHref={formHref}
+            />
+          </div>
+        </div>
+
+        <div class="est-plan__side">
+          <h3 class="ac-type-h3-band est-plan__side-title">{copy.scope.commitmentsHeading}</h3>
+          <ul class="est-plan__commitments">
+            {copy.scope.commitments.map((item) => (
+              <li>
+                <p class="est-plan__commit-title">{item.title}</p>
+                <p class="est-plan__commit-body">{item.body}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 04 · A STRAIGHTFORWARD PROCESS ═══════════════════════════════════════════════════════
+      Three evenly sized steps, vertical list on mobile. Modest numerals, no oversized figures and
+      no progress animation. §B4 still applies — no schedule of updates is promised. */}
+  <section class="est-steps" aria-labelledby="process-title">
+    <div class="est-shell">
+      <h2 id="process-title" class="ac-type-h2 est-h2">{copy.process.heading}</h2>
+      <ol class="est-steps__list">
+        {copy.process.steps.map((step, index) => (
+          <li class="est-steps__item">
+            <span class="est-steps__num" aria-hidden="true">{String(index + 1).padStart(2, "0")}</span>
+            <h3 class="ac-type-h3-band est-steps__title">{step.title}</h3>
+            <p class="est-steps__body">{step.body}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  {/* ══ 05 · YOU'LL KNOW WHO TO CALL ═════════════════════════════════════════════════════════
+      ~320px portrait beside the introduction, cropped with object-position so the face is
+      preserved at every width. The likeness is the genuine owner photograph and is never
+      regenerated or replaced. Surrounding space is tight by design. */}
+  <section class="est-founder" aria-labelledby="founder-title">
+    <div class="est-shell">
+      <div class="est-founder__grid">
+        <Image
+          class="est-founder__portrait"
+          src={founderPortrait}
+          alt="Matthew Ruiz, founder of Aseptaclean"
+          width={640}
+          height={800}
+          widths={[320, 480, 640]}
+          sizes="(min-width: 62rem) 320px, 60vw"
+          format="webp"
+          quality={80}
+          loading="lazy"
+          decoding="async"
+        />
+        <div class="est-founder__copy">
+          <h2 id="founder-title" class="ac-type-h2 est-h2">{copy.founder.heading}</h2>
+          {copy.founder.body.map((paragraph) => <p class="est-founder__body">{paragraph}</p>)}
+          <div class="est-founder__actions">
+            <AcActions primaryLabel={ppcEstateFounderCallLabel} showSecondary={false} />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 06 · QUESTIONS FAMILIES ASK ══════════════════════════════════════════════════════════
+      Native details/summary accordions — keyboard-operable with no script. Eight of the source's
+      ten questions, with every substantive answer and service limitation retained; see
+      src/data/ppcEstate.ts §B1 and §B2 for the two omitted on readiness grounds.
+
+      NO FAQPage JSON-LD. This route is noindex and PpcLayout already suppresses structured data
+      for it; rich results for a deliberately unindexed page would be a contradiction. */}
+  <section class="est-faq" aria-labelledby="faq-title">
+    <div class="est-shell">
+      <h2 id="faq-title" class="ac-type-h2 est-h2">{copy.faq.heading}</h2>
+      <div class="est-faq__list">
+        <FaqAccordion items={copy.faq.items} headingId="faq-title" />
+      </div>
+    </div>
+  </section>
+
+  {/* ══ 07 · LET'S MAKE A PLAN FOR THE HOUSE ═════════════════════════════════════════════════
+      Compact close. Both actions point at the single working form in the opening; the refresh
+      forbids a second form, and returning to the hero preserves anything already typed because
+      the page never reloads. */}
+  <section class="est-final" aria-labelledby="final-title">
+    <div class="est-shell">
+      <div class="est-final__grid">
+        <div class="est-final__copy">
+          <h2 id="final-title" class="ac-type-h2 est-h2">{copy.final.heading}</h2>
+          {copy.final.body.map((paragraph) => <p class="est-final__body">{paragraph}</p>)}
+          <p class="est-final__area">{copy.final.areaLine}</p>
+        </div>
+        <div class="est-final__actions">
+          <AcActions
+            tone="dark"
+            primaryLabel={ppcEstateCallLabel}
+            secondaryLabel={copy.hero.secondaryLabel}
+            secondaryHref={formHref}
+          />
+          <p class="est-final__note">
+            Contacting {site.business.name} does not authorize work or create a service agreement.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+</PpcLayout>
+
+<style>
+  /* ═══ SHARED PAGE SHELL ═══════════════════════════════════════════════════════════════════
+     Refresh "Spacing and type": container max-width 1200px, 32px desktop / 20px mobile padding.
+     Declared per-section rather than reusing `.ac-shell` (1320px), which this route caps. */
+  .est-shell {
+    margin-inline: auto;
+    max-width: 1200px;
+    padding-inline: 32px;
+  }
+
+  /* Section rhythm: 72px desktop, 44px mobile — inside the refresh's 64–80 / 40–48 ranges. These
+     beat global.css's `main > section { padding-block: 68px }` on specificity, so no `is:global`
+     override is needed and no other route is touched. */
+  .est-offer,
+  .est-decisions,
+  .est-plan,
+  .est-steps,
+  .est-founder,
+  .est-faq,
+  .est-final {
+    padding-block: 72px;
+  }
+
+  .est-offer,
+  .est-steps {
+    background: var(--ac-color-paper);
+  }
+
+  .est-decisions,
+  .est-founder,
+  .est-faq {
+    background: var(--ac-color-warm-white);
+  }
+
+  /* Type law #1 (AGENTS.md §6): every heading takes its size from its `.ac-type-*` role class and
+     nothing here declares font-size on one. `.est-h2` carries colour and measure only. */
+  .est-h2 {
+    margin: 0;
+    max-width: 22ch;
+    color: var(--ac-color-navy-950);
+    text-wrap: balance;
+  }
+
+  /* ═══ SHARED FIGURE ═══════════════════════════════════════════════════════════════════════
+     Consistent 4:3, 14px radius (the refresh's 12–16), and the required visible caption. The
+     image is never stretched to the height of the text column beside it. */
+  .est-figure {
+    margin: 0;
+    min-width: 0;
+  }
+
+  .est-figure :global(img) {
+    display: block;
+    width: 100%;
+    /* height:auto is load-bearing: Astro <Image> emits width/height attributes, and
+       aspect-ratio is ignored unless the used height resolves to auto. */
+    height: auto;
+    /* Refresh §2: "around 400px tall maximum on desktop; no forced height on mobile." */
+    max-height: 400px;
+    border-radius: 14px;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
+  .est-figure__caption {
+    margin-top: 8px;
+    color: var(--ac-color-ink-400);
+    font-size: 0.75rem;
+    letter-spacing: 0.02em;
+    line-height: 1.4;
+  }
+
+  /* ═══ 01 OFFER ════════════════════════════════════════════════════════════════════════════ */
+  .est-offer__grid {
+    display: grid;
+    align-items: start;
+    gap: 48px;
+    grid-template-columns: minmax(0, 44fr) minmax(0, 56fr);
+  }
+
+  .est-offer__copy {
+    min-width: 0;
+  }
+
+  .est-offer__lead {
+    margin: 16px 0 0;
+    max-width: 60ch;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  /* Compact rows, hairline separated. Not cards. */
+  .est-offer__rows {
+    display: grid;
+    margin: 28px 0 0;
+    padding: 0;
+    list-style: none;
+    gap: 0;
+  }
+
+  .est-offer__row {
+    border-top: 1px solid var(--ac-color-line);
+    padding-block: 16px;
+  }
+
+  .est-offer__row:last-child {
+    border-bottom: 1px solid var(--ac-color-line);
+  }
+
+  .est-offer__row-title {
+    margin: 0;
+    color: var(--ac-color-navy-800);
+  }
+
+  .est-offer__row-body {
+    margin: 6px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .est-offer__closing {
+    margin: 16px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  .est-offer__closing:first-of-type {
+    margin-top: 22px;
+  }
+
+  .est-offer__strong {
+    margin: 22px 0 0;
+    max-width: 62ch;
+    border-left: 2px solid var(--ac-color-navy-800);
+    padding-left: 16px;
+    color: var(--ac-color-navy-900);
+    font-size: 1.0625rem;
+    font-weight: 650;
+    line-height: 1.55;
+  }
+
+  .est-offer__boundary {
+    margin: 18px 0 0;
+    max-width: 66ch;
+    color: var(--ac-color-ink-600);
+    /* 15px. A scope boundary is never shrunk below the readable floor to make it recede. */
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  /* ═══ 02 DECISIONS ════════════════════════════════════════════════════════════════════════ */
+  .est-decisions__grid {
+    display: grid;
+    align-items: start;
+    gap: 48px;
+    grid-template-columns: minmax(0, 56fr) minmax(0, 44fr);
+  }
+
+  .est-decisions__copy {
+    min-width: 0;
+  }
+
+  .est-decisions__body {
+    margin: 16px 0 0;
+    max-width: 60ch;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  /* The three decisions sit directly beneath their explanation — the refresh's core correction
+     for this section. */
+  .est-decisions__row {
+    display: grid;
+    margin-top: 26px;
+    gap: 20px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .est-decisions__item {
+    min-width: 0;
+    border-top: 2px solid var(--ac-color-navy-800);
+    padding-top: 14px;
+  }
+
+  .est-decisions__item-title {
+    margin: 0;
+    color: var(--ac-color-navy-800);
+  }
+
+  .est-decisions__item-body {
+    margin: 8px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.55;
+  }
+
+  .est-decisions__note {
+    margin: 24px 0 0;
+    max-width: 62ch;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  .est-decisions__strong {
+    margin: 18px 0 0;
+    max-width: 60ch;
+    border-left: 2px solid var(--ac-color-navy-800);
+    padding-left: 16px;
+    color: var(--ac-color-navy-900);
+    font-size: 1.0625rem;
+    font-weight: 650;
+    line-height: 1.55;
+  }
+
+  /* A tall text column beside a 4:3 image leaves the image floating at the top; sticking it to
+     the reading position keeps the pairing legible without stretching the photo. */
+  .est-figure--sticky {
+    position: sticky;
+    top: 96px;
+  }
+
+  /* ═══ 03 PLAN + COMMITMENTS ═══════════════════════════════════════════════════════════════ */
+  .est-plan {
+    background: var(--ac-color-navy-900);
+    color: #fff;
+  }
+
+  .est-plan__grid {
+    display: grid;
+    align-items: start;
+    gap: 48px;
+    grid-template-columns: minmax(0, 60fr) minmax(0, 40fr);
+  }
+
+  .est-plan__main,
+  .est-plan__side {
+    min-width: 0;
+  }
+
+  .est-plan .est-h2 {
+    color: #fff;
+  }
+
+  .est-plan__body {
+    margin: 16px 0 0;
+    max-width: 58ch;
+    color: #c3d2e4;
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  .est-plan__list {
+    margin-top: 18px;
+  }
+
+  .est-plan__pull {
+    margin: 22px 0 0;
+    max-width: 58ch;
+    color: #fff;
+    font-size: 1.0625rem;
+    font-weight: 650;
+    line-height: 1.55;
+  }
+
+  .est-plan__actions {
+    margin-top: 26px;
+  }
+
+  .est-plan__side {
+    border-left: 1px solid rgb(255 255 255 / 18%);
+    padding-left: 32px;
+  }
+
+  .est-plan__side-title {
+    margin: 0;
+    color: #fff;
+  }
+
+  .est-plan__commitments {
+    display: grid;
+    margin: 20px 0 0;
+    padding: 0;
+    list-style: none;
+    gap: 18px;
+  }
+
+  .est-plan__commit-title {
+    margin: 0;
+    color: #fff;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    line-height: 1.45;
+  }
+
+  .est-plan__commit-body {
+    margin: 5px 0 0;
+    color: #c3d2e4;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  /* ═══ 04 STEPS ════════════════════════════════════════════════════════════════════════════ */
+  .est-steps__list {
+    display: grid;
+    margin: 34px 0 0;
+    padding: 0;
+    list-style: none;
+    gap: 32px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .est-steps__item {
+    min-width: 0;
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 18px;
+  }
+
+  /* Modest, not a decorative oversized numeral. */
+  .est-steps__num {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+  }
+
+  .est-steps__title {
+    margin: 0;
+    color: var(--ac-color-navy-900);
+  }
+
+  .est-steps__body {
+    margin: 8px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  /* ═══ 05 FOUNDER ══════════════════════════════════════════════════════════════════════════ */
+  .est-founder__grid {
+    display: grid;
+    align-items: center;
+    gap: 40px;
+    grid-template-columns: 320px minmax(0, 1fr);
+  }
+
+  /* object-position keeps the face in frame at every crop; the likeness is never altered. */
+  .est-founder__portrait {
+    width: 320px;
+    height: 400px;
+    border-radius: 14px;
+    object-fit: cover;
+    object-position: 50% 22%;
+  }
+
+  .est-founder__copy {
+    min-width: 0;
+  }
+
+  .est-founder__body {
+    margin: 14px 0 0;
+    max-width: 58ch;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  .est-founder__actions {
+    margin-top: 22px;
+  }
+
+  /* ═══ 06 FAQ ══════════════════════════════════════════════════════════════════════════════ */
+  .est-faq__list {
+    margin-top: 26px;
+  }
+
+  /* ═══ 07 FINAL ════════════════════════════════════════════════════════════════════════════ */
+  .est-final {
+    background: var(--ac-color-navy-950);
+    color: #fff;
+    padding-block: 56px;
+  }
+
+  .est-final__grid {
+    display: grid;
+    align-items: center;
+    gap: 32px;
+    grid-template-columns: minmax(0, 1fr) auto;
+  }
+
+  .est-final__grid > * {
+    min-width: 0;
+  }
+
+  .est-final .est-h2 {
+    color: #fff;
+  }
+
+  .est-final__body {
+    margin: 14px 0 0;
+    max-width: 56ch;
+    color: #c3d2e4;
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  .est-final__area {
+    margin: 16px 0 0;
+    color: var(--ac-color-blue-on-navy);
+    font-size: 0.9375rem;
+    font-weight: 650;
+    letter-spacing: 0.04em;
+  }
+
+  .est-final__actions {
+    display: grid;
+    min-width: 0;
+    gap: 12px;
+    justify-items: start;
+  }
+
+  .est-final__note {
+    margin: 0;
+    max-width: 34ch;
+    color: #8fa6bf;
+    font-size: 0.75rem;
+    line-height: 1.6;
+  }
+
+  /* ═══ RESPONSIVE ══════════════════════════════════════════════════════════════════════════
+     At narrow widths every column collapses. Nothing scrolls horizontally, nothing overlaps. */
+  @media (max-width: 62rem) {
+    .est-offer__grid,
+    .est-decisions__grid,
+    .est-plan__grid,
+    .est-final__grid {
+      gap: 32px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    /* Refresh §2: "no forced height on mobile." */
+    .est-figure :global(img) {
+      max-height: none;
+    }
+
+    .est-figure--sticky {
+      position: static;
+    }
+
+    /* Explanation first, then the decisions, then the illustration — the reading order the
+       refresh asks for, without moving anything in the DOM. */
+    .est-decisions__copy {
+      order: 1;
+    }
+
+    .est-decisions__grid > .est-figure {
+      order: 2;
+    }
+
+    .est-plan__side {
+      border-left: 0;
+      border-top: 1px solid rgb(255 255 255 / 18%);
+      padding-left: 0;
+      padding-top: 28px;
+    }
+
+    .est-steps__list {
+      gap: 24px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .est-founder__grid {
+      gap: 28px;
+      grid-template-columns: minmax(0, 1fr);
+      justify-items: start;
+    }
+
+    .est-final__note {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .est-shell {
+      padding-inline: 20px;
+    }
+
+    .est-offer,
+    .est-decisions,
+    .est-plan,
+    .est-steps,
+    .est-founder,
+    .est-faq,
+    .est-final {
+      padding-block: 44px;
+    }
+
+    .est-h2 {
+      max-width: none;
+    }
+
+    .est-decisions__row {
+      gap: 16px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .est-founder__portrait {
+      width: min(260px, 70vw);
+      height: auto;
+      aspect-ratio: 4 / 5;
+    }
+  }
+</style>

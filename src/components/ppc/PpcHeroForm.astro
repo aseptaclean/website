@@ -42,7 +42,19 @@
 // PARTIAL FAILURE IS REPORTED HONESTLY. functions/api/lead.ts returns 503 with `ok:false` and a
 // specific message when the details stored but the files did not. That message is surfaced
 // verbatim and the entered values are preserved — this form never claims photos were received.
-import { assessment } from "@data/assessment";
+//
+// SECOND CAMPAIGN, 2026-09-09 — /estate-cleanout-san-jose/assessment/. Four additive props were
+// introduced for it, each defaulted so the hoarding route renders byte-identically to before:
+//   detailLabel        the visible label on the free-text field (default: the hoarding wording)
+//   detailRequired     false on the estate campaign, whose brief makes details optional with no
+//                      minimum length. The SERVER's matching relaxation is route-scoped in
+//                      functions/_lib/lead.ts (`detailOptionalCampaignRoutes`) — the two must
+//                      agree or the browser accepts a blank the endpoint then rejects.
+//   statusLabel /      an optional, unselected-by-default property-description selector posting
+//   statusOptions      to `property_status`. Absent unless a caller passes it.
+//   descriptionHelper  now optional; the helper paragraph is simply not rendered without one.
+import PpcOptionalFields from "@components/ppc/PpcOptionalFields.astro";
+import { assessment, postableSituationValues } from "@data/assessment";
 import { legal, site } from "@data/site";
 
 interface Props {
@@ -60,7 +72,27 @@ interface Props {
    * a telephone link or promise a booking — see the role table in src/data/site.ts.
    */
   submitLabel?: string;
-  descriptionHelper: string;
+  /** Visible label on the free-text field. */
+  detailLabel?: string;
+  /** False makes the free-text field optional. Must match the server's route-scoped rule. */
+  detailRequired?: boolean;
+  descriptionHelper?: string;
+  /** Optional property-description selector. Both props are required together to render it. */
+  statusLabel?: string;
+  statusOptions?: readonly string[];
+  /**
+   * Panel surface. `dark` is the original deep-navy hero panel and stays the default so the
+   * hoarding route is untouched. `light` is the white, outlined panel the 2026-09-09 estate
+   * layout refresh specifies for a bright opening: same markup, same fields, same script — only
+   * the surface, borders and text colours change.
+   */
+  tone?: "dark" | "light";
+  /**
+   * When set, the OPTIONAL fields (property description, free text, photos) move inside a native
+   * <details> disclosure carrying this label, and the consent block stays outside it. Omit it and
+   * every field renders inline exactly as before.
+   */
+  optionalDisclosureLabel?: string;
   photoHelper: string;
   microcopy: string;
   /** Where a CONFIRMED submission lands. Reached by GET, so a refresh cannot resubmit. */
@@ -74,19 +106,34 @@ const {
   title,
   intro,
   submitLabel = site.offer.formSubmitCta,
+  detailLabel = "Tell us what’s going on",
+  detailRequired = true,
   descriptionHelper,
+  statusLabel,
+  statusOptions,
+  tone = "dark",
+  optionalDisclosureLabel,
   photoHelper,
   microcopy,
   thankYouRoute
 } = Astro.props;
 
 // Fail the build rather than post a value the CRM enum does not contain. A silent typo here
-// would be a 422 on every real lead.
-if (!assessment.situations.some((situation) => situation.value === situationValue)) {
+// would be a 422 on every real lead — and on a campaign form the value is a hidden input, so
+// there is no visibly wrong dropdown to give the failure away.
+//
+// Checked against `postableSituationValues`, which is the rendered options PLUS the
+// campaign-fixed values. `scripts/situation-enum-guard.mjs` runs the real endpoint validator
+// against that same list on every build, so passing this check means the endpoint accepts it.
+if (!postableSituationValues.includes(situationValue)) {
   throw new Error(
-    `PpcHeroForm: "${situationValue}" is not a value in src/data/assessment.ts situations.`
+    `PpcHeroForm: "${situationValue}" is in neither \`situations\` nor \`campaignSituations\` in src/data/assessment.ts.`
   );
 }
+
+// `assessment` still backs the upload limits and the form version below.
+const showStatusSelect = Boolean(statusLabel && statusOptions && statusOptions.length);
+const useDisclosure = Boolean(optionalDisclosureLabel);
 
 const endpointAvailable = Boolean(
   site.integrations.formEnabled &&
@@ -97,10 +144,10 @@ const endpointAvailable = Boolean(
 const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
 ---
 
-<div class="ppc-form-shell">
+<div class:list={["ppc-form-shell", { "is-light": tone === "light" }]}>
   <form
     id={formId}
-    class="ppc-form"
+    class:list={["ppc-form", { "is-light": tone === "light" }]}
     method="post"
     enctype="multipart/form-data"
     action={endpointAvailable ? site.urls.formEndpoint : undefined}
@@ -190,13 +237,50 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
         />
       </div>
 
+      {/* OPTIONAL FIELDS. Inline by default — no wrapper element, so the hoarding route's DOM and
+          its short-desktop pairing rule are untouched. With `optionalDisclosureLabel` set they
+          move inside a native <details>; see PpcOptionalFields.astro. */}
+      <PpcOptionalFields label={optionalDisclosureLabel}>
+      {
+        /* OPTIONAL PROPERTY-DESCRIPTION SELECTOR. Starts unselected: the first option carries an
+           empty value and is not `selected`-by-omission-of-anything-else — with no `required`
+           attribute an empty value submits cleanly, and functions/_lib/lead.ts skips an empty
+           string before the allowed-values check. This is NOT the service selector; the service
+           is the hidden `property_situation` above. */
+        showStatusSelect && (
+          <div class="ppc-form__field ppc-form__field--full">
+            <label for={`${formId}-status`}>
+              {statusLabel} <span class="ppc-form__optional">(optional)</span>
+            </label>
+            <select id={`${formId}-status`} name="property_status">
+              <option value="">Select one</option>
+              {statusOptions?.map((option) => <option value={option}>{option}</option>)}
+            </select>
+          </div>
+        )
+      }
+
       <div class="ppc-form__field ppc-form__field--full">
-        <label for={`${formId}-detail`}>Tell us what&rsquo;s going on</label>
+        <label for={`${formId}-detail`}>
+          {detailLabel}
+          {!detailRequired && <> <span class="ppc-form__optional">(optional)</span></>}
+        </label>
         {/* rows="2" so the profile's compact 64px textarea minimum is the value that actually
             renders. `rows` sets a used height that a smaller min-height cannot reduce, which is
-            why the shared form's rows="3" measures 87px in compact mode. Still resizable. */}
-        <textarea id={`${formId}-detail`} name="property_detail" rows="2" required></textarea>
-        <p class="ppc-form__helper" id={`${formId}-detail-help`}>{descriptionHelper}</p>
+            why the shared form's rows="3" measures 87px in compact mode. Still resizable.
+
+            NO `minlength`, and none server-side either: an optional field with a floor under it
+            is not optional. */}
+        <textarea
+          id={`${formId}-detail`}
+          name="property_detail"
+          rows="2"
+          required={detailRequired}
+          aria-describedby={descriptionHelper ? `${formId}-detail-help` : undefined}
+        ></textarea>
+        {descriptionHelper && (
+          <p class="ppc-form__helper" id={`${formId}-detail-help`}>{descriptionHelper}</p>
+        )}
       </div>
 
       <div class="ppc-form__field ppc-form__field--full ppc-form__upload">
@@ -227,11 +311,16 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
         <p class="ppc-form__file-error form-error" data-ppc-upload-error role="alert" hidden></p>
         <p class="visually-hidden" data-ppc-upload-status role="status" aria-live="polite"></p>
       </div>
+      </PpcOptionalFields>
     </div>
 
     {/* Verbatim from src/data/site.ts. 10DLC-relevant consent language — never reworded, never
         retyped at a call site, never shrunk below 14px to win fold space. The appendix applies
-        because this form collects property media. */}
+        because this form collects property media.
+
+        ALWAYS OUTSIDE THE DISCLOSURE. Consent is a required act; it can never sit behind a
+        control a visitor has to discover. The estate refresh states this explicitly and it is
+        also the only reading AGENTS.md §3's protected-consent rule permits. */}
     <label class="ppc-form__consent">
       <input type="checkbox" name="privacy_consent" value="yes" required />
       <span>
@@ -257,7 +346,7 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
             <div
               class="cf-turnstile"
               data-sitekey={site.integrations.turnstileSiteKey}
-              data-theme="dark"
+              data-theme={tone === "light" ? "light" : "dark"}
               data-size="flexible"
             />
           </div>
@@ -488,8 +577,18 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
       });
     };
 
+    // An error must never be reported against a control the visitor cannot see. When the optional
+    // fields sit inside the <details> disclosure and something in there is rejected — the only
+    // realistic case is a server-side `property_status` rejection — the panel is opened before
+    // the message is attached and before focus or scrolling happens.
+    const revealFor = (control: FormControl) => {
+      const panel = control.closest<HTMLDetailsElement>("[data-ppc-optional]");
+      if (panel && !panel.open) panel.open = true;
+    };
+
     const attachError = (control: FormControl, message: string) => {
       control.setAttribute("aria-invalid", "true");
+      revealFor(control);
       if (control instanceof HTMLInputElement && control.type === "checkbox") {
         const wrapper = control.closest("label");
         if (!wrapper) return;
@@ -551,7 +650,12 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
       }
 
       const uploadProblems = renderUpload();
-      if (uploadProblems.length) messages.push(...uploadProblems);
+      if (uploadProblems.length) {
+        messages.push(...uploadProblems);
+        // The upload control may be inside the disclosure; a file-selection problem has to be
+        // visible to be fixable.
+        if (uploadInput) revealFor(uploadInput);
+      }
 
       showSummary(messages);
       return messages.length === 0;
@@ -947,7 +1051,8 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
   }
 
   .ppc-form__field input,
-  .ppc-form__field textarea {
+  .ppc-form__field textarea,
+  .ppc-form__field select {
     width: 100%;
     min-width: 0;
     /* >=44px control height and >=16px text — the profile's floors, and what stops iOS from
@@ -966,6 +1071,27 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
   .ppc-form__field textarea {
     min-height: 64px;
     resize: vertical;
+  }
+
+  /* The optional selector matches the inputs exactly — same 44px floor, same >=16px text, same
+     translucent fill on the deep-navy panel. `color-scheme: dark` is what makes the native
+     dropdown list render legibly against this surface instead of black-on-dark; the option
+     colours are set explicitly as well, because Windows and some Linux builds ignore it. */
+  .ppc-form__field select {
+    appearance: none;
+    color-scheme: dark;
+    background-image: linear-gradient(45deg, transparent 50%, currentcolor 50%),
+      linear-gradient(135deg, currentcolor 50%, transparent 50%);
+    background-position: calc(100% - 18px) calc(50% + 2px), calc(100% - 13px) calc(50% + 2px);
+    background-size: 5px 5px, 5px 5px;
+    background-repeat: no-repeat;
+    padding-right: 34px;
+    cursor: pointer;
+  }
+
+  .ppc-form__field select option {
+    background: var(--ac-color-navy-900);
+    color: var(--ac-color-paper);
   }
 
   /* The file control keeps the same >=16px text and >=44px height floors as every other input.
@@ -990,7 +1116,8 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
   }
 
   .ppc-form__field input:focus-visible,
-  .ppc-form__field textarea:focus-visible {
+  .ppc-form__field textarea:focus-visible,
+  .ppc-form__field select:focus-visible {
     outline: 2px solid var(--ac-color-paper);
     outline-offset: 1px;
   }
@@ -1275,6 +1402,165 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
        third row of the same left-to-right grid. */
     .ppc-form__grid > .ppc-form__field--full {
       grid-column: auto;
+    }
+  }
+
+  /* ═══ LIGHT PANEL ═════════════════════════════════════════════════════════════════════════
+     The 2026-09-09 estate layout refresh: "The form is a white panel with a subtle border, 16px
+     corner radius, and restrained shadow… visible navy labels and white inputs with clearly
+     visible borders."
+
+     SURFACE ONLY. Not one field, label, helper string, consent control, limit, validation rule
+     or event moves — this block changes colour, border and radius and nothing else. Every
+     readable floor the dark panel holds is restated here rather than inherited by accident:
+     >=16px input text, >=44px controls, >=48px submit, 14px helper and consent copy.
+
+     Contrast, measured against #ffffff: navy-900 #10233f label text 15.0:1; ink-600 #46566b
+     helper and consent copy 7.2:1; line-strong #ccd6e2 input borders are a 1px non-text
+     boundary carrying a 1.6:1 ratio against white, which is why every input also has a visible
+     2px focus outline in --ac-color-focus (#2e5c9e, 5.9:1). AGENTS.md §2.2's "check contrast
+     rather than using light brand colours for small text" is the rule this satisfies. */
+  .ppc-form.is-light {
+    border: 1px solid var(--ac-color-line-strong);
+    /* The refresh's 16px radius, this panel only. */
+    border-radius: 16px;
+    background: var(--ac-color-paper);
+    /* Restrained: one soft ambient shadow, no coloured glow, no layered elevation. */
+    box-shadow: 0 1px 2px rgb(16 35 63 / 6%), 0 12px 28px -18px rgb(16 35 63 / 28%);
+    padding: 26px;
+  }
+
+  .ppc-form.is-light .ppc-form__title {
+    color: var(--ac-color-navy-900);
+  }
+
+  .ppc-form.is-light .ppc-form__intro,
+  .ppc-form.is-light .ppc-form__helper,
+  .ppc-form.is-light .ppc-form__microcopy,
+  .ppc-form.is-light .ppc-form__consent,
+  .ppc-form.is-light .ppc-form__note,
+  .ppc-form.is-light .ppc-form__status {
+    color: var(--ac-color-ink-600);
+  }
+
+  .ppc-form.is-light .ppc-form__field label {
+    color: var(--ac-color-navy-900);
+  }
+
+  .ppc-form.is-light .ppc-form__optional {
+    color: var(--ac-color-ink-600);
+  }
+
+  .ppc-form.is-light .ppc-form__field input,
+  .ppc-form.is-light .ppc-form__field textarea,
+  .ppc-form.is-light .ppc-form__field select {
+    border-color: var(--ac-color-line-strong);
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+  }
+
+  .ppc-form.is-light .ppc-form__field select {
+    color-scheme: light;
+  }
+
+  .ppc-form.is-light .ppc-form__field select option {
+    background: var(--ac-color-paper);
+    color: var(--ac-color-navy-900);
+  }
+
+  .ppc-form.is-light .ppc-form__field input::file-selector-button {
+    border-color: var(--ac-color-line-strong);
+    background: var(--ac-color-warm-white);
+    color: var(--ac-color-navy-900);
+  }
+
+  .ppc-form.is-light .ppc-form__field input:focus-visible,
+  .ppc-form.is-light .ppc-form__field textarea:focus-visible,
+  .ppc-form.is-light .ppc-form__field select:focus-visible {
+    outline-color: var(--ac-color-focus);
+  }
+
+  .ppc-form.is-light .ppc-form__files li {
+    border-color: var(--ac-color-line-strong);
+  }
+
+  .ppc-form.is-light .ppc-form__files strong,
+  .ppc-form.is-light .ppc-form__file-remove {
+    color: var(--ac-color-navy-900);
+  }
+
+  .ppc-form.is-light .ppc-form__files small {
+    color: var(--ac-color-ink-600);
+  }
+
+  .ppc-form.is-light .ppc-form__link {
+    color: var(--ac-color-blue-deep);
+  }
+
+  .ppc-form.is-light .ppc-form__consent input {
+    accent-color: var(--ac-color-navy-800);
+  }
+
+  /* Navy #1C355E button on white, per the refresh's palette note. */
+  .ppc-form.is-light .ppc-form__submit {
+    background: var(--ac-color-navy-800);
+    color: var(--ac-color-paper);
+  }
+
+  .ppc-form.is-light .ppc-form__submit:hover:not(:disabled) {
+    background: var(--ac-color-navy-900);
+  }
+
+  .ppc-form.is-light .ppc-form__submit:focus-visible {
+    outline-color: var(--ac-color-focus);
+  }
+
+  .ppc-form.is-light .ppc-form__errors {
+    background: #fdf2f0;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ppc-form.is-light :global(.form-error) {
+    color: var(--ac-color-error);
+  }
+
+  /* The light panel opts out of the dark hero's short-desktop compaction: it is not competing
+     for a fold budget against a full-bleed photograph, and the refresh explicitly caps the
+     opening at a 1200px container with top-aligned columns. */
+  @media (min-width: 75rem) and (max-height: 950px) {
+    .ppc-form.is-light {
+      gap: 12px;
+      padding: 26px;
+    }
+
+    .ppc-form.is-light .ppc-form__grid {
+      gap: 10px 14px;
+    }
+  }
+
+  @media (min-width: 75rem) and (max-height: 880px) {
+    .ppc-form.is-light {
+      grid-template-columns: minmax(0, 1fr);
+      padding: 26px;
+    }
+
+    .ppc-form.is-light > .ppc-form__verify,
+    .ppc-form.is-light > .ppc-form__submit {
+      grid-column: 1 / -1;
+    }
+
+    .ppc-form.is-light > .ppc-form__submit {
+      align-self: auto;
+    }
+
+    .ppc-form.is-light .ppc-form__grid > .ppc-form__field--full {
+      grid-column: 1 / -1;
+    }
+  }
+
+  @media (max-width: 33.75rem) {
+    .ppc-form.is-light {
+      padding: 20px;
     }
   }
 

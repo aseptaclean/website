@@ -25,6 +25,13 @@ interface Props {
   imageAlt?: string;
   needsAsset?: string;
   showActions?: boolean;
+  /**
+   * Replaces the call label where a route's approved wording appends the number — the same
+   * contract AcActions documents. Added 2026-09-09 so a campaign band can render its own call
+   * label without moving its actions into the slot, which would put them ahead of the pull quote
+   * and out of the source copy's order. Omit it and AcActions' sitewide default applies.
+   */
+  primaryLabel?: string;
   secondaryLabel?: string;
   secondaryHref?: string;
 }
@@ -41,6 +48,7 @@ const {
   imageAlt = "",
   needsAsset,
   showActions = true,
+  primaryLabel,
   secondaryLabel,
   secondaryHref
 } = Astro.props;
@@ -64,7 +72,12 @@ const {
         {pullQuote && <p class="acx-dark__pull">{pullQuote}</p>}
         {showActions && (
           <div class="acx-dark__actions">
-            <AcActions tone="dark" secondaryLabel={secondaryLabel} secondaryHref={secondaryHref} />
+            <AcActions
+              tone="dark"
+              {...(primaryLabel ? { primaryLabel } : {})}
+              secondaryLabel={secondaryLabel}
+              secondaryHref={secondaryHref}
+            />
           </div>
         )}
       </div>

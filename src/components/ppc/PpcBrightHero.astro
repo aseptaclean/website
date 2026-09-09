@@ -1,0 +1,237 @@
+---
+// BRIGHT OPENING — docs/aseptaclean-layout-refresh.md §1, installed 2026-09-09.
+//
+// This replaces the dark full-bleed photographic hero on the estate campaign route only.
+// PpcHero.astro is untouched and still opens /hoarding-cleanup-san-jose/assessment/.
+//
+// The refresh's recipe, implemented literally:
+//   · warm white #F7F8FA surface, navy text, no photograph and no dark overlay
+//   · centred container capped at 1200px, ~54/46 desktop split, 40px gap
+//   · BOTH COLUMNS TOP-ALIGNED — `align-items: start`, not `center`. Centring is what produced
+//     the empty bands the refresh is correcting.
+//   · no viewport-height section, no spacer divs, no fixed heights
+//
+// The three-part line ("One person to call" · "Written plan and price" · "Help from start to
+// finish") is a restrained inline row of three items separated by hairline rules — the refresh
+// asks for exactly that "rather than adding a large badge wall". No icons, no cards, no badges,
+// and nothing in it is a credential or a claim the site does not already make.
+//
+// The call sits above the form in DOM order so a phone visitor reaches the primary action first,
+// and the form follows the copy on mobile with nothing in between.
+import AcActions from "@components/ac/AcActions.astro";
+
+interface Props {
+  id: string;
+  eyebrow: string;
+  heading: string;
+  headingId: string;
+  lead: string;
+  body: readonly string[];
+  /** The restrained three-part line below the introduction. */
+  points: readonly string[];
+  /** Campaign call label — built from src/data/site.ts by the caller, never typed in. */
+  primaryLabel: string;
+  secondaryLabel: string;
+  /** Same-page target for the subordinate action. */
+  formHref: string;
+  supportingLine: string;
+}
+
+const {
+  id,
+  eyebrow,
+  heading,
+  headingId,
+  lead,
+  body,
+  points,
+  primaryLabel,
+  secondaryLabel,
+  formHref,
+  supportingLine
+} = Astro.props;
+---
+
+<section class="est-hero" id={id} aria-labelledby={headingId}>
+  <div class="est-shell">
+    <div class="est-hero__grid">
+      <div class="est-hero__copy">
+        <p class="est-hero__eyebrow">{eyebrow}</p>
+        {/* The ONE H1 on this page. Size comes from .ac-type-h1-home; type law #1 (AGENTS.md §6)
+            forbids a component declaring font-size on a heading, so nothing below touches it. */}
+        <h1 id={headingId} class="ac-type-h1-home est-hero__title">{heading}</h1>
+        <p class="est-hero__lead">{lead}</p>
+        {body.map((paragraph) => <p class="est-hero__body">{paragraph}</p>)}
+
+        <ul class="est-hero__points">
+          {points.map((point) => <li>{point}</li>)}
+        </ul>
+
+        <div class="est-hero__actions">
+          <AcActions
+            primaryLabel={primaryLabel}
+            secondaryLabel={secondaryLabel}
+            secondaryHref={formHref}
+          />
+        </div>
+
+        <p class="est-hero__note">{supportingLine}</p>
+      </div>
+
+      <div class="est-hero__form">
+        <slot name="form" />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* OPTS OUT OF THE GLOBAL SECTION RHYTHM. global.css gives every `main > section` 68px of block
+     padding; this hero carries its own on the grid below, so without this it would render
+     68 + 56 = 124px of opening space no specification asks for — the same correction global.css
+     already records for `.acx-hero` and PpcLayout records for `.ppc-hero`. Measured before the
+     fix: the eyebrow sat 207px down a 900px viewport. Space only; nothing is hidden or clipped. */
+  .est-hero {
+    padding-block: 0;
+    background: var(--ac-color-warm-white);
+    border-bottom: 1px solid var(--ac-color-line);
+  }
+
+  /* Refresh: 1200px container, 32px desktop padding, 20px mobile. Declared here rather than
+     reusing `.ac-shell` (1320px) because the refresh caps this route specifically. */
+  .est-shell {
+    margin-inline: auto;
+    max-width: 1200px;
+    padding-inline: 32px;
+  }
+
+  /* ~54/46 with a 40px gap. `minmax(0, …)` on both tracks so a long word or the Turnstile
+     widget's 300px minimum can never push the grid past the container. */
+  .est-hero__grid {
+    display: grid;
+    align-items: start;
+    gap: 40px;
+    grid-template-columns: minmax(0, 54fr) minmax(0, 46fr);
+    padding-block: 56px 64px;
+  }
+
+  .est-hero__copy {
+    min-width: 0;
+  }
+
+  .est-hero__eyebrow {
+    margin: 0 0 14px;
+    color: var(--ac-color-blue-deep);
+    font-size: 0.875rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    line-height: 1.4;
+    text-transform: uppercase;
+  }
+
+  .est-hero__title {
+    margin: 0;
+    color: var(--ac-color-navy-950);
+  }
+
+  /* Refresh: "Keep prose lines near 55–65 characters." */
+  .est-hero__lead {
+    margin: 18px 0 0;
+    max-width: 34ch;
+    color: var(--ac-color-navy-900);
+    font-size: 1.1875rem;
+    font-weight: 650;
+    line-height: 1.5;
+  }
+
+  .est-hero__body {
+    margin: 14px 0 0;
+    max-width: 58ch;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  /* The three-part line. Hairline separators, no badges. */
+  .est-hero__points {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 22px 0 0;
+    padding: 0;
+    list-style: none;
+    gap: 10px 18px;
+  }
+
+  .est-hero__points li {
+    position: relative;
+    color: var(--ac-color-navy-900);
+    font-size: 0.9375rem;
+    font-weight: 650;
+    line-height: 1.4;
+  }
+
+  .est-hero__points li + li {
+    padding-left: 19px;
+  }
+
+  .est-hero__points li + li::before {
+    position: absolute;
+    left: 0;
+    top: 0.15em;
+    bottom: 0.15em;
+    width: 1px;
+    background: var(--ac-color-line-strong);
+    content: "";
+  }
+
+  .est-hero__actions {
+    margin-top: 26px;
+  }
+
+  .est-hero__note {
+    margin: 14px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+
+  .est-hero__form {
+    min-width: 0;
+    /* The walkthrough anchors land here; clear the sticky header before the form's first field. */
+    scroll-margin-top: 90px;
+  }
+
+  /* Refresh: "On mobile: introduction, call/walkthrough buttons, then form." DOM order already
+     is exactly that, so the columns simply collapse. */
+  @media (max-width: 62rem) {
+    .est-hero__grid {
+      gap: 32px;
+      grid-template-columns: minmax(0, 1fr);
+      padding-block: 40px 44px;
+    }
+
+    .est-hero__lead {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .est-shell {
+      padding-inline: 20px;
+    }
+
+    .est-hero__points li + li {
+      padding-left: 0;
+    }
+
+    .est-hero__points li + li::before {
+      display: none;
+    }
+
+    .est-hero__points {
+      display: grid;
+      gap: 8px;
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

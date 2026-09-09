@@ -1,0 +1,113 @@
+---
+// OPTIONAL-FIELD WRAPPER for PpcHeroForm's three optional controls (property description, free
+// text, photos). Added 2026-09-09 for the estate layout refresh, which asks that they move into
+// "an accessible disclosure labeled 'Add property details or photos (optional)'".
+//
+// WHY A SLOT COMPONENT RATHER THAN A TERNARY IN THE FORM. Astro scopes styles to the component
+// that AUTHORED the markup, and slotted content keeps its author's scope — so the fields keep
+// every `.ppc-form__field` rule from PpcHeroForm's own style block without a single `:global()`.
+// Duplicating the three fields into two branches would have worked too, and would have left two
+// copies of a validated form control to drift apart.
+//
+// WITHOUT A LABEL THIS RENDERS NOTHING OF ITS OWN — just `<slot />`. That is deliberate and it is
+// what keeps /hoarding-cleanup-san-jose/assessment/ byte-identical: no wrapper element, no extra
+// grid item, and `.ppc-form__grid > .ppc-form__field--full` (the short-desktop pairing rule)
+// still matches, because the fields are still direct children of the grid.
+//
+// <details> is the whole control: keyboard-operable, screen-reader-announced and toggleable with
+// no JavaScript. Collapsing it does NOT clear anything — the inputs stay in the DOM and in the
+// FormData, so typed values survive a close and still submit. PpcHeroForm's submit handler
+// force-opens it if a server error ever lands on a field inside, so no error is ever reported
+// against a control the visitor cannot see.
+interface Props {
+  /** Visible summary text. Omit it and the fields render inline with no wrapper at all. */
+  label?: string;
+}
+
+const { label } = Astro.props;
+---
+
+{
+  label ? (
+    <details class="ppc-optional" data-ppc-optional>
+      <summary class="ppc-optional__summary">
+        <span class="ppc-optional__label">{label}</span>
+        <span class="ppc-optional__chevron" aria-hidden="true"></span>
+      </summary>
+      <div class="ppc-optional__fields">
+        <slot />
+      </div>
+    </details>
+  ) : (
+    <slot />
+  )
+}
+
+<style>
+  /* The disclosure spans both tracks of the form grid — it is a section of the panel, not a
+     field beside another field. */
+  .ppc-optional {
+    grid-column: 1 / -1;
+    border: 1px solid var(--ac-color-line-strong);
+    border-radius: var(--ac-r-sm);
+    background: var(--ac-color-warm-white);
+  }
+
+  .ppc-optional__summary {
+    display: flex;
+    /* >=44px tap target, the same floor every control in this panel holds. */
+    min-height: 44px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 10px 14px;
+    color: var(--ac-color-navy-900);
+    /* 15px — the panel's readable floor for a control label. */
+    font-size: 0.9375rem;
+    font-weight: 650;
+    line-height: 1.4;
+    cursor: pointer;
+    list-style: none;
+  }
+
+  /* Safari renders a default disclosure triangle through this pseudo-element; the chevron below
+     replaces it so the control looks the same in every browser. */
+  .ppc-optional__summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .ppc-optional__summary:focus-visible {
+    outline: 2px solid var(--ac-color-focus);
+    outline-offset: 2px;
+  }
+
+  .ppc-optional__chevron {
+    width: 8px;
+    height: 8px;
+    flex: 0 0 auto;
+    border-right: 2px solid currentcolor;
+    border-bottom: 2px solid currentcolor;
+    transform: translateY(-2px) rotate(45deg);
+    transition: transform 150ms ease;
+  }
+
+  .ppc-optional[open] .ppc-optional__chevron {
+    transform: translateY(2px) rotate(-135deg);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .ppc-optional__chevron {
+      transition: none;
+    }
+  }
+
+  .ppc-optional__fields {
+    display: grid;
+    gap: 12px;
+    /* One column: these are all full-width controls, and `grid-column: 1 / -1` on the slotted
+       fields resolves against this track rather than the panel's two. */
+    grid-template-columns: minmax(0, 1fr);
+    border-top: 1px solid var(--ac-color-line);
+    padding: 14px;
+  }
+</style>

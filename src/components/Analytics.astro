@@ -71,10 +71,18 @@
     // /request-assessment/ was retired 2026-09-06 (docs/05-CURRENT-DECISIONS.md); every CTA
     // that used to point at it now points at a page's own embedded form anchor instead —
     // #hero-form (homepage + the five service pages' AcHeroWithForm, its default formId),
-    // #request (RequestForm.astro / CityHero.astro), #contact-form (Contact), or
-    // #assessment-form (the PPC hero form). Match those instead of the dead route substring so
-    // this event keeps firing on the same visitor action it always measured.
-    if (/#(hero-form|request|contact-form|assessment-form)(&|$)/.test(link.href)) {
+    // #request (RequestForm.astro / CityHero.astro), #contact-form (Contact),
+    // #assessment-form (the hoarding PPC hero form), or #request-walkthrough (the estate PPC
+    // hero form, added 2026-09-09). Match those instead of the dead route substring so this
+    // event keeps firing on the same visitor action it always measured.
+    //
+    // `request-walkthrough` is listed BEFORE `request`: alternation is first-match, and
+    // `#request` followed by `-` would fail the `(&|$)` boundary and drop the estate CTA
+    // entirely. This is still an intent event, not a lead — the only lead event on this site is
+    // `ppc_form_success`, raised solely after the endpoint accepts a submission.
+    if (
+      /#(hero-form|request-walkthrough|request|contact-form|assessment-form)(&|$)/.test(link.href)
+    ) {
       record(
         offer === "private_residence_reset"
           ? "private_residence_assessment_click"

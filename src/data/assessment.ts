@@ -84,3 +84,38 @@ export const assessment = {
       "Up to 10 files. Images up to 10 MB each; videos up to 50 MB each; 75 MB combined."
   }
 } as const;
+
+// CAMPAIGN-FIXED SITUATION VALUES — accepted by the endpoint, NOT rendered in the visible
+// service dropdown.
+//
+// A PPC landing page covers one service and posts its `property_situation` as a hidden input
+// rather than asking a visitor to re-pick a service they already clicked an ad for. When that
+// service has no entry in `situations` above — because it is not one of the six choices the
+// shared dropdown offers — the value still has to be a member of
+// `allowedValues.property_situation` in functions/_lib/lead.ts or the endpoint rejects it 422
+// before Turnstile, storage, HubSpot and both emails. That is exactly the failure the
+// crime-scene enum incident produced on 2026-09-06.
+//
+// So campaign-fixed values are declared HERE rather than typed into a page, and
+// `scripts/situation-enum-guard.mjs` runs the real validator against this list as well as the
+// rendered one. Adding a row is still a two-file change; the guard is what makes forgetting the
+// second file a build failure instead of a silent lead loss.
+//
+// `"Inherited or estate property"` is not a new enum value — it has been in
+// `allowedValues.property_situation` since before this campaign, and
+// /estate-cleanout-san-jose/'s own comment already names it as the estate mapping. This entry
+// promotes it from "tolerated from stale pages" to "actively posted by a live form".
+export const campaignSituations = [
+  {
+    value: "Inherited or estate property",
+    label: "Estate Cleanout",
+    route: "/estate-cleanout-san-jose/assessment/"
+  }
+] as const;
+
+// Every value a form on this site may post, rendered or campaign-fixed. Components validate a
+// fixed `property_situation` against this set at build time.
+export const postableSituationValues: readonly string[] = [
+  ...assessment.situations.map((situation) => situation.value),
+  ...campaignSituations.map((situation) => situation.value)
+];

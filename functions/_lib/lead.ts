@@ -104,6 +104,33 @@ const leanRequiredFields = [
   "property_detail"
 ] as const;
 
+// CAMPAIGN ROUTES WHERE THE FREE-TEXT DESCRIPTION IS OPTIONAL.
+//
+// Scoped by the route the submission came from, the same mechanism functions/_lib/providers.ts
+// already uses to scope the hoarding campaign's confirmation email. Keying on `offer_type` was
+// rejected for the same reason it was rejected there: campaign forms post the SHARED
+// `handoff_reset` value, so that key would have relaxed the required set for every other form on
+// the site.
+//
+// WHY: docs/aseptaclean-estate-landing-page.md (owner, 2026-09-09) requires name, phone, email
+// and property ZIP, and makes the free-text details and the property-description selector
+// optional with "No minimum word or character requirement on optional details, in browser or
+// backend." The estate campaign form therefore renders `property_detail` as optional and this
+// list is what stops the endpoint from rejecting a blank one. `property_zip` and
+// `property_situation` stay required on this branch — the campaign posts a fixed situation and
+// asks for the ZIP.
+//
+// Nothing else changes. Every other form, including /hoarding-cleanup-san-jose/assessment/,
+// still requires a description exactly as it did before.
+const detailOptionalCampaignRoutes = ["/estate-cleanout-san-jose/assessment/"] as const;
+
+const isDetailOptionalSubmission = (data: Record<string, string | string[]>) =>
+  [data.entry_route, data.landing_page, data.submitted_from].some(
+    (value) =>
+      typeof value === "string" &&
+      detailOptionalCampaignRoutes.some((route) => value.startsWith(route))
+  );
+
 const commonOptionalFields = [
   "offer_type",
   "property_city",
@@ -111,6 +138,12 @@ const commonOptionalFields = [
   "property_type",
   "vacant_status",
   "property_situation",
+  // Optional property-description selector on the estate campaign form
+  // (docs/aseptaclean-estate-landing-page.md §2, "What best describes the property?"). Distinct
+  // from `property_situation`, which is the frozen CRM SERVICE enum: this records what kind of
+  // property the estate work is happening in, and the campaign posts the service value itself as
+  // a hidden input. Optional everywhere and starts unselected, so no existing form is affected.
+  "property_status",
   "desired_completion_date",
   "approximate_square_footage",
   "email",
@@ -267,6 +300,15 @@ const allowedValues: Record<string, Set<string>> = {
     "Establishing a whole-home cleaning baseline",
     "Rodent droppings",
     "Animal waste",
+    "Other"
+  ]),
+  // Estate campaign property-description selector. Optional; a submission that leaves it
+  // unselected posts an empty string, which the loop below skips. The four values are the exact
+  // labels the form renders, so the CRM summary reads the same words the customer chose.
+  property_status: new Set([
+    "Estate after a loss",
+    "Inherited home",
+    "Occupied home",
     "Other"
   ]),
   approximate_square_footage: new Set([
@@ -459,13 +501,20 @@ export function validateLead(formData: FormData): ValidationResult {
   //      (leanRequiredFields). This replaced an earlier long-form questionnaire that required
   //      the full handoffOptionalFields set; that list is kept in allowedScalarFields only so
   //      no longer-sent field is rejected if it ever arrives from a stale cached page.
+  //   4. The estate campaign form (2026-09-09) — shape 3 with ONE difference: `property_detail`
+  //      is optional, because that campaign's brief makes the free-text details optional with no
+  //      minimum length. Detected from the submission's own entry route, not from `offer_type`,
+  //      which the campaign shares with every other handoff-reset form.
   const isDetailedSubmission = Boolean(data.form_version);
   const isResidenceOffer = offerType === "private_residence_reset";
+  const leanRequired = isDetailOptionalSubmission(data)
+    ? leanRequiredFields.filter((field) => field !== "property_detail")
+    : [...leanRequiredFields];
   const requiredFields = !isDetailedSubmission
-    ? commonRequiredFields
+    ? [...commonRequiredFields]
     : isResidenceOffer
     ? [...commonRequiredFields, ...residenceOptionalFields]
-    : [...commonRequiredFields, ...leanRequiredFields];
+    : [...commonRequiredFields, ...leanRequired];
   for (const field of requiredFields) {
     if (!data[field] || (Array.isArray(data[field]) && !data[field].length)) {
       errors[field] = "This field is required.";
