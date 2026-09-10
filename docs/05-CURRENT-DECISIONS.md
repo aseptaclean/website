@@ -1166,8 +1166,9 @@ published GTM container contains now. It does not rewrite that historical entry.
 - Native Google Ads conversion tracking is deliberately incomplete until Google Ads supplies the
   action-specific conversion label (the value after `AW-18340008320/` in the event snippet, or
   the Conversion Label shown under “Use Google Tag Manager”). Do not invent it. The future native
-  Ads tag must trigger only on custom event `ppc_form_success` with `page_path` exactly
-  `/estate-cleanout-san-jose/assessment/`.
+  Ads tag must trigger only on custom event `ppc_form_success` with `form_id` exactly
+  `request-walkthrough`. That stable form ID is carried by both the immediate success event and
+  the once-only thank-you recovery, while excluding the hoarding campaign's `assessment-form`.
 - Measurement choice: use one native Google Ads conversion action for the estate lead once that
   label is available. Do not also import GA4 `generate_lead` as a Google Ads conversion—the
   existing GA4 event covers both PPC forms, while the requested Ads conversion is estate-specific,
