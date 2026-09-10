@@ -133,8 +133,11 @@ if (
 }
 
 const wranglerPath = resolve(projectRoot, "wrangler.toml");
+const wranglerText = existsSync(wranglerPath)
+  ? readFileSync(wranglerPath, "utf8")
+  : "";
 const wranglerServiceArea = existsSync(wranglerPath)
-  ? readFileSync(wranglerPath, "utf8").match(
+  ? wranglerText.match(
       /^\s*PUBLIC_SERVICE_AREA\s*=\s*"([^"]*)"\s*$/m
     )?.[1]
   : undefined;
@@ -142,6 +145,20 @@ if (wranglerServiceArea !== approvedServiceArea) {
   errors.push(
     `wrangler.toml PUBLIC_SERVICE_AREA must exactly equal "${approvedServiceArea}".`
   );
+}
+
+// Google Ads is a public destination ID, not a secret. Keep the local production build and the
+// checked-in Cloudflare Pages build on the same account so a successful local analytics check
+// cannot mask a deployment that omitted or changed the Ads destination.
+const approvedGoogleAdsId = "AW-18340008320";
+const wranglerGoogleAdsId = wranglerText.match(
+  /^\s*PUBLIC_GOOGLE_ADS_ID\s*=\s*"([^"]*)"\s*$/m
+)?.[1];
+if (values.PUBLIC_GOOGLE_ADS_ID !== approvedGoogleAdsId) {
+  errors.push(`PUBLIC_GOOGLE_ADS_ID must exactly equal ${approvedGoogleAdsId}.`);
+}
+if (wranglerGoogleAdsId !== approvedGoogleAdsId) {
+  errors.push(`wrangler.toml PUBLIC_GOOGLE_ADS_ID must exactly equal ${approvedGoogleAdsId}.`);
 }
 
 const siteUrl = values.PUBLIC_SITE_URL;

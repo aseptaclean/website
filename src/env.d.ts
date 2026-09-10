@@ -11,6 +11,7 @@ interface ImportMetaEnv {
   readonly PUBLIC_PRIVACY_CONTACT?: string;
   readonly PUBLIC_GA_ID?: string;
   readonly PUBLIC_GTM_ID?: string;
+  readonly PUBLIC_GOOGLE_ADS_ID?: string;
   readonly PUBLIC_SERVICE_AREA?: string;
   readonly PUBLIC_RESPONSE_TIME?: string;
   readonly PUBLIC_ASSESSMENT_FEE?: string;

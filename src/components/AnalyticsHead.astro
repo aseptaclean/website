@@ -6,7 +6,7 @@
 // Termly's own blocking requires. Nothing else in `src/` may load a Google tag; the sitewide
 // behavioural events live in Analytics.astro and only push to `dataLayer`.
 //
-// EXACTLY ONE BASE INSTALLATION, ENFORCED IN CODE.
+// EXACTLY ONE LOADER INSTALLATION, ENFORCED IN CODE.
 // `gtmId` and `gaId` are mutually exclusive below. When a container is configured, the container
 // is the only base tag and GA4 is configured as a tag INSIDE it; the standalone gtag.js branch
 // then cannot render, so there is no window in which two GA4 base tags both emit `page_view`.
@@ -24,28 +24,41 @@
 // misfired only because no ID was ever configured; with one configured it would have left the
 // script at `type="text/plain"` forever and loaded nothing at all.
 //
-// The region config in that same live bundle reports `"consent_mode": "opt_in"` and
-// `"enable_google_consent_mode": false` for every region. Two consequences, both deliberate:
-//   1. Termly does NOT emit gtag consent default/update signals today, so a Consent Mode v2
-//      default-denied stub would leave GA4 permanently denied with nothing to grant it. None is
-//      emitted here. The gate is the loader itself, which is strictly stronger than Consent Mode:
-//      on refusal the container is never fetched and no Google cookie is ever written.
-//   2. Termly's auto-blocker classifies `googletagmanager.com` `_default` as ESSENTIAL, so an
-//      ungated container would load before consent. The manual gate below is what prevents that.
-//      Do not remove it to "make the tag fire".
+// Current browser verification observes a Google Consent Mode update when the visitor saves an
+// accepted preference, but this installation does not depend on that signal for its initial
+// privacy boundary. The gate is the loader itself: before a decision and after refusal, the
+// container is never fetched. Termly's auto-blocker otherwise classifies googletagmanager.com in
+// a way that can allow an ungated loader, so the manual gate below remains required. Do not remove
+// it to "make the tag fire", and do not add a competing consent-default implementation here.
 //
 // The bare `dataLayer` initialiser is not a tracker and is not gated: it allocates an array. It
 // runs first so events raised before the container loads are queued rather than lost, and are
 // replayed by GTM if — and only if — consent is later granted.
+//
+// GOOGLE ADS DESTINATION — no second loader and no conversion event.
+// `AW-18340008320` is configured through the already-installed Google tag by queueing one
+// `gtag('config', ...)` command. `send_page_view:false` prevents this second destination config
+// from producing another page-view event. The command is separately gated as Advertising, so a
+// visitor who permits Analytics but refuses Advertising never executes it. Because the existing
+// GTM loader is Analytics-gated, an Advertising-only choice is conservative: the command may be
+// queued, but no Google code is fetched unless Analytics is also allowed.
+//
+// A Google Ads conversion action needs BOTH this account ID and its action-specific conversion
+// label. The label is not in the repository or published container, so this file deliberately
+// does not emit `gtag('event','conversion')` or invent a `send_to` value. The existing accepted-
+// lead signal remains `ppc_form_success`; see the Google Ads handoff in docs/05-CURRENT-DECISIONS.md.
 import { site } from "@data/site";
 
 const gaId = site.integrations.analytics.gaId;
 const gtmId = site.integrations.analytics.gtmId;
+const googleAdsId = site.integrations.analytics.googleAdsId;
 const consentEnabled = site.integrations.termly.consentEnabled;
 
 const gtmSnippet = `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer',${JSON.stringify(gtmId)});`;
 
 const gtagSnippet = `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config',${JSON.stringify(gaId)},{anonymize_ip:true});`;
+
+const googleAdsConfigSnippet = `window.dataLayer=window.dataLayer||[];window.gtag=window.gtag||function(){window.dataLayer.push(arguments)};window.gtag('config',${JSON.stringify(googleAdsId)},{send_page_view:false});`;
 ---
 
 {
@@ -69,5 +82,16 @@ const gtagSnippet = `window.dataLayer=window.dataLayer||[];function gtag(){dataL
       />
       <script is:inline type="text/plain" data-categories="analytics" set:html={gtagSnippet} />
     </>
+  )
+}
+
+{
+  consentEnabled && googleAdsId && (gtmId || gaId) && (
+    <script
+      is:inline
+      type="text/plain"
+      data-categories="advertising"
+      set:html={googleAdsConfigSnippet}
+    />
   )
 }

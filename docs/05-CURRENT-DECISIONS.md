@@ -1150,3 +1150,27 @@ published GTM container contains now. It does not rewrite that historical entry.
   the contact upsert, associated deal creation, pipeline/stage fields, offer type, confirmation
   code, and description payload. The record was not separately opened in the HubSpot UI because
   this session has no HubSpot account access or retrievable API secret.
+
+### 2026-09-10 — Google Ads destination and estate-lead conversion handoff
+
+- Inspection before editing found one Termly-gated GTM installation, `GTM-WSSQ62BN`, on the
+  shared Base and PPC layouts. Its published container carries the GA4 Google tag for
+  `G-40K4ETN1NX` and maps the accepted-lead-only `ppc_form_success` dataLayer event to the GA4
+  event `generate_lead`. It did not contain `AW-18340008320` or a native Google Ads conversion
+  tag. The detected Google tag ID `GT-NFDGKKNW` is provider-managed identity, not a second loader
+  in repository source.
+- `AW-18340008320` is added as a destination through the existing Google tag/dataLayer. No new
+  GTM or gtag.js loader is installed. The destination config is manually blocked under Termly's
+  Advertising category and sets `send_page_view:false`; the existing GTM loader remains under
+  Analytics consent. Refusing consent leaves both inert.
+- Native Google Ads conversion tracking is deliberately incomplete until Google Ads supplies the
+  action-specific conversion label (the value after `AW-18340008320/` in the event snippet, or
+  the Conversion Label shown under “Use Google Tag Manager”). Do not invent it. The future native
+  Ads tag must trigger only on custom event `ppc_form_success` with `page_path` exactly
+  `/estate-cleanout-san-jose/assessment/`.
+- Measurement choice: use one native Google Ads conversion action for the estate lead once that
+  label is available. Do not also import GA4 `generate_lead` as a Google Ads conversion—the
+  existing GA4 event covers both PPC forms, while the requested Ads conversion is estate-specific,
+  and enabling both would double-count the estate submission.
+- Verification must intercept or stub `/api/lead` and Google hosts. No production submission or
+  real conversion may be generated merely to test this installation.

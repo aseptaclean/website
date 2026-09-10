@@ -60,6 +60,12 @@ PUBLIC_FOUNDER_NAME = "Matthew Ruiz"
 # `gaId && !gtmId`, so setting both would silence the gtag branch rather than duplicate it — but
 # do not set both. One base tag, one `page_view`.
 PUBLIC_GTM_ID = "GTM-WSSQ62BN"
+# Google Ads is added as a destination on the existing Google tag. AnalyticsHead queues this
+# config command through the same dataLayer and does NOT install another gtag.js or GTM loader.
+# It is separately held behind Termly's Advertising category. This is a public tag identifier,
+# not a secret. No native Ads conversion event is published until Google Ads supplies the real
+# conversion label; never invent the value after the slash in AW-18340008320/<label>.
+PUBLIC_GOOGLE_ADS_ID = "AW-18340008320"
 # PUBLIC_INSURANCE_STATUS intentionally absent. doc 21 §2.5 / AGENTS.md §3: no current COI is
 # verified in this repository, so the insurance line and the "Organic Pathogen Endorsed" line
 # (both gated on this same value — see src/data/site.ts, CredentialBar.astro, about/index.astro,

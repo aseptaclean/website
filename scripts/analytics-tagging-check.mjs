@@ -7,10 +7,10 @@
 // Checks, over EVERY emitted HTML page:
 //   1. exactly one GTM container installation per page that carries one at all
 //   2. no second GA4 base tag anywhere — no gtag.js loader, no `gtag('config', 'G-…')`
-//   3. the container is Termly-gated with the attribute Termly actually reads
-//   4. the container sits in <head>, and its <noscript> immediately after <body>
-//   5. no page carries a raw GA4 measurement ID outside the container
-//   6. every route built from the shared layouts carries the container
+//   3. one AW-18340008320 config uses that existing loader and is Advertising-consent-gated
+//   4. no native Ads conversion/send_to exists without the real conversion label
+//   5. the container sits in <head>, and its <noscript> immediately after <body>
+//   6. every route built from the shared layouts carries the container and Ads destination
 //
 // Usage: node scripts/analytics-tagging-check.mjs [distDir]
 import { readdir, readFile } from "node:fs/promises";
@@ -18,6 +18,7 @@ import { join, relative } from "node:path";
 
 const distDir = process.argv[2] || "./dist";
 const CONTAINER_ID = "GTM-WSSQ62BN";
+const GOOGLE_ADS_ID = "AW-18340008320";
 
 // /sms-notification-consent/ is byte-preserved under an ACTIVE Twilio 10DLC carrier review and is
 // fenced DO NOT EDIT by AGENTS.md §2 and §6. It is a standalone document that does not use
@@ -59,6 +60,11 @@ const notInHead = [];
 const noscriptMisplaced = [];
 const ga4BaseTag = [];
 const rawMeasurementId = [];
+const missingAdsDestination = [];
+const duplicateAdsDestination = [];
+const ungatedAdsDestination = [];
+const adsLoader = [];
+const nativeAdsConversion = [];
 
 for (const file of files) {
   const rel = relative(distDir, file);
@@ -92,6 +98,21 @@ for (const file of files) {
   const headEnd = html.indexOf("</head>");
   if (headEnd === -1 || loaderIndex > headEnd) notInHead.push(rel);
 
+  const adsIdCount = countOf(html, GOOGLE_ADS_ID);
+  if (adsIdCount === 0) missingAdsDestination.push(rel);
+  if (adsIdCount > 1) duplicateAdsDestination.push(`${rel} (ID×${adsIdCount})`);
+  if (adsIdCount > 0) {
+    const adsIndex = html.indexOf(GOOGLE_ADS_ID);
+    const adsTagStart = html.lastIndexOf("<script", adsIndex);
+    const adsOpeningTag = html.slice(adsTagStart, html.indexOf(">", adsTagStart) + 1);
+    if (
+      !adsOpeningTag.includes('type="text/plain"') ||
+      !adsOpeningTag.includes('data-categories="advertising"')
+    ) {
+      ungatedAdsDestination.push(`${rel} → ${adsOpeningTag.slice(0, 140)}`);
+    }
+  }
+
   // "Immediately after the opening <body>" — nothing but whitespace between them.
   const bodyOpen = html.indexOf("<body");
   const bodyTagEnd = html.indexOf(">", bodyOpen) + 1;
@@ -105,8 +126,12 @@ for (const file of files) {
   const rel = relative(distDir, file);
   const html = await readFile(file, "utf8");
   if (html.includes("googletagmanager.com/gtag/js")) ga4BaseTag.push(rel);
-  if (/gtag\s*\(\s*["'`]config["'`]/.test(html)) ga4BaseTag.push(`${rel} (gtag config)`);
+  if (/gtag\s*\(\s*["'`]config["'`]\s*,\s*["'`]G-/.test(html)) {
+    ga4BaseTag.push(`${rel} (GA4 gtag config)`);
+  }
   if (/\bG-[A-Z0-9]{8,}\b/.test(html)) rawMeasurementId.push(rel);
+  if (html.includes(`googletagmanager.com/gtag/js?id=${GOOGLE_ADS_ID}`)) adsLoader.push(rel);
+  if (/send_to["']?\s*:\s*["']AW-/.test(html)) nativeAdsConversion.push(rel);
 }
 
 console.log(`\nAnalytics tagging check — ${files.length} HTML page(s) in ${distDir}\n`);
@@ -138,8 +163,35 @@ check(
 );
 check(
   ga4BaseTag.length === 0,
-  "no second GA4 base tag (no gtag.js loader, no gtag config call) anywhere in the build",
+  "no second GA4 base tag (no gtag.js loader or GA4 config call) anywhere in the build",
   ga4BaseTag.slice(0, 5).join(", ")
+);
+check(
+  missingAdsDestination.length === 0,
+  `every non-exempt page configures Google Ads destination ${GOOGLE_ADS_ID}`,
+  missingAdsDestination.length
+    ? `missing on ${missingAdsDestination.length}: ${missingAdsDestination.slice(0, 5).join(", ")}`
+    : `${withContainer.length} page(s)`
+);
+check(
+  duplicateAdsDestination.length === 0,
+  "exactly one Google Ads destination config per page",
+  duplicateAdsDestination.slice(0, 5).join("; ")
+);
+check(
+  ungatedAdsDestination.length === 0,
+  'the Google Ads destination is Termly-gated as data-categories="advertising"',
+  ungatedAdsDestination.slice(0, 3).join("; ")
+);
+check(
+  adsLoader.length === 0,
+  "Google Ads reuses GTM; no second gtag.js loader is installed",
+  adsLoader.slice(0, 5).join(", ")
+);
+check(
+  nativeAdsConversion.length === 0,
+  "no native Ads conversion/send_to is invented before Google Ads supplies the label",
+  nativeAdsConversion.slice(0, 5).join(", ")
 );
 check(
   rawMeasurementId.length === 0,

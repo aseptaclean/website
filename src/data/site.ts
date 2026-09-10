@@ -218,7 +218,8 @@ export const site = {
     turnstileSiteKey: value("PUBLIC_TURNSTILE_SITE_KEY"),
     analytics: {
       gaId: value("PUBLIC_GA_ID"),
-      gtmId: value("PUBLIC_GTM_ID")
+      gtmId: value("PUBLIC_GTM_ID"),
+      googleAdsId: value("PUBLIC_GOOGLE_ADS_ID")
     },
     termly: {
       websiteUuid: termlyWebsiteUuid,

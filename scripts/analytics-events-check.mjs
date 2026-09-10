@@ -23,6 +23,7 @@ import { chromium } from "playwright-core";
 const ROUTE = "/hoarding-cleanup-san-jose/assessment/";
 const THANKS = "/hoarding-cleanup-san-jose/assessment/thank-you/";
 const CONTAINER = "GTM-WSSQ62BN";
+const GOOGLE_ADS_ID = "AW-18340008320";
 const chromePath =
   process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 
@@ -230,21 +231,32 @@ console.log("A. Consent gating (real Termly, real container URL)");
       return {
         stillBlocked: blocked > 0,
         containerLive: Boolean((window.google_tag_manager || {})[id]),
-        consentSignals: (window.dataLayer || []).filter((e) => e && e[0] === "consent").length
+        consentSignals: (window.dataLayer || []).filter((e) => e && e[0] === "consent").length,
+        adsConfigs: (window.dataLayer || []).filter(
+          (e) => e && e[0] === "config" && e[1] === "AW-18340008320"
+        ).length,
+        adsConversions: (window.dataLayer || []).filter(
+          (e) =>
+            (e && e[0] === "event" && e[1] === "conversion") ||
+            (e && e.event === "conversion")
+        ).length
       };
     }, CONTAINER);
 
     if (decision === "none") {
       check(
-        containerRequests.length === 0 && state.stillBlocked && !state.containerLive,
-        "before any consent decision the container is not requested and stays type=text/plain",
-        `requests=${containerRequests.length} blocked=${state.stillBlocked}`
+        containerRequests.length === 0 &&
+          state.stillBlocked &&
+          !state.containerLive &&
+          state.adsConfigs === 0,
+        "before consent neither GTM nor the Ads destination executes",
+        `requests=${containerRequests.length} blocked=${state.stillBlocked} ads=${state.adsConfigs}`
       );
     } else if (decision === "Decline") {
       check(
-        containerRequests.length === 0 && !state.containerLive,
-        "after DECLINE the container is never requested and never loads",
-        `requests=${containerRequests.length} live=${state.containerLive}`
+        containerRequests.length === 0 && !state.containerLive && state.adsConfigs === 0,
+        "after DECLINE neither the container nor Ads destination loads",
+        `requests=${containerRequests.length} live=${state.containerLive} ads=${state.adsConfigs}`
       );
     } else {
       check(
@@ -257,7 +269,17 @@ console.log("A. Consent gating (real Termly, real container URL)");
         "Termly pushes a Google Consent Mode update on save",
         `${state.consentSignals} consent signal(s)`
       );
+      check(
+        state.adsConfigs === 1,
+        `after ACCEPT the existing Google tag receives one ${GOOGLE_ADS_ID} config`,
+        `${state.adsConfigs} Ads config command(s)`
+      );
     }
+    check(
+      state.adsConversions === 0,
+      `${decision}: a consent/page-view action never emits an Ads lead conversion`,
+      `${state.adsConversions} conversion command(s)`
+    );
     await context.close();
   }
 }
