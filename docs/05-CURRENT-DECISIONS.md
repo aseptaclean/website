@@ -1051,3 +1051,40 @@ clicks are measured on the same intent event as every other form anchor. A phone
 above records that no tag, trigger or variable has been created in the workspace. Nothing in this
 change alters that, and nothing here can verify it from the repository. Email delivery, HubSpot
 writes and GA4 receipt were exercised against stubs, not live accounts.
+
+### 2026-09-09 (later) — Estate campaign trust bar
+
+A three-item trust bar was requested below the hero and form. The layout is built in full to the
+requested specification. **Two of the three items are release-gated and do not publish today**;
+both are wired to their real verification flags rather than hardcoded, so each appears
+automatically the moment its fact is recorded and cannot appear before then.
+
+| Item | State | Gate |
+|---|---|---|
+| CDPH Registered · Trauma Scene Waste Management Practitioner · TSW 933 | **Withheld** | Not a missing fact — the registration is verified active. Its **publication scope** blocks it: doc 21 §5 authorizes the credential on `/crime-scene-trauma-cleanup-san-jose/` "plus its named cross-links (footer, `/services/`)", and `AGENTS.md` §3 repeats it. Measured against the build, `933` appears in exactly one emitted page. §5 is explicit that registration authorizes "one registered scope", not a company-wide credential. **The identical request was already escalated and refused on the sibling campaign route** — `src/data/ppcHoarding.ts` exception 2 and its `credentialsDependency`, 2026-09-05. Needs an explicit owner decision widening §5's display scope, recorded here. Then flip `publishTswOnEstateCampaign`. |
+| Insured · Certificate available upon request | **Suppressed** | `AGENTS.md` §3 suppression rule and doc 21 §2.5. `PUBLIC_INSURANCE_STATUS` is empty and `wrangler.toml` carries an explicit comment saying it is intentionally absent pending a COI. Same gate `CredentialBar`, `HomeTrustStrip`, `HomeRegulatedAuthority`, `ServicesAuthority` and the hoarding trust strip already use. Set that value from a verified COI and the item ships with the approved §2.5 wording. |
+| Owner-Led Projects · Work directly with Matthew Ruiz | **Ships** | Founder identity and accountability is named in doc 21 §6 as permitted proof today. No credential, rating, count or capability claim. |
+
+**The offered insurance fallback is deliberately not used.** "Business insurance coverage" is
+still an affirmative statement about policy coverage, and doc 21 §2.5 extends the suppression to
+"every statement about policy coverage, limits, specialty coverage, or insurance-linked
+certification." A softer wording does not clear the gate; a verified COI does. The slot ships
+empty instead — `AGENTS.md` §0.3, "empty beats fake, always."
+
+Column proportions are derived from the items that actually render, so the bar stays balanced at
+one, two or three rather than leaving an empty track behind a suppressed claim. Verified by
+temporarily opening both gates and rebuilding: tracks resolve to 477.5 / 249.1 / 311.4 px of a
+1038px content box — exactly 46 / 24 / 30 — with all three items top-aligned at the same pixel and
+the requested line breaks intact. Both gates were closed again and the revert confirmed against
+the build.
+
+Type law: the item titles are `<p>`, not `<h3>`. The requested 16px semibold is a `font-size`
+declaration, and `AGENTS.md` §6 law 1 forbids one on anything resolving to a heading element.
+These are control labels in a trust strip, not document structure.
+
+Checked at 320, 390, 768, 1024 and 1440px plus a 200% root font: no clipping, no ellipsis, no
+justified text, `nowrap` scoped to `TSW 933` alone and never to a description, and the bar does not
+widen the document at any width. **Pre-existing observation, not a regression:** at a 32px root
+font on a 320px viewport the document reflows to 640px on this route *and equally on the untouched
+hoarding route* — a campaign-layout property of the large H1, measured with the bar removed to
+confirm it is not the cause.

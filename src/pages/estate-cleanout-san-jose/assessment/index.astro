@@ -69,7 +69,13 @@ import AcActions from "@components/ac/AcActions.astro";
 import AcCheckList from "@components/ac/AcCheckList.astro";
 import FaqAccordion from "@components/FaqAccordion.astro";
 import { site } from "@data/site";
-import { ppcEstate, ppcEstateCallLabel, ppcEstateFounderCallLabel } from "@data/ppcEstate";
+import PpcTrustBar from "@components/ppc/PpcTrustBar.astro";
+import {
+  ppcEstate,
+  ppcEstateCallLabel,
+  ppcEstateFounderCallLabel,
+  ppcEstateTrustItems
+} from "@data/ppcEstate";
 
 import accumulationImage from "../../../assets/aseptaclean/estate-accumulation-illustration.png";
 import sortingImage from "../../../assets/aseptaclean/estate-sorting-illustration.png";
@@ -126,6 +132,13 @@ const illustrationWidths = [480, 768, 1024];
       thankYouRoute={copy.thankYou.route}
     />
   </PpcBrightHero>
+
+  {/* ══ TRUST BAR — below the hero and form, at the page's content width. ═════════════════════
+      Two of its three items are release-gated and are wired to their verification flags in
+      src/data/ppcEstate.ts, so the bar renders whatever is actually publishable today and gains
+      the rest automatically when each fact lands. Today that is one item; the column proportions
+      are derived from what renders, so it stays balanced either way. */}
+  <PpcTrustBar items={ppcEstateTrustItems} label={ppcEstate.trustBar.label} />
 
   {/* ══ 01 · GET HELP WITH THE WHOLE CLEANOUT ═════════════════════════════════════════════════
       Accumulation illustration LEFT, service explanation RIGHT. One short introductory paragraph,

@@ -284,6 +284,251 @@ for (const viewport of [
   await context.close();
 }
 
+// ── A2. TRUST BAR ────────────────────────────────────────────────────────────────────────────
+console.log("\nA2. Trust bar");
+{
+  // Every width the request names, plus an enlarged-text pass at the narrowest.
+  for (const width of [320, 390, 768, 1024, 1440]) {
+    const { context, page } = await openPage({ viewport: { width, height: 900 } });
+    const bar = await page.evaluate(() => {
+      const panel = document.querySelector(".est-trust__panel");
+      if (!panel) return { present: false };
+      const cs = getComputedStyle(panel);
+      const items = [...panel.querySelectorAll(".est-trust__item")];
+      // "Matching the page's existing content width" means matching the EDGES the rest of the
+      // page's content sits on — not the shell's border-box width, which includes its own inline
+      // padding. Compared against a real section grid rather than a computed number.
+      const edges = (el) => {
+        if (!el) return null;
+        const r = el.getBoundingClientRect();
+        return `${Math.round(r.left)}→${Math.round(r.right)}`;
+      };
+      return {
+        present: true,
+        radius: cs.borderTopLeftRadius,
+        padding: cs.paddingTop,
+        borderWidth: cs.borderTopWidth,
+        background: cs.backgroundColor,
+        columns: cs.gridTemplateColumns.split(" ").length,
+        alignItems: cs.alignItems,
+        panelEdges: edges(panel),
+        heroEdges: edges(document.querySelector(".est-hero__grid")),
+        offerEdges: edges(document.querySelector(".est-offer__grid")),
+        // Vertical rules between columns, horizontal rules when stacked.
+        verticalRules: items.filter((el) => parseFloat(getComputedStyle(el).borderLeftWidth) > 0)
+          .length,
+        horizontalRules: items.filter((el) => parseFloat(getComputedStyle(el).borderTopWidth) > 0)
+          .length,
+        tops: items.map((el) => Math.round(el.getBoundingClientRect().top)),
+        // Nothing that carries TEXT may clip, truncate or overflow its box. SVG is excluded on
+        // purpose: `overflow: hidden` is the UA default on an <svg> element, so including it
+        // would flag every icon on the page as a clipped text node.
+        clipping: items.some((el) =>
+          [el, ...el.querySelectorAll("p, span, div")].some((node) => {
+            const s = getComputedStyle(node);
+            if (s.display === "inline") return false;
+            return (
+              s.overflow === "hidden" ||
+              s.textOverflow === "ellipsis" ||
+              node.scrollWidth > node.clientWidth + 1
+            );
+          })
+        ),
+        justified: items.some((el) =>
+          [...el.querySelectorAll("p")].some((p) => getComputedStyle(p).textAlign === "justify")
+        ),
+        nowrapDescriptions: [...panel.querySelectorAll(".est-trust__desc")].filter(
+          (p) => getComputedStyle(p).whiteSpace === "nowrap"
+        ).length,
+        keepTogether: [...panel.querySelectorAll(".est-trust__keep")].map(
+          (el) => getComputedStyle(el).whiteSpace
+        ),
+        icons: [...panel.querySelectorAll(".est-trust__icon svg")].map((svg) => {
+          const r = svg.getBoundingClientRect();
+          return `${Math.round(r.width)}x${Math.round(r.height)}`;
+        }),
+        titleSizes: [...panel.querySelectorAll(".est-trust__title")].map(
+          (el) => `${getComputedStyle(el).fontSize}/${getComputedStyle(el).fontWeight}`
+        ),
+        descStyles: [...panel.querySelectorAll(".est-trust__desc")].map(
+          (el) => `${getComputedStyle(el).fontSize}/${getComputedStyle(el).lineHeight}`
+        ),
+        // Heading-element purity: the titles must NOT be h1–h6 (AGENTS.md §6 law 1).
+        headingTags: [...panel.querySelectorAll("h1,h2,h3,h4,h5,h6")].length,
+        itemCount: items.length
+      };
+    });
+
+    const stacked = width < 800;
+    check(bar.present, `${width}px: the trust bar renders`);
+    check(
+      bar.radius === "12px" && bar.padding === (width <= 640 ? "20px" : "24px") &&
+        bar.borderWidth === "1px" && bar.background === "rgb(255, 255, 255)",
+      `${width}px: one white container, 1px border, 12px radius, ${width <= 640 ? 20 : 24}px padding`,
+      JSON.stringify({ r: bar.radius, p: bar.padding, b: bar.borderWidth, bg: bar.background })
+    );
+    check(
+      bar.panelEdges === bar.heroEdges && bar.panelEdges === bar.offerEdges,
+      `${width}px: the bar sits on the page's existing content edges`,
+      `bar ${bar.panelEdges} · hero ${bar.heroEdges} · offer ${bar.offerEdges}`
+    );
+    check(
+      stacked ? bar.columns === 1 : bar.columns === bar.itemCount,
+      `${width}px: ${stacked ? "stacked into one column" : `${bar.itemCount} column(s), no fixed widths left behind`}`,
+      `${bar.columns} column(s) for ${bar.itemCount} item(s)`
+    );
+    check(
+      stacked
+        ? bar.verticalRules === 0 && bar.horizontalRules === bar.itemCount - 1
+        : bar.verticalRules === bar.itemCount - 1 && bar.horizontalRules === 0,
+      `${width}px: ${stacked ? "horizontal" : "vertical"} separators between items only`,
+      `v=${bar.verticalRules} h=${bar.horizontalRules} items=${bar.itemCount}`
+    );
+    if (!stacked && bar.itemCount > 1) {
+      check(
+        new Set(bar.tops).size === 1,
+        `${width}px: every item is top-aligned`,
+        JSON.stringify(bar.tops)
+      );
+    }
+    check(bar.alignItems === "start", `${width}px: items keep their natural heights`, bar.alignItems);
+    check(!bar.clipping, `${width}px: nothing is clipped, truncated or ellipsised`);
+    check(!bar.justified, `${width}px: no justified text`);
+    check(
+      bar.nowrapDescriptions === 0 && bar.keepTogether.every((v) => v === "nowrap"),
+      `${width}px: nowrap is scoped to the kept-together token, never a whole description`,
+      JSON.stringify({ desc: bar.nowrapDescriptions, keep: bar.keepTogether })
+    );
+    check(
+      new Set(bar.icons).size === 1 && bar.icons[0] === "20x20",
+      `${width}px: icons are one consistent size`,
+      JSON.stringify(bar.icons)
+    );
+    check(
+      bar.titleSizes.every((v) => v === "16px/650") && bar.descStyles.every((v) => v === "14px/20.3px"),
+      `${width}px: 16px semibold headings, 14px/1.45 supporting text`,
+      JSON.stringify({ t: bar.titleSizes, d: bar.descStyles })
+    );
+    check(
+      bar.headingTags === 0,
+      `${width}px: the bar declares no heading element (type law 1)`,
+      `${bar.headingTags} found`
+    );
+
+    const docWidth = await page.evaluate(() => ({
+      doc: document.documentElement.scrollWidth,
+      win: window.innerWidth
+    }));
+    check(
+      docWidth.doc <= docWidth.win + 1,
+      `${width}px: no horizontal document scroll with the bar in place`,
+      `${docWidth.doc} vs ${docWidth.win}`
+    );
+
+    await context.close();
+  }
+
+  // ENLARGED TEXT — 200% root font at the narrowest supported width, a harsher condition than
+  // browser zoom (which scales the viewport with the text). Scoped to the BAR: the assertion is
+  // that its own content reflows rather than clipping or forcing its column wider than the
+  // viewport. Whether the whole document also fits at a 32px root is a separate, page-wide
+  // property measured against the hoarding route as a control below.
+  {
+    const { context, page } = await openPage({ viewport: { width: 320, height: 900 } });
+    await page.addStyleTag({ content: "html { font-size: 32px }" });
+    await page.waitForTimeout(300);
+    const enlarged = await page.evaluate(() => {
+      const panel = document.querySelector(".est-trust__panel");
+      const items = [...panel.querySelectorAll(".est-trust__item")];
+      const clipped = items.some((el) =>
+        [el, ...el.querySelectorAll("p, span, div")].some(
+          (n) => getComputedStyle(n).display !== "inline" && n.scrollWidth > n.clientWidth + 1
+        )
+      );
+      // The bar's own content requirement, measured BEFORE it is detached — a detached subtree
+      // reports zero and would make this read as a suspiciously perfect result.
+      const intrinsic = Math.max(
+        0,
+        ...items.flatMap((el) => [...el.querySelectorAll("p")].map((p) => Math.ceil(p.scrollWidth)))
+      );
+      // CAUSATION, not correlation. A full-width block stretches to whatever the document's
+      // scroll width already is, so "the panel is wider than the viewport" proves nothing about
+      // which element forced it. Removing the bar and re-measuring does.
+      const withBar = document.documentElement.scrollWidth;
+      document.querySelector(".est-trust").remove();
+      const withoutBar = document.documentElement.scrollWidth;
+      return { clipped, withBar, withoutBar, intrinsic, win: window.innerWidth };
+    });
+    check(
+      !enlarged.clipped && enlarged.withBar === enlarged.withoutBar,
+      "320px at 200% root font: the bar reflows without clipping and does not widen the document",
+      `doc ${enlarged.withBar} with the bar, ${enlarged.withoutBar} without it; widest bar ` +
+        `paragraph needs ${enlarged.intrinsic}px of a ${enlarged.win}px viewport`
+    );
+    await context.close();
+  }
+
+  // The two release-gated claims must be absent until their facts are recorded.
+  //
+  // Matched against the SEPARATED text, not raw textContent: concatenating "Projects" and "Work"
+  // with no separator produces "ProjecTSWork", which a naive /TSW/i test reads as the credential.
+  {
+    const { context, page } = await openPage();
+    const text = await page.evaluate(() =>
+      [...document.querySelectorAll(".est-trust p, .est-trust span")]
+        .map((el) => el.textContent.trim())
+        .join(" | ")
+    );
+    check(
+      !/TSW 933/.test(text) && !/CDPH/.test(text) && !/Trauma Scene/.test(text),
+      "the TSW #933 credential is absent — out of doc 21 §5's authorized display scope",
+      JSON.stringify(text)
+    );
+    check(
+      !/insur/i.test(text) && !/[Cc]ertificate/.test(text),
+      "no insurance statement is published while PUBLIC_INSURANCE_STATUS is empty",
+      JSON.stringify(text)
+    );
+    check(
+      /Owner-Led Projects/.test(text) && /Matthew Ruiz/.test(text),
+      "the owner-led item ships — permitted proof under doc 21 §6"
+    );
+    await context.close();
+  }
+
+  // CONTROL: is the 32px-root document overflow something this bar introduced, or a property the
+  // campaign layout already had? Measured on the untouched hoarding route under identical
+  // conditions. Reported either way — a page-wide reflow limit is worth knowing about even when
+  // it is not a regression.
+  {
+    const { context, page } = await openPage({
+      route: "/hoarding-cleanup-san-jose/assessment/",
+      viewport: { width: 320, height: 900 }
+    });
+    await page.addStyleTag({ content: "html { font-size: 32px }" });
+    await page.waitForTimeout(300);
+    const control = await page.evaluate(() => ({
+      doc: document.documentElement.scrollWidth,
+      win: window.innerWidth
+    }));
+    const { context: c2, page: p2 } = await openPage({ viewport: { width: 320, height: 900 } });
+    await p2.addStyleTag({ content: "html { font-size: 32px }" });
+    await p2.waitForTimeout(300);
+    const estate = await p2.evaluate(() => ({
+      doc: document.documentElement.scrollWidth,
+      win: window.innerWidth
+    }));
+    check(
+      estate.doc <= control.doc,
+      "320px at 200% root font: the estate route is no worse than the untouched hoarding route",
+      `estate ${estate.doc} vs hoarding ${control.doc} (viewport ${estate.win}) — a 32px root font ` +
+        `overflows both; this is a pre-existing campaign-layout property, not a trust-bar defect`
+    );
+    await context.close();
+    await c2.close();
+  }
+}
+
 // ── B. CONTACT AFFORDANCES ───────────────────────────────────────────────────────────────────
 console.log("\nB. Calls and walkthrough requests");
 {

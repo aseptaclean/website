@@ -1,0 +1,218 @@
+---
+// TRUST BAR — /estate-cleanout-san-jose/assessment/, below the hero and form.
+//
+// One white container, subtle border, 12px radius, 24px padding, at the page's content width.
+// Desktop: three columns at the requested 46 / 24 / 30 proportions, thin vertical separators,
+// 24px internal spacing, everything top-aligned. Below 800px: one column, horizontal separators,
+// no fixed widths.
+//
+// THE COLUMN PROPORTIONS ARE DERIVED FROM WHAT ACTUALLY RENDERS, not hardcoded to three tracks.
+// Two of the three items are release-gated (see src/data/ppcEstate.ts `trustBar`), so the bar has
+// to stay balanced whether it ships one item or three — the same `--ac-trust-count` reasoning the
+// hoarding campaign's strip already uses for its own conditional item. With all three present the
+// tracks resolve to exactly 46fr / 24fr / 30fr.
+//
+// TYPE LAW (AGENTS.md §6). The item titles are `<p>`, not `<h3>`. Law 1 forbids a `font-size`
+// declaration on anything that resolves to a heading element, and the requested 16px semibold is
+// a size declaration; these are control labels inside a trust strip, not document structure, so
+// making them paragraphs keeps both the requested type and the law intact — and it keeps the
+// page's H1/H2 outline clean.
+//
+// NO CLIPPING ANYWHERE. No `overflow: hidden`, no `text-overflow: ellipsis`, no fixed heights, no
+// `white-space: nowrap` on a description. Every size is in rem so enlarged text reflows instead
+// of truncating. `min-width: 0` on every grid child so a long token can never force a horizontal
+// scrollbar on the document.
+//
+// ICONS are small, consistently sized outline glyphs at one stroke weight, drawn in `currentColor`
+// so they inherit the navy. They are deliberately plain marks — doc 21 §6 forbids badges, seals
+// and credential chips, and nothing here is styled as one.
+interface TrustItem {
+  /** Grid proportion for this item on desktop. */
+  span: number;
+  icon: "record" | "shield" | "person";
+  title: string;
+  /** Preferred line breaks. Each entry is a block-level span that still wraps when it must. */
+  lines: readonly string[];
+  /** Rendered on its own line, and never broken across one. */
+  keepTogether?: string;
+}
+
+interface Props {
+  items: readonly TrustItem[];
+  /** Accessible name for the group. */
+  label: string;
+}
+
+const { items, label } = Astro.props;
+
+const columns = items.map((item) => `minmax(0, ${item.span}fr)`).join(" ");
+---
+
+{
+  items.length > 0 && (
+    <section class="est-trust" aria-label={label}>
+      <div class="est-shell">
+        <div class="est-trust__panel" style={`--est-trust-columns: ${columns}`}>
+          {items.map((item) => (
+            <div class="est-trust__item">
+              <span class="est-trust__icon" aria-hidden="true">
+                {item.icon === "record" && (
+                  <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M11.5 2.25H5.25a1.5 1.5 0 0 0-1.5 1.5v12.5a1.5 1.5 0 0 0 1.5 1.5h9.5a1.5 1.5 0 0 0 1.5-1.5V7z" />
+                    <path d="M11.5 2.25V7h4.75" />
+                    <path d="m7.25 12.25 1.75 1.75 3.5-3.5" />
+                  </svg>
+                )}
+                {item.icon === "shield" && (
+                  <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M10 2.25 3.75 4.75v5c0 4 2.65 6.85 6.25 8 3.6-1.15 6.25-4 6.25-8v-5z" />
+                  </svg>
+                )}
+                {item.icon === "person" && (
+                  <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="10" cy="6.75" r="3" />
+                    <path d="M3.75 17.25a6.25 6.25 0 0 1 12.5 0" />
+                  </svg>
+                )}
+              </span>
+
+              <div class="est-trust__text">
+                <p class="est-trust__title">{item.title}</p>
+                <p class="est-trust__desc">
+                  {item.lines.map((line) => (
+                    <span class="est-trust__line">{line}</span>
+                  ))}
+                  {item.keepTogether && (
+                    <span class="est-trust__line est-trust__keep">{item.keepTogether}</span>
+                  )}
+                </p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<style>
+  /* Continues the hero's warm-white band and carries the boundary into the white section below,
+     so the card reads as part of the opening rather than as a stripe of its own. */
+  .est-trust {
+    padding-block: 0 44px;
+    background: var(--ac-color-warm-white);
+    border-bottom: 1px solid var(--ac-color-line);
+  }
+
+  /* The page's content width, matching every other section on this route. */
+  .est-shell {
+    margin-inline: auto;
+    max-width: 1200px;
+    padding-inline: 32px;
+  }
+
+  .est-trust__panel {
+    display: grid;
+    /* Top-aligned: `start`, never `stretch`. Items keep their natural heights and no item is
+       padded out to match the tallest — the request is explicit that they need not have the same
+       number of lines. */
+    align-items: start;
+    grid-template-columns: var(--est-trust-columns);
+    column-gap: 24px;
+    border: 1px solid var(--ac-color-line-strong);
+    border-radius: 12px;
+    background: var(--ac-color-paper);
+    padding: 24px;
+  }
+
+  .est-trust__item {
+    display: flex;
+    /* Icon, title and text all start on the same top edge. */
+    align-items: flex-start;
+    /* Load-bearing on a grid child: without it a long unbroken token sets the track's minimum
+       width and pushes the document into horizontal scroll. */
+    min-width: 0;
+    gap: 12px;
+  }
+
+  /* Thin vertical separators BETWEEN columns only — the first item carries none. The 24px column
+     gap plus the 24px padding puts the rule midway between two text blocks. */
+  .est-trust__item + .est-trust__item {
+    border-inline-start: 1px solid var(--ac-color-line);
+    padding-inline-start: 24px;
+  }
+
+  .est-trust__icon {
+    display: flex;
+    flex: 0 0 auto;
+    /* Optical alignment with the title's cap height, not its line box. */
+    margin-top: 1px;
+    color: var(--ac-color-blue-deep);
+  }
+
+  .est-trust__text {
+    min-width: 0;
+  }
+
+  /* 16px semibold, navy. A paragraph, not a heading — see the type-law note above. */
+  .est-trust__title {
+    margin: 0;
+    color: var(--ac-color-navy-900);
+    font-size: 1rem;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+
+  .est-trust__desc {
+    margin: 4px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 0.875rem;
+    line-height: 1.45;
+    /* Never justified: ragged right is what keeps the requested line breaks readable. */
+    text-align: start;
+    /* A long word breaks rather than overflowing its column. */
+    overflow-wrap: anywhere;
+  }
+
+  /* Each supplied line is its own block, so the preferred break happens by default — and because
+     it is a block-level span rather than a hard <br>, a line that no longer fits still wraps
+     naturally inside itself instead of overflowing. */
+  .est-trust__line {
+    display: block;
+  }
+
+  /* Scoped to one short token. The rule is never applied to a whole description. */
+  .est-trust__keep {
+    white-space: nowrap;
+  }
+
+  /* Below 800px: stack vertically, horizontal separators, no fixed column widths. Text sizes are
+     unchanged — the columns collapse rather than the type shrinking to fit them. */
+  @media (max-width: 50rem) {
+    .est-trust__panel {
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 20px;
+    }
+
+    .est-trust__item + .est-trust__item {
+      border-inline-start: 0;
+      border-top: 1px solid var(--ac-color-line);
+      padding-inline-start: 0;
+      padding-top: 20px;
+    }
+  }
+
+  @media (max-width: 40rem) {
+    .est-shell {
+      padding-inline: 20px;
+    }
+
+    .est-trust {
+      padding-block: 0 32px;
+    }
+
+    .est-trust__panel {
+      padding: 20px;
+    }
+  }
+</style>

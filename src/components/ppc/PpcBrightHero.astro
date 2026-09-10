@@ -91,10 +91,12 @@ const {
      68 + 56 = 124px of opening space no specification asks for — the same correction global.css
      already records for `.acx-hero` and PpcLayout records for `.ppc-hero`. Measured before the
      fix: the eyebrow sat 207px down a 900px viewport. Space only; nothing is hidden or clipped. */
+  /* No bottom border: the trust bar below continues this warm-white band and carries the boundary
+     into the white section after it. Without a trust bar to render, PpcTrustBar emits nothing and
+     the white `.est-offer` section provides the edge on its own. */
   .est-hero {
     padding-block: 0;
     background: var(--ac-color-warm-white);
-    border-bottom: 1px solid var(--ac-color-line);
   }
 
   /* Refresh: 1200px container, 32px desktop padding, 20px mobile. Declared here rather than
@@ -112,7 +114,9 @@ const {
     align-items: start;
     gap: 40px;
     grid-template-columns: minmax(0, 54fr) minmax(0, 46fr);
-    padding-block: 56px 64px;
+    /* Bottom padding is tighter than the top because the trust bar sits directly beneath and
+       supplies the rest of the separation. */
+    padding-block: 56px 40px;
   }
 
   .est-hero__copy {
