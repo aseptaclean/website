@@ -108,6 +108,11 @@ may never be expanded into a disease, decontamination, sanitization, or steriliz
 Both the insurance line and the endorsement must be matched against the current COI before
 production release; unverified → suppress the statement entirely.
 
+**Owner decision 2026-09-09 — route-scoped exception.** The exact one-word item `Insured` may
+appear in the trust bar on `/estate-cleanout-san-jose/assessment/`. This exception does not
+authorize the longer certificate-availability line, the endorsement, coverage details, or any
+insurance claim on another route; all of those remain subject to the COI gate above.
+
 **The credential chip may never say "licensed."**
 
 ---
@@ -268,7 +273,11 @@ and make ticket handover a standard deliverable on permitted jobs.
 > owner-confirmed and recorded in `AGENTS.md` §3 and `docs/02-CURRENT-FACTS.md`. §5.1's
 > pre-registration publication ban is therefore **satisfied**, not waived, and one trauma route
 > is authorized: `/crime-scene-trauma-cleanup-san-jose/`, plus its named cross-links (footer,
-> `/services/`). Everything else in §5 stands unchanged — §5.2's discovery trigger, the STOP
+> `/services/`). **Owner decision 2026-09-09:** the verified credential may also appear as the
+> `CDPH Registered · Trauma Scene Waste Management Practitioner · TSW 933` trust item on
+> `/estate-cleanout-san-jose/assessment/`. This is a display-scope exception only; it does not
+> add trauma work or widen the estate campaign's service offer. Everything else in §5 stands
+> unchanged — §5.2's discovery trigger, the STOP
 > gate, and the referral relationship are unaffected by registration. Registration authorizes
 > **one registered scope**, not `remediation`, `decontamination`, contractor work, or an
 > unlimited biohazard service family. §4's forbidden-construction list is unchanged.

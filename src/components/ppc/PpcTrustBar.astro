@@ -6,11 +6,8 @@
 // 24px internal spacing, everything top-aligned. Below 800px: one column, horizontal separators,
 // no fixed widths.
 //
-// THE COLUMN PROPORTIONS ARE DERIVED FROM WHAT ACTUALLY RENDERS, not hardcoded to three tracks.
-// Two of the three items are release-gated (see src/data/ppcEstate.ts `trustBar`), so the bar has
-// to stay balanced whether it ships one item or three — the same `--ac-trust-count` reasoning the
-// hoarding campaign's strip already uses for its own conditional item. With all three present the
-// tracks resolve to exactly 46fr / 24fr / 30fr.
+// THE COLUMN PROPORTIONS are supplied by the route's approved items. With all three present the
+// tracks resolve to exactly 46fr / 24fr / 30fr, giving the longer CDPH item more width.
 //
 // TYPE LAW (AGENTS.md §6). The item titles are `<p>`, not `<h3>`. Law 1 forbids a `font-size`
 // declaration on anything that resolves to a heading element, and the requested 16px semibold is

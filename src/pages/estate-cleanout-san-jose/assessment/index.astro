@@ -133,11 +133,10 @@ const illustrationWidths = [480, 768, 1024];
     />
   </PpcBrightHero>
 
-  {/* ══ TRUST BAR — below the hero and form, at the page's content width. ═════════════════════
-      Two of its three items are release-gated and are wired to their verification flags in
-      src/data/ppcEstate.ts, so the bar renders whatever is actually publishable today and gains
-      the rest automatically when each fact lands. Today that is one item; the column proportions
-      are derived from what renders, so it stays balanced either way. */}
+  {/* ══ TRUST BAR — below the hero and form, at the page's content width. All three items are
+      explicitly approved for this route (owner decision 2026-09-09). The 46/24/30 proportions
+      give the longer CDPH registration item more room; the shared credential surfaces and all
+      other routes remain unchanged. */}
   <PpcTrustBar items={ppcEstateTrustItems} label={ppcEstate.trustBar.label} />
 
   {/* ══ 01 · GET HELP WITH THE WHOLE CLEANOUT ═════════════════════════════════════════════════

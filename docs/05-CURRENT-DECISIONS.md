@@ -1088,3 +1088,65 @@ widen the document at any width. **Pre-existing observation, not a regression:**
 font on a 320px viewport the document reflows to 640px on this route *and equally on the untouched
 hoarding route* — a campaign-layout property of the large H1, measured with the bar removed to
 confirm it is not the cause.
+
+### 2026-09-09 (owner confirmation) — Estate campaign release exceptions
+
+- `Free Walkthrough` is explicitly approved for `/estate-cleanout-san-jose/assessment/`, its
+  thank-you route, and the matching confirmation-email branch. It is a walkthrough only, never a
+  free assessment or free consultation. The route renders no price; the shared $195 on-site
+  assessment fee and every other route's pricing rule are unchanged.
+- The trust bar directly below that route's hero is approved with exactly three items:
+  `CDPH Registered · Trauma Scene Waste Management Practitioner · TSW 933`; `Insured`; and
+  `Owner-Led Projects · Work directly with Matthew Ruiz`. This widens the TSW credential's
+  display scope only to this route and makes no additional trauma-service claim. The one-word
+  insurance item is route-scoped; shared insurance and endorsement surfaces remain gated.
+- Presentation: one white strip, small navy outline icons, top-aligned text, 46/24/30 desktop
+  proportions, and a single-column mobile stack. No government seals and no blanket OSHA claim.
+
+### 2026-09-09 (current verification) — Analytics and one authorized live inquiry
+
+This verification supersedes the September 6 account-state snapshot as evidence of what the
+published GTM container contains now. It does not rewrite that historical entry.
+
+**Analytics, separated by layer:**
+
+- Current source and browser checks: `PpcHeroForm` emits one `ppc_form_success` only after an
+  HTTP success with `ok: true`; failure, invalid input, phone clicks, refreshes, and repeated
+  submits do not emit a lead event. `npm run qa:analytics:events` passed 34/34 and
+  `npm run qa:estate:page` passed 140/140 against the fresh build. These suites stub the provider
+  or container where documented; they prove the browser/dataLayer contract, not GA4 receipt.
+- Current published GTM container: the public `GTM-WSSQ62BN` script fetched during this pass
+  contains the GA4 base tag for `G-40K4ETN1NX`, a custom-event trigger for
+  `ppc_form_success`, and a GA4 event tag named `generate_lead`. Its rule table maps that trigger
+  to that tag. The same container carries the separate `phone_click`, `form_start`, attempt, and
+  error mappings. The fresh build passes `npm run qa:analytics` 8/8: one consent-gated container
+  and no duplicate gtag base installation.
+- GA4 property receipt is still **unverified**. No GA4 account/API access is available in this
+  session, so the repository and public container can prove emission and configuration but not
+  that GA4 stored a resulting event. Verify `generate_lead` in GA4 Realtime/DebugView or Recent
+  events before treating receipt as closed.
+- `scripts/current-site-verification.mjs` was reconciled with the existing launch contract: it
+  still requires canonical metadata on every ordinary route, but applies search-identity
+  uniqueness, BreadcrumbList, and inbound-crawl-path gates only to indexable pages. Requiring
+  structured data or public inbound links on intentionally noindex PPC/utility routes directly
+  contradicted `BaseLayout`/`PpcLayout`, which suppress structured data for those routes. After
+  that correction, `npm run qa:current` passes 50 routes at six widths plus the 390px Axe scan.
+
+**One real production inquiry — not stubbed:**
+
+- Exactly one inquiry was submitted through the currently deployed `/contact/` form using the
+  existing Aseptaclean business contact details and the marker
+  `ASEPTACLEAN WEBSITE TEST — 2026-09-10T04:06:39Z`. Earlier attempts against the retired
+  `/request-assessment/` path and from an unresolved temporary script both stopped before any
+  form submission.
+- The real `/api/lead` returned HTTP 201 with submission
+  `1bc12d52-527d-4e55-a616-cf9ca41510f5` / confirmation `AC-3F0JTM`; the browser reached
+  `/thank-you/`. The production R2 ledger records core storage succeeded, no files supplied,
+  HubSpot succeeded (`Contact 549571718903; deal 347542280900`), customer email accepted by
+  Resend (`accf7e54-88dd-4fcd-b926-9dc03ed7cc1a`), SMS skipped because 10DLC alerts are disabled,
+  and the owner fallback email accepted by Resend (`9af56129-f912-48fd-9ec6-19fbdcb72500`).
+- Provider acceptance is verified; inbox placement/opening was not observed because this session
+  has no mailbox access. The HubSpot API returned real contact and deal IDs only after accepting
+  the contact upsert, associated deal creation, pipeline/stage fields, offer type, confirmation
+  code, and description payload. The record was not separately opened in the HubSpot UI because
+  this session has no HubSpot account access or retrievable API secret.

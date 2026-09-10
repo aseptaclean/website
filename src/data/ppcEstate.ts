@@ -115,14 +115,13 @@
 //       needs" and "we arrange the crew and services" are the brief's own wording and both stay.
 //
 // ─────────────────────────────────────────────────────────────────────────────────────────────
-// C. FREE WALKTHROUGH — SCOPE EXTENSION, FLAGGED FOR OWNER CONFIRMATION BEFORE PUBLIC RELEASE
+// C. FREE WALKTHROUGH — NARROW OWNER-APPROVED EXCEPTION
 // ─────────────────────────────────────────────────────────────────────────────────────────────
 //
 // AGENTS.md §7 bans "free assessment" and "free consultation" sitewide and states that the
-// 2026-09-06 free-WALKTHROUGH exception "reaches no other route" than
-// /hoarding-cleanup-san-jose/assessment/. This brief is a later owner-supplied document
-// (2026-09-09) whose entire offer is built on "Request a Free Walkthrough", and it supplies no
-// fallback for that phrase — which is the brief's way of treating it as settled.
+// 2026-09-06 free-WALKTHROUGH exception originally reached only
+// /hoarding-cleanup-san-jose/assessment/. The owner explicitly approved the same narrow wording
+// for this route on 2026-09-09; AGENTS.md §4 and §7 now record both route-scoped exceptions.
 //
 // Implemented on the same terms the hoarding exception was granted, and no wider:
 //   · This route publishes NO price figure at all. `site.offer.assessmentFee`,
@@ -132,8 +131,7 @@
 //     walkthrough, in every one of its occurrences.
 //   · No shared label moved: `site.offer.formSubmitCta` ("Send Message") still labels every
 //     other form on the site.
-// This is the ONE item on this route that needs an explicit owner sign-off before the page goes
-// public. It is recorded in docs/05-CURRENT-DECISIONS.md and reported with the build.
+// The required owner sign-off is complete. This does not change another route's price or label.
 import { site } from "./site";
 
 export const ppcEstate = {
@@ -176,39 +174,16 @@ export const ppcEstate = {
   },
 
   // ── TRUST BAR ──────────────────────────────────────────────────────────────────────────────
-  // Below the hero and form. Three items were requested; TWO OF THEM ARE RELEASE-GATED and are
-  // wired to their real verification flags rather than hardcoded, so each appears automatically
-  // the moment its fact is recorded — and cannot appear before then.
+  // Below the hero and form. All three items were explicitly approved by the owner for this
+  // route on 2026-09-09. This approval is route-scoped and changes no shared credential strip.
   //
-  //   1. TSW #933 — WITHHELD. GATED ON AN OWNER DECISION, NOT ON A MISSING FACT.
-  //      The registration is real and verified active (AGENTS.md §3). Its PUBLICATION SCOPE is
-  //      what blocks it: docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §5 (rank 3) authorizes the
-  //      credential on "/crime-scene-trauma-cleanup-san-jose/, plus its named cross-links
-  //      (footer, /services/)", and AGENTS.md §3 repeats the same restriction verbatim. Measured
-  //      against the current build, "933" appears in exactly one emitted page — the trauma route.
-  //      An estate cleanout landing page is not on that list, and §5 is explicit that
-  //      registration authorizes "one registered scope", not a company-wide credential.
-  //      THE IDENTICAL REQUEST WAS ALREADY REFUSED ON THE SIBLING CAMPAIGN ROUTE: see
-  //      src/data/ppcHoarding.ts exception 2 and its `credentialsDependency`, which records the
-  //      same reasoning for /hoarding-cleanup-san-jose/assessment/ on 2026-09-05.
-  //      TO SHIP IT: an explicit owner decision widening the doc 21 §5 display scope to this
-  //      route, recorded in docs/05-CURRENT-DECISIONS.md. Then flip the flag below — the copy,
-  //      the layout and the column proportions are already built and waiting.
+  //   1. TSW #933 — APPROVED HERE. The registration is verified active (AGENTS.md §3). The owner
+  //      widened its display scope to this trust item only; it does not add a trauma service to
+  //      the estate campaign or authorize the credential on another campaign route.
   //
-  //   2. INSURED — SUPPRESSED BY THE STANDING RULE, AUTOMATICALLY.
-  //      AGENTS.md §3's suppression rules: "Unverified insurance wording → suppress the insurance
-  //      statement." doc 21 §2.5: the recorded wording "is not publication-approved merely because
-  //      it appears in this file… if current verification is not available, suppress it."
-  //      `PUBLIC_INSURANCE_STATUS` is empty in .env.production and wrangler.toml carries an
-  //      explicit comment saying it is intentionally absent pending a COI. So this item renders
-  //      only when that value is set — the same gate CredentialBar, HomeTrustStrip,
-  //      HomeRegulatedAuthority, ServicesAuthority and the hoarding trust strip all already use.
-  //      THE OFFERED FALLBACK IS DELIBERATELY NOT USED. "Business insurance coverage" is still an
-  //      affirmative statement about policy coverage, and doc 21 §2.5 extends the suppression to
-  //      "every statement about policy coverage, limits, specialty coverage, or insurance-linked
-  //      certification". A softer wording does not clear the gate; a verified COI does.
-  //      TO SHIP IT: record the verified COI wording in `PUBLIC_INSURANCE_STATUS`. The
-  //      certificate-availability line is already the approved doc 21 §2.5 string and ships with it.
+  //   2. INSURED — APPROVED HERE, using exactly the requested one-word claim. This route-scoped
+  //      instruction does not set `PUBLIC_INSURANCE_STATUS`, publish the longer certificate or
+  //      endorsement wording, or open insurance claims on any other route.
   //
   //   3. OWNER-LED PROJECTS — SHIPS NOW. Founder identity and accountability is named in doc 21
   //      §6 as permitted proof today, it is what the page's own founder section already says, and
@@ -228,7 +203,7 @@ export const ppcEstate = {
       span: 24,
       icon: "shield" as const,
       title: "Insured",
-      lines: ["Certificate available", "upon request"]
+      lines: []
     },
     ownerLed: {
       span: 30,
@@ -594,22 +569,19 @@ export const ppcEstate = {
   }
 } as const;
 
-// TSW #933 DISPLAY SCOPE ON THIS ROUTE. False until an explicit owner decision widens
-// docs/21-CLAIMS-AND-COMPLIANCE-LAW.md §5's authorized surfaces to include this campaign page and
-// that decision is recorded in docs/05-CURRENT-DECISIONS.md. Flipping this one boolean is the
-// entire change — the item, its copy, its icon and its 46fr column are already built.
-//
-// Do NOT flip it to "make the trust bar look complete". §5 authorizes one registered scope, and
-// the same request was already escalated and refused on /hoarding-cleanup-san-jose/assessment/.
-export const publishTswOnEstateCampaign = false;
+// TSW #933 DISPLAY SCOPE ON THIS ROUTE. Explicitly approved by the owner on 2026-09-09 for this
+// trust item only. The service and credential rules on every other route remain unchanged.
+export const publishTswOnEstateCampaign = true;
 
-// The trust-bar items that may actually publish today, in the requested order. Each gate is
-// evaluated here rather than inside a component, so the reason a slot is empty stays with the
-// fact that empties it. AGENTS.md §0.3: "If a proof slot has no real asset, the slot ships
-// empty. Empty beats fake, always."
+// The exact one-word insurance item was approved for this route in the same instruction. Keep
+// this route-level constant separate from `site.business.insuranceStatus`: setting the shared
+// value would publish broader wording on unrelated pages without evidence or authorization.
+export const publishInsuredOnEstateCampaign = true;
+
+// The three owner-approved trust items, in the requested order and proportions.
 export const ppcEstateTrustItems = [
   ...(publishTswOnEstateCampaign ? [ppcEstate.trustBar.tsw] : []),
-  ...(site.business.insuranceStatus ? [ppcEstate.trustBar.insured] : []),
+  ...(publishInsuredOnEstateCampaign ? [ppcEstate.trustBar.insured] : []),
   ppcEstate.trustBar.ownerLed
 ];
 

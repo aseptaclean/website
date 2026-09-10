@@ -562,13 +562,22 @@ response         within one business day
 TSWMP            verified active 2026-09-03 — California Registered Trauma Scene Waste
                  Management Practitioner, TSW #933. Published only on
                  /crime-scene-trauma-cleanup-san-jose/ and its cross-links (footer, /services/,
-                 doc27ServicePages.ts). See docs/archive/2026-09-04-before-consolidation/05-DECISIONS-LOG.md.
+                 doc27ServicePages.ts), plus the approved trust bar on
+                 /estate-cleanout-san-jose/assessment/. The estate display is a credential-only
+                 trust item and does not widen the services offered on that campaign route. See
+                 docs/05-CURRENT-DECISIONS.md, 2026-09-09.
 ```
 
 **Suppression rules — all six are absolute.** Unverified insurance wording → suppress the
 insurance statement. Inactive social account → omit it. Never render an empty phone link.
 Never show a success state against a non-working endpoint. Never expose a placeholder in a
 production build. Never infer a physical office from service-area coverage.
+
+**Narrow insurance display exception — owner decision 2026-09-09.** The exact one-word trust
+item `Insured` is approved on `/estate-cleanout-san-jose/assessment/` only. This does not set or
+replace `PUBLIC_INSURANCE_STATUS`, publish the certificate-availability or endorsement wording,
+or authorize an insurance statement on any other route. The general suppression rule remains in
+force everywhere else.
 
 **CTA decision, owner-approved 2026-09-04 — supersedes the 2026-08-25 ruling below.** The
 default visible primary CTA is `Call Aseptaclean`; the secondary is `Send a Message`, which
@@ -588,7 +597,8 @@ without verifying its controlling requirements.
 No current COI or equivalent policy document is present in the repository. Until the owner or
 broker verifies the exact insurance and endorsement wording against current documentation,
 those public trust claims remain release-gated. Do not preserve them merely because an older
-document or environment value contains them.
+document or environment value contains them. The one-word estate-campaign exception above is the
+only owner-approved departure from this gate.
 
 ---
 
@@ -617,6 +627,12 @@ Implementation:
     actually decided, and the scope decided here is one campaign. Recorded in
     `docs/05-CURRENT-DECISIONS.md`; wording lives in
     `docs/page-briefs/ASEPTACLEAN-PPC-HERO-COPY-UPDATE.md` (AC-PPC-HERO-ROOMS-1.1).
+  - **Scoped exception — owner decision 2026-09-09.** `Free Walkthrough` is also approved on
+    `/estate-cleanout-san-jose/assessment/`, its thank-you route, and the matching confirmation
+    email branch. This is the same narrow offer distinction: it is always a walkthrough, never a
+    free assessment or free consultation. The route publishes no price figure and does not render
+    `site.offer.assessmentFraming()`. The $195 assessment fee, its shared data, and every other
+    route's pricing rule remain unchanged.
 - `/private-residence-reset/`'s `$2,000` anchor is removed under the same rule.
 - Revisit once there are ≥5 completed projects with photographs and ≥5 Google reviews.
 
@@ -695,12 +711,12 @@ byte-preserved under carrier review and loads Montserrat/Open Sans from Google. 
 - No hantavirus or rodent-specific handling language until written crew protocol exists.
 - No stat bar — no job counts, years in business, or review counts.
 - No `free assessment` or `free consultation` — the on-site assessment is $195. Both phrases stay
-  banned everywhere, including on the PPC route below. **Scoped exception, owner decision
-  2026-09-06:** the walkthrough offered through the hoarding PPC campaign is free, and
-  `/hoarding-cleanup-san-jose/assessment/` (plus its thank-you route and its confirmation email
-  branch) says `free walkthrough` in its secondary CTA, form subtext, submit button, one FAQ
-  answer and its thank-you body. It is a walkthrough, never an "assessment" or a "consultation",
-  and the exception reaches no other route. See §4.
+  banned everywhere, including on the two PPC routes below. **Scoped exceptions:** the free
+  walkthrough offer is approved only for `/hoarding-cleanup-san-jose/assessment/` (owner decision
+  2026-09-06) and `/estate-cleanout-san-jose/assessment/` (owner decision 2026-09-09), plus each
+  route's thank-you page and matching confirmation-email branch. It is always a walkthrough,
+  never an "assessment" or a "consultation". No other route is covered, and no shared assessment
+  price, label, or rule changes. See §4.
 - No retired mechanism names: `Assess → Define → Authorize → Clear → Document` is dead.
   The sequence is `Scope → Protect → Clear → Reset → Verify`.
 - No retired guarantee names. The block is the **Handoff Assurance**.

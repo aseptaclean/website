@@ -152,21 +152,29 @@ try {
 
 const canonicalOrigin = "https://aseptaclean.com";
 const identityExempt = new Set(["/404", "/sms-notification-consent/"]);
+const isNoindex = (page) => /(?:^|,\s*)noindex(?:,|$)/i.test(page.robots);
 const seen = { title: new Map(), description: new Map(), h1: new Map() };
 for (const [route, page] of Object.entries(pages)) {
   if (!identityExempt.has(route)) {
     const expected = `${canonicalOrigin}${route}`;
     if (page.canonical !== expected) failures.push(`${route} canonical is ${page.canonical || "missing"}; expected ${expected}`);
     if (!page.title || !page.description) failures.push(`${route} is missing title or description`);
-    for (const [kind, value] of [["title", page.title], ["description", page.description], ["h1", page.h1Text]]) {
-      const prior = seen[kind].get(value);
-      if (prior) failures.push(`${route} duplicates ${kind} from ${prior}`);
-      else seen[kind].set(value, route);
+    // Search-identity uniqueness and BreadcrumbList schema are publication checks. BaseLayout
+    // deliberately suppresses structured data on noindex routes, and campaign thank-you pages
+    // deliberately reuse a neutral confirmation identity. Keep validating their canonical and
+    // metadata presence above, but do not contradict the launch architecture by requiring SEO
+    // features from pages explicitly withheld from search.
+    if (!isNoindex(page)) {
+      for (const [kind, value] of [["title", page.title], ["description", page.description], ["h1", page.h1Text]]) {
+        const prior = seen[kind].get(value);
+        if (prior) failures.push(`${route} duplicates ${kind} from ${prior}`);
+        else seen[kind].set(value, route);
+      }
     }
     for (const schema of page.schemaText) {
       try { JSON.parse(schema); } catch { failures.push(`${route} has invalid JSON-LD`); }
     }
-    if (route !== "/" && !page.schemaText.some((schema) => schema.includes("BreadcrumbList"))) failures.push(`${route} has no BreadcrumbList schema`);
+    if (route !== "/" && !isNoindex(page) && !page.schemaText.some((schema) => schema.includes("BreadcrumbList"))) failures.push(`${route} has no BreadcrumbList schema`);
   }
 }
 
@@ -191,9 +199,14 @@ for (const [from, page] of Object.entries(pages)) {
     else if (target !== "/api/lead") failures.push(`${from} links to missing internal route ${target}`);
   }
 }
-const intentionalOrphans = new Set(["/404", "/thank-you/", "/data-request/", "/projects/", "/sms-notification-consent/"]);
 const orphans = [...inbound].filter(([route, sources]) => route !== "/" && sources.size === 0).map(([route]) => route);
-for (const route of orphans) if (!intentionalOrphans.has(route)) failures.push(`${route} has no inbound internal link`);
+for (const route of orphans) {
+  // Hidden marketing pages and post-submit utilities are allowed to have no public crawl path;
+  // requiring one would directly conflict with their noindex / campaign-isolation contract.
+  if (!identityExempt.has(route) && !isNoindex(pages[route])) {
+    failures.push(`${route} has no inbound internal link`);
+  }
+}
 
 await mkdir(resolve(root, "artifacts"), { recursive: true });
 await writeFile(output, JSON.stringify({ generatedAt: new Date().toISOString(), routes: routes.length, widths, cityRoutes, robots, orphans, responsive, pages, failures }, null, 2));

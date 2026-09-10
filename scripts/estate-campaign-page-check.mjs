@@ -468,10 +468,7 @@ console.log("\nA2. Trust bar");
     await context.close();
   }
 
-  // The two release-gated claims must be absent until their facts are recorded.
-  //
-  // Matched against the SEPARATED text, not raw textContent: concatenating "Projects" and "Work"
-  // with no separator produces "ProjecTSWork", which a naive /TSW/i test reads as the credential.
+  // All three trust items were explicitly approved for this route on 2026-09-09.
   {
     const { context, page } = await openPage();
     const text = await page.evaluate(() =>
@@ -480,13 +477,14 @@ console.log("\nA2. Trust bar");
         .join(" | ")
     );
     check(
-      !/TSW 933/.test(text) && !/CDPH/.test(text) && !/Trauma Scene/.test(text),
-      "the TSW #933 credential is absent — out of doc 21 §5's authorized display scope",
+      /CDPH Registered/.test(text) && /Trauma Scene Waste/.test(text) &&
+        /Management Practitioner/.test(text) && /TSW 933/.test(text),
+      "the approved CDPH / TSW 933 item ships on this route",
       JSON.stringify(text)
     );
     check(
-      !/insur/i.test(text) && !/[Cc]ertificate/.test(text),
-      "no insurance statement is published while PUBLIC_INSURANCE_STATUS is empty",
+      /Insured/.test(text) && !/[Cc]ertificate/.test(text),
+      "the approved one-word Insured item ships without broader certificate wording",
       JSON.stringify(text)
     );
     check(
