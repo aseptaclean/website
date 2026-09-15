@@ -9,10 +9,9 @@
 // /hoarding-cleanup-san-jose/ is untouched by this file and keeps its own copy record in
 // src/data/servicePageCopy.ts.
 //
-// INDEXING: `noindex` is passed explicitly AND the route is absent from
-// src/data/launchArchitecture.ts `launchIndexablePaths`, which is what sitemap.xml.ts iterates.
-// So it is out of the sitemap and out of the primary navigation by construction, not by a rule
-// somebody has to remember. Verified in dist/, not assumed.
+// INDEXING: owner-approved for organic search, 2026-09-15. The route is included
+// in launchIndexablePaths and sitemap.xml. Its thank-you page stays noindex.
+// The compact campaign navigation, content and form behavior are unchanged.
 //
 // SECTION MAP — every numbered section in the brief, in order:
 //   01 hero + form            PpcHero + PpcHeroForm
@@ -98,7 +97,6 @@ const trustCount = copy.trust.length;
   title={copy.seo.title}
   description={copy.seo.description}
   canonicalPath={copy.route}
-  noindex={true}
   stickyHeroSelector="#ppc-hero"
   stickyFormHref={formHref}
   stickySecondaryLabel={copy.stickyBar.secondaryLabel}

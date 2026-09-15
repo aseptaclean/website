@@ -55,43 +55,22 @@ export const launchPrimaryPaths = [
 // ---------------------------------------------------------------------------
 // INDEXATION
 // ---------------------------------------------------------------------------
-//
-// /rodent-dropping-cleanup-san-jose/ is in the twelve-page DESIGN scope and is fully built, but
-// its indexation is held by an unresolved operational dependency, not by a stale note. The
-// evidence, re-checked 2026-09-04 against the archived record:
-//
-//   - The 2026-08-09 owner override that would have ungated animal-waste / rodent / pigeon was
-//     itself SUPERSEDED on 2026-08-16, when the owner "chose the gated path over
-//     SITEMAP-MASTER's ungated column" for those three routes.
-//   - The gate is the specialty-page compliance release, whose six inputs are: written insurance
-//     confirmation for the specific service and terminology; confirmation of pest-control /
-//     cleanup licensing boundaries; confirmed waste-handling and disposal procedure; confirmed
-//     equipment, PPE, work-zone and access limitations; final claims review; and confirmation
-//     that public language matches actual training and field capacity.
-//     (docs/archive/2026-09-04-before-consolidation/27-COPY-CANONICAL.md §21.)
-//   - None of the six is recorded anywhere as cleared.
-//
-// docs/SITEMAP-MASTER.md is explicit about how to handle exactly this: "An obsolete 'TSW pending'
-// note is not current proof, but an unresolved actual operational requirement also cannot be
-// marked cleared by a design task. Record the specific remaining factual dependency and complete
-// the rest of the page." So the page ships complete and `noindex, follow` — an ordinary
-// crawlable-but-unindexed state. It keeps its nav, footer and grid links.
-//
-// This is NOT an operational-availability statement: AGENTS.md §2.1 separates operational
-// availability, TSWMP scope, and SEO/indexation state, and rodent work is not TSWMP-gated.
-//
-// TO CLEAR: record the six inputs as satisfied in docs/02-CURRENT-FACTS.md, then delete the
-// filter below. Do not delete it as part of a styling or layout change.
-export const launchIndexableExceptions = {
-  "/rodent-dropping-cleanup-san-jose/":
-    "Specialty-page compliance release: six operational inputs (insurance wording, licensing " +
-    "boundaries, disposal procedure, PPE/work-zone limits, final claims review, training/field " +
-    "capacity) are unresolved. Owner decision 2026-08-16 chose the gated path. See " +
-    "docs/02-CURRENT-FACTS.md."
-} as const;
+// Owner-requested SEO update, 2026-09-15: include the rodent service page and
+// both assessment landing pages. This supersedes their earlier noindex decisions
+// for search visibility only; it does not certify operational requirements.
+// See docs/05-CURRENT-DECISIONS.md.
+export const launchIndexableExceptions = {} as const;
+
+// Campaign pages may be indexed without joining the main navigation.
+export const launchLandingPaths = [
+  "/estate-cleanout-san-jose/assessment/",
+  "/hoarding-cleanup-san-jose/assessment/"
+] as const;
 
 export const launchIndexablePaths = new Set<string>(
-  launchPrimaryPaths.filter((path) => !(path in launchIndexableExceptions))
+  [...launchPrimaryPaths, ...launchLandingPaths].filter(
+    (path) => !(path in launchIndexableExceptions)
+  )
 );
 
 export const normalizeLaunchPath = (value: string) => {

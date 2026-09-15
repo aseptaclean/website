@@ -27,21 +27,21 @@ Footer: brand/contact; the five services; About/Contact; Privacy Policy/Terms an
 
 ## Campaign routes
 
-These are paid-traffic landing pages. They are **not** part of the twelve-page scope above, they
-are never added to the public navigation, and they never enter `sitemap.xml`. Each ships
-`noindex, follow`, which `src/data/launchArchitecture.ts` produces automatically by leaving the
-path out of `launchIndexablePaths` — the same mechanism that generates the sitemap, so the two
-cannot disagree.
+These landing pages keep their compact campaign navigation. Owner decision 2026-09-15
+also makes the two assessment pages eligible for organic search: they now ship
+`index, follow` and enter `sitemap.xml` through `launchLandingPaths`.
+Their thank-you pages remain `noindex, follow` and outside the sitemap.
 
 | Route | Brief | Indexation | Notes |
 | --- | --- | --- | --- |
-| `/hoarding-cleanup-san-jose/assessment/` | `page-briefs/PPC-HOARDING-SAN-JOSE.md` | `noindex, follow`, absent from `sitemap.xml` | Hoarding PPC landing page, built 2026-09-05 |
-| `/private-residence-reset/` | `08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` | see `AGENTS.md` §2 | Pre-existing campaign page, footer-linked |
+| `/hoarding-cleanup-san-jose/assessment/` | `page-briefs/PPC-HOARDING-SAN-JOSE.md` | `index, follow`, in `sitemap.xml` | Owner SEO update 2026-09-15 |
+| `/estate-cleanout-san-jose/assessment/` | `aseptaclean-estate-landing-page.md` | `index, follow`, in `sitemap.xml` | Owner SEO update 2026-09-15 |
+| `/private-residence-reset/` | `08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` | Existing noindex state unchanged | Outside this update |
 
-Additional campaign route: `/hoarding-cleanup-san-jose/assessment/`, a dedicated noindex PPC
-landing page. Uses AC-CP70-91130-1.1 with only the exceptions in
-`page-briefs/PPC-HOARDING-SAN-JOSE.md`: compact navigation/footer, approximate 55/45 hero and
-Hoarding-specific intake. Call Aseptaclean remains primary. Existing SEO routes remain unchanged.
+The same decision removes the rodent service page's indexation exception. This is an
+explicit search-visibility decision, not a design task or certification that the historical
+operational inputs are satisfied. Existing business facts and service copy remain unchanged.
+See `docs/05-CURRENT-DECISIONS.md`, 2026-09-15.
 
 **The SEO route `/hoarding-cleanup-san-jose/` is untouched by the campaign page** and keeps its
 own copy record in `src/data/servicePageCopy.ts`. The two share no copy; the brief forbids
