@@ -25,10 +25,9 @@
 //     thank-you route, its own dark hero, its own form tone. Nothing here changes what it renders.
 //   · The SEO page at /estate-cleanout-san-jose/ is untouched and keeps its own copy record.
 //
-// INDEXING — the existing policy, applied, not changed. `noindex` is passed explicitly AND the
-// route is absent from src/data/launchArchitecture.ts `launchIndexablePaths`, which is what
-// sitemap.xml.ts iterates. Out of the sitemap and out of primary navigation by construction. No
-// sitewide robots or sitemap rule was altered, and no public page links here.
+// INDEXING: owner-approved for organic search, 2026-09-15. The route is included
+// in launchIndexablePaths and sitemap.xml. Its thank-you page stays noindex.
+// The compact campaign navigation, content and form behavior are unchanged.
 //
 // SECTION MAP — the refresh's order:
 //   hero   bright opening, warm white, headline + intro beside a white outlined form
@@ -93,7 +92,6 @@ const illustrationWidths = [480, 768, 1024];
   title={copy.seo.title}
   description={copy.seo.description}
   canonicalPath={copy.route}
-  noindex={true}
   stickyHeroSelector="#ppc-hero"
   stickyFormHref={formHref}
   stickySecondaryLabel={copy.stickyBar.secondaryLabel}
@@ -331,8 +329,8 @@ const illustrationWidths = [480, 768, 1024];
       ten questions, with every substantive answer and service limitation retained; see
       src/data/ppcEstate.ts §B1 and §B2 for the two omitted on readiness grounds.
 
-      NO FAQPage JSON-LD. This route is noindex and PpcLayout already suppresses structured data
-      for it; rich results for a deliberately unindexed page would be a contradiction. */}
+      NO FAQPage JSON-LD. The existing FAQ presentation is unchanged by the indexing update;
+      PpcLayout supplies the shared page metadata. */}
   <section class="est-faq" aria-labelledby="faq-title">
     <div class="est-shell">
       <h2 id="faq-title" class="ac-type-h2 est-h2">{copy.faq.heading}</h2>

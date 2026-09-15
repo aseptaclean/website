@@ -34,6 +34,12 @@ for (const line of primaryBody.split("\n")) {
   if (literal) expectedPublicAll.push(literal[1]);
 }
 
+// Owner-approved campaign landing pages share indexation without joining navigation.
+const landingStart = launchSource.indexOf("export const launchLandingPaths = [");
+if (landingStart < 0) throw new Error("launchArchitecture.ts: launchLandingPaths not found");
+const landingBody = launchSource.slice(landingStart, launchSource.indexOf("] as const;", landingStart));
+expectedPublicAll.push(...[...landingBody.matchAll(/^\s*"(\/[^"]*)"/gm)].map((match) => match[1]));
+
 // Routes deliberately held out of the indexable set. Parsed from the same file, so a page can
 // only be excused here by being excused in the code the site itself reads.
 const exceptionsStart = launchSource.indexOf("export const launchIndexableExceptions = {");

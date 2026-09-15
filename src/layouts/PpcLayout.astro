@@ -13,11 +13,9 @@
 //   2. The sitewide MobileCTA bar is replaced by PpcStickyBar, which is hero-aware, keyboard-
 //      aware and consent-aware as the brief's "MOBILE STICKY CTA" section requires.
 //
-// INDEXING: this route is not in `launchIndexablePaths`, so `isLaunchPublicPath` already returns
-// false and BaseLayout's rule — which this layout reproduces exactly — resolves it to
-// `noindex, follow` with structured data suppressed. `noindex` is ALSO passed explicitly by the
-// page so the intent is stated in source rather than only inherited. The same mechanism keeps
-// the route out of sitemap.xml, which is generated from `launchIndexablePaths`.
+// INDEXING: shared allow-list plus an optional page-level noindex override.
+// Owner-approved assessment landing pages are indexable as of 2026-09-15;
+// thank-you pages stay excluded and explicitly noindex.
 import Analytics from "@components/Analytics.astro";
 import AnalyticsHead from "@components/AnalyticsHead.astro";
 import AnalyticsNoscript from "@components/AnalyticsNoscript.astro";

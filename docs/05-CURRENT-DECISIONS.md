@@ -1175,3 +1175,31 @@ published GTM container contains now. It does not rewrite that historical entry.
   and enabling both would double-count the estate submission.
 - Verification must intercept or stub `/api/lead` and Google hosts. No production submission or
   real conversion may be generated merely to test this installation.
+
+
+## 2026-09-15 — Owner-requested rodent and assessment-page indexing
+
+The owner requested Google indexing for the rodent service page and both assessment
+landing pages, reviewed the proposed allow-list change, and authorized direct repository edits.
+This supersedes the older rodent indexation exception and the campaign briefs' noindex
+requirements for these three routes only:
+
+- `/rodent-dropping-cleanup-san-jose/`
+- `/estate-cleanout-san-jose/assessment/`
+- `/hoarding-cleanup-san-jose/assessment/`
+
+The shared indexable set includes all three; the two landing pages no longer pass explicit
+`noindex={true}`. Fresh source inspection shows the current rodent route uses AcServicePage
+without its own noindex override; the old sitemap comment claiming otherwise was stale.
+Sitemap comments and the launch architecture check now match the expanded set.
+
+This records an SEO decision, not evidence that the six historical operational inputs have
+been satisfied. No business-fact records, service claims, navigation, forms, tracking,
+endpoints, consent documents, protected SMS files, or other route publication states change.
+Thank-you pages remain explicitly noindex and outside the sitemap. Verification: production `npm run build` passed using the checked-in public variables in
+`wrangler.toml`; `npm run check` reported 0 errors, 0 warnings and 11 hints;
+`npm run qa:launch` passed across 53 built routes with exactly 14 sitemap URLs.
+Independent XML/HTML inspection confirmed self-canonicals and `index, follow` for all three
+requested pages, and `noindex, follow` plus sitemap exclusion for both campaign thank-you
+pages. `robots.txt` allows crawling and points to the correct sitemap. `git diff --check`
+passed. No visual or form behavior changed, so no live lead submissions were made.

@@ -3,16 +3,9 @@ import type { APIRoute } from "astro";
 import { launchIndexablePaths } from "@data/launchArchitecture";
 import { site } from "@data/site";
 
-// Owner-approved 2026-09-03 launch set. Retained historical, marketing, city, campaign, and
-// utility routes are deliberately absent and receive noindex through BaseLayout. The protected
-// SMS consent document remains outside this system and outside the sitemap.
-//
-// Reads launchIndexablePaths, not launchPrimaryPaths — the two used to be identical, but
-// launchIndexablePaths now excludes /rodent-dropping-cleanup-san-jose/ (that page ships its own
-// noindex={true}; see launchArchitecture.ts's comment on the exclusion). Sourcing from
-// launchPrimaryPaths here would have put a noindex page's URL in the sitemap, which is exactly
-// the "sitemap claims indexable, robots tag says noindex" contradiction the 2026-09-03 route
-// audit found. See docs/05-DECISIONS-LOG.md.
+// The shared indexable set includes the owner-approved public and assessment pages.
+// Other legacy, city and utility routes remain excluded, including thank-you pages
+// and the protected SMS consent document. See docs/05-CURRENT-DECISIONS.md (2026-09-15).
 const routes = [...launchIndexablePaths];
 
 export const GET: APIRoute = () => {
