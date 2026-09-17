@@ -10,6 +10,12 @@
 interface FaqItem {
   question: string;
   answer: string;
+  /**
+   * Optional trailing link rendered inside the same answer paragraph. Added for approved copy
+   * that cites an external source (e.g. a CDC or EPA page) inside a specific FAQ answer — every
+   * existing caller omits this and renders byte-identically.
+   */
+  link?: { label: string; href: string };
 }
 
 interface Props {
@@ -24,7 +30,15 @@ const { items, headingId } = Astro.props;
   {items.map((item) => (
     <details>
       <summary>{item.question}</summary>
-      <p>{item.answer}</p>
+      <p>
+        {item.answer}
+        {item.link && (
+          <>
+            {" "}
+            <a class="ac-faq-accordion__link" href={item.link.href}>{item.link.label}</a>.
+          </>
+        )}
+      </p>
     </details>
   ))}
 </div>
@@ -74,5 +88,9 @@ const { items, headingId } = Astro.props;
     color: var(--ac-color-ink-600);
     font-size: var(--ac-text-body);
     line-height: 1.65;
+  }
+
+  .ac-faq-accordion__link {
+    color: var(--ac-color-navy-800);
   }
 </style>

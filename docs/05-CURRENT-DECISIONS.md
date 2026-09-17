@@ -1175,3 +1175,182 @@ published GTM container contains now. It does not rewrite that historical entry.
   and enabling both would double-count the estate submission.
 - Verification must intercept or stub `/api/lead` and Google hosts. No production submission or
   real conversion may be generated merely to test this installation.
+
+### 2026-09-16 — Rodent service page rebuilt on new owner copy; new rodent assessment landing page
+
+The owner supplied two new approved copy documents — `docs/Aseptaclean_Rodent_Service_Page_Copy.md`
+for `/rodent-dropping-cleanup-san-jose/` and `docs/Aseptaclean_Rodent_Landing_Page_Copy.md` for a
+new landing page — plus explicit design instructions for both. Both are rank-2 explicit current
+owner decisions (AGENTS.md §1), scoped to these two routes only.
+
+#### Conflict 1 — pricing
+
+| Side | Text | Rank |
+| --- | --- | --- |
+| A | The two new copy files: small-area cleanup "starts at $500", larger jobs "start at $1,500", on-site assessment "$145", "the full $145 counts toward your cleanup bill" (no 7-day condition). Owner-supplied, 2026-09-16. | 2 |
+| B | `AGENTS.md` §4, 2026-08-11: "No price figure is published anywhere on the site." §3: assessment fee is $195, "credited toward an approved project booked within 7 days." | 2 (earlier) |
+
+**Resolution: A wins, scoped to exactly these two routes**, on the same reasoning as the
+2026-09-06 hoarding-walkthrough and 2026-09-09 estate-walkthrough entries above — a later rank-2
+owner decision that names its own scope outranks an earlier one within that scope only. Unlike
+those two entries this is a **price figure**, not a "free" relabeling, and it is the first
+published general starting price on the site. `AGENTS.md` §3 and §4 amended in place with scoped
+exceptions rather than left contradicting the new pages. The $195 fee, `site.offer.assessmentFee`,
+`assessmentFraming()`, and the sitewide no-starting-price rule are unchanged everywhere else. The
+figures ship as literal strings in the two new data files, not through `site.offer`.
+
+**Type:** violated rule → rule scoped, both documents amended.
+
+#### Conflict 2 — hero form placement
+
+| Side | Text | Rank |
+| --- | --- | --- |
+| A | Owner design instructions, 2026-09-16: "Use a split hero with text on the left and a relevant image on the right... Place the contact form at the bottom of each page, not in the hero... Make every 'Request a Property Assessment' button scroll to that page's bottom form," for both the service page and the new landing page. | 2 |
+| B | `AGENTS.md` §2.2.3: "Home and the five service pages share one responsive `HeroWithForm`." The existing PPC assessment-page pattern (`/hoarding-cleanup-san-jose/assessment/`, `/estate-cleanout-san-jose/assessment/`) also puts the intake form inside `PpcHero`. | 2 (earlier), plus doc 30 §3 (rank 5) |
+
+**Resolution: A wins, scoped to exactly these two routes.** Every existing reusable
+hero/form pairing on the site (`AcHeroWithForm`, `AcServicePage`, `PpcHero`+`PpcHeroForm`-in-hero)
+bundles the intake form into the hero, so satisfying the owner's explicit instruction required a
+scoped departure rather than reuse of an existing page-level composition. Implementation reuses
+every existing ATOMIC piece unmodified except where noted — `PpcHeroForm` (relocated out of the
+hero into its own bottom section, unmodified field set/validation/consent/backend/analytics),
+`AcActions`, `AcTrustStrip`, `AcSteps`, `AcCheckList`, `FaqAccordion`, `AcSplit` (for body
+sections).
+
+**First attempt, corrected same day.** The hero was initially built as a brand-new component,
+`AcSplitHero.astro` — a literal two-column layout (light background, contained photo box, text
+left) — reading "text on the left, image on the right" as a rejection of the sitewide full-bleed
+photo hero. Once built, it did not visually match any other page on the site, and the owner said
+so directly ("the design looks different from the other pages") without further specifying what.
+A side-by-side screenshot comparison against `/hoarding-cleanup-san-jose/` confirmed it: every
+other hero on the site is a full-bleed photograph with a flat navy overlay and white left-aligned
+text; the new component was a light, boxed, two-column layout that read as a different product.
+`AcPageHero.astro`'s own header comment states this exact pattern — "a white text hero with a
+small contained photograph on the right" — was deliberately retired sitewide in the 2026-09-04
+visual port, with doc 30 §1 naming it "the thing NOT to do." Building it back, even for a good
+literal reading of "text left, image right," reproduced a rejected pattern.
+
+**Corrected implementation.** `AcSplitHero.astro` is deleted. Both pages use `AcPageHero` — the
+same full-bleed photo + navy overlay, no-form hero already used on About, Contact and the Services
+hub — extended with two small additive props: `primaryLabel` (so the button can read "Call (408)
+785-7588" per the approved copy instead of the sitewide default "Call Aseptaclean," the same
+override `AcActions` already supported) and `strongBody` (a bold paragraph rendered after the
+regular body paragraphs, for the landing page's second bold hero line). Both props default to
+unset, so the three existing `AcPageHero` callers (About, Contact, Services hub) render
+byte-identically. `AcHeroWithForm.astro`, `AcServicePage.astro`, `PpcHero.astro` and every route
+using any of them, including the three existing `AcPageHero` callers, are otherwise untouched.
+`AGENTS.md` §2.2.3 amended with the corrected scoped exception.
+
+**Type:** violated rule → rule scoped; first implementation attempt also violated the visual
+system it was scoped inside of, caught by the owner's direct feedback and fixed same-session
+rather than left as a second, undiscovered defect.
+
+#### Doc 21 mandatory clauses applied (rank 3, over the rank-4 copy documents)
+
+Both new pages describe rodent/animal-waste cleaning throughout, and both describe the pest
+boundary explicitly ("We do not: trap rodents... seal holes..." / "We do not trap rodents, treat
+pests, or seal entry holes"). Per the precedent set on `/estate-cleanout-san-jose/assessment/`
+(2026-09-09 entry above), doc 21's mandatory verbatim clauses are added ON TOP OF the approved
+copy, not as a replacement for it:
+
+- **§2.3 animal/organic clause** — "Cleaning only — not a decontamination, sterilization, or
+  health-safety determination." Added once per page, at the end of the section that most directly
+  describes the cleaning/pest boundary (service page: "What if rodents are still getting in?";
+  landing page: the matching FAQ answer).
+- **§3.1 pest-boundary sentence** — "Aseptaclean may clean accepted conditions left behind after
+  an appropriately licensed pest operator has confirmed the active pest issue is resolved.
+  Aseptaclean does not inspect for, identify, exclude, trap, or treat pests." Added in the same
+  place, verbatim, not a paraphrase of the copy's own similar sentences.
+- **§4.2 disposal wording** was evaluated and NOT added: neither copy file describes arranging
+  disposal or transport (only on-property removal, "we remove the droppings... included in your
+  approved plan"), so the clause is not triggered on these two pages — unlike the estate page,
+  which described arranging disposal three times.
+
+#### Route creation — `/rodent-dropping-cleanup-san-jose/assessment/`
+
+Checked before creation: no existing rodent landing/assessment route anywhere in `src/pages`,
+`src/data/ppc*.ts`, or `public/_redirects`. New route + `.../assessment/thank-you/`, mirroring the
+hoarding/estate campaign pattern exactly (`PpcLayout`, own `PpcHeroForm` field set/validation/
+consent/backend, own thank-you page with the same query contract and lead-event recovery script).
+`noindex` passed explicitly and the route is absent from `launchIndexablePaths`, so it is out of
+`sitemap.xml` by the same mechanism as the two existing PPC routes — no change to
+`src/data/launchArchitecture.ts`. **No new confirmation-email branch was added** to
+`functions/_lib/providers.ts`: unlike the hoarding/estate campaigns, this page does not offer a
+free walkthrough (it publishes the real $145 fee), so the existing default "Assessment request"
+branch already says the correct thing and required no code change. `offer_type` posts the existing
+`handoff_reset` value (the only other allowed value, `private_residence_reset`, does not apply);
+`property_situation` posts the existing frozen enum value `"Rodent droppings or animal waste"`.
+
+`/rodent-dropping-cleanup-san-jose/` itself keeps its existing `noindex, follow` status
+(`launchIndexableExceptions`, unresolved specialty-page compliance release) — this content rebuild
+does not touch indexation, per AGENTS.md §2.1's separation of content/design work from that gate.
+
+#### Component changes
+
+- **`src/components/FaqAccordion.astro`** — added one optional field, `link?: { label, href }`,
+  rendered as a trailing sentence inside the existing answer `<p>`. Every existing caller omits it
+  and renders byte-identically; it exists so the CDC and EPA links the two approved copy files
+  require inside specific FAQ answers can render as real links instead of being dropped or moved
+  out of their approved placement.
+- **`src/components/ac/AcPageHero.astro`** — two additive props, `primaryLabel` and `strongBody`,
+  both defaulting to unset. See Conflict 2 above; `AcSplitHero.astro`, built and then deleted the
+  same session, is not part of the shipped result.
+- **`src/data/servicePageCopy.ts`** — the old rodent record removed (superseded by
+  `src/data/rodentServicePage.ts`); the file's header comment's source list updated to drop
+  "Rodent" now that its copy source is the new dedicated file, not
+  `docs/aseptaclean-all-website-copy.md`.
+
+#### Not changed
+
+`src/data/site.ts`, `src/data/assessment.ts`, `functions/_lib/lead.ts`, `functions/_lib/providers.ts`,
+`src/data/launchArchitecture.ts`, `AcHeroWithForm.astro`, `AcServicePage.astro`, `PpcHero.astro`,
+`PpcHeroForm.astro`, and every other route's copy, navigation, or metadata.
+
+#### Conflict 3 — "disinfect" as an outcome claim (found during claims-check, fixed before publish)
+
+Both approved copy files use "disinfect"/"disinfecting"/"disinfected" repeatedly as something
+Aseptaclean itself does — the hero body on both pages ("We clean the affected areas and disinfect
+surfaces that can be treated"), a service-page process step titled "Disinfect surfaces that can be
+treated," a landing-page step ("When we disinfect, we follow the product's directions..."), and a
+landing-page FAQ, "Are sanitizing and disinfecting the same?", naming what sanitizers and
+disinfectants can kill.
+
+| Side | Text | Rank |
+| --- | --- | --- |
+| A | The two approved copy files, owner-supplied 2026-09-16, using "disinfect" as an outcome repeatedly. | 4 (copy source) |
+| B | `docs/21-CLAIMS-AND-COMPLIANCE-LAW.md` §2.2: "disinfect" is banned "as an outcome claim... no permitted-negation carve-out covers it." | 3 |
+
+**Resolution: B wins, in full**, on the identical reasoning already recorded in
+`src/pages/animal-waste-cleanup-san-jose/index.astro`'s own top-of-file comment ("THE DISINFECT/
+DECONTAMINATION RECONCILIATION") for the same word in the same kind of source copy on a sibling
+route: doc 21 is rank 3 and this specific ban has no hedge that survives it — not a softened
+version, not a generic-education framing. Unlike the pricing and hero-form exceptions above, this
+is **not** treated as a fresh owner override: nothing indicates the owner was presented with this
+specific §2.2 conflict (the way the one standing "Biohazard Remediation" descriptor exception was,
+per doc 21 §2.1 and `docs/20-COPY-MAP.md`'s OWNER OVERRIDE section) before supplying the copy, so
+the default rule — rank 3 governs public wording — applies without an escalation step.
+
+**Type:** violated rule → fixed code.
+
+**Changed**, in both `src/data/rodentServicePage.ts` and `src/data/ppcRodent.ts`:
+- Every hero/body/step/FAQ sentence claiming Aseptaclean disinfects, or naming disinfecting as
+  part of the work, is reworded to "clean" only, or the disinfect-specific clause is dropped from
+  an otherwise-surviving sentence.
+- The service page's entire "Disinfect surfaces that can be treated." process step (5th of 5) is
+  removed rather than reworded — the step existed only to describe a disinfectant product-method
+  claim, matching the sibling page's "drop the whole step" resolution for the identical conflict.
+  The process section now has four steps.
+- The landing page's entire "Are sanitizing and disinfecting the same?" FAQ item, **including its
+  EPA link**, is removed rather than kept in a hedged, generic-education form — the sibling page's
+  own reconciliation explicitly rejected that middle ground for its analogous enzyme-cleaner FAQ
+  ("naming a product category at all is a method claim this page has no approved documentation
+  for"; here, naming what disinfectants and sanitizers kill has the same problem). **This means
+  the EPA link is not on either rodent page** — only the CDC link (attached to "What should I do
+  before your visit?", which is a general public-safety warning quoted from the CDC and does not
+  make a claim about Aseptaclean's own process) survives. This is flagged in the final report to
+  the owner as a departure from the literal "keep CDC and EPA links wherever included" instruction,
+  made because the instruction's own premise — a compliant sentence to attach the link to — did
+  not survive the claims check.
+- The mandatory §2.3 clause ("Cleaning only — not a decontamination, sterilization, or
+  health-safety determination") already carries the correct negation and needed no change; it does
+  not itself use the word "disinfect."

@@ -180,6 +180,23 @@ with a secondary `Send a Message` link instead of a duplicate intake panel. Cont
 compact title plus a details/form split. Legal pages use a text title only. *This supersedes the
 earlier "hero form on `/` only" rule.*
 
+**Scoped exception, owner decision 2026-09-16 — the rodent service page and its landing page.**
+`/rodent-dropping-cleanup-san-jose/` and the new `/rodent-dropping-cleanup-san-jose/assessment/`
+do not use `AcHeroWithForm` or `PpcHero`+`PpcHeroForm`-in-hero. Per explicit owner design
+instructions for these two routes only: no form in the hero, and every "Request a Property
+Assessment" action scrolls to a working form placed at the bottom of the page. The hero itself is
+`AcPageHero` — the same full-bleed photo + navy overlay, no-form hero already used on About,
+Contact and the Services hub, extended with two small additive props (`primaryLabel`,
+`strongBody`) so it can carry these two pages' exact copy. An earlier pass built a separate
+light-background, boxed-photo hero component for this; it did not visually match the rest of the
+site (AcPageHero's own header comment already records why that exact pattern was retired sitewide
+in the 2026-09-04 visual port) and was deleted. Both pages reuse the existing, unmodified
+`PpcHeroForm` component (relocated out of the hero into its own bottom section) so the field set,
+validation, consent, anti-spam, backend endpoint and analytics events are unchanged — only their
+position on the page moved. `AcHeroWithForm`, `AcServicePage`, `PpcHero` and every other page using
+them are untouched; this exception does not generalize past these two routes. Recorded in
+`docs/05-CURRENT-DECISIONS.md`, 2026-09-16.
+
 **4. Public service name — `Extreme Cleaning`.**
 Source content is the `Severe Property Cleanup` section of
 `docs/aseptaclean-all-website-copy.md`. The canonical route `/extreme-cleaning-san-jose/` is
@@ -556,8 +573,11 @@ primary CTA      Call Aseptaclean            (owner decision 2026-09-04, §2.2.2
 secondary CTA    Send a Message              → local form, else /contact/#contact-form
 form submit      Send Message                (owner decision 2026-09-04, §2.2.3)
 form heading     Tell us about the property. (docs/03-INTEGRATION-CONTRACT.md)
-assessment fee   $195, credited toward an approved project booked within 7 days
-starting price   NOT PUBLISHED — see §4
+assessment fee   $195, credited toward an approved project booked within 7 days.
+                 Scoped exception, 2026-09-16: $145, fully credited with no 7-day window, on
+                 the rodent service page and its /assessment/ landing page only. See §4.
+starting price   NOT PUBLISHED — see §4. Scoped exception, 2026-09-16: $500/$1,500 starting
+                 prices on the rodent service page and its /assessment/ landing page only.
 response         within one business day
 TSWMP            verified active 2026-09-03 — California Registered Trauma Scene Waste
                  Management Practitioner, TSW #933. Published only on
@@ -633,6 +653,18 @@ Implementation:
     free assessment or free consultation. The route publishes no price figure and does not render
     `site.offer.assessmentFraming()`. The $195 assessment fee, its shared data, and every other
     route's pricing rule remain unchanged.
+  - **Scoped exception — owner decision 2026-09-16.** `docs/Aseptaclean_Rodent_Service_Page_Copy.md`
+    and `docs/Aseptaclean_Rodent_Landing_Page_Copy.md` are owner-supplied approved copy for
+    `/rodent-dropping-cleanup-san-jose/` and `/rodent-dropping-cleanup-san-jose/assessment/` and
+    publish three figures verbatim: a **$500 small-area cleanup starting price**, a **$1,500
+    larger-job starting price**, and a **$145 on-site assessment fee, fully credited toward an
+    approved cleanup with no 7-day booking window**. This is the first published general starting
+    price on the site (the §4 "no price figure" default and the sitewide `PUBLIC_STARTING_PRICE`
+    removal are otherwise unchanged everywhere else) and a different assessment-fee number and
+    crediting term than the sitewide $195 recorded in §3. Both figures are literal strings in
+    `src/data/rodentServicePage.ts` and `src/data/ppcRodent.ts`, not `site.offer.assessmentFee` or
+    `assessmentFraming()` — those, and every other route's pricing, are untouched. Scope is
+    exactly these two routes. Recorded in `docs/05-CURRENT-DECISIONS.md`, 2026-09-16.
 - `/private-residence-reset/`'s `$2,000` anchor is removed under the same rule.
 - Revisit once there are ≥5 completed projects with photographs and ≥5 Google reviews.
 

@@ -132,25 +132,68 @@ const PLACEMENT = {
       "Not sure whether you need detailed deep cleaning?"
     ]
   ],
+  // REBUILT 2026-09-16 on docs/Aseptaclean_Rodent_Service_Page_Copy.md, which replaced this
+  // route's entire copy source (see docs/05-CURRENT-DECISIONS.md, 2026-09-16). The list below is
+  // that file's own headings, not docs/aseptaclean-all-website-copy.md's — the old mapped blocks
+  // are the superseded copy and are expected to be absent, not a fidelity failure. One heading is
+  // deliberately NOT listed: "Disinfect surfaces that can be treated." was dropped from the page
+  // entirely as a claims-check fix (doc 21 §2.2 bans "disinfect" as an outcome claim outright),
+  // so its absence is correct and must not be reintroduced by "fixing" this list.
   "/rodent-dropping-cleanup-san-jose/": [
     "dist/rodent-dropping-cleanup-san-jose/index.html",
     [
-      "Found rodent droppings?",
-      "Don't sweep or vacuum them first.",
-      "Pest control handles the rodents.",
-      "Seeing a few droppings does not always tell you the whole story.",
-      "What we look at during an assessment",
-      "How Aseptaclean approaches rodent cleanup",
-      "Not every rodent cleanup is the same.",
-      "Rodent contamination can affect more than floors.",
-      "Why Aseptaclean",
-      "What Aseptaclean does",
-      "The pest-control company already cleaned some of it. Do I still need you?",
-      "I only found a few droppings. Is this overkill?",
-      "What if there are droppings inside cabinets?",
-      "What if the rodents are still there?",
-      "Can you tell me the price from photos?",
-      "Start with photos."
+      "Rodent Dropping Cleanup in San Jose",
+      "Different spaces need different cleanup plans.",
+      "Kitchen cabinets, drawers, and pantries",
+      "Garages and storage spaces",
+      "Closets, furniture, and living areas",
+      "Several rooms or heavy rodent waste",
+      "What can you keep?",
+      "How we handle the cleanup.",
+      "Plan the work area.",
+      "Remove waste and soiled materials.",
+      "Review the work with you.",
+      "What we look at during a property assessment.",
+      "What does cleanup cost?",
+      "Small-area cleanup — starts at $500",
+      "Larger cleanup jobs — start at $1,500",
+      "On-site assessment — $145",
+      "What if rodents are still getting in?",
+      "Meet Matthew, the owner.",
+      "Questions before you book.",
+      "Serving San Jose, the South Bay, and the Peninsula.",
+      "Tell us what you found."
+    ]
+  ],
+  // NEW ROUTE, 2026-09-16, on docs/Aseptaclean_Rodent_Landing_Page_Copy.md. See
+  // docs/05-CURRENT-DECISIONS.md for the route-creation record. "Are sanitizing and disinfecting
+  // the same?" is deliberately absent — that FAQ item was dropped in full as the same claims-check
+  // fix (doc 21 §2.2), including its EPA link.
+  "/rodent-dropping-cleanup-san-jose/assessment/": [
+    "dist/rodent-dropping-cleanup-san-jose/assessment/index.html",
+    [
+      "Rodent Dropping Cleanup for Your Home",
+      "The rodents may be gone. Their mess is still there.",
+      "A clear plan for your home and your things.",
+      "Plan the work.",
+      "Talk with you about what stays.",
+      "Use the right method for each surface.",
+      "Put the plan and price in writing.",
+      "Help with small areas or a larger mess.",
+      "How it works.",
+      "Tell us what you found.",
+      "Get your cleanup plan and price.",
+      "Let us handle the cleanup.",
+      "Review the work with us.",
+      "Meet Matthew, the owner.",
+      "Questions before you book.",
+      "Will you throw everything away?",
+      "What if rodents are still getting in?",
+      "What should I do before your visit?",
+      "What does cleanup cost?",
+      "Small-area cleanup — starts at $500",
+      "Larger cleanup jobs — start at $1,500",
+      "On-site assessment — $145"
     ]
   ],
   "/crime-scene-trauma-cleanup-san-jose/": [

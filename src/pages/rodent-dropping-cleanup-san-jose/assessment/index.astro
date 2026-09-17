@@ -1,0 +1,303 @@
+---
+// RODENT ASSESSMENT LANDING PAGE — new route, built 2026-09-16 on the owner-approved
+// docs/Aseptaclean_Rodent_Landing_Page_Copy.md. Verbatim wording and section order.
+//
+// Mirrors the working hoarding/estate PPC pattern: PpcLayout (compact nav), PpcHeroForm
+// (unmodified field set/validation/consent/backend/analytics), its own thank-you route. ONE
+// scoped difference, per explicit owner design instruction (AGENTS.md §2.2.3, 2026-09-16): the
+// hero carries no form, and the working form sits in its own section at the bottom of the page
+// instead. The hero itself is AcPageHero — the same full-bleed photo + navy overlay, no-form hero
+// component About, Contact and the Services hub already use — not PpcHero (which always bundles
+// an intake panel) and not a bespoke light-background split, which an earlier draft of this page
+// used and which did not visually match the rest of the site. See
+// docs/05-CURRENT-DECISIONS.md, 2026-09-16.
+//
+// INDEXING: noindex is passed explicitly AND the route is absent from launchIndexablePaths
+// (src/data/launchArchitecture.ts), so it is out of sitemap.xml by the same mechanism as the two
+// existing PPC routes — no change to that file.
+import PpcLayout from "@layouts/PpcLayout.astro";
+import AcPageHero from "@components/ac/AcPageHero.astro";
+import AcIntro from "@components/ac/AcIntro.astro";
+import AcSplit from "@components/ac/AcSplit.astro";
+import AcSteps from "@components/ac/AcSteps.astro";
+import AcCheckList from "@components/ac/AcCheckList.astro";
+import AcActions from "@components/ac/AcActions.astro";
+import FaqAccordion from "@components/FaqAccordion.astro";
+import PpcHeroForm from "@components/ppc/PpcHeroForm.astro";
+import { site, legal } from "@data/site";
+import { ppcRodent as copy, ppcRodentCallLabel as callLabel } from "@data/ppcRodent";
+
+import heroImage from "../../../assets/aseptaclean/rodent-utility-room-context.png";
+import messImage from "../../../assets/aseptaclean/rodent-hard-surface-detail.png";
+import helpImage from "../../../assets/aseptaclean/rodent-storage-contents.png";
+import founderPortrait from "../../../assets/aseptaclean/founder-matthew-ruiz.jpeg";
+
+const formHref = `#${copy.formId}`;
+---
+
+<PpcLayout
+  title={copy.seo.title}
+  description={copy.seo.description}
+  canonicalPath={copy.route}
+  noindex={true}
+  stickyHeroSelector=".acx-phero"
+  stickyFormHref={formHref}
+  stickySecondaryLabel={copy.stickyBar.secondaryLabel}
+>
+  <AcPageHero
+    eyebrow={copy.hero.eyebrow}
+    heading={copy.hero.heading}
+    headingId="rodent-landing-hero-title"
+    lead={copy.hero.lead}
+    body={copy.hero.body}
+    strongBody={[copy.hero.boldLine]}
+    image={heroImage}
+    imageAlt="A residential utility room with a low shelf, cardboard boxes and a small scattering of rodent droppings near the wall"
+    assurances={[copy.hero.trustLine]}
+    primaryLabel={callLabel}
+    secondaryLabel={copy.hero.secondaryLabel}
+    secondaryHref={formHref}
+  />
+
+  {/* The rodents may be gone. Their mess is still there. */}
+  <AcSplit heading={copy.mess.heading} headingId={copy.mess.id} body={copy.mess.body} image={messImage} imageAlt="A close view of dry rodent droppings scattered on a concrete floor against a painted baseboard">
+    <div class="rodent-list">
+      <AcCheckList items={copy.mess.list} compact />
+    </div>
+    {copy.mess.closing.map((paragraph) => <p class="rodent-closing">{paragraph}</p>)}
+  </AcSplit>
+
+  {/* A clear plan for your home and your things. */}
+  <AcIntro heading={copy.plan.heading} headingId={copy.plan.id} tone="soft">
+    <div class="rodent-groups">
+      {copy.plan.groups.map((group) => (
+        <div class="rodent-groups__item">
+          <h3 class="ac-type-h3-band">{group.title}</h3>
+          {group.body.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+      ))}
+    </div>
+  </AcIntro>
+
+  {/* Help with small areas or a larger mess. */}
+  <AcSplit heading={copy.help.heading} headingId={copy.help.id} lead={copy.help.lead} image={helpImage} imageAlt="A residential storage shelf holding cardboard boxes and a plastic tub, with dust and a small scattering of rodent droppings on the shelf" reverse>
+    <div class="rodent-list">
+      <AcCheckList items={copy.help.list} compact />
+    </div>
+    {copy.help.closing.map((paragraph) => <p class="rodent-closing">{paragraph}</p>)}
+  </AcSplit>
+
+  {/* How it works. */}
+  <AcIntro heading={copy.howItWorks.heading} headingId={copy.howItWorks.id} tone="soft">
+    <div class="rodent-steps">
+      <AcSteps steps={copy.howItWorks.steps} />
+    </div>
+  </AcIntro>
+
+  {/* Meet Matthew, the owner. */}
+  <AcSplit heading={copy.founder.heading} headingId={copy.founder.id} body={copy.founder.body} image={founderPortrait} imageAlt={`${site.founder.name}, founder of Aseptaclean`} ratio="3/4">
+    <p class="rodent-limit">{legal.founderAuthorityLimit}</p>
+  </AcSplit>
+
+  {/* Questions before you book. — doc 21 §2.3 + §3.1 appended verbatim inside the matching FAQ
+      answer in src/data/ppcRodent.ts. CDC and EPA links preserved via FaqAccordion's optional
+      `link` field. */}
+  <AcIntro heading={copy.faq.heading} headingId={copy.faq.id} tone="soft">
+    <div class="rodent-faq">
+      <FaqAccordion items={copy.faq.items} headingId={copy.faq.id} />
+    </div>
+  </AcIntro>
+
+  {/* What does cleanup cost? — scoped pricing exception, AGENTS.md §4, 2026-09-16. */}
+  <section class="rodent-cost" aria-labelledby={copy.cost.id}>
+    <div class="ac-shell">
+      <div class="rodent-cost__inner">
+        <h2 id={copy.cost.id} class="ac-type-h2">{copy.cost.heading}</h2>
+
+        <h3 class="ac-type-h3-band">{copy.cost.small.title}</h3>
+        {copy.cost.small.body.map((paragraph) => <p class="rodent-cost__body">{paragraph}</p>)}
+
+        <h3 class="ac-type-h3-band">{copy.cost.larger.title}</h3>
+        {copy.cost.larger.body.map((paragraph) => <p class="rodent-cost__body">{paragraph}</p>)}
+        <div class="rodent-cost__factors">
+          <AcCheckList items={copy.cost.larger.factors} columns={2} compact />
+        </div>
+
+        <p class="rodent-strong">{copy.cost.strongLine}</p>
+
+        <h3 class="ac-type-h3-band">{copy.cost.assessment.title}</h3>
+        {copy.cost.assessment.body.map((paragraph) => <p class="rodent-cost__body">{paragraph}</p>)}
+        <p class="rodent-strong">{copy.cost.assessment.strongLine}</p>
+        <p class="rodent-cost__body">{copy.cost.assessment.closing}</p>
+
+        <p class="rodent-cost__body">Start with a <strong>free phone and photo review</strong>. Some small jobs can be quoted without a separate visit.</p>
+
+        <div class="rodent-cost__actions">
+          <AcActions primaryLabel={callLabel} secondaryLabel={copy.hero.secondaryLabel} secondaryHref={formHref} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* Tell us what you found. — bottom form, per the scoped hero-form exception. */}
+  <section class="rodent-form" id={copy.formId} aria-labelledby="rodent-form-heading">
+    <div class="ac-shell rodent-form__shell">
+      <div class="rodent-form__intro">
+        <h2 id="rodent-form-heading" class="ac-type-h2">{copy.form.heading}</h2>
+        <p class="rodent-form__lead">{copy.form.lead}</p>
+      </div>
+      <PpcHeroForm
+        formId={copy.formId}
+        entryRoute={`${copy.route}#${copy.formId}`}
+        situationValue="Rodent droppings or animal waste"
+        title={copy.form.heading}
+        intro={copy.form.intro}
+        submitLabel={copy.form.submitLabel}
+        photoHelper="Photos of the affected area help."
+        microcopy={copy.form.microcopy}
+        thankYouRoute={copy.thankYou.route}
+        tone="light"
+      />
+    </div>
+    <p class="rodent-form__phone">
+      <strong>Prefer to talk? <a href={site.business.phoneUri}>{callLabel}</a>.</strong>
+    </p>
+  </section>
+</PpcLayout>
+
+<style>
+  .rodent-list {
+    margin-top: 22px;
+  }
+
+  .rodent-closing {
+    margin: 16px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .rodent-groups {
+    display: grid;
+    margin-top: 26px;
+    gap: 28px;
+    text-align: left;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rodent-groups__item h3 {
+    margin: 0 0 10px;
+  }
+
+  .rodent-groups__item p {
+    margin: 8px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  @media (max-width: 44rem) {
+    .rodent-groups {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .rodent-steps {
+    margin-top: 40px;
+    text-align: left;
+  }
+
+  .rodent-limit {
+    margin: 22px 0 0;
+    border-left: 2px solid var(--ac-color-line-strong);
+    padding-left: 18px;
+    color: var(--ac-color-ink-500);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .rodent-faq {
+    margin-top: 34px;
+    text-align: left;
+  }
+
+  .rodent-strong {
+    margin: 20px 0 0;
+    border-left: 2px solid var(--ac-color-navy-800);
+    padding-left: 18px;
+    color: var(--ac-color-navy-900);
+    font-size: 1.0625rem;
+    font-weight: 650;
+    line-height: 1.55;
+  }
+
+  .rodent-cost {
+    background: var(--ac-color-warm-white);
+  }
+
+  .rodent-cost__inner {
+    max-width: 880px;
+  }
+
+  .rodent-cost__inner h3 {
+    margin: 32px 0 0;
+  }
+
+  .rodent-cost__body {
+    margin: 14px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .rodent-cost__factors {
+    margin-top: 18px;
+  }
+
+  .rodent-cost__actions {
+    margin-top: 30px;
+  }
+
+  .rodent-form {
+    background: var(--ac-color-paper);
+    padding-block: 20px 68px;
+  }
+
+  .rodent-form__shell {
+    display: grid;
+    gap: 40px;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 480px);
+    align-items: start;
+  }
+
+  .rodent-form__intro h2 {
+    text-wrap: balance;
+  }
+
+  .rodent-form__lead {
+    margin: 16px 0 0;
+    max-width: 46ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  .rodent-form__phone {
+    margin: 24px auto 0;
+    max-width: 880px;
+    text-align: center;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+  }
+
+  .rodent-form__phone a {
+    color: var(--ac-color-navy-800);
+    font-weight: 650;
+  }
+
+  @media (max-width: 62rem) {
+    .rodent-form__shell {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>
