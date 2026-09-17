@@ -23,15 +23,15 @@ import type { ImageMetadata } from "astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import AcPageHero from "@components/ac/AcPageHero.astro";
 import AcTrustStrip from "@components/ac/AcTrustStrip.astro";
-import AcActions from "@components/ac/AcActions.astro";
+import AcEyebrow from "@components/ac/AcEyebrow.astro";
 import AcIntro from "@components/ac/AcIntro.astro";
 import AcSplit from "@components/ac/AcSplit.astro";
 import AcDarkBand from "@components/ac/AcDarkBand.astro";
 import AcCheckList from "@components/ac/AcCheckList.astro";
-import AcEyebrow from "@components/ac/AcEyebrow.astro";
 import AcServiceCards from "@components/ac/AcServiceCards.astro";
 import FaqAccordion from "@components/FaqAccordion.astro";
 import PpcHeroForm from "@components/ppc/PpcHeroForm.astro";
+import RodentPricing from "@components/rodent/RodentPricing.astro";
 import { site, legal } from "@data/site";
 import { rodentServicePage as page } from "@data/rodentServicePage";
 import { launchServiceLinks } from "@data/launchArchitecture";
@@ -192,36 +192,24 @@ const schema = [
     {page.assessmentVisit.closingAfter.map((paragraph) => <p class="rodent-closing">{paragraph}</p>)}
   </AcSplit>
 
-  {/* What does cleanup cost? — scoped pricing exception, AGENTS.md §4, 2026-09-16. */}
-  <section class="rodent-cost" aria-labelledby={page.pricing.id}>
-    <div class="ac-shell">
-      <div class="rodent-cost__inner">
-        <AcEyebrow text="05 / Cost" />
-        <h2 id={page.pricing.id} class="ac-type-h2">{page.pricing.heading}</h2>
-
-        <h3 class="ac-type-h3-band">{page.pricing.small.title}</h3>
-        {page.pricing.small.body.map((paragraph) => <p class="rodent-cost__body">{paragraph}</p>)}
-
-        <h3 class="ac-type-h3-band">{page.pricing.larger.title}</h3>
-        {page.pricing.larger.body.map((paragraph) => <p class="rodent-cost__body">{paragraph}</p>)}
-        <div class="rodent-cost__factors">
-          <AcCheckList items={page.pricing.larger.factors} columns={2} compact />
-        </div>
-        <p class="rodent-cost__body">{page.pricing.larger.closing}</p>
-
-        <h3 class="ac-type-h3-band">{page.pricing.assessment.title}</h3>
-        {page.pricing.assessment.body.map((paragraph) => <p class="rodent-cost__body">{paragraph}</p>)}
-        <p class="rodent-strong">{page.pricing.assessment.strongLine}</p>
-        <p class="rodent-cost__body">{page.pricing.assessment.closing}</p>
-
-        <p class="rodent-cost__body">Start with a <strong>free phone and photo review</strong>. Some small jobs can be quoted without a separate visit.</p>
-
-        <div class="rodent-cost__actions">
-          <AcActions primaryLabel={callLabel} secondaryLabel={page.hero.secondaryLabel} secondaryHref={formHref} />
-        </div>
-      </div>
-    </div>
-  </section>
+  {/* What does cleanup cost? — scoped pricing exception, AGENTS.md §4, 2026-09-16, rebuilt
+      2026-09-17 on docs/Aseptaclean_Rodent_Pages_Layout_Brief.md (docs/05-CURRENT-DECISIONS.md,
+      2026-09-17): two cleanup price cards, one shared factor sentence, and a separate $145
+      assessment strip with its own CTA — no redundant call/assessment button pair above the
+      form (brief §5). */}
+  <RodentPricing
+    headingId={page.pricing.id}
+    eyebrow={page.pricing.eyebrow}
+    heading={page.pricing.heading}
+    lead={page.pricing.lead}
+    cards={page.pricing.cards}
+    note={page.pricing.note}
+    assessmentHeading={page.pricing.assessment.heading}
+    assessmentBody={page.pricing.assessment.body}
+    assessmentStrongLine={page.pricing.assessment.strongLine}
+    assessmentButtonLabel={page.pricing.assessment.buttonLabel}
+    assessmentButtonHref={formHref}
+  />
 
   {/* What if rodents are still getting in? — doc 21 §2.3 + §3.1 appended verbatim below. One
       dark band per page, doc 30 §4 ("one or two dark breaks in a long service page"), matching
@@ -266,29 +254,38 @@ const schema = [
     </div>
   </AcIntro>
 
-  {/* Tell us what you found. — bottom form, per the scoped hero-form exception. */}
+  {/* Tell us what you found. — bottom form, per the scoped hero-form exception. Rebuilt
+      2026-09-17 on the layout brief §6/§7 (docs/05-CURRENT-DECISIONS.md, 2026-09-17): one
+      centered ~680px container, one visible heading (PpcHeroForm's own duplicate header is
+      suppressed via `headingId`), no empty side column. */}
   <section class="rodent-form" id={page.formId} aria-labelledby="rodent-form-heading">
-    <div class="ac-shell rodent-form__shell">
-      <div class="rodent-form__intro">
-        <h2 id="rodent-form-heading" class="ac-type-h2">{page.form.heading}</h2>
-        <p class="rodent-form__lead">{page.form.lead}</p>
+    <div class="ac-shell">
+      <div class="rodent-form__shell">
+        <div class="rodent-form__intro">
+          <AcEyebrow text={page.form.eyebrow} />
+          <h2 id="rodent-form-heading" class="ac-type-h2">{page.form.heading}</h2>
+          <p class="rodent-form__lead">{page.form.lead}</p>
+          <p class="rodent-form__lead">{page.form.secondaryLead}</p>
+        </div>
+        <PpcHeroForm
+          formId={page.formId}
+          headingId="rodent-form-heading"
+          entryRoute={`${page.route}#${page.formId}`}
+          situationValue="Rodent droppings or animal waste"
+          submitLabel={page.form.submitLabel}
+          detailLabel={page.form.detailLabel}
+          descriptionHelper={page.form.detailHelper}
+          emailBeforeZip
+          photoHelper="Photos of the affected area help."
+          microcopy={page.form.microcopy}
+          thankYouRoute="/thank-you/"
+          tone="light"
+        />
+        <p class="rodent-form__phone">
+          Prefer to talk? <a href={site.business.phoneUri}>Call {site.business.phone}</a>.
+        </p>
       </div>
-      <PpcHeroForm
-        formId={page.formId}
-        entryRoute={`${page.route}#${page.formId}`}
-        situationValue="Rodent droppings or animal waste"
-        title={page.form.heading}
-        intro={page.form.intro}
-        submitLabel={page.form.submitLabel}
-        photoHelper="Photos of the affected area help."
-        microcopy={page.form.microcopy}
-        thankYouRoute="/thank-you/"
-        tone="light"
-      />
     </div>
-    <p class="rodent-form__phone">
-      <strong>Prefer to talk? <a href={site.business.phoneUri}>Call {site.business.phone}</a>.</strong>
-    </p>
   </section>
 </BaseLayout>
 
@@ -406,46 +403,18 @@ const schema = [
     text-align: left;
   }
 
-  .rodent-cost {
-    background: var(--ac-color-warm-white);
-  }
-
-  .rodent-cost__inner {
-    max-width: 880px;
-  }
-
-  .rodent-cost__inner h3 {
-    margin: 32px 0 0;
-  }
-
-  .rodent-cost__body {
-    margin: 14px 0 0;
-    color: var(--ac-color-ink-600);
-    font-size: var(--ac-text-body);
-    line-height: 1.65;
-  }
-
-  .rodent-cost__factors {
-    margin-top: 18px;
-  }
-
-  .rodent-cost__actions {
-    display: flex;
-    flex-wrap: wrap;
-    margin-top: 30px;
-    gap: 12px;
-  }
-
   .rodent-form {
     background: var(--ac-color-paper);
-    padding-block: 20px 68px;
+    padding-block: 64px;
   }
 
+  /* Single centered column, ~680px per the layout brief §7 — no empty side column. */
   .rodent-form__shell {
     display: grid;
-    gap: 40px;
-    grid-template-columns: minmax(0, 1fr) minmax(360px, 480px);
-    align-items: start;
+    max-width: 680px;
+    margin-inline: auto;
+    gap: 28px;
+    text-align: left;
   }
 
   .rodent-form__intro h2 {
@@ -453,17 +422,16 @@ const schema = [
   }
 
   .rodent-form__lead {
-    margin: 16px 0 0;
-    max-width: 46ch;
+    margin: 12px 0 0;
     color: var(--ac-color-ink-600);
     font-size: 1.0625rem;
     line-height: 1.6;
   }
 
   .rodent-form__phone {
-    margin: 24px auto 0;
-    max-width: 880px;
-    text-align: center;
+    margin: 0;
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 24px;
     color: var(--ac-color-ink-600);
     font-size: 0.9375rem;
   }
@@ -473,9 +441,9 @@ const schema = [
     font-weight: 650;
   }
 
-  @media (max-width: 62rem) {
-    .rodent-form__shell {
-      grid-template-columns: minmax(0, 1fr);
+  @media (max-width: 26rem) {
+    .rodent-form {
+      padding-block: 40px;
     }
   }
 </style>

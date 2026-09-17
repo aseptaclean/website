@@ -63,8 +63,22 @@ interface Props {
   entryRoute: string;
   /** Frozen CRM enum value for this campaign's service. */
   situationValue: string;
-  title: string;
-  intro: string;
+  /**
+   * Required unless `headingId` is set. Renders as the panel's own `<h2>` and is what
+   * `aria-labelledby` points at by default.
+   */
+  title?: string;
+  /** Required unless `headingId` is set. Renders as the panel's own intro paragraph. */
+  intro?: string;
+  /**
+   * When set, the panel does NOT render its own header (title/intro) — the caller has already
+   * rendered a single visible heading with this id outside the panel, and the form's
+   * `aria-labelledby` points at it instead. Used by the two rodent routes' 2026-09-17 layout
+   * brief, which requires exactly one visible "Tell us what you found." heading rather than one
+   * outside the panel and a duplicate inside it (docs/05-CURRENT-DECISIONS.md, 2026-09-17). Every
+   * other caller leaves this unset and renders exactly as before.
+   */
+  headingId?: string;
   /**
    * Visible label on the submit control. Defaults to the sitewide `site.offer.formSubmitCta`
    * ("Send Message") so this component keeps behaving as it did; the hoarding campaign overrides
@@ -97,6 +111,13 @@ interface Props {
   microcopy: string;
   /** Where a CONFIRMED submission lands. Reached by GET, so a refresh cannot resubmit. */
   thankYouRoute: string;
+  /**
+   * True swaps the visible/DOM order of the Email and Property ZIP Code fields to Email-then-ZIP
+   * (brief §7's "email/ZIP" row), matching the 2026-09-17 rodent layout brief's field order.
+   * Reorders the actual DOM, not just CSS `order`, so tab order and visual order stay in sync.
+   * Every other caller leaves this unset and keeps the original ZIP-then-Email order.
+   */
+  emailBeforeZip?: boolean;
 }
 
 const {
@@ -105,6 +126,7 @@ const {
   situationValue,
   title,
   intro,
+  headingId,
   submitLabel = site.offer.formSubmitCta,
   detailLabel = "Tell us what’s going on",
   detailRequired = true,
@@ -115,8 +137,14 @@ const {
   optionalDisclosureLabel,
   photoHelper,
   microcopy,
-  thankYouRoute
+  thankYouRoute,
+  emailBeforeZip = false
 } = Astro.props;
+
+if (!headingId && !title) {
+  throw new Error("PpcHeroForm: `title` is required when `headingId` is not set.");
+}
+const labelledBy = headingId ?? `${formId}-title`;
 
 // Fail the build rather than post a value the CRM enum does not contain. A silent typo here
 // would be a 422 on every real lead — and on a campaign form the value is a hidden input, so
@@ -151,7 +179,7 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
     method="post"
     enctype="multipart/form-data"
     action={endpointAvailable ? site.urls.formEndpoint : undefined}
-    aria-labelledby={`${formId}-title`}
+    aria-labelledby={labelledBy}
     data-ppc-form
     data-contact-phone={site.business.phone}
     data-thank-you={thankYouRoute}
@@ -184,11 +212,15 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
     />
 
     {/* Brief's `.ac-ppc .ac-form__header { display: grid; gap: 4px }` — the title and its
-        supporting line are one block, so the panel's own row gap does not sit between them. */}
-    <div class="ppc-form__header">
-      <h2 id={`${formId}-title`} class="ac-type-ppc-form-title ppc-form__title">{title}</h2>
-      <p class="ppc-form__intro">{intro}</p>
-    </div>
+        supporting line are one block, so the panel's own row gap does not sit between them.
+        Skipped entirely when `headingId` is set: the caller already rendered this heading once,
+        outside the panel — see the Props comment above. */}
+    {!headingId && (
+      <div class="ppc-form__header">
+        <h2 id={`${formId}-title`} class="ac-type-ppc-form-title ppc-form__title">{title}</h2>
+        <p class="ppc-form__intro">{intro}</p>
+      </div>
+    )}
 
     <div class="ppc-form__errors" tabindex="-1" role="alert" hidden data-ppc-form-errors>
       <ul></ul>
@@ -212,30 +244,65 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
         />
       </div>
 
-      <div class="ppc-form__field">
-        <label for={`${formId}-zip`}>Property ZIP Code</label>
-        <input
-          id={`${formId}-zip`}
-          name="property_zip"
-          type="text"
-          inputmode="numeric"
-          autocomplete="postal-code"
-          pattern="[0-9]{5}(?:-[0-9]{4})?"
-          required
-        />
-      </div>
+      {/* ZIP and Email swap DOM order (and therefore tab order) under `emailBeforeZip` — a real
+          reorder, not a CSS `order` trick, so visual and keyboard order stay in sync. */}
+      {
+        emailBeforeZip ? (
+          <Fragment>
+            <div class="ppc-form__field">
+              <label for={`${formId}-email`}>Email</label>
+              <input
+                id={`${formId}-email`}
+                name="email"
+                type="email"
+                inputmode="email"
+                autocomplete="email"
+                required
+              />
+            </div>
 
-      <div class="ppc-form__field">
-        <label for={`${formId}-email`}>Email</label>
-        <input
-          id={`${formId}-email`}
-          name="email"
-          type="email"
-          inputmode="email"
-          autocomplete="email"
-          required
-        />
-      </div>
+            <div class="ppc-form__field">
+              <label for={`${formId}-zip`}>Property ZIP Code</label>
+              <input
+                id={`${formId}-zip`}
+                name="property_zip"
+                type="text"
+                inputmode="numeric"
+                autocomplete="postal-code"
+                pattern="[0-9]{5}(?:-[0-9]{4})?"
+                required
+              />
+            </div>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <div class="ppc-form__field">
+              <label for={`${formId}-zip`}>Property ZIP Code</label>
+              <input
+                id={`${formId}-zip`}
+                name="property_zip"
+                type="text"
+                inputmode="numeric"
+                autocomplete="postal-code"
+                pattern="[0-9]{5}(?:-[0-9]{4})?"
+                required
+              />
+            </div>
+
+            <div class="ppc-form__field">
+              <label for={`${formId}-email`}>Email</label>
+              <input
+                id={`${formId}-email`}
+                name="email"
+                type="email"
+                inputmode="email"
+                autocomplete="email"
+                required
+              />
+            </div>
+          </Fragment>
+        )
+      }
 
       {/* OPTIONAL FIELDS. Inline by default — no wrapper element, so the hoarding route's DOM and
           its short-desktop pairing rule are untouched. With `optionalDisclosureLabel` set they

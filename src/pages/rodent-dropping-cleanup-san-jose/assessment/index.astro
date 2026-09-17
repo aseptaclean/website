@@ -23,9 +23,10 @@ import AcSplit from "@components/ac/AcSplit.astro";
 import AcDarkBand from "@components/ac/AcDarkBand.astro";
 import AcSteps from "@components/ac/AcSteps.astro";
 import AcCheckList from "@components/ac/AcCheckList.astro";
-import AcActions from "@components/ac/AcActions.astro";
+import AcEyebrow from "@components/ac/AcEyebrow.astro";
 import FaqAccordion from "@components/FaqAccordion.astro";
 import PpcHeroForm from "@components/ppc/PpcHeroForm.astro";
+import RodentPricing from "@components/rodent/RodentPricing.astro";
 import { site, legal } from "@data/site";
 import { ppcRodent as copy, ppcRodentCallLabel as callLabel } from "@data/ppcRodent";
 
@@ -110,60 +111,57 @@ const formHref = `#${copy.formId}`;
     </div>
   </AcIntro>
 
-  {/* What does cleanup cost? — scoped pricing exception, AGENTS.md §4, 2026-09-16. */}
-  <section class="rodent-cost" aria-labelledby={copy.cost.id}>
-    <div class="ac-shell">
-      <div class="rodent-cost__inner">
-        <h2 id={copy.cost.id} class="ac-type-h2">{copy.cost.heading}</h2>
+  {/* What does cleanup cost? — scoped pricing exception, AGENTS.md §4, 2026-09-16, rebuilt
+      2026-09-17 on docs/Aseptaclean_Rodent_Pages_Layout_Brief.md (docs/05-CURRENT-DECISIONS.md,
+      2026-09-17): two cleanup price cards, one shared factor sentence, and a separate $145
+      assessment strip with its own CTA — no redundant call/assessment button pair above the
+      form (brief §5). */}
+  <RodentPricing
+    headingId={copy.cost.id}
+    eyebrow={copy.cost.eyebrow}
+    heading={copy.cost.heading}
+    lead={copy.cost.lead}
+    cards={copy.cost.cards}
+    note={copy.cost.note}
+    assessmentHeading={copy.cost.assessment.heading}
+    assessmentBody={copy.cost.assessment.body}
+    assessmentStrongLine={copy.cost.assessment.strongLine}
+    assessmentButtonLabel={copy.cost.assessment.buttonLabel}
+    assessmentButtonHref={formHref}
+  />
 
-        <h3 class="ac-type-h3-band">{copy.cost.small.title}</h3>
-        {copy.cost.small.body.map((paragraph) => <p class="rodent-cost__body">{paragraph}</p>)}
-
-        <h3 class="ac-type-h3-band">{copy.cost.larger.title}</h3>
-        {copy.cost.larger.body.map((paragraph) => <p class="rodent-cost__body">{paragraph}</p>)}
-        <div class="rodent-cost__factors">
-          <AcCheckList items={copy.cost.larger.factors} columns={2} compact />
-        </div>
-
-        <p class="rodent-strong">{copy.cost.strongLine}</p>
-
-        <h3 class="ac-type-h3-band">{copy.cost.assessment.title}</h3>
-        {copy.cost.assessment.body.map((paragraph) => <p class="rodent-cost__body">{paragraph}</p>)}
-        <p class="rodent-strong">{copy.cost.assessment.strongLine}</p>
-        <p class="rodent-cost__body">{copy.cost.assessment.closing}</p>
-
-        <p class="rodent-cost__body">Start with a <strong>free phone and photo review</strong>. Some small jobs can be quoted without a separate visit.</p>
-
-        <div class="rodent-cost__actions">
-          <AcActions primaryLabel={callLabel} secondaryLabel={copy.hero.secondaryLabel} secondaryHref={formHref} />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  {/* Tell us what you found. — bottom form, per the scoped hero-form exception. */}
+  {/* Tell us what you found. — bottom form, per the scoped hero-form exception. Rebuilt
+      2026-09-17 on the layout brief §6/§7 (docs/05-CURRENT-DECISIONS.md, 2026-09-17): one
+      centered ~680px container, one visible heading (PpcHeroForm's own duplicate header is
+      suppressed via `headingId`), no empty side column. */}
   <section class="rodent-form" id={copy.formId} aria-labelledby="rodent-form-heading">
-    <div class="ac-shell rodent-form__shell">
-      <div class="rodent-form__intro">
-        <h2 id="rodent-form-heading" class="ac-type-h2">{copy.form.heading}</h2>
-        <p class="rodent-form__lead">{copy.form.lead}</p>
+    <div class="ac-shell">
+      <div class="rodent-form__shell">
+        <div class="rodent-form__intro">
+          <AcEyebrow text={copy.form.eyebrow} />
+          <h2 id="rodent-form-heading" class="ac-type-h2">{copy.form.heading}</h2>
+          <p class="rodent-form__lead">{copy.form.lead}</p>
+          <p class="rodent-form__lead">{copy.form.secondaryLead}</p>
+        </div>
+        <PpcHeroForm
+          formId={copy.formId}
+          headingId="rodent-form-heading"
+          entryRoute={`${copy.route}#${copy.formId}`}
+          situationValue="Rodent droppings or animal waste"
+          submitLabel={copy.form.submitLabel}
+          detailLabel={copy.form.detailLabel}
+          descriptionHelper={copy.form.detailHelper}
+          emailBeforeZip
+          photoHelper="Photos of the affected area help."
+          microcopy={copy.form.microcopy}
+          thankYouRoute={copy.thankYou.route}
+          tone="light"
+        />
+        <p class="rodent-form__phone">
+          Prefer to talk? <a href={site.business.phoneUri}>{callLabel}</a>.
+        </p>
       </div>
-      <PpcHeroForm
-        formId={copy.formId}
-        entryRoute={`${copy.route}#${copy.formId}`}
-        situationValue="Rodent droppings or animal waste"
-        title={copy.form.heading}
-        intro={copy.form.intro}
-        submitLabel={copy.form.submitLabel}
-        photoHelper="Photos of the affected area help."
-        microcopy={copy.form.microcopy}
-        thankYouRoute={copy.thankYou.route}
-        tone="light"
-      />
     </div>
-    <p class="rodent-form__phone">
-      <strong>Prefer to talk? <a href={site.business.phoneUri}>{callLabel}</a>.</strong>
-    </p>
   </section>
 </PpcLayout>
 
@@ -223,53 +221,18 @@ const formHref = `#${copy.formId}`;
     text-align: left;
   }
 
-  .rodent-strong {
-    margin: 20px 0 0;
-    border-left: 2px solid var(--ac-color-navy-800);
-    padding-left: 18px;
-    color: var(--ac-color-navy-900);
-    font-size: 1.0625rem;
-    font-weight: 650;
-    line-height: 1.55;
-  }
-
-  .rodent-cost {
-    background: var(--ac-color-warm-white);
-  }
-
-  .rodent-cost__inner {
-    max-width: 880px;
-  }
-
-  .rodent-cost__inner h3 {
-    margin: 32px 0 0;
-  }
-
-  .rodent-cost__body {
-    margin: 14px 0 0;
-    color: var(--ac-color-ink-600);
-    font-size: var(--ac-text-body);
-    line-height: 1.65;
-  }
-
-  .rodent-cost__factors {
-    margin-top: 18px;
-  }
-
-  .rodent-cost__actions {
-    margin-top: 30px;
-  }
-
   .rodent-form {
     background: var(--ac-color-paper);
-    padding-block: 20px 68px;
+    padding-block: 64px;
   }
 
+  /* Single centered column, ~680px per the layout brief §7 — no empty side column. */
   .rodent-form__shell {
     display: grid;
-    gap: 40px;
-    grid-template-columns: minmax(0, 1fr) minmax(360px, 480px);
-    align-items: start;
+    max-width: 680px;
+    margin-inline: auto;
+    gap: 28px;
+    text-align: left;
   }
 
   .rodent-form__intro h2 {
@@ -277,17 +240,16 @@ const formHref = `#${copy.formId}`;
   }
 
   .rodent-form__lead {
-    margin: 16px 0 0;
-    max-width: 46ch;
+    margin: 12px 0 0;
     color: var(--ac-color-ink-600);
     font-size: 1.0625rem;
     line-height: 1.6;
   }
 
   .rodent-form__phone {
-    margin: 24px auto 0;
-    max-width: 880px;
-    text-align: center;
+    margin: 0;
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 24px;
     color: var(--ac-color-ink-600);
     font-size: 0.9375rem;
   }
@@ -297,9 +259,9 @@ const formHref = `#${copy.formId}`;
     font-weight: 650;
   }
 
-  @media (max-width: 62rem) {
-    .rodent-form__shell {
-      grid-template-columns: minmax(0, 1fr);
+  @media (max-width: 26rem) {
+    .rodent-form {
+      padding-block: 40px;
     }
   }
 </style>

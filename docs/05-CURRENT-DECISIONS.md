@@ -1467,3 +1467,49 @@ routes table and its rodent-service-page row updated to match.
 entry's account of what was actually built that day (kept, with the stale sentences corrected in
 place rather than deleted, so the record of the mistake survives); pricing, claims wording, forms,
 navigation, or any other route's indexation.
+
+### 2026-09-17 — Rodent pricing/assessment/contact layout rebuilt on the owner's dated brief
+
+New file `docs/Aseptaclean_Rodent_Pages_Layout_Brief.md` ("Implementation brief · September 17,
+2026") was handed directly to the assistant by the owner on 2026-09-17 with explicit approved
+copy for the pricing cards, the $145 assessment strip, and the contact-form intro on both
+`/rodent-dropping-cleanup-san-jose/` and `/rodent-dropping-cleanup-san-jose/assessment/`.
+
+#### Conflict — which pricing/form copy governs these two routes' pricing and contact sections?
+
+| Side | Text | Rank |
+| --- | --- | --- |
+| A | This document's 2026-09-16 entries + `src/data/rodentServicePage.ts` `pricing`/`form` and `src/data/ppcRodent.ts` `cost`/`form`, built on `docs/Aseptaclean_Rodent_Service_Page_Copy.md` / `docs/Aseptaclean_Rodent_Landing_Page_Copy.md`, owner-approved 2026-09-16. Card titles embed the price ("Small-area cleanup — starts at $500"); pricing factors render as a 5-item bullet checklist; the contact section renders its heading/lead twice (once outside `PpcHeroForm`, once inside its own header). | 2 (owner decision, 2026-09-16) |
+| B | `docs/Aseptaclean_Rodent_Pages_Layout_Brief.md` §4/§6, handed to the assistant directly by the owner today: eyebrow "Cleanup pricing", H2 "Know where pricing starts.", card title separate from a "Starting at $X" label and the price itself, one shared sentence replacing the bullet checklist, one visible "Tell us what you found." heading with eyebrow "Start with a free phone and photo review", centered ~680px form container with no empty side column. | 2 (owner decision, 2026-09-17 — newer, delivered live in-session) |
+
+**Resolution: B wins**, on the same logic AGENTS.md §2.2 uses for its own supersession clause —
+"these supersede every lower-ranked statement of the same fact, including statements made
+earlier." Both sides are rank-2 owner decisions; B is the newer one on the identical narrow
+fact (how this pricing/assessment/contact section reads and lays out on these two routes only),
+and it was delivered as a live, explicit, dated instruction to implement now — not inferred, so
+this does not meet the "owner decision implied but never actually made" bar that would otherwise
+call for stopping to ask.
+
+**Type:** owner decision superseded by a newer owner decision → data/copy and markup changed.
+
+**Changed:** `src/data/rodentServicePage.ts` `pricing` and `form` blocks; `src/data/ppcRodent.ts`
+`cost` and `form` blocks — restructured to the brief's exact wording (card title/price/body
+split, one-sentence factor note, assessment strip copy, contact eyebrow/heading/lead). New shared
+component `src/components/rodent/RodentPricing.astro` renders the pricing cards + assessment
+strip identically on both routes (brief §9, "prefer reusable... markup or components... for
+these two pages"). `src/components/ppc/PpcHeroForm.astro` gained two additive, default-off props
+(`headingId`, `emailBeforeZip`) so the rodent routes can show one visible form heading and the
+brief's field order without touching the hoarding/estate campaigns that share this component —
+every other caller renders exactly as before.
+
+**Not changed:** the underlying facts the brief's copy still asserts — $500 / $1,500 starting
+prices, the $145 assessment fee and its full credit, doc 21's compliance clauses on the "still
+getting in" section, consent wording, upload limits, the lead endpoint, analytics events, or
+confirmation routes. The brief's removal of the 5-item pricing-factors checklist in favor of one
+sentence is a layout simplification of the same underlying facts (amount of waste, access,
+materials, protective measures, disposal needs — all five are still named, just in prose), not a
+claims change; verified against doc 21 via the claims-check skill before publishing. The 12
+non-pricing/contact sections of the service page (spaces, keep, process, assessment-visit,
+still-getting-in, founder, FAQ, serving, related-services) and the landing page's equivalent
+sections are untouched, per the brief's own "this is a focused redesign... preserve the current
+approved copy elsewhere."

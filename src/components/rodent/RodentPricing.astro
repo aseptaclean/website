@@ -1,0 +1,228 @@
+---
+// RODENT CLEANUP PRICING + ASSESSMENT STRIP — shared by both rodent routes
+// (/rodent-dropping-cleanup-san-jose/ and its /assessment/ landing page) per
+// docs/Aseptaclean_Rodent_Pages_Layout_Brief.md §3/§5 (docs/05-CURRENT-DECISIONS.md, 2026-09-17).
+//
+// Two equal-width cleanup price cards, one shared price-factor sentence, then a visually
+// separate $145 on-site-assessment strip with its own single CTA. The assessment is a step, not
+// a third competing price card — brief §3.
+//
+// Headings reuse the sitewide `ac-type-h2`/`ac-type-h3-band` role classes with no local
+// font-size override (type-law rule 1). The large price figure is a plain <p>, not a heading
+// element, specifically so it can carry a custom size without touching that rule.
+import AcEyebrow from "@components/ac/AcEyebrow.astro";
+
+interface PricingCard {
+  title: string;
+  price: string;
+  body: string;
+}
+
+interface Props {
+  headingId: string;
+  eyebrow: string;
+  heading: string;
+  lead: string;
+  cards: readonly PricingCard[];
+  note: string;
+  assessmentHeading: string;
+  assessmentBody: string;
+  assessmentStrongLine: string;
+  assessmentButtonLabel: string;
+  assessmentButtonHref: string;
+}
+
+const {
+  headingId,
+  eyebrow,
+  heading,
+  lead,
+  cards,
+  note,
+  assessmentHeading,
+  assessmentBody,
+  assessmentStrongLine,
+  assessmentButtonLabel,
+  assessmentButtonHref
+} = Astro.props;
+---
+
+<section class="rp" aria-labelledby={headingId}>
+  <div class="ac-shell">
+    <div class="rp__inner">
+      <div class="rp__head">
+        <AcEyebrow text={eyebrow} />
+        <h2 id={headingId} class="ac-type-h2">{heading}</h2>
+        <p class="rp__lead">{lead}</p>
+      </div>
+
+      <div class="rp__cards">
+        {cards.map((card) => (
+          <div class="rp__card">
+            <h3 class="ac-type-h3-band rp__card-title">{card.title}</h3>
+            <p class="rp__card-label">Starting at</p>
+            <p class="rp__card-price">{card.price}</p>
+            <p class="rp__card-body">{card.body}</p>
+          </div>
+        ))}
+      </div>
+
+      <p class="rp__note">{note}</p>
+
+      <div class="rp__assessment">
+        <div class="rp__assessment-text">
+          <h3 class="ac-type-h3-band rp__assessment-heading">{assessmentHeading}</h3>
+          <p class="rp__assessment-body">{assessmentBody}</p>
+          <p class="rp__assessment-strong">{assessmentStrongLine}</p>
+        </div>
+        <a class="button rp__assessment-cta" href={assessmentButtonHref}>{assessmentButtonLabel}</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .rp {
+    background: var(--ac-color-warm-white);
+    padding-block: 64px;
+  }
+
+  .rp__inner {
+    max-width: 1120px;
+    margin-inline: auto;
+  }
+
+  .rp__head {
+    max-width: 62rem;
+  }
+
+  .rp__lead {
+    margin: 24px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.6;
+  }
+
+  .rp__cards {
+    display: grid;
+    margin-top: 32px;
+    gap: 24px;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: stretch;
+  }
+
+  .rp__card {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ac-color-line-strong);
+    border-radius: 12px;
+    background: var(--ac-color-paper);
+    padding: 30px;
+  }
+
+  .rp__card-title {
+    margin: 0;
+  }
+
+  .rp__card-label {
+    margin: 16px 0 0;
+    color: var(--ac-color-ink-500);
+    font-size: 0.8125rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* Not a heading element — see the top-of-file note. Loud on purpose: this is what the brief
+     calls "visually stronger than card titles" (§5), which the h3-band role class alone is not
+     sized for. */
+  .rp__card-price {
+    margin: 4px 0 0;
+    color: var(--ac-color-navy-900);
+    font-family: var(--ac-font-display);
+    font-size: clamp(2.25rem, 1.9rem + 1.5vw, 3rem);
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+
+  .rp__card-body {
+    margin: 14px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .rp__note {
+    margin: 20px 0 0;
+    max-width: 62rem;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .rp__assessment {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 32px;
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 32px;
+    gap: 24px;
+  }
+
+  .rp__assessment-text {
+    max-width: 46rem;
+    flex: 1 1 320px;
+  }
+
+  .rp__assessment-heading {
+    margin: 0;
+  }
+
+  .rp__assessment-body {
+    margin: 10px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .rp__assessment-strong {
+    margin: 10px 0 0;
+    color: var(--ac-color-navy-900);
+    font-size: 1rem;
+    font-weight: 700;
+    line-height: 1.5;
+  }
+
+  .rp__assessment-cta {
+    flex: 0 0 auto;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 43.75rem) {
+    .rp {
+      padding-block: 40px;
+    }
+
+    .rp__cards {
+      grid-template-columns: minmax(0, 1fr);
+    }
+
+    .rp__assessment {
+      flex-direction: column;
+      align-items: stretch;
+    }
+
+    .rp__assessment-cta {
+      width: 100%;
+    }
+  }
+
+  @media (max-width: 26rem) {
+    .rp {
+      padding-block: 36px;
+    }
+  }
+</style>

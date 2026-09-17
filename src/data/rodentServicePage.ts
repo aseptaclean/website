@@ -169,40 +169,34 @@ export const rodentServicePage = {
     imageAlt: "A close view of dry rodent droppings scattered on a concrete floor against a painted baseboard"
   },
 
-  // PRICING — scoped owner exception, AGENTS.md §4, 2026-09-16. Literal figures, not
-  // site.offer.assessmentFee.
+  // PRICING — scoped owner exception, AGENTS.md §4, 2026-09-16, restructured 2026-09-17 on
+  // docs/Aseptaclean_Rodent_Pages_Layout_Brief.md §4 (docs/05-CURRENT-DECISIONS.md, 2026-09-17).
+  // Literal figures, not site.offer.assessmentFee. Rendered by src/components/rodent/RodentPricing.astro,
+  // shared with the assessment landing page's identically-shaped `cost` block.
   pricing: {
-    heading: "What does cleanup cost?",
+    eyebrow: "Cleanup pricing",
+    heading: "Know where pricing starts.",
     id: "what-does-cleanup-cost",
-    small: {
-      title: "Small-area cleanup — starts at $500",
-      body: [
-        "For a small amount of rodent waste in one area that is easy to reach.",
-        "Your price depends on the mess, the materials, and the work needed."
-      ]
-    },
-    larger: {
-      title: "Larger cleanup jobs — start at $1,500",
-      body: ["For larger areas, waste in several places, or more items and materials to remove.", "Your price depends on:"],
-      factors: [
-        "How much waste there is.",
-        "How hard it is to reach.",
-        "What needs cleaning or removal.",
-        "What steps are needed to help protect nearby areas.",
-        "How the waste must be disposed of."
-      ],
-      closing: "These are starting prices. Your written quote gives the price for your job."
-    },
+    lead: "You receive a written cleanup plan and price before work begins.",
+    cards: [
+      {
+        title: "Small-area cleanup",
+        price: "$500",
+        body: "For a small amount of rodent waste in one area that is easy to reach."
+      },
+      {
+        title: "Larger cleanup jobs",
+        price: "$1,500",
+        body: "For larger areas, waste in several places, or more items and materials to remove."
+      }
+    ],
+    note: "Final pricing depends on the amount of waste, access, materials, protective measures, and disposal needs.",
     assessment: {
-      title: "On-site assessment — $145",
-      body: [
-        "We visit your property, check the affected areas we can reach, and give you a written cleanup plan and quote."
-      ],
-      strongLine: "If you hire us, the full $145 counts toward your cleanup bill.",
-      closing: "The fee pays for the visit and review. Cleanup costs extra."
+      heading: "On-site assessment · $145",
+      body: "We check the affected areas we can reach and provide a written cleanup plan and quote. The fee covers the visit and review; cleanup is priced separately.",
+      strongLine: "The full $145 is credited toward your cleanup if you hire us.",
+      buttonLabel: "Request a Property Assessment"
     }
-    // Closing line ("Start with a **free phone and photo review**...") is rendered directly in
-    // index.astro with an inline <strong>, since this data shape only stores plain strings.
   },
 
   // DOC 21 §2.3 + §3.1 MANDATORY CLAUSES appended at the end, verbatim, on top of the approved
@@ -288,11 +282,18 @@ export const rodentServicePage = {
       "For other nearby cities, share your ZIP code so we can check service for your project."
   },
 
+  // CONTACT SECTION — restructured 2026-09-17 on the layout brief §6 (docs/05-CURRENT-DECISIONS.md,
+  // 2026-09-17). One visible heading now: `eyebrow`/`heading`/`lead`/`secondaryLead` render once,
+  // outside PpcHeroForm (which is passed `headingId` to suppress its own duplicate header).
+  // `detailLabel`/`detailHelper` relabel the message field per the brief's visible field order.
   form: {
+    eyebrow: "Start with a free phone and photo review",
     heading: "Tell us what you found.",
-    lead: "Where did you find rodent waste? Is it in one spot or several rooms? Are boxes, furniture, or other items affected?",
-    intro: "Share a few details so we can help with the next step.",
+    lead: "Share a few details. We will discuss the work and whether an on-site assessment is needed.",
+    secondaryLead: "Some small jobs can be quoted without a separate visit.",
+    detailLabel: "What needs cleanup?",
+    detailHelper: "Where did you find rodent waste? Are any boxes, furniture, or other items affected?",
     submitLabel: "Request a Property Assessment",
-    microcopy: "We will discuss your needs and explain any visit fee before we book. Sending this form does not approve cleanup work."
+    microcopy: "We will explain the $145 assessment fee before booking a visit. The full fee is credited toward your cleanup if you hire us."
   }
 } as const;

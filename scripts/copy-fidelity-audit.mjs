@@ -139,6 +139,12 @@ const PLACEMENT = {
   // deliberately NOT listed: "Disinfect surfaces that can be treated." was dropped from the page
   // entirely as a claims-check fix (doc 21 §2.2 bans "disinfect" as an outcome claim outright),
   // so its absence is correct and must not be reintroduced by "fixing" this list.
+  //
+  // Pricing/assessment block updated 2026-09-17 on docs/Aseptaclean_Rodent_Pages_Layout_Brief.md
+  // (docs/05-CURRENT-DECISIONS.md, 2026-09-17), which restructured the pricing cards — title,
+  // "Starting at" label, and price now render as separate text nodes, no longer one combined
+  // "Title — starts at $X" string, and the section heading and assessment strip both changed
+  // wording. The four strings below are what `RodentPricing.astro` actually renders now.
   "/rodent-dropping-cleanup-san-jose/": [
     "dist/rodent-dropping-cleanup-san-jose/index.html",
     [
@@ -154,10 +160,10 @@ const PLACEMENT = {
       "Remove waste and soiled materials.",
       "Review the work with you.",
       "What we look at during a property assessment.",
-      "What does cleanup cost?",
-      "Small-area cleanup — starts at $500",
-      "Larger cleanup jobs — start at $1,500",
-      "On-site assessment — $145",
+      "Know where pricing starts.",
+      "Small-area cleanup",
+      "Larger cleanup jobs",
+      "On-site assessment · $145",
       "What if rodents are still getting in?",
       "Meet Matthew, the owner.",
       "Questions before you book.",
@@ -169,6 +175,9 @@ const PLACEMENT = {
   // docs/05-CURRENT-DECISIONS.md for the route-creation record. "Are sanitizing and disinfecting
   // the same?" is deliberately absent — that FAQ item was dropped in full as the same claims-check
   // fix (doc 21 §2.2), including its EPA link.
+  //
+  // Pricing/assessment block updated 2026-09-17 — see the sibling comment above; identical
+  // restructure, shared `RodentPricing.astro` component.
   "/rodent-dropping-cleanup-san-jose/assessment/": [
     "dist/rodent-dropping-cleanup-san-jose/assessment/index.html",
     [
@@ -190,10 +199,10 @@ const PLACEMENT = {
       "Will you throw everything away?",
       "What if rodents are still getting in?",
       "What should I do before your visit?",
-      "What does cleanup cost?",
-      "Small-area cleanup — starts at $500",
-      "Larger cleanup jobs — start at $1,500",
-      "On-site assessment — $145"
+      "Know where pricing starts.",
+      "Small-area cleanup",
+      "Larger cleanup jobs",
+      "On-site assessment · $145"
     ]
   ],
   "/crime-scene-trauma-cleanup-san-jose/": [
