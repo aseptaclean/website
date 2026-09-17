@@ -21,11 +21,18 @@ interface Props {
   headingId?: string;
   lead?: string;
   body?: readonly string[];
+  /** Additional paragraph(s) rendered at body size but bold — a source **bold** line that is not
+   * the hero's lead sentence. Rendered after `body`, in order. */
+  strongBody?: readonly string[];
   /** Short factual lines under the actions. Verified facts only — never a badge wall. */
   assurances?: readonly string[];
   image?: ImageMetadata;
   imageAlt?: string;
   needsAsset?: string;
+  /** Overrides the default "Call Aseptaclean" label where a route's approved copy writes out
+   * the number instead (e.g. "Call (408) 785-7588"). The action is unchanged — still
+   * site.business.phoneUri, still omitted when that value is empty. */
+  primaryLabel?: string;
   secondaryLabel?: string;
   secondaryHref?: string;
   showActions?: boolean;
@@ -37,10 +44,12 @@ const {
   headingId = "page-hero-title",
   lead,
   body = [],
+  strongBody = [],
   assurances = [],
   image,
   imageAlt = "",
   needsAsset,
+  primaryLabel,
   secondaryLabel,
   secondaryHref,
   showActions = true
@@ -75,9 +84,10 @@ const heroWidths = image ? srcsetWidths(image, [480, 768, 1024, 1440, 1920]) : [
       <h1 id={headingId} class="ac-type-h1-hub">{heading}</h1>
       {lead && <p class="acx-phero__lead">{lead}</p>}
       {body.map((paragraph) => <p class="acx-phero__body">{paragraph}</p>)}
+      {strongBody.map((paragraph) => <p class="acx-phero__body acx-phero__body--strong">{paragraph}</p>)}
       {showActions && (
         <div class="acx-phero__actions">
-          <AcActions tone="dark" secondaryLabel={secondaryLabel} secondaryHref={secondaryHref} />
+          <AcActions tone="dark" primaryLabel={primaryLabel} secondaryLabel={secondaryLabel} secondaryHref={secondaryHref} />
         </div>
       )}
       {assurances.length > 0 && (
@@ -165,6 +175,11 @@ const heroWidths = image ? srcsetWidths(image, [480, 768, 1024, 1440, 1920]) : [
     color: rgb(255 255 255 / 88%);
     font-size: var(--ac-text-body);
     line-height: 1.6;
+  }
+
+  .acx-phero__body--strong {
+    color: #fff;
+    font-weight: 650;
   }
 
   .acx-phero__actions {

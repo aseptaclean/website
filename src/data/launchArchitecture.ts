@@ -62,9 +62,13 @@ export const launchPrimaryPaths = [
 export const launchIndexableExceptions = {} as const;
 
 // Campaign pages may be indexed without joining the main navigation.
+// /rodent-dropping-cleanup-san-jose/assessment/ joined 2026-09-17, on the same basis as the
+// other two (owner decision; see docs/05-CURRENT-DECISIONS.md, 2026-09-17). It postdates the
+// 2026-09-15 decision above — it did not exist yet on that date.
 export const launchLandingPaths = [
   "/estate-cleanout-san-jose/assessment/",
-  "/hoarding-cleanup-san-jose/assessment/"
+  "/hoarding-cleanup-san-jose/assessment/",
+  "/rodent-dropping-cleanup-san-jose/assessment/"
 ] as const;
 
 export const launchIndexablePaths = new Set<string>(

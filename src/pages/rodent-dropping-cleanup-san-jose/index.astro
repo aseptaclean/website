@@ -1,16 +1,481 @@
 ---
-// Rebuilt 2026-09-04 to the current owner decision (AGENTS.md §2.2) and doc 30 §6.0/§20.
+// RODENT SERVICE PAGE — rebuilt 2026-09-16 on the owner-approved
+// docs/Aseptaclean_Rodent_Service_Page_Copy.md. Verbatim wording and section order.
 //
-// This route is composition + copy only: the page's sections, their order, their split
-// directions and their imagery all live in the record below, and AcServicePage renders them.
-// Doc 30 §20 forbids one universal service-page template, so no two records share a section
-// order — see the comment at the top of src/components/ac/AcServicePage.astro.
+// SCOPED DESIGN EXCEPTION (AGENTS.md §2.2.3, 2026-09-16): this page does not use the shared
+// AcServicePage + AcHeroWithForm composition every other service page uses — per explicit owner
+// instruction, the hero carries no form and the working intake form (PpcHeroForm, unmodified)
+// sits in its own section at the bottom of the page instead. The HERO ITSELF still uses the
+// sitewide full-bleed photo + navy overlay treatment via AcPageHero (the same component About,
+// Contact and the Services hub already use for a no-form hero) — an earlier draft of this page
+// built a separate light-background, boxed-photo hero component and it visually did not match
+// the rest of the site; AcPageHero's own header comment already explains why that pattern was
+// retired sitewide in the 2026-09-04 visual port. See docs/05-CURRENT-DECISIONS.md, 2026-09-16.
 //
-// The route, canonical URL, and every inbound link are unchanged.
-import AcServicePage from "@components/ac/AcServicePage.astro";
-import { findServicePage } from "@data/servicePageCopy";
+// ROUTE AND CANONICAL URL ARE UNCHANGED. Indexation is `index, follow`, per the owner's
+// 2026-09-15 decision to remove this route's launchIndexableExceptions gate (see
+// docs/05-CURRENT-DECISIONS.md, 2026-09-15) — independent of, and unaffected by, this copy
+// rebuild.
+//
+// DOC 21 §2.3 + §3.1 mandatory clauses are appended, verbatim, at the end of the "What if rodents
+// are still getting in?" section, on top of the approved copy.
+import type { ImageMetadata } from "astro";
+import BaseLayout from "@layouts/BaseLayout.astro";
+import AcPageHero from "@components/ac/AcPageHero.astro";
+import AcTrustStrip from "@components/ac/AcTrustStrip.astro";
+import AcActions from "@components/ac/AcActions.astro";
+import AcIntro from "@components/ac/AcIntro.astro";
+import AcSplit from "@components/ac/AcSplit.astro";
+import AcDarkBand from "@components/ac/AcDarkBand.astro";
+import AcCheckList from "@components/ac/AcCheckList.astro";
+import AcEyebrow from "@components/ac/AcEyebrow.astro";
+import AcServiceCards from "@components/ac/AcServiceCards.astro";
+import FaqAccordion from "@components/FaqAccordion.astro";
+import PpcHeroForm from "@components/ppc/PpcHeroForm.astro";
+import { site, legal } from "@data/site";
+import { rodentServicePage as page } from "@data/rodentServicePage";
+import { launchServiceLinks } from "@data/launchArchitecture";
 
-const page = findServicePage("/rodent-dropping-cleanup-san-jose/")!;
+import heroImage from "../../assets/aseptaclean/rodent-utility-room-context.png";
+import storageImage from "../../assets/aseptaclean/rodent-storage-contents.png";
+import surfaceImage from "../../assets/aseptaclean/rodent-hard-surface-detail.png";
+import founderPortrait from "../../assets/aseptaclean/founder-matthew-ruiz.jpeg";
+import hoardingLivingRoom from "../../assets/aseptaclean/hoarding-living-room.png";
+import extremeKitchen from "../../assets/aseptaclean/extreme-cleaning-neglected-kitchen.png";
+import deepCleaningKitchen from "../../assets/aseptaclean/detailed-deep-cleaning-kitchen.png";
+import traumaContext from "../../assets/aseptaclean/trauma-residential-context.png";
+
+const callLabel = `Call ${site.business.phone}`;
+const formHref = `#${page.formId}`;
+
+// "Not the right service?" cross-link row — every AcServicePage-based sibling has this; matches
+// that component's own relatedImages/relatedBlurbs mapping (AcServicePage.astro), rebuilt here
+// since this page does not render through AcServicePage. See docs/05-CURRENT-DECISIONS.md.
+const relatedImages: Record<string, ImageMetadata> = {
+  "/hoarding-cleanup-san-jose/": hoardingLivingRoom,
+  "/extreme-cleaning-san-jose/": extremeKitchen,
+  "/deep-cleaning-san-jose/": deepCleaningKitchen,
+  "/crime-scene-trauma-cleanup-san-jose/": traumaContext
+};
+const relatedBlurbs: Record<string, string> = {
+  "/hoarding-cleanup-san-jose/": "When belongings and clutter have made the home difficult to manage.",
+  "/extreme-cleaning-san-jose/": "When the condition has gone beyond a normal deep clean.",
+  "/deep-cleaning-san-jose/": "For homes that need more than routine cleaning.",
+  "/crime-scene-trauma-cleanup-san-jose/": "Discreet cleanup after the scene has been released."
+};
+const related = launchServiceLinks
+  .filter((link) => link.href !== page.route)
+  .map((link) => ({
+    title: link.label,
+    description: relatedBlurbs[link.href] ?? "",
+    href: link.href,
+    image: relatedImages[link.href],
+    imageAlt: ""
+  }));
+
+const cities = site.location.cities;
+const servingSentence = `We serve ${cities.slice(0, -1).join(", ")}, and ${cities[cities.length - 1]}.`;
+
+const schema = [
+  {
+    "@type": "Service",
+    serviceType: "Rodent Droppings & Animal Waste Cleanup",
+    name: "Rodent Droppings & Animal Waste Cleanup",
+    description: page.seo.description,
+    url: new URL(page.route, site.urls.site).href,
+    provider: { "@id": new URL("/#business", site.urls.site).href },
+    areaServed: site.location.cities.map((name) => ({ "@type": "City", name }))
+  },
+  {
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Services",
+        item: new URL("/services/", site.urls.site).href
+      },
+      {
+        "@type": "ListItem",
+        position: 3,
+        name: "Rodent Droppings & Animal Waste Cleanup",
+        item: new URL(page.route, site.urls.site).href
+      }
+    ]
+  },
+  {
+    "@type": "FAQPage",
+    mainEntity: page.faq.items.map((item) => ({
+      "@type": "Question",
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer }
+    }))
+  }
+];
 ---
 
-<AcServicePage page={page} />
+<BaseLayout title={page.seo.title} description={page.seo.description} canonicalPath={page.route} schema={schema}>
+  <AcPageHero
+    eyebrow={page.hero.eyebrow}
+    heading={page.hero.heading}
+    headingId="rodent-hero-title"
+    lead={page.hero.lead}
+    body={page.hero.body}
+    image={heroImage}
+    imageAlt="A residential utility room with a low shelf, cardboard boxes and a small scattering of rodent droppings near the wall"
+    assurances={[page.hero.trustLine]}
+    primaryLabel={callLabel}
+    secondaryLabel={page.hero.secondaryLabel}
+    secondaryHref={formHref}
+  />
+
+  <AcTrustStrip />
+
+  {/* Different spaces need different cleanup plans. */}
+  <AcIntro eyebrow="01 / The spaces" heading={page.spaces.heading} headingId={page.spaces.id} lead={page.spaces.lead} body={page.spaces.body}>
+    <div class="rodent-groups">
+      {page.spaces.groups.map((group) => (
+        <div class="rodent-groups__item">
+          <h3 class="ac-type-h3-band">{group.title}</h3>
+          {group.body.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+      ))}
+    </div>
+  </AcIntro>
+
+  {/* What can you keep? */}
+  <AcSplit
+    eyebrow="02 / What stays"
+    heading={page.keep.heading}
+    headingId={page.keep.id}
+    lead={page.keep.lead}
+    body={page.keep.body}
+    image={storageImage}
+    imageAlt={page.keep.imageAlt}
+    tone="soft"
+  >
+    <div class="rodent-list">
+      <AcCheckList items={page.keep.list} compact />
+    </div>
+    {page.keep.closing.map((paragraph) => <p class="rodent-closing">{paragraph}</p>)}
+  </AcSplit>
+
+  {/* How we handle the cleanup. */}
+  <AcIntro eyebrow="03 / How we clean" heading={page.process.heading} headingId={page.process.id} tone="soft">
+    <div class="rodent-groups rodent-groups--cols">
+      {page.process.groups.map((group) => (
+        <div class="rodent-groups__item">
+          <h3 class="ac-type-h3-band">{group.title}</h3>
+          {group.body.map((paragraph) => <p>{paragraph}</p>)}
+        </div>
+      ))}
+    </div>
+  </AcIntro>
+
+  {/* What we look at during a property assessment. */}
+  <AcSplit
+    eyebrow="04 / The visit"
+    heading={page.assessmentVisit.heading}
+    headingId={page.assessmentVisit.id}
+    lead={page.assessmentVisit.lead}
+    body={page.assessmentVisit.body}
+    image={surfaceImage}
+    imageAlt={page.assessmentVisit.imageAlt}
+    reverse
+  >
+    <div class="rodent-list">
+      <AcCheckList items={page.assessmentVisit.list} compact />
+    </div>
+    {page.assessmentVisit.closing.map((paragraph) => <p class="rodent-closing">{paragraph}</p>)}
+    <p class="rodent-strong">{page.assessmentVisit.strongLine}</p>
+    {page.assessmentVisit.closingAfter.map((paragraph) => <p class="rodent-closing">{paragraph}</p>)}
+  </AcSplit>
+
+  {/* What does cleanup cost? — scoped pricing exception, AGENTS.md §4, 2026-09-16. */}
+  <section class="rodent-cost" aria-labelledby={page.pricing.id}>
+    <div class="ac-shell">
+      <div class="rodent-cost__inner">
+        <AcEyebrow text="05 / Cost" />
+        <h2 id={page.pricing.id} class="ac-type-h2">{page.pricing.heading}</h2>
+
+        <h3 class="ac-type-h3-band">{page.pricing.small.title}</h3>
+        {page.pricing.small.body.map((paragraph) => <p class="rodent-cost__body">{paragraph}</p>)}
+
+        <h3 class="ac-type-h3-band">{page.pricing.larger.title}</h3>
+        {page.pricing.larger.body.map((paragraph) => <p class="rodent-cost__body">{paragraph}</p>)}
+        <div class="rodent-cost__factors">
+          <AcCheckList items={page.pricing.larger.factors} columns={2} compact />
+        </div>
+        <p class="rodent-cost__body">{page.pricing.larger.closing}</p>
+
+        <h3 class="ac-type-h3-band">{page.pricing.assessment.title}</h3>
+        {page.pricing.assessment.body.map((paragraph) => <p class="rodent-cost__body">{paragraph}</p>)}
+        <p class="rodent-strong">{page.pricing.assessment.strongLine}</p>
+        <p class="rodent-cost__body">{page.pricing.assessment.closing}</p>
+
+        <p class="rodent-cost__body">Start with a <strong>free phone and photo review</strong>. Some small jobs can be quoted without a separate visit.</p>
+
+        <div class="rodent-cost__actions">
+          <AcActions primaryLabel={callLabel} secondaryLabel={page.hero.secondaryLabel} secondaryHref={formHref} />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* What if rodents are still getting in? — doc 21 §2.3 + §3.1 appended verbatim below. One
+      dark band per page, doc 30 §4 ("one or two dark breaks in a long service page"), matching
+      every AcServicePage sibling. Copy-only: no fourth distinct rodent photograph exists to pair
+      with it without repeating one already used above. */}
+  <AcDarkBand eyebrow="06 / Pest control" heading={page.stillGettingIn.heading} headingId={page.stillGettingIn.id} body={page.stillGettingIn.body} showActions={false}>
+    <div class="rodent-exclude">
+      <h3 class="ac-type-h3-band rodent-exclude__title">{page.stillGettingIn.excludeTitle}</h3>
+      <ul class="rodent-exclude__list">
+        {page.stillGettingIn.exclude.map((item) => <li>{item}</li>)}
+      </ul>
+    </div>
+    {page.stillGettingIn.closing.map((paragraph) => <p class="rodent-closing rodent-closing--dark">{paragraph}</p>)}
+    {page.stillGettingIn.complianceClauses.map((clause) => <p class="rodent-limit rodent-limit--dark">{clause}</p>)}
+  </AcDarkBand>
+
+  {/* Meet Matthew, the owner. */}
+  <AcSplit eyebrow="07 / Why Aseptaclean" heading={page.founder.heading} headingId={page.founder.id} body={page.founder.body} image={founderPortrait} imageAlt={`${site.founder.name}, founder of Aseptaclean`} ratio="3/4">
+    <p class="rodent-limit">{legal.founderAuthorityLimit}</p>
+  </AcSplit>
+
+  {/* Questions before you book. */}
+  <AcIntro eyebrow="08 / Questions" heading={page.faq.heading} headingId={page.faq.id} tone="soft">
+    <div class="rodent-faq">
+      <FaqAccordion items={page.faq.items} headingId={page.faq.id} />
+    </div>
+  </AcIntro>
+
+  {/* Serving San Jose, the South Bay, and the Peninsula. */}
+  <AcIntro heading={page.serving.heading} headingId={page.serving.id} body={[servingSentence, page.serving.closing]} />
+
+  {/* Not the right service? — every AcServicePage sibling ends its body here, before the
+      closing action. */}
+  <AcIntro
+    eyebrow="Other services"
+    heading="Not the right service?"
+    headingId="related-title"
+    lead="Aseptaclean handles four other property conditions. If you are not sure which one fits, tell us what is happening and we will help you decide."
+  >
+    <div class="rodent-related">
+      <AcServiceCards cards={related} layout="even" />
+    </div>
+  </AcIntro>
+
+  {/* Tell us what you found. — bottom form, per the scoped hero-form exception. */}
+  <section class="rodent-form" id={page.formId} aria-labelledby="rodent-form-heading">
+    <div class="ac-shell rodent-form__shell">
+      <div class="rodent-form__intro">
+        <h2 id="rodent-form-heading" class="ac-type-h2">{page.form.heading}</h2>
+        <p class="rodent-form__lead">{page.form.lead}</p>
+      </div>
+      <PpcHeroForm
+        formId={page.formId}
+        entryRoute={`${page.route}#${page.formId}`}
+        situationValue="Rodent droppings or animal waste"
+        title={page.form.heading}
+        intro={page.form.intro}
+        submitLabel={page.form.submitLabel}
+        photoHelper="Photos of the affected area help."
+        microcopy={page.form.microcopy}
+        thankYouRoute="/thank-you/"
+        tone="light"
+      />
+    </div>
+    <p class="rodent-form__phone">
+      <strong>Prefer to talk? <a href={site.business.phoneUri}>Call {site.business.phone}</a>.</strong>
+    </p>
+  </section>
+</BaseLayout>
+
+<style>
+  .rodent-groups {
+    display: grid;
+    margin-top: 26px;
+    gap: 28px;
+    text-align: left;
+  }
+
+  .rodent-groups--cols {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .rodent-groups__item h3 {
+    margin: 0 0 10px;
+  }
+
+  .rodent-groups__item p {
+    margin: 8px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  @media (max-width: 44rem) {
+    .rodent-groups--cols {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
+  .rodent-list {
+    margin-top: 22px;
+  }
+
+  .rodent-list h3 {
+    margin: 0 0 14px;
+  }
+
+  .rodent-closing {
+    margin: 16px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .rodent-closing--dark {
+    color: #c3d2e4;
+  }
+
+  .rodent-exclude {
+    margin-top: 22px;
+  }
+
+  .rodent-exclude__title {
+    margin: 0 0 14px;
+    color: #fff;
+  }
+
+  .rodent-exclude__list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 10px;
+  }
+
+  .rodent-exclude__list li {
+    position: relative;
+    padding-left: 22px;
+    color: #d7e2f0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .rodent-exclude__list li::before {
+    position: absolute;
+    left: 0;
+    content: "—";
+    color: var(--ac-color-blue-on-navy);
+  }
+
+  .rodent-related {
+    margin-top: 40px;
+    text-align: left;
+  }
+
+  .rodent-strong {
+    margin: 20px 0 0;
+    border-left: 2px solid var(--ac-color-navy-800);
+    padding-left: 18px;
+    color: var(--ac-color-navy-900);
+    font-size: 1.0625rem;
+    font-weight: 650;
+    line-height: 1.55;
+  }
+
+  .rodent-limit {
+    margin: 22px 0 0;
+    border-left: 2px solid var(--ac-color-line-strong);
+    padding-left: 18px;
+    color: var(--ac-color-ink-500);
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .rodent-limit--dark {
+    border-left-color: rgb(255 255 255 / 30%);
+    color: #8fa6bf;
+  }
+
+  .rodent-faq {
+    margin-top: 34px;
+    text-align: left;
+  }
+
+  .rodent-cost {
+    background: var(--ac-color-warm-white);
+  }
+
+  .rodent-cost__inner {
+    max-width: 880px;
+  }
+
+  .rodent-cost__inner h3 {
+    margin: 32px 0 0;
+  }
+
+  .rodent-cost__body {
+    margin: 14px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .rodent-cost__factors {
+    margin-top: 18px;
+  }
+
+  .rodent-cost__actions {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 30px;
+    gap: 12px;
+  }
+
+  .rodent-form {
+    background: var(--ac-color-paper);
+    padding-block: 20px 68px;
+  }
+
+  .rodent-form__shell {
+    display: grid;
+    gap: 40px;
+    grid-template-columns: minmax(0, 1fr) minmax(360px, 480px);
+    align-items: start;
+  }
+
+  .rodent-form__intro h2 {
+    text-wrap: balance;
+  }
+
+  .rodent-form__lead {
+    margin: 16px 0 0;
+    max-width: 46ch;
+    color: var(--ac-color-ink-600);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  .rodent-form__phone {
+    margin: 24px auto 0;
+    max-width: 880px;
+    text-align: center;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+  }
+
+  .rodent-form__phone a {
+    color: var(--ac-color-navy-800);
+    font-weight: 650;
+  }
+
+  @media (max-width: 62rem) {
+    .rodent-form__shell {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+</style>

@@ -10,7 +10,7 @@ This table replaces the old city-page and category-hub launch plan for this rede
 | 4 | Extreme Cleaning | /extreme-cleaning-san-jose/ | Main copy → Severe Property Cleanup |
 | 5 | Detailed Deep Cleaning | /deep-cleaning-san-jose/ | Main copy → Detailed Deep Cleaning |
 | 6 | Crime Scene & Trauma Cleanup | /crime-scene-trauma-cleanup-san-jose/ | Trauma copy |
-| 7 | Rodent Droppings & Animal Waste Cleanup | /rodent-dropping-cleanup-san-jose/ | Main copy → Rodent Droppings & Animal Waste Cleanup |
+| 7 | Rodent Droppings & Animal Waste Cleanup | /rodent-dropping-cleanup-san-jose/ | **Rebuilt 2026-09-16** on `docs/Aseptaclean_Rodent_Service_Page_Copy.md` (`src/data/rodentServicePage.ts`). No longer sourced from the main copy document or rendered through `AcServicePage`/`AcHeroWithForm` — see `docs/05-CURRENT-DECISIONS.md`, 2026-09-16, for the scoped design exception. Route and canonical URL are unchanged; indexation is `index, follow` per the owner's 2026-09-15 SEO decision (see Campaign routes note above), independent of this copy rebuild. |
 | 8 | Contact | /contact/ | Main source form material + verified contact data + current dedicated copy |
 | 9 | About | /about/ | Main copy → Why Aseptaclean + current dedicated About copy |
 | 10 | Privacy Policy | /privacy/ | Actual existing policy provider document |
@@ -36,6 +36,7 @@ Their thank-you pages remain `noindex, follow` and outside the sitemap.
 | --- | --- | --- | --- |
 | `/hoarding-cleanup-san-jose/assessment/` | `page-briefs/PPC-HOARDING-SAN-JOSE.md` | `index, follow`, in `sitemap.xml` | Owner SEO update 2026-09-15 |
 | `/estate-cleanout-san-jose/assessment/` | `aseptaclean-estate-landing-page.md` | `index, follow`, in `sitemap.xml` | Owner SEO update 2026-09-15 |
+| `/rodent-dropping-cleanup-san-jose/assessment/` | `docs/Aseptaclean_Rodent_Landing_Page_Copy.md` | `index, follow`, in `sitemap.xml` | Rodent PPC landing page, built 2026-09-16, after the 2026-09-15 SEO decision — brought under the same decision 2026-09-17 (owner-confirmed) since it is the same kind of page as the other two rows. One scoped difference from the other two: the intake form sits at the bottom of the page, not in the hero (owner design instruction, `docs/05-CURRENT-DECISIONS.md`, 2026-09-16) |
 | `/private-residence-reset/` | `08-PRIVATE-RESIDENCE-RESET-BUILD-SPEC.md` | Existing noindex state unchanged | Outside this update |
 
 The same decision removes the rodent service page's indexation exception. This is an

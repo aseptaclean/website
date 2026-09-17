@@ -1,0 +1,285 @@
+---
+// RODENT CAMPAIGN THANK-YOU — /rodent-dropping-cleanup-san-jose/assessment/thank-you/
+//
+// Identical pattern to /hoarding-cleanup-san-jose/assessment/thank-you/ and
+// /estate-cleanout-san-jose/assessment/thank-you/: reached ONLY by redirect from PpcHeroForm
+// after functions/api/lead.ts returns a confirmed `ok: true`. The redirect is a GET, so
+// refreshing this page re-fetches a static document and cannot resubmit anything.
+//
+// ONE H1, TEXT SWAPPED — the sitewide /thank-you/ convention. The document ships the HONEST
+// DEFAULT ("this page does not confirm…") and the script upgrades it only when the query says a
+// submission was confirmed.
+//
+// QUERY CONTRACT — identical to the sitewide /thank-you/ and the other two PPC thank-you routes:
+//   received=1                 the endpoint confirmed acceptance
+//   code=AC-XXXXXX             the derived display code (validated against a strict regex)
+//   email=sent|attention       whether a confirmation email was actually accepted by Resend
+//   callback=business-hours|…  read but deliberately NOT rendered (no response-time promise)
+//
+// NO PERSONAL INFORMATION IS EVER IN THE URL. `code` is a presentation string derived from the
+// submission UUID; nothing is stored under it, deduped on it or looked up by it.
+import PpcLayout from "@layouts/PpcLayout.astro";
+import { site } from "@data/site";
+import { ppcRodent, ppcRodentCallLabel } from "@data/ppcRodent";
+
+const copy = ppcRodent.thankYou;
+const formUrl = `${ppcRodent.route}#${ppcRodent.formId}`;
+const phoneHref = site.business.phoneUri;
+---
+
+<PpcLayout
+  title={copy.seo.title}
+  description={copy.seo.description}
+  canonicalPath={copy.route}
+  noindex={true}
+  stickyHeroSelector="#rodent-confirmation"
+  stickyFormHref={formUrl}
+  stickySecondaryLabel={ppcRodent.stickyBar.secondaryLabel}
+>
+  <section class="ppc-confirm" id="rodent-confirmation" aria-labelledby="confirm-title">
+    <div class="ac-shell">
+      <div
+        class="ppc-confirm__panel"
+        tabindex="-1"
+        data-confirm-panel
+        data-lead-form-id={ppcRodent.formId}
+        data-lead-offer-type="handoff_reset"
+      >
+        <p class="ppc-confirm__eyebrow">{copy.eyebrow}</p>
+
+        <h1
+          id="confirm-title"
+          class="ac-type-h1-home"
+          data-confirm-title
+          data-confirmed={copy.heading}
+        >{copy.unconfirmed.heading}</h1>
+
+        <p
+          class="ppc-confirm__body"
+          data-confirm-body
+          data-confirmed={copy.body[0]}
+        >{copy.unconfirmed.body}</p>
+
+        <p class="ppc-confirm__body" data-confirm-extra data-confirmed={copy.body[1]} hidden></p>
+
+        <p
+          class="ppc-confirm__code"
+          data-confirm-code
+          data-label={copy.codeLabel}
+          data-note={copy.codeNote}
+          hidden
+        ></p>
+
+        <p
+          class="ppc-confirm__email"
+          data-confirm-email
+          data-sent={copy.emailSent}
+          data-pending={copy.emailPending}
+          hidden
+        ></p>
+
+        <div class="ppc-confirm__actions">
+          {phoneHref && <a class="ppc-confirm__call" href={phoneHref}>{ppcRodentCallLabel}</a>}
+          <a class="ppc-confirm__back" href={formUrl} data-confirm-back>
+            {copy.unconfirmed.backLabel}
+          </a>
+        </div>
+
+        <p class="ppc-confirm__boundary" data-confirm-boundary hidden>{copy.boundary}</p>
+      </div>
+    </div>
+  </section>
+</PpcLayout>
+
+<script>
+  const parameters = new URLSearchParams(window.location.search);
+
+  if (parameters.get("received") === "1") {
+    const panel = document.querySelector<HTMLElement>("[data-confirm-panel]");
+    const title = document.querySelector<HTMLElement>("[data-confirm-title]");
+    const body = document.querySelector<HTMLElement>("[data-confirm-body]");
+    const extra = document.querySelector<HTMLElement>("[data-confirm-extra]");
+    const codeEl = document.querySelector<HTMLElement>("[data-confirm-code]");
+    const emailEl = document.querySelector<HTMLElement>("[data-confirm-email]");
+    const back = document.querySelector<HTMLElement>("[data-confirm-back]");
+    const boundary = document.querySelector<HTMLElement>("[data-confirm-boundary]");
+
+    if (title?.dataset.confirmed) title.textContent = title.dataset.confirmed;
+    if (body?.dataset.confirmed) body.textContent = body.dataset.confirmed;
+    if (extra?.dataset.confirmed) {
+      extra.textContent = extra.dataset.confirmed;
+      extra.hidden = false;
+    }
+
+    const code = parameters.get("code") ?? "";
+    if (codeEl && /^AC-[0-9A-HJKMNP-TV-Z]{6}$/.test(code)) {
+      codeEl.hidden = false;
+      codeEl.textContent = `${codeEl.dataset.label}: ${code} — ${codeEl.dataset.note}`;
+    }
+
+    const emailState = parameters.get("email");
+    if (emailEl && emailState === "sent") {
+      emailEl.hidden = false;
+      emailEl.textContent = emailEl.dataset.sent ?? "";
+    } else if (emailEl && emailState === "attention") {
+      emailEl.hidden = false;
+      emailEl.textContent = emailEl.dataset.pending ?? "";
+    }
+
+    if (back) back.hidden = true;
+    if (boundary) boundary.hidden = false;
+
+    // ---- Lead-event recovery. EXPLICIT, ONCE-ONLY, AND NOT A PAGE VIEW. See the hoarding
+    // thank-you page's comment for the full rationale; identical mechanism here.
+    if (/^AC-[0-9A-HJKMNP-TV-Z]{6}$/.test(code)) {
+      let claimed = false;
+      try {
+        const key = `ac_ppc_lead:${code}`;
+        if (!window.sessionStorage.getItem(key)) {
+          window.sessionStorage.setItem(key, "1");
+          claimed = true;
+        }
+      } catch {
+        claimed = false;
+      }
+
+      if (claimed) {
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push({
+          event: "ppc_form_success",
+          form_id: panel?.dataset.leadFormId ?? "",
+          page_path: window.location.pathname,
+          offer_type: panel?.dataset.leadOfferType ?? "",
+          recovered: true
+        });
+      }
+    }
+
+    panel?.focus({ preventScroll: true });
+    window.history.replaceState({}, "", window.location.pathname);
+  }
+</script>
+
+<style>
+  .ppc-confirm {
+    background: var(--ac-color-navy-950);
+    color: #fff;
+  }
+
+  .ppc-confirm__panel {
+    max-width: 46rem;
+    padding-block: clamp(24px, 4vw, 48px);
+  }
+
+  .ppc-confirm__panel:focus {
+    outline: none;
+  }
+
+  .ppc-confirm__eyebrow {
+    margin: 0 0 12px;
+    color: var(--ac-color-blue-on-navy);
+    font-size: 0.9375rem;
+    font-weight: 650;
+    line-height: 1.35;
+  }
+
+  .ppc-confirm h1 {
+    color: #fff;
+    line-height: 1.08;
+    text-wrap: balance;
+  }
+
+  .ppc-confirm__body {
+    margin: 18px 0 0;
+    max-width: 54ch;
+    color: #c3d2e4;
+    font-size: var(--ac-text-body);
+    line-height: 1.65;
+  }
+
+  .ppc-confirm__body[hidden],
+  .ppc-confirm__code[hidden],
+  .ppc-confirm__email[hidden],
+  .ppc-confirm__boundary[hidden],
+  .ppc-confirm__back[hidden] {
+    display: none;
+  }
+
+  .ppc-confirm__code {
+    margin: 22px 0 0;
+    border-left: 2px solid var(--ac-color-blue-on-navy);
+    padding-left: 18px;
+    color: #fff;
+    font-size: 1.0625rem;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  .ppc-confirm__email {
+    margin: 14px 0 0;
+    max-width: 54ch;
+    color: #c3d2e4;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .ppc-confirm__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 28px;
+    gap: 12px;
+  }
+
+  .ppc-confirm__call,
+  .ppc-confirm__back {
+    display: inline-flex;
+    min-height: 48px;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--ac-r-sm);
+    padding-inline: 24px;
+    font-size: 0.9375rem;
+    font-weight: 650;
+    text-decoration: none;
+  }
+
+  .ppc-confirm__call {
+    border: 1px solid #fff;
+    background: #fff;
+    color: var(--ac-color-navy-900);
+  }
+
+  .ppc-confirm__call:hover {
+    border-color: var(--ac-color-blue-pale);
+    background: var(--ac-color-blue-pale);
+    color: var(--ac-color-navy-900);
+  }
+
+  .ppc-confirm__back {
+    border: 1px solid rgb(255 255 255 / 45%);
+    color: #fff;
+  }
+
+  .ppc-confirm__back:hover {
+    background: rgb(255 255 255 / 12%);
+    color: #fff;
+  }
+
+  .ppc-confirm__boundary {
+    margin: 26px 0 0;
+    max-width: 46ch;
+    color: #8fa6bf;
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 26rem) {
+    .ppc-confirm__call,
+    .ppc-confirm__back {
+      width: 100%;
+      white-space: normal;
+      text-align: center;
+    }
+  }
+</style>
