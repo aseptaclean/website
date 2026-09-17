@@ -1306,6 +1306,42 @@ does not touch indexation, per AGENTS.md §2.1's separation of content/design wo
 `src/data/launchArchitecture.ts`, `AcHeroWithForm.astro`, `AcServicePage.astro`, `PpcHero.astro`,
 `PpcHeroForm.astro`, and every other route's copy, navigation, or metadata.
 
+#### Second round of owner feedback, same day — page rhythm did not match its siblings
+
+After the hero fix above, the owner flagged (twice) that the pages still did not look like the
+rest of the site. The hero was right by then; the rest of the body was not. Full-page screenshot
+comparison against `/hoarding-cleanup-san-jose/` (the service page's true sibling) found three
+concrete, fixable gaps, none of them the hero:
+
+1. **No numbered eyebrow labels** ("01 / …", "02 / …") above section headings. Every
+   `AcServicePage`-based sibling has these; the rodent service page had none. Added to all eight
+   body sections in sequence (`01 / The spaces` through `08 / Questions`).
+2. **No dark navy band anywhere in the body.** Doc 30 §4 calls for "one or two dark breaks in a
+   long service page"; every sibling has at least one, the rodent page had zero. The "What if
+   rodents are still getting in?" section is now `AcDarkBand` instead of `AcIntro` (copy-only —
+   no fourth distinct rodent photograph exists without repeating one already used above). Its
+   exclusion list ("We do not: …") needed its own small dark-surface styling, since
+   `AcCheckList`'s `tone` prop cannot combine "exclude" marks with light-on-dark coloring (`quiet`
+   is the include-only dark variant) — a bespoke `.rodent-exclude__list` was added rather than
+   extending the shared component for one non-composable combination.
+3. **Missing the "Not the right service?" cross-link row.** Every `AcServicePage` sibling ends its
+   body with a four-card row linking the other services. This page, not being built through
+   `AcServicePage`, never had one. Rebuilt using the same `AcServiceCards` component and the same
+   image/blurb mapping `AcServicePage.astro` uses (`launchServiceLinks`, filtered to exclude self),
+   placed directly before the bottom form.
+
+**The landing page's true siblings are the two existing PPC pages, which are visually different
+from each other** (hoarding: dark full-bleed hero, one dark band, no eyebrows; estate: light
+white-background hero, no dark bands, per its own later "layout refresh" brief). Since the rodent
+landing page's hero already matches hoarding's, it was brought in line with hoarding's rhythm, not
+estate's: no eyebrows added (hoarding has none), one dark band added ("Help with small areas or a
+larger mess.", converted from `AcSplit` to `AcDarkBand`, reusing the same image), no related-
+services row added (neither PPC page has one — cross-linking away from a paid-traffic landing page
+works against its purpose).
+
+Rebuilt, re-ran `astro check` (0 errors), `qa:copy`/`qa:launch` (pass), and the type-law sweep on
+both routes (clean) after each round of changes.
+
 #### Conflict 3 — "disinfect" as an outcome claim (found during claims-check, fixed before publish)
 
 Both approved copy files use "disinfect"/"disinfecting"/"disinfected" repeatedly as something

@@ -18,25 +18,59 @@
 //
 // DOC 21 §2.3 + §3.1 mandatory clauses are appended, verbatim, at the end of the "What if rodents
 // are still getting in?" section, on top of the approved copy.
+import type { ImageMetadata } from "astro";
 import BaseLayout from "@layouts/BaseLayout.astro";
 import AcPageHero from "@components/ac/AcPageHero.astro";
 import AcTrustStrip from "@components/ac/AcTrustStrip.astro";
 import AcActions from "@components/ac/AcActions.astro";
 import AcIntro from "@components/ac/AcIntro.astro";
 import AcSplit from "@components/ac/AcSplit.astro";
+import AcDarkBand from "@components/ac/AcDarkBand.astro";
 import AcCheckList from "@components/ac/AcCheckList.astro";
+import AcEyebrow from "@components/ac/AcEyebrow.astro";
+import AcServiceCards from "@components/ac/AcServiceCards.astro";
 import FaqAccordion from "@components/FaqAccordion.astro";
 import PpcHeroForm from "@components/ppc/PpcHeroForm.astro";
 import { site, legal } from "@data/site";
 import { rodentServicePage as page } from "@data/rodentServicePage";
+import { launchServiceLinks } from "@data/launchArchitecture";
 
 import heroImage from "../../assets/aseptaclean/rodent-utility-room-context.png";
 import storageImage from "../../assets/aseptaclean/rodent-storage-contents.png";
 import surfaceImage from "../../assets/aseptaclean/rodent-hard-surface-detail.png";
 import founderPortrait from "../../assets/aseptaclean/founder-matthew-ruiz.jpeg";
+import hoardingLivingRoom from "../../assets/aseptaclean/hoarding-living-room.png";
+import extremeKitchen from "../../assets/aseptaclean/extreme-cleaning-neglected-kitchen.png";
+import deepCleaningKitchen from "../../assets/aseptaclean/detailed-deep-cleaning-kitchen.png";
+import traumaContext from "../../assets/aseptaclean/trauma-residential-context.png";
 
 const callLabel = `Call ${site.business.phone}`;
 const formHref = `#${page.formId}`;
+
+// "Not the right service?" cross-link row — every AcServicePage-based sibling has this; matches
+// that component's own relatedImages/relatedBlurbs mapping (AcServicePage.astro), rebuilt here
+// since this page does not render through AcServicePage. See docs/05-CURRENT-DECISIONS.md.
+const relatedImages: Record<string, ImageMetadata> = {
+  "/hoarding-cleanup-san-jose/": hoardingLivingRoom,
+  "/extreme-cleaning-san-jose/": extremeKitchen,
+  "/deep-cleaning-san-jose/": deepCleaningKitchen,
+  "/crime-scene-trauma-cleanup-san-jose/": traumaContext
+};
+const relatedBlurbs: Record<string, string> = {
+  "/hoarding-cleanup-san-jose/": "When belongings and clutter have made the home difficult to manage.",
+  "/extreme-cleaning-san-jose/": "When the condition has gone beyond a normal deep clean.",
+  "/deep-cleaning-san-jose/": "For homes that need more than routine cleaning.",
+  "/crime-scene-trauma-cleanup-san-jose/": "Discreet cleanup after the scene has been released."
+};
+const related = launchServiceLinks
+  .filter((link) => link.href !== page.route)
+  .map((link) => ({
+    title: link.label,
+    description: relatedBlurbs[link.href] ?? "",
+    href: link.href,
+    image: relatedImages[link.href],
+    imageAlt: ""
+  }));
 
 const cities = site.location.cities;
 const servingSentence = `We serve ${cities.slice(0, -1).join(", ")}, and ${cities[cities.length - 1]}.`;
@@ -98,7 +132,7 @@ const schema = [
   <AcTrustStrip />
 
   {/* Different spaces need different cleanup plans. */}
-  <AcIntro heading={page.spaces.heading} headingId={page.spaces.id} lead={page.spaces.lead} body={page.spaces.body}>
+  <AcIntro eyebrow="01 / The spaces" heading={page.spaces.heading} headingId={page.spaces.id} lead={page.spaces.lead} body={page.spaces.body}>
     <div class="rodent-groups">
       {page.spaces.groups.map((group) => (
         <div class="rodent-groups__item">
@@ -111,6 +145,7 @@ const schema = [
 
   {/* What can you keep? */}
   <AcSplit
+    eyebrow="02 / What stays"
     heading={page.keep.heading}
     headingId={page.keep.id}
     lead={page.keep.lead}
@@ -126,7 +161,7 @@ const schema = [
   </AcSplit>
 
   {/* How we handle the cleanup. */}
-  <AcIntro heading={page.process.heading} headingId={page.process.id} tone="soft">
+  <AcIntro eyebrow="03 / How we clean" heading={page.process.heading} headingId={page.process.id} tone="soft">
     <div class="rodent-groups rodent-groups--cols">
       {page.process.groups.map((group) => (
         <div class="rodent-groups__item">
@@ -139,6 +174,7 @@ const schema = [
 
   {/* What we look at during a property assessment. */}
   <AcSplit
+    eyebrow="04 / The visit"
     heading={page.assessmentVisit.heading}
     headingId={page.assessmentVisit.id}
     lead={page.assessmentVisit.lead}
@@ -159,6 +195,7 @@ const schema = [
   <section class="rodent-cost" aria-labelledby={page.pricing.id}>
     <div class="ac-shell">
       <div class="rodent-cost__inner">
+        <AcEyebrow text="05 / Cost" />
         <h2 id={page.pricing.id} class="ac-type-h2">{page.pricing.heading}</h2>
 
         <h3 class="ac-type-h3-band">{page.pricing.small.title}</h3>
@@ -185,23 +222,28 @@ const schema = [
     </div>
   </section>
 
-  {/* What if rodents are still getting in? — doc 21 §2.3 + §3.1 appended verbatim below. */}
-  <AcIntro heading={page.stillGettingIn.heading} headingId={page.stillGettingIn.id} body={page.stillGettingIn.body} tone="soft">
-    <div class="rodent-list">
-      <h3 class="ac-type-h3-band">{page.stillGettingIn.excludeTitle}</h3>
-      <AcCheckList items={page.stillGettingIn.exclude} tone="exclude" compact />
+  {/* What if rodents are still getting in? — doc 21 §2.3 + §3.1 appended verbatim below. One
+      dark band per page, doc 30 §4 ("one or two dark breaks in a long service page"), matching
+      every AcServicePage sibling. Copy-only: no fourth distinct rodent photograph exists to pair
+      with it without repeating one already used above. */}
+  <AcDarkBand eyebrow="06 / Pest control" heading={page.stillGettingIn.heading} headingId={page.stillGettingIn.id} body={page.stillGettingIn.body} showActions={false}>
+    <div class="rodent-exclude">
+      <h3 class="ac-type-h3-band rodent-exclude__title">{page.stillGettingIn.excludeTitle}</h3>
+      <ul class="rodent-exclude__list">
+        {page.stillGettingIn.exclude.map((item) => <li>{item}</li>)}
+      </ul>
     </div>
-    {page.stillGettingIn.closing.map((paragraph) => <p class="rodent-closing">{paragraph}</p>)}
-    {page.stillGettingIn.complianceClauses.map((clause) => <p class="rodent-limit">{clause}</p>)}
-  </AcIntro>
+    {page.stillGettingIn.closing.map((paragraph) => <p class="rodent-closing rodent-closing--dark">{paragraph}</p>)}
+    {page.stillGettingIn.complianceClauses.map((clause) => <p class="rodent-limit rodent-limit--dark">{clause}</p>)}
+  </AcDarkBand>
 
   {/* Meet Matthew, the owner. */}
-  <AcSplit heading={page.founder.heading} headingId={page.founder.id} body={page.founder.body} image={founderPortrait} imageAlt={`${site.founder.name}, founder of Aseptaclean`} ratio="3/4">
+  <AcSplit eyebrow="07 / Why Aseptaclean" heading={page.founder.heading} headingId={page.founder.id} body={page.founder.body} image={founderPortrait} imageAlt={`${site.founder.name}, founder of Aseptaclean`} ratio="3/4">
     <p class="rodent-limit">{legal.founderAuthorityLimit}</p>
   </AcSplit>
 
   {/* Questions before you book. */}
-  <AcIntro heading={page.faq.heading} headingId={page.faq.id} tone="soft">
+  <AcIntro eyebrow="08 / Questions" heading={page.faq.heading} headingId={page.faq.id} tone="soft">
     <div class="rodent-faq">
       <FaqAccordion items={page.faq.items} headingId={page.faq.id} />
     </div>
@@ -209,6 +251,19 @@ const schema = [
 
   {/* Serving San Jose, the South Bay, and the Peninsula. */}
   <AcIntro heading={page.serving.heading} headingId={page.serving.id} body={[servingSentence, page.serving.closing]} />
+
+  {/* Not the right service? — every AcServicePage sibling ends its body here, before the
+      closing action. */}
+  <AcIntro
+    eyebrow="Other services"
+    heading="Not the right service?"
+    headingId="related-title"
+    lead="Aseptaclean handles four other property conditions. If you are not sure which one fits, tell us what is happening and we will help you decide."
+  >
+    <div class="rodent-related">
+      <AcServiceCards cards={related} layout="even" />
+    </div>
+  </AcIntro>
 
   {/* Tell us what you found. — bottom form, per the scoped hero-form exception. */}
   <section class="rodent-form" id={page.formId} aria-labelledby="rodent-form-heading">
@@ -280,6 +335,47 @@ const schema = [
     line-height: 1.65;
   }
 
+  .rodent-closing--dark {
+    color: #c3d2e4;
+  }
+
+  .rodent-exclude {
+    margin-top: 22px;
+  }
+
+  .rodent-exclude__title {
+    margin: 0 0 14px;
+    color: #fff;
+  }
+
+  .rodent-exclude__list {
+    display: grid;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    gap: 10px;
+  }
+
+  .rodent-exclude__list li {
+    position: relative;
+    padding-left: 22px;
+    color: #d7e2f0;
+    font-size: 0.9375rem;
+    line-height: 1.6;
+  }
+
+  .rodent-exclude__list li::before {
+    position: absolute;
+    left: 0;
+    content: "—";
+    color: var(--ac-color-blue-on-navy);
+  }
+
+  .rodent-related {
+    margin-top: 40px;
+    text-align: left;
+  }
+
   .rodent-strong {
     margin: 20px 0 0;
     border-left: 2px solid var(--ac-color-navy-800);
@@ -297,6 +393,11 @@ const schema = [
     color: var(--ac-color-ink-500);
     font-size: 0.9375rem;
     line-height: 1.6;
+  }
+
+  .rodent-limit--dark {
+    border-left-color: rgb(255 255 255 / 30%);
+    color: #8fa6bf;
   }
 
   .rodent-faq {

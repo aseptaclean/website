@@ -19,6 +19,7 @@ import PpcLayout from "@layouts/PpcLayout.astro";
 import AcPageHero from "@components/ac/AcPageHero.astro";
 import AcIntro from "@components/ac/AcIntro.astro";
 import AcSplit from "@components/ac/AcSplit.astro";
+import AcDarkBand from "@components/ac/AcDarkBand.astro";
 import AcSteps from "@components/ac/AcSteps.astro";
 import AcCheckList from "@components/ac/AcCheckList.astro";
 import AcActions from "@components/ac/AcActions.astro";
@@ -79,13 +80,14 @@ const formHref = `#${copy.formId}`;
     </div>
   </AcIntro>
 
-  {/* Help with small areas or a larger mess. */}
-  <AcSplit heading={copy.help.heading} headingId={copy.help.id} lead={copy.help.lead} image={helpImage} imageAlt="A residential storage shelf holding cardboard boxes and a plastic tub, with dust and a small scattering of rodent droppings on the shelf" reverse>
+  {/* Help with small areas or a larger mess. — one dark band, matching the one dark break the
+      hoarding PPC page (this route's closest sibling) uses for the same visual rhythm. */}
+  <AcDarkBand heading={copy.help.heading} headingId={copy.help.id} lead={copy.help.lead} image={helpImage} imageAlt="A residential storage shelf holding cardboard boxes and a plastic tub, with dust and a small scattering of rodent droppings on the shelf" showActions={false}>
     <div class="rodent-list">
-      <AcCheckList items={copy.help.list} compact />
+      <AcCheckList items={copy.help.list} tone="quiet" compact />
     </div>
-    {copy.help.closing.map((paragraph) => <p class="rodent-closing">{paragraph}</p>)}
-  </AcSplit>
+    {copy.help.closing.map((paragraph) => <p class="rodent-closing rodent-closing--dark">{paragraph}</p>)}
+  </AcDarkBand>
 
   {/* How it works. */}
   <AcIntro heading={copy.howItWorks.heading} headingId={copy.howItWorks.id} tone="soft">
