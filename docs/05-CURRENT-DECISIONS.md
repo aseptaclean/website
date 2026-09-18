@@ -1513,3 +1513,14 @@ non-pricing/contact sections of the service page (spaces, keep, process, assessm
 still-getting-in, founder, FAQ, serving, related-services) and the landing page's equivalent
 sections are untouched, per the brief's own "this is a focused redesign... preserve the current
 approved copy elsewhere."
+
+
+## 2026-09-18 — Legacy estate redirect deployment
+
+Owner authorized deployment of the tested estate redirect fix. Added exact 301 rules for
+`/estate-cleanout` and `/estate-cleanout/` to `/estate-cleanout-san-jose/assessment/` in
+`public/_redirects`. Local Cloudflare Pages tests passed one-hop redirects, destination 200,
+and exact tracking query preservation. Live destination canonical and 200 verified before
+deployment. No old-address internal links were found. No conflicts or rule exceptions.
+Deployment is isolated from unrelated workspace changes; rodent pages, lead endpoint,
+forms, copy and layout remain unchanged. Live redirect verification follows deployment.
