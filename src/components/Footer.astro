@@ -35,20 +35,9 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
             decoding="async"
           />
         </a>
-        {/* B2 — the geography reads "the South Bay & Peninsula". docs/27-SECTION-9-15's approved
-            tagline said "for San Jose and the South Bay & Peninsula", which named the region
-            twice in two different shapes inside one sentence and put the forbidden "and the
-            South Bay" form in the footer of all 37 routes. The rest of the line is unchanged
-            §9.15 copy. This is the NAP wording of record — it must match GBP and Yelp character
-            for character, so it is now the same string site.location.serviceArea carries. */}
-        {/* 2026-08-21. Was "Property clearing, detailed cleaning, and documented closeout for
-            the {region}." The B2 geography ruling above is untouched — the region still renders
-            from site.location.serviceArea and nothing else. What changed is the first half:
-            "property clearing" led the sitewide tagline on all 46 routes, and a closeout document
-            was one of the three things the company was described as selling. */}
+        {/* Owner-approved shared business positioning, 2026-09-19. */}
         <p class="foot__tagline">
-          Specialty property cleaning and complex cleanup for the
-          {" "}{site.location.serviceArea}.
+          {site.business.shortDescription}
         </p>
         {phoneHref && (
           <p class="foot__phone"><a href={phoneHref}>{site.business.phone}</a></p>
@@ -104,10 +93,10 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
       </nav>
 
       <p>
-        © {year} {site.business.legalName} · Aseptaclean is not a licensed general contractor,
-        remediation contractor, pest-control operator, or appraiser.
+        © {year} {site.business.legalName} · <span data-nosnippet>Aseptaclean is not a licensed general contractor,
+        remediation contractor, pest-control operator, or appraiser.</span>
       </p>
-      <p>{legal.scopeDisclaimer} {legal.documentationDisclaimer}</p>
+      <p><span data-nosnippet>{legal.scopeDisclaimer} {legal.documentationDisclaimer}</span></p>
       {termlyConsentEnabled && (
         <noscript>
           <p>

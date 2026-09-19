@@ -45,6 +45,9 @@ const termlyConsentEnabled =
 export const site = {
   business: {
     name: value("PUBLIC_BUSINESS_NAME", "Aseptaclean"),
+    // Owner-approved business positioning, 2026-09-19; see docs/05-CURRENT-DECISIONS.md.
+    shortDescription: "Aseptaclean provides biohazard remediation and specialty property cleanup throughout the South Bay and Peninsula.",
+    description: "Aseptaclean provides biohazard remediation and specialty property cleanup throughout the South Bay and Peninsula, including trauma and crime scene cleanup, hoarding cleanup, and rodent and animal waste cleanup.",
     legalName: value("PUBLIC_LEGAL_NAME", "Aseptaclean, LLC"),
     email: value("PUBLIC_EMAIL", "info@aseptaclean.com"),
     phone: rawPhone,

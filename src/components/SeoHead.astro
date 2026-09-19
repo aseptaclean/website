@@ -60,6 +60,7 @@ const graph: Array<Record<string, unknown>> = [
     "@id": businessId,
     name: site.business.name,
     legalName: site.business.legalName,
+    description: site.business.description,
     url: site.urls.site,
     email: site.business.email,
     ...(site.business.phone ? { telephone: site.business.phone } : {}),
@@ -129,5 +130,7 @@ const jsonLd = JSON.stringify({
 <meta property="og:description" content={description} />
 <meta property="og:url" content={canonical} />
 {image && <meta property="og:image" content={new URL(image, site.urls.site)} />}
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
 <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
 {structuredDataEnabled && <script is:inline type="application/ld+json" set:html={jsonLd}></script>}
