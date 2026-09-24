@@ -18,7 +18,10 @@
 //
 // The call sits above the form in DOM order so a phone visitor reaches the primary action first,
 // and the form follows the copy on mobile with nothing in between.
+import { Image } from "astro:assets";
+import type { ImageMetadata } from "astro";
 import AcActions from "@components/ac/AcActions.astro";
+import { srcsetWidths } from "@components/imageWidths";
 
 interface Props {
   id: string;
@@ -35,6 +38,16 @@ interface Props {
   /** Same-page target for the subordinate action. */
   formHref: string;
   supportingLine: string;
+  /**
+   * Right column becomes a photograph instead of the `slot="form"` content when provided.
+   * Added 2026-09-18 (Aseptaclean_Website_Design_Blueprint.md, estate campaign review): "text
+   * left, meaningful image right... one centered form near the bottom" — the working form moves
+   * out of this hero, so the column it used to fill needs a real image rather than staying empty.
+   * The one remaining consumer of this component (the estate assessment landing page) now passes
+   * this instead of a form slot; a future caller can still use the form slot by omitting `image`.
+   */
+  image?: ImageMetadata;
+  imageAlt?: string;
 }
 
 const {
@@ -48,14 +61,18 @@ const {
   primaryLabel,
   secondaryLabel,
   formHref,
-  supportingLine
+  supportingLine,
+  image,
+  imageAlt = ""
 } = Astro.props;
+
+const heroWidths = image ? srcsetWidths(image, [480, 768, 1024]) : [];
 ---
 
-<section class="est-hero" id={id} aria-labelledby={headingId}>
+<section class="est-hero ac-hero" id={id} aria-labelledby={headingId}>
   <div class="est-shell">
     <div class="est-hero__grid">
-      <div class="est-hero__copy">
+      <div class="est-hero__copy ac-hero__copy">
         <p class="est-hero__eyebrow">{eyebrow}</p>
         {/* The ONE H1 on this page. Size comes from .ac-type-h1-home; type law #1 (AGENTS.md §6)
             forbids a component declaring font-size on a heading, so nothing below touches it. */}
@@ -79,7 +96,24 @@ const {
       </div>
 
       <div class="est-hero__form">
-        <slot name="form" />
+        {image ? (
+          <Image
+            class="est-hero__image"
+            src={image}
+            alt={imageAlt}
+            width={960}
+            height={1080}
+            widths={heroWidths}
+            sizes="(min-width: 62rem) 46vw, 92vw"
+            format="webp"
+            quality={76}
+            loading="eager"
+            decoding="async"
+            fetchpriority="high"
+          />
+        ) : (
+          <slot name="form" />
+        )}
       </div>
     </div>
   </div>
@@ -97,6 +131,41 @@ const {
   .est-hero {
     padding-block: 0;
     background: var(--ac-color-warm-white);
+  }
+
+  /* SHARED HERO SIZING — docs/ASEPTACLEAN-DESIGN-SPEC.md §2.2: "The two reviewed campaign landing
+     pages use the same hero sizing rules with their route-specific composition and offer; the
+     estate split-image variant and rodent full-photo variant can differ in composition while
+     retaining the same measured opening height." Same 600/560/440px baseline as the nine public
+     marketing pages, escalated to 696/680 desktop/tablet (see AcHeroWithForm.astro's comment for
+     the full root-cause writeup). A MIN-height, not fixed — the grid below stays in normal flow,
+     so longer approved copy still grows the section.
+
+     TABLET FIX, 2026-09-18. Before this pass, this route was the one documented exception to
+     hero equality: measured 1060px at 820px tablet width against a 592px shared floor, because
+     `.est-hero__grid` (below) stacked its two-column split at `max-width: 62rem` (992px) — ABOVE
+     the spec's 768px tablet floor, so the ENTIRE 768-1023px tablet range rendered the STACKED
+     layout (copy height + gap + image height) instead of the side-by-side composition every
+     other reviewed hero uses at that width. Lowering the stacking breakpoint to 768px (see that
+     rule below) keeps the two-column split through the whole tablet range; its real two-column
+     content need at 820px measures 676px, which is why tablet's shared token is 680px (560 + 15
+     x 8px) rather than the 592px the other ten pages alone would need — this is the new binding
+     constraint, not Extreme Cleaning's hero, and 680px is still AT, not above, the spec's 680px
+     tablet ceiling. */
+  .est-hero {
+    min-height: 440px;
+  }
+
+  @media (min-width: 48rem) {
+    .est-hero {
+      min-height: 680px;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .est-hero {
+      min-height: 696px;
+    }
   }
 
   /* Refresh: 1200px container, 32px desktop padding, 20px mobile. Declared here rather than
@@ -205,9 +274,30 @@ const {
     scroll-margin-top: 90px;
   }
 
+  /* Meaningful image right, replacing the hero-embedded form (blueprint, estate campaign review).
+     4:3-ish contained plate, not a full-bleed crop — this hero stays the bright, white-surface
+     composition the refresh established, just with a photograph where the form used to sit. */
+  .est-hero__image {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 14px;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+  }
+
   /* Refresh: "On mobile: introduction, call/walkthrough buttons, then form." DOM order already
-     is exactly that, so the columns simply collapse. */
-  @media (max-width: 62rem) {
+     is exactly that, so the columns simply collapse.
+
+     STACKING THRESHOLD — was `max-width: 62rem` (992px), which put the ENTIRE 768-1023px tablet
+     range into the stacked layout (copy height + gap + image height) instead of the shared
+     592px tablet floor's side-by-side composition. Measured stacked at 820px: 1060px, nearly
+     double the shared tablet token. Lowered to the shared tablet/mobile boundary (48rem/768px,
+     docs/ASEPTACLEAN-DESIGN-SPEC.md §2.1) so the two-column split — like every other reviewed
+     hero at tablet width — persists through the whole tablet range and only stacks on mobile,
+     where content-driven height is explicitly allowed to grow (§2.2). Measured two-column at
+     820px: 664px, under the spec's 680px tablet ceiling. */
+  @media (max-width: 47.9375rem) {
     .est-hero__grid {
       gap: 32px;
       grid-template-columns: minmax(0, 1fr);

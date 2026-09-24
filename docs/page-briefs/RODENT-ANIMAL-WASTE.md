@@ -1,21 +1,40 @@
-# Rodent Droppings & Animal Waste Cleanup
+# Rodent & Animal Waste — approved public page
 
-Expected route: `/rodent-dropping-cleanup-san-jose/`. Confirm the actual canonical URL. Main source: `aseptaclean-all-website-copy.md` → `Rodent Droppings & Animal Waste Cleanup`.
+Current owner decision: 2026-09-18 approved HTML kit implementation. Canonical route confirmed:
+`/rodent-dropping-cleanup-san-jose/`. Source: `src/pages/rodent-dropping-cleanup-san-jose/index.astro`.
 
-Use the shared Header → photo-background HeroWithForm → mapped body → Footer. ClearPath PDF p28–33 controls hero and split-section composition; 911 p14–16 controls supporting reading restraint. Master spec controls all geometry.
+This scoped instruction supersedes the former source-copy placement, public rodent section matrix,
+shared hero sizing, and default CTA labels on this route only. The campaign at
+`/rodent-dropping-cleanup-san-jose/assessment/` is unchanged.
 
-| Order | Component | Exact source heading(s) |
-| --- | --- | --- |
-| 1 | Hero + opening introduction + existing nested rodent advice | Rodent Droppings & Animal Waste Cleanup |
-| 2 | White image/text: pest control and remaining conditions | Pest control handles the rodents.<br>Seeing a few droppings does not always tell you the whole story. |
-| 3 | Assessment list and source process | What we look at during an assessment<br>How Aseptaclean approaches rodent cleanup |
-| 4 | Dark image/text: affected areas | Not every rodent cleanup is the same.<br>Rodent contamination can affect more than floors. |
-| 5 | White approach and scope section | Why Aseptaclean<br>What Aseptaclean does—and what we don’t |
-| 6 | FAQ accordion | “The pest-control company already cleaned some of it. Do I still need you?”<br>“I only found a few droppings. Is this overkill?”<br>“What if there are droppings inside cabinets?”<br>“What if the rodents are still there?”<br>“Can you tell me the price from photos?” |
-| 7 | Final call section | Start with photos. |
+## Approved sources
 
-Retain the nested “Found rodent droppings? Don’t sweep or vacuum them first.” source block below the opening hero, before the next major section. Preserve any still-applicable current scope qualification; resolve the actual publication/indexation issue separately from styling. Do not add new medical advice in this design pass.
+- [Kit instructions](../START-HERE%20copy.md), read in full.
+- [Visual reference](../aseptaclean-rodent-approved.html).
+- [Exact fragment](../rodent-approved-fragment.html).
+- [Original stylesheet](../aseptaclean-rodent-approved.css).
+- [Implementation and verification record](../aseptaclean-rodent-approved/IMPLEMENTATION-PROGRESS.md).
 
-Hero paragraph placement follows 20-COPY-MAP.md. The opening-source continuation stays directly below the hero, so compactness does not delete copy. All listed source blocks and nested content are retained. Existing source action controls receive the explicit CTA display changes. Call Aseptaclean is primary; the form submits Send Message and preselects the matching existing service enum. FAQ includes full source answers.
+Keep shared public header, actual logo, six-service dropdown and footer. Within `#ac-rodent`, render
+hero → three-item trust strip → six coverage items → attics/crawl spaces → belongings → navy
+assessment band → four process steps → before-work scope → six FAQs → service area → assessment
+strip → production contact form. No new Services hub or campaign navigation entries.
 
-Use 2–4 supporting photos in substantial mapped sections, not one stock image per paragraph. Apply the real image inventory and factual checks. Never replace this page with the older generic service template from the archive.
+Belongings steps are a full-width sibling row below the text/image split, stacking at 620px.
+Before-work image stays landscape 3:2 with no minimum height; its two scope columns are below the
+split. FAQ heading is centered above a single maximum-800px accordion; first answer open.
+Use content-driven heights, exact approved copy, and existing locally served Inter typography roles.
+
+Page CTAs: `Request an Assessment` → `#rodent-form`; `Call (408) 785-7588` → central site phone URI.
+The exact supplied illustrations are authorized for this page by this owner request; describe them
+as illustrative, never completed jobs. No new image generation is authorized. Approved page-local
+coverage follows the fragment; other pages' shared coverage data is unchanged.
+
+The production `PpcHeroForm` preserves endpoint, fields, service enum, attribution, uploads, consent,
+spam protection, validation and `/thank-you/` behavior. It replaces the entire demo form, including
+its unsupported area selector and fake submission handler. Keep the existing assessment-fee
+microcopy. Required claims-law §2.3 and §3.1 disclosures remain below the before-work scope columns.
+
+Install CSS only at `src/styles/aseptaclean-rodent.css`, imported by this route. Preserve original
+cascade and final layout/contrast overrides; map heading sizing to `.ac-type-rodent-*` roles.
+Do not change shared components or deploy as part of this task.

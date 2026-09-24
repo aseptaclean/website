@@ -24,6 +24,13 @@ import AcEyebrow from "./AcEyebrow.astro";
 import { srcsetWidths } from "../imageWidths";
 
 interface Props {
+  /** Stable anchor id, e.g. the homepage's `why`/`who-we-help` sections
+   * (docs/ASEPTACLEAN-DESIGN-SPEC.md §3's stable-ID table). */
+  id?: string;
+  /** `data-section` value for the spec's §12.4 DOM measurement helper, which reads
+   * `el.dataset.section || el.id`. Pass this whenever `id` alone doesn't already match the
+   * spec's expected homepage section-array string. */
+  dataSection?: string;
   eyebrow?: string;
   heading: string;
   /** Second heading line, set in the accent colour. Same contract as AcDarkBand. */
@@ -41,9 +48,22 @@ interface Props {
   ratio?: "4/3" | "5/4" | "16/9" | "3/4";
   reverse?: boolean;
   tone?: "light" | "soft";
+  /**
+   * Column split as [textFr, imageFr]. Defaults to `[1, 1]` (50/50, every existing caller's
+   * behaviour is unchanged). Aseptaclean_Website_Design_Blueprint.md's homepage "Why Aseptaclean"
+   * and "Who We Help" sections require an explicit 45/55 text/image split — "a 45fr/55fr grid
+   * after the gap is deducted; do not use 45% + 55% + an extra gap" — so this maps directly to
+   * `grid-template-columns` fr values, no percentage arithmetic. The text column is always
+   * whichever column ends up first in reading order: with `reverse` that is the copy (DOM order
+   * 1, image ordered to 2), so `[45, 55]` + `reverse` gives text-left/image-right at 45/55 exactly
+   * as those two sections require.
+   */
+  splitFr?: readonly [number, number];
 }
 
 const {
+  id,
+  dataSection,
   eyebrow,
   heading,
   headingAccent,
@@ -56,7 +76,8 @@ const {
   needsAsset,
   ratio = "4/3",
   reverse = false,
-  tone = "light"
+  tone = "light",
+  splitFr = [1, 1]
 } = Astro.props;
 
 // Portrait keeps its own intrinsic box and a shorter ladder — a 360px-capped plate never needs a
@@ -70,15 +91,20 @@ const mediaWidths = image
 ---
 
 <section
+  id={id}
+  data-section={dataSection}
   class:list={["acx-split", `is-${tone}`, { "is-reverse": reverse, "is-copy-only": !image }]}
   aria-labelledby={headingId}
   data-needs-asset={!image ? needsAsset : undefined}
 >
   <div class="ac-shell">
-    <div class="acx-split__grid">
+    <div
+      class:list={["acx-split__grid", "ac-split"]}
+      style={`--ac-split-fr: minmax(0, ${splitFr[0]}fr) minmax(0, ${splitFr[1]}fr)`}
+    >
       {image && (
         <figure
-          class:list={["acx-split__media", { "is-portrait": isPortrait }]}
+          class:list={["acx-split__media", "ac-split__media", { "is-portrait": isPortrait }]}
           style={`--ac-split-ratio: ${ratio}`}
         >
           <Image
@@ -96,7 +122,7 @@ const mediaWidths = image
         </figure>
       )}
 
-      <div class="acx-split__copy">
+      <div class="acx-split__copy ac-split__text">
         {eyebrow && <AcEyebrow text={eyebrow} />}
         {/* The space before the accent span is load-bearing — see AcDarkBand. */}
         <h2 id={headingId} class="ac-type-h2">
@@ -121,12 +147,15 @@ const mediaWidths = image
     background: var(--ac-color-warm-white);
   }
 
-  /* doc 30 §2: "near 50/50 columns, 48-64px gap". Reference CSS `.ac-split` uses 56px. */
+  /* doc 30 §2: "near 50/50 columns, 48-64px gap". Reference CSS `.ac-split` uses 56px.
+     `--ac-split-fr` defaults every existing caller to 50/50 (`minmax(0, 1fr)` twice via the
+     fallback); a caller passing `splitFr` gets its exact fr ratio instead — see the prop comment
+     above for why this is fr values, not percentages. */
   .acx-split__grid {
     display: grid;
     align-items: center;
     gap: 56px;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: var(--ac-split-fr, minmax(0, 1fr) minmax(0, 1fr));
   }
 
   .acx-split__grid > * {

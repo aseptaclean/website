@@ -1,326 +1,66 @@
 ---
-// HOMEPAGE — docs/page-briefs/HOME.md, under doc 30 §5 "Page architecture".
-// Composition from docs/reference/clearpath-911-visual-reference.pdf p23–27 and 911 p3–4/p8.
-// Copy from docs/aseptaclean-all-website-copy.md via docs/20-COPY-MAP.md.
-//
-// BRIEF ORDER (HOME.md), one component per row:
-//   1  SiteHeader                  BaseLayout
-//   2  HeroWithForm                AcHeroWithForm
-//   3  Verified trust row          AcTrustStrip
-//   4  White image/text intro      AcSplit        "Some properties need more than cleaning."
-//   5  Five-service photo grid     AcServiceCards "What are you dealing with?" + card excerpts
-//   6  Dark image/text scope       AcDarkBand     "You should know what you are paying us…"
-//   7  Compact five-step process   AcSteps        "How it starts" — five steps, not four
-//   8  Founder split               AcSplit        "Why Aseptaclean"
-//   9  Verified service area       AcIntro        verified city list, no invented counties
-//  10  FAQ                         FaqAccordion   the complete source question set
-//  11  Final call section          AcFinalCta     "You do not need to know exactly what kind…"
-//  12  SiteFooter                  BaseLayout
-//
-// EXPLICIT HOMEPAGE OMISSIONS — docs/20-COPY-MAP.md "Homepage selection". These source sections
-// are deliberately NOT rendered here, and must not be re-added because the source has more
-// headings: "Show us the condition first."; "We do not pretend every problem belongs to us.";
-// "Real trust starts with clear expectations."; "Who calls Aseptaclean?"; "What affects the
-// cost?" Their text is untouched in the source file, and the scope/process/cost detail lives on
-// the service and hub pages.
+// Homepage-only kit v1.2. Wording: kit/01-APPROVED-COPY.md; visual: reference/home-preview.html.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import AcHeroWithForm from "@components/ac/AcHeroWithForm.astro";
-import AcTrustStrip from "@components/ac/AcTrustStrip.astro";
-import AcIntro from "@components/ac/AcIntro.astro";
-import AcServiceCards from "@components/ac/AcServiceCards.astro";
-import AcSplit from "@components/ac/AcSplit.astro";
-import AcDarkBand from "@components/ac/AcDarkBand.astro";
-import AcSteps from "@components/ac/AcSteps.astro";
-import AcCheckList from "@components/ac/AcCheckList.astro";
-import AcFinalCta from "@components/ac/AcFinalCta.astro";
-import FaqAccordion from "@components/FaqAccordion.astro";
-import { home } from "@data/publicCopy";
-import { legal, site } from "@data/site";
-
-// IMAGERY — docs/06-ASSET-MANIFEST.md, owner image package installed 2026-09-05.
-// Slots follow that package's README-ASSET-MAP.md and aseptaclean-image-placement-guide.md
-// placement index: 01 hero, 02 introduction, 03/06/09/13/15 the five service cards, 18 the dark
-// scope section. The numbered files are ORIGINAL ILLUSTRATIVE images, not company job
-// documentation. That provenance is recorded in the asset manifest, not printed on the page:
-// the visitor-facing reference captions were removed 2026-09-05 at the owner's instruction, so
-// no section is captioned at all. Nothing here is labelled as Aseptaclean project work.
-// No two adjacent sections share a photograph.
-//
-// The founder portrait is the only genuine company asset on this page: a real photograph of
-// Matthew Ruiz supplied by the owner.
-import heroNeglectedInterior from "../assets/aseptaclean/home-hero-neglected-interior.png";
-import propertyIntroduction from "../assets/aseptaclean/property-interior-introduction.png";
-import hoardingLivingRoom from "../assets/aseptaclean/hoarding-living-room.png";
-import extremeKitchen from "../assets/aseptaclean/extreme-cleaning-neglected-kitchen.png";
-import deepCleaningKitchen from "../assets/aseptaclean/detailed-deep-cleaning-kitchen.png";
-import traumaContext from "../assets/aseptaclean/trauma-residential-context.png";
-import rodentUtilityRoom from "../assets/aseptaclean/rodent-utility-room-context.png";
-import propertyScopeDetail from "../assets/aseptaclean/home-property-scope-detail.png";
-import founderPortrait from "../assets/aseptaclean/founder-matthew-ruiz.jpeg";
-
-// Card images, indexed against the SITEMAP-MASTER service order the copy data already uses:
-// Hoarding · Extreme Cleaning · Detailed Deep Cleaning · Crime Scene & Trauma · Rodent.
-// Each card now carries its own service's main package image (guide 03, 06, 09, 13, 15) rather
-// than a subject-adjacent stand-in, so the card and the page it links to open on the same scene.
-const cardMedia = [
-  {
-    image: hoardingLivingRoom,
-    alt: "A living room where boxes, textiles and household belongings cover the sofa and floor, leaving a narrow walkway"
-  },
-  {
-    image: extremeKitchen,
-    alt: "A neglected kitchen with heavy grease buildup around the stove and grime along the floor edges"
-  },
-  {
-    image: deepCleaningKitchen,
-    alt: "An everyday residential kitchen with light grease around the cooking area and dust along the edges"
-  },
-  {
-    image: traumaContext,
-    alt: "A quiet, unoccupied residential room with plain flooring and an open doorway"
-  },
-  {
-    image: rodentUtilityRoom,
-    alt: "A residential utility room with a low shelf, cardboard boxes and a small scattering of rodent droppings near the wall"
-  }
+import AcCompactForm from "@components/ac/AcCompactForm.astro";
+import HomeHeader from "@components/home/HomeHeader.astro";
+import HomeFooter from "@components/home/HomeFooter.astro";
+import HomeIcon from "@components/home/HomeIcon.astro";
+import AssignedPhoto from "@components/ac/AssignedPhoto.astro";
+import { homeKitServices } from "@data/homeKit";
+import { site } from "@data/site";
+import homeHero from "../assets/aseptaclean/public-pages/home/01-home-hero-garage-cleanup.webp";
+import homeWhy from "../assets/aseptaclean/public-pages/home/02-home-why-aseptaclean-tablet.webp";
+import homeWho from "../assets/aseptaclean/public-pages/home/03-home-who-we-help-walkthrough.webp";
+import "@styles/home-kit.css";
+import "@styles/hero-consistency.css";
+import "@styles/assigned-photos.css";
+const existingSchemaDescriptions = [
+  "Structured cleanup for hoarding conditions, with care for your belongings.",
+  "Detailed cleaning for heavily soiled and neglected properties.",
+  "Focused cleaning of buildup, edges, and hard-to-reach surfaces.",
+  "Discreet cleanup after a crime scene or traumatic event.",
+  "Cleaning of accepted residual waste after active pest issues are resolved.",
+  "Careful sorting, approved removal, and cleaning of estate contents."
 ];
-
-const serviceCards = home.serviceCards.map((card, index) => ({
-  title: card.title,
-  description: card.description,
-  href: card.href,
-  image: cardMedia[index]?.image,
-  imageAlt: cardMedia[index]?.alt ?? ""
-}));
-
-// The service-area FAQ answer is rebuilt from verified data rather than transcribed — the
-// source answer names "Santa Clara County", which docs/02-CURRENT-FACTS.md rejects because the
-// footprint includes Atherton (San Mateo County). See docs/20-COPY-MAP.md.
-const faqItems = [
-  ...home.faq,
-  {
-    question: "What areas do you serve?",
-    answer: `Aseptaclean serves the ${site.location.serviceArea}, including ${site.location.cities.slice(0, -1).join(", ")}, and ${site.location.cities.at(-1)}. Contact us with the property location and we will confirm whether it falls within our current service area.`
-  }
-];
-
-const serviceSchemas = home.serviceCards.map((card) => ({
-  "@type": "Service",
-  serviceType: card.title,
-  description: card.description,
+const schema = homeKitServices.map((card, index) => ({
+  "@type": "Service", serviceType: card.label, description: existingSchemaDescriptions[index],
   url: new URL(card.href, site.urls.site).href,
   provider: { "@id": new URL("/#business", site.urls.site).href },
-  areaServed: site.location.cities.map((name) => ({ "@type": "City", name }))
+  areaServed: site.location.cities.map(name => ({ "@type": "City", name }))
 }));
-
-// FAQPage JSON-LD describes the visible accordion below and is sourced from the same array, so
-// schema and rendered copy cannot drift.
-const faqSchema = {
-  "@type": "FAQPage",
-  mainEntity: faqItems.map((item) => ({
-    "@type": "Question",
-    name: item.question,
-    acceptedAnswer: { "@type": "Answer", text: item.answer }
-  }))
-};
-
-const schema = [...serviceSchemas, faqSchema];
 ---
+<BaseLayout title="Aseptaclean | Biohazard Remediation & Specialty Property Cleanup"
+ description="Aseptaclean provides biohazard remediation and specialty property cleanup in San Jose and surrounding areas, including trauma, hoarding, and rodent waste cleanup."
+ canonicalPath="/" schema={schema} showMobileCta={false} homeKit>
+ <HomeHeader slot="header" />
+ <HomeFooter slot="footer" />
 
-<BaseLayout
-  title="Specialty Property Cleanup in San Jose | Aseptaclean"
-  description="Hoarding cleanup, extreme cleaning, detailed deep cleaning, crime scene and trauma cleanup, and rodent droppings and animal waste cleanup for properties that need more than a normal cleaning company. Serving the South Bay & Peninsula."
-  canonicalPath="/"
-  schema={schema}
->
-  {/* 2 */}
-  <AcHeroWithForm
-    eyebrow={home.hero.eyebrow}
-    heading={home.hero.heading}
-    headingId="home-hero-title"
-    body={home.hero.body}
-    image={heroNeglectedInterior}
-    imageAlt="A modest living room with a worn sofa, cardboard boxes, scattered papers and a layer of household dust"
-    trustLine={`Owner-operated · Serving the ${site.location.serviceArea}`}
-    formId="hero-form"
-    route="/"
-  />
+<section class="hero" id="hero"><span id="ac-top" class="legacy-anchor" aria-hidden="true"></span><AssignedPhoto src={homeHero} alt="Protective-clothed technician cleaning a garage workbench." kind="hero" position="center 58%" /><div class="wrap"><div class="hero-copy"><p class="eyebrow">ASEPTACLEAN · SOUTH BAY &amp; PENINSULA</p><h1 class="ac-type-home-h1"><span class="ac-heading-line">Specialized Property Cleanup.</span> <span class="ac-heading-line">A Clear Path Forward.</span></h1><p class="body">Biohazard remediation, estate cleanouts, and specialty cleaning for homes and businesses. Tell us what needs attention. We’ll explain how we can help.</p><div class="actions"><a class="action light" href="#home-contact">Request an Assessment <HomeIcon name="arrow-up-right" /></a><a class="action outline" href={site.business.phoneUri}>Call {site.business.phone}</a></div></div></div></section>
+<div class="wrap"><div class="trust"><div><HomeIcon name="shield-check" /><div><strong>CDPH Registered</strong><span>Trauma Scene Waste · TSW 933</span></div></div><div><HomeIcon name="user-round-check" /><div><strong>Owner-Operated</strong><span>Speak directly with the owner</span></div></div><div><HomeIcon name="clipboard-check" /><div><strong>Written Plan &amp; Price</strong><span>Review the work before it starts</span></div></div></div></div>
+<section class="section" id="ac-why"><span id="why" class="legacy-anchor" aria-hidden="true"></span><div class="wrap why-layout"><div class="why-heading"><p class="eyebrow">Why Aseptaclean</p><h2 class="ac-type-home-h2"><span class="ac-heading-line">Careful Work.</span> <span class="ac-heading-line">Clear Steps.</span></h2></div><div class="why-copy"><p>Before founding Aseptaclean, Matthew Ruiz worked in surgical pathology at Stanford Health Care and pharmaceutical manufacturing at BioMarin. His work required careful handling, contamination control, and accurate records.</p><p>He brings those habits to Aseptaclean: follow written steps, pay attention to what is being handled, and document the work.</p></div><AssignedPhoto src={homeWhy} alt="Black-gloved professional reviewing a property assessment on a tablet." class="why-photo" position="center 54%" /><ul class="checks why-points"><li><HomeIcon name="check" /><span><strong>Careful handling:</strong> Discuss your belongings and what needs to stay, go, or be reviewed.</span></li><li><HomeIcon name="check" /><span><strong>Clear steps:</strong> Review the cleanup plan and price before work begins.</span></li><li><HomeIcon name="check" /><span><strong>Written records:</strong> Receive the agreed documentation of the completed work.</span></li></ul><div class="actions why-action"><a class="action" href="#home-contact">Request an Assessment <HomeIcon name="arrow-right" /></a></div></div></section>
+<section class="section warm" id="ac-services"><span id="services" class="legacy-anchor" aria-hidden="true"></span><div class="wrap"><div class="section-top"><div><p class="eyebrow">Our services</p><h2 class="ac-type-home-h2">Specialized help for your property.</h2></div><p>Find help for the condition you’re facing, from a single room to a full property cleanout.</p></div><div class="services">{homeKitServices.map(service => (
+  <a class="tile" href={service.href}>
+    {service.image && service.imageAlt
+      ? <AssignedPhoto src={service.image} alt={service.imageAlt} kind="card" />
+      : <div class:list={["photo", service.photo]} aria-hidden="true"></div>}
+    <div class="label"><h3 class="ac-type-home-h3 ac-type-home-card">{service.label}<HomeIcon name="arrow-up-right" /></h3><p>{service.description}</p></div>
+  </a>
+))}</div></div></section>
+<section class="section" id="ac-who"><span id="who-we-help" class="legacy-anchor" aria-hidden="true"></span><div class="wrap split"><div class="audience-heading"><p class="eyebrow">Who we help</p><h2 class="ac-type-home-h2"><span>Help for the people responsible.</span></h2></div><div><div class="audience"><div><HomeIcon name="house" /><div><h3 class="ac-type-home-h3 ac-type-home-audience">Homeowners &amp; Families</h3><p>Get help with a difficult cleanup while keeping a say in what happens to your belongings.</p></div></div><div><HomeIcon name="file-check" /><div><h3 class="ac-type-home-h3 ac-type-home-audience">Executors &amp; Trustees</h3><p>Arrange property clearing with agreed sorting, inventory, and documentation for your records.</p></div></div><div><HomeIcon name="key-round" /><div><h3 class="ac-type-home-h3 ac-type-home-audience">Property Managers &amp; Landlords</h3><p>Address cleanup needs before preparing a property for its next use.</p></div></div><div><HomeIcon name="building-2" /><div><h3 class="ac-type-home-h3 ac-type-home-audience">Businesses &amp; Facilities</h3><p>Coordinate the cleanup around site access, your requirements, and the agreed work.</p></div></div></div></div><AssignedPhoto src={homeWho} alt="Two people reviewing a furnished home, viewed from behind." position="center 42%" /></div></section>
+<section class="band" id="cta-mid"><div class="wrap"><div><p class="eyebrow" style="color:#b7d0e3">Start with a conversation</p><h2 class="ac-type-home-h2 ac-type-home-band">Not sure where to start?</h2><p>Describe the condition, even if you’re unsure which service you need. We’ll ask questions and explain the next step.</p></div><a class="action light" href="#home-contact">Request an Assessment <HomeIcon name="arrow-right" /></a></div></section>
+<section class="section" id="ac-process"><span id="process" class="legacy-anchor" aria-hidden="true"></span><div class="wrap"><p class="eyebrow">Our process</p><h2 class="ac-type-home-h2">A clear plan from first call to finish.</h2><ol class="steps"><li class="step"><b>01</b><h3 class="ac-type-home-h3 ac-type-home-step">Contact Us</h3><p>Tell us what happened, where the property is, and what you need help with.</p></li><li class="step"><b>02</b><h3 class="ac-type-home-h3 ac-type-home-step">Review Your Plan</h3><p>We assess the property and explain the work and price for your approval.</p></li><li class="step"><b>03</b><h3 class="ac-type-home-h3 ac-type-home-step">Complete the Work</h3><p>We carry out the agreed cleanup and keep you updated on progress.</p></li><li class="step"><b>04</b><h3 class="ac-type-home-h3 ac-type-home-step">Review &amp; Document</h3><p>We review the completed work with you and provide the agreed documentation.</p></li></ol></div></section>
+<section class="section warm" id="ac-area"><span id="service-area" class="legacy-anchor" aria-hidden="true"></span><div class="wrap coverage"><div class="coverage-heading"><p class="eyebrow">Local service</p><h2 class="ac-type-home-h2">South Bay and Peninsula.</h2></div><div class="coverage-intro"><p>Serving homes and businesses in Santa Clara County and San Mateo County. Share the property’s location and cleanup needs so we can confirm availability.</p></div><div class="coverage-county"><h3 class="ac-type-home-h3 ac-type-home-county">Santa Clara County</h3><ul class="county-cities"><li>Campbell</li><li>Cupertino</li><li>Gilroy</li><li>Los Altos</li><li>Los Altos Hills</li><li>Los Gatos</li><li>Milpitas</li><li>Monte Sereno</li><li>Morgan Hill</li><li>Mountain View</li><li>Palo Alto</li><li>San Jose</li><li>Santa Clara</li><li>Saratoga</li><li>Sunnyvale</li></ul></div><div class="coverage-county"><h3 class="ac-type-home-h3 ac-type-home-county">San Mateo County</h3><ul class="county-cities"><li>Atherton</li><li>Belmont</li><li>Brisbane</li><li>Burlingame</li><li>Colma</li><li>Daly City</li><li>East Palo Alto</li><li>Foster City</li><li>Half Moon Bay</li><li>Hillsborough</li><li>Menlo Park</li><li>Millbrae</li><li>Pacifica</li><li>Portola Valley</li><li>Redwood City</li><li>San Bruno</li><li>San Carlos</li><li>San Mateo</li><li>Woodside</li></ul></div><p class="coverage-note"><strong>Outside these cities?</strong><br/>Send the property’s ZIP code and tell us what needs cleanup. We’ll confirm whether we can help.</p></div></section>
+<section class="quiet" id="cta-close"><div class="wrap"><div><h2 class="ac-type-home-h2 ac-type-home-quiet">Let’s make a plan for your property.</h2><p>Tell us what needs to happen next. We’ll discuss the cleanup needed to get you there.</p></div></div></section>
+<section class="section" id="ac-form"><span id="contact" class="legacy-anchor" aria-hidden="true"></span><span id="home-contact" class="legacy-anchor" aria-hidden="true"></span><div class="wrap"><div class="formwrap"><p class="eyebrow">Request an assessment</p><h2 id="hero-form-title" class="ac-type-home-h2 center">Tell us what needs cleanup.</h2><p>Describe the condition and what you need help with. A short description is enough to start.</p><AcCompactForm formId="hero-form" entryRoute="/#hero-form" preselectRoute="/" tone="light" headingId="hero-form-title" homepage kit /></div></div></section>
 
-  {/* 3 — verified facts only. "Insured" renders only when a current COI is recorded; TSW #933
-      is not published here (AGENTS.md §3 limits it to the trauma route and its cross-links). */}
-  <AcTrustStrip />
-
-  {/* 4 */}
-  <AcSplit
-    eyebrow="01 / The difference"
-    heading={home.intro.heading}
-    headingAccent={home.intro.headingAccent}
-    headingId="home-intro-title"
-    body={home.intro.body}
-    pullQuote={home.intro.pullQuote}
-    image={propertyIntroduction}
-    imageAlt="An unfurnished residential interior looking from the living room toward an adjoining hallway"
-  />
-
-  {/* 5 */}
-  <AcIntro
-    eyebrow="02 / What we handle"
-    heading={home.doorsIntro.heading}
-    headingId="home-services-title"
-    lead={home.doorsIntro.lead}
-    body={home.doorsIntro.body}
-    tone="soft"
-  >
-    <div class="home-services">
-      <AcServiceCards cards={serviceCards} layout="five" />
-    </div>
-  </AcIntro>
-
-  {/* 6 */}
-  <AcDarkBand
-    eyebrow="03 / Scope"
-    heading={home.scope.heading}
-    headingId="home-scope-title"
-    lead={home.scope.lead}
-    body={home.scope.body}
-    pullQuote={home.scope.pullQuote}
-    image={propertyScopeDetail}
-    imageAlt="A residential room with a worn chair, stacked boxes and visible dirt along the floor edges"
-  >
-    <div class="home-scope-list">
-      <AcCheckList items={home.scopeQuestions} tone="quiet" compact />
-    </div>
-  </AcDarkBand>
-
-  {/* 7 — five steps. doc 30 §4: "Process: five steps where the main copy has five." */}
-  <AcIntro
-    eyebrow="04 / How it starts"
-    heading="How it starts"
-    headingId="home-process-title"
-    tone="soft"
-  >
-    <div class="home-steps">
-      <AcSteps steps={home.steps} />
-    </div>
-  </AcIntro>
-
-  {/* 8 — founder. THE MISSING ASSET IS NO LONGER MISSING. The owner supplied a real photograph
-      of Matthew Ruiz on 2026-09-05, so this split now renders its media column instead of
-      collapsing to one readable column with a recorded `needsAsset`. It is a genuine company
-      asset, not illustration, so it carries NO illustrative caption — that disclosure exists to
-      stop a visitor reading a generated interior as documentation of a job, and applying it to
-      a real founder portrait would say the opposite of the truth.
-      Portrait 3:4, contained plate — see the portrait note in AcSplit. */}
-  <AcSplit
-    eyebrow="05 / Why Aseptaclean"
-    heading={home.why.heading}
-    headingId="home-founder-title"
-    lead={`${home.why.lead} ${site.founder.name} is ${site.founder.title}.`}
-    body={home.why.body}
-    pullQuote={home.why.pullQuote}
-    image={founderPortrait}
-    imageAlt="Matthew Ruiz, founder of Aseptaclean"
-    ratio="3/4"
-  >
-    {home.why.close.map((paragraph) => <p class="home-founder__body">{paragraph}</p>)}
-    {/* Mandatory wherever the founder's background appears — docs/02-CURRENT-FACTS.md. */}
-    <p class="home-founder__limit">{legal.founderAuthorityLimit}</p>
-  </AcSplit>
-
-  {/* 9 — verified service area. The real city list, not a directory of city buttons and not a
-      county promise the business has not verified (docs/02-CURRENT-FACTS.md "Geography"). */}
-  <AcIntro
-    eyebrow="06 / Service area"
-    heading={`Serving the ${site.location.serviceArea}`}
-    headingId="home-area-title"
-    lead="Contact us with the property location and we will confirm whether it falls within our current service area."
-  >
-    <ul class="home-cities">
-      {site.location.cities.map((city) => <li>{city}</li>)}
-    </ul>
-  </AcIntro>
-
-  {/* 10 */}
-  <AcIntro
-    eyebrow="07 / Questions"
-    heading="Frequently asked questions"
-    headingId="home-faq-title"
-    tone="soft"
-  >
-    <div class="home-faq">
-      <FaqAccordion items={faqItems} headingId="home-faq-title" />
-    </div>
-  </AcIntro>
-
-  {/* 11 */}
-  <AcFinalCta heading={home.final.heading} body={home.final.body} />
 </BaseLayout>
-
-<style>
-  .home-services,
-  .home-steps {
-    margin-top: 40px;
-    text-align: left;
-  }
-
-  .home-scope-list {
-    margin-top: 22px;
-  }
-
-  .home-founder__body {
-    margin: 14px 0 0;
-    color: var(--ac-color-ink-600);
-    font-size: var(--ac-text-body);
-    line-height: 1.65;
-  }
-
-  .home-founder__limit {
-    margin: 22px 0 0;
-    border-left: 2px solid var(--ac-color-line-strong);
-    padding-left: 18px;
-    color: var(--ac-color-ink-500);
-    font-size: 0.9375rem;
-    line-height: 1.6;
-  }
-
-  .home-cities {
-    display: grid;
-    max-width: 60rem;
-    margin: 36px auto 0;
-    padding: 0;
-    list-style: none;
-    gap: 1px;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    /* The 1px gap over a rule-coloured background draws the grid lines — no per-cell borders,
-       so no doubled rules where cells meet. Quiet, and not a row of city buttons. */
-    background: var(--ac-color-line);
-    border: 1px solid var(--ac-color-line);
-  }
-
-  .home-cities li {
-    max-width: none;
-    padding: 15px 12px;
-    background: var(--ac-color-paper);
-    color: var(--ac-color-navy-900);
-    font-size: 0.9375rem;
-    font-weight: 600;
-    text-align: center;
-  }
-
-  .home-faq {
-    margin: 34px auto 0;
-    text-align: left;
-  }
-
-  @media (max-width: 62rem) {
-    .home-cities {
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-    }
-  }
-
-  @media (max-width: 44rem) {
-    .home-cities {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
-  }
-</style>
+<script>
+const root = document.querySelector("#ac-home-locked-mockup");
+root?.querySelectorAll<HTMLAnchorElement>('a[href="#home-contact"]').forEach(link => link.addEventListener("click", event => {
+ event.preventDefault();
+ history.pushState(null, "", link.hash);
+ document.querySelector("#ac-form")?.scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth",block:"start"});
+ const field = document.querySelector<HTMLInputElement>("#hero-form-name");
+ field?.focus({preventScroll:true});
+}));
+</script>

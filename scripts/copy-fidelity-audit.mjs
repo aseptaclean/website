@@ -132,43 +132,32 @@ const PLACEMENT = {
       "Not sure whether you need detailed deep cleaning?"
     ]
   ],
-  // REBUILT 2026-09-16 on docs/Aseptaclean_Rodent_Service_Page_Copy.md, which replaced this
-  // route's entire copy source (see docs/05-CURRENT-DECISIONS.md, 2026-09-16). The list below is
-  // that file's own headings, not docs/aseptaclean-all-website-copy.md's — the old mapped blocks
-  // are the superseded copy and are expected to be absent, not a fidelity failure. One heading is
-  // deliberately NOT listed: "Disinfect surfaces that can be treated." was dropped from the page
-  // entirely as a claims-check fix (doc 21 §2.2 bans "disinfect" as an outcome claim outright),
-  // so its absence is correct and must not be reintroduced by "fixing" this list.
-  //
-  // Pricing/assessment block updated 2026-09-17 on docs/Aseptaclean_Rodent_Pages_Layout_Brief.md
-  // (docs/05-CURRENT-DECISIONS.md, 2026-09-17), which restructured the pricing cards — title,
-  // "Starting at" label, and price now render as separate text nodes, no longer one combined
-  // "Title — starts at $X" string, and the section heading and assessment strip both changed
-  // wording. The four strings below are what `RodentPricing.astro` actually renders now.
+  // 2026-09-18: the approved HTML kit replaces the former public-page body only.
+  // Source: docs/rodent-approved-fragment.html; campaign fixture stays independent.
   "/rodent-dropping-cleanup-san-jose/": [
     "dist/rodent-dropping-cleanup-san-jose/index.html",
     [
-      "Rodent Dropping Cleanup in San Jose",
-      "Different spaces need different cleanup plans.",
-      "Kitchen cabinets, drawers, and pantries",
-      "Garages and storage spaces",
-      "Closets, furniture, and living areas",
-      "Several rooms or heavy rodent waste",
-      "What can you keep?",
-      "How we handle the cleanup.",
-      "Plan the work area.",
-      "Remove waste and soiled materials.",
-      "Review the work with you.",
-      "What we look at during a property assessment.",
-      "Know where pricing starts.",
-      "Small-area cleanup",
-      "Larger cleanup jobs",
-      "On-site assessment · $145",
-      "What if rodents are still getting in?",
-      "Meet Matthew, the owner.",
-      "Questions before you book.",
-      "Serving San Jose, the South Bay, and the Peninsula.",
-      "Tell us what you found."
+      "Take Back Your Space.", "Leave the Cleanup to Us.",
+      "Written Plan & Price", "Owner-Operated", "Beyond the Living Space",
+      "Where we help", "Kitchens & Cabinets", "Garages & Storage", "Living Spaces",
+      "Attics", "Crawl Spaces", "Belongings & Contents",
+      "The cleanup includes", "the spaces out of sight.",
+      "Affected insulation removal, when needed",
+      "We remove insulation. We do not install replacement insulation or provide pest control.",
+      "Your belongings matter", "Clear decisions.", "No guesswork about your things.",
+      "Review what is affected", "Agree on the next step", "Put the scope in writing",
+      "Not sure how much needs cleaning?", "A clear plan from first call to finish.",
+      "Tell Us What You Found", "Review the Scope", "Complete the Cleanup", "Review the Work",
+      "Before work begins", "Know what’s included.", "Know what comes next.",
+      "Cleanup & Removal", "Separate Services",
+      "Cleaning only — not a decontamination, sterilization, or health-safety determination.",
+      "Aseptaclean does not inspect for, identify, exclude, trap, or treat pests.",
+      "Common questions", "A few things you may be wondering.",
+      "Do you clean attics and crawl spaces?", "Can you remove affected insulation?",
+      "Do you provide pest control?", "Will everything need to be thrown away?",
+      "How much will the cleanup cost?", "Can I send photos first?",
+      "Let’s make a plan for your property.", "Tell us what needs cleanup.",
+      "Request an Assessment", "Call (408) 785-7588"
     ]
   ],
   // NEW ROUTE, 2026-09-16, on docs/Aseptaclean_Rodent_Landing_Page_Copy.md. See
@@ -176,8 +165,8 @@ const PLACEMENT = {
   // the same?" is deliberately absent — that FAQ item was dropped in full as the same claims-check
   // fix (doc 21 §2.2), including its EPA link.
   //
-  // Pricing/assessment block updated 2026-09-17 — see the sibling comment above; identical
-  // restructure, shared `RodentPricing.astro` component.
+  // Campaign pricing/assessment block updated 2026-09-17 via RodentPricing.astro.
+  // The later public-page kit does not change this campaign.
   "/rodent-dropping-cleanup-san-jose/assessment/": [
     "dist/rodent-dropping-cleanup-san-jose/assessment/index.html",
     [
@@ -253,7 +242,10 @@ const HOMEPAGE_OMISSIONS = [
 const failures = [];
 const notes = [];
 
+// Optional focused run; default still audits every route.
+const requestedRoutes = process.env.ROUTES?.split(",").filter(Boolean);
 for (const [route, [file, blocks]] of Object.entries(PLACEMENT)) {
+  if (requestedRoutes && !requestedRoutes.includes(route)) continue;
   const text = textOf(await readFile(file, "utf8"));
   const missing = blocks.filter((block) => !text.includes(norm(block)));
   if (missing.length) {
@@ -264,10 +256,13 @@ for (const [route, [file, blocks]] of Object.entries(PLACEMENT)) {
   }
 
   for (const [phrase, why] of BANNED_EVERYWHERE) {
+    // The latest owner kit explicitly restores this label on the public rodent page only.
+    if (phrase === "Request an Assessment" && route === "/rodent-dropping-cleanup-san-jose/") continue;
     if (text.includes(phrase)) failures.push(`${route}: contains "${phrase}" — ${why}`);
   }
 }
 
+if (!requestedRoutes || requestedRoutes.includes("/")) {
 const homepageText = textOf(await readFile("dist/index.html", "utf8"));
 const leaked = HOMEPAGE_OMISSIONS.filter((section) => homepageText.includes(norm(section)));
 if (leaked.length) {
@@ -275,6 +270,8 @@ if (leaked.length) {
   leaked.forEach((section) => failures.push(`    - ${section}`));
 } else {
   notes.push(`PASS / — all ${HOMEPAGE_OMISSIONS.length} explicit homepage omissions absent`);
+}
+
 }
 
 // The source documents are never edited. Confirm the omitted text still exists in the source.

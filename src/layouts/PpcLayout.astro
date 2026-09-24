@@ -30,6 +30,10 @@ import "@styles/global.css";
 import interFontUrl from "../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
 
 interface Props {
+  /** Scoped estate editorial kit; other campaigns retain their existing shell. */
+  estateLandingKit?: boolean;
+  /** Rodent campaign editorial kit; opt-in only. */
+  rodentLandingKit?: boolean;
   title: string;
   description: string;
   canonicalPath: string;
@@ -38,10 +42,14 @@ interface Props {
   stickyHeroSelector: string;
   stickyFormHref: string;
   stickySecondaryLabel: string;
+  /** Opt-in for bottom-form campaigns: do not cover the form or its consent with the sticky bar. */
+  stickyHideWhileFormVisible?: boolean;
   /** Illustrative-photography disclosure, rendered in the footer rather than in the hero. */
 }
 
 const {
+  estateLandingKit = false,
+  rodentLandingKit = false,
   title,
   description,
   canonicalPath,
@@ -49,6 +57,7 @@ const {
   stickyHeroSelector,
   stickyFormHref,
   stickySecondaryLabel,
+  stickyHideWhileFormVisible = false,
 } = Astro.props;
 
 const termlyConsent = site.integrations.termly;
@@ -94,18 +103,19 @@ const effectiveNoindex = noindex || hiddenFromLaunch;
       structuredDataEnabled={!hiddenFromLaunch}
     />
   </head>
-  <body class="ac-ppc">
+  <body class="ac-ppc" id={rodentLandingKit ? "ac-rodent-editorial" : estateLandingKit ? "ac-inherited-estate" : undefined}>
     <AnalyticsNoscript />
     <a class="skip-link" href="#main-content">Skip to main content</a>
-    <PpcHeader />
+    <slot name="header"><PpcHeader /></slot>
     <main id="main-content" tabindex="-1">
       <slot />
     </main>
-    <PpcFooter />
+    <slot name="footer"><PpcFooter /></slot>
     <PpcStickyBar
       heroSelector={stickyHeroSelector}
       formHref={stickyFormHref}
       secondaryLabel={stickySecondaryLabel}
+      hideWhileFormVisible={stickyHideWhileFormVisible}
     />
     <Analytics />
   </body>

@@ -275,6 +275,8 @@ const endpointAvailable = Boolean(
 }
 
 <script>
+  import { storeAcceptedInquiryReceipt } from "../scripts/acceptedInquiryReceipt";
+
   type FormControl = HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
 
   interface ValidationIssue {
@@ -776,17 +778,8 @@ const endpointAvailable = Boolean(
       try {
         const { status, payload } = await submitWithProgress();
         if (status >= 200 && status < 300 && payload.ok === true) {
-          const code = typeof payload.confirmationCode === "string" ? payload.confirmationCode : "";
-          const callbackWindow =
-            typeof payload.callbackWindow === "string" ? payload.callbackWindow : "next-business-window";
-          const parameters = new URLSearchParams({
-            received: "1",
-            callback: callbackWindow,
-            email: payload.confirmationEmailSent === true ? "sent" : "attention"
-          });
-          if (isResidenceOffer) parameters.set("offer", "private-residence-reset");
-          if (code) parameters.set("code", code);
-          window.location.assign(`/thank-you/?${parameters.toString()}`);
+          storeAcceptedInquiryReceipt(payload);
+          window.location.assign("/thank-you/");
           return;
         }
 

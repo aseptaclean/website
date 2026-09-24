@@ -4,6 +4,8 @@ Expected route: `/crime-scene-trauma-cleanup-san-jose/`. Source: `aseptaclean-cr
 
 Use shared Header → photographic HeroWithForm → mapped body → Footer. Reference ClearPath PDF p28–33.
 
+**Superseded 2026-09-17** — the hero no longer embeds the form (owner decision; see AGENTS.md "Hero-form scope" and `docs/05-CURRENT-DECISIONS.md`, 2026-09-17). Read "HeroWithForm" above as the same hero photograph/overlay/copy composition with `showForm={false}`; the working form now sits in its own contact section near the bottom of the page, reusing this page's `finalHeading`/`finalBody` (the "Final call section" row below) as that section's introduction. The §3.1 stacked-hero focal-point exception for this route (doc 30) is unchanged.
+
 | Order | Component | Exact source heading(s) |
 | --- | --- | --- |
 | 1 | Hero and opening continuation | Crime Scene & Trauma Cleanup; Professional cleanup after a traumatic event. |

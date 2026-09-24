@@ -1,0 +1,228 @@
+---
+import { launchServiceLinks } from "@data/launchArchitecture";
+
+interface Props {
+  id: string;
+  mobile?: boolean;
+}
+
+const { id, mobile = false } = Astro.props;
+const panelId = `${id}-services-panel`;
+const triggerId = `${id}-services-trigger`;
+
+const normalizePath = (value: string) => {
+  const path = value.split(/[?#]/, 1)[0] || "/";
+  return path === "/" ? "/" : `/${path.replace(/^\/+|\/+$/g, "")}/`;
+};
+const currentPath = normalizePath(Astro.url.pathname);
+---
+
+<div class:list={["public-services-menu", { "public-services-menu--mobile": mobile }]} data-service-disclosure>
+  <button
+    id={triggerId}
+    class="public-services-menu__trigger"
+    type="button"
+    aria-expanded="false"
+    aria-controls={panelId}
+    data-service-disclosure-trigger
+  >
+    <span>Services</span>
+    <svg aria-hidden="true" viewBox="0 0 10 6" width="10" height="6">
+      <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </button>
+  <div
+    id={panelId}
+    class="public-services-menu__panel"
+    aria-labelledby={triggerId}
+    data-service-disclosure-panel
+    hidden
+  >
+    {launchServiceLinks.map((service) => (
+      <a href={service.href} aria-current={normalizePath(service.href) === currentPath ? "page" : undefined}>
+        {service.navLabel}
+      </a>
+    ))}
+  </div>
+</div>
+
+<script>
+  const disclosures = document.querySelectorAll<HTMLElement>("[data-service-disclosure]");
+
+  const setDisclosureOpen = (disclosure: HTMLElement, open: boolean) => {
+    const trigger = disclosure.querySelector<HTMLButtonElement>("[data-service-disclosure-trigger]");
+    const panel = disclosure.querySelector<HTMLElement>("[data-service-disclosure-panel]");
+    if (!trigger || !panel) return;
+    trigger.setAttribute("aria-expanded", String(open));
+    panel.hidden = !open;
+    disclosure.classList.toggle("is-open", open);
+  };
+
+  disclosures.forEach((disclosure) => {
+    const trigger = disclosure.querySelector<HTMLButtonElement>("[data-service-disclosure-trigger]");
+    if (!trigger || trigger.dataset.serviceDisclosureReady === "true") return;
+    trigger.dataset.serviceDisclosureReady = "true";
+
+    trigger.addEventListener("click", () => {
+      const willOpen = trigger.getAttribute("aria-expanded") !== "true";
+      disclosures.forEach((candidate) => setDisclosureOpen(candidate, false));
+      setDisclosureOpen(disclosure, willOpen);
+    });
+
+    disclosure.addEventListener("keydown", (event) => {
+      if (event.key !== "Escape" || trigger.getAttribute("aria-expanded") !== "true") return;
+      event.stopPropagation();
+      setDisclosureOpen(disclosure, false);
+      trigger.focus();
+    });
+
+    disclosure.addEventListener("focusout", (event) => {
+      const next = event.relatedTarget as Node | null;
+      if (!next || !disclosure.contains(next)) setDisclosureOpen(disclosure, false);
+    });
+
+    disclosure.querySelectorAll<HTMLAnchorElement>("a[href]").forEach((link) => {
+      link.addEventListener("click", () => setDisclosureOpen(disclosure, false));
+    });
+  });
+
+  if (document.documentElement.dataset.serviceDisclosureOutsideReady !== "true") {
+    document.documentElement.dataset.serviceDisclosureOutsideReady = "true";
+    document.addEventListener("pointerdown", (event) => {
+      const target = event.target as Node | null;
+      disclosures.forEach((disclosure) => {
+        if (!target || !disclosure.contains(target)) setDisclosureOpen(disclosure, false);
+      });
+    });
+
+    document.querySelectorAll<HTMLDetailsElement>("details").forEach((details) => {
+      details.addEventListener("toggle", () => {
+        if (details.open) return;
+        details.querySelectorAll<HTMLElement>("[data-service-disclosure]").forEach((disclosure) => {
+          setDisclosureOpen(disclosure, false);
+        });
+      });
+    });
+  }
+</script>
+
+<style>
+  .public-services-menu {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    min-width: 0;
+  }
+
+  .public-services-menu__trigger {
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+    justify-content: center;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    padding: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    font-weight: 650;
+    white-space: nowrap;
+    gap: 7px;
+    cursor: pointer;
+  }
+
+  .public-services-menu__trigger:hover,
+  .public-services-menu__trigger[aria-expanded="true"] {
+    color: var(--ac-color-navy-800, var(--navy, #1c355e));
+  }
+
+  .public-services-menu__trigger:focus-visible,
+  .public-services-menu__panel a:focus-visible {
+    outline: 3px solid var(--ac-color-slate, #6a9bc3);
+    outline-offset: 2px;
+  }
+
+  .public-services-menu__trigger svg {
+    flex: 0 0 auto;
+    transition: transform 160ms ease;
+  }
+
+  .public-services-menu.is-open .public-services-menu__trigger svg {
+    transform: rotate(180deg);
+  }
+
+  .public-services-menu__panel {
+    position: absolute;
+    z-index: 120;
+    top: calc(100% - 1px);
+    left: 0;
+    display: flex;
+    width: min(320px, calc(100vw - 40px));
+    max-height: calc(100dvh - 96px);
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    border: 1px solid var(--ac-color-line, var(--line, #d8e0e7));
+    border-radius: 8px;
+    background: var(--ac-color-paper, #fff);
+    padding: 8px;
+    box-shadow: 0 12px 30px rgb(18 40 64 / 16%);
+  }
+
+  .public-services-menu__panel[hidden] {
+    display: none;
+  }
+
+  .public-services-menu__panel a {
+    display: flex;
+    min-height: 44px;
+    align-items: center;
+    padding: 10px 12px;
+    color: var(--ac-color-ink-900, var(--ink, #263849));
+    font-size: 0.875rem;
+    line-height: 1.35;
+    text-decoration: none;
+  }
+
+  .public-services-menu__panel a:hover,
+  .public-services-menu__panel a[aria-current="page"] {
+    background: var(--ac-color-warm-white, var(--warm, #f7f8fa));
+    color: var(--ac-color-navy-800, var(--navy, #1c355e));
+  }
+
+  .public-services-menu--mobile {
+    display: block;
+    border-bottom: 1px solid var(--ac-color-line, var(--line, #d8e0e7));
+  }
+
+  .public-services-menu--mobile .public-services-menu__trigger {
+    width: 100%;
+    min-height: 52px;
+    justify-content: space-between;
+    border-bottom: 0;
+    padding: 8px 12px;
+    text-align: left;
+  }
+
+  .public-services-menu--mobile .public-services-menu__panel {
+    position: static;
+    width: 100%;
+    max-height: min(55dvh, 420px);
+    border: 0;
+    border-radius: 0;
+    padding: 0 0 10px 12px;
+    box-shadow: none;
+  }
+
+  .public-services-menu--mobile .public-services-menu__panel a {
+    min-height: 46px;
+    padding-inline: 12px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .public-services-menu__trigger svg {
+      transition: none;
+    }
+  }
+</style>

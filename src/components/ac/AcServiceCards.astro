@@ -24,10 +24,13 @@ export interface ServiceCard {
 interface Props {
   cards: readonly ServiceCard[];
   /**
-   * `five` is the documented homepage arrangement (3 + 2 centred).
-   * `even` keeps a plain equal-column grid for sets that are not the five services.
+   * `five` is the previous homepage arrangement (3 + 2 centred), kept for any other caller.
+   * `six` is Aseptaclean_Website_Design_Blueprint.md's homepage requirement after adding Estate
+   * Cleanout as the sixth public service: "three columns desktop, two on tablet, one on mobile" —
+   * a plain 3x2 grid, no centred remainder row.
+   * `even` keeps a plain equal-column grid for sets that are neither five nor six.
    */
-  layout?: "five" | "even";
+  layout?: "five" | "six" | "even";
   /** Heading level for card titles, so each page keeps a correct document outline. */
   headingLevel?: 2 | 3;
 }
@@ -98,6 +101,13 @@ const Title = `h${headingLevel}` as "h2" | "h3";
 
   .is-five .acx-cards__item:nth-child(5) {
     grid-column: 4 / span 2;
+  }
+
+  /* Plain 3x2 grid — three columns desktop, two tablet, one mobile (blueprint, homepage
+     services). No explicit per-item placement needed: six cards fill two even rows of three on
+     their own. */
+  .is-six {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .is-even {
@@ -199,6 +209,10 @@ const Title = `h${headingLevel}` as "h2" | "h3";
     .is-five .acx-cards__item:nth-child(5) {
       grid-column: auto;
     }
+
+    .is-six {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
   }
 
   @media (max-width: 40rem) {
@@ -207,6 +221,7 @@ const Title = `h${headingLevel}` as "h2" | "h3";
     }
 
     .is-five,
+    .is-six,
     .is-even {
       grid-template-columns: minmax(0, 1fr);
     }

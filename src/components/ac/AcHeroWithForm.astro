@@ -71,6 +71,24 @@ interface Props {
   formId?: string;
   /** Route recorded on the lead, and the service preselected in the form's situation field. */
   route?: string;
+  /**
+   * False renders the hero with no embedded form: the two-column `.acx-hero__grid` collapses to
+   * one fluid column (so no abandoned empty form track is left behind) and `AcCompactForm` is not
+   * rendered at all. Defaults to `true`, so every existing caller — the homepage, and any other
+   * consumer that does not pass this — is byte-identical to before.
+   *
+   * Added 2026-09-17 (docs/Aseptaclean_Service_Hero_And_Spaces_Update.md): the owner directed
+   * that service-detail-page heroes match the rodent page's no-form composition, with the working
+   * form relocated to a section near the bottom of the page. `AcServicePage.astro` is the only
+   * caller that sets this to `false`; the homepage is untouched.
+   */
+  showForm?: boolean;
+  /**
+   * Overrides the secondary action's target. Defaults to `#${formId}`, which is exactly the
+   * previous behaviour when the form renders inside this hero. A caller with `showForm={false}`
+   * passes the anchor of the page's own relocated contact section instead.
+   */
+  secondaryHref?: string;
 }
 
 const {
@@ -86,7 +104,9 @@ const {
   stackedImagePosition,
   trustLine,
   formId = "hero-form",
-  route = "/"
+  route = "/",
+  showForm = true,
+  secondaryHref = `#${formId}`
 } = Astro.props;
 
 const isSplitBand = stackedLayout === "split-band";
@@ -97,7 +117,7 @@ const heroWidths = srcsetWidths(image, [480, 768, 1024, 1440, 1920]);
 ---
 
 <section
-  class:list={["acx-hero", { "acx-hero--split": isSplitBand }]}
+  class:list={["acx-hero", "ac-hero", { "acx-hero--split": isSplitBand, "acx-hero--no-form": !showForm }]}
   aria-labelledby={headingId}
   style={`--acx-hero-focal: ${imagePosition}; --acx-hero-focal-stacked: ${
     stackedImagePosition ?? imagePosition
@@ -122,7 +142,7 @@ const heroWidths = srcsetWidths(image, [480, 768, 1024, 1440, 1920]);
 
   <div class="acx-hero__shell ac-shell">
     <div class="acx-hero__grid">
-      <div class="acx-hero__content">
+      <div class="acx-hero__content ac-hero__copy">
         <p class="acx-hero__eyebrow">{eyebrow}</p>
         <h1 id={headingId} class="ac-type-h1-home">{heading}</h1>
         {lead && <p class="acx-hero__lead">{lead}</p>}
@@ -132,15 +152,17 @@ const heroWidths = srcsetWidths(image, [480, 768, 1024, 1440, 1920]);
             headline; do not make mobile users scroll through the entire form before finding the
             phone action." The secondary points at this page's own form. */}
         <div class="acx-hero__actions">
-          <AcActions tone="dark" secondaryHref={`#${formId}`} />
+          <AcActions tone="dark" secondaryHref={secondaryHref} />
         </div>
 
         {trustLine && <p class="acx-hero__trust">{trustLine}</p>}
       </div>
 
-      <div class="acx-hero__form">
-        <AcCompactForm formId={formId} entryRoute={`${route}#${formId}`} preselectRoute={route} />
-      </div>
+      {showForm && (
+        <div class="acx-hero__form">
+          <AcCompactForm formId={formId} entryRoute={`${route}#${formId}`} preselectRoute={route} />
+        </div>
+      )}
     </div>
   </div>
 </section>
@@ -150,6 +172,57 @@ const heroWidths = srcsetWidths(image, [480, 768, 1024, 1440, 1920]);
     position: relative;
     isolation: isolate;
     background: var(--ac-color-navy-950);
+  }
+
+  /* SHARED HERO SIZING — docs/ASEPTACLEAN-DESIGN-SPEC.md §2.1/§2.2: 600px desktop (>=1024px) /
+     560px tablet (768-1023px) / 440px mobile floor, measured from the hero's top (below the
+     navbar) to its bottom, excluding the navbar and the homepage trust strip (a separate sibling
+     section in normal flow, so it can never enlarge this box). This is a MIN-height, not a fixed
+     one: `.acx-hero__shell` is a normal-flow element (not absolutely positioned), so it still
+     sets the section's height when its content needs more room than the floor — long approved
+     copy grows the hero taller instead of being clipped or compressed, at every breakpoint,
+     exactly as the spec requires. Applies to every `AcHeroWithForm` caller: the homepage and,
+     since `showForm={false}` already collapses their grid to one column, the four sibling
+     AcServicePage routes.
+
+     696px desktop / 680px tablet — corrected 2026-09-18, down from a prior 736/592 pass.
+     736px desktop was itself the bug this repair fixes: it was set by matching the shared token
+     to Extreme Cleaning's rendered height WITHOUT first checking why that page's hero was tall,
+     which silently inflated every other page's hero (some had 200+px of pure floor padding) to
+     accommodate one outlier — exactly what the spec's escalation rule (§2.2) warns against ("If
+     this requires a desktop height above 720px..., preserve the copy and report a concrete fit
+     conflict rather than silently making every hero enormous").
+
+     The actual cause: `heroAssurances` rendered as a `trustLine` PARAGRAPH INSIDE this hero
+     (`.acx-hero__trust`, now removed from this component's call sites) — the spec is explicit
+     that "trust signals... are outside that [hero] measurement" (§2.2). On Hoarding and Extreme
+     Cleaning — this component's two longest-headline callers — that misplaced paragraph added
+     roughly 40px of avoidable height on top of an already-long, wrapping H1. The homepage's own
+     trustLine was a second, separate bug: a byte-for-byte duplicate of what `AcTrustStrip`
+     already renders immediately below the hero. Both are fixed at the call sites
+     (src/pages/index.astro, AcServicePage.astro) — see docs/05-CURRENT-DECISIONS.md, 2026-09-18.
+
+     With that fixed, Extreme Cleaning's real desktop content requires 695px — under the spec's
+     720px ceiling — so the shared token only needed to move to 696px (600 + 12 x 8px steps, the
+     smallest increment that still fits every reviewed hero), not 736px. Tablet's binding
+     constraint shifted to the estate campaign's two-column split (see PpcBrightHero.astro's own
+     comment) at 676px, so 680px (560 + 15 x 8px) is tablet's smallest fitting increment — still
+     at, not above, the spec's 680px tablet ceiling. Measured results:
+     docs/ASEPTACLEAN-DESIGN-QA.md, "Hero equality". */
+  .acx-hero {
+    min-height: 440px;
+  }
+
+  @media (min-width: 48rem) {
+    .acx-hero {
+      min-height: 680px;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .acx-hero {
+      min-height: 696px;
+    }
   }
 
   .acx-hero__media {
@@ -174,13 +247,28 @@ const heroWidths = srcsetWidths(image, [480, 768, 1024, 1440, 1920]);
     inset: 0;
   }
 
-  /* 36px per side — profile AC-CP70-91130-1.1 CSS-02 ("Hero padding 36px top/bottom"). Was
-     44px, which predates the profile. The section itself now contributes zero padding
-     (global.css "special-role heroes opt out"), so this shell is the hero's only padding. */
+  /* SHARED CONTENT INSET — Aseptaclean_Website_Design_Blueprint.md "Mandatory shared hero
+     sizing": 40px mobile / 48px tablet (768px+) / 64px desktop (1024px+), top and bottom. Was a
+     flat 36px (profile AC-CP70-91130-1.1 CSS-02); stepping it to the blueprint's table keeps the
+     inset identical to AcPageHero's at every breakpoint, which the shared-hero comparison
+     requires. The section itself still contributes zero padding (global.css "special-role heroes
+     opt out"), so this shell remains the hero's only padding. */
   .acx-hero__shell {
     position: relative;
     z-index: 2;
-    padding-block: 36px;
+    padding-block: 40px;
+  }
+
+  @media (min-width: 48rem) {
+    .acx-hero__shell {
+      padding-block: 48px;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .acx-hero__shell {
+      padding-block: 64px;
+    }
   }
 
   /* Reference CSS `.ac-hero__grid`: fluid copy column + minmax(520px, 560px) form column,
@@ -195,6 +283,13 @@ const heroWidths = srcsetWidths(image, [480, 768, 1024, 1440, 1920]);
 
   .acx-hero__grid > * {
     min-width: 0;
+  }
+
+  /* `showForm={false}` — no abandoned empty form track. Each text element already caps its own
+     measure (h1 18ch, lead 52ch, body 56ch below), so collapsing to one fluid column does not
+     stretch the copy full-width; it just removes the reserved 520-560px column nothing fills. */
+  .acx-hero--no-form .acx-hero__grid {
+    grid-template-columns: minmax(0, 1fr);
   }
 
   /* EYEBROW RECIPE — profile AC-CP70-91130-1.1 §"Approved descriptor update in version 1.1":
@@ -333,9 +428,9 @@ const heroWidths = srcsetWidths(image, [480, 768, 1024, 1440, 1920]);
   }
 
   @media (max-width: 40rem) {
-    .acx-hero__shell {
-      padding-block: 34px 40px;
-    }
+    /* Was an asymmetric 34px/40px, predating the blueprint's stepped inset table above (40px
+       mobile, both sides). No longer needed as a separate override — removed rather than left
+       to silently win over the shared value at this width. */
 
     .acx-hero__content h1 {
       max-width: none;

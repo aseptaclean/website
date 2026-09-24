@@ -1,23 +1,36 @@
 ---
-import { launchPrimaryNavLinks, launchServiceLinks } from "@data/launchArchitecture";
+import { launchPrimaryNavLinks } from "@data/launchArchitecture";
 import { site } from "@data/site";
+import ServiceDisclosure from "@components/ServiceDisclosure.astro";
+
+interface Props { homepage?: boolean; }
+const { homepage = false } = Astro.props;
 
 const normalizePath = (value: string) => {
   const path = value.split(/[?#]/, 1)[0] || "/";
   return path === "/" ? "/" : `/${path.replace(/^\/+|\/+$/g, "")}/`;
 };
 const currentPath = normalizePath(Astro.url.pathname);
-const isCurrent = (href?: string) => Boolean(href && normalizePath(href) === currentPath);
+const isCurrent = (href?: string) => Boolean(href && !(homepage && href.includes("#")) && normalizePath(href) === currentPath);
 
-// Primary nav is Services / About / Contact, and Services is both a real link to /services/ and
-// a separate accessible dropdown toggle listing the five service routes — docs/SITEMAP-MASTER.md
-// "Navigation", which also forbids putting the five service links alongside Services in the
-// primary desktop nav. Dropdown order comes from launchServiceLinks.
-const publicLinks = launchPrimaryNavLinks;
-const serviceLinks = launchServiceLinks;
+// Primary nav is Services / About / Contact. Services is an accessible disclosure button listing
+// the six public service routes; it deliberately has no navigation behavior of its own. The panel
+// order and labels come from launchServiceLinks through ServiceDisclosure.
+//
+// RETIRED HUB, 2026-09-18 (owner blueprint). "Services" used to link to the standalone
+// `/services/` hub; that page is gone. launchPrimaryNavLinks retains `/#services` for non-header
+// consumers, while this header replaces the Services entry with the non-navigating disclosure.
+const publicLinks = homepage ? [
+  { label: "Services", href: "#services" },
+  { label: "Who We Help", href: "#who-we-help" },
+  { label: "About", href: "/about/" },
+  { label: "Service Area", href: "#service-area" },
+  { label: "Contact", href: "/contact/" }
+] : launchPrimaryNavLinks;
+const isServicesLink = (label: string) => label === "Services";
 ---
 
-<nav class="site-nav" aria-label="Primary navigation">
+<nav class="site-nav" aria-label="Primary navigation" data-homepage={homepage || undefined}>
   <div class="site-nav__inner">
     <a class="site-nav__logo" href="/" aria-current={isCurrent("/") ? "page" : undefined}>
       <img
@@ -30,35 +43,8 @@ const serviceLinks = launchServiceLinks;
 
     <div class="site-nav__desktop">
       {publicLinks.map((link) =>
-        link.href === "/services/" ? (
-          <div class="services-nav" data-services-nav>
-            <a
-              class="services-nav__link"
-              href={link.href}
-              aria-current={isCurrent(link.href) ? "page" : undefined}
-            >
-              {link.label}
-            </a>
-            <button
-              type="button"
-              class="services-nav__toggle"
-              aria-expanded="false"
-              aria-controls="services-nav-panel"
-              data-services-toggle
-            >
-              <span class="visually-hidden">Show current services</span>
-              <svg aria-hidden="true" viewBox="0 0 10 6" width="10" height="6">
-                <path d="M1 1l4 4 4-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-              </svg>
-            </button>
-            <div class="services-nav__panel" id="services-nav-panel" data-services-panel>
-              {serviceLinks.map((service) => (
-                <a href={service.href} aria-current={isCurrent(service.href) ? "page" : undefined}>
-                  {service.navLabel}
-                </a>
-              ))}
-            </div>
-          </div>
+        isServicesLink(link.label) ? (
+          <ServiceDisclosure id="site-desktop" />
         ) : (
           <a href={link.href} aria-current={isCurrent(link.href) ? "page" : undefined}>
             {link.label}
@@ -75,14 +61,14 @@ const serviceLinks = launchServiceLinks;
         action now belongs to the hero and closing sections where it has a form to reach. */}
     <div class="site-nav__actions">
       {site.business.phoneUri && (
-        <a class="site-nav__cta" href={site.business.phoneUri}>
+        <a class="site-nav__cta" href={site.business.phoneUri} aria-label={homepage ? `Call ${site.business.phone}` : undefined}>
           <svg class="site-nav__cta-icon" aria-hidden="true" viewBox="0 0 16 16" width="14" height="14">
             <path
               d="M5.2 1.8 6.6 4.6 5.2 6a9.4 9.4 0 0 0 4.8 4.8l1.4-1.4 2.8 1.4v2.4c0 .6-.5 1-1.1 1A12.7 12.7 0 0 1 1.2 2.9c0-.6.4-1.1 1-1.1z"
               fill="currentColor"
             />
           </svg>
-          <span>{site.offer.primaryCta}</span>
+          {homepage ? <Fragment><span class="home-call-long">Call {site.business.phone}</span><span class="home-call-short">Call</span></Fragment> : <span>{site.offer.primaryCta}</span>}
         </a>
       )}
     </div>
@@ -103,33 +89,8 @@ const serviceLinks = launchServiceLinks;
 
         <div class="mobile-nav__content">
           {publicLinks.map((link) =>
-            link.href === "/services/" ? (
-              <div class="mobile-services">
-                <a
-                  class="mobile-nav__primary-link mobile-services__link"
-                  href={link.href}
-                  aria-current={isCurrent(link.href) ? "page" : undefined}
-                >
-                  {link.label}
-                </a>
-                <button
-                  type="button"
-                  class="mobile-services__toggle"
-                  aria-expanded="false"
-                  aria-controls="mobile-services-panel"
-                  data-mobile-services-toggle
-                >
-                  <span class="visually-hidden">Show current services</span>
-                  <span aria-hidden="true">+</span>
-                </button>
-                <div class="mobile-services__panel" id="mobile-services-panel" data-mobile-services-panel>
-                  {serviceLinks.map((service) => (
-                    <a href={service.href} aria-current={isCurrent(service.href) ? "page" : undefined}>
-                      {service.navLabel}
-                    </a>
-                  ))}
-                </div>
-              </div>
+            isServicesLink(link.label) ? (
+              <ServiceDisclosure id="site-mobile" mobile />
             ) : (
               <a
                 class="mobile-nav__primary-link"
@@ -153,8 +114,8 @@ const serviceLinks = launchServiceLinks;
               {site.offer.primaryCta} · {site.business.phone}
             </a>
           )}
-          <a class="mobile-nav__phone" href={site.offer.contactFormUrl}>
-            {site.offer.secondaryCta}
+          <a class="mobile-nav__phone" href={homepage ? "#home-contact" : site.offer.contactFormUrl}>
+            {homepage ? "Request an Assessment" : site.offer.secondaryCta}
           </a>
         </div>
       </div>
@@ -164,6 +125,10 @@ const serviceLinks = launchServiceLinks;
 
 <script>
   const mobileNav = document.querySelector<HTMLDetailsElement>("[data-mobile-nav]");
+  const homepage = Boolean(document.querySelector(".site-nav[data-homepage]"));
+  if (homepage) mobileNav?.querySelectorAll<HTMLAnchorElement>("a[href]").forEach((link) => {
+    link.addEventListener("click", () => { mobileNav.open = false; });
+  });
 
   mobileNav?.addEventListener("toggle", () => {
     document.body.classList.toggle("is-navigation-open", mobileNav.open);
@@ -171,66 +136,8 @@ const serviceLinks = launchServiceLinks;
     summary?.setAttribute("aria-label", mobileNav.open ? "Close navigation" : "Open navigation");
   });
 
-  // Desktop Services dropdown — link stays a normal navigable <a>; the toggle button owns
-  // open/close state so keyboard and mouse users both reach every service without either
-  // losing direct access to /services/ itself.
-  const servicesNav = document.querySelector<HTMLElement>("[data-services-nav]");
-  const servicesToggle = servicesNav?.querySelector<HTMLButtonElement>("[data-services-toggle]");
-  const servicesPanel = servicesNav?.querySelector<HTMLElement>("[data-services-panel]");
-
-  const setServicesOpen = (open: boolean) => {
-    if (!servicesNav || !servicesToggle) return;
-    servicesNav.classList.toggle("is-open", open);
-    servicesToggle.setAttribute("aria-expanded", String(open));
-  };
-
-  const openOnFocusIn = () => setServicesOpen(true);
-
-  if (servicesNav && servicesToggle && servicesPanel) {
-    servicesToggle.addEventListener("click", () => {
-      setServicesOpen(!servicesNav.classList.contains("is-open"));
-    });
-
-    servicesNav.addEventListener("mouseenter", () => setServicesOpen(true));
-    servicesNav.addEventListener("mouseleave", () => setServicesOpen(false));
-
-    servicesNav.addEventListener("focusin", openOnFocusIn);
-    servicesNav.addEventListener("focusout", (event) => {
-      const next = event.relatedTarget as Node | null;
-      if (!next || !servicesNav.contains(next)) setServicesOpen(false);
-    });
-
-    document.addEventListener("click", (event) => {
-      const target = event.target as Node | null;
-      if (target && !servicesNav.contains(target)) setServicesOpen(false);
-    });
-  }
-
-  // Mobile Services expand — same link-plus-toggle pattern inside the drawer.
-  const mobileServicesToggle = document.querySelector<HTMLButtonElement>(
-    "[data-mobile-services-toggle]"
-  );
-  const mobileServicesPanel = document.querySelector<HTMLElement>(
-    "[data-mobile-services-panel]"
-  );
-
-  mobileServicesToggle?.addEventListener("click", () => {
-    const open = mobileServicesToggle.getAttribute("aria-expanded") !== "true";
-    mobileServicesToggle.setAttribute("aria-expanded", String(open));
-    mobileServicesPanel?.classList.toggle("is-open", open);
-  });
-
   document.addEventListener("keydown", (event) => {
     if (event.key !== "Escape") return;
-    if (servicesNav?.classList.contains("is-open")) {
-      // Moving focus to the toggle fires `focusin` on servicesNav, which would otherwise
-      // immediately reopen the panel setServicesOpen(false) just closed.
-      servicesNav.removeEventListener("focusin", openOnFocusIn);
-      setServicesOpen(false);
-      servicesToggle?.focus();
-      requestAnimationFrame(() => servicesNav?.addEventListener("focusin", openOnFocusIn));
-      return;
-    }
     if (mobileNav?.open) {
       mobileNav.open = false;
       mobileNav.querySelector<HTMLElement>(":scope > summary")?.focus();
@@ -241,7 +148,7 @@ const serviceLinks = launchServiceLinks;
   // where the same approved desktop spacing fits without clipping or compressing the CTA.
   // If the drawer is open and the viewport grows past it, the desktop bar returns and the drawer
   // has to close with it or focus is trapped behind an invisible overlay.
-  window.matchMedia("(min-width: 74rem)").addEventListener("change", (event) => {
+  window.matchMedia(homepage ? "(min-width: 1200px)" : "(min-width: 74rem)").addEventListener("change", (event) => {
     if (event.matches && mobileNav?.open) mobileNav.open = false;
   });
 </script>
@@ -307,86 +214,6 @@ const serviceLinks = launchServiceLinks;
 
   .mobile-nav > summary::-webkit-details-marker {
     display: none;
-  }
-
-  /* Services — link + separate toggle, per docs/aseptaclean-website-design-system.md §10.
-     The panel is positioned from `.services-nav`, not `.site-nav__desktop > a`, so it never
-     inherits the plain link's border-bottom hover treatment. */
-  .services-nav {
-    position: relative;
-    display: flex;
-    align-items: stretch;
-  }
-
-  .services-nav__link {
-    display: flex;
-    min-height: var(--ac-header-stack);
-    align-items: center;
-    border-bottom: 2px solid transparent;
-    color: var(--ac-color-ink-900);
-    font-size: 0.875rem;
-    font-weight: 650;
-    white-space: nowrap;
-    text-decoration: none;
-  }
-
-  .services-nav__link:hover,
-  .services-nav__link[aria-current="page"] {
-    border-bottom-color: var(--ac-color-navy-800);
-    color: var(--ac-color-navy-800);
-  }
-
-  .services-nav__toggle {
-    display: flex;
-    width: 26px;
-    min-height: var(--ac-header-stack);
-    align-items: center;
-    justify-content: center;
-    border: 0;
-    background: transparent;
-    color: var(--ac-color-ink-900);
-    cursor: pointer;
-  }
-
-  .services-nav__toggle svg {
-    transition: transform 160ms ease;
-  }
-
-  .services-nav.is-open .services-nav__toggle svg {
-    transform: rotate(180deg);
-  }
-
-  .services-nav__panel {
-    position: absolute;
-    z-index: 60;
-    top: 100%;
-    left: 0;
-    display: none;
-    flex-direction: column;
-    width: 300px;
-    border: 1px solid var(--ac-color-line);
-    background: var(--ac-color-paper);
-    padding: 8px;
-  }
-
-  .services-nav.is-open .services-nav__panel {
-    display: flex;
-  }
-
-  .services-nav__panel a {
-    display: flex;
-    min-height: 44px;
-    align-items: center;
-    padding-inline: 12px;
-    color: var(--ac-color-ink-900);
-    font-size: 0.9375rem;
-    text-decoration: none;
-  }
-
-  .services-nav__panel a:hover,
-  .services-nav__panel a[aria-current="page"] {
-    background: var(--ac-color-warm-white);
-    color: var(--ac-color-navy-800);
   }
 
   .site-nav__actions {
@@ -527,62 +354,6 @@ const serviceLinks = launchServiceLinks;
     font-size: 1.0625rem;
     font-weight: 700;
     text-decoration: none;
-  }
-
-  /* Mobile Services — link stays full-width and navigable; the toggle is a separate control
-     so tapping "Services" never traps a visitor into only expanding the list. */
-  .mobile-services {
-    display: grid;
-    border-bottom: 1px solid var(--ac-color-line);
-    grid-template-columns: 1fr auto;
-  }
-
-  .mobile-services__link {
-    border-bottom: 0;
-  }
-
-  .mobile-services__toggle {
-    display: flex;
-    width: 58px;
-    min-height: 58px;
-    align-items: center;
-    justify-content: center;
-    border: 0;
-    background: transparent;
-    color: var(--ac-color-ink-900);
-    font-size: 1.5rem;
-    font-weight: 400;
-    cursor: pointer;
-  }
-
-  .mobile-services__toggle[aria-expanded="true"] span[aria-hidden] {
-    display: inline-block;
-    transform: rotate(45deg);
-  }
-
-  .mobile-services__panel {
-    display: none;
-    grid-column: 1 / -1;
-    flex-direction: column;
-    padding: 0 0 12px 18px;
-  }
-
-  .mobile-services__panel.is-open {
-    display: flex;
-  }
-
-  .mobile-services__panel a {
-    display: flex;
-    min-height: 46px;
-    align-items: center;
-    color: var(--ac-color-ink-600);
-    font-size: 0.9375rem;
-    text-decoration: none;
-  }
-
-  .mobile-services__panel a[aria-current="page"] {
-    color: var(--ac-color-navy-800);
-    font-weight: 700;
   }
 
   .mobile-nav__actions {

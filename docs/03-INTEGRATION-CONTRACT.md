@@ -21,6 +21,16 @@ Secondary navigation label: **Send a Message**. Home/service hero secondary link
 
 Desired compact fields: Full Name, Phone Number, Property ZIP Code, What are you dealing with?, Tell us what's going on. Preserve their actual backend field names, required/optional states, current validation, anti-spam, consent text, helper copy, upload logic, and successful submission route. If the actual schema includes additional required fields, accommodate them rather than silently removing them to match a screenshot.
 
+**Campaign form exception — owner decision 2026-09-23.** Only
+`/rodent-dropping-cleanup-san-jose/assessment/` and
+`/estate-cleanout-san-jose/assessment/` use the shortened visible sequence: Name (required), Phone
+(required), Email (optional), route-relevant Role (optional), Additional info (optional), and Photos
+(optional), followed by the existing required consent and anti-spam controls. They do not render
+ZIP, property-condition, timeline, affected-area, or service controls. A validated
+`campaign_context` binds each page route to its fixed service enum; every other form retains its
+existing fields and required states. Owner notification does not depend on customer email;
+customer confirmation is attempted only when a valid email is supplied.
+
 Display service choices: Hoarding Cleanup; Extreme Cleaning; Detailed Deep Cleaning; Crime Scene & Trauma Cleanup; Rodent Droppings & Animal Waste Cleanup; Not Sure. Map these labels to existing internal enum values. Renaming a visible option does not authorize breaking the CRM contract. Preselect the relevant service on its page while permitting correction.
 
 Do not make SMS consent prechecked or required to click the telephone link. Do not replace established consent wording with copy invented for this redesign. A successful UI must reflect a real accepted submission; preserve error states and user input after failures. Do not show a fake success state for a placeholder endpoint.

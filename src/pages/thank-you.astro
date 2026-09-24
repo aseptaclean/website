@@ -3,271 +3,438 @@ import BaseLayout from "@layouts/BaseLayout.astro";
 import { site } from "@data/site";
 
 const phoneHref = site.business.phoneUri;
-
-// A5 — BreadcrumbList. This route had none; every other non-root route on the site does, and a
-// crumb trail is how a leaf page tells a crawler where it sits. The "Home" item uses
-// `site.urls.home` (WITH the trailing slash) so it matches the homepage canonical exactly —
-// `site.urls.site` is a bare origin and produced a second URL for the same page.
-const schema = [
-  {
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Thank You",
-        item: new URL("/thank-you/", site.urls.site).href
-      }
-    ]
-  }
-];
+const currentYear = new Date().getFullYear();
 ---
 
 <BaseLayout
   title="Thank You | Aseptaclean"
-  description="Aseptaclean assessment request confirmation."
+  description="Aseptaclean inquiry receipt."
   canonicalPath="/thank-you/"
-  schema={schema}
   noindex={true}
   showMobileCta={false}
 >
-  <div class="confirmation">
-    <div class="ac-measure-wide confirmation__layout">
-      <section
-        class="confirmation__record"
-        data-confirmation
-      >
-        <p class="confirmation__eyebrow" data-confirmation-eyebrow>Assessment request</p>
-        <h1 class="ac-type-h1" data-confirmation-title>This page does not confirm that a request was received.</h1>
-        <div data-confirmed hidden>
-          <p class="confirmation__status">Received</p>
-          <!-- Exact required copy — do not paraphrase. The email-delivery paragraph below it
-               stays: it reports which delivery states actually occurred, which this line does
-               not claim. -->
-          <p class="confirmation__lead" data-confirmation-email>
-            We'll review what you sent and contact you about the next step. If we need more
-            information or an on-site assessment before pricing the work, we'll let you know.
-          </p>
-          <p class="confirmation__callback" data-callback-message></p>
-          <p class="confirmation__reference" data-submission-reference hidden></p>
-        </div>
-
-        <div data-unconfirmed>
-          <p class="confirmation__status confirmation__status--neutral">No submission confirmed</p>
-          <p class="confirmation__lead">
-            If you arrived here without submitting the assessment, start the
-            request below. If you just submitted and expected a confirmation,
-            check your email or contact Aseptaclean before submitting again.
-            Successfully received requests receive a Handoff Plan within one
-            business day.
-          </p>
-          <a class="button" href="/contact/#contact-form">Start the assessment</a>
-        </div>
-
-        <aside class="confirmation__boundary">
-          <strong>What this submission does—and does not do</strong>
-          <p>
-            It begins a property fit review. It does not authorize work, create
-            a service agreement, reserve a project date, or guarantee that the
-            property is within Aseptaclean’s scope.
-          </p>
-        </aside>
-      </section>
-
-      <aside class="confirmation__next" aria-labelledby="next-title">
-        <p class="confirmation__next-label">While you wait</p>
-        <h2 id="next-title" class="ac-type-h3">Photos speed everything up.</h2>
-        <p class="confirmation__next-body">
-          Stand in the doorway and get the whole room, then step in close on the
-          worst spots. Text them to the number below and mention your name.
-        </p>
-        {
-          phoneHref && (
-            <a href={phoneHref}>
-              Urgent or complex property? Call {site.business.phone}
-            </a>
-          )
-        }
-        <small>{site.business.hours}</small>
-      </aside>
+  <header slot="header" class="receipt-header">
+    <div class="receipt-wrap receipt-header__inner">
+      <a class="receipt-brand" href="/" aria-label="Aseptaclean home">
+        <span>{site.business.name}</span>
+        <small>Specialty Property Cleanup</small>
+      </a>
+      {phoneHref && <a class="receipt-phone" href={phoneHref}>{site.business.phone}</a>}
     </div>
+  </header>
+
+  <div id="ac-submission-receipt">
+    <section class="receipt-main" aria-live="polite">
+      <div class="receipt-wrap">
+        <div data-receipt-success hidden>
+          <p class="receipt-label">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="m8 12 2.6 2.6L16.5 9"></path>
+            </svg>
+            Inquiry received
+          </p>
+          <h1 class="receipt-title" tabindex="-1" data-receipt-focus>
+            Thank you.<br />We’ll take it from here.
+          </h1>
+          <p class="receipt-lead">
+            Your inquiry is with Aseptaclean. We’ll review the details and contact you to
+            discuss the property and the next step.
+          </p>
+
+          <div class="receipt-grid">
+            <div>
+              <h2 class="receipt-heading">Your inquiry</h2>
+              <dl class="receipt-details" data-receipt-details hidden>
+                <div data-reference-row hidden>
+                  <dt>Reference</dt>
+                  <dd data-reference></dd>
+                </div>
+              </dl>
+              <p class="receipt-fine receipt-boundary">
+                This confirms your inquiry. An assessment or cleanup appointment has not been
+                booked.
+              </p>
+            </div>
+            <div>
+              <h2 class="receipt-heading">Want to talk now?</h2>
+              <p>Call us if you’d like to discuss the property or add a detail.</p>
+              {
+                phoneHref && (
+                  <a class="receipt-action" href={phoneHref}>
+                    Call {site.business.phone}
+                    <span aria-hidden="true">↗</span>
+                  </a>
+                )
+              }
+              <p class="receipt-fine">{site.business.hours}</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="receipt-neutral" data-receipt-neutral>
+          <p class="receipt-label">Receipt unavailable</p>
+          <h1 class="receipt-title" tabindex="-1" data-neutral-focus>
+            No inquiry is confirmed on this page.
+          </h1>
+          <p class="receipt-lead">
+            A confirmation appears here only after Aseptaclean accepts an inquiry. If you have
+            not submitted the form, return to the contact page to begin.
+          </p>
+          <div class="receipt-neutral__actions">
+            <a class="receipt-action" href="/contact/#contact-form">Go to the contact form</a>
+            {phoneHref && <a class="receipt-text-link" href={phoneHref}>Call {site.business.phone}</a>}
+          </div>
+        </div>
+      </div>
+    </section>
   </div>
+
+  <footer slot="footer" class="receipt-footer">
+    <div class="receipt-wrap receipt-footer__inner">
+      <span>© {currentYear} {site.business.name}</span>
+      <a href="/">Return to Aseptaclean ↗</a>
+    </div>
+  </footer>
 </BaseLayout>
 
 <script>
-  const parameters = new URLSearchParams(window.location.search);
-  const valid = parameters.get("received") === "1";
-  const isResidence =
-    parameters.get("offer") === "private-residence-reset";
-  const confirmed = document.querySelector<HTMLElement>("[data-confirmed]");
-  const unconfirmed = document.querySelector<HTMLElement>("[data-unconfirmed]");
-  const callback = document.querySelector<HTMLElement>(
-    "[data-callback-message]"
-  );
-  const reference = document.querySelector<HTMLElement>(
-    "[data-submission-reference]"
-  );
-  const confirmationEmail = document.querySelector<HTMLElement>(
-    "[data-confirmation-email]"
-  );
-  const title = document.querySelector<HTMLElement>(
-    "[data-confirmation-title]"
-  );
-  if (isResidence) {
-    const eyebrow = document.querySelector<HTMLElement>(
-      "[data-confirmation-eyebrow]"
-    );
-    if (eyebrow) eyebrow.textContent = "Private Residence Reset intake";
-    if (title) title.textContent = "Your residence assessment is in the review queue.";
-    if (confirmationEmail) {
-      confirmationEmail.textContent =
-        "A confirmation email is on its way. Aseptaclean will review the residence, desired baseline, priority rooms, finish instructions, access, and whether an on-site walkthrough is required.";
-    }
+  import { readAcceptedInquiryReceipt } from "../scripts/acceptedInquiryReceipt";
+
+  const success = document.querySelector<HTMLElement>("[data-receipt-success]");
+  const neutral = document.querySelector<HTMLElement>("[data-receipt-neutral]");
+  const receipt = readAcceptedInquiryReceipt();
+
+  // Query parameters are intentionally not evidence of acceptance. Remove any legacy or
+  // hand-authored flags so a refresh/share cannot imply a successful submission.
+  if (window.location.search || window.location.hash) {
+    window.history.replaceState({}, "", "/thank-you/");
   }
 
-  if (valid && confirmed && unconfirmed) {
-    if (title) {
-      title.textContent = isResidence
-        ? "Your residence assessment is in the review queue."
-        : "Request received.";
+  if (receipt && success && neutral) {
+    neutral.hidden = true;
+    success.hidden = false;
+
+    if (receipt.confirmationCode) {
+      const details = document.querySelector<HTMLElement>("[data-receipt-details]");
+      const row = document.querySelector<HTMLElement>("[data-reference-row]");
+      const reference = document.querySelector<HTMLElement>("[data-reference]");
+      if (details && row && reference) {
+        reference.textContent = receipt.confirmationCode;
+        row.hidden = false;
+        details.hidden = false;
+      }
     }
-    confirmed.hidden = false;
-    unconfirmed.hidden = true;
-    const callbackWindow = parameters.get("callback");
-    if (callback) {
-      callback.textContent =
-        callbackWindow === "business-hours"
-          ? "Because this request arrived during published business hours, Aseptaclean’s operating standard is to call within 5 minutes."
-          : "Because this request arrived outside published business hours, Aseptaclean will call during the next business window.";
-    }
-    const emailState = parameters.get("email");
-    if (isResidence && confirmationEmail) {
-      confirmationEmail.textContent =
-        "A confirmation email is on its way. Aseptaclean will review the residence, desired baseline, priority rooms, finish instructions, access, and whether an on-site walkthrough is required.";
-    } else if (confirmationEmail && emailState === "none") {
-      // No email was collected on this submission, so no confirmation email is ever
-      // attempted. Reporting unverified delivery here would describe a message that was
-      // never sent.
-      confirmationEmail.textContent =
-        "We'll review what you sent and contact you by phone about the next step. If we need more information or an on-site assessment before pricing the work, we'll let you know.";
-    } else if (confirmationEmail && emailState !== "sent") {
-      confirmationEmail.textContent =
-        "We'll review what you sent and contact you about the next step. Save the confirmation code below in case you need to reference it. If we need more information or an on-site assessment before pricing the work, we'll let you know.";
-    }
-    // Six Crockford base32 characters, so the visitor can read this down the phone or
-    // type it from a photo. The submission UUID stays internal and is never shown here.
-    const code = parameters.get("code");
-    if (reference && code && /^AC-[0-9A-HJKMNP-TV-Z]{6}$/.test(code)) {
-      reference.hidden = false;
-      reference.textContent = `Confirmation code: ${code}`;
-    }
-    window.history.replaceState({}, "", "/thank-you/");
+
+    document.querySelector<HTMLElement>("[data-receipt-focus]")?.focus({
+      preventScroll: true
+    });
   }
 </script>
 
 <style>
-  .confirmation {
-    padding-block: clamp(3.5rem, 8vw, 7rem);
-    background: var(--ac-color-warm-white);
+  :global(body) {
+    background: #fff;
   }
 
-  .confirmation__layout {
-    display: grid;
-    gap: var(--ac-space-7);
+  .receipt-wrap {
+    width: calc(100% - 80px);
+    max-width: 1050px;
+    margin-inline: auto;
   }
 
-  .confirmation__record {
-    border-top: 3px solid var(--ac-color-navy-900);
-    padding-top: var(--ac-space-5);
+  .receipt-header {
+    position: relative;
+    z-index: 1;
+    border-bottom: 1px solid #e0e5ea;
+    background: #fff;
+    color: #122840;
   }
 
-  .confirmation__eyebrow,
-  .confirmation__next-label,
-  .confirmation__status {
-    margin: 0;
-    color: var(--ac-color-navy-800);
-    font-family: var(--ac-font-sans);
-    font-size: var(--ac-text-label-chip);
-    font-weight: 700;
-    letter-spacing: 0.05em;
+  .receipt-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    min-height: 76px;
+    padding-block: 14px;
+  }
+
+  .receipt-brand {
+    color: #1c355e;
+    font-size: 25px;
+    font-weight: 750;
+    letter-spacing: -0.8px;
+    line-height: 1.1;
+    text-decoration: none;
+  }
+
+  .receipt-brand small {
+    display: block;
+    margin-top: 1px;
+    color: #1c355e;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 1.8px;
     text-transform: uppercase;
   }
 
-  .confirmation__status {
-    width: fit-content;
-    margin-top: var(--ac-space-6);
-    border: 1px solid var(--ac-color-success);
-    padding: 0.35rem 0.55rem;
-    color: var(--ac-color-success);
+  .receipt-phone {
+    color: #1c355e;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
   }
 
-  .confirmation__status--neutral {
-    border-color: var(--ac-color-ink-500);
-    color: var(--ac-color-ink-500);
+  #ac-submission-receipt {
+    color-scheme: light;
+    min-height: calc(100vh - 153px);
+    background: #fff;
+    color: #122840;
+    font-family: Inter, Arial, sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
   }
 
-  h1 {
-    max-width: 18ch;
-    margin: var(--ac-space-4) 0 0;
+  #ac-submission-receipt * {
+    box-sizing: border-box;
   }
 
-  .confirmation__lead {
-    max-width: 43rem;
-    margin: var(--ac-space-5) 0 0;
-    font-size: var(--ac-text-lead);
+  #ac-submission-receipt [hidden] {
+    display: none !important;
   }
 
-  .confirmation__callback,
-  .confirmation__reference {
-    max-width: 43rem;
-    margin: var(--ac-space-5) 0 0;
-    border-left: 3px solid var(--ac-color-blue-500);
-    padding-left: var(--ac-space-4);
-    color: var(--ac-color-navy-900);
-    font-weight: 700;
+  .receipt-main {
+    padding-block: 68px 55px;
+    background: #fff;
+    color: #122840;
   }
 
-  .confirmation__boundary {
-    max-width: 43rem;
-    margin-top: var(--ac-space-7);
-    border-top: 1px solid var(--ac-color-rule);
-    padding-top: var(--ac-space-4);
+  .receipt-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 0;
+    color: #446479;
+    font-size: 12px;
+    font-weight: 650;
+    letter-spacing: 1px;
+    text-transform: uppercase;
   }
 
-  .confirmation__boundary p {
-    margin: var(--ac-space-2) 0 0;
+  .receipt-label svg {
+    width: 21px;
+    height: 21px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
   }
 
-  .confirmation__next {
-    align-self: start;
-    border: 1px solid var(--ac-color-steel-300);
-    padding: var(--ac-space-5);
-    background: var(--ac-color-paper);
+  .receipt-title {
+    max-width: 20ch;
+    margin: 22px 0 20px;
+    color: #122840;
+    font-size: clamp(36px, 5.2vw, 55px);
+    font-weight: 650;
+    letter-spacing: -1.9px;
+    line-height: 1.12;
   }
 
-  .confirmation__next h2 {
-    margin: var(--ac-space-3) 0 0;
+  .receipt-title:focus {
+    outline: none;
   }
 
-  /* Replaced the 01/02/03 rail: §9.15.5 supplies a single connective body paragraph for
-     this slot, and no approved copy exists for the three step strings. */
-  .confirmation__next-body {
-    margin: var(--ac-space-4) 0 0;
-    border-top: 1px solid var(--ac-color-rule);
-    padding-top: var(--ac-space-4);
+  .receipt-lead {
+    max-width: 660px;
+    margin: 0;
+    color: #536779;
+    font-size: 18px;
+    line-height: 1.7;
   }
 
-  .confirmation__next a,
-  .confirmation__next small {
-    display: block;
-    margin-top: var(--ac-space-4);
+  .receipt-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+    gap: 70px;
+    margin-top: 43px;
+    border-top: 1px solid #cbd5df;
+    padding-top: 32px;
   }
 
-  @media (min-width: 60rem) {
-    .confirmation__layout {
-      grid-template-columns: minmax(0, 7fr) minmax(18rem, 4fr);
-      gap: clamp(3rem, 8vw, 8rem);
+  .receipt-grid > * {
+    min-width: 0;
+  }
+
+  .receipt-heading {
+    margin: 0 0 14px;
+    color: #122840;
+    font-size: 22px;
+    font-weight: 650;
+    letter-spacing: -0.4px;
+    line-height: 1.3;
+  }
+
+  .receipt-grid p {
+    margin: 0 0 17px;
+    color: #536779;
+    font-size: 15px;
+  }
+
+  .receipt-details {
+    margin: 0;
+  }
+
+  .receipt-details div {
+    display: grid;
+    grid-template-columns: 90px minmax(0, 1fr);
+    gap: 15px;
+    padding-block: 7px;
+    font-size: 14px;
+  }
+
+  .receipt-details dt {
+    color: #536779;
+  }
+
+  .receipt-details dd {
+    margin: 0;
+    color: #122840;
+    font-weight: 550;
+    overflow-wrap: anywhere;
+  }
+
+  .receipt-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    min-height: 48px;
+    margin: 5px 0 16px;
+    padding: 13px 21px;
+    border: 1px solid #1c355e;
+    border-radius: 0;
+    background: #1c355e;
+    color: #fff;
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+  }
+
+  .receipt-action:hover {
+    background: #122840;
+    color: #fff;
+  }
+
+  .receipt-action:focus-visible,
+  .receipt-text-link:focus-visible,
+  .receipt-phone:focus-visible,
+  .receipt-brand:focus-visible,
+  .receipt-footer a:focus-visible {
+    outline: 3px solid #1c355e;
+    outline-offset: 4px;
+  }
+
+  .receipt-fine {
+    color: #536779 !important;
+    font-size: 12px !important;
+  }
+
+  .receipt-boundary {
+    margin-top: 19px !important;
+  }
+
+  .receipt-neutral {
+    max-width: 760px;
+  }
+
+  .receipt-neutral .receipt-title {
+    max-width: 15ch;
+  }
+
+  .receipt-neutral__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 24px;
+    margin-top: 28px;
+  }
+
+  .receipt-neutral__actions .receipt-action {
+    margin: 0;
+  }
+
+  .receipt-text-link {
+    color: #1c355e;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .receipt-footer {
+    border-top: 1px solid #d9e0e6;
+    padding-block: 25px;
+    background: #f7f8fa;
+    color: #536779;
+  }
+
+  .receipt-footer__inner {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    font-size: 12px;
+  }
+
+  .receipt-footer a {
+    color: #1c355e;
+    text-decoration: none;
+  }
+
+  @media (max-width: 620px) {
+    .receipt-wrap {
+      width: calc(100% - 40px);
+    }
+
+    .receipt-header__inner {
+      min-height: 70px;
+    }
+
+    .receipt-brand {
+      font-size: 22px;
+    }
+
+    .receipt-phone {
+      font-size: 12px;
+    }
+
+    .receipt-main {
+      padding-block: 40px;
+    }
+
+    .receipt-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 28px;
+      margin-top: 30px;
+    }
+
+    .receipt-neutral__actions {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .receipt-neutral__actions .receipt-action {
+      width: 100%;
+    }
+
+    .receipt-footer__inner {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .receipt-action {
+      border: 1px solid ButtonText;
     }
   }
 </style>

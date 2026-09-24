@@ -398,3 +398,14 @@ Run against every new or edited public-facing string.
 - [ ] No placeholder, `[OWNER INPUT: …]`, or `REPLACE_WITH_*` string
 - [ ] Documentation disclaimer present wherever a record or sample appears
 - [ ] JSON-LD contains no aggregate rating, review, or unverifiable credential
+
+
+### Current owner positioning exception — 2026-09-19
+
+The owner's explicit homepage metadata/business-positioning request extends the 2026-09-04
+display-only exception to the exact homepage metadata, public/campaign footer description and
+existing LocalBusiness description recorded in `20-COPY-MAP.md` under “Owner positioning update
+— 2026-09-19”. This later rank-2 decision supersedes the three-role-only limit for those exact
+strings. It does not establish new licensing, insurance, credentials or operating scope. All
+existing disclaimer text remains visible and unchanged; only its eligibility for search snippets
+is restricted by disclaimer-only `data-nosnippet` spans.

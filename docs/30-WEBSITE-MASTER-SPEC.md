@@ -8,11 +8,11 @@ Reference: reference/clearpath-911-visual-reference.pdf. Pages are 1-based. Thes
 
 | Element | Reference | Required adaptation |
 | --- | --- | --- |
-| Home hero | ClearPath p23 | Large full-width property/cleanup photograph, dark overlay, left-aligned copy, compact form right. Visible call action in copy column. |
-| Service hero | ClearPath p28 | Same photo-background + copy/form composition; service-specific image and headline. Do not substitute the old white-copy/isolated-photo split. |
-| Services preview | 911 p3–4; ClearPath p24 | Simple photo cards with title, brief source excerpt, page link; five real services. |
+| Home hero | ClearPath p23 | Large full-width property/cleanup photograph, dark overlay, left-aligned copy. Visible call action in copy column. **No embedded form as of the 2026-09-17 owner decision (§3) — the form moved to a bottom contact section; the secondary action scrolls there.** **The homepage's full section order is now fixed by the owner's 2026-09-18 design blueprint (`docs/Aseptaclean_Website_Design_Blueprint.md`), not by this table's row order — see that document's "Exact homepage structure" and §5 below.** |
+| Service hero | ClearPath p28 | Same photo-background composition; service-specific image and headline. Do not substitute the old white-copy/isolated-photo split. **No embedded form as of the 2026-09-17 owner decision (§3) — the form moved to a bottom contact section; the secondary action scrolls there.** |
+| Services preview | 911 p3–4; ClearPath p24 | Simple photo cards with title, brief source excerpt, page link; **six real services as of 2026-09-18 (the owner blueprint added Estate Cleanout as the sixth public service; three columns desktop, two tablet, one mobile).** |
 | Main section rhythm | ClearPath p25–32 | Alternate substantial white image/text sections with occasional dark or accent bands. Photography occupies real space. |
-| Process | ClearPath p25 and p30 | Compact horizontal steps, stacking cleanly on mobile. Source controls the number and wording of steps. |
+| Process | ClearPath p25 and p30 | Compact horizontal steps, stacking cleanly on mobile. Source controls the number and wording of steps **on service pages. The homepage process is fixed at four steps by the 2026-09-18 owner blueprint, consolidated from the source's five with no sentence dropped — see docs/05-CURRENT-DECISIONS.md, 2026-09-18.** |
 | Calm content and geographic clarity | 911 p2, p4, p14–16, p22 | Readable white sections, restrained cards, short hierarchy, useful service-area presentation. |
 | FAQ | ClearPath p33; 911 p16 | Simple full-width accordion rows within a readable centered column. |
 | Footer | 911 p8 | Substantial dark footer with clear service, company, legal, and contact groups. |
@@ -41,7 +41,23 @@ Use `docs/styles/website-reference.css` as the numerical reference, mapped into 
 
 ## 3. Hero and form fit
 
-Home and the five service pages share one responsive HeroWithForm component. The hub and About use shorter photographic introductions without the full intake panel. Contact uses a compact title plus call/details/form split. Legal pages use a text title.
+**Owner decisions, 2026-09-17 — two, same day, second one widening the first (supersedes the
+paragraph below entirely) — see AGENTS.md "Hero-form scope" and `docs/05-CURRENT-DECISIONS.md`,
+both 2026-09-17 entries.** No page's hero embeds a working form anymore. The homepage and all
+five service-detail pages (hoarding, extreme cleaning, deep cleaning, crime scene & trauma,
+rodent) use the same full-bleed photo + flat navy overlay hero geometry described below, but with
+**no embedded form**: the secondary action scrolls to a centered contact section near the bottom
+of the same page instead. This is the composition the rodent service page already used. The hub,
+About, Contact and legal pages, and every PPC/paid-landing-page route, are unaffected and keep the
+compositions named in the untouched sentence that follows.
+
+~~Home and the five service pages share one responsive HeroWithForm component.~~ Home and the
+five service pages use the same hero geometry (`AcHeroWithForm`) with the form removed
+(`showForm={false}`) — see the owner-decision note above. **The Services hub is retired
+2026-09-18 (owner blueprint) — `/services/` no longer exists and redirects to `/#services`; every
+reference to "the hub" below and elsewhere in this document describes retired code, kept for
+history.** About uses a shorter photographic introduction without the full intake panel. Contact
+uses a compact title plus call/details/form split. Legal pages use a text title.
 
 Desktop >=1200px: fluid copy column + 520–560px form column, approximately 52px gap. If actual content needs more width or height, adjust measured spacing and the breakpoint, not the phone number, required consent, or source wording.
 
@@ -50,6 +66,25 @@ At smaller widths stack copy then form. Keep the call action near the headline; 
 Above-fold targets: at 1440x900 and 1536x864, show the headline, call action, entire compact form, and submit button without clipping. Also inspect 1366x768 and 1280x800; aim for the same with measured compact spacing. On short viewports, zoomed text, or long required consent, allow normal vertical scrolling. A fixed height with overflow:hidden is never an acceptable way to claim the hero fits. Do not promise the entire hero fits on every device.
 
 Use content-aware height, never a giant minimum-height copied from an old mockup. Account for real header/utility height, browser viewport, consent copy, form status, anti-spam widget, and any image disclosure. Keep disclosure text under the layout, not as a second horizontal flex child that steals the form's width. Do not delete existing helper/consent copy merely to meet a geometry target.
+
+**Mandatory shared hero sizing, owner blueprint, 2026-09-18 — reconciles with the paragraph above
+rather than replacing it.** The "never a giant minimum-height" warning above targets a fixed,
+mockup-copied height that clips or hides content; it does not forbid a considered, uniform floor
+that still lets a page grow taller when its approved copy needs more room. The owner's design
+blueprint (`docs/Aseptaclean_Website_Design_Blueprint.md`, "Mandatory shared hero sizing") requires
+exactly that: all nine public marketing pages (home, the six service pages including Estate
+Cleanout, About, and Contact) share one MIN-height floor, originally targeted at 600px desktop /
+560px tablet / 440px minimum mobile. **Raised to 736px desktop (≥1024px) / 592px tablet
+(768–1023px) after measurement**, per the design spec's own repair rule (§2.2: "If approved copy
+exceeds the baseline, increase the shared token in 8px increments to the smallest value that fits
+every reviewed hero") — Extreme Cleaning's approved hero copy needs 736px at desktop width, and
+raising the shared token is the compliant fix, not a page-specific exception. The 440px mobile
+floor is unchanged; mobile is explicitly allowed to expand per-page. Measured from below the
+navbar to the hero's bottom, excluding the homepage trust strip. Content sets the height above that
+floor; nothing is clipped, compressed, or given a page-specific exception. Shared content inset is
+64px top/bottom desktop, 48px tablet, 40px mobile, also stepped rather than fluid, so every page's
+hero measures identically at matching widths. See `docs/ASEPTACLEAN-DESIGN-QA.md` for the measured
+verification record.
 
 ### 3.1 Route exception — stacked hero photograph on `/crime-scene-trauma-cleanup-san-jose/`
 
@@ -89,6 +124,16 @@ sitewide `overlay` behaviour, set from `heroStackedLayout` on the trauma record 
 `src/data/servicePageCopy.ts`. The homepage and the other four service heroes pass nothing and
 are unaffected; `acx-hero--split` appears in exactly one built page. **Do not generalise this to
 another hero without its own recorded owner decision.**
+
+**Note, 2026-09-17 — the trauma hero no longer carries a form.** Since the §3 owner decision
+removed the embedded form from every service hero, the stacked media box this exception bounds
+now spans only the copy region by construction (there is no form beneath it to also span), which
+is what this exception already produced. The `split-band` mechanism, the recorded focal points,
+and the measured table above are left exactly as they were rather than removed as "now redundant"
+— they cost nothing to keep, and removing them would be an unrequested change to a route this
+task's brief explicitly said to preserve ("preserve trauma-specific image focal points"). Verified
+post-change at 390/768/1024/1280+ with no clipping, no obscured subject, and no regression from
+the measured table above.
 
 ## 4. Shared components
 

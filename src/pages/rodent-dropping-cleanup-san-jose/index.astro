@@ -1,449 +1,136 @@
 ---
-// RODENT SERVICE PAGE — rebuilt 2026-09-16 on the owner-approved
-// docs/Aseptaclean_Rodent_Service_Page_Copy.md. Verbatim wording and section order.
-//
-// SCOPED DESIGN EXCEPTION (AGENTS.md §2.2.3, 2026-09-16): this page does not use the shared
-// AcServicePage + AcHeroWithForm composition every other service page uses — per explicit owner
-// instruction, the hero carries no form and the working intake form (PpcHeroForm, unmodified)
-// sits in its own section at the bottom of the page instead. The HERO ITSELF still uses the
-// sitewide full-bleed photo + navy overlay treatment via AcPageHero (the same component About,
-// Contact and the Services hub already use for a no-form hero) — an earlier draft of this page
-// built a separate light-background, boxed-photo hero component and it visually did not match
-// the rest of the site; AcPageHero's own header comment already explains why that pattern was
-// retired sitewide in the 2026-09-04 visual port. See docs/05-CURRENT-DECISIONS.md, 2026-09-16.
-//
-// ROUTE AND CANONICAL URL ARE UNCHANGED. Indexation is `index, follow`, per the owner's
-// 2026-09-15 decision to remove this route's launchIndexableExceptions gate (see
-// docs/05-CURRENT-DECISIONS.md, 2026-09-15) — independent of, and unaffected by, this copy
-// rebuild.
-//
-// DOC 21 §2.3 + §3.1 mandatory clauses are appended, verbatim, at the end of the "What if rodents
-// are still getting in?" section, on top of the approved copy.
-import type { ImageMetadata } from "astro";
+// Owner-approved 2026-09-19 rodent-service kit; advertising route remains independent.
 import BaseLayout from "@layouts/BaseLayout.astro";
-import AcPageHero from "@components/ac/AcPageHero.astro";
-import AcTrustStrip from "@components/ac/AcTrustStrip.astro";
-import AcEyebrow from "@components/ac/AcEyebrow.astro";
-import AcIntro from "@components/ac/AcIntro.astro";
-import AcSplit from "@components/ac/AcSplit.astro";
-import AcDarkBand from "@components/ac/AcDarkBand.astro";
-import AcCheckList from "@components/ac/AcCheckList.astro";
-import AcServiceCards from "@components/ac/AcServiceCards.astro";
-import FaqAccordion from "@components/FaqAccordion.astro";
+import AssignedPhoto from '@components/ac/AssignedPhoto.astro';
+import rodentHero from '../../assets/aseptaclean/public-pages/rodent-service/01-rodent-service-garage-inspection.webp';
+import rodentAttic from '../../assets/aseptaclean/public-pages/rodent-service/02-rodent-service-attic-evidence.webp';
+import rodentBelongings from '../../assets/aseptaclean/public-pages/rodent-service/03-rodent-service-affected-belongings.webp';
+import rodentDocument from '../../assets/aseptaclean/public-pages/rodent-service/04-rodent-service-document-droppings.webp';
+import Header from "@components/Header.astro";
 import PpcHeroForm from "@components/ppc/PpcHeroForm.astro";
-import RodentPricing from "@components/rodent/RodentPricing.astro";
-import { site, legal } from "@data/site";
+import { site } from "@data/site";
 import { rodentServicePage as page } from "@data/rodentServicePage";
-import { launchServiceLinks } from "@data/launchArchitecture";
-
-import heroImage from "../../assets/aseptaclean/rodent-utility-room-context.png";
-import storageImage from "../../assets/aseptaclean/rodent-storage-contents.png";
-import surfaceImage from "../../assets/aseptaclean/rodent-hard-surface-detail.png";
-import founderPortrait from "../../assets/aseptaclean/founder-matthew-ruiz.jpeg";
-import hoardingLivingRoom from "../../assets/aseptaclean/hoarding-living-room.png";
-import extremeKitchen from "../../assets/aseptaclean/extreme-cleaning-neglected-kitchen.png";
-import deepCleaningKitchen from "../../assets/aseptaclean/detailed-deep-cleaning-kitchen.png";
-import traumaContext from "../../assets/aseptaclean/trauma-residential-context.png";
-
-const callLabel = `Call ${site.business.phone}`;
-const formHref = `#${page.formId}`;
-
-// "Not the right service?" cross-link row — every AcServicePage-based sibling has this; matches
-// that component's own relatedImages/relatedBlurbs mapping (AcServicePage.astro), rebuilt here
-// since this page does not render through AcServicePage. See docs/05-CURRENT-DECISIONS.md.
-const relatedImages: Record<string, ImageMetadata> = {
-  "/hoarding-cleanup-san-jose/": hoardingLivingRoom,
-  "/extreme-cleaning-san-jose/": extremeKitchen,
-  "/deep-cleaning-san-jose/": deepCleaningKitchen,
-  "/crime-scene-trauma-cleanup-san-jose/": traumaContext
-};
-const relatedBlurbs: Record<string, string> = {
-  "/hoarding-cleanup-san-jose/": "When belongings and clutter have made the home difficult to manage.",
-  "/extreme-cleaning-san-jose/": "When the condition has gone beyond a normal deep clean.",
-  "/deep-cleaning-san-jose/": "For homes that need more than routine cleaning.",
-  "/crime-scene-trauma-cleanup-san-jose/": "Discreet cleanup after the scene has been released."
-};
-const related = launchServiceLinks
-  .filter((link) => link.href !== page.route)
-  .map((link) => ({
-    title: link.label,
-    description: relatedBlurbs[link.href] ?? "",
-    href: link.href,
-    image: relatedImages[link.href],
-    imageAlt: ""
-  }));
-
-const cities = site.location.cities;
-const servingSentence = `We serve ${cities.slice(0, -1).join(", ")}, and ${cities[cities.length - 1]}.`;
-
-const schema = [
+import "@styles/aseptaclean-rodent.css";
+import "@styles/hero-consistency.css";
+import '@styles/assigned-photos.css';
+const faqs = [
   {
-    "@type": "Service",
-    serviceType: "Rodent Droppings & Animal Waste Cleanup",
-    name: "Rodent Droppings & Animal Waste Cleanup",
-    description: page.seo.description,
-    url: new URL(page.route, site.urls.site).href,
-    provider: { "@id": new URL("/#business", site.urls.site).href },
-    areaServed: site.location.cities.map((name) => ({ "@type": "City", name }))
+    "question": "Do you clean attics and crawl spaces?",
+    "answer": "Yes. We assess the entrance, available working space, affected materials, and extent of the waste before confirming the cleanup we can perform."
   },
   {
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Services",
-        item: new URL("/services/", site.urls.site).href
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "Rodent Droppings & Animal Waste Cleanup",
-        item: new URL(page.route, site.urls.site).href
-      }
-    ]
+    "question": "Can you remove affected insulation?",
+    "answer": "Yes. Removal of affected insulation can be included in your proposal. We do not install replacement insulation."
   },
   {
-    "@type": "FAQPage",
-    mainEntity: page.faq.items.map((item) => ({
-      "@type": "Question",
-      name: item.question,
-      acceptedAnswer: { "@type": "Answer", text: item.answer }
-    }))
+    "question": "Do you provide pest control?",
+    "answer": "No. Our service addresses waste and affected materials. Trapping, pest treatment, and sealing entry points require another provider. Tell us if you are still seeing rodents or fresh signs of activity."
+  },
+  {
+    "question": "Will everything need to be thrown away?",
+    "answer": "Not necessarily. The material and condition matter. We explain which belongings we propose to clean and which we recommend removing. Removal decisions are reviewed with you before work starts."
+  },
+  {
+    "question": "How much will the cleanup cost?",
+    "answer": "Small cleanup jobs start at $500. Larger cleanup jobs start at $1,500. The on-site assessment is $145, credited toward the cleanup if you proceed. Final pricing depends on the affected areas, access, contamination, and materials requiring removal. You receive a written proposal before committing to the cleanup."
+  },
+  {
+    "question": "Can I send photos first?",
+    "answer": "Yes. Photos can help us understand the location and visible conditions. An on-site assessment may still be needed. Take photos only from somewhere you can safely access; do not sweep or vacuum rodent waste to prepare for a photo or visit."
   }
 ];
+const schema = [
+  { "@type": "Service", serviceType: "Rodent Droppings & Animal Waste Cleanup", name: "Rodent Droppings & Animal Waste Cleanup", description: page.seo.description, url: new URL(page.route, site.urls.site).href, provider: { "@id": new URL("/#business", site.urls.site).href }, areaServed: ["San Jose", "Santa Clara", "Sunnyvale", "Mountain View", "Palo Alto", "Menlo Park", "Redwood City", "San Mateo"].map(name => ({ "@type": "City", name })) },
+  { "@type": "BreadcrumbList", itemListElement: [ { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home }, { "@type": "ListItem", position: 2, name: "Rodent Droppings & Animal Waste Cleanup", item: new URL(page.route, site.urls.site).href } ] },
+  { "@type": "FAQPage", mainEntity: faqs.map(item => ({ "@type": "Question", name: item.question, acceptedAnswer: { "@type": "Answer", text: item.answer } })) }
+];
 ---
-
 <BaseLayout title={page.seo.title} description={page.seo.description} canonicalPath={page.route} schema={schema}>
-  <AcPageHero
-    eyebrow={page.hero.eyebrow}
-    heading={page.hero.heading}
-    headingId="rodent-hero-title"
-    lead={page.hero.lead}
-    body={page.hero.body}
-    image={heroImage}
-    imageAlt="A residential utility room with a low shelf, cardboard boxes and a small scattering of rodent droppings near the wall"
-    assurances={[page.hero.trustLine]}
-    primaryLabel={callLabel}
-    secondaryLabel={page.hero.secondaryLabel}
-    secondaryHref={formHref}
-  />
+<Fragment slot="header"><div class="rodent-utility"><div>Specialty property cleanup · South Bay &amp; Peninsula<span>Rodent &amp; Animal Waste Cleanup</span></div></div><Header /></Fragment>
+<div id="ac-rodent">
+<section class="hero"><AssignedPhoto src={rodentHero} alt="Technician inspecting rodent activity around garage shelving." kind="hero" position="center 52%" /><div class="wrap"><div class="hero-copy"><p class="eyebrow">Rodent &amp; Animal Waste Cleanup</p><h1 class="ac-type-rodent-hero">Take Back Your Space.<br/>Leave the Cleanup to Us.</h1><p class="body">Cleanup for rodent droppings, urine, nesting materials, and animal waste. We assess affected rooms, belongings, attics, and crawl spaces, then explain the work and price.</p><div class="actions"><a class="action light" href="#rodent-contact">Request an Assessment <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-up-right" aria-hidden="true" class="lucide lucide-arrow-up-right"><path d="M7 7h10v10"></path><path d="M7 17 17 7"></path></svg></a><a class="action outline" href={site.business.phoneUri}>Call {site.business.phone}</a></div></div></div></section>
+<div class="wrap"><div class="trust"><div><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="clipboard-check" aria-hidden="true" class="lucide lucide-clipboard-check"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="m9 14 2 2 4-4"></path></svg><div><strong>Written Plan &amp; Price</strong><span>Review the work before it starts</span></div></div><div><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="user-round-check" aria-hidden="true" class="lucide lucide-user-round-check"><path d="M2 21a8 8 0 0 1 13.292-6"></path><circle cx="10" cy="8" r="5"></circle><path d="m16 19 2 2 4-4"></path></svg><div><strong>Owner-Operated</strong><span>Speak directly with the owner</span></div></div><div><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="house" aria-hidden="true" class="lucide lucide-house"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg><div><strong>Beyond the Living Space</strong><span>Cleanup for attics &amp; crawl spaces</span></div></div></div></div>
+<section class="section" id="rodent-scope"><div class="wrap"><div class="section-top"><div><p class="eyebrow">Where we help</p><h2 class="ac-type-rodent-section">Waste in places you need to use again.</h2></div><p>You may have found droppings in one cabinet or waste throughout a storage area. Tell us where you found it and whether rodents are still active. We handle the cleanup; pest control is a separate service.</p></div><div class="scope-grid">
+<div class="scope-item"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="cooking-pot" aria-hidden="true" class="lucide lucide-cooking-pot"><path d="M2 12h20"></path><path d="M20 12v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-8"></path><path d="m4 8 16-4"></path><path d="m8.86 6.78-.45-1.81a2 2 0 0 1 1.45-2.43l1.94-.48a2 2 0 0 1 2.43 1.46l.45 1.8"></path></svg><div><h3 class="ac-type-rodent-scope">Kitchens &amp; Cabinets</h3><p>Remove waste and clean affected surfaces in cabinets, pantries, drawers, and kitchen areas.</p></div></div>
+<div class="scope-item"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="warehouse" aria-hidden="true" class="lucide lucide-warehouse"><path d="M18 21V10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1v11"></path><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V8a2 2 0 0 1 1.132-1.803l7.95-3.974a2 2 0 0 1 1.837 0l7.948 3.974A2 2 0 0 1 22 8z"></path><path d="M6 13h12"></path><path d="M6 17h12"></path></svg><div><h3 class="ac-type-rodent-scope">Garages &amp; Storage</h3><p>Address droppings and nesting debris around shelving, boxes, and stored belongings.</p></div></div>
+<div class="scope-item"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="armchair" aria-hidden="true" class="lucide lucide-armchair"><path d="M19 9V6a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v3"></path><path d="M3 16a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-5a2 2 0 0 0-4 0v1.5a.5.5 0 0 1-.5.5h-9a.5.5 0 0 1-.5-.5V11a2 2 0 0 0-4 0z"></path><path d="M5 18v2"></path><path d="M19 18v2"></path></svg><div><h3 class="ac-type-rodent-scope">Living Spaces</h3><p>Clean animal waste and assess affected surfaces and materials in rooms throughout the property.</p></div></div>
+<div class="scope-item"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="house" aria-hidden="true" class="lucide lucide-house"><path d="M15 21v-8a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v8"></path><path d="M3 10a2 2 0 0 1 .709-1.528l7-6a2 2 0 0 1 2.582 0l7 6A2 2 0 0 1 21 10v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg><div><h3 class="ac-type-rodent-scope">Attics</h3><p>Remove droppings, nesting debris, and affected insulation included in the cleanup.</p></div></div>
+<div class="scope-item"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="layers" aria-hidden="true" class="lucide lucide-layers"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83z"></path><path d="M2 12a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 12"></path><path d="M2 17a1 1 0 0 0 .58.91l8.6 3.91a2 2 0 0 0 1.65 0l8.58-3.9A1 1 0 0 0 22 17"></path></svg><div><h3 class="ac-type-rodent-scope">Crawl Spaces</h3><p>Clean accessible affected areas beneath the home, with entry and working space assessed first.</p></div></div>
+<div class="scope-item"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="package-open" aria-hidden="true" class="lucide lucide-package-open"><path d="M12 22v-9"></path><path d="M15.17 2.21a1.67 1.67 0 0 1 1.63 0L21 4.57a1.93 1.93 0 0 1 0 3.36L8.82 14.79a1.655 1.655 0 0 1-1.64 0L3 12.43a1.93 1.93 0 0 1 0-3.36z"></path><path d="M20 13v3.87a2.06 2.06 0 0 1-1.11 1.83l-6 3.08a1.93 1.93 0 0 1-1.78 0l-6-3.08A2.06 2.06 0 0 1 4 16.87V13"></path><path d="M21 12.43a1.93 1.93 0 0 0 0-3.36L8.83 2.2a1.64 1.64 0 0 0-1.63 0L3 4.57a1.93 1.93 0 0 0 0 3.36l12.18 6.86a1.636 1.636 0 0 0 1.63 0z"></path></svg><div><h3 class="ac-type-rodent-scope">Belongings &amp; Contents</h3><p>Review affected items and explain what we propose to clean or remove before you decide.</p></div></div>
+</div></div></section>
+<section class="section warm" id="rodent-attic"><div class="wrap"><div class="wide-heading"><p class="eyebrow">Attics &amp; crawl spaces</p><h2 class="ac-type-rodent-section"><span class="ac-heading-line">The cleanup includes</span> <span class="ac-heading-line">the spaces out of sight.</span></h2></div><div class="split"><div><p>Droppings and nesting materials can collect above the ceiling or beneath the floor. We assess access, the affected surfaces, and whether contaminated insulation needs removal.</p><p style="font-size:13px">We do not install replacement insulation, seal entry points, or provide pest control. Tell us what has already been done to address the animals.</p><div class="actions"><a class="action" href="#rodent-contact">Request an Assessment <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" aria-hidden="true" class="lucide lucide-arrow-right"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></div><div><AssignedPhoto src={rodentAttic} alt="Rodent evidence on an attic platform beside insulation and timber framing." /><div class="photo-caption">Illustrative photo</div></div></div><ul class="checks attic-points"><li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"></path></svg>Remove droppings and nesting materials.</li><li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"></path></svg>Remove affected insulation where included.</li><li><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="check" aria-hidden="true" class="lucide lucide-check"><path d="M20 6 9 17l-5-5"></path></svg>Clean accessible surfaces covered by the job.</li></ul></div></section>
+<section class="section" id="rodent-belongings">
+<div class="wrap"><div class="wide-heading"><p class="eyebrow">Your belongings matter</p><h2 class="ac-type-rodent-section"><span class="ac-heading-line">Clear decisions.</span> <span class="ac-heading-line">No guesswork about your things.</span></h2></div>
+<div class="split">
+<div><p>Finding droppings around stored belongings raises another question: what can you keep?</p><p>We review the affected items, their materials, and their condition. You see what we propose to clean or remove before authorizing the work. Tell us about important belongings that need individual attention.</p></div>
+<div class="assigned-photo-frame"><AssignedPhoto src={rodentBelongings} alt="Black-gloved hands inspecting a damaged carton of stored fabrics." kind="fill" /><div class="image-note">Your property. Your decisions.<small>Review proposed removal before work starts.</small></div></div>
+</div>
+<div class="audience belongings-steps">
+<div><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="package-check" aria-hidden="true" class="lucide lucide-package-check"><path d="M12 22V12"></path><path d="m16 17 2 2 4-4"></path><path d="M21 11.127V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.729l7 4a2 2 0 0 0 2 .001l1.32-.753"></path><path d="M3.29 7 12 12l8.71-5"></path><path d="m7.5 4.27 8.997 5.148"></path></svg><div><h3 class="ac-type-rodent-decision">Review what is affected</h3><p>Identify the belongings and surfaces involved, including items that need closer review.</p></div></div>
+<div><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="messages-square" aria-hidden="true" class="lucide lucide-messages-square"><path d="M16 10a2 2 0 0 1-2 2H6.828a2 2 0 0 0-1.414.586l-2.202 2.202A.71.71 0 0 1 2 14.286V4a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"></path><path d="M20 9a2 2 0 0 1 2 2v10.286a.71.71 0 0 1-1.212.502l-2.202-2.202A2 2 0 0 0 17.172 19H10a2 2 0 0 1-2-2v-1"></path></svg><div><h3 class="ac-type-rodent-decision">Agree on the next step</h3><p>Discuss what can be included in cleaning and what is proposed for removal.</p></div></div>
+<div><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="clipboard-list" aria-hidden="true" class="lucide lucide-clipboard-list"><rect width="8" height="4" x="8" y="2" rx="1" ry="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M12 11h4"></path><path d="M12 16h4"></path><path d="M8 11h.01"></path><path d="M8 16h.01"></path></svg><div><h3 class="ac-type-rodent-decision">Put the scope in writing</h3><p>Record the approved work and any items or areas excluded from it.</p></div></div>
+</div>
+</div>
+</section>
+<section class="band"><div class="wrap"><div><h2 class="ac-type-rodent-band">Not sure how much needs cleaning?</h2><p>Start with where you found the waste and what you noticed. We’ll ask about access, affected belongings, and any pest-control work already completed.</p></div><a class="action light" href="#rodent-contact">Request an Assessment <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" data-lucide="arrow-right" aria-hidden="true" class="lucide lucide-arrow-right"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a></div></section>
+<section class="section" id="rodent-process"><div class="wrap"><p class="eyebrow">Our process</p><h2 class="ac-type-rodent-section">A clear plan from first call to finish.</h2><div class="steps"><div class="step"><b>01</b><h3 class="ac-type-rodent-step">Tell Us What You Found</h3><p>Share the property’s location, affected areas, and whether animals are still active. Photos can help explain the condition.</p></div><div class="step"><b>02</b><h3 class="ac-type-rodent-step">Review the Scope</h3><p>We assess the work and provide a written price. You can ask questions before deciding to proceed.</p></div><div class="step"><b>03</b><h3 class="ac-type-rodent-step">Complete the Cleanup</h3><p>We remove approved waste and materials and clean the areas listed in your proposal.</p></div><div class="step"><b>04</b><h3 class="ac-type-rodent-step">Review the Work</h3><p>Review the completed cleanup and receive the photos and records included in your scope.</p></div></div></div></section>
+<section class="section warm before-work"><div class="wrap"><div class="wide-heading"><p class="eyebrow">Before work begins</p><h2 class="ac-type-rodent-section"><span class="ac-heading-line">Know what’s included.</span> <span class="ac-heading-line">Know what comes next.</span></h2></div>
+<div class="split">
+<div><p>A few affected shelves and an attic filled with contaminated insulation require different work. The amount of waste, access, belongings, and materials to remove all affect the price.</p><p>Your proposal identifies the areas and tasks included. If we find a condition that changes the job, we explain the additional work and price before you approve it.</p></div>
+<AssignedPhoto src={rodentDocument} alt="Black-gloved hands photographing rodent droppings beside a washing machine." class="assigned-photo--wide" />
+</div>
+<div aria-label="Cleanup starting prices" class="job-pricing"><div><h3 class="ac-type-rodent-price">Small cleanup jobs</h3><p class="starting-label">Starting at</p><p class="price-value">$500</p></div><div><h3 class="ac-type-rodent-price">Larger cleanup jobs</h3><p class="starting-label">Starting at</p><p class="price-value">$1,500</p></div></div><p class="pricing-explanation">Final cleanup pricing depends on the affected areas, access, contamination, and materials requiring removal.</p><div class="assessment-band"><div><h3 class="ac-type-rodent-assessment">On-site assessment · $145</h3><p class="price-note">Credited toward the cleanup if you proceed.</p></div><div class="actions"><a class="action" href="#rodent-contact">Request an Assessment</a></div></div><div class="boundaries"><div><h3 class="ac-type-rodent-subheading">Cleanup &amp; Removal</h3><p>Waste removal, cleaning of affected areas, and approved removal of contaminated materials. Insulation removal is included only when listed in your proposal.</p></div><div><h3 class="ac-type-rodent-subheading">Separate Services</h3><p>Pest control, entry-point sealing, repairs, and insulation replacement require another provider. Let us know about ongoing activity so we can discuss the timing of cleanup.</p></div></div>
+<div class="scope-disclosures" data-nosnippet>{page.stillGettingIn.complianceClauses.map(clause => <p>{clause}</p>)}</div></div></section>
+<section class="section" id="rodent-faq"><div class="wrap faq-layout"><div class="faq-heading"><p class="eyebrow">Common questions</p><h2 class="ac-type-rodent-section">A few things you may be wondering.</h2></div><div class="faq-list">
+<details open=""><summary>Do you clean attics and crawl spaces?</summary><p>Yes. We assess the entrance, available working space, affected materials, and extent of the waste before confirming the cleanup we can perform.</p></details>
+<details><summary>Can you remove affected insulation?</summary><p>Yes. Removal of affected insulation can be included in your proposal. We do not install replacement insulation.</p></details>
+<details><summary>Do you provide pest control?</summary><p>No. Our service addresses waste and affected materials. Trapping, pest treatment, and sealing entry points require another provider. Tell us if you are still seeing rodents or fresh signs of activity.</p></details>
+<details><summary>Will everything need to be thrown away?</summary><p>Not necessarily. The material and condition matter. We explain which belongings we propose to clean and which we recommend removing. Removal decisions are reviewed with you before work starts.</p></details>
+<details><summary>How much will the cleanup cost?</summary><p>Small cleanup jobs start at $500. Larger cleanup jobs start at $1,500. The on-site assessment is $145, credited toward the cleanup if you proceed. Final pricing depends on the affected areas, access, contamination, and materials requiring removal. You receive a written proposal before committing to the cleanup.</p></details>
+<details><summary>Can I send photos first?</summary><p>Yes. Photos can help us understand the location and visible conditions. An on-site assessment may still be needed. Take photos only from somewhere you can safely access; do not sweep or vacuum rodent waste to prepare for a photo or visit.</p></details>
+</div><div class="faq-contact"><p>Have a question about your property? Tell us what you found.</p><div class="actions"><a class="action outline" href={site.business.phoneUri}>Call {site.business.phone}</a></div></div></div></section>
+<section class="section warm" id="rodent-area"><div class="wrap coverage"><div><p class="eyebrow">Service area</p><h2 class="ac-type-rodent-section">South Bay<br/>&amp; Peninsula.</h2><p>Rodent and animal waste cleanup in Santa Clara County and San Mateo County. Share the property’s location and affected areas so we can confirm availability.</p></div><div><h3 class="ac-type-rodent-area">Santa Clara County</h3><ul><li>Campbell</li><li>Cupertino</li><li>Gilroy</li><li>Los Altos</li><li>Los Altos Hills</li><li>Los Gatos</li><li>Milpitas</li><li>Monte Sereno</li><li>Morgan Hill</li><li>Mountain View</li><li>Palo Alto</li><li>San Jose</li><li>Santa Clara</li><li>Saratoga</li><li>Sunnyvale</li></ul></div><div><h3 class="ac-type-rodent-area">San Mateo County</h3><ul><li>Atherton</li><li>Belmont</li><li>Brisbane</li><li>Burlingame</li><li>Colma</li><li>Daly City</li><li>East Palo Alto</li><li>Foster City</li><li>Half Moon Bay</li><li>Hillsborough</li><li>Menlo Park</li><li>Millbrae</li><li>Pacifica</li><li>Portola Valley</li><li>Redwood City</li><li>San Bruno</li><li>San Carlos</li><li>San Mateo</li><li>Woodside</li></ul></div></div></section>
+<section class="quiet"><div class="wrap"><div><h2 class="ac-type-rodent-closing">Let’s make a plan for your property.</h2><p>Tell us where you found waste and what you need help cleaning. You do not need to know the full extent before contacting us.</p></div><a class="action" href="#rodent-contact">Request an Assessment</a></div></section>
+<section class="section" id="rodent-contact"><div class="wrap"><div id="rodent-form" class="formwrap"><p class="eyebrow">Contact Aseptaclean</p><h2 id="rodent-contact-title" class="ac-type-rodent-section center">Tell us what needs cleanup.</h2><p>Describe the affected areas and whether rodents or animals are still active. Mention any pest-control work already completed.</p><p class="assessment-fee">On-site assessment: $145, credited toward the cleanup if you proceed.</p><PpcHeroForm
+  formId="rodent-form-panel"
+  headingId="rodent-contact-title"
+  entryRoute={`${page.route}#rodent-form`}
+  situationValue="Rodent droppings or animal waste"
+  submitLabel="Send Message"
+  detailLabel="What Have You Found?"
+  emailBeforeZip
+  photoHelper="Photos of the affected area help."
+  microcopy={page.form.microcopy}
+  thankYouRoute="/thank-you/"
+  tone="light"
+>
+ <div slot="additional-fields" class="ppc-form__field affected-area">
+  <label for="rodent-form-panel-area">Affected Area</label>
+  <select id="rodent-form-panel-area" name="affected_area" required>
+   <option value="">Select an area</option>
+   {['Kitchen or cabinets','Garage or storage','Living spaces','Attic','Crawl space','Multiple areas / not sure'].map(area => <option>{area}</option>)}
+  </select>
+ </div>
+</PpcHeroForm></div></div></section>
+</div>
 
-  <AcTrustStrip />
-
-  {/* Different spaces need different cleanup plans. */}
-  <AcIntro eyebrow="01 / The spaces" heading={page.spaces.heading} headingId={page.spaces.id} lead={page.spaces.lead} body={page.spaces.body}>
-    <div class="rodent-groups">
-      {page.spaces.groups.map((group) => (
-        <div class="rodent-groups__item">
-          <h3 class="ac-type-h3-band">{group.title}</h3>
-          {group.body.map((paragraph) => <p>{paragraph}</p>)}
-        </div>
-      ))}
-    </div>
-  </AcIntro>
-
-  {/* What can you keep? */}
-  <AcSplit
-    eyebrow="02 / What stays"
-    heading={page.keep.heading}
-    headingId={page.keep.id}
-    lead={page.keep.lead}
-    body={page.keep.body}
-    image={storageImage}
-    imageAlt={page.keep.imageAlt}
-    tone="soft"
-  >
-    <div class="rodent-list">
-      <AcCheckList items={page.keep.list} compact />
-    </div>
-    {page.keep.closing.map((paragraph) => <p class="rodent-closing">{paragraph}</p>)}
-  </AcSplit>
-
-  {/* How we handle the cleanup. */}
-  <AcIntro eyebrow="03 / How we clean" heading={page.process.heading} headingId={page.process.id} tone="soft">
-    <div class="rodent-groups rodent-groups--cols">
-      {page.process.groups.map((group) => (
-        <div class="rodent-groups__item">
-          <h3 class="ac-type-h3-band">{group.title}</h3>
-          {group.body.map((paragraph) => <p>{paragraph}</p>)}
-        </div>
-      ))}
-    </div>
-  </AcIntro>
-
-  {/* What we look at during a property assessment. */}
-  <AcSplit
-    eyebrow="04 / The visit"
-    heading={page.assessmentVisit.heading}
-    headingId={page.assessmentVisit.id}
-    lead={page.assessmentVisit.lead}
-    body={page.assessmentVisit.body}
-    image={surfaceImage}
-    imageAlt={page.assessmentVisit.imageAlt}
-    reverse
-  >
-    <div class="rodent-list">
-      <AcCheckList items={page.assessmentVisit.list} compact />
-    </div>
-    {page.assessmentVisit.closing.map((paragraph) => <p class="rodent-closing">{paragraph}</p>)}
-    <p class="rodent-strong">{page.assessmentVisit.strongLine}</p>
-    {page.assessmentVisit.closingAfter.map((paragraph) => <p class="rodent-closing">{paragraph}</p>)}
-  </AcSplit>
-
-  {/* What does cleanup cost? — scoped pricing exception, AGENTS.md §4, 2026-09-16, rebuilt
-      2026-09-17 on docs/Aseptaclean_Rodent_Pages_Layout_Brief.md (docs/05-CURRENT-DECISIONS.md,
-      2026-09-17): two cleanup price cards, one shared factor sentence, and a separate $145
-      assessment strip with its own CTA — no redundant call/assessment button pair above the
-      form (brief §5). */}
-  <RodentPricing
-    headingId={page.pricing.id}
-    eyebrow={page.pricing.eyebrow}
-    heading={page.pricing.heading}
-    lead={page.pricing.lead}
-    cards={page.pricing.cards}
-    note={page.pricing.note}
-    assessmentHeading={page.pricing.assessment.heading}
-    assessmentBody={page.pricing.assessment.body}
-    assessmentStrongLine={page.pricing.assessment.strongLine}
-    assessmentButtonLabel={page.pricing.assessment.buttonLabel}
-    assessmentButtonHref={formHref}
-  />
-
-  {/* What if rodents are still getting in? — doc 21 §2.3 + §3.1 appended verbatim below. One
-      dark band per page, doc 30 §4 ("one or two dark breaks in a long service page"), matching
-      every AcServicePage sibling. Copy-only: no fourth distinct rodent photograph exists to pair
-      with it without repeating one already used above. */}
-  <AcDarkBand eyebrow="06 / Pest control" heading={page.stillGettingIn.heading} headingId={page.stillGettingIn.id} body={page.stillGettingIn.body} showActions={false}>
-    <div class="rodent-exclude">
-      <h3 class="ac-type-h3-band rodent-exclude__title">{page.stillGettingIn.excludeTitle}</h3>
-      <ul class="rodent-exclude__list">
-        {page.stillGettingIn.exclude.map((item) => <li>{item}</li>)}
-      </ul>
-    </div>
-    {page.stillGettingIn.closing.map((paragraph) => <p class="rodent-closing rodent-closing--dark">{paragraph}</p>)}
-    {page.stillGettingIn.complianceClauses.map((clause) => <p class="rodent-limit rodent-limit--dark">{clause}</p>)}
-  </AcDarkBand>
-
-  {/* Meet Matthew, the owner. */}
-  <AcSplit eyebrow="07 / Why Aseptaclean" heading={page.founder.heading} headingId={page.founder.id} body={page.founder.body} image={founderPortrait} imageAlt={`${site.founder.name}, founder of Aseptaclean`} ratio="3/4">
-    <p class="rodent-limit">{legal.founderAuthorityLimit}</p>
-  </AcSplit>
-
-  {/* Questions before you book. */}
-  <AcIntro eyebrow="08 / Questions" heading={page.faq.heading} headingId={page.faq.id} tone="soft">
-    <div class="rodent-faq">
-      <FaqAccordion items={page.faq.items} headingId={page.faq.id} />
-    </div>
-  </AcIntro>
-
-  {/* Serving San Jose, the South Bay, and the Peninsula. */}
-  <AcIntro heading={page.serving.heading} headingId={page.serving.id} body={[servingSentence, page.serving.closing]} />
-
-  {/* Not the right service? — every AcServicePage sibling ends its body here, before the
-      closing action. */}
-  <AcIntro
-    eyebrow="Other services"
-    heading="Not the right service?"
-    headingId="related-title"
-    lead="Aseptaclean handles four other property conditions. If you are not sure which one fits, tell us what is happening and we will help you decide."
-  >
-    <div class="rodent-related">
-      <AcServiceCards cards={related} layout="even" />
-    </div>
-  </AcIntro>
-
-  {/* Tell us what you found. — bottom form, per the scoped hero-form exception. Rebuilt
-      2026-09-17 on the layout brief §6/§7 (docs/05-CURRENT-DECISIONS.md, 2026-09-17): one
-      centered ~680px container, one visible heading (PpcHeroForm's own duplicate header is
-      suppressed via `headingId`), no empty side column. */}
-  <section class="rodent-form" id={page.formId} aria-labelledby="rodent-form-heading">
-    <div class="ac-shell">
-      <div class="rodent-form__shell">
-        <div class="rodent-form__intro">
-          <AcEyebrow text={page.form.eyebrow} />
-          <h2 id="rodent-form-heading" class="ac-type-h2">{page.form.heading}</h2>
-          <p class="rodent-form__lead">{page.form.lead}</p>
-          <p class="rodent-form__lead">{page.form.secondaryLead}</p>
-        </div>
-        <PpcHeroForm
-          formId={page.formId}
-          headingId="rodent-form-heading"
-          entryRoute={`${page.route}#${page.formId}`}
-          situationValue="Rodent droppings or animal waste"
-          submitLabel={page.form.submitLabel}
-          detailLabel={page.form.detailLabel}
-          descriptionHelper={page.form.detailHelper}
-          emailBeforeZip
-          photoHelper="Photos of the affected area help."
-          microcopy={page.form.microcopy}
-          thankYouRoute="/thank-you/"
-          tone="light"
-        />
-        <p class="rodent-form__phone">
-          Prefer to talk? <a href={site.business.phoneUri}>Call {site.business.phone}</a>.
-        </p>
-      </div>
-    </div>
-  </section>
+<script>
+ const form = document.querySelector<HTMLFormElement>('#rodent-form-panel');
+ form?.addEventListener('formdata', (event) => {
+  const area = event.formData.get('affected_area');
+  if (area) event.formData.set('property_detail', `Affected area: ${area}\n\n${event.formData.get('property_detail') ?? ''}`);
+  event.formData.delete('affected_area');
+ });
+ document.querySelectorAll<HTMLAnchorElement>('#ac-rodent a[href="#rodent-contact"]').forEach(link => link.addEventListener('click', event => {
+  event.preventDefault();
+  document.querySelector('#rodent-contact')?.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+  document.querySelector<HTMLInputElement>('#rodent-form-panel-name')?.focus({preventScroll:true});
+ }));
+</script>
 </BaseLayout>
-
 <style>
-  .rodent-groups {
-    display: grid;
-    margin-top: 26px;
-    gap: 28px;
-    text-align: left;
-  }
-
-  .rodent-groups--cols {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .rodent-groups__item h3 {
-    margin: 0 0 10px;
-  }
-
-  .rodent-groups__item p {
-    margin: 8px 0 0;
-    color: var(--ac-color-ink-600);
-    font-size: var(--ac-text-body);
-    line-height: 1.65;
-  }
-
-  @media (max-width: 44rem) {
-    .rodent-groups--cols {
-      grid-template-columns: minmax(0, 1fr);
-    }
-  }
-
-  .rodent-list {
-    margin-top: 22px;
-  }
-
-  .rodent-list h3 {
-    margin: 0 0 14px;
-  }
-
-  .rodent-closing {
-    margin: 16px 0 0;
-    color: var(--ac-color-ink-600);
-    font-size: var(--ac-text-body);
-    line-height: 1.65;
-  }
-
-  .rodent-closing--dark {
-    color: #c3d2e4;
-  }
-
-  .rodent-exclude {
-    margin-top: 22px;
-  }
-
-  .rodent-exclude__title {
-    margin: 0 0 14px;
-    color: #fff;
-  }
-
-  .rodent-exclude__list {
-    display: grid;
-    margin: 0;
-    padding: 0;
-    list-style: none;
-    gap: 10px;
-  }
-
-  .rodent-exclude__list li {
-    position: relative;
-    padding-left: 22px;
-    color: #d7e2f0;
-    font-size: 0.9375rem;
-    line-height: 1.6;
-  }
-
-  .rodent-exclude__list li::before {
-    position: absolute;
-    left: 0;
-    content: "—";
-    color: var(--ac-color-blue-on-navy);
-  }
-
-  .rodent-related {
-    margin-top: 40px;
-    text-align: left;
-  }
-
-  .rodent-strong {
-    margin: 20px 0 0;
-    border-left: 2px solid var(--ac-color-navy-800);
-    padding-left: 18px;
-    color: var(--ac-color-navy-900);
-    font-size: 1.0625rem;
-    font-weight: 650;
-    line-height: 1.55;
-  }
-
-  .rodent-limit {
-    margin: 22px 0 0;
-    border-left: 2px solid var(--ac-color-line-strong);
-    padding-left: 18px;
-    color: var(--ac-color-ink-500);
-    font-size: 0.9375rem;
-    line-height: 1.6;
-  }
-
-  .rodent-limit--dark {
-    border-left-color: rgb(255 255 255 / 30%);
-    color: #8fa6bf;
-  }
-
-  .rodent-faq {
-    margin-top: 34px;
-    text-align: left;
-  }
-
-  .rodent-form {
-    background: var(--ac-color-paper);
-    padding-block: 64px;
-  }
-
-  /* Single centered column, ~680px per the layout brief §7 — no empty side column. */
-  .rodent-form__shell {
-    display: grid;
-    max-width: 680px;
-    margin-inline: auto;
-    gap: 28px;
-    text-align: left;
-  }
-
-  .rodent-form__intro h2 {
-    text-wrap: balance;
-  }
-
-  .rodent-form__lead {
-    margin: 12px 0 0;
-    color: var(--ac-color-ink-600);
-    font-size: 1.0625rem;
-    line-height: 1.6;
-  }
-
-  .rodent-form__phone {
-    margin: 0;
-    border-top: 1px solid var(--ac-color-line-strong);
-    padding-top: 24px;
-    color: var(--ac-color-ink-600);
-    font-size: 0.9375rem;
-  }
-
-  .rodent-form__phone a {
-    color: var(--ac-color-navy-800);
-    font-weight: 650;
-  }
-
-  @media (max-width: 26rem) {
-    .rodent-form {
-      padding-block: 40px;
-    }
-  }
+.rodent-utility { background:#122840;color:#dbe5ee;font-size:11px;letter-spacing:.025em;padding:7px 0; }
+.rodent-utility > div { width:min(1120px,calc(100% - 72px));margin:auto;display:flex;justify-content:space-between;gap:15px; }
+@media(max-width:850px){.rodent-utility > div {width:calc(100% - 40px);}}
+@media(max-width:620px){.rodent-utility span {display:none;}}
 </style>

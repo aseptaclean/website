@@ -1,0 +1,87 @@
+.assigned-photo {
+  display: block;
+  max-width: 100%;
+  object-fit: cover;
+}
+
+.hero > .assigned-photo--hero {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  opacity: .83;
+}
+
+.assigned-photo--editorial,
+.assigned-photo-frame {
+  width: 100%;
+  aspect-ratio: 1.35;
+}
+
+.assigned-photo--fill {
+  height: 100%;
+}
+
+.assigned-photo--editorial {
+  height: auto;
+}
+
+/* The existing public-service "Before work begins" slots use a 3:2 frame. */
+.assigned-photo--wide {
+  aspect-ratio: 3 / 2;
+}
+
+.assigned-photo-frame {
+  position: relative;
+  overflow: hidden;
+}
+
+.assigned-photo-frame > .assigned-photo--fill {
+  width: 100%;
+}
+
+#ac-home-locked-mockup #ac-services .tile .assigned-photo--card {
+  width: 132px;
+  height: 150px;
+  margin: 0;
+  align-self: start;
+  transition: filter .2s;
+}
+
+#ac-home-locked-mockup #ac-services .tile:hover .assigned-photo--card {
+  filter: brightness(1.08);
+}
+
+@media (max-width: 950px) {
+  #ac-home-locked-mockup #ac-services .tile .assigned-photo--card {
+    width: 105px;
+    height: 135px;
+  }
+}
+
+@media (max-width: 760px) {
+  #ac-home-locked-mockup #ac-services .tile .assigned-photo--card {
+    width: 112px;
+    height: 138px;
+  }
+}
+
+@media (max-width: 620px) {
+  .split > .assigned-photo--editorial,
+  .split > div > .assigned-photo--editorial {
+    margin-top: 12px;
+  }
+
+  .before-work .split > .assigned-photo--editorial,
+  .before-work .split > div > .assigned-photo--editorial {
+    margin-top: 0;
+  }
+}
+
+@media (max-width: 390px) {
+  #ac-home-locked-mockup #ac-services .tile .assigned-photo--card {
+    width: 86px;
+    height: 116px;
+  }
+}

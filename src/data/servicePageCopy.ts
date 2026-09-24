@@ -679,9 +679,23 @@ export const servicePageCopy: ServicePageRecord[] = [
       {
         // RESTORED VERBATIM 2026-09-04. The three source lists (Kitchens / Bathrooms / Living
         // areas and bedrooms) had been compressed into three prose sentences, which dropped
-        // every individual line item. docs/page-briefs/DETAILED-DEEP-CLEANING.md item 3 asks for
-        // a "Room/surface detail section with photograph", and docs/20-COPY-MAP.md requires
-        // lists to remain lists.
+        // every individual line item. docs/20-COPY-MAP.md requires lists to remain lists.
+        //
+        // NO IMAGE — corrected 2026-09-18 per docs/ASEPTACLEAN-DESIGN-SPEC.md §4.4 `deep-rooms`:
+        // "No paired image, accordion, clipping, or fixed checklist height." This section
+        // previously paired all three complete checklists with one photo (`deep-cleaning-window-
+        // track`) stretched the length of the combined lists — the spec's own evidence appendix
+        // names this exact page as the example of what to fix ("Three long room checklists stack
+        // in one right column beside one vertically centered photo... Remove this split wrapper
+        // for the checklist"). Omitting `image` here now renders the spec's exact layout: heading
+        // above three equal top-aligned columns (AcServicePage.astro's `roomLists` branch).
+        // `deep-cleaning-window-track` has no equally strong alternate slot on this page — the
+        // "surfaces" section below already carries its own well-matched image
+        // (`deep-cleaning-shower-deposits`, directly illustrating that section's mineral-buildup
+        // copy) — so it is left unplaced rather than forced into a weaker pairing, the same
+        // documented choice this codebase already makes for the trauma page's unplaced
+        // `trauma-affected-carpet-detail.png` (see AcServicePage.astro's image-registry note).
+        // The file stays installed and in the image registry for a future slot.
         kind: "roomLists",
         eyebrow: "03 / What detailed means",
         heading: "What does “detailed” actually mean?",
@@ -739,12 +753,7 @@ export const servicePageCopy: ServicePageRecord[] = [
         ],
         close: "The exact scope depends on the property.",
         pullQuote:
-          "We would rather tell you clearly what we are cleaning than hide behind the words “deep clean.”",
-        // Package slot 11 — the guide's Detailed Deep Cleaning "scope/detail" image, beside the
-        // room-by-room scope lists it illustrates.
-        image: "deep-cleaning-window-track",
-        imageAlt:
-          "A residential sliding window track with trapped dust and grit along the grooves"
+          "We would rather tell you clearly what we are cleaning than hide behind the words “deep clean.”"
       },
       {
         kind: "dark",

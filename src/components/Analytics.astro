@@ -69,20 +69,26 @@
       record("phone_click", { link_location: placementOf(link) });
     }
     // /request-assessment/ was retired 2026-09-06 (docs/05-CURRENT-DECISIONS.md); every CTA
-    // that used to point at it now points at a page's own embedded form anchor instead —
-    // #hero-form (homepage + the five service pages' AcHeroWithForm, its default formId),
-    // #request (RequestForm.astro / CityHero.astro), #contact-form (Contact),
+    // that used to point at it now points at a page's own contact anchor instead —
+    // #hero-form (the homepage's relocated bottom contact section as of 2026-09-17; the literal
+    // <form> underneath still carries this id even though the section wrapping it does not —
+    // see AcServicePage/index.astro's contact-section comments), #home-contact (the wrapping
+    // section itself, so a bare same-page link straight to the section also tracks),
+    // #service-contact (the four sibling service pages' equivalent wrapping section, added
+    // 2026-09-17 — their <form> keeps `#service-form`, untracked here on purpose, same as
+    // before this date), #request (RequestForm.astro / CityHero.astro), #contact-form (Contact),
     // #assessment-form (the hoarding PPC hero form), #request-walkthrough (the estate PPC
-    // hero form, added 2026-09-09), or #rodent-form (the rodent PPC landing page's bottom form,
-    // added 2026-09-17). Match those instead of the dead route substring so this event keeps
-    // firing on the same visitor action it always measured.
+    // hero form, added 2026-09-09), or #rodent-form (the rodent page's and its PPC landing
+    // page's bottom form, added 2026-09-17). Match those instead of the dead route substring so
+    // this event keeps firing on the same visitor action it always measured.
     //
     // `request-walkthrough` is listed BEFORE `request`: alternation is first-match, and
     // `#request` followed by `-` would fail the `(&|$)` boundary and drop the estate CTA
     // entirely. This is still an intent event, not a lead — the only lead event on this site is
-    // `ppc_form_success`, raised solely after the endpoint accepts a submission.
+    // `ppc_form_success` / the homepage-and-service-page `AcCompactForm`'s own success redirect,
+    // raised solely after the endpoint accepts a submission.
     if (
-      /#(hero-form|request-walkthrough|request|contact-form|assessment-form|rodent-form)(&|$)/.test(
+      /#(rodent-contact|hoarding-contact|trauma-contact|extreme-contact|estate-contact|detailed-contact|hero-form|home-contact|request-walkthrough|request|contact-form|assessment-form|rodent-form)(&|$)/.test(
         link.href
       )
     ) {

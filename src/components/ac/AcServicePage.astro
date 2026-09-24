@@ -13,6 +13,14 @@
 // contained photograph. Reference ClearPath p28 shows the same photo-background hero the
 // homepage uses, and doc 30 §1 says so explicitly: "Do not substitute the old
 // white-copy/isolated-photo split."
+//
+// HERO FORM REMOVED 2026-09-17 (docs/Aseptaclean_Service_Hero_And_Spaces_Update.md; recorded in
+// docs/05-CURRENT-DECISIONS.md and AGENTS.md's hero-form-scope rule). The owner directed that
+// every service-detail-page hero match the rodent page's no-form composition: same full-bleed
+// photo + flat navy overlay via AcHeroWithForm's `showForm={false}`, with the working
+// AcCompactForm relocated to a centered contact section near the bottom of the page, replacing
+// the old AcFinalCta closing band (whose copy is now that section's own introduction). The
+// homepage is the only remaining caller of AcHeroWithForm with a hero-embedded form.
 import BaseLayout from "@layouts/BaseLayout.astro";
 import AcHeroWithForm from "./AcHeroWithForm.astro";
 import AcTrustStrip from "./AcTrustStrip.astro";
@@ -21,8 +29,7 @@ import AcSplit from "./AcSplit.astro";
 import AcDarkBand from "./AcDarkBand.astro";
 import AcSteps from "./AcSteps.astro";
 import AcCheckList from "./AcCheckList.astro";
-import AcFinalCta from "./AcFinalCta.astro";
-import AcServiceCards from "./AcServiceCards.astro";
+import AcCompactForm from "./AcCompactForm.astro";
 import FaqAccordion from "@components/FaqAccordion.astro";
 import { launchServiceLinks } from "@data/launchArchitecture";
 import { legal, site } from "@data/site";
@@ -126,38 +133,12 @@ if (!heroImage) {
   );
 }
 
-// Related services: every current public service except this one. Photographic cards, so the
-// cross-link row matches the homepage routing treatment rather than being a bare link list.
-// Each card carries its own service's package main image, so a cross-link card and the page it
-// opens show the same scene — the same pairing the homepage and Services hub now use. A page
-// never lists itself, so its hero image can never repeat inside its own related row.
-const relatedImages: Record<string, ImageMetadata> = {
-  "/hoarding-cleanup-san-jose/": hoardingLivingRoom,
-  "/extreme-cleaning-san-jose/": extremeKitchen,
-  "/rodent-dropping-cleanup-san-jose/": rodentUtilityRoom,
-  "/deep-cleaning-san-jose/": deepCleaningKitchen,
-  "/crime-scene-trauma-cleanup-san-jose/": traumaContext
-};
-const relatedBlurbs: Record<string, string> = {
-  "/hoarding-cleanup-san-jose/":
-    "When belongings and clutter have made the home difficult to manage.",
-  "/extreme-cleaning-san-jose/": "When the condition has gone beyond a normal deep clean.",
-  "/rodent-dropping-cleanup-san-jose/":
-    "Pest control stops the activity. We address what was left behind.",
-  "/deep-cleaning-san-jose/": "For homes that need more than routine cleaning.",
-  "/crime-scene-trauma-cleanup-san-jose/":
-    "Discreet cleanup after the scene has been released."
-};
-
+// Related services: every current public service except this one, as compact text links
+// (docs/ASEPTACLEAN-DESIGN-SPEC.md §4.2-4.6 `-related`: "Compact links... no photos"). A page
+// never lists itself.
 const related = launchServiceLinks
   .filter((link) => link.href !== page.slug)
-  .map((link) => ({
-    title: link.label,
-    description: relatedBlurbs[link.href] ?? "",
-    href: link.href,
-    image: relatedImages[link.href],
-    imageAlt: ""
-  }));
+  .map((link) => ({ title: link.label, href: link.href }));
 
 // FAQPage JSON-LD only where the page actually renders an FAQ accordion (doc 21 §6.1: schema
 // must not describe content a visitor cannot see).
@@ -174,18 +155,15 @@ const schema: Record<string, unknown>[] = [
     areaServed: site.location.cities.map((name) => ({ "@type": "City", name }))
   },
   {
+    // "Services" breadcrumb node removed 2026-09-18: the hub it pointed at (/services/) is
+    // retired (owner blueprint). No other real hub sits between Home and these four pages, so the
+    // trail goes straight from Home to the page itself rather than pointing at a redirected URL.
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "Home", item: site.urls.home },
       {
         "@type": "ListItem",
         position: 2,
-        name: "Services",
-        item: new URL("/services/", site.urls.site).href
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
         name: page.name,
         item: new URL(page.slug, site.urls.site).href
       }
@@ -226,12 +204,16 @@ if (faqSection && faqSection.kind === "faq") {
     imagePosition={page.heroImagePosition}
     stackedLayout={page.heroStackedLayout}
     stackedImagePosition={page.heroStackedImagePosition}
-    trustLine={page.heroAssurances?.join(" · ")}
-    formId="service-form"
-    route={page.slug}
+    showForm={false}
+    secondaryHref="#service-contact"
   />
 
-  <AcTrustStrip lead={page.trustLead} />
+  {/* heroAssurances used to render as a trustLine INSIDE the hero (`.acx-hero__trust`), which
+      pushed the two longest-headline pages (Hoarding, Extreme Cleaning) past the spec's 720px
+      desktop hero-height ceiling (docs/ASEPTACLEAN-DESIGN-SPEC.md §2.2: "Trust signals... are
+      outside that measurement"). Moved here, into the existing below-hero trust strip that
+      already sits outside `.ac-hero` — same approved wording, same order, nothing dropped. */}
+  <AcTrustStrip lead={[...(page.trustLead ?? []), ...page.heroAssurances]} />
 
   {page.sections.map((section) => {
     if (section.kind === "split") {
@@ -323,6 +305,35 @@ if (faqSection && faqSection.kind === "faq") {
       );
     }
 
+    // docs/ASEPTACLEAN-DESIGN-SPEC.md §4.4 `deep-rooms`: ".ac-room-grid three columns desktop,
+    // one below 1024 ... Heading ABOVE grid. Each column contains its complete checklist. No
+    // paired image, accordion, clipping, or fixed checklist height." A `roomLists` section with
+    // no `image` renders this layout instead of the AcSplit-wrapped one below — the three
+    // complete checklists used to sit beside one photo stretched the length of all three lists
+    // combined, which the spec's evidence appendix flags by name.
+    if (section.kind === "roomLists" && !section.image) {
+      return (
+        <AcIntro
+          eyebrow={section.eyebrow}
+          heading={section.heading}
+          headingId={section.id}
+          lead={section.lead}
+          body={section.body}
+        >
+          <div class="svc-room-grid">
+            {section.groups.map((group) => (
+              <div class="svc-room-grid__col">
+                <h3 class="ac-type-h3-band">{group.title}</h3>
+                <AcCheckList items={group.items} compact />
+              </div>
+            ))}
+          </div>
+          {section.pullQuote && <p class="svc-close">{section.pullQuote}</p>}
+          {section.close && <p class="svc-close">{section.close}</p>}
+        </AcIntro>
+      );
+    }
+
     if (section.kind === "roomLists") {
       return (
         <AcSplit
@@ -373,7 +384,7 @@ if (faqSection && faqSection.kind === "faq") {
     }
 
     return (
-      <AcIntro heading={section.heading} headingId={section.id} tone="soft">
+      <AcIntro heading={section.heading} headingId={section.id} tone="soft" narrow>
         <div class="svc-faq">
           <FaqAccordion items={section.items} headingId={section.id} />
         </div>
@@ -381,22 +392,60 @@ if (faqSection && faqSection.kind === "faq") {
     );
   })}
 
+  {/* COMPACT RELATED-SERVICE LINKS — docs/ASEPTACLEAN-DESIGN-SPEC.md §4.2-4.6's `-related` row
+      for every service page: "Compact links | Relevant public services only" / CSS contract §7
+      `.ac-related`: "Compact title/text links to relevant public services; no photos." This used
+      to render as a full AcServiceCards photo grid (five cards: four across a row plus one
+      orphaned alone on the next), which is exactly what the spec's evidence appendix flags —
+      "Full-height four-card grids repeat near the end of every service page and delay the form" —
+      and duplicates the homepage's own card treatment instead of staying compact. Replaced with a
+      text-link row; no image, no description, no orphan row. The lead copy's service count was
+      also stale ("four other... conditions") from before Estate Cleanout became the sixth public
+      service, leaving five "other" services on every page — corrected to match. */}
   <AcIntro
     eyebrow="Other services"
     heading="Not the right service?"
     headingId="related-title"
-    lead="Aseptaclean handles four other property conditions. If you are not sure which one fits, tell us what is happening and we will help you decide."
+    lead="Aseptaclean handles five other property conditions. If you are not sure which one fits, tell us what is happening and we will help you decide."
   >
-    <div class="svc-related">
-      <AcServiceCards cards={related} layout="even" />
-    </div>
+    <ul class="svc-related-list">
+      {related.map((item) => (
+        <li>
+          <a href={item.href}>{item.title}</a>
+        </li>
+      ))}
+    </ul>
   </AcIntro>
 
-  <AcFinalCta
-    heading={page.finalHeading}
-    headingId="service-final-title"
-    body={page.finalBody}
-  />
+  {/* RELOCATED CONTACT SECTION — replaces the old AcFinalCta closing band (2026-09-17, see the
+      top-of-file note). `page.finalHeading`/`finalBody` are the same approved closing copy,
+      reused here as the section's one visible introduction — Part C: "Reuse approved final copy
+      as the contact introduction where appropriate. Do not repeat both in an outer wrapper." The
+      form suppresses its own default heading via `headingId` so there is exactly one heading. */}
+  <section class="svc-contact" id="service-contact" aria-labelledby="service-contact-heading">
+    <div class="ac-shell">
+      <div class="svc-contact__shell">
+        <div class="svc-contact__intro">
+          <h2 id="service-contact-heading" class="ac-type-h2">{page.finalHeading}</h2>
+          {page.finalBody.map((paragraph) => <p class="svc-contact__lead">{paragraph}</p>)}
+        </div>
+        {/* `formId="service-form"` is preserved literally — scripts/launch-e2e-form-check.mjs
+            hardcodes `#service-form` plus its `-name`/`-phone`/… child ids for this exact route.
+            The wrapping section (not the form) carries the anchor the hero's secondary action and
+            any other on-page CTA target, so scrolling there also reveals this heading. */}
+        <AcCompactForm
+          formId="service-form"
+          headingId="service-contact-heading"
+          entryRoute={`${page.slug}#service-form`}
+          preselectRoute={page.slug}
+          tone="light"
+        />
+        <p class="svc-contact__phone">
+          Prefer to talk? <a href={site.business.phoneUri}>Call {site.business.phone}</a>.
+        </p>
+      </div>
+    </div>
+  </section>
 </BaseLayout>
 
 <style>
@@ -405,10 +454,32 @@ if (faqSection && faqSection.kind === "faq") {
   }
 
   .svc-list--wide,
-  .svc-steps,
-  .svc-related {
+  .svc-steps {
     margin-top: 40px;
     text-align: left;
+  }
+
+  /* COMPACT RELATED-SERVICE LINKS — docs/ASEPTACLEAN-DESIGN-SPEC.md §7 `.ac-related`: a plain
+     flex-wrap row of text links, no cards, no photos, no per-item panel chrome. */
+  .svc-related-list {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 32px 0 0;
+    padding: 0;
+    list-style: none;
+    gap: 12px 32px;
+    text-align: left;
+  }
+
+  .svc-related-list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
+    color: var(--ac-color-navy-800);
+    font-size: 1.0625rem;
+    font-weight: 650;
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   .svc-two {
@@ -429,6 +500,28 @@ if (faqSection && faqSection.kind === "faq") {
 
   .svc-rooms__group h3 {
     margin: 0 0 12px;
+  }
+
+  /* docs/ASEPTACLEAN-DESIGN-SPEC.md §4.4 `deep-rooms` — three equal columns desktop, one below
+     1024px, each a complete standalone checklist with its own top-aligned heading. No fixed
+     height: `AcCheckList` sizes to its own content, so a longer column simply runs taller. */
+  .svc-room-grid {
+    display: grid;
+    margin-top: 32px;
+    gap: 40px;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    text-align: left;
+  }
+
+  .svc-room-grid__col h3 {
+    margin: 0 0 14px;
+  }
+
+  @media (max-width: 64rem) {
+    .svc-room-grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 32px;
+    }
   }
 
   .svc-two h3 {
@@ -463,6 +556,51 @@ if (faqSection && faqSection.kind === "faq") {
   .svc-faq {
     margin: 34px auto 0;
     text-align: left;
+  }
+
+  /* RELOCATED CONTACT SECTION — same recipe as the rodent page's `.rodent-form` (one centered
+     ~680px column, no empty side column), added 2026-09-17. */
+  .svc-contact {
+    background: var(--ac-color-paper);
+    padding-block: 64px;
+  }
+
+  .svc-contact__shell {
+    display: grid;
+    max-width: 680px;
+    margin-inline: auto;
+    gap: 28px;
+    text-align: left;
+  }
+
+  .svc-contact__intro h2 {
+    text-wrap: balance;
+  }
+
+  .svc-contact__lead {
+    margin: 12px 0 0;
+    color: var(--ac-color-ink-600);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  .svc-contact__phone {
+    margin: 0;
+    border-top: 1px solid var(--ac-color-line-strong);
+    padding-top: 24px;
+    color: var(--ac-color-ink-600);
+    font-size: 0.9375rem;
+  }
+
+  .svc-contact__phone a {
+    color: var(--ac-color-navy-800);
+    font-weight: 650;
+  }
+
+  @media (max-width: 26rem) {
+    .svc-contact {
+      padding-block: 40px;
+    }
   }
 
   @media (max-width: 44rem) {

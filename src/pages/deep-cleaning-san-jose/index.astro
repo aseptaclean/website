@@ -1,16 +1,88 @@
 ---
-// Rebuilt 2026-09-04 to the current owner decision (AGENTS.md §2.2) and doc 30 §6.0/§20.
-//
-// This route is composition + copy only: the page's sections, their order, their split
-// directions and their imagery all live in the record below, and AcServicePage renders them.
-// Doc 30 §20 forbids one universal service-page template, so no two records share a section
-// order — see the comment at the top of src/components/ac/AcServicePage.astro.
-//
-// The route, canonical URL, and every inbound link are unchanged.
-import AcServicePage from "@components/ac/AcServicePage.astro";
-import { findServicePage } from "@data/servicePageCopy";
+// Page-specific owner-approved kit installed from detailed-deep-approved-fragment.html.
+// The canonical route and metadata remain the existing route's values; shared production
+// navigation, consent, analytics and lead handling replace only the mockup's demo behavior.
+import BaseLayout from "@layouts/BaseLayout.astro";
+import AssignedPhoto from '@components/ac/AssignedPhoto.astro';
+import detailedHero from '../../assets/aseptaclean/public-pages/detailed-deep-service/01-detailed-service-kitchen-mopping.webp';
+import detailedFaucet from '../../assets/aseptaclean/public-pages/detailed-deep-service/02-detailed-service-faucet-detail.webp';
+import detailedSofa from '../../assets/aseptaclean/public-pages/detailed-deep-service/03-detailed-service-protect-sofa.webp';
+import detailedTrack from '../../assets/aseptaclean/public-pages/detailed-deep-service/04-detailed-service-shower-track-review.webp';
+import AcCompactForm from "@components/ac/AcCompactForm.astro";
+import DetailedHeader from "@components/detailed/DetailedHeader.astro";
+import DetailedIcon from "@components/detailed/DetailedIcon.astro";
+import { legal, site } from "@data/site";
+import "@styles/detailed-deep-service-kit.css";
+import "@styles/hero-consistency.css";
+import '@styles/assigned-photos.css';
 
-const page = findServicePage("/deep-cleaning-san-jose/")!;
+const faq = [
+  ["What is detailed deep cleaning?", "It gives extra attention to buildup and areas that routine cleaning may miss, such as cabinet fronts, bathroom fixtures, door frames, and baseboards. Your proposal identifies the tasks included."],
+  ["How is this different from extreme cleaning?", "Detailed deep cleaning focuses on accessible rooms and surfaces. Heavy waste, substantial buildup, or contents that block access may call for extreme cleaning or a separate cleanout. Describe the condition and we’ll help identify the appropriate service."],
+  ["Do you clean inside appliances and cabinets?", "These tasks are included only when listed in your proposal. We discuss access, emptying contents, and any preparation needed before work begins."],
+  ["Do I need to move everything first?", "No. Start by telling us which areas need cleaning. We’ll explain what should be put away and discuss any furniture or belongings that limit access."],
+  ["Can you remove every stain or mark?", "We do not promise that cleaning will remove every mark or restore worn finishes. We discuss visible damage and cleaning limits during the assessment."],
+  ["How much does detailed deep cleaning cost?", "The rooms, buildup, access, and selected tasks affect the price. You receive a written proposal before deciding to proceed. Photos may help us understand the work; an on-site assessment may still be needed."]
+];
+
+const schema = [
+  { "@type": "Service", name: "Detailed Deep Cleaning in San Jose", serviceType: "Detailed deep cleaning", provider: { "@id": new URL("/#business", site.urls.site).href }, areaServed: { "@type": "City", name: "San Jose" } },
+  { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: site.urls.home }, { "@type": "ListItem", position: 2, name: "Detailed Deep Cleaning", item: new URL("/deep-cleaning-san-jose/", site.urls.site).href }] },
+  { "@type": "FAQPage", mainEntity: faq.map(([question, answer]) => ({ "@type": "Question", name: question, acceptedAnswer: { "@type": "Answer", text: answer } })) }
+];
 ---
 
-<AcServicePage page={page} />
+<BaseLayout title="Detailed Deep Cleaning in San Jose | Aseptaclean" description="Detailed deep cleaning for homes that need more than a standard cleaning checklist — heavy kitchen and bathroom buildup, neglected detail, move-in and move-out resets." canonicalPath="/deep-cleaning-san-jose/" schema={schema} showMobileCta={false} detailedKit>
+  <DetailedHeader slot="header" />
+  <footer slot="footer">
+    <div class="wrap"><div class="footergrid">
+      <div><a class="brand" href="/" aria-label="Aseptaclean — home"><img src={site.business.logoReversedUrl} width="900" height="215" alt="Aseptaclean" /></a><p>Specialty property cleanup.<br />A clear path forward.</p><p><a href={site.business.phoneUri}>Call {site.business.phone}</a></p><p>Available 7 AM–7 PM</p></div>
+      <div><h3 class="ac-type-detailed-h3 ac-type-detailed-footer">Detailed Deep Cleaning</h3><div class="footlinks"><a href="#detailed-scope">Cleaning Services</a><a href="#detailed-belongings">Surfaces &amp; Belongings</a><a href="#detailed-process">Our Process</a><a href="#detailed-faq">Common Questions</a></div></div>
+      <div><h3 class="ac-type-detailed-h3 ac-type-detailed-footer">Get in Touch</h3><div class="footlinks"><a href="#detailed-contact">Request an Assessment</a><a href="#detailed-area">Service Area</a><a href={site.business.phoneUri}>Call {site.business.phone}</a></div></div>
+      <div><h3 class="ac-type-detailed-h3 ac-type-detailed-footer">Serving</h3><div class="footlinks"><a href="#detailed-area">South Bay</a><a href="#detailed-area">Peninsula</a></div></div>
+    </div><div class="legal"><span>© 2026 Aseptaclean. All rights reserved.</span><div class="legal-links"><a href={site.urls.privacyPolicy}>Privacy Policy</a><a href={site.urls.terms}>Terms &amp; Conditions</a><a href={site.urls.cookiePolicy}>Cookie Policy</a><button class="termly-display-preferences" type="button">Cookie Preferences</button></div></div></div>
+    <div class="wrap legal-notes"><p data-nosnippet>{legal.scopeDisclaimer}</p><p data-nosnippet>{legal.documentationDisclaimer}</p></div>
+  </footer>
+
+  <section class="hero" id="detailed-top" data-section="hero"><AssignedPhoto src={detailedHero} alt="Professional mopping the floor of a residential kitchen." kind="hero" position="center 58%" /><div class="wrap"><div class="hero-copy"><p class="eyebrow">Detailed Deep Cleaning · South Bay &amp; Peninsula</p><h1 class="ac-type-detailed-h1"><span class="hero-heading-line">Detailed Deep Cleaning.</span><span class="hero-heading-line">Care in Every Detail.</span></h1><p class="body">Kitchen grease, bathroom buildup, and dust along the baseboards deserve more attention. We clean the rooms and surfaces you identify, with the tasks and price confirmed before work begins.</p><div class="actions"><a class="action light" href="#detailed-contact">Request an Assessment <DetailedIcon name="arrow-up-right" /></a><a class="action outline" href={site.business.phoneUri}>Call {site.business.phone}</a></div></div></div></section>
+  <div class="wrap"><div class="trust"><div><DetailedIcon name="clipboard-check" /><div><strong>Respectful Service</strong><span>Discuss surfaces and special items</span></div></div><div><DetailedIcon name="user-round-check" /><div><strong>Written Plan &amp; Price</strong><span>Know which tasks are included</span></div></div><div><DetailedIcon name="house" /><div><strong>Documented Work</strong><span>Records included in your scope</span></div></div></div></div>
+
+  <section class="section" id="detailed-scope"><div class="wrap"><div class="section-top"><div><p class="eyebrow">Detailed deep cleaning for your property</p><h2 class="ac-type-detailed-h2">A closer clean. Room by room.</h2></div><p>Cleaning for lived-in homes, vacant properties, and move-in or move-out needs. Your proposal identifies the rooms and tasks included.</p></div><div class="scope-grid">
+    <div class="scope-item"><DetailedIcon name="cooking-pot" /><div><h3 class="ac-type-detailed-h3 ac-type-detailed-scope">Kitchens &amp; Cabinets</h3><p>Grease and food residue on counters, backsplashes, cabinet fronts, and appliance exteriors.</p></div></div>
+    <div class="scope-item"><DetailedIcon name="bath" /><div><h3 class="ac-type-detailed-h3 ac-type-detailed-scope">Bathrooms</h3><p>Buildup on sinks, showers, tubs, toilets, and other accessible bathroom surfaces.</p></div></div>
+    <div class="scope-item"><DetailedIcon name="brush-cleaning" /><div><h3 class="ac-type-detailed-h3 ac-type-detailed-scope">Floors &amp; Edges</h3><p>Cleaning suited to the floor material, with attention to edges and accessible corners.</p></div></div>
+    <div class="scope-item"><DetailedIcon name="door-open" /><div><h3 class="ac-type-detailed-h3 ac-type-detailed-scope">Doors &amp; Baseboards</h3><p>Dust and grime on doors, frames, trim, and baseboards.</p></div></div>
+    <div class="scope-item"><DetailedIcon name="panels-top-left" /><div><h3 class="ac-type-detailed-h3 ac-type-detailed-scope">Interior Windows &amp; Sills</h3><p>Accessible interior glass, sills, and tracks when included in your scope.</p></div></div>
+    <div class="scope-item"><DetailedIcon name="house" /><div><h3 class="ac-type-detailed-h3 ac-type-detailed-scope">Move-In &amp; Move-Out</h3><p>Cleaning of selected rooms and surfaces before you move in or after belongings have been removed.</p></div></div>
+  </div></div></section>
+
+  <section class="section warm care-section"><div class="wrap"><div class="wide-heading"><p class="eyebrow">Focus on what matters</p><h2 class="ac-type-detailed-h2"><span class="ac-heading-line">The details</span> <span class="ac-heading-line">make the difference.</span></h2></div><div class="split"><div><p>Tell us where routine cleaning has fallen short. It may be grease around the stove, buildup in the shower, or dust along the floor edges.</p><p>We’ll ask which rooms need attention, whether the property is occupied, and when you need the work done. These details help us assess the cleaning and preparation needed.</p><div class="actions"><a class="action" href="#detailed-contact">Request an Assessment <DetailedIcon name="arrow-right" /></a></div></div><div><AssignedPhoto src={detailedFaucet} alt="Black-gloved hand brushing around a bathroom faucet base." /><div class="photo-caption">Illustrative photo</div></div></div><ul class="checks"><li><DetailedIcon name="check" />Identify the rooms and surfaces that matter most.</li><li><DetailedIcon name="check" />Discuss access around furniture and belongings.</li><li><DetailedIcon name="check" />Tell us about a move date or other deadline.</li></ul></div></section>
+
+  <section class="section" id="detailed-belongings"><div class="wrap"><div class="wide-heading"><p class="eyebrow">Your belongings matter</p><h2 class="ac-type-detailed-h2"><span class="ac-heading-line">Care for your home</span> <span class="ac-heading-line">and what's in it.</span></h2></div><div class="split"><div><p>Point out delicate finishes, existing damage, and belongings you do not want moved. If a surface has special care instructions, share them before cleaning begins.</p><p>We confirm which areas we can reach and what needs to be put away or moved. Cleaning behind heavy furniture or appliances is not assumed to be included.</p></div><div class="assigned-photo-frame"><AssignedPhoto src={detailedSofa} alt="Worker placing a protective cover over a sofa." kind="fill" /><div class="image-note">Your property. Your decisions.<small>Your priorities and handling instructions.</small></div></div></div><div class="audience belongings-steps">
+    <div><DetailedIcon name="package-check" /><div><h3 class="ac-type-detailed-h3 ac-type-detailed-audience">Review the surfaces</h3><p>Identify delicate materials, existing damage, and areas needing extra attention.</p></div></div>
+    <div><DetailedIcon name="messages-square" /><div><h3 class="ac-type-detailed-h3 ac-type-detailed-audience">Agree on access</h3><p>Discuss what can be moved and which areas should remain undisturbed.</p></div></div>
+    <div><DetailedIcon name="clipboard-list" /><div><h3 class="ac-type-detailed-h3 ac-type-detailed-audience">Put the scope in writing</h3><p>List the rooms, cleaning tasks, and special handling instructions.</p></div></div>
+  </div></div></section>
+
+  <section class="band"><div class="wrap"><div><h2 class="ac-type-detailed-h2 ac-type-detailed-band">Which areas need extra attention?</h2><p>Describe the rooms, surfaces, and buildup you want addressed. We’ll explain how to arrange the cleaning.</p></div><a class="action light" href="#detailed-contact">Request an Assessment <DetailedIcon name="arrow-right" /></a></div></section>
+  <section class="section" id="detailed-process"><div class="wrap"><p class="eyebrow">Our process</p><h2 class="ac-type-detailed-h2">A clear plan from first call to finish.</h2><div class="steps">
+    <div class="step"><b>01</b><h3 class="ac-type-detailed-h3 ac-type-detailed-step">Tell Us What You Need</h3><p>Share the location, rooms, and cleaning priorities. Include your preferred timing and whether the property is occupied.</p></div><div class="step"><b>02</b><h3 class="ac-type-detailed-h3 ac-type-detailed-step">Review the Plan</h3><p>We assess the surfaces, buildup, and access. You review the included tasks and written price.</p></div><div class="step"><b>03</b><h3 class="ac-type-detailed-h3 ac-type-detailed-step">Complete the Cleaning</h3><p>We clean the approved rooms and accessible surfaces using methods suited to the materials.</p></div><div class="step"><b>04</b><h3 class="ac-type-detailed-h3 ac-type-detailed-step">Review &amp; Document</h3><p>Review the completed tasks, discuss any remaining concerns, and receive the records included in your scope.</p></div>
+  </div></div></section>
+
+  <section class="section warm before-work"><div class="wrap"><div class="wide-heading"><p class="eyebrow">Before work begins</p><h2 class="ac-type-detailed-h2"><span class="ac-heading-line">Know what</span> <span class="ac-heading-line">your cleaning includes.</span></h2></div><div class="split"><div><p>Room size, buildup, surface condition, and access affect the work and price. We identify the cleaning tasks before you decide to proceed.</p><p>Tell us if you want the inside of cabinets or appliances cleaned. These areas need to be discussed and listed in the proposal.</p><div class="actions"><a class="action" href="#detailed-contact">Request an Assessment</a></div></div><AssignedPhoto src={detailedTrack} alt="Black-gloved hand pointing to residue in a shower-door track." class="assigned-photo--wide" /></div><div class="boundaries"><div><h3 class="ac-type-detailed-h3">Included in Your Plan</h3><p>Your proposal lists the rooms and surfaces to clean. Interior windows, cabinet interiors, and appliance interiors are included only when specified. Any added work and cost require your approval.</p></div><div><h3 class="ac-type-detailed-h3">When More Is Needed</h3><p>Large cleanouts, heavy waste, and biohazard conditions require a separate assessment and scope. Repairs, pest control, and replacing damaged materials are not part of detailed deep cleaning.</p></div></div></div></section>
+
+  <section class="section" id="detailed-faq"><div class="wrap faq-layout"><div class="faq-heading"><p class="eyebrow">Common questions</p><h2 class="ac-type-detailed-h2">A few things you may be wondering.</h2></div><div class="faq-list">{faq.map(([question, answer], index) => <details open={index === 0}><summary>{question}</summary><p>{answer}</p></details>)}</div><div class="faq-contact"><p>Have a question about a particular room or surface? Call us to discuss it.</p><div class="actions"><a class="action outline" href={site.business.phoneUri}>Call {site.business.phone}</a></div></div></div></section>
+
+  <section class="section warm" id="detailed-area"><div class="wrap coverage"><div><p class="eyebrow">Detailed deep cleaning for homes and properties in Santa Clara County and San Mateo County. Share the location and cleaning needs so we can confirm availability.</p><h2 class="ac-type-detailed-h2">South Bay<br />&amp; Peninsula.</h2><p>Detailed deep cleaning for homeowners, families, property managers, and people preparing for a move.</p></div><div><h3 class="ac-type-detailed-h3 ac-type-detailed-county">Santa Clara County</h3><ul><li>Campbell</li><li>Cupertino</li><li>Gilroy</li><li>Los Altos</li><li>Los Altos Hills</li><li>Los Gatos</li><li>Milpitas</li><li>Monte Sereno</li><li>Morgan Hill</li><li>Mountain View</li><li>Palo Alto</li><li>San Jose</li><li>Santa Clara</li><li>Saratoga</li><li>Sunnyvale</li></ul></div><div><h3 class="ac-type-detailed-h3 ac-type-detailed-county">San Mateo County</h3><ul><li>Atherton</li><li>Belmont</li><li>Brisbane</li><li>Burlingame</li><li>Colma</li><li>Daly City</li><li>East Palo Alto</li><li>Foster City</li><li>Half Moon Bay</li><li>Hillsborough</li><li>Menlo Park</li><li>Millbrae</li><li>Pacifica</li><li>Portola Valley</li><li>Redwood City</li><li>San Bruno</li><li>San Carlos</li><li>San Mateo</li><li>Woodside</li></ul></div></div></section>
+  <section class="quiet"><div class="wrap"><div><h2 class="ac-type-detailed-h2 ac-type-detailed-quiet">Let’s make a plan for your property.</h2><p>Tell us which rooms need cleaning and when you would like the work done.</p></div><a class="action" href="#detailed-contact">Request an Assessment</a></div></section>
+  <section class="section" id="detailed-contact"><div class="wrap"><div class="formwrap"><p class="eyebrow">Contact Aseptaclean</p><h2 id="detailed-form-title" class="center ac-type-detailed-h2">Tell us what needs cleanup.</h2><p>Share the property’s location, rooms needing attention, and preferred timing. A short description is enough to begin.</p><AcCompactForm formId="service-form" entryRoute="/deep-cleaning-san-jose/#service-form" preselectRoute="/deep-cleaning-san-jose/" tone="light" headingId="detailed-form-title" detailedKit /></div></div></section>
+</BaseLayout>
+
+<script>
+  const root = document.getElementById("ac-detailed");
+  root?.querySelectorAll<HTMLAnchorElement>('a[href="#detailed-contact"]').forEach((link) => link.addEventListener("click", (event) => {
+    event.preventDefault();
+    document.getElementById("detailed-contact")?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "instant" : "smooth", block: "start" });
+    document.querySelector<HTMLInputElement>("#service-form-name")?.focus({ preventScroll: true });
+  }));
+</script>

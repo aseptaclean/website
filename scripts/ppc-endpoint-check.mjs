@@ -213,9 +213,14 @@ for (const field of [
 }
 
 // ---------------------------------------------------------------------------------------------
-// 4. OPTIONAL FIELDS — email really is optional, and is validated only when supplied.
+// 4. EMAIL — current server contract requires it on every active form and validates it.
 const noEmail = await post(ppcForm({ idempotency_key: nextKey("no-email"), email: undefined }));
-check("email omitted is accepted", (await noEmail.json()).ok === true, `status ${noEmail.status}`);
+const noEmailPayload = await noEmail.json();
+check(
+  "email omitted is rejected with a field-level error",
+  noEmail.status === 422 && Boolean(noEmailPayload.errors?.email),
+  `status ${noEmail.status}`
+);
 
 const badEmail = await post(
   ppcForm({ idempotency_key: nextKey("bad-email"), email: "not-an-address" })
@@ -236,6 +241,46 @@ check(
   "unsupported file type rejected 422",
   badFileResponse.status === 422,
   `status ${badFileResponse.status}`
+);
+
+const tooManyFiles = ppcForm({ idempotency_key: nextKey("too-many-files") });
+for (let index = 0; index < 11; index += 1) {
+  tooManyFiles.append("property_media[]", jpeg(`photo-${index}.jpg`));
+}
+const tooManyFilesResponse = await post(tooManyFiles);
+const tooManyFilesPayload = await tooManyFilesResponse.json();
+check(
+  "more than 10 photos is rejected 422",
+  tooManyFilesResponse.status === 422 && Boolean(tooManyFilesPayload.errors?.["property_media[]"]),
+  `status ${tooManyFilesResponse.status}`
+);
+
+const oversizedFile = ppcForm({ idempotency_key: nextKey("oversized-file") });
+oversizedFile.append(
+  "property_media[]",
+  new File([new Uint8Array(10 * 1024 * 1024 + 1)], "oversized.jpg", { type: "image/jpeg" })
+);
+const oversizedFileResponse = await post(oversizedFile);
+const oversizedFilePayload = await oversizedFileResponse.json();
+check(
+  "a photo over 10 MB is rejected 422",
+  oversizedFileResponse.status === 422 && Boolean(oversizedFilePayload.errors?.["property_media[]"]),
+  `status ${oversizedFileResponse.status}`
+);
+
+const combinedOversize = ppcForm({ idempotency_key: nextKey("combined-oversize") });
+for (let index = 0; index < 8; index += 1) {
+  combinedOversize.append(
+    "property_media[]",
+    new File([new Uint8Array(9.5 * 1024 * 1024)], `combined-${index}.jpg`, { type: "image/jpeg" })
+  );
+}
+const combinedOversizeResponse = await post(combinedOversize);
+const combinedOversizePayload = await combinedOversizeResponse.json();
+check(
+  "combined photos over 75 MB are rejected 422",
+  combinedOversizeResponse.status === 422 && Boolean(combinedOversizePayload.errors?.["property_media[]"]),
+  `status ${combinedOversizeResponse.status}`
 );
 
 // ---------------------------------------------------------------------------------------------
@@ -299,11 +344,13 @@ check(
 // photo-reference lines added 2026-09-05 after inspecting the real HubSpot deals.
 const hubspot = [];
 const resend = [];
+const resendIdempotencyKeys = [];
 globalThis.fetch = async (url, init = {}) => {
   const target = String(url);
   if (target.includes("turnstile")) return Response.json({ success: true });
   if (target.includes("api.resend.com")) {
     if (init.body) resend.push(JSON.parse(String(init.body)));
+    resendIdempotencyKeys.push(new Headers(init.headers).get("idempotency-key"));
     return Response.json({ id: "email-stub-id" });
   }
   if (target.includes("api.hubapi.com")) {
@@ -400,31 +447,164 @@ check(
 const customerEmail = resend.find((m) => m.to === "ppc-test@example.test");
 const ownerEmail = resend.find((m) => m.to === "owner@example.test");
 check(
+  "customer and owner emails use distinct stable provider idempotency keys",
+  resendIdempotencyKeys.length === 2 &&
+    resendIdempotencyKeys.every(Boolean) &&
+    new Set(resendIdempotencyKeys).size === 2 &&
+    resendIdempotencyKeys.every((key) => key.endsWith(providerPayload.submissionId)),
+  resendIdempotencyKeys.join(", ")
+);
+check(
   "customer confirmation goes to the submitted address from the verified domain",
-  customerEmail?.from === "assessments@contact.aseptaclean.com" &&
+  customerEmail?.from === "Aseptaclean <assessments@contact.aseptaclean.com>" &&
     customerEmail?.reply_to === "info@aseptaclean.com",
   `${customerEmail?.from} → ${customerEmail?.to}, reply-to ${customerEmail?.reply_to}`
 );
 check(
   "customer confirmation confirms an inquiry, not a booking or authorized work",
-  /does not authorize work, create a service agreement, or reserve a project date/.test(
-    customerEmail?.text ?? ""
-  )
+  /does not book an assessment or authorize work/.test(customerEmail?.text ?? "") &&
+    customerEmail?.subject === "We received your hoarding cleanup inquiry | Aseptaclean" &&
+    customerEmail?.html?.includes("What you shared")
 );
 check(
   "owner notification is a lead alert with the details needed to act",
-  ownerEmail?.subject.startsWith("New lead") &&
+  ownerEmail?.from === "Aseptaclean Website <assessments@contact.aseptaclean.com>" &&
+    ownerEmail?.subject === "New lead: Hoarding Cleanup · 95113 · PPC Test" &&
     /Name:/.test(ownerEmail?.text ?? "") &&
     /Phone:/.test(ownerEmail?.text ?? "") &&
-    /Call: tel:/.test(ownerEmail?.text ?? ""),
+    /Call: tel:/.test(ownerEmail?.text ?? "") &&
+    ownerEmail?.html?.includes("Customer confirmation: sent"),
   ownerEmail?.subject
 );
 check(
   "owner notification replies to the lead, and carries source and photo references",
   ownerEmail?.reply_to === "ppc-test@example.test" &&
-    ownerEmail?.text.includes(`Source page: ${ENTRY}`) &&
+    ownerEmail?.text.includes(`Page: ${ENTRY}`) &&
     ownerEmail?.text.includes("leads/"),
   ownerEmail?.reply_to
+);
+
+// ---------------------------------------------------------------------------------------------
+// 10. TRANSIENT DELIVERY RECOVERY — one retry succeeds without changing the provider key.
+let transientEmailAttempts = 0;
+const transientEmailKeys = [];
+globalThis.fetch = async (url, init = {}) => {
+  const target = String(url);
+  if (target.includes("turnstile")) return Response.json({ success: true });
+  if (target.includes("api.resend.com")) {
+    transientEmailAttempts += 1;
+    transientEmailKeys.push(new Headers(init.headers).get("idempotency-key"));
+    if (transientEmailAttempts === 1) {
+      return new Response("simulated transient outage", { status: 503 });
+    }
+    return Response.json({ id: `recovered-email-${transientEmailAttempts}` });
+  }
+  if (target.includes("api.hubapi.com")) {
+    if (target.endsWith("/search")) return Response.json({ results: [] });
+    if (target.endsWith("/contacts")) return Response.json({ id: "contact-stub-id" });
+    if (target.endsWith("/deals")) return Response.json({ id: "deal-stub-id" });
+  }
+  throw new Error(`Unexpected provider call: ${url} ${init.method ?? "GET"}`);
+};
+const transientBucket = new MemoryR2();
+const transientResponse = await post(
+  ppcForm({ idempotency_key: nextKey("email-transient-recovery") }),
+  {
+    LEAD_UPLOADS: transientBucket,
+    TURNSTILE_SECRET_KEY: "test-secret",
+    HUBSPOT_ACCESS_TOKEN: "stub-token",
+    HUBSPOT_PIPELINE_ID: "default",
+    HUBSPOT_DEAL_STAGE_ID: "3959465687",
+    RESEND_API_KEY: "stub-key",
+    EMAIL_FROM_ADDRESS: "assessments@contact.aseptaclean.com",
+    OWNER_ALERT_EMAIL: "owner@example.test"
+  }
+);
+const transientPayload = await transientResponse.json();
+const transientLead = await (
+  await transientBucket.get(`leads/${transientPayload.submissionId}/submission.json`)
+)?.json();
+check(
+  "a transient email outage recovers on a bounded retry",
+  transientResponse.status === 201 &&
+    transientLead?.delivery.customerEmail.state === "succeeded" &&
+    transientLead?.delivery.customerEmail.detail.includes("attempt 2") &&
+    transientEmailAttempts === 3,
+  `${transientEmailAttempts} attempts; ${transientLead?.delivery.customerEmail.detail}`
+);
+check(
+  "the recovered customer retry reuses one provider idempotency key",
+  transientEmailKeys[0] === transientEmailKeys[1] &&
+    transientEmailKeys[0]?.startsWith("customer-confirmation/") &&
+    transientEmailKeys[2]?.startsWith("owner-notification/"),
+  transientEmailKeys.join(", ")
+);
+
+// ---------------------------------------------------------------------------------------------
+// 11. DELIVERY FAILURE + IDEMPOTENT RETRY — each email receives three bounded attempts with one
+// stable provider idempotency key. A final failure stays in the durable ledger, and resubmitting
+// the same lead key does not start a second notification run.
+let failedEmailAttempts = 0;
+const failedEmailKeys = [];
+globalThis.fetch = async (url, init = {}) => {
+  const target = String(url);
+  if (target.includes("turnstile")) return Response.json({ success: true });
+  if (target.includes("api.resend.com")) {
+    failedEmailAttempts += 1;
+    failedEmailKeys.push(new Headers(init.headers).get("idempotency-key"));
+    return new Response("simulated Resend outage", { status: 503 });
+  }
+  if (target.includes("api.hubapi.com")) {
+    if (target.endsWith("/search")) return Response.json({ results: [] });
+    if (target.endsWith("/contacts")) return Response.json({ id: "contact-stub-id" });
+    if (target.endsWith("/deals")) return Response.json({ id: "deal-stub-id" });
+  }
+  throw new Error(`Unexpected provider call: ${url} ${init.method ?? "GET"}`);
+};
+const failureKey = nextKey("email-provider-failure");
+const failureBucket = new MemoryR2();
+const failureEnv = {
+  LEAD_UPLOADS: failureBucket,
+  TURNSTILE_SECRET_KEY: "test-secret",
+  HUBSPOT_ACCESS_TOKEN: "stub-token",
+  HUBSPOT_PIPELINE_ID: "default",
+  HUBSPOT_DEAL_STAGE_ID: "3959465687",
+  RESEND_API_KEY: "stub-key",
+  EMAIL_FROM_ADDRESS: "assessments@contact.aseptaclean.com",
+  OWNER_ALERT_EMAIL: "owner@example.test"
+};
+const failedDeliveryResponse = await post(
+  ppcForm({ idempotency_key: failureKey }),
+  failureEnv
+);
+const failedDeliveryPayload = await failedDeliveryResponse.json();
+const failedDeliveryLead = await (
+  await failureBucket.get(`leads/${failedDeliveryPayload.submissionId}/submission.json`)
+)?.json();
+check(
+  "email-provider failure does not turn an accepted stored lead into a form failure",
+  failedDeliveryResponse.status === 201 &&
+    failedDeliveryPayload.ok === true &&
+    failedDeliveryLead?.delivery.customerEmail.state === "failed" &&
+    failedDeliveryLead?.delivery.ownerFallbackEmail.state === "failed",
+  `status ${failedDeliveryResponse.status}; customer ${failedDeliveryLead?.delivery.customerEmail.state}; owner ${failedDeliveryLead?.delivery.ownerFallbackEmail.state}`
+);
+const failureDuplicate = await post(
+  ppcForm({ idempotency_key: failureKey }),
+  failureEnv
+);
+const failureDuplicatePayload = await failureDuplicate.json();
+check(
+  "transient email failures receive bounded idempotent retries",
+  failedEmailAttempts === 6 &&
+    new Set(failedEmailKeys.filter((key) => key?.startsWith("customer-confirmation/"))).size === 1 &&
+    new Set(failedEmailKeys.filter((key) => key?.startsWith("owner-notification/"))).size === 1,
+  `${failedEmailAttempts} attempts; ${new Set(failedEmailKeys).size} provider keys`
+);
+check(
+  "idempotent resubmission returns the accepted lead without a second notification run",
+  failureDuplicatePayload.duplicate === true && failedEmailAttempts === 6,
+  `duplicate ${failureDuplicatePayload.duplicate}; attempts ${failedEmailAttempts}`
 );
 
 // ---------------------------------------------------------------------------------------------

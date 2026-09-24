@@ -59,7 +59,7 @@ const {
 const heroWidths = image ? srcsetWidths(image, [480, 768, 1024, 1440, 1920]) : [];
 ---
 
-<section class:list={["acx-phero", { "is-flat": !image }]} aria-labelledby={headingId}>
+<section class:list={["acx-phero", "ac-hero", { "is-flat": !image }]} aria-labelledby={headingId}>
   {image && (
     <div class="acx-phero__media">
       <Image
@@ -79,7 +79,7 @@ const heroWidths = image ? srcsetWidths(image, [480, 768, 1024, 1440, 1920]) : [
   <div class="acx-phero__overlay" aria-hidden="true" data-needs-asset={needsAsset}></div>
 
   <div class="acx-phero__shell ac-shell">
-    <div class="acx-phero__copy">
+    <div class="acx-phero__copy ac-hero__copy">
       <p class="acx-phero__eyebrow">{eyebrow}</p>
       <h1 id={headingId} class="ac-type-h1-hub">{heading}</h1>
       {lead && <p class="acx-phero__lead">{lead}</p>}
@@ -105,6 +105,33 @@ const heroWidths = image ? srcsetWidths(image, [480, 768, 1024, 1440, 1920]) : [
     isolation: isolate;
     background: var(--ac-color-navy-950);
     color: #fff;
+  }
+
+  /* SHARED HERO SIZING — docs/ASEPTACLEAN-DESIGN-SPEC.md §2.1/§2.2. Same floor as AcHeroWithForm
+     (600/560/440 at 1024/768px baseline, escalated to 696/680 desktop/tablet), so About, Contact
+     and the rodent public/campaign pages that render through this component measure the same as
+     the homepage and the four sibling service pages. A MIN-height, not a fixed one —
+     `.acx-phero__shell` stays in normal flow, so long approved copy still grows the section
+     instead of clipping.
+
+     696/680, corrected 2026-09-18 from a prior 736/592 — see AcHeroWithForm.astro's own comment
+     for the full root-cause writeup (a misplaced in-hero trust paragraph and a duplicate hero
+     trustLine on the homepage). This component's own callers (About, Contact, the rodent public
+     page) were never the tall outlier; they simply inherited the inflated shared token. */
+  .acx-phero {
+    min-height: 440px;
+  }
+
+  @media (min-width: 48rem) {
+    .acx-phero {
+      min-height: 680px;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .acx-phero {
+      min-height: 696px;
+    }
   }
 
   .acx-phero__media {
@@ -133,12 +160,28 @@ const heroWidths = image ? srcsetWidths(image, [480, 768, 1024, 1440, 1920]) : [
     background: var(--ac-color-navy-900);
   }
 
-  /* SHORTER than the hero-with-form: this is an introduction, not the page's conversion
-     surface. Reference p29's inner-page hero band is roughly two thirds the home hero's height. */
+  /* SHARED CONTENT INSET — Aseptaclean_Website_Design_Blueprint.md "Mandatory shared hero
+     sizing": 40px mobile / 48px tablet (768px+) / 64px desktop (1024px+), top and bottom — the
+     same stepped values AcHeroWithForm uses, so this component's four callers (rodent, About,
+     Contact, and the rodent PPC landing page) measure identically to the homepage and the four
+     sibling service pages. Was a fluid `clamp(40px, 5vw, 64px)`, which does not land on the
+     blueprint's exact breakpoints. */
   .acx-phero__shell {
     position: relative;
     z-index: 2;
-    padding-block: clamp(40px, 5vw, 64px);
+    padding-block: 40px;
+  }
+
+  @media (min-width: 48rem) {
+    .acx-phero__shell {
+      padding-block: 48px;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .acx-phero__shell {
+      padding-block: 64px;
+    }
   }
 
   .acx-phero__copy {
@@ -203,9 +246,7 @@ const heroWidths = image ? srcsetWidths(image, [480, 768, 1024, 1440, 1920]) : [
     line-height: 1.5;
   }
 
-  @media (max-width: 40rem) {
-    .acx-phero__shell {
-      padding-block: 32px 36px;
-    }
-  }
+  /* Was an asymmetric 32px/36px, predating the blueprint's stepped inset table above (40px
+     mobile, both sides, applied unconditionally at the top of this block). No separate mobile
+     override needed — removed rather than left to silently win at this width. */
 </style>

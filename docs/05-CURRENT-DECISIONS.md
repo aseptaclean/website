@@ -1513,3 +1513,1308 @@ non-pricing/contact sections of the service page (spaces, keep, process, assessm
 still-getting-in, founder, FAQ, serving, related-services) and the landing page's equivalent
 sections are untouched, per the brief's own "this is a focused redesign... preserve the current
 approved copy elsewhere."
+
+---
+
+## 2026-09-17 — Rodent spaces section rebuilt; no-form hero generalized to all five service pages
+
+Implements `docs/Aseptaclean_Service_Hero_And_Spaces_Update.md`, an owner-authored implementation
+brief delivered directly in this session. Three parts: (A) fix the rodent service page's
+"The spaces" section, which rendered its four groups in one column instead of the intended grid;
+(B) standardize every service-detail-page hero on the rodent page's full-width-photo/navy-overlay,
+no-form composition; (C) relocate each affected page's existing form to one centered contact
+section near the page's bottom.
+
+### Conflict: does the no-form hero generalize past the rodent routes?
+
+A: This session's live owner instruction — "The owner has explicitly asked to move forms out of
+the other service-page heroes to match the rodent service page. This instruction supersedes the
+older hero-form placement requirement for service pages and the old restriction that the no-form
+treatment applies only to rodent routes." Scope named explicitly: the five service-detail pages,
+not the homepage, Services hub, About, Contact, legal pages, or paid-traffic landing pages. (rank
+2 — explicit current owner decision)
+
+B: `AGENTS.md` "Hero-form scope" (2026-09-04 owner decision) — "the homepage and all five service
+pages share one responsive `HeroWithForm`" — and the 2026-09-16 entry immediately below it (also
+rank 2) — "`AcHeroWithForm`, `AcServicePage`, `PpcHero` and every other page using them are
+untouched; this exception does not generalize past these two routes."
+`docs/30-WEBSITE-MASTER-SPEC.md` §3 carries the same "home and the five service pages share one
+responsive HeroWithForm" sentence implementing the 2026-09-04 side. (rank 2 owner decision, and
+rank 5 doc implementing it)
+
+**Resolution: A wins, scoped to the five service-detail pages exactly as it names itself.** This
+resolves the same way the 2026-09-06 free-walkthrough and request-assessment-retirement entries
+in this log did: a later owner decision that names its own scope outranks an earlier one within
+that scope, because it is the same authority speaking again, not a different one. The 2026-09-16
+entry's closing sentence is exactly what this instruction targets ("the old restriction that the
+no-form treatment applies only to rodent routes"); the rest of that entry — why `AcPageHero`
+was chosen, why the boxed-photo alternative was rejected, that `PpcHeroForm` is reused unmodified
+— remains an accurate description of the rodent routes and is not disturbed. `AGENTS.md` and doc
+30 §3 are amended in place rather than left contradicting the shipped pages; both keep the
+superseded text, struck through or quoted, so the "why" is not lost.
+
+**Type:** owner decision superseded by a newer owner decision, generalizing its scope → rule
+amended, code changed to match, no two live documents left contradicting each other.
+
+### Part A — the rodent "spaces" section
+
+`.rodent-groups` (the shared class also used, unmodified, by the process section immediately
+below it) declared `display: grid` with no column template, so its four groups rendered in one
+column — exactly the source-file defect the brief's evidence review named. Fixed with a
+spaces-only modifier, `.rodent-spaces-grid`, applied only to that one `<div>`:
+two columns / two rows at normal widths, one column at ≤44rem (`44rem` is this page's existing
+narrow-mobile breakpoint, reused rather than inventing a new one), 24px gap, and each of the four
+groups now renders as an understated bordered panel (`--ac-color-line-strong` border, 12px
+radius, `--ac-color-warm-white` fill, 26px padding) against the section's white background —
+brief §"Recommended composition": "white or warm-white surfaces, a subtle existing border token,
+and restrained corner treatment." `.rodent-groups--cols` (the process section's own two-column
+modifier) is untouched, and neither modifier reaches the other section. The intro's `AcIntro` call
+gained `align="start"`, left-aligning its eyebrow/heading/lead/body with the grid below instead of
+centering them above a left-aligned grid — the exact disconnect the brief's evidence review
+flagged. No copy changed; all four category headings and bodies, and the "finding waste in one
+room does not mean every room needs the same work" qualification, are byte-identical. Grid rows
+size to content (no fixed heights, no `align-items` override), so a taller panel never clips a
+shorter one's text — verified in the screenshots below.
+
+**File:** `src/pages/rodent-dropping-cleanup-san-jose/index.astro`. The `/assessment/` landing
+page's analogous "plan" section already had a two-column grid (unscoped, its only consumer) and
+was not part of the brief's Part A scope, so it was not touched.
+
+### Part B — the shared no-form hero
+
+`AcHeroWithForm.astro` (the homepage's and, until now, four of the five service pages' hero
+component) gained two additive props, both defaulted so the homepage — the only other caller — is
+byte-identical to before:
+
+- `showForm` (default `true`): `false` skips rendering `AcCompactForm` entirely and collapses
+  `.acx-hero__grid` from the two-column `minmax(0,1fr) minmax(520px,560px)` template to one fluid
+  column via a `.acx-hero--no-form` modifier, so no abandoned empty form track is left behind
+  (brief: "Eliminate the abandoned form grid column"). Each hero text element already caps its own
+  measure (h1 18ch, lead 52ch, body 56ch), so the single wide column does not stretch the copy
+  full-bleed.
+- `secondaryHref` (default `` `#${formId}` ``, i.e. the previous behaviour exactly): overrides the
+  secondary action's target for a caller that relocated the form elsewhere.
+
+`AcServicePage.astro` (hoarding, extreme cleaning, deep cleaning, crime scene & trauma) now passes
+`showForm={false}` and `secondaryHref="#service-contact"`. The image, alt text, focal point
+(`heroImagePosition`), stacked-layout exception (`heroStackedLayout`/`heroStackedImagePosition` —
+trauma's `split-band` route exception, doc 30 §3.1), eyebrow, H1, lead, body paragraphs and
+assurances are all read from the same `page` record as before and are byte-identical; only the
+form panel and its grid column are gone. Trauma's stacked-hero crop measurably improved as a
+side effect: with no form beneath the copy at stacked widths, the media box the `split-band`
+exception bounds is now exactly the copy region by construction, the same effect that exception
+was built to force — see the updated note in doc 30 §3.1. `AcPageHero`-based routes (rodent, and
+the pages that already used it — About, Contact, the Services hub) are unaffected; they already
+had no hero form.
+
+### Part C — the relocated contact section
+
+Each of the four sibling pages gained one new bottom section, replacing the old `AcFinalCta`
+closing band (deleted from `AcServicePage.astro`'s render list, not from the file, since `AcFinalCta`
+is a shared component `Contact`'s own page still uses unmodified):
+
+```
+<section class="svc-contact" id="service-contact" aria-labelledby="service-contact-heading">
+  <h2 id="service-contact-heading">{page.finalHeading}</h2>
+  {page.finalBody...}
+  <AcCompactForm formId="service-form" headingId="service-contact-heading"
+                 entryRoute={`${page.slug}#service-form`} preselectRoute={page.slug} tone="light" />
+  <p>Prefer to talk? Call {site.business.phone}.</p>
+</section>
+```
+
+`page.finalHeading`/`finalBody` — the same approved closing copy each page's old `AcFinalCta` band
+rendered, verified byte-identical in `dist/` and still asserted by `scripts/copy-fidelity-audit.mjs`
+— is reused as this section's one visible introduction, per the brief's "Reuse approved final copy
+as the contact introduction where appropriate. Do not repeat both in an outer wrapper."
+`AcCompactForm` gained an additive `headingId` prop (mirroring the identical, already-shipped
+convention on `PpcHeroForm`): when set, the form suppresses its own default `<h2>`+lede and labels
+itself via the caller's heading instead, so there is exactly one heading per section, not two.
+Every other `AcCompactForm` caller (homepage hero, Contact) leaves it unset and is unchanged.
+
+**Duplicate-ID resolution, matching the brief's own instruction ("preserve an existing form ID
+where possible, such as `service-form`... give its outer section a different ID if needed").**
+`scripts/launch-e2e-form-check.mjs` hardcodes `formSelector: "#service-form"` plus its
+`-name`/`-phone`/`-email`/`-zip`/`-detail` child ids for exactly this route (`service-page`
+surface) — an "internal hook" the brief names by example. `formId="service-form"` is therefore
+passed to `AcCompactForm` unchanged, so `<form id="service-form">` and its child ids are
+byte-identical to what that script already expects. The wrapping `<section>` carries the new,
+previously-unused id `service-contact` instead, and every CTA that used to point at the hero form
+(`#service-form`) now points at `#service-contact` — the section, not the bare form — so
+`html`'s existing `scroll-padding-top` (already sized to the sticky header) lands the visitor with
+the section's heading visible, not just the form fields. Verified:
+`document.querySelectorAll("[id]")` reports zero duplicate ids on all four routes; clicking the
+hero's "Send a Message"
+action lands with the heading fully in view and focus on the Full Name field (via `AcActions`'
+existing `data-focus-target` mechanism, unmodified).
+
+**Service selection, hidden fields and consent are unchanged.** `preselectRoute={page.slug}` is
+the exact value `AcHeroWithForm` used to pass as `route` when the form lived in the hero — the
+"What are you dealing with?" select still preselects the correct service (verified: Hoarding
+Cleanup / Crime Scene & Trauma Cleanup / etc. render pre-selected on their own pages).
+`entryRoute` changed only in its fragment (`#service-form` instead of `#hero-form`-style), which is
+descriptive metadata on the lead, not a functional lookup key.
+
+**The same duplicate-ID pattern already existed, unfixed, on both rodent routes** — flagged by the
+brief's own evidence review (finding #8) and confirmed still present in the working tree: the
+outer `<section id={page.formId}>` and the nested `<PpcHeroForm formId={page.formId}>`'s `<form>`
+shared the literal id `rodent-form`. Fixed the other direction from the four sibling pages, because
+`#rodent-form` (unlike `#service-form`) is an already-shipped, load-bearing value: Analytics.astro's
+click-tracking regex matches `#rodent-form` by name, and the `/assessment/` landing page's sticky
+bar (`stickyFormHref`) points at it too. Both must keep resolving to the section (so the heading
+stays visible and the analytics event keeps firing on the same fragment), so the section kept
+`id={page.formId}` and the nested `<PpcHeroForm>` instead received a new, purely-internal id
+(`` `${page.formId}-panel` ``) — nothing queries the `<form>` tag by its literal id on either rodent
+route. Verified: zero duplicate ids on both rodent routes post-fix; `#rodent-form` still resolves
+to the section on both.
+
+### Verification
+
+- `npm run check` — 0 errors.
+- `npm run build:local` — 55 pages built, no errors.
+- `npm run qa:copy` / `npm run qa:gate6` — PASS; every route's mapped source blocks present,
+  including the four `finalHeading` strings each script's `PLACEMENT` table names for hoarding,
+  extreme cleaning, deep cleaning and trauma — unaffected by moving that copy from `AcFinalCta`
+  into the new contact section, since the check greps rendered text, not a specific component.
+- `npm run qa:launch` — PASS, unchanged from before this change.
+- `npm run qa:seo` — same pre-existing city-route publish-blocker count as before this change
+  (42, all on `/service-areas/*` routes this task did not touch); PASSED.
+- `scripts/type-law-check.mjs`, scoped to the seven touched routes plus `/` — Rule 1 CLEAN (every
+  heading, including the new `.svc-contact`/`.rodent-spaces-grid` markup, sizes through an
+  `.ac-type-*` role class); Rule 2 all seven routes clear 1.9:1 at every width; no one-word H1
+  final lines introduced.
+- Playwright sweep across `/`, all five service-detail routes, both PPC assessment landing pages
+  (hoarding, rodent) and `/contact/` at 1440×900, 1366×768, 768×1024, 390×844 and 320×700: zero
+  horizontal overflow at any combination. Targeted checks on the four migrated routes confirmed
+  zero duplicate DOM ids, exactly one `<h2>` inside `#service-contact`, the form nested inside that
+  section, and the hero's secondary action landing on the visible heading with focus in the first
+  field.
+- Trauma's mobile hero crop was re-measured against the 2026-09-06 baseline in
+  `docs/30-WEBSITE-MASTER-SPEC.md` §3.1: visually confirms materially more of the source photograph
+  is visible at 390px now that no form sits beneath the copy in the stacked layout (qualitative
+  screenshot comparison, not a re-run of `scripts/trauma-hero-mobile-check.mjs`, which is a
+  diagnostic capture script with no pass/fail gate and was left unmodified — its `form`-keyed
+  fields now legitimately report `null` for these routes rather than measuring a removed element).
+- Claims-check re-run over every rendered string this change touched (the four relocated
+  `finalHeading`/`finalBody` blocks, the new "Prefer to talk? Call…" line, the unchanged rodent
+  spaces copy): no violation: no new claim, price, credential, or wording was introduced; every
+  string moved verbatim from where it already rendered.
+
+### Not changed
+
+- Homepage, Services hub, About, Contact, legal pages: no file touched, no layout change.
+- Every PPC/paid-landing-page route (`/hoarding-cleanup-san-jose/assessment/`,
+  `/estate-cleanout-san-jose/assessment/`, `/rodent-dropping-cleanup-san-jose/assessment/`):
+  `PpcHero`/`PpcHeroForm`/`AcPageHero` and their existing hero-form or bottom-form compositions are
+  untouched by this entry. The rodent landing page's duplicate-id fix (Part C) is the only change
+  it received here.
+- No service claim, price, credential, meta title/description, canonical, indexing rule, or legal
+  wording. No form field, required state, validation rule, endpoint, redirect, CRM mapping,
+  upload limit, or analytics event definition.
+- `functions/api/lead.ts` and the rest of the canonical backend: untouched, per the brief's own
+  "Leave the canonical backend untouched for this layout task." The disabled-submit "Online
+  submission is not fully configured in this preview" message still renders in the local `astro
+  preview` environment used to verify this change — expected, since Cloudflare Pages Functions do
+  not run under that preview server; not concealed, not faked, and not a defect introduced here.
+- `AcFinalCta.astro` itself: left in the tree, unmodified, and still rendered by `/contact/`.
+
+### Blockers / follow-ups for a separately authorized session
+
+- Real end-to-end submission (Turnstile solve, live `/api/lead`, confirmation email) was not
+  exercised for the four migrated pages in this session — that requires the deployed Cloudflare
+  Pages Functions environment and, per standing instruction, explicit authorization plus a
+  designated test inbox before sending a real test lead. `scripts/launch-e2e-form-check.mjs`
+  already covers the hoarding service page (`service-page` surface) against production and needs
+  no changes for this task, since `#service-form`'s child ids are unchanged.
+- Nothing was deployed. All verification above ran against `npm run build:local`'s `dist/` output
+  served by `astro preview` on `localhost`.
+
+---
+
+## 2026-09-17 (same day, second decision) — Homepage hero form relocated too
+
+Live owner instruction, delivered directly in chat immediately after the entry above shipped:
+"can you change the home page hero to match the service page design." No written brief this time
+— the entry above already established what "the service page design" means in this session (the
+rodent-page composition, generalized), so this is a scope widening of that exact decision, not a
+new design direction.
+
+### Conflict: the entry immediately above this one explicitly excluded the homepage
+
+A: This message — an explicit, current, live owner instruction to apply the same no-form-hero
+treatment to `/`. (rank 2)
+
+B: The entry immediately above — "The homepage, Services hub, About, Contact, legal pages, and
+every PPC/paid-landing-page route... are explicitly untouched and keep their current layouts,"
+and `AGENTS.md`'s matching "Hero-form scope — the homepage only" sentence, both written earlier
+today. (rank 2, same session, same day)
+
+**Resolution: A wins.** Same rule this log already applies repeatedly: a later owner decision
+that names its own scope outranks an earlier one within that scope, because it is the same
+authority speaking again. This is the tightest case of that rule so far — the two decisions are
+roughly an hour apart in the same conversation — but the mechanism is identical, and "the
+homepage is deliberately out of scope" was never a fact independent of the owner's own stated
+intent; it was that intent, now updated.
+
+**Type:** owner decision superseded by a newer owner decision, minutes later, same conversation →
+rule amended again, code changed to match.
+
+### What changed
+
+`src/pages/index.astro`:
+
+- `<AcHeroWithForm>` gained `showForm={false}` and `secondaryHref="#home-contact"`; dropped the
+  now-unused `formId="hero-form"` and `route="/"` props (both were only consumed by the form panel
+  this hero no longer renders).
+- The closing `<AcFinalCta heading={home.final.heading} body={home.final.body} />` is replaced by
+  a new `.home-contact` section, id `home-contact`, reusing `home.final.heading`/`body` verbatim
+  as its one visible introduction. `AcCompactForm` renders inside it with `formId="hero-form"`
+  (preserved literally — see below), `headingId="home-contact-heading"` (suppresses the form's own
+  default heading so there is exactly one), `tone="light"`, `entryRoute="/#hero-form"`,
+  `preselectRoute="/"` (the same value `AcHeroWithForm` used to pass by default, so the situation
+  select's behavior — no service preselected on the homepage — is unchanged). A "Prefer to talk?
+  Call…" line matches the wording already shipped on the rodent and service-page contact
+  sections.
+
+**Duplicate-ID / anchor resolution, same pattern as the entry above.**
+`scripts/launch-e2e-form-check.mjs`'s `homepage` surface hardcodes `formSelector: "#hero-form"`
+plus `-name`/`-phone`/`-email`/`-zip`/`-detail`/`-situation` child ids. `formId="hero-form"` is
+therefore unchanged on `AcCompactForm`, so the `<form>` and its children are byte-identical to
+before. The new `home-contact` id lives on the wrapping `<section>` instead, and the hero's
+secondary action now points there — so the visitor lands with the heading visible (verified:
+heading top 152px, inside the viewport, at 1440×900 after the click), not just the bare form.
+
+**`src/components/Analytics.astro`:** the click-tracking regex gained `home-contact` as a tracked
+fragment (full pattern now `hero-form|home-contact|request-walkthrough|request|contact-form|
+assessment-form|rodent-form`, unbroken in the source file — wrapped here only for this log's line
+width), because the homepage's secondary action now points at `#home-contact`, not
+`#hero-form`, and that CTA is the site's single highest-traffic conversion click — it must keep
+firing `handoff_plan_click`. `hero-form` stays in the alternation even though no current `<a href>`
+targets it directly: `AcCompactForm`'s default `entryRoute` prop and this page's own `entryRoute`
+string still reference it as descriptive metadata, and removing a previously-live tracked fragment
+is exactly the kind of quiet regression this log exists to prevent, for zero benefit.
+
+**`AGENTS.md`** "Hero-form scope" and **`docs/30-WEBSITE-MASTER-SPEC.md`** §3 (including the §1
+"Home hero" table row) amended in place: both now state that no page's hero embeds a form via
+`AcHeroWithForm`, with the superseded "homepage only" language struck through/quoted rather than
+deleted. **`docs/page-briefs/HOME.md`** gained the same one-line supersession note already added
+to the four service-page briefs.
+
+### Verification
+
+`npm run check` (0 errors) · `npm run build:local` (55 pages) · `qa:copy`/`qa:gate6` PASS
+(`home.final.heading`'s text — "You do not need to know exactly what kind of cleanup you need." —
+is still present in `dist/index.html`, just inside `.home-contact` instead of `AcFinalCta`;
+neither script asserts which component renders it) · `qa:launch` PASS. Playwright: zero horizontal
+overflow at 1440×900, 1366×768, 390×844, 320×700; zero duplicate DOM ids on `/`; `#home-contact`
+contains exactly one `<h2>` and the `<form>`; clicking the hero's "Send a Message" action lands
+with the heading visible and focus on the Full Name field.
+
+### Not changed
+
+Everything the entry above already scoped as untouched, still untouched: Services hub, About,
+Contact, legal pages, every PPC/paid-landing-page route. No service claim, price, credential,
+meta title/description, field, validation rule, endpoint, or analytics event *definition* — only
+one tracked fragment was *added* to the existing click regex, not redefined. `functions/api/lead.ts`
+untouched. Nothing deployed.
+
+### Blocker, unchanged from the entry above
+
+Real end-to-end submission for the homepage's relocated form was not exercised this session for
+the same reason as the four service pages — needs the deployed Pages Functions environment and
+separate authorization. `scripts/launch-e2e-form-check.mjs`'s `homepage` surface needs no code
+change, since `#hero-form`'s child ids are unchanged.
+
+---
+
+## 2026-09-18 — Owner design blueprint implemented: homepage rebuild, Services hub retired,
+## Estate Cleanout added to navigation, shared hero sizing, estate campaign form relocated
+
+Implements `docs/Aseptaclean_Website_Design_Blueprint.md`, an owner-authored implementation brief
+(dated internally September 18, 2026) delivered directly in this session, following the same
+pattern as the two 2026-09-17 entries above. This is the largest single change this log records:
+a full homepage rebuild to the owner's exact 11-section order, retirement of the standalone
+`/services/` hub with a permanent redirect, a sixth public service (Estate Cleanout) wired into
+navigation/homepage/footer, a shared hero-sizing rule applied across nine public pages plus the
+two reviewed campaign landing pages, and the estate assessment landing page's form moved out of
+its hero per the owner's earlier, now-generalized instruction.
+
+### Conflicts resolved
+
+**A — the homepage's row order and content.** `docs/page-briefs/HOME.md` and doc 30 §1/§5
+described a 12-row homepage (including two standalone "difference"/"scope" sections, a five-step
+process, and a standalone FAQ). The blueprint specifies an exact 11-section order (navbar, hero +
+trust, Why Aseptaclean, Services, Who We Help, CTA, Process, Service Area, CTA, Contact form,
+footer) and explicitly directs several consolidations. Resolution: the blueprint is a current,
+explicit owner decision (rank 2) naming its own scope in detail; it supersedes doc 30 §5 and
+HOME.md's row order for the homepage specifically, the same way the 2026-09-17 entries above
+resolved a scope-widening owner decision against an earlier one. HOME.md and doc 30 §1/§3/§4 are
+amended in place (struck/quoted, not deleted) rather than left contradicting the shipped page.
+
+**B — "Services hub is a live, indexable page" (§1.2/§2, `docs/SITEMAP-MASTER.md`) vs. "retire the
+standalone Services hub" (blueprint).** The blueprint is explicit and names its own scope: "Remove
+the standalone `/services/` overview page from the active site... Implement a permanent redirect
+from the old `/services/` route to `/#services`." Resolution: A wins. `src/pages/services/index.astro`
+is deleted; `public/_redirects` gained one rule (`/services/ → /#services`, 301); every internal
+reference (`Header.astro`, `Footer.astro`, `AcServicePage.astro`'s and the rodent page's
+BreadcrumbList schema, `launchArchitecture.ts`) was updated or removed. No dead route, no redirect
+chain: Cloudflare Pages applies `_redirects` before checking for a real asset (existing project
+knowledge, same mechanism already documented for the historical retirements in that file), and the
+deleted page means nothing can shadow the rule either way.
+
+**C — "five current public services, unchanged order" (AGENTS.md §2.2.6 route table, doc 30) vs.
+"append Estate Cleanout as the sixth public service" (blueprint).** The public
+`/estate-cleanout-san-jose/` page already existed, fully built (a bespoke, extensively documented
+gold-standard page, not the generic template), but had never been added to
+`launchArchitecture.ts`'s `launchServiceLinks` — so it was invisible in the header dropdown and
+footer, and (a pre-existing gap this pass also closes) it inherited `noindex` from
+`isLaunchPublicPath`/`BaseLayout` and was absent from `sitemap.xml`. Resolution: the blueprint's
+instruction is additive, not a conflict with anything the five-service table actually decided
+(it does not forbid a sixth service, only describes the five that existed at the time). Estate
+Cleanout joins `launchServiceLinks` as the sixth, ordered last per the blueprint's explicit
+"Preserve the relative order of the five current public services and append the newly requested
+Estate Cleanout service." This single data-file change is what fixes the pre-existing indexation
+gap, since `launchPrimaryPaths` spreads `launchServiceLinks`' hrefs.
+
+**D — "never a giant minimum-height copied from an old mockup" (doc 30 §3) vs. "mandatory shared
+hero sizing... 600/560/440px" (blueprint).** Resolution: not a real conflict once read precisely —
+doc 30 §3 amended in place to say so. The old warning targets a *fixed* height that clips or hides
+content; the blueprint's floor is a *minimum*, applied to a hero whose content region
+(`.acx-hero__shell` / `.acx-phero__shell` / `.ec-hero__shell`) stays in normal document flow, so a
+page whose approved copy needs more room still grows taller instead of being clipped or
+compressed. Both rules are satisfied simultaneously by a `min-height` rather than a `height`.
+
+### What changed
+
+**Shared hero sizing** — `src/components/ac/AcHeroWithForm.astro`, `src/components/ac/AcPageHero.astro`,
+`src/pages/estate-cleanout-san-jose/index.astro` (`.ec-hero`), and `src/components/ppc/PpcBrightHero.astro`
+(`.est-hero`, the estate campaign's own hero) all gained the same stepped rule set: `min-height`
+440px base / 560px at `min-width: 48rem` (768px) / 600px at `min-width: 64rem` (1024px), and a
+matching stepped content inset (40px / 48px / 64px, replacing several pre-existing flat or fluid
+`clamp()` values that did not land on the blueprint's exact breakpoints). This reaches all nine
+public marketing pages the blueprint names (home; hoarding, extreme cleaning, deep cleaning, crime
+scene & trauma, rodent and estate cleanout service pages; About; Contact — the first four service
+pages and the homepage via `AcHeroWithForm`, rodent/About/Contact via `AcPageHero`, estate via its
+own component) plus the two reviewed campaign pages (rodent assessment via `AcPageHero`, estate
+assessment via `PpcBrightHero`). The estate service page's hero (`.ec-hero`) also moved from
+`display:flex; align-items:center` (vertically centering its copy) to normal top-aligned block flow
+with the same stepped padding, matching the blueprint's "Align text from the top inset rather than
+vertically centering different amounts of copy" and the other eight pages' own approach. No copy
+was changed on any of these pages; only the measured geometry.
+
+**Homepage (`src/pages/index.astro`), full rewrite** to the blueprint's 11-section order. Every
+sentence from the previous homepage's `home.intro`, `home.why`, `home.scope`, and `home.steps` data
+is preserved somewhere on the page (see the file's own header comment for the exact mapping); two
+structural, minimal edits were required to fit the blueprint's mandated shape and are called out
+explicitly in that comment and below:
+  - Section 3 ("Why Aseptaclean") combines the former standalone "difference" intro and the
+    founder "Why" split into one 45/55 (text-left/image-right) section, per the blueprint's own
+    "'The difference' and current founder/Why material become the early Why section." `home.why.close`'s
+    three sentences become the section's "up to three brief evidence/benefit rows."
+  - The homepage process (section 7) is consolidated from five steps to four, per the blueprint's
+    explicit "Replace five narrow process columns with four concise steps." Steps 2 and 3 ("We
+    review the condition." / "We define the work.") merge into one step with both bodies
+    concatenated verbatim; steps 1, 4 and 5 are otherwise unchanged. This is a homepage-only
+    change — the four sibling service pages' own process sections are untouched.
+  - The former standalone dark "Scope" band (`home.scope`) is folded into the process section as a
+    "what you will know before we start" block — heading, lead, body, the seven scope questions,
+    and the pull quote all preserved verbatim, per "The oversized 'Scope' block becomes concise
+    written-plan proof within Why and process."
+  - The homepage FAQ (`home.faq`, six questions plus the rebuilt service-area answer) moved to
+    `/contact/` rather than being deleted, per "Existing standalone homepage FAQs can move to
+    appropriate service/Contact content... Do not destroy useful answers or leave stale FAQ
+    structured data." `/contact/` gained a new FAQ section (`AcIntro` + `FaqAccordion`) and its own
+    `FAQPage` JSON-LD; the homepage no longer emits one.
+
+**New homepage sections** (not present before this pass):
+  - "Who We Help" (45/55, text-left/image-right): four audience groups per the blueprint's own
+    proposed labels (homeowners and families; executors, trustees and fiduciaries; property
+    managers and landlords; businesses and facility managers), each with one newly drafted
+    sentence describing the cleanup need only — flagged as new copy below.
+  - Two `AcCtaBand` sections (new shared component, `src/components/ac/AcCtaBand.astro`): a compact
+    deep-navy band after Who We Help (one new one-sentence invitation, flagged below) and a
+    warm-white/fine-divider band before the contact form, reusing `home.final.heading`/`body`
+    verbatim as a *different* heading from the contact form's own ("Tell us about the property.",
+    `site.offer.formHeading`) — satisfying the blueprint's "Its heading invites action; the next
+    section's heading identifies the form. Do not repeat the same heading twice."
+  - Service Area, restructured to text-left (~40%) / two grouped city lists right (~60%) — South
+    Bay (8 cities) and Peninsula (Palo Alto, Atherton) — rather than a single five-column city
+    grid. No map asset exists anywhere in this repository (`find src/assets public -iname
+    "*map*"` returns nothing); the blueprint's own fallback — "If an appropriate map asset is
+    unavailable, use two neatly grouped city lists; no decorative empty map box in production" —
+    governs. The South Bay/Peninsula split is the same distinction AGENTS.md §3 already uses to
+    reject "Santa Clara County" as the region label (Atherton is San Mateo County).
+
+**Estate Cleanout added to navigation and the homepage card grid.** `launchServiceLinks`
+(`src/data/launchArchitecture.ts`) gained a sixth entry, which automatically reaches the header
+dropdown, the footer Services column, `launchPrimaryPaths`, and therefore `sitemap.xml` (see
+Conflict C above). The homepage's service-card grid moved from `AcServiceCards`' "five" layout
+(3+2 centered) to a new "six" layout (plain 3×2 desktop / 2 tablet / 1 mobile, per the blueprint)
+and gained a sixth card whose description is the public estate page's own hero lede, reused
+verbatim (not new copy) so the card and its destination open on the same statement. A "Help Me
+Choose a Service" text link was added beneath the grid, linking to the homepage's own contact form
+— the blueprint's required bottom CTA, replacing the retired hub's "View All Services" link.
+
+**Services hub retirement.** `src/pages/services/index.astro` deleted. `public/_redirects` gained
+`/services/ → /#services` (301). `src/data/launchArchitecture.ts`: `launchPrimaryNavLinks`'
+"Services" entry now points at `/#services` instead of the deleted route; `/services/` removed
+from `launchPrimaryPaths`. `Header.astro`'s desktop/mobile Services-dropdown branch now matches on
+`link.label === "Services"` instead of `link.href === "/services/"` (the href changed, so the old
+check silently stopped matching — label-based matching survives any future destination change).
+`Footer.astro`'s "Company" column "Services" link now points at `/#services`. The BreadcrumbList
+JSON-LD on the four `AcServicePage`-rendered routes and on the rodent page's own hand-duplicated
+schema both had a "Services" node pointing at the now-deleted `/services/`; removed (no other real
+hub sits between Home and these five pages, so the trail now goes Home → the page directly, the
+same shape the estate page's own breadcrumb already uses with its real `/property-clearing/`
+parent). The homepage's services section carries the stable `id="services"` the blueprint
+requires; `AcIntro.astro` gained an optional `id` prop to make that possible (previously silently
+dropped any `id` passed to it). Dead code identified but deliberately NOT touched, since nothing
+renders it and editing it carries risk for zero behavior change: `src/data/site.ts`'s `megaNav`
+and `navigation` exports, `src/data/servicePages.ts`'s separate `servicesHub` record, and roughly
+a dozen orphaned `Services*`/`HomeService*` components (`HomeServiceGrid.astro`, `WhatWeHandle.astro`,
+`ServicesHero.astro`, etc.) — none has a live importer under `src/pages/`, confirmed by import-graph
+search before this pass, so none was a "consumer" this retirement needed to update.
+
+**Estate assessment landing page (`/estate-cleanout-san-jose/assessment/`) — form moved out of the
+hero.** The blueprint's campaign review is explicit: "Apply the owner's earlier direction: text
+left, meaningful image right, call and form-anchor buttons, one centered form near the bottom."
+`src/components/ppc/PpcBrightHero.astro` gained an additive `image`/`imageAlt` prop pair (defaulted
+so its behavior is unchanged when omitted — it has exactly one consumer today) that swaps the
+`slot="form"` column for a 4:3 photograph. The page now passes the public estate page's own hero
+image (`hoarding-garage-contents.png`) rather than either of the two illustrations used one and two
+sections below the hero (both are already placed elsewhere on this same page; reusing either in the
+hero would put the same image in two sections a scroll apart). The `PpcHeroForm` that used to render
+inside the hero moved to the former "07 · LET'S MAKE A PLAN FOR THE HOUSE" section, which kept that
+section's own approved `copy.final.heading`/`body`/`areaLine` as its introduction (reused, not
+duplicated) and gained the actual working form beneath it — the same "reuse approved closing copy as
+the contact introduction" pattern the 2026-09-17 entries above established for the sibling service
+pages and the homepage. That section's background moved from deep navy to the shared warm-paper
+surface those relocated contact sections use, since it is now a real form panel (`tone="light"`)
+rather than a dark closing statement.
+
+**Duplicate-ID fix, same pattern as the 2026-09-17 entries.** The section wrapping the relocated
+estate form keeps the literal id `copy.formId` ("request-walkthrough") — the sticky bar's
+`stickyFormHref`, every in-page "walkthrough" CTA, and the Analytics.astro click-tracking regex all
+target `#request-walkthrough` and must keep resolving to the section so its heading stays visible on
+scroll. The `<form>` itself (via `PpcHeroForm`) received a distinct, purely-internal id
+(`request-walkthrough-panel`). Verified: zero duplicate DOM ids on the built page.
+
+**FAQ container fix, applied broadly.** The blueprint's evidence review flags the same defect on
+five separate routes (rodent, and by the same mechanism the four `AcServicePage` routes, plus this
+session's new Contact FAQ): "Heading is centered across a broad area while the accordion occupies
+the left portion, leaving a disconnected right void." `AcIntro.astro` gained an additive `narrow`
+prop: when set, the heading and the slotted content share one centered ~820px container, both
+left-aligned, instead of a centered ~992px heading sitting above a separately-positioned slot.
+Applied to `AcServicePage.astro`'s FAQ section (reaches hoarding, extreme cleaning, deep cleaning,
+and crime scene & trauma), the rodent service page's own FAQ, the rodent assessment landing page's
+FAQ, and the new Contact FAQ. Every other `AcIntro` caller omits the prop and is unchanged.
+
+**45/55 split and 3×2 card grid, as reusable component options rather than one-off CSS.**
+`AcSplit.astro` gained an additive `splitFr` prop (`readonly [number, number]`, default `[1, 1]` —
+50/50, every existing caller unchanged) so a caller can request an exact fr ratio instead of the
+component's default equal columns; used with `reverse` (text-first DOM order) it gives the
+text-left/image-right 45/55 split the blueprint requires for both "Why Aseptaclean" and "Who We
+Help." `AcServiceCards.astro` gained a `layout="six"` option (plain 3-column grid, 2 at
+`max-width: 74.9375rem`, 1 at `max-width: 40rem` — the same breakpoints its existing `"five"`
+layout already uses) alongside the existing `"five"` (kept for any future caller) and `"even"`.
+
+### New copy — flagged for owner review, per the blueprint's own instruction #6
+
+Everything else on the rebuilt homepage and the estate campaign hero is either unchanged source
+copy (via `src/data/publicCopy.ts`) or reused verbatim from another already-approved page (the
+Estate Cleanout homepage card description, and the estate campaign hero's reused image). The
+following strings are new, minimal, and were checked against AGENTS.md §0.3/§7 and doc 21 before
+writing (no claim, price, credential, guarantee, or service not already described elsewhere on the
+site):
+
+  - "Who We Help" section lede: "Families, fiduciaries, property managers and businesses all reach
+    Aseptaclean the same way — by telling us what is happening at the property."
+  - The four audience one-sentence descriptions under "Homeowners and families," "Executors,
+    trustees and fiduciaries," "Property managers and landlords," and "Businesses and facility
+    managers" (see `src/pages/index.astro`'s `audiences` constant for the exact wording). The four
+    group *labels* are the blueprint's own proposed text, not new.
+  - The first CTA band's heading/invitation: "Not sure where to start? You do not need to know the
+    name of the service before you contact us." (the second clause is `home.doorsIntro.lead`,
+    already-approved; the first clause is new).
+  - The homepage process section's one merged step title, "We review the condition and define the
+    work." (both step *bodies* underneath are unchanged verbatim source text).
+
+### Verification
+
+  - `npm run check` — 0 errors (11 pre-existing hints/warnings in unrelated files, unchanged by
+    this pass).
+  - `npm run build:local` — 54 pages built (was 55 before this session; the retired `/services/`
+    page accounts for the exact difference), no errors.
+  - `grep` against `dist/`: zero duplicate `id` attributes on the homepage, the estate service
+    page, and the estate assessment landing page; `id="services"` present on the homepage;
+    `/services/` absent from the build output; `/services/` redirect rule present in the copied
+    `_redirects` file; `estate-cleanout-san-jose` present in the homepage's rendered dropdown/card
+    markup; the Contact page's FAQ section renders with the expected heading id.
+  - Full route-level browser verification (desktop/tablet/mobile viewport screenshots, dropdown
+    and redirect interaction, safe-mode form behavior) is recorded separately in this session's
+    final report to the owner rather than duplicated here.
+
+### Not changed
+
+  - `functions/api/lead.ts` and the rest of the canonical backend, all form field names, required
+    states, consent text, upload limits, and analytics event definitions.
+  - The hoarding assessment landing page (`/hoarding-cleanup-san-jose/assessment/`) — the blueprint
+    explicitly says it "still needs its own review when its current screenshots or source are
+    available," so it is untouched by this pass.
+  - Page-specific composition changes the blueprint recommends for the four `AcServicePage` routes
+    individually (Detailed Deep Cleaning's three-room-column checklist restructuring, Extreme
+    Cleaning's repeated-explanation consolidation, Crime Scene & Trauma's 2×3 situations grid,
+    Hoarding's process/pricing refinements) and for About — these are real, itemized
+    recommendations in the blueprint that this pass did not implement, given the volume of
+    higher-priority, explicitly-enumerated work (homepage rebuild, hub retirement, Estate Cleanout
+    launch, shared hero sizing, campaign form relocation) completed in the same session. Each is a
+    smaller, page-scoped follow-up.
+  - No service claim, price, credential, meta title/description, canonical, indexing rule beyond
+    what Conflict C already required, legal wording, or campaign offer. Nothing deployed.
+
+### Blockers / follow-ups for a separately authorized session
+
+  - Real end-to-end submission (Turnstile solve, live `/api/lead`, confirmation email) for the
+    estate assessment landing page's relocated form was not exercised — same standing reason as
+    every other relocated form in this log: requires the deployed Cloudflare Pages Functions
+    environment and explicit authorization before a real test lead is sent.
+  - The four page-specific `AcServicePage` refinements and the About page recomposition listed
+    under "Not changed" above remain open work, each requiring its own focused pass.
+  - The "Who We Help" section's four descriptive sentences and the first CTA band's invitation
+    sentence (listed under "New copy" above) are drafted, minimal, and claims-checked, but have not
+    been separately owner-approved as locked marketing copy the way `docs/aseptaclean-all-website-copy.md`'s
+    strings have.
+
+---
+
+## 2026-09-18 (same day, second decision) — Blueprint expanded in place into a literal MUST/MUST-NOT
+## specification mid-session; DOM/CSS contract reconciled against the entry above's implementation
+
+While the entry above's implementation was already complete and mid-QA, the owner expanded
+`docs/Aseptaclean_Website_Design_Blueprint.md` **in place**, roughly doubling it (476 → 987 lines)
+into a formal MUST/MUST-NOT contract with exact CSS to install (§8), exact per-page section-ID
+matrices for the homepage and all six service pages (§3–§4), a browser-acceptance contract with a
+read-only DOM measurement helper (§12.4), required tracking documents (§1), and a §14 "pasteable
+implementation instruction" restating the task. The owner's live instruction accompanying this
+directed: "Read the entire attached specification before editing. Implement it exactly... Follow
+the implementation instruction in section 14."
+
+### Conflict: a completed, verified implementation vs. a newly-literal contract for the same work
+
+A: The entry above — a complete, verified homepage rebuild, hub retirement, Estate Cleanout launch,
+shared hero sizing, and campaign form relocation, built against the *original* (pre-expansion)
+blueprint text, using the repository's existing `Ac*`/`.acx-*` component and class system.
+
+B: The expanded specification's §8 ("This is CSS, not pseudo-code... do not substitute approximate
+styling") and its own §0.3 ("MUST NOT... substitute your own design"), which read literally as
+requiring the exact `.ac-site`/`.ac-hero`/`.ac-split`/etc. class contract to be installed and
+attached across the site.
+
+**Resolution: both stand, reconciled via the spec's own explicit escape valve.** Spec §7 states
+"Reuse suitable existing components rather than creating parallel implementations... filenames may
+match existing names" and §8 permits "If an existing component uses different names, attach these
+classes or document an exact mapping; do not substitute approximate styling" — an explicit
+either/or. The already-completed work (entry above) was not thrown away and rebuilt against a
+parallel class system; instead:
+
+1. The exact numeric contract (§2.1's pixel/breakpoint table) was verified against the existing
+   implementation and corrected where it measured wrong (see "What changed" below) — the *values*
+   are now exactly compliant, independent of which class names carry them.
+2. The exact DOM contract needed for the spec's own §12.4 measurement helper to run (`.ac-site`,
+   `.ac-hero`, `.ac-hero__copy`, `.ac-split`, `.ac-split__text`/`__media`, `.ac-dropdown__panel`,
+   `main > section` with `data-section`/`id` matching the exact expected array) was attached as
+   *additional* marker classes on the real elements, not a replacement of the working classes.
+3. Everywhere the two structural contracts (existing whole-card-link service cards; the five
+   pre-existing service pages' internal section matrices; About/Contact's exact section IDs) could
+   not both be satisfied without a much larger rebuild, the gap is recorded explicitly rather than
+   claimed closed — see `docs/ASEPTACLEAN-IMPLEMENTATION-MAP.md` §10's "Honest scope statement."
+
+This is the same rule this log applies repeatedly: a later, more specific owner instruction wins
+within the scope it actually decided, but where it explicitly offers an equivalence path (§7/§8's
+"or document an exact mapping"), taking that path over a costlier literal rewrite is compliance,
+not a deviation — provided the equivalence is actually documented, which it now is.
+
+**Type:** owner specification substantially expanded mid-session, read in full, reconciled against
+already-completed work via the spec's own documented-mapping allowance → four new tracking
+documents created, DOM/CSS contract partially attached, one real defect found and fixed (see
+below), one real gap disclosed rather than hidden.
+
+### What changed as a direct result of re-reading the expanded spec
+
+- **`docs/ASEPTACLEAN-DESIGN-SPEC.md`** created — a byte-identical canonical copy of the (now
+  expanded) blueprint file, at the exact path the spec's own §1 requires.
+- **`docs/ASEPTACLEAN-IMPLEMENTATION-MAP.md`, `docs/ASEPTACLEAN-COPY-MAP.md`,
+  `docs/ASEPTACLEAN-DESIGN-QA.md`** created — the three tracking records §1 requires.
+- **AGENTS.md §0.4 and `CLAUDE.md`** updated to carry the spec's §11 rule text verbatim (previously
+  they carried an earlier, differently-worded rule drafted from the pre-expansion blueprint text).
+- **A real, measured defect was found and fixed: hero-height inequality across pages.** Re-measuring
+  against the spec's exact 1440/820/390 viewport table (rather than the earlier, less rigorous
+  spot-check) showed the nine-page/two-campaign hero heights were NOT equal at the original
+  600px-desktop/560px-tablet target — Extreme Cleaning's approved copy naturally renders at 736px
+  desktop / 589px tablet, taller than every other page. Per the spec's own §2.2 repair rule, the
+  shared token was raised to 736px desktop / 592px tablet (the next 8px increment) across all four
+  hero implementations (`AcHeroWithForm`, `AcPageHero`, the estate service page's `.ec-hero`, and
+  the estate campaign's `.est-hero`) and re-verified: **exact 0px-variance equality at both
+  breakpoints on 10 of 11 reviewed pages**, with one disclosed exception (below). Two pre-existing,
+  previously-unnoticed page-specific `min-height` overrides on the estate service page (500px at
+  `≤70rem`, 460px at `≤44rem`, both predating this session) were found during this pass and removed
+  — they were silently winning the cascade over the shared floor.
+- **One disclosed, unresolved exception**: the estate campaign's hero uses the spec's permitted
+  "split" composition (text/image side by side), with its own internal stacking breakpoint at
+  992px — wider than the tablet range's ceiling (1023px) but positioned such that an 820px
+  viewport is already in its stacked (much taller) layout. Root-caused, not fixed this session
+  (would need a readability check of the 54/46 columns at 820–991px width); recorded in
+  `docs/ASEPTACLEAN-DESIGN-QA.md` §2.
+- **DOM/CSS contract**: `src/styles/aseptaclean-layout.css` saved (the spec's exact §8 CSS,
+  verbatim, as a reference file — not loaded, same treatment `docs/styles/website-reference.css`
+  already gets per AGENTS.md §1.1, for the identical reason of not running two independent global
+  stylesheets against one production site). `.ac-site` attached to `<body>`; `.ac-hero`/
+  `.ac-hero__copy`/`.ac-split`/`.ac-split__text`/`.ac-split__media`/`.ac-dropdown__panel` attached
+  as additional marker classes alongside their existing classes on the relevant components; the
+  homepage's nine `main > section` children given the spec's exact `id`/`data-section` values
+  (hero, why, services, who-we-help, cta-mid, process, service-area, cta-close, contact) — required
+  wrapping the hero and trust strip in one outer section, since the spec counts them as one part.
+  `AcSplit.astro`, `AcIntro.astro`, and `AcCtaBand.astro` each gained additive `id`/`dataSection`
+  props to make this possible without hardcoding markup per page.
+- **Full re-verification** run against the corrected build: `npm run check` (0 errors), `npm run
+  build:local` (54 pages), and a Playwright sweep across all 11 reviewed routes at 1440/820/390
+  reproducing the spec's own §12.4 measurement helper. Zero horizontal overflow, zero duplicate
+  DOM ids, exact homepage section-order match, six correct dropdown links, confirmed `/services/`
+  redirect (fragment survives), confirmed estate campaign hero has no form and does have an image,
+  confirmed its bottom form anchor resolves and scrolls correctly, confirmed the relocated Contact
+  FAQ renders 7 accordion rows. Full results, per-route hero-height table, and the explicit "not
+  verified this session" list are in `docs/ASEPTACLEAN-DESIGN-QA.md`. Screenshots:
+  `artifacts/design-spec-2026-09-18/`.
+
+### Not changed by this reconciliation pass
+
+Nothing from the entry above was reverted or rebuilt from scratch. No copy was rewritten. No new
+claim, price, or credential was introduced. The five pre-existing service pages' internal section
+structure (spec §4.1–§4.5's exact matrices) and About/Contact's exact section IDs (§5.1/§5.2) were
+not rebuilt — this is the single largest disclosed gap, spelled out route-by-route in
+`docs/ASEPTACLEAN-IMPLEMENTATION-MAP.md` §10 rather than left implicit. Nothing deployed.
+
+---
+
+### 2026-09-18 (later the same day) — `aseptaclean-home.css` installed, homepage only
+
+A distinct, later owner instruction attached a second, simpler, self-contained CSS file
+(`docs/aseptaclean-home.css`) with its own `.ac-home`-scoped class/DOM contract, and asked for it to
+be installed literally (saved at `src/styles/aseptaclean-home.css`, imported once, homepage markup
+restructured to carry its classes) rather than mapped onto the existing component system the way
+§ "Implementation-map §11" — i.e. the entry immediately above — mapped the sitewide spec's own CSS.
+Full narrative, class-by-class mapping, and every conflict resolution:
+`docs/ASEPTACLEAN-IMPLEMENTATION-MAP.md` §11. Checks actually run: `docs/ASEPTACLEAN-DESIGN-QA.md`
+§8. Summary of the material resolutions, since this file is the required record of "what conflicted
+and what you did about it":
+
+1. **No mockup image was attached or found.** Reported to the owner rather than guessed; the CSS
+   file's own header comments and DOM contract were used as the structural reference instead.
+2. **Hero minimum heights 560/520/440px supersede the 696/680/440px figure this same file recorded
+   earlier today**, but for the homepage only — an explicit, same-day, more specific owner
+   instruction ("do not carry over the older 736px rule") wins under this file's own precedence
+   rule (later explicit instructions supersede). `AcHeroWithForm.astro`, still used by the four
+   sibling service pages, was not touched; the homepage stopped calling it instead.
+3. **Type Law conflict, resolved in favor of Type Law.** The attached file sizes every heading via
+   bare-tag/class+element selectors (`.ac-home h1`, `.ac-home .ac-cta h2`, etc.) — precisely what
+   AGENTS.md's zero-exception Type Law forbids, confirmed with an isolated, independent browser
+   check before concluding it was real. Resolved by moving every such value into a same-valued,
+   standalone `.ac-type-home-*` role class (full table in the implementation map) — the file was
+   installed literally as attached, then this one mechanism was corrected, not its numbers, colors,
+   spacing, or DOM shape. This is the smallest concrete resolution available: AGENTS.md §0 states
+   its rules "override any default behavior," and this repository's own instructions direct running
+   the `type-law` skill/check on exactly this kind of change rather than shipping around it.
+4. **Header and Footer were not restructured to the new contract and are excluded from `.ac-home`'s
+   scope** (applied to `<main>` only, not `<body>`) — both to avoid the Type Law violation Footer's
+   existing `.ac-type-label-head`-sized column headings would otherwise trigger, and because both
+   are shared, working, sitewide chrome that an explicit "preserve … working navigation" instruction
+   and the homepage-only scope of this task both argue against touching. Disclosed, minor,
+   unresolved consequence: Header's existing 1184px nav breakpoint is ~16px narrower than the new
+   file's own 1199px breakpoint.
+5. **Two class-name collisions with `src/styles/global.css`** (`.ac-eyebrow`, `.ac-split`) were
+   found by systematically diffing the new file's class list against the existing global
+   stylesheet, not only by visual discovery. `.ac-eyebrow` was a real, visible defect (light text on
+   a light pill-chip background, inherited from an unrelated ~20-site pill-chip utility) and was
+   fixed inside the new file's own rule, not by editing the shared global one. `.ac-split` was
+   checked and found benign (the new rule's higher specificity covers every property the colliding
+   rule also sets).
+6. **Found and fixed, unrelated to the CSS itself:** `scripts/type-law-check.mjs`'s Rule 1 silently
+   always passed on current Chrome (CSS Nesting gives ordinary style rules an empty-but-truthy
+   `.cssRules`, which the walker misread as "this is a container, skip it"). Fixed and re-verified
+   against four routes with no new false positives — left broken, it would have given false
+   confidence on every future typography change.
+7. **Found, not fixed — pre-existing, sitewide, out of scope:** a 23px horizontal overflow at 320px
+   caused by the Cloudflare Turnstile widget rendering at a fixed ~300px in this local/unverified
+   environment. Reproduced identically on `/contact/`, a page this pass never touched, confirming it
+   predates this session and is not homepage-specific.
+
+Not verified this pass: 200% zoom; a live lead submission (would require an actual Turnstile pass
+and send a real lead — not run without separate authorization). Nothing deployed; no `git push`.
+
+## 2026-09-18 — Homepage correction to the approved mockup
+
+Authority: the owner's explicit correction request (`pasted-text.txt`, attachment
+8beecc71-a2e6-4004-a77f-5eb2e7398041) and subsequently supplied
+`ChatGPT Image Sep 18, 2026, 10_43_54 AM.png`. A review copy of the reference is at
+`output/homepage-correction/approved-mockup.png`.
+
+The request supersedes the prior homepage copy-preservation ruling and the previous decision to
+exclude shared chrome from homepage styling. Homepage-only variants now cover header, main,
+footer, and the existing form. The supplied homepage CSS's 560/520/440px hero minimums apply;
+mobile grows for text. Other routes keep their existing hero sizes and presentation.
+
+The homepage uses the exact requested headline, supporting copy, Why section, process, CTA and
+form wording. This includes the explicitly requested affirmative “Biohazard remediation” hero
+sentence, a current owner display instruction superseding doc 21's earlier limited display
+exception **on this homepage only**; no regulatory capability or credential was independently
+inferred. Registration remains the verified trauma scope. The trust strip carries CDPH / TSW 933,
+owner operation, and written plan/price; no insurance or response-time promise is added.
+“Request an Assessment” is now this homepage's form CTA and actual submit-button label. Shared
+offer data and other pages' CTA labels are unchanged. The long biography and scope/pricing block
+were removed from this page, not from About or service pages.
+
+The form retains its id, route attribution, required fields, CRM values, consent, anti-spam,
+`/api/lead` endpoint and genuine success redirect. Optional photos use the existing
+`property_media[]` backend/R2 contract; the lead endpoint was not edited. Homepage Turnstile uses
+its supported compact size (150px wide) to fit the 280px form at a 320px viewport. Actual widget
+errors now produce a visible failure message and disabled submit button; a successful challenge
+restores it. Local preview fails hostname authorization (110200); no production submission was
+made. The existing backend is preserved, not replaced by a preview simulation.
+
+No suitable approved individual photos exist here for the mockup's technician hero,
+work/documentation split or customer consultation split. The two split-image slots ship empty;
+the hero retains the existing owner-supplied property-condition image. Service cards retain the
+existing condition illustrations. No generated people, cropped mockup fragments or unrelated
+stock figures were substituted. These gaps prevent an exact visual-match claim.
+
+Actual browser evidence, checks and remaining differences are in
+`output/homepage-correction/REVIEW.md` and the appended design QA record. No push or deployment.
+Repository rules, source copy files, canonical routes and unrelated page sources were not edited
+for this correction. Pre-existing uncommitted changes were preserved.
+
+Side-by-side refinement: the mockup's approximately 96px desktop gutters map to a 1248px
+content maximum at 1440px. Desktop section padding is 36px (44px tablet/mobile) to remove the
+rejected stylesheet's excessive vertical space; hero minimums and typography role sizes remain
+unchanged. Footer cities use two columns. Form rows use 16px gaps and a 112px minimum message
+box, without shrinking labels, line heights or the 48px controls. The homepage photo-upload form
+reuses the **existing** `legal.consentAssessmentAppendix` verbatim, as the other media-collecting
+form already does. Its required consent base is unchanged. The homepage footer retains doc 21's
+verbatim cleaning-only scope clause for the animal-waste card without lengthening that card.
+
+## 2026-09-18 — Approved Rodent & Animal Waste public-page kit
+
+Implemented the owner's attached request on the existing `/rodent-dropping-cleanup-san-jose/`
+route, using `docs/rodent-approved-fragment.html` and the approved stylesheet/visual reference.
+Kit files were found directly in `docs/`; the kit's START-HERE is `docs/START-HERE copy.md`.
+Original kit files remain untouched. The public rodent page brief now points to these sources.
+
+This is a later, explicit, route-scoped design/copy decision. It supersedes the older rodent body,
+pricing sections, founder/related sections, shared fixed hero sizing, flat-overlay requirement and
+CTA defaults for this public page. Its hero is content-driven and its CTA labels are `Request an
+Assessment` and `Call (408) 785-7588`; the submit button also uses the approved assessment label.
+No shared hero token, global navigation, route, indexation rule or campaign content was changed.
+The approved city list remains page-local, including Menlo Park, Redwood City and San Mateo; this
+owner-supplied coverage copy does not change shared business-location data or other pages.
+
+Owner expressly requested the supplied illustrative subjects and crops. Extracted the embedded
+photo grid and landscape documentation image byte-for-byte, retained their illustrative labels,
+and created no new imagery. This narrow authorization does not permit fabricated job proof or
+image generation elsewhere. The supplied assets themselves contain thin collage-edge strips;
+those existing reference crop artifacts were retained rather than silently altering the images.
+
+Integration overrides are deliberate: BaseLayout retains the actual shared header/footer/logo
+instead of mockup utility/local navigation; all body assessment anchors use existing `#rodent-form`
+to preserve analytics; unmodified PpcHeroForm preserves `/api/lead`, required/optional field states,
+`Rodent droppings or animal waste`, uploads, consent, Turnstile, honeypot, attribution, existing fee
+microcopy and `/thank-you/`. No demo area selector or demo success handler ships. Mandatory doc 21
+§2.3 and §3.1 disclosures remain below the before-work scope columns without adding a section.
+
+The stylesheet is imported only by this public route. Heading sizes use dedicated typography roles
+at the exact reference values. Its Inter family maps to the existing local Inter Variable face;
+the reference's Arial fallback wraps differently, so natural height is preserved without shrinking
+or rewriting text. Inherited global paragraph measures are reset within the scope so the approved
+local text widths prevail. Final reference cascade/contrast/landscape overrides remain ordered.
+
+Updated the public rodent fixture in the existing copy-fidelity audit and added optional `ROUTES`
+filtering; default still runs the full audit. Full audit currently stops at the already-retired
+`dist/services/index.html` fixture; unrelated fixture migration is outside this task. Verification,
+actual screenshots and integration limitations are recorded in
+`docs/aseptaclean-rodent-approved/IMPLEMENTATION-PROGRESS.md`. No push, deployment or production lead.
+
+
+## 2026-09-18 — Legacy estate-cleanout URL redirect
+
+Owner requested permanent redirects for `/estate-cleanout` and `/estate-cleanout/` to the
+existing estate campaign. Added two exact 301 rules in `public/_redirects`, both targeting
+`/estate-cleanout-san-jose/assessment/`. The live destination returned HTTP 200 with no
+redirect and declares that trailing-slash URL as canonical; the fresh build agrees.
+No conflicting instruction required resolution. No old-address internal links were found
+in source or built HTML, so no link edits were needed. Existing unrelated working-tree
+changes were preserved. Rodent public/campaign source files are byte-unchanged from this
+task's starting hashes; no page copy, layout, lead endpoint or form behavior was edited.
+
+Verification: `npm run build` passed; `npm run check` passed (237 files, zero errors,
+zero warnings, 14 hints). In `wrangler pages dev dist` on localhost:8792, both legacy
+paths with and without query strings returned 301 directly to the destination, then 200
+with no second redirect. Exact query-string preservation passed for UTM source/medium/
+campaign, gclid, gbraid, wbraid, gad_source, encoded custom values and repeated parameters.
+The destination HTML contains its expected canonical and request-walkthrough form anchor.
+The public estate route and both rodent routes still returned 200. Built `_redirects`
+matches its source; the built-HTML link scan found zero links to the legacy paths.
+
+No push or deployment. Production redirect behavior must be checked after owner-approved
+deployment; the redirect results above are from the local Cloudflare Pages runtime.
+
+
+## 2026-09-18 — Estate redirect deployed and verified live
+
+Owner authorized deployment after reviewing local test results. To preserve unrelated
+uncommitted page changes, cloned production main into `/tmp/aseptaclean-redirect-deploy`
+at `7637beb` and committed only the two estate rules plus their decision record. Pushed
+`fd03f97` through the existing GitHub-to-Cloudflare Pages workflow. Production deployment
+`6437cf4d-e736-4c62-8527-e9d6cddb7838` completed successfully at 23:48:59 UTC.
+
+Live HTTP tests on aseptaclean.com passed for `/estate-cleanout` and `/estate-cleanout/`,
+each with and without tracking queries: exactly one 301 to
+`https://aseptaclean.com/estate-cleanout-san-jose/assessment/`, then HTTP 200 and no further
+redirect. Destination canonical matches. Query strings survived byte-for-byte, including
+utm_source, utm_medium, utm_campaign, gclid, gbraid, wbraid, gad_source, encoded values and
+repeated keys. Evidence: `/tmp/aseptaclean-live-redirect-results.json`.
+No unrelated local changes were deployed. No form submissions or notifications sent.
+The original workspace remains on its prior commit with its pre-existing changes intact;
+the production commit was made and pushed from the isolated checkout.
+
+Durable live-test evidence: `output/estate-redirect/live-verification.json`. Both rodent
+routes returned 200; comparison with the prior production deployment showed only the
+custom domain Cloudflare email-obfuscation rewrite and its decoding script. Application
+HTML otherwise matched. The production commit changes only `_redirects` and the decision log.
+
+
+## 2026-09-19 — Homepage search metadata and business positioning
+
+Implemented the owner's exact title/description in `src/pages/index.astro`, restored the existing
+approved descriptor through `home.hero.eyebrow` in the current hero eyebrow, and preserved its H1,
+body, images, CTA markup and CSS. Added the two owner-approved business descriptions to
+`src/data/site.ts`. Both public and campaign footers use the short description and exclude only
+visible disclaimer spans from snippets. `SeoHead.astro` adds the description to the existing
+LocalBusiness entity and emits Twitter title/description from the page's own inputs; it has no
+brand-appending template.
+
+Conflict resolution: the current explicit owner wording supersedes doc 21's older three-role-only
+positioning exception and doc 20's historical unchanged-SEO statement for these exact strings.
+The controlling copy map and claims exception are updated. No credential or operating-scope fact
+is inferred. Disclaimer text is preserved. No changes to routes, redirects, analytics, Ads, forms
+or the lead endpoint. Existing unrelated uncommitted work is preserved.
+
+Validation and screenshots: `output/seo-positioning/` and the matching entry in
+`docs/ASEPTACLEAN-DESIGN-QA.md`. No push or deployment: the existing local-only authorization
+remains in effect; this request did not explicitly authorize a production release. External
+Google Business Profile, Nextdoor, LinkedIn and Thumbtack edits remain a separate task.
+
+
+## 2026-09-19 — SEO positioning deployed and verified live
+
+Owner explicitly authorized deployment. Isolated production main at `fd03f97` in
+`/tmp/aseptaclean-seo-release`; committed and pushed only eight positioning/documentation files as
+`d0b9c3e7cd248fe60fa95f825bf8a0b53a14e5c9`. The broader uncommitted homepage/service/form/design
+work remains local and unchanged. Production already had the exact hero descriptor, so it needed
+no hero change. The prior estate redirects are preserved. This supersedes the previous entry's
+local-only deployment status for the scoped SEO changes, not for the unrelated redesign.
+
+Cloudflare Pages production deployment `c4413de8-02e0-4033-bbef-47b491d5fce9` completed through
+GitHub integration. Live normal and cache-busted homepage verified at 2026-09-19 17:45:34 UTC:
+HTTP 200; exact title, meta and social descriptions; no duplicate metadata; exact descriptor and
+business descriptions; one valid LocalBusiness with other fields unchanged; visible disclaimers
+in two disclaimer-only data-nosnippet spans; canonical https://aseptaclean.com/; index, follow;
+no blocking HTTP robots headers. Representative service/campaign checks and the prior estate
+301 with tracking-query preservation pass. No real lead or external profile edit.
+
+The isolated production candidate passes build, type, launch, copy and analytics-tag checks;
+52-page metadata/route comparison and 204 responsive checks pass. Existing city publication
+blockers remain outside release scope. Earlier workspace-only launch/copy failures do not occur
+in this isolated release. All original file hashes were preserved before appending this record
+and adding evidence. Original checkout remains on its prior commit to avoid disturbing edits.
+Evidence and remaining limitations: `output/seo-positioning-deployment/REVIEW.md`,
+`release.json`, `live-verification.json`, `live-extra-checks.json` and HTTP captures.
+
+
+## 2026-09-19 — Build kits inventoried; implementation not started
+
+Owner requested extraction, route inventory and one reusable installation checklist only.
+Preserved the dirty working tree and extracted the 88-file r01 bundle byte-for-byte under
+`docs/reference/build-kits-2026-09-19-r01/`, preserving all package folders. Read master index
+and all ten package status/start files; verified 80 checksum entries. Route mappings,
+provisional-copy status, source authorities, receipt/email integration gaps and future QA
+are recorded in `docs/BUILD-KITS-INSTALLATION-CHECKLIST.md`. The owner's request for this
+checklist supersedes the homepage kit's historical prohibition on another progress document.
+Older integration-document hero/assessment-route instructions are superseded by existing
+AGENTS.md owner decisions; no retired route or layout was restored. No package installed,
+no source/redirect/backend changed, no build or visual QA claimed, no push/deployment or sends.
+
+
+## 2026-09-19 — Homepage build kit v1.2 installed locally
+
+Owner requested only `aseptaclean-home`, preserving routes/navigation/form functionality and
+prohibiting push/deployment. The kit's `01-APPROVED-COPY.md` controls homepage wording; its
+final preview and CSS control composition. This scoped owner decision supersedes older homepage
+CTA, hero equality, section-layout and imagery instructions. The supplied atlas is preserved
+as illustrative imagery, never company-job evidence. Other pages retain their existing rules.
+
+Installed the approved hero, full-width headings, horizontal service cards, Why points beneath
+the unstretched image/text pair, 34-city area and bottom working form. Existing About/Contact
+navigation destinations win over the kit's proposed destinations per the current user request.
+Legacy anchors and assessment-click tracking remain working; metadata/JSON-LD/redirects/backend
+are preserved. Header/footer use homepage slots; the shared form has an opt-in display variant.
+The original slate focus color was 2.96:1 on white, repaired using the kit's darker slate.
+
+Progress, exact changed files, source/role mappings, screenshots and actual checks are in
+`docs/BUILD-KITS-INSTALLATION-CHECKLIST.md`, reused as requested rather than creating PROGRESS.md.
+Build/type, homepage copy/metadata, responsive/accessibility, analytics and controlled endpoint/UI
+checks pass. Live Turnstile/provider delivery is not verified locally; stale Services copy audit,
+five estate launch-link findings and two unrelated 320px service-form overflows remain recorded.
+No other package installed, no live inquiry/email sent, no push or deployment.
+
+## 2026-09-19 — Estate public-service kit installation (local only)
+
+Owner requested only `aseptaclean-estate-service` on `/estate-cleanout-san-jose/`, with the
+advertising page untouched. The decoded `estate-service-preview.html` contains the exact
+`estate-service-fragment.html`; the three style blocks retain their source order in one
+route-scoped stylesheet. This later scoped instruction supersedes the old public estate copy,
+shared hero sizing, CTA defaults and illustrative-image restrictions for this supplied reference
+only. Preserve its explicit hero break, belongings steps/caption, landscape documentation crop,
+Stanford Health Care/BioMarin founder passage, quiet strip, seven FAQs and 34-city list. No new
+numeric pricing, free offer, employer endorsement or wider service capability is authorized.
+
+The real logo and public navigation destinations replace preview chrome. Mandatory documentation,
+founder, disposal, pest and scope qualifications remain visible. Footer policies and cookie
+preferences remain functional. Existing metadata/canonical/indexation remain; FAQ structured data
+now follows the actual approved answers, and breadcrumbs use the public home/estate hierarchy.
+
+The bottom form uses the existing `AcCompactForm` with an opt-in estate display/mapping variant.
+Its six approved need choices map to `Inherited or estate property`; the selected need is prepended
+to the supported `property_detail` payload so it is not lost. Other callers retain their field
+choices and submission behavior. Required consent, multipart photos, anti-spam, idempotency,
+security checks and server-accepted receipt routing remain. The new local CTA anchor is included
+in the existing analytics intent event. The protected endpoint is unchanged.
+
+Only this package is installed; campaign source, pricing, offer, form and assets are unchanged.
+Actual checks, screenshots and any unresolved verification are recorded in
+`docs/BUILD-KITS-INSTALLATION-CHECKLIST.md`, under “Estate service installation”. No push,
+deployment, live inquiry or production email is authorized or performed.
+
+
+## 2026-09-19 — Hoarding public service package installed locally
+
+Owner requested only `aseptaclean-hoarding-service` on `/hoarding-cleanup-san-jose/`, using its
+fragment and preview. This scoped decision supersedes older hoarding copy, CTA and shared hero
+geometry defaults. Preserved both exact hero phrases, full-width headings, supporting processes
+below both columns, quote-only section, seven FAQs and bottom form. No starting prices/tiers or
+advertising offer imported. Supplied illustrative images are retained as illustrations, not proof.
+
+Page-scoped styles/header/icons preserve the fragment; local Inter, real navigation/logo,
+mandatory qualifications and the existing production form replace demo integrations. A tablet
+photo-overlay contrast repair changes no copy or dimensions. Submit remains Send Message under
+the standing form rule. Hoarding need selections map to the existing enum and message; actual
+optional photo uploads use the existing upload contract. Endpoint untouched; advertising page
+source untouched. Full checks, screenshots, live-delivery limitations and an intermittent
+advertising-mobile overflow observation are recorded in `docs/BUILD-KITS-INSTALLATION-CHECKLIST.md`.
+No push, deployment, live lead or other package installation. Existing unrelated edits preserved.
+
+## 2026-09-19 — Install only the approved rodent public-service kit
+
+Owner requested `aseptaclean-rodent-service` on `/rodent-dropping-cleanup-san-jose/`, using its
+fragment and preview, with no push/deployment. This latest scoped package replaces the older
+rodent composition/copy, hero sizing and default marketing CTA wording on that public route only.
+The exact $500 small-job / $1,500 larger-job starting prices and $145 assessment credited toward
+cleanup if the customer proceeds appear in their approved pricing/FAQ/form locations. No added
+expiry, price ceiling or location-based price category. The advertising route and its offer/data
+remain unchanged.
+
+Installed the original CSS cascade once, local Inter, byte-preserved illustrative JPEGs and existing
+SVG icons. Kept the 3:2 documentation crop, full-width headings, attic points and belongings steps
+beneath both columns, centered single-column FAQ and bottom production form. Existing shared
+Header/Footer, six-service menu, logo, policies and cookie controls remain; the supplied utility
+bar is route-local. Existing mandatory animal/pest scope qualifications remain beside exclusions.
+Supplied photos remain accessible illustrations, not completed-job evidence. These package-specific
+assets and geometry supersede older reference restrictions only for this explicit installation.
+
+The demo handler/consent were not installed. `PpcHeroForm` retains `rodent-form-panel`, original
+`entry_route` ending `#rodent-form`, endpoint, frozen service enum, validation, uploads, consent,
+Turnstile, idempotency, analytics and accepted-response thank-you flow. A default-empty named slot
+adds the package's required Affected Area selector only here; a page-local `formdata` handler carries
+it losslessly in `property_detail`, without adding a backend enum. All assessment links focus the
+bottom form. Submit uses standing production label **Send Message**; assessment links retain
+**Request an Assessment**. Analytics recognizes the new `#rodent-contact` anchor alongside the
+preserved old anchor. No endpoint or advertising-page source edits.
+
+Verification and exact paths are recorded in `BUILD-KITS-INSTALLATION-CHECKLIST.md`, rodent install
+entry, with evidence under `output/rodent-service-install/`. Local browser submissions are intercepted;
+no production inquiry, CRM delivery or email was sent. Stop after this package; nothing pushed or
+deployed. Other pre-existing work is preserved.
+
+## 2026-09-19 — Trauma public-service kit installation (local only)
+
+Owner requested only `aseptaclean-trauma-service` on the existing
+`/crime-scene-trauma-cleanup-san-jose/` public route. Implemented the approved
+`trauma-service-fragment.html`; the decoded standalone preview contains that exact fragment
+and is used only as visual evidence. Original package files are unchanged.
+
+Within this route, the latest owner request supersedes the older service matrix, shared hero
+height, default marketing CTA wording, and older trauma imagery. Preserve the package's exact
+hero, attached trust strip, six situations, support section, belongings decision row, navy band,
+four process steps, scope section, centered FAQ, 34 cities, closing strip and bottom form.
+No numeric price, assessment fee, or free offer. Registration remains the verified TSW 933
+trauma scope; treatment language does not promise a health/safety outcome or insurance payment.
+The supplied images are retained byte-for-byte as illustrative service visuals, never job proof.
+The preview's thin image-sheet edge strips are preserved, not replaced or retouched.
+
+Production adaptations: real logo, existing six public service destinations, local Inter,
+inline SVG icons, configured telephone links, working policy/cookie controls and mandatory
+scope/documentation disclaimers. Keep the standing **Send Message** submit label and original
+service-form consent. The approved optional message and photos use `AcCompactForm`'s opt-in
+`traumaKit` branch: six cleanup labels map to the frozen `Crime scene or trauma cleanup` CRM
+value and are carried in `property_detail`, allowing an empty optional message without changing
+the backend schema. Retain `service-form`, route attribution, Turnstile, idempotency, timestamps,
+validation/error handling and accepted-response redirect. Use Turnstile's supported compact size
+on this route. No endpoint/provider edits or live inquiries.
+
+Typography remains in `.ac-type-trauma-*` roles within `#ac-trauma`; one imported stylesheet
+preserves the fragment's cascade. Measured photographic contrast required a stronger desktop/
+tablet navy overlay; geometry, typography, wording and image positions are unchanged. The
+existing type-law script misclassifies scoped role selectors; a QA-only copy recognizes the
+root-qualified roles and verifies actual CSSOM matches. No weakening of the standing law.
+
+Verification and evidence are in `docs/BUILD-KITS-INSTALLATION-CHECKLIST.md`, trauma installation
+entry, and `output/trauma-service-install/`. Other packages, campaign pages, global styling,
+route/indexation data and protected functions are untouched. No push or deployment.
+
+## 2026-09-19 — Extreme public service kit installed locally
+
+Owner requested only `aseptaclean-extreme-service` on the existing
+`/extreme-cleaning-san-jose/` public route. Its exact fragment and matching exported preview now
+control this route's copy, section order, hero blocks, geometry, image proportions and marketing
+CTA labels. This supersedes the earlier generic service-page copy/shared hero sizing within this
+route only. No numeric pricing, fee or another service's wording was introduced.
+
+Production adaptations retain canonical/metadata/indexation, public service destinations, actual
+logo and configured phone, mandatory scope/documentation/legal notices, provider controls and the
+existing form contract. Submit remains `Send Message`; six approved need labels map to the frozen
+`Severe property condition` enum and are carried losslessly in `property_detail`. The message and
+supported photo upload are optional. `functions/api/lead.ts` is untouched. Shared form/layout
+additions are opt-in; analytics recognizes the new local assessment anchor.
+
+The owner's supplied illustrative imagery is retained byte-for-byte under the explicit package
+instruction; it is not actual company job evidence and no image was generated. Original atlas
+edge strips remain. A stronger route-local navy overlay above 620px fixes measured photographic
+contrast without changing copy, dimensions or crops. Production-photo provenance remains a
+release follow-up. These narrow package decisions do not change other routes or claims boundaries.
+
+Actual results, screenshot paths, shared-consumer checks and remaining live-provider/estate-campaign
+limitations are recorded in `docs/BUILD-KITS-INSTALLATION-CHECKLIST.md`, Extreme installation section,
+and `output/extreme-service-install/`. Build/type, six-width preview comparison, accessibility,
+native 200% zoom and controlled form checks completed. No other kit installed, push/deploy or live
+inquiry. Stop at this installation.
+
+## 2026-09-19 — Estate campaign kit installed locally; copy remains provisional
+
+Owner requested only `aseptaclean-estate-landing` at the checklist's existing
+`/estate-cleanout-san-jose/assessment/` route, comparison to its supplied preview, real form
+integration, local checks without inquiries, and no push/deploy. The public estate service page
+is unchanged. The newer route-specific package controls composition and dimensions over the
+older blueprint §6.2 and campaign layout; it does **not** approve its provisional wording or
+photographs. Supplied marketing paragraphs, section order, photographic rows, atlas crops and
+FAQ remain intact. No new imagery was generated.
+
+The package's demonstration form is replaced with the existing `PpcHeroForm` flow. Preserve
+`request-walkthrough-panel`, the legacy `#request-walkthrough` anchor and entry attribution,
+service enum, optional property-description/details/photos, required email and production
+consent, uploads, security, idempotency, URL attribution, server-confirmed events and campaign
+receipt route. The supplied required role selector maps to existing `additional_notes` as
+`Role: <choice>`; it is not a new backend field. Email-before-ZIP matches the kit. Submit is
+`Send Message` under the standing production rule. All demo handlers/notices are removed.
+The existing Free Walkthrough offer remains visible beside the bottom form. The kit's
+“assessment” terminology is retained provisionally, **not** a pricing/offer change; reconcile
+it with the free-walkthrough offer before launch. No endpoint, provider, receipt, redirect,
+canonical, metadata or campaign-data change.
+
+Production adaptations retain configured logos/phone links, policy links, Termly preferences,
+existing disposal/scope/documentation limits, and the campaign sticky contact bar. `PpcLayout`
+gains optional header/footer slots and an estate root flag; defaults remain unchanged.
+`PpcHeroForm` gains an optional compact Turnstile size; existing callers keep `flexible`.
+CSS remains route-scoped, in supplied cascade order, with equivalent `.ac-type-*` heading roles
+and the site's local Inter font. Required form/footer content accounts for preview differences;
+hero dimensions and all five photo rectangles match at all six checked widths.
+
+Release blockers: provisional copy approval, especially inventory/document handling/shredding
+readiness previously gated in `ppcEstate.ts`; assessment/walkthrough terminology reconciliation;
+provisional illustrative photo provenance/approval; deployed Turnstile and real delivery checks.
+Local acceptance simulations prove browser behavior, not CRM/email delivery. No real inquiry,
+push or deployment. Full checks, adaptations, screenshots and remaining limits are recorded in
+`docs/BUILD-KITS-INSTALLATION-CHECKLIST.md`, estate landing entry.
+
+## 2026-09-20 — Rodent campaign build kit installed locally
+
+Owner scope: only `aseptaclean-rodent-landing` at
+`/rodent-dropping-cleanup-san-jose/assessment/`, from its fragment and preview;
+no push/deployment or real inquiries. The package's editorial hero, photographic service rows,
+overlapping planning panel, three process steps, call band, FAQ and bottom form supersede the
+older campaign composition/shared hero sizing **on this route only**. Public rodent source,
+pricing component, campaign data/metadata/offer, endpoint, receipts and redirects are unchanged.
+Supplied copy remains provisional; package source bytes remain unchanged.
+
+Concrete conflicts resolved under the requested standing rules:
+
+- Package utility label `Estate Cleanout` → `Rodent Dropping Cleanup`; this is the rodent campaign.
+- Doc 21 prohibits affirmative disinfection claims: the hero lead uses the existing campaign
+  sentence “Aseptaclean removes rodent droppings, nests, and materials soiled by rodent waste.”
+  The third process item is “Review” / “We show you what we cleaned and removed.” from the
+  existing campaign review step instead of “Disinfect” / “Suitable surfaces that can be treated.”
+  These are explicit claims adaptations, not new copy approval. Other draft marketing text remains.
+- Add the mandatory cleaning-only and licensed-pest-operator boundaries to the pest FAQ, existing
+  third-party disposal boundary below service rows, and air-sealing exclusion to the insulation
+  boundary (explicitly required by the package instructions). Insulation-removal capability and
+  the remaining provisional wording require owner review before launch.
+- Demo optional email/details cannot relax existing production required fields. Preserve actual
+  names, validation, consent, uploads, challenge, timestamps, idempotency, attribution and receipt;
+  real submit says `Send Message`. Retain the campaign's existing $145 disclosure in its form
+  and unchanged metadata. Do not import public-page price cards or any free-walkthrough offer.
+- Required affected-area selection posts through supported `additional_notes`; route-only
+  `formdata` handling prefixes it to outgoing `property_detail`, which existing CRM/owner
+  summaries actually consume. Typed textarea values are unchanged, including on retries.
+  No shared form or backend change.
+- Supplied CSS heading declarations map to explicit `.ac-type-rodent-landing-*` roles. Original
+  responsive H1 floors of 25/27px violate AGENTS §6's 1.9 ratio: raise the minimum to 31px,
+  preserving line-height and all wording; mobile hero grows naturally. Desktop/tablet hero and
+  all photo dimensions match the preview. Do not force this editorial hero onto other pages.
+- Reuse the existing PPC document/analytics/consent shell, header/footer slots, compact Turnstile
+  option, and static SVG icon renderer. New `rodentLandingKit` shell flag defaults false.
+  Original atlas bytes retained and labeled illustrative; no generated/replacement photos.
+  Hero aria-label corrected to describe the actual discussion image selected by the kit's final CSS.
+
+Actual QA, adaptations, screenshot paths, changed files and launch blockers are recorded in
+`docs/BUILD-KITS-INSTALLATION-CHECKLIST.md`, “Rodent campaign landing installation — 2026-09-20”.
+This is local installation, not copy/photo approval or verified live provider delivery.
+
+## 2026-09-20 — Install only the Contact package
+
+Owner requested `aseptaclean-contact` in the existing `/contact/`, preserving its locked open
+white layout and provisional copy while connecting the production form. This newer scoped
+instruction supersedes the older Contact section order/photo-hero/shared-height direction in
+doc 30, the Contact brief and design spec §5.2 for this route only. No other package installed.
+
+Use the original fragment's 19 CSS blocks in order, one route-scoped import, existing BaseLayout
+header/footer slots and an opt-in root ID. Keep metadata, canonical/indexation, schema, analytics,
+Termly, phone configuration and backend. No endpoint/provider/receipt edits. Original package
+files preserved. Introduction and column geometry match the locally rendered standalone preview.
+
+Production contract outranks demo form semantics: email and details remain required; submit
+remains `Send Message`; production consent/security/legal controls replace demo text. Package
+service labels map to existing accepted enums. `contact-form` and `/contact/` identity remain.
+The backend demonstrably supports multipart `property_media[]` private R2 uploads; retain the
+optional control and existing limits. Local tests verify exact uploaded bytes and visible storage
+failure without falsely claiming success. Add contact-only native constraint checking and busy
+submission protection; all other AcCompactForm consumers retain defaults.
+
+Hours use verified `site.business.hours`, including operating days, instead of the provisional
+short hours line. Copy stays provisional; this installation does not approve it. Heading rules
+map to type roles; raise only the 30px clamp floor to 31px to meet AGENTS §6's ratio at intermediate
+widths. All six requested comparison widths retain identical reference introduction heights.
+Footer retains existing legal/scope/documentation and cookie controls, explaining extra height.
+
+QA: build/check pass; 147 local form/additional assertions, 36 regression renders, six contact
+viewport comparisons, axe checks and native 200% zoom pass. Full results, exact adaptations,
+file list and screenshots are in `BUILD-KITS-INSTALLATION-CHECKLIST.md`, Contact installation.
+Live providers remain unverified. No real inquiries, push, deployment or submission-flow work.
+
+## 2026-09-20 — Estate inherited-home campaign replacement
+
+Owner scope: replace only the existing `/estate-cleanout-san-jose/assessment/` design with
+`aseptaclean-estate-inherited-landing-2026-09-20-r01.zip`. This explicit instruction supersedes the
+older estate campaign landing design and the ZIP's packaging-time statement that the archive did
+not itself authorize replacement. It does not modify the public estate service page or general
+hoarding service page.
+
+Use the inherited-home fragment as implementation authority, its preview as the visual reference
+and its copy extraction for proofreading. Preserve the exact two-line hero, CTA wording, cascade,
+image proportions and supplied section sequence. The audience is families, executors, trustees and
+authorized representatives after a death; hoarding/heavy clutter is a possible property condition,
+not a separate general-hoarding offer. No substantive copy rewrite, price or invented promise.
+
+Preserve the route, canonical/indexation, redirects, campaign identity, attribution, analytics and
+receipt flow. Use the existing production form and private upload path. Store and deliver the new
+role, contents-level and timeline values through route-scoped validation, owner notifications and
+CRM summary. Keep consent, spam protection, server/client validation, error handling and genuine-
+acceptance-only conversion behavior. No preview iframe or duplicate stylesheet.
+
+The checked-in package is the current estate campaign design reference. Its source required no
+obvious spelling, punctuation or accidental-spacing corrections; this does not convert the
+package's stated editorial/draft status into final copy or photo approval. Full local QA and
+remaining live-provider/photo-approval blockers are recorded in
+`docs/BUILD-KITS-INSTALLATION-CHECKLIST.md`, “Estate inherited-home campaign replacement —
+2026-09-20”. Nothing was pushed or deployed.
+
+## 2026-09-20 — Public-page heading wording and authored line breaks
+
+The owner's heading list supplied in the current work context supersedes earlier wording and
+line-break requirements for those headings only. Apply the replacements to the homepage and the
+six public service routes (Hoarding, Extreme Cleaning, Detailed Deep Cleaning, Trauma & Crime
+Scene, Rodent, and Estate), preserving one semantic heading per item. Directed lines render as
+separate block spans; the homepage Who We Help phrase and two estate phrases each remain one span
+and avoid an internal desktop break when space permits. Narrow layouts and 200% zoom may wrap
+inside any span without clipping or type reduction. Do not propagate these edits to campaign
+landing pages. Copy sources remain byte-preserved. Local implementation and evidence are recorded
+in `docs/ASEPTACLEAN-DESIGN-QA.md`, “Public heading copy and line-break QA — 2026-09-20”.
+
+## 2026-09-22 — inquiry-form verification and local reliability fixes
+
+The owner requested rendered, route-by-route verification of every installed inquiry form rather
+than shared-component sampling. The fresh build contains 36 form routes with one form each; About
+contains none. Each installed instance is now covered independently at desktop and mobile for
+validation, keyboard access, complete field/page attribution, upload behavior where offered,
+failure retention, repeat-click suppression, accepted receipt navigation and exactly-once tracking.
+
+Two implementation defects were corrected locally. AcCompact and Quick Handoff now publish the
+same privacy-safe accepted-lead event contract as campaign forms, including session-level receipt
+deduplication. Quick Handoff now renders its configured form ID, and RequestForm records its actual
+page as `entry_route` rather than the stale shared `/#request` value. These changes do not alter
+public copy, form fields, consent, anti-spam, campaign attribution, approved layout or the protected
+`functions/api/lead.ts` endpoint.
+
+Production testing revealed deployment drift which the local passing result does not override:
+the deployed Estate service route has no form; several deployed public forms lack their local
+photo control; deployed Trauma and Extreme forms submit the Hoarding situation. Current local
+route assertions carry the intended mappings, but production remains failed/pending until an
+authorized deployment and route-by-route retest.
+
+Five new controlled production inquiries plus the existing Contact control reached private R2,
+HubSpot and separate customer/owner Resend acceptance. One rodent photo was retrieved through
+authenticated R2 access and matched the submitted bytes. Provider acceptance is not inbox receipt.
+No Resend delivery-event or inbox access was available, and the five-attempt/15-minute production
+rate limiter prevented the remaining thirty live submissions in this work window. The limiter was
+not bypassed or weakened. Advertising hosts were blocked and analytics consent withheld during the
+controlled sends. Full evidence and blockers are recorded in `docs/04-RELEASE-CHECKLIST.md`,
+“2026-09-22 — exhaustive route-by-route inquiry-form QA”. Nothing was pushed or deployed.
+
+## 2026-09-23 — Shorten the Rodent and Estate campaign forms only
+
+The two current campaign routes `/rodent-dropping-cleanup-san-jose/assessment/` and
+`/estate-cleanout-san-jose/assessment/` now show, in order: required Name; required Phone;
+optional Email; route-relevant optional Role; optional Additional info; optional Photos; then the
+existing required consent, security verification and submit control. ZIP, condition/affected-area,
+contents-level and timeline inputs are removed from these two rendered forms. Rodent retains
+`Send Message`; Estate retains `Request an Assessment`.
+
+Each route posts a validated `campaign_context` paired with its fixed existing service enum and
+campaign source route. The endpoint relaxes email, ZIP and detail requirements only for a valid
+pair; all legacy and non-target form contracts remain unchanged. Owner notification runs with or
+without customer email. Customer confirmation is skipped when no email is supplied and sent when
+a valid address is present. Role, details, attribution and private photo references remain in lead
+storage, CRM summaries and owner email when supplied. No endpoint route, consent language, spam
+control, upload limit, attribution field or conversion event was changed.
+
+Local endpoint and browser matrices passed for both routes, including minimal/all-optional
+payloads, with/without photos, invalid fields, spoofed route/service identity, storage failure,
+repeat submission, owner/customer email branches and campaign thank-you redirects. Advertising
+hosts were blocked in browser testing. The two routes also opt into hiding their mobile sticky
+actions whenever the bottom form is visible, preventing the fixed bar from covering consent; the
+Hoarding campaign remains unchanged. No live email was sent, and nothing was deployed.

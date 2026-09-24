@@ -37,8 +37,7 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
           />
         </a>
         <p class="ppc-foot__tagline">
-          Specialty property cleaning and complex cleanup for the
-          {" "}{site.location.serviceArea}.
+          {site.business.shortDescription}
         </p>
       </div>
 
@@ -66,10 +65,10 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
       </nav>
 
       <p>
-        © {year} {site.business.legalName} · Aseptaclean is not a licensed general contractor,
-        remediation contractor, pest-control operator, or appraiser.
+        © {year} {site.business.legalName} · <span data-nosnippet>Aseptaclean is not a licensed general contractor,
+        remediation contractor, pest-control operator, or appraiser.</span>
       </p>
-      <p>{legal.scopeDisclaimer} {legal.documentationDisclaimer}</p>
+      <p><span data-nosnippet>{legal.scopeDisclaimer} {legal.documentationDisclaimer}</span></p>
       {termlyConsentEnabled && (
         <noscript>
           <p>

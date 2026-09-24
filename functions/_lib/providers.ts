@@ -1,4 +1,8 @@
 import type { LeadEnvironment, LeadRecord } from "./lead";
+import {
+  buildCustomerConfirmationEmail,
+  buildOwnerLeadNotificationEmail
+} from "./emailTemplates";
 
 const providerError = async (response: Response, provider: string) => {
   const body = (await response.text()).slice(0, 500);
@@ -78,6 +82,18 @@ const propertyStatusLines = (lead: LeadRecord) => {
   return text ? [`Property status: ${text}`] : [];
 };
 
+const campaignIntakeLines = (lead: LeadRecord) => {
+  const fields = [
+    ["Role", lead.data.campaign_role || lead.data.estate_role],
+    ["Contents level", lead.data.estate_contents_level],
+    ["Timeline", lead.data.estate_timeline]
+  ] as const;
+  return fields.flatMap(([label, value]) => {
+    const text = typeof value === "string" ? value.trim() : "";
+    return text ? [`${label}: ${text}`] : [];
+  });
+};
+
 // Photo REFERENCES, not links. These are private R2 object keys: they are not URLs, they are not
 // publicly resolvable, and nothing here exposes an uploaded property photo on an unrestricted
 // address. They let the owner find the exact objects for a submission in the bucket.
@@ -153,8 +169,9 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
     return result.results?.[0]?.id;
   };
 
-  // Email is now the identifier: every active form requires one (2026-09-06), so this is the
-  // match every submission dedupes on. Phone is looked up separately, ONLY to detect a
+  // Email is the preferred identifier where supplied. The two compact campaign forms allow it
+  // to be omitted, in which case the existing phone-match fallback below is used. Phone is
+  // otherwise looked up separately, ONLY to detect a
   // conflict — matching (or overwriting) a contact by phone alone would let two different
   // people's records collapse into one just because they share a phone number (a landline, a
   // family member, a reused mobile number). See docs/05-CURRENT-DECISIONS.md 2026-09-06 "HubSpot
@@ -163,9 +180,8 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
   const phoneContactId = await findContactByProperty("phone", phone);
   const phoneOnDifferentContact = Boolean(phoneContactId) && phoneContactId !== emailContactId;
 
-  // Defensive fallback only: every active form now requires email, so `email` is never empty
-  // here in practice. If it somehow is (a stale cached page posting an old form shape), fall
-  // back to the previous phone-match behavior rather than always creating a duplicate contact.
+  // Phone fallback supports the two compact campaigns when the visitor omits optional email,
+  // and also keeps stale cached forms from always creating a duplicate contact.
   let contactId = emailContactId ?? (email ? undefined : phoneContactId);
   const contactProperties = {
     ...(email ? { email } : {}),
@@ -232,13 +248,18 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
           `Offer: Assessment request`,
           `Confirmation code: ${lead.code}`,
           `Request ID: ${lead.id}`,
-          `Property ZIP: ${field(lead.data.property_zip)}`,
+          ...(lead.data.property_zip
+            ? [`Property ZIP: ${field(lead.data.property_zip)}`]
+            : []),
           `Situation: ${field(lead.data.property_situation)}`,
           // Estate campaign only, and only when the visitor actually chose one — the selector is
           // optional and starts unselected, so an absent answer must not become a "Not supplied"
           // line on every other assessment deal.
           ...propertyStatusLines(lead),
-          `Description: ${field(lead.data.property_detail)}`,
+          ...campaignIntakeLines(lead),
+          ...(lead.data.property_detail
+            ? [`Description: ${field(lead.data.property_detail)}`]
+            : []),
           ...attributionLines(lead),
           ...uploadLines(lead)
         ]
@@ -303,51 +324,78 @@ export async function syncHubSpot(env: LeadEnvironment, lead: LeadRecord) {
 // lands in the customer's inbox.
 const CUSTOMER_REPLY_TO = "info@aseptaclean.com";
 
-// HOARDING PPC CAMPAIGN ROUTE. Owner decision 2026-09-06: the walkthrough offered through this
-// campaign is free, and only through this campaign. The confirmation email is therefore scoped by
-// the route the submission came from rather than by `offer_type` — this campaign posts the SHARED
-// `handoff_reset` offer type, so keying on that would have rewritten the confirmation for every
-// other form on the site and repriced an assessment the owner did not reprice.
-const HOARDING_CAMPAIGN_ROUTE = "/hoarding-cleanup-san-jose/assessment/";
-
-// ESTATE PPC CAMPAIGN ROUTE, added 2026-09-09 (docs/aseptaclean-estate-landing-page.md). Same
-// shape and same reasoning as the hoarding route above: this campaign also offers a free
-// walkthrough, it also posts the shared `handoff_reset` offer type, and its confirmation
-// therefore has to be scoped by route rather than by offer type. Its wording is the estate
-// campaign's own — the page, the thank-you route and this email say the same thing.
-const ESTATE_CAMPAIGN_ROUTE = "/estate-cleanout-san-jose/assessment/";
-
-const isFromRoute = (lead: LeadRecord, route: string) =>
-  [lead.data.entry_route, lead.data.landing_page, lead.data.submitted_from].some(
-    (value) => typeof value === "string" && value.startsWith(route)
-  );
-
-const isHoardingCampaignLead = (lead: LeadRecord) => isFromRoute(lead, HOARDING_CAMPAIGN_ROUTE);
-const isEstateCampaignLead = (lead: LeadRecord) => isFromRoute(lead, ESTATE_CAMPAIGN_ROUTE);
-
 async function sendResend(
   env: LeadEnvironment,
-  message: { to: string; subject: string; text: string; replyTo?: string }
+  message: {
+    to: string;
+    fromName: "Aseptaclean" | "Aseptaclean Website";
+    subject: string;
+    text: string;
+    html: string;
+    replyTo?: string;
+  },
+  idempotencyKey: string
 ) {
   if (!env.RESEND_API_KEY || !env.EMAIL_FROM_ADDRESS) {
     return { skipped: true, detail: "Resend credentials are not configured." };
   }
-  const { replyTo, ...email } = message;
-  const response = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      authorization: `Bearer ${env.RESEND_API_KEY}`,
-      "content-type": "application/json"
-    },
-    body: JSON.stringify({
-      from: env.EMAIL_FROM_ADDRESS,
-      ...email,
-      ...(replyTo ? { reply_to: replyTo } : {})
-    })
+  const { replyTo, fromName, ...email } = message;
+  const body = JSON.stringify({
+    from: `${fromName} <${env.EMAIL_FROM_ADDRESS}>`,
+    ...email,
+    ...(replyTo ? { reply_to: replyTo } : {})
   });
-  if (!response.ok) await providerError(response, "Resend");
-  const result = (await response.json()) as { id: string };
-  return { skipped: false, detail: `Email ${result.id}` };
+  const delays = [0, 150, 400];
+  let lastError: unknown;
+
+  for (const [index, delay] of delays.entries()) {
+    if (delay) await new Promise((resolve) => setTimeout(resolve, delay));
+    try {
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          authorization: `Bearer ${env.RESEND_API_KEY}`,
+          "content-type": "application/json",
+          // Resend retains idempotency keys for 24 hours. A stable key per lead and message
+          // type makes timeout/5xx retries safe: an accepted first attempt cannot create a
+          // second customer confirmation or owner alert.
+          "idempotency-key": idempotencyKey
+        },
+        body
+      });
+      if (response.ok) {
+        const result = (await response.json()) as { id: string };
+        return {
+          skipped: false,
+          detail: `Provider accepted email ${result.id} on attempt ${index + 1}.`
+        };
+      }
+
+      const responseBody = (await response.text()).slice(0, 500);
+      const retryable =
+        response.status === 408 ||
+        response.status === 429 ||
+        response.status >= 500 ||
+        (response.status === 409 && responseBody.includes("concurrent_idempotent_requests"));
+      lastError = new Error(`Resend returned ${response.status}: ${responseBody}`);
+      if (!retryable || index === delays.length - 1) throw lastError;
+    } catch (error) {
+      lastError = error;
+      if (index === delays.length - 1) throw error;
+      // HTTP failures reach here only after the retryability check above. Fetch/network
+      // failures are transient by definition and use the same provider idempotency key.
+      if (
+        error instanceof Error &&
+        error.message.startsWith("Resend returned ") &&
+        !/returned (408|429|5\d\d):/.test(error.message) &&
+        !error.message.includes("concurrent_idempotent_requests")
+      ) {
+        throw error;
+      }
+    }
+  }
+
+  throw lastError instanceof Error ? lastError : new Error("Resend request failed.");
 }
 
 export function sendCustomerEmail(env: LeadEnvironment, lead: LeadRecord) {
@@ -358,41 +406,12 @@ export function sendCustomerEmail(env: LeadEnvironment, lead: LeadRecord) {
       detail: "No email was collected on this submission; confirmation email needs one."
     });
   }
-  const isResidence = lead.data.offer_type === "private_residence_reset";
-  const isHoardingCampaign = !isResidence && isHoardingCampaignLead(lead);
-  const isEstateCampaign = !isResidence && !isHoardingCampaign && isEstateCampaignLead(lead);
-  const callback =
-    lead.callbackWindow === "business-hours"
-      ? "Because your request arrived during published business hours, our operating standard is to call within 5 minutes."
-      : "Because your request arrived outside published business hours, we will call during the next business window.";
+  const rendered = buildCustomerConfirmationEmail(lead);
   return sendResend(env, {
     to: email,
     replyTo: CUSTOMER_REPLY_TO,
-    subject: isResidence
-      ? "We received your Private Residence Reset assessment"
-      : isHoardingCampaign || isEstateCampaign
-        ? "We received your walkthrough request"
-        : "We received your Aseptaclean assessment request",
-    // The customer sees the short code and not the UUID. Giving them two references for
-    // one request invites them to quote the wrong one; the UUID stays internal.
-    //
-    // The campaign branch mirrors the campaign form's own subtext ("discuss the situation and
-    // arrange a free walkthrough") so the button, the thank-you page and this email say the same
-    // thing. It states the non-appointment boundary outright, because a visitor who just clicked
-    // "Request a Free Walkthrough" is the one most likely to read a confirmation as a booking.
-    text: isResidence
-      ? `Thank you, ${lead.data.full_name}.\n\nWe received your Private Residence Reset assessment. Your confirmation code is ${lead.code} — quote it if you call. ${callback}\n\nWithin one business day, Aseptaclean will review the residence, desired baseline, priority rooms, access, and whether an on-site walkthrough is required.\n\nSubmitting this request does not authorize work, create a service agreement, or reserve a project date.`
-      : isHoardingCampaign
-        ? `Thank you, ${lead.data.full_name}.\n\nWe received your request. Your confirmation code is ${lead.code} — quote it if you call. ${callback}\n\nAseptaclean will review the information and photos you provided, then contact you to discuss the situation and arrange a free walkthrough.\n\nThis request does not confirm an appointment. Submitting it does not authorize work, create a service agreement, or reserve a project date.`
-        // Mirrors the estate campaign form's own subtext and its thank-you body — "contact you to
-        // discuss the property and arrange the next step" — so the button, the confirmation page
-        // and this message say the same thing. It states the non-booking boundary outright,
-        // because someone who has just clicked "Request My Free Walkthrough" is the most likely
-        // to read a confirmation as a booked visit.
-        : isEstateCampaign
-        ? `Thank you, ${lead.data.full_name}.\n\nWe received your request. Your confirmation code is ${lead.code} — quote it if you call. ${callback}\n\nAseptaclean will review what you sent, then contact you to discuss the property and arrange a free walkthrough.\n\nNo need to sort or clean before we speak. This request does not book a crew or confirm an appointment. Submitting it does not authorize work, create a service agreement, or reserve a project date.`
-        : `Thank you, ${lead.data.full_name}.\n\nWe received your assessment request. Your confirmation code is ${lead.code} — quote it if you call. ${callback}\n\nAseptaclean will review the information and photos you provided. If we can determine the next step from what you sent, we will explain it. If we need to see more, we may ask for additional photos, speak with you by phone, or recommend an on-site assessment.\n\nSubmitting this request does not authorize work, create a service agreement, or reserve a project date.`
-  });
+    ...rendered
+  }, `customer-confirmation/${lead.id}`);
 }
 
 export async function sendOwnerSms(env: LeadEnvironment, lead: LeadRecord) {
@@ -449,62 +468,14 @@ export function sendOwnerFallbackEmail(
       detail: "Owner alert email is not configured."
     });
   }
-  const isResidence = lead.data.offer_type === "private_residence_reset";
-  const offerLabel = !isDetailedLead(lead)
-    ? "Quick request"
-    : isResidence
-    ? "Private Residence Reset"
-    : "Assessment request";
-  // SMS_ALERTS_ENABLED off (the default until 10DLC approval) means email is the sole,
-  // expected notification channel — not a degraded fallback — so the copy must not read
-  // as an incident. Any other skip/failure reason means SMS was actually attempted.
-  const smsIsByDesign = env.SMS_ALERTS_ENABLED !== "true";
-  const callbackPhone = String(lead.data.phone).replace(/[^\d+]/g, "");
-  // Replying to a lead alert should reach the lead, not Aseptaclean. The short form
-  // collects no email, so this is absent on that path and no Reply-To is set.
   const customerEmail = typeof lead.data.email === "string" ? lead.data.email : "";
-  // The subject is read on a phone lock screen before the message is ever opened, so it
-  // leads with the two facts that decide whether to pick up — where the property is and
-  // what is wrong with it — and trails the code. Absent parts are dropped entirely:
-  // field()'s "Not supplied" is honest in a body but wastes the only line that gets read.
-  // Situation falls back to the offer label so the short form, which collects neither a
-  // city nor a situation, still says something more than its own code.
-  const subjectPart = (value: LeadRecord["data"][string] | undefined, max: number) => {
-    const text = typeof value === "string" ? value.trim() : "";
-    if (!text) return "";
-    return text.length > max ? `${text.slice(0, max - 1).trimEnd()}…` : text;
-  };
-  const subject = [
-    smsIsByDesign ? "New lead" : "SMS fallback",
-    subjectPart(lead.data.property_zip, 24),
-    subjectPart(lead.data.property_situation, 34) || offerLabel,
-    lead.code
-  ]
-    .filter(Boolean)
-    .join(" · ");
-  const leadSummary = [
-    `Confirmation code: ${lead.code}`,
-    `Request ID: ${lead.id}`,
-    `Name: ${lead.data.full_name}`,
-    `Phone: ${lead.data.phone}`,
-    `Email: ${field(lead.data.email)}`,
-    `ZIP: ${field(lead.data.property_zip)}`,
-    `Situation: ${field(lead.data.property_situation)}`,
-    ...propertyStatusLines(lead),
-    ...(!isResidence
-      ? [`Description: ${field(lead.data.property_detail || lead.data.additional_notes)}`]
-      : []),
-    ...uploadLines(lead),
-    `Callback window: ${lead.callbackWindow}`,
-    ...attributionLines(lead),
-    `Call: tel:${callbackPhone}`
-  ].join("\n");
+  const rendered = buildOwnerLeadNotificationEmail(
+    lead,
+    env.SMS_ALERTS_ENABLED === "true" ? smsStatus : ""
+  );
   return sendResend(env, {
     to: env.OWNER_ALERT_EMAIL,
     ...(customerEmail ? { replyTo: customerEmail } : {}),
-    subject,
-    text: smsIsByDesign
-      ? `New ${offerLabel} lead received. (SMS owner alerts are off pending 10DLC approval; email is the active notification channel.)\n\n${leadSummary}`
-      : `The owner SMS alert did not deliver: ${smsStatus}\n\n${leadSummary}`
-  });
+    ...rendered
+  }, `owner-notification/${lead.id}`);
 }

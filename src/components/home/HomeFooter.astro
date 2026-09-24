@@ -1,0 +1,14 @@
+---
+import { legal, site } from '@data/site';
+import { homeKitServices } from '@data/homeKit';
+const termly = site.integrations.termly.consentEnabled;
+---
+<footer><div class="wrap"><div class="footergrid">
+ <div><a class="brand" href="/"><img src={site.business.logoReversedUrl} alt="Aseptaclean — home" width="900" height="215" loading="lazy" /></a><p>Specialty property cleanup.<br />A clear path forward.</p><p><a href={site.business.phoneUri}>Call {site.business.phone}</a></p><p><a href={`mailto:${site.business.email}`}>{site.business.email}</a></p></div>
+ <div><h3 class="ac-type-home-h3 ac-type-home-footer">Services</h3><div class="footlinks">{homeKitServices.map(service=><a href={service.href}>{service.label}</a>)}</div></div>
+ <div><h3 class="ac-type-home-h3 ac-type-home-footer">Aseptaclean</h3><div class="footlinks"><a href="#ac-why">Why Aseptaclean</a><a href="/about/">About</a><a href="#who-we-help">Who We Help</a><a href="#ac-process">Our Process</a><a href="#service-area">Service Area</a><a href="/contact/">Contact</a></div></div>
+ <div><h3 class="ac-type-home-h3 ac-type-home-footer">Service Area</h3><div class="footlinks"><a href="#ac-area">South Bay</a><a href="#ac-area">Peninsula</a></div><p>7 AM–7 PM</p></div>
+ </div><div class="legal"><span>© {new Date().getFullYear()} {site.business.legalName}</span><div class="legal-links"><a href={site.urls.privacyPolicy}>Privacy Policy</a><a href={site.urls.terms}>Terms &amp; Conditions</a><a href={site.urls.cookiePolicy}>Cookie Policy</a>{termly && <button class="termly-display-preferences" type="button">Cookie Preferences</button>}</div></div>
+ <div class="legal-notes"><p><span data-nosnippet>Aseptaclean is not a licensed general contractor, remediation contractor, pest-control operator, or appraiser.</span></p><p><span data-nosnippet>{legal.scopeDisclaimer} {legal.documentationDisclaimer}</span></p><p><span data-nosnippet>Cleaning only — not a decontamination, sterilization, or health-safety determination.</span></p><p><span data-nosnippet>{legal.founderAuthorityLimit}</span></p></div>
+ {termly && <noscript><p>Cookie Preferences requires JavaScript. The Cookie Policy remains available above, or email {site.business.privacyContact || site.business.email} for help.</p></noscript>}
+</div></footer>

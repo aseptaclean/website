@@ -10,6 +10,9 @@
 import { launchServiceLinks } from "@data/launchArchitecture";
 import { legal, site } from "@data/site";
 
+interface Props { homepage?: boolean; }
+const { homepage = false } = Astro.props;
+
 const year = new Date().getFullYear();
 const phoneHref = site.business.phoneUri;
 const termlyConsentEnabled = site.integrations.termly.consentEnabled;
@@ -35,20 +38,9 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
             decoding="async"
           />
         </a>
-        {/* B2 — the geography reads "the South Bay & Peninsula". docs/27-SECTION-9-15's approved
-            tagline said "for San Jose and the South Bay & Peninsula", which named the region
-            twice in two different shapes inside one sentence and put the forbidden "and the
-            South Bay" form in the footer of all 37 routes. The rest of the line is unchanged
-            §9.15 copy. This is the NAP wording of record — it must match GBP and Yelp character
-            for character, so it is now the same string site.location.serviceArea carries. */}
-        {/* 2026-08-21. Was "Property clearing, detailed cleaning, and documented closeout for
-            the {region}." The B2 geography ruling above is untouched — the region still renders
-            from site.location.serviceArea and nothing else. What changed is the first half:
-            "property clearing" led the sitewide tagline on all 46 routes, and a closeout document
-            was one of the three things the company was described as selling. */}
+        {/* Owner-approved shared business positioning, 2026-09-19. */}
         <p class="foot__tagline">
-          Specialty property cleaning and complex cleanup for the
-          {" "}{site.location.serviceArea}.
+          {site.business.shortDescription}
         </p>
         {phoneHref && (
           <p class="foot__phone"><a href={phoneHref}>{site.business.phone}</a></p>
@@ -80,12 +72,25 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
         </p>
       </div>
 
-      <nav aria-label="Company">
+      <nav aria-label="Company" class="foot__company">
         <h2 class="ac-type-label-head foot__h">Company</h2>
-        <a href="/services/">Services</a>
-        <a href="/about/">About</a>
-        <a href="/contact/">Contact</a>
-        <a href={site.offer.contactFormUrl}>{site.offer.secondaryCta}</a>
+        {/* Retired hub, 2026-09-18 (owner blueprint): points at the homepage services section
+            instead of the deleted /services/ page. */}
+        {homepage ? (
+          <Fragment>
+            <a href="/about/">About</a>
+            <a href="#who-we-help">Who We Help</a>
+            <a href="#service-area">Service Area</a>
+            <a href="/contact/">Contact</a>
+          </Fragment>
+        ) : (
+          <Fragment>
+            <a href="/#services">Services</a>
+            <a href="/about/">About</a>
+            <a href="/contact/">Contact</a>
+            <a href={site.offer.contactFormUrl}>{site.offer.secondaryCta}</a>
+          </Fragment>
+        )}
       </nav>
 
     </div>
@@ -104,10 +109,11 @@ const termlyConsentEnabled = site.integrations.termly.consentEnabled;
       </nav>
 
       <p>
-        © {year} {site.business.legalName} · Aseptaclean is not a licensed general contractor,
-        remediation contractor, pest-control operator, or appraiser.
+        © {year} {site.business.legalName} · <span data-nosnippet>Aseptaclean is not a licensed general contractor,
+        remediation contractor, pest-control operator, or appraiser.</span>
       </p>
-      <p>{legal.scopeDisclaimer} {legal.documentationDisclaimer}</p>
+      <p><span data-nosnippet>{legal.scopeDisclaimer} {legal.documentationDisclaimer}</span></p>
+      {homepage && <p><span data-nosnippet>Cleaning only — not a decontamination, sterilization, or health-safety determination.</span></p>}
       {termlyConsentEnabled && (
         <noscript>
           <p>

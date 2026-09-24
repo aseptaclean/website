@@ -24,6 +24,8 @@
 // approved callout exists for hubs or company pages, so those must not be given one.
 import QuickHandoffForm from "@components/QuickHandoffForm.astro";
 
+const entryRoute = `${Astro.url.pathname}#request`;
+
 interface Props {
   calloutHeading?: string;
   calloutBody?: string;
@@ -76,7 +78,7 @@ const {
       </div>
 
       <div class="ac-stepform request__card">
-        <QuickHandoffForm formId="request-quick-form" entryRoute="/#request" />
+        <QuickHandoffForm formId="request-quick-form" entryRoute={entryRoute} />
       </div>
     </div>
   </div>

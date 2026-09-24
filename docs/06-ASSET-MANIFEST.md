@@ -532,3 +532,62 @@ file still ships on the page that owns it, so none was deleted:
 | `home-hero-neglected-interior` — dark full-bleed hero | no hero photograph at all; the opening is warm white | `/` hero |
 | `hoarding-garage-contents` — §02 garage | `estate-sorting-illustration` | `/hoarding-cleanup-san-jose/` and its campaign route |
 | `home-property-scope-detail` — pricing band | that band has no photograph now | `/` §03 scope dark band |
+
+## 2026-09-18 — Homepage mockup correction: exact missing-image record
+
+Reference: `output/homepage-correction/approved-mockup.png`. It is review evidence only and is
+not imported into the website. Actual approved wordmark/reversed wordmark continue to render
+from `site.business.logoUrl` / `logoReversedUrl`, despite differing from the illustrative mark.
+
+| Homepage slot | Required individual asset | Intended dimensions / crop | Current state |
+| --- | --- | --- | --- |
+| Hero | Approved genuine or appropriately licensed cleanup-work photo with photographic subject on the right and room for left-aligned text | Prefer ≥1920px wide, full-width 560px desktop crop | Existing 1672×941 owner-package condition illustration retained; not a visual match to the mockup's technician |
+| Why Aseptaclean | Approved work/documentation photograph showing cleanup planning/checklist, with suitable permissions; not unrelated stock personnel | ≥1200×900, 4:3, right 55% column | Empty; founder portrait removed from homepage only |
+| Who We Help | Approved property consultation/customer-support photograph, not invented company staff or clients | ≥1200×900, 4:3, right 55% column | Empty; unrelated vacant-room image removed |
+
+The six card images retain their existing owner-package provenance and use shallow 2.4:1 cover
+crops. They illustrate the correct service conditions but differ from the mockup's individual
+photographs. No additional image asset was generated or sourced, and no mockup fragment was
+extracted as apparent real company proof. `src/assets/stock/document_clipboard.jpg` was inspected:
+it depicts an unrelated person with a home-inspection checklist, so it was not used.
+
+## 2026-09-19 — Extreme public-service package illustrations
+
+Explicit owner instruction installs the supplied `aseptaclean-extreme-service` reference on
+`/extreme-cleaning-san-jose/` only. Extracted bytes and SHA-256 hashes are recorded in
+`output/extreme-service-install/assets.json`; original package files remain unchanged.
+
+| Asset | Slots / proportions | Provenance and limitation |
+| --- | --- | --- |
+| `src/assets/aseptaclean/extreme-service-0.jpg` | Approved interior-work hero tile, support documentation tile and belongings discussion tile; original background sizing/positions | Embedded owner-approved illustration sheet. Not company staff, clients or completed-job proof. |
+| `src/assets/aseptaclean/extreme-service-1.jpg` | Scope documentation photograph, 3:2 landscape, cover crop | Embedded owner-approved illustration; original visible atlas-edge strip retained to match preview. Not an actual project record. |
+
+No image generated or independently sourced. Suitable production-photo provenance remains a
+release follow-up; alt labels explicitly identify illustrations. Working logo URLs come from
+`site.business`. Every image box matches the preview at 1440/1024/820/768/390/320px.
+
+### Estate campaign kit — local installation, 2026-09-19
+
+`src/assets/aseptaclean/estate-landing-0.jpg` and `estate-landing-1.jpg` are byte-for-byte
+extractions of the two embedded JPEG data URIs in `aseptaclean-estate-landing`'s supplied
+fragment. Original CSS cascade and 300% atlas positioning retained; work rows use p8/p3/p5.
+Hashes: `output/estate-landing-install/assets.json`. Used only by the estate campaign stylesheet.
+These are **provisional illustrative photographs**, not verified Aseptaclean properties,
+customers, employees or completed work. No new images generated. Production provenance and
+owner approval remain launch blockers; this installation does not promote their status.
+
+## Rodent campaign kit — local review, 2026-09-20
+
+`src/assets/aseptaclean/rodent-landing-{0,1}.jpg` are byte-for-byte decoded JPEG atlases from
+`reference/build-kits-2026-09-19-r01/aseptaclean-website-build-kits/aseptaclean-rodent-landing/rodent-landing-fragment.html`.
+Used only by `src/styles/rodent-landing-kit.css` on `/rodent-dropping-cleanup-san-jose/assessment/`.
+Original CSS cascade/crops retained: hero discussion image, kitchen/garage/attic service rows,
+and planning/documentation image. Original atlas edge strips remain visible, matching the preview.
+Hero's inherited garage alt label was corrected to “Illustrative property discussion.”
+
+**Provisional, not production approved.** Source says illustrative; provenance/rights and compliance
+with the no-generated-people/properties/documents/crews rule are unresolved. Labels do not establish
+provenance or authorize synthetic job evidence. Resolve before launch; no claim these show actual
+Aseptaclean jobs, customers, staff or records. No new image generation or stock substitution.
+The supplied reference folder remains unchanged. Asset hash evidence is in
+`output/rodent-landing-install/preservation-results.json`.

@@ -81,3 +81,22 @@ Actual Privacy, Terms, and Cookie documents come from the current policy provide
 ## Copy trace
 
 In the implementation report, record page → rendered component → source file/heading → exact excerpt boundaries → any display transformation. Every visible marketing sentence must resolve to a named source or the explicit UI-string table above. Existing legal/consent strings resolve to the actual provider/application source. A stale copy validator should be updated to reflect this documented map; do not disable it or report its old failures as a pass.
+
+
+## Owner positioning update — 2026-09-19
+
+The current owner explicitly approves the following scoped replacements, superseding the earlier
+three-display-role-only restriction and historical statement that homepage SEO is unchanged:
+
+- Homepage title, Open Graph title and Twitter title: `Aseptaclean | Biohazard Remediation & Specialty Property Cleanup`.
+- Homepage meta/Open Graph/Twitter description: `Aseptaclean provides biohazard remediation and specialty property cleanup in San Jose and surrounding areas, including trauma, hoarding, and rodent waste cleanup.`
+- Homepage existing hero eyebrow: `Biohazard Remediation & Specialty Property Cleanup`, using `home.hero.eyebrow` without duplicating it. Preserve the current headline and remaining hero content.
+- Public and campaign footer business description (`site.business.shortDescription`): `Aseptaclean provides biohazard remediation and specialty property cleanup throughout the South Bay and Peninsula.`
+- Existing LocalBusiness description (`site.business.description`): `Aseptaclean provides biohazard remediation and specialty property cleanup throughout the South Bay and Peninsula, including trauma and crime scene cleanup, hoarding cleanup, and rodent and animal waste cleanup.`
+
+This approves those exact positioning strings, not new credentials, services, operating authority,
+or changes to the business entity's name/identity. Existing visible footer scope/licensing,
+documentation and homepage cleaning-only disclaimers retain their text; disclaimer-only spans
+carry `data-nosnippet`. Copyright, business descriptions, links and main content are not excluded.
+Other pages retain their own title/description; shared Twitter tags use each page's own values.
+The original owner copy documents are unchanged.

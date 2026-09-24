@@ -7,6 +7,14 @@
 // /extreme-cleaning-san-jose/, and every existing link, redirect, canonical and internal enum
 // pointing at it keeps working. The source content for that page is still the copy document's
 // "Severe Property Cleanup" section — the service was renamed, not rewritten.
+// SIXTH SERVICE ADDED 2026-09-18 (Aseptaclean_Website_Design_Blueprint.md, owner brief): the
+// owner requested a separate Estate Cleanout public service page as the sixth entry in this
+// list, appended after the existing five in their established order. `/estate-cleanout-san-jose/`
+// already existed as a built, unlinked page (see the page's own header comment); it was not
+// previously a member of this array, which meant it inherited `noindex` from
+// `isLaunchPublicPath` and was absent from the header dropdown, the footer Services column, and
+// `sitemap.xml` — all three now include it via this one entry, and the page becomes indexable as
+// a side effect of joining `launchPrimaryPaths` below.
 export const launchServiceLinks = [
   { label: "Hoarding Cleanup", navLabel: "Hoarding Cleanup", href: "/hoarding-cleanup-san-jose/" },
   { label: "Extreme Cleaning", navLabel: "Extreme Cleaning", href: "/extreme-cleaning-san-jose/" },
@@ -24,13 +32,23 @@ export const launchServiceLinks = [
     label: "Rodent Droppings & Animal Waste Cleanup",
     navLabel: "Rodent & Animal Waste",
     href: "/rodent-dropping-cleanup-san-jose/"
+  },
+  {
+    label: "Estate Cleanout",
+    navLabel: "Estate Cleanout",
+    href: "/estate-cleanout-san-jose/"
   }
 ] as const;
 
 // docs/SITEMAP-MASTER.md "Navigation": Services / About / Contact, with Services carrying its own
-// dropdown toggle. The five service links do not join this list.
+// dropdown toggle. The six service links do not join this list.
+//
+// RETIRED 2026-09-18 (Aseptaclean_Website_Design_Blueprint.md, owner brief): "Services" no longer
+// links to the standalone hub — that page is retired and `/services/` now 301s to `/#services`
+// (public/_redirects). Header.astro recognizes this label and renders the non-navigating Services
+// disclosure button instead; the href remains the approved fallback for other data consumers.
 export const launchPrimaryNavLinks = [
-  { label: "Services", href: "/services/" },
+  { label: "Services", href: "/#services" },
   { label: "About", href: "/about/" },
   { label: "Contact", href: "/contact/" }
 ] as const;
@@ -41,9 +59,14 @@ export const launchPrimaryNavLinks = [
 // point). See docs/05-CURRENT-DECISIONS.md, 2026-09-06, "Standalone Request Assessment page
 // retired." The route file no longer exists, so a real not-found response is unconditional here
 // — it does not depend on this array.
+//
+// "/services/" REMOVED 2026-09-18 (owner blueprint): the standalone hub page is deleted
+// (src/pages/services/index.astro) and the route now redirects at the edge
+// (public/_redirects: "/services/ /#services 301"). Removing it here drops it from
+// `launchIndexablePaths`, which removes it from sitemap.xml automatically — the sitemap has no
+// separate maintenance step.
 export const launchPrimaryPaths = [
   "/",
-  "/services/",
   "/about/",
   "/contact/",
   ...launchServiceLinks.map((link) => link.href),

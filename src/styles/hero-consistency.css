@@ -1,0 +1,124 @@
+/* Final cross-package hero QA contract, 2026-09-20.
+ * This late-loaded layer reconciles the homepage and public-service hero group. Contact,
+ * Thank You, campaign pages, body sections, image crops, wording, and route-specific
+ * navigation remain untouched. */
+
+:is(#ac-home-locked-mockup, #ac-estate, #ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent) .hero .wrap {
+  display: flex;
+  min-block-size: 632px;
+  padding-block: 76px 96px;
+}
+
+:is(#ac-home-locked-mockup, #ac-estate, #ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent) .hero-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  inline-size: 100%;
+  max-inline-size: 960px;
+  min-inline-size: 0;
+}
+
+:is(#ac-home-locked-mockup, #ac-estate, #ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent) .hero h1 {
+  font-size: 56px;
+  line-height: 1.07;
+}
+
+:is(#ac-home-locked-mockup, #ac-estate, #ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent) .hero p.body {
+  max-inline-size: 480px;
+}
+
+:is(#ac-home-locked-mockup, #ac-estate, #ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent) .hero .actions {
+  margin-block-start: 24px;
+  padding-block-start: 0;
+}
+
+/* Both reviewed campaign openings keep the same 3:2 editorial image and share measured shell
+ * floors through tablet. Their different approved copy continues to drive height on mobile. */
+#ac-inherited-estate .estate-editorial-hero,
+#ac-rodent-editorial .rodent-editorial-hero {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 665px;
+}
+
+#ac-inherited-estate .estate-hero-bottom-actions,
+#ac-rodent-editorial .rodent-hero-bottom-actions {
+  margin-block-start: auto;
+}
+
+#ac-inherited-estate .estate-editorial-media .photo,
+#ac-rodent-editorial .rodent-editorial-media .photo {
+  aspect-ratio: 3 / 2;
+}
+
+@media (max-width: 1199px) {
+  #ac-inherited-estate .estate-editorial-hero,
+  #ac-rodent-editorial .rodent-editorial-hero {
+    min-block-size: 604px;
+  }
+}
+
+@media (max-width: 1023px) {
+  :is(#ac-home-locked-mockup, #ac-estate, #ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent) .hero .wrap {
+    min-block-size: 576px;
+    padding-block: 64px 80px;
+  }
+
+  :is(#ac-home-locked-mockup, #ac-estate, #ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent) .hero h1 {
+    font-size: 44px;
+    line-height: 1.1;
+  }
+
+  #ac-inherited-estate .estate-editorial-hero,
+  #ac-rodent-editorial .rodent-editorial-hero {
+    min-block-size: 610px;
+  }
+}
+
+@media (min-width: 681px) and (max-width: 850px) {
+  #ac-inherited-estate .estate-editorial-grid,
+  #ac-rodent-editorial .rodent-editorial-grid {
+    min-block-size: 312px;
+  }
+
+  #ac-inherited-estate .estate-editorial-assurances,
+  #ac-rodent-editorial .rodent-editorial-assurances {
+    min-block-size: 125px;
+  }
+}
+
+@media (max-width: 680px) {
+  #ac-inherited-estate .estate-editorial-hero,
+  #ac-rodent-editorial .rodent-editorial-hero {
+    min-block-size: 0;
+  }
+
+  #ac-inherited-estate .estate-hero-bottom-actions,
+  #ac-rodent-editorial .rodent-hero-bottom-actions {
+    margin-block-start: 24px;
+  }
+}
+
+@media (max-width: 620px) {
+  :is(#ac-home-locked-mockup, #ac-estate, #ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent) .hero .wrap {
+    min-block-size: 0;
+    padding-block: 48px 64px;
+  }
+
+  :is(#ac-home-locked-mockup, #ac-estate, #ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent) .hero-copy {
+    max-inline-size: 100%;
+  }
+
+  :is(#ac-home-locked-mockup, #ac-estate, #ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent) .hero h1 {
+    font-size: 36px;
+    line-height: 1.12;
+  }
+
+  :is(#ac-home-locked-mockup, #ac-estate, #ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent) .hero p.body {
+    max-inline-size: none;
+  }
+
+  :is(#ac-home-locked-mockup, #ac-estate, #ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent) .hero .actions {
+    margin-block-start: 0;
+  }
+}

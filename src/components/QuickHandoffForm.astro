@@ -24,6 +24,7 @@ const endpointAvailable = Boolean(
 ---
 
 <form
+  id={formId}
   class="quick-form"
   method="post"
   action={endpointAvailable ? site.urls.formEndpoint : undefined}
@@ -95,16 +96,12 @@ const endpointAvailable = Boolean(
     <label for={`${formId}-detail`}>
       What are you looking at? <span class="quick-form__optional">(optional)</span>
     </label>
-    {/* `required` added 2026-09-04. functions/_lib/lead.ts has listed property_detail in
-        leanRequiredFields since the 2026-09-03 rebuild, but this control never carried the
-        attribute — so this form's remaining callers (RequestForm.astro, CityHero.astro) could
-        submit it empty and receive a 422 with no client-side guard. The server contract is
-        unchanged; the client now matches it. */}
+    {/* This short form does not send form_version, so the endpoint treats property_detail as
+        optional. Keep the DOM contract aligned with the visible “(optional)” label. */}
     <textarea
       id={`${formId}-detail`}
       name="property_detail"
       rows="3"
-      required
       placeholder="A quick description of the property and what needs to happen."
     ></textarea>
   </div>
@@ -203,6 +200,8 @@ const endpointAvailable = Boolean(
 }
 
 <script>
+  import { storeAcceptedInquiryReceipt } from "../scripts/acceptedInquiryReceipt";
+
   type FormControl = HTMLInputElement | HTMLTextAreaElement;
 
   document
@@ -284,6 +283,94 @@ const endpointAvailable = Boolean(
         ? `Something went wrong on our end and the form didn't send. Call or text ${contactPhone} and we'll take it from there.`
         : "Something went wrong on our end and the form didn't send. Call or text us and we'll take it from there.";
 
+      // Match the PPC and compact-form measurement contract without sending submitted values.
+      // The backend confirmation code is used only to prevent a retry/redirect from counting the
+      // same accepted lead twice; it is never included in the analytics payload.
+      const pagePath = window.location.pathname;
+      const offerType =
+        (form.elements.namedItem("offer_type") as HTMLInputElement | null)?.value ?? "";
+      const trackingPayload = (
+        event: string,
+        detail: Record<string, string | number | boolean> = {}
+      ) => ({
+        event,
+        form_id: form.id,
+        page_path: pagePath,
+        ...(offerType ? { offer_type: offerType } : {}),
+        ...detail
+      });
+      const track = (
+        event: string,
+        detail: Record<string, string | number | boolean> = {}
+      ) => {
+        (window as Window & { dataLayer?: unknown[] }).dataLayer ??= [];
+        (window as Window & { dataLayer?: unknown[] }).dataLayer!.push(
+          trackingPayload(event, detail)
+        );
+      };
+      const containerLoaded = () => {
+        const containers = (window as Window & { google_tag_manager?: Record<string, unknown> })
+          .google_tag_manager;
+        return Boolean(containers && Object.keys(containers).some((key) => key.startsWith("GTM-")));
+      };
+      const trackAndSettle = (
+        event: string,
+        detail: Record<string, string | number | boolean>
+      ) =>
+        new Promise<void>((resolve) => {
+          (window as Window & { dataLayer?: unknown[] }).dataLayer ??= [];
+          if (!containerLoaded()) {
+            (window as Window & { dataLayer?: unknown[] }).dataLayer!.push(
+              trackingPayload(event, detail)
+            );
+            resolve();
+            return;
+          }
+          let settled = false;
+          const settle = () => {
+            if (settled) return;
+            settled = true;
+            window.clearTimeout(timer);
+            resolve();
+          };
+          const timer = window.setTimeout(settle, 1000);
+          (window as Window & { dataLayer?: unknown[] }).dataLayer!.push({
+            ...trackingPayload(event, detail),
+            eventTimeout: 1000,
+            eventCallback: settle
+          });
+        });
+      const claimLead = (code: string) => {
+        if (!code) return false;
+        try {
+          const key = `ac_ppc_lead:${code}`;
+          if (window.sessionStorage.getItem(key)) return false;
+          window.sessionStorage.setItem(key, "1");
+          return true;
+        } catch {
+          return false;
+        }
+      };
+      const errorCategory = (status: number) => {
+        if (status === 400) return "verification_failed";
+        if (status === 403) return "origin_rejected";
+        if (status === 413) return "payload_too_large";
+        if (status === 422) return "server_validation";
+        if (status === 429) return "rate_limited";
+        if (status === 503) return "service_unavailable";
+        if (status >= 500) return "server_error";
+        if (status >= 400) return "request_rejected";
+        return "unexpected_response";
+      };
+      let startRecorded = false;
+      const recordStart = () => {
+        if (startRecorded) return;
+        startRecorded = true;
+        track("form_start");
+      };
+      form.addEventListener("input", recordStart);
+      form.addEventListener("change", recordStart);
+
       const renderErrors = (errors: Record<string, string>) => {
         clearFieldErrors();
         const messages: string[] = [];
@@ -358,9 +445,12 @@ const endpointAvailable = Boolean(
         }
       };
 
+      let inFlight = false;
+
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
         if (!form.action) return;
+        if (inFlight) return;
 
         clearFieldErrors();
         if (errorBox) errorBox.hidden = true;
@@ -385,6 +475,8 @@ const endpointAvailable = Boolean(
           timestampInput.value = new Date().toISOString();
         }
 
+        inFlight = true;
+        track("ppc_form_submit_attempt", { photos_attached: false });
         setSubmitting(true, "Sending your request…");
 
         try {
@@ -401,34 +493,14 @@ const endpointAvailable = Boolean(
           }
 
           if (response.ok && payload.ok === true) {
-            // THREE email states, not two — "email" is required on this form (added
-            // 2026-09-06), so the visitor supplied one on every real submission. Collapsing a
-            // provider failure into "none" would tell them we never had an address to send to,
-            // when we did and the send failed. Only this form knows whether an address was
-            // actually typed.
-            const emailSupplied = Boolean(
-              (form.elements.namedItem("email") as HTMLInputElement | null)?.value.trim()
-            );
-            const parameters = new URLSearchParams({
-              received: "1",
-              callback:
-                typeof payload.callbackWindow === "string"
-                  ? payload.callbackWindow
-                  : "next-business-window",
-              email: !emailSupplied
-                ? "none"
-                : payload.confirmationEmailSent === true
-                  ? "sent"
-                  : "attention"
-            });
-            // The short code, not the UUID: this is what the visitor may write down or
-            // photograph, and it is the reference the office can act on.
             const code =
-              typeof payload.confirmationCode === "string"
-                ? payload.confirmationCode
-                : "";
-            if (code) parameters.set("code", code);
-            window.location.assign(`/thank-you/?${parameters.toString()}`);
+              typeof payload.confirmationCode === "string" ? payload.confirmationCode : "";
+            const codeIsValid = /^AC-[0-9A-HJKMNP-TV-Z]{6}$/.test(code);
+            if (!codeIsValid || claimLead(code)) {
+              await trackAndSettle("ppc_form_success", { photos_attached: false });
+            }
+            storeAcceptedInquiryReceipt(payload);
+            window.location.assign("/thank-you/");
             return;
           }
 
@@ -438,8 +510,13 @@ const endpointAvailable = Boolean(
           ) {
             renderErrors(payload.errors as Record<string, string>);
           }
+          track("ppc_form_error", {
+            error_type: errorCategory(response.status),
+            photos_attached: false
+          });
           // §9.15.5 approved submission-error string, as the fallback when the server sends
           // no specific message of its own.
+          inFlight = false;
           setSubmitting(
             false,
             typeof payload.message === "string"
@@ -448,6 +525,11 @@ const endpointAvailable = Boolean(
           );
           resetTurnstile();
         } catch {
+          track("ppc_form_error", {
+            error_type: "network",
+            photos_attached: false
+          });
+          inFlight = false;
           setSubmitting(false, submissionErrorMessage);
           resetTurnstile();
         }

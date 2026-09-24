@@ -50,7 +50,8 @@ const ESTATE_ROUTE = "/estate-cleanout-san-jose/assessment/";
 const FORM_ANCHOR = `${ESTATE_ROUTE}#request-walkthrough`;
 
 // EXACTLY what src/components/ppc/PpcHeroForm.astro posts from the estate page: the hidden
-// identity fields, the four required contact fields, and the two optional answers. No field name
+// identity fields, the four required contact fields, the required role, and the optional
+// contents/timeline/detail answers. No field name
 // here is invented — each one is rendered by that component.
 const estateForm = (overrides = {}) => {
   const values = {
@@ -67,6 +68,9 @@ const estateForm = (overrides = {}) => {
     // OPTIONAL, and blank here on purpose — this is the case the brief requires to succeed.
     property_detail: "",
     property_status: "",
+    estate_role: "Executor / personal representative",
+    estate_contents_level: "Most rooms heavily cluttered",
+    estate_timeline: "Within the next few weeks",
     privacy_consent: "yes",
     submission_timestamp: new Date().toISOString(),
     idempotency_key: crypto.randomUUID(),
@@ -122,17 +126,22 @@ const check = (label, condition, detail = "") => {
   );
   const customer = sent.find((message) => message.to === "estate-check@example.test");
   check(
-    "estate form: the customer confirmation uses the campaign's walkthrough wording",
+    "estate form: the customer confirmation uses the installed submission-flow wording",
     Boolean(customer) &&
-      customer.subject === "We received your walkthrough request" &&
-      customer.text.includes("arrange a free walkthrough") &&
-      customer.text.includes("does not book a crew"),
+      customer.subject === "We received your estate cleanout inquiry | Aseptaclean" &&
+      customer.text.includes("We received your inquiry.") &&
+      customer.text.includes("does not book an assessment or authorize work"),
     JSON.stringify(customer?.subject)
   );
   const owner = sent.find((message) => message.to === "owner@example.test");
   check(
     "estate form: the owner alert carries the lead and the campaign source route",
-    Boolean(owner) && owner.text.includes(ESTATE_ROUTE) && owner.text.includes("95125"),
+    Boolean(owner) &&
+      owner.text.includes(ESTATE_ROUTE) &&
+      owner.text.includes("95125") &&
+      owner.text.includes("Role: Executor / personal representative") &&
+      owner.text.includes("Contents level: Most rooms heavily cluttered") &&
+      owner.text.includes("Timeline: Within the next few weeks"),
     JSON.stringify(owner?.subject)
   );
   check(
@@ -186,6 +195,18 @@ const rejections = [
   ["consent is required", { privacy_consent: "" }, "privacy_consent"],
   ["a short phone number is rejected", { phone: "40855" }, "phone"],
   ["a malformed ZIP is rejected", { property_zip: "9512" }, "property_zip"],
+  ["role is required on the estate campaign", { estate_role: "" }, "estate_role"],
+  ["an unsupported role is rejected", { estate_role: "Neighbor" }, "estate_role"],
+  [
+    "an unsupported contents level is rejected",
+    { estate_contents_level: "Completely empty" },
+    "estate_contents_level"
+  ],
+  [
+    "an unsupported timeline is rejected",
+    { estate_timeline: "Tomorrow at noon" },
+    "estate_timeline"
+  ],
   [
     "an unsupported service value is rejected before storage",
     { property_situation: "Estate cleanout" },

@@ -346,21 +346,34 @@ try {
   const ownerExpected = [
     "Name: Staging Test",
     "Phone: 4085550100",
-    "ZIP: 95113",
-    "Situation: Severe property condition",
-    "Description: Two-storey home, heavy kitchen buildup, access through the garage.",
-    "Private uploads: 1 (private R2 objects, not public URLs)",
-    "Source page: /",
-    "Submitted: ",
-    "Consent: contact consent given at submission"
+    "Property ZIP: 95113",
+    "Service: Extreme Cleaning",
+    "Customer message",
+    "Two-storey home, heavy kitchen buildup, access through the garage.",
+    "1. property.jpg — protected R2 object leads/",
+    "Page: /",
+    "Attribution: Referrer: https://example.test/source",
+    "Contact consent: Checked · form version phase3-test-v1"
   ];
   for (const fragment of ownerExpected) {
     if (!ownerEmail?.text?.includes(fragment)) {
       throw new Error(`Owner notification omitted "${fragment}".`);
     }
   }
-  if (!customerEmail?.text?.includes("We received your assessment request.")) {
-    throw new Error("Customer confirmation did not use the assessment copy.");
+  if (
+    customerEmail?.from !== "Aseptaclean <test@example.test>" ||
+    customerEmail?.subject !== "We received your extreme cleaning inquiry | Aseptaclean" ||
+    !customerEmail?.text?.includes("We received your inquiry.") ||
+    !customerEmail?.html?.includes("background:#ffffff")
+  ) {
+    throw new Error("Customer confirmation did not use the approved HTML/text design.");
+  }
+  if (
+    ownerEmail?.from !== "Aseptaclean Website <test@example.test>" ||
+    ownerEmail?.subject !== "New lead: Extreme Cleaning · 95113 · Staging Test" ||
+    !ownerEmail?.html?.includes("New extreme cleaning inquiry.")
+  ) {
+    throw new Error("Owner notification did not use the approved HTML/text design.");
   }
 
   globalThis.fetch = async (url) => {

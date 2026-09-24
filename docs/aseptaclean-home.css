@@ -1,0 +1,314 @@
+/*
+ * ASEPTACLEAN — approved desktop homepage concept / responsive stylesheet
+ * Version 1.0 | 2026-09-18
+ *
+ * INSTALL: save as src/styles/aseptaclean-home.css and import once from the
+ * Astro layout used by Home. Do not load alongside the earlier contract CSS
+ * on Home: this file replaces that page's visual stylesheet.
+ * Scope: <div class="ac-site ac-home"> wrapping header, main and footer.
+ * Keep the project's existing body margin reset and local Inter font loader.
+ * Do not apply this stylesheet to campaign pages without separate review.
+ *
+ * SECTION ORDER / CLASSES:
+ * header.ac-header > .ac-container.ac-header__inner
+ * main > section#hero > .ac-hero + .ac-container > .ac-trust
+ * section#why.ac-section > .ac-container.ac-split
+ * section#services.ac-section.ac-warm > .ac-container > .ac-service-grid
+ * section#who-we-help.ac-section > .ac-container.ac-split
+ * section#cta-mid.ac-cta.ac-cta--dark > .ac-container.ac-cta__inner
+ * section#process.ac-section.ac-warm > .ac-container > ol.ac-process
+ * section#service-area.ac-section > .ac-container.ac-area-grid
+ * section#cta-close.ac-cta.ac-cta--quiet > .ac-container.ac-cta__inner
+ * section#contact.ac-section > .ac-container > .ac-form-shell
+ * footer.ac-footer > .ac-container > .ac-footer__grid + .ac-footer__legal
+ *
+ * DOM DETAILS:
+ * Hero: .ac-hero__photo containing img (decorative alt=""), followed by
+ * .ac-container.ac-hero__inner > .ac-hero__copy containing eyebrow, h1,
+ * .ac-hero__body and .ac-actions. Trust strip is OUTSIDE the photo hero.
+ * Split: .ac-split__text first, .ac-split__media second. Never reverse mobile.
+ * Card: article.ac-service-card > .ac-service-card__image (img) +
+ * .ac-service-card__body (h3, p, a.ac-service-card__link).
+ * Process: li.ac-process__step > span.ac-process__number + h3 + p.
+ * Form: retain existing form handlers; add .ac-form and .ac-form-grid to the
+ * actual wrappers. Short fields .ac-field; long fields also .ac-field--full.
+ * Inputs/select/textarea .ac-input; checkbox row label.ac-consent.
+ * Header disclosure panels use [hidden], managed by existing accessible JS.
+ * Footer logo needs the actual approved light/reversed logo asset.
+ *
+ * This file contains styling, not photographs, copy, menu JS, or a backend.
+ * Never replace approved copy with text from the illustrative image.
+ * No fixed text heights, line clamps, filler, or global overflow suppression.
+ */
+
+/* 01 — Tokens and scoped foundations */
+.ac-home {
+  --ac-navy: #1c355e;
+  --ac-deep: #122840;
+  --ac-slate: #6a9bc3;
+  --ac-steel: #a8b8c8;
+  --ac-white: #fff;
+  --ac-warm: #f7f8fa;
+  --ac-text: #263849;
+  --ac-muted: #526574;
+  --ac-border: #d8e0e7;
+  --ac-on-dark: #e7eef4;
+  --ac-max: 1200px;
+  --ac-gutter: 40px;
+  --ac-section-y: 72px;
+  --ac-gap: 48px;
+  --ac-grid-gap: 24px;
+  --ac-header-height: 80px;
+  --ac-hero-height: 560px;
+  --ac-hero-inset: 72px;
+  --ac-radius: 8px;
+  font-family: Inter, "Inter Variable", system-ui, sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ac-text);
+  background: var(--ac-white);
+  isolation: isolate;
+  /* No overflow or transform here: either can break the sticky header. */
+}
+.ac-home *, .ac-home *::before, .ac-home *::after { box-sizing: border-box; }
+.ac-home [hidden][hidden] { display: none; } /* Preserve semantic hidden state. */
+.ac-home :where(h1,h2,h3,p,ul,ol,figure) { margin: 0; }
+.ac-home :where(button,input,select,textarea) { font: inherit; }
+.ac-home img { display: block; max-inline-size: 100%; }
+.ac-home :where(h1,h2,h3) { color: var(--ac-deep); overflow-wrap: break-word; }
+.ac-home h1 { font-size: 56px; line-height: 1.08; font-weight: 700; letter-spacing: -.035em; }
+.ac-home h2 { font-size: 36px; line-height: 1.18; font-weight: 700; letter-spacing: -.025em; }
+.ac-home h3 { font-size: 21px; line-height: 1.3; font-weight: 650; letter-spacing: -.015em; }
+.ac-home a { color: var(--ac-navy); text-underline-offset: .2em; }
+.ac-home :where(a,button,input,select,textarea,summary):focus-visible {
+  outline: 3px solid var(--ac-navy); outline-offset: 4px;
+}
+.ac-home .ac-container { inline-size: min(var(--ac-max), calc(100% - 2 * var(--ac-gutter))); margin-inline: auto; }
+.ac-home .ac-section { padding-block: var(--ac-section-y); }
+.ac-home .ac-warm { background: var(--ac-warm); }
+.ac-home :where(section,[id]) { scroll-margin-block-start: calc(var(--ac-header-height) + 24px); }
+.ac-home .ac-flow > * + * { margin-block-start: 16px; }
+.ac-home .ac-eyebrow { font-size: 12px; line-height: 1.5; letter-spacing: .1em; font-weight: 650; text-transform: uppercase; color: var(--ac-muted); }
+.ac-home .ac-eyebrow + :where(h1,h2) { margin-block-start: 10px; }
+.ac-home .ac-small, .ac-home figcaption { font-size: 14px; line-height: 1.5; color: var(--ac-muted); }
+.ac-home figcaption { margin-block-start: 8px; }
+.ac-home .ac-section-heading { max-inline-size: 760px; margin-block-end: 32px; }
+.ac-home .ac-section-heading > * + * { margin-block-start: 12px; }
+.ac-home .ac-section-heading--center { margin-inline: auto; text-align: center; }
+.ac-home .ac-list { padding-inline-start: 22px; }
+.ac-home .ac-list li + li { margin-block-start: 8px; }
+
+/* 02 — Buttons, links, and shared action groups */
+.ac-home .ac-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-block-start: 24px; }
+.ac-home .ac-actions--center { justify-content: center; margin-block-start: 32px; }
+.ac-home .ac-button {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-block-size: 48px; max-inline-size: 100%; padding: 12px 20px;
+  border: 1px solid var(--ac-navy); border-radius: 6px;
+  background: var(--ac-navy); color: var(--ac-white);
+  font-size: 16px; line-height: 1.4; font-weight: 600;
+  text-align: center; text-decoration: none; white-space: normal;
+  overflow-wrap: anywhere; cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+.ac-home .ac-button:hover { background: var(--ac-deep); border-color: var(--ac-deep); }
+.ac-home .ac-button--outline { background: transparent; color: var(--ac-navy); }
+.ac-home .ac-button--outline:hover { background: var(--ac-white); }
+.ac-home .ac-button--light { background: var(--ac-white); color: var(--ac-deep); border-color: var(--ac-white); }
+.ac-home .ac-button--light:hover { background: var(--ac-on-dark); border-color: var(--ac-on-dark); }
+.ac-home .ac-button--outline-light { background: transparent; color: var(--ac-white); border-color: var(--ac-white); }
+.ac-home .ac-button--outline-light:hover { background: rgb(255 255 255 / .12); border-color: var(--ac-white); }
+.ac-home .ac-button:disabled { cursor: not-allowed; opacity: .6; }
+
+/* 03 — Sticky header. Existing JS owns disclosure state and focus return. */
+.ac-home .ac-header { position: sticky; inset-block-start: 0; z-index: 50; background: var(--ac-white); border-block-end: 1px solid var(--ac-border); }
+.ac-home .ac-header__inner { min-block-size: var(--ac-header-height); display: flex; align-items: center; gap: 24px; }
+.ac-home .ac-logo { display: inline-flex; align-items: center; flex: 0 0 auto; min-block-size: 44px; font-size: 25px; font-weight: 750; text-decoration: none; letter-spacing: -.05em; }
+.ac-home .ac-logo img { inline-size: 160px; block-size: auto; max-block-size: 48px; object-fit: contain; }
+.ac-home .ac-nav { display: flex; align-items: center; gap: 24px; margin-inline-start: auto; font-size: 15px; font-weight: 600; }
+.ac-home .ac-nav :where(a,button) { display: inline-flex; align-items: center; min-block-size: 44px; text-decoration: none; }
+.ac-home .ac-menu-trigger { border: 0; background: transparent; color: var(--ac-navy); padding: 8px 0; cursor: pointer; }
+.ac-home .ac-header__call { margin-inline-start: auto; }
+.ac-home .ac-nav + .ac-header__call { margin-inline-start: 0; }
+.ac-home .ac-dropdown { position: relative; }
+.ac-home .ac-dropdown__panel { position: absolute; inset-block-start: 100%; inset-inline-start: 0; inline-size: 300px; padding: 12px; background: var(--ac-white); border: 1px solid var(--ac-border); border-radius: 8px; box-shadow: 0 8px 24px rgb(18 40 64 / .1); }
+.ac-home .ac-dropdown__panel a { display: flex; padding: 10px 12px; }
+.ac-home .ac-dropdown__panel a:hover { background: var(--ac-warm); }
+.ac-home .ac-mobile-toggle, .ac-home .ac-mobile-menu { display: none; }
+.ac-home .ac-call-short { display: none; }
+
+/* 04 — Full-width photo hero. Photos and approved copy are supplied by Astro.
+ * 560px matches the compact approved concept. Do not import prior 736px rules.
+ * Height is a minimum so text remains readable at zoom/with changed copy.
+ * Check other pages before rolling this new homepage token out site-wide.
+ */
+.ac-home .ac-hero { position: relative; isolation: isolate; background: var(--ac-deep); color: var(--ac-white); }
+.ac-home .ac-hero__photo { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
+.ac-home .ac-hero__photo img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: var(--ac-hero-position, 65% 50%); }
+.ac-home .ac-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: rgb(18 40 64 / .58); }
+.ac-home .ac-hero__inner { min-block-size: var(--ac-hero-height); padding-block: var(--ac-hero-inset); }
+.ac-home .ac-hero__copy { max-inline-size: 600px; min-inline-size: 0; }
+.ac-home .ac-hero h1 { color: var(--ac-white); }
+.ac-home .ac-hero .ac-eyebrow { color: var(--ac-on-dark); }
+.ac-home .ac-hero__body { max-inline-size: 560px; margin-block-start: 20px; color: var(--ac-on-dark); }
+.ac-home .ac-hero__body > * + * { margin-block-start: 12px; }
+.ac-home .ac-hero :focus-visible { outline-color: var(--ac-white); }
+
+/* 05 — Three trust signals. Icons are real supplied SVG/icon assets, not emoji. */
+.ac-home .ac-trust { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); padding-block: 24px; background: var(--ac-white); }
+.ac-home .ac-trust__item { display: flex; align-items: flex-start; gap: 16px; padding-inline: 24px; min-inline-size: 0; }
+.ac-home .ac-trust__item:first-child { padding-inline-start: 0; }
+.ac-home .ac-trust__item + .ac-trust__item { border-inline-start: 1px solid var(--ac-border); }
+.ac-home .ac-trust__icon { inline-size: 32px; block-size: 32px; flex: 0 0 32px; color: var(--ac-navy); }
+.ac-home .ac-trust__item strong { display: block; font-size: 16px; line-height: 1.4; color: var(--ac-deep); }
+.ac-home .ac-trust__item p { margin-block-start: 4px; font-size: 14px; line-height: 1.5; color: var(--ac-muted); }
+
+/* 06 — Why / Who we help. EXACT 45/55 after subtracting gap. */
+.ac-home .ac-split { display: grid; grid-template-columns: minmax(0,45fr) minmax(0,55fr); gap: var(--ac-gap); align-items: start; }
+.ac-home .ac-split > * { min-inline-size: 0; }
+.ac-home .ac-split__text > h2 + p { margin-block-start: 16px; }
+.ac-home .ac-split__media img { inline-size: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: var(--ac-image-position, 50% 50%); border-radius: var(--ac-radius); }
+.ac-home .ac-benefits { list-style: none; padding: 0; margin-block-start: 24px; }
+.ac-home .ac-benefits li { display: flex; align-items: flex-start; gap: 12px; }
+.ac-home .ac-benefits li + li { margin-block-start: 12px; }
+.ac-home .ac-benefits svg { inline-size: 20px; block-size: 20px; flex: 0 0 20px; margin-block-start: 4px; color: var(--ac-navy); }
+.ac-home .ac-rows { margin-block-start: 24px; }
+.ac-home .ac-row { padding-block: 16px; border-block-end: 1px solid var(--ac-border); }
+.ac-home .ac-row:first-child { padding-block-start: 0; }
+.ac-home .ac-row:last-child { border-block-end: 0; padding-block-end: 0; }
+.ac-home .ac-row h3 { font-size: 18px; }
+.ac-home .ac-row p { margin-block-start: 6px; font-size: 16px; line-height: 1.5; }
+.ac-home .ac-row--icon { display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 16px; }
+.ac-home .ac-row__icon { inline-size: 28px; block-size: 28px; color: var(--ac-navy); }
+
+/* 07 — Six service cards. Three desktop / two tablet / one mobile. */
+.ac-home .ac-service-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: var(--ac-grid-gap); align-items: stretch; }
+.ac-home .ac-service-card { display: flex; flex-direction: column; min-inline-size: 0; background: var(--ac-white); border: 1px solid var(--ac-border); border-radius: var(--ac-radius); }
+.ac-home .ac-service-card__image { aspect-ratio: 16 / 10; overflow: hidden; border-radius: 7px 7px 0 0; }
+.ac-home .ac-service-card__image img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: var(--ac-image-position, 50% 50%); }
+.ac-home .ac-service-card__body { display: flex; flex-direction: column; flex: 1; padding: 20px; }
+.ac-home .ac-service-card h3 { font-size: 20px; line-height: 1.3; }
+.ac-home .ac-service-card p { margin-block-start: 10px; font-size: 16px; line-height: 1.5; }
+.ac-home .ac-service-card__link { align-self: flex-start; margin-block-start: auto; padding-block: 16px 4px; font-size: 15px; font-weight: 650; text-decoration: none; }
+.ac-home .ac-service-card__link:hover { text-decoration: underline; }
+
+/* 08 — Mid-page navy CTA and shorter closing CTA */
+.ac-home .ac-cta { padding-block: 36px; }
+.ac-home .ac-cta__inner { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 32px; }
+.ac-home .ac-cta__inner > * { min-inline-size: 0; }
+.ac-home .ac-cta h2 { font-size: 28px; line-height: 1.25; }
+.ac-home .ac-cta p { margin-block-start: 8px; font-size: 16px; line-height: 1.5; }
+.ac-home .ac-cta .ac-actions { margin-block-start: 0; }
+.ac-home .ac-cta--dark { background: var(--ac-deep); color: var(--ac-on-dark); }
+.ac-home .ac-cta--dark h2 { color: var(--ac-white); }
+.ac-home .ac-cta--dark :focus-visible { outline-color: var(--ac-white); }
+.ac-home .ac-cta--quiet { background: var(--ac-warm); padding-block: 32px; border-block-start: 1px solid var(--ac-border); }
+.ac-home .ac-cta--quiet h2 { font-size: 24px; }
+
+/* 09 — Four open process steps */
+.ac-home .ac-process { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 24px; list-style: none; padding: 0; }
+.ac-home .ac-process__step { min-inline-size: 0; border-block-start: 1px solid var(--ac-border); padding-block-start: 16px; }
+.ac-home .ac-process__number { display: block; font-size: 28px; line-height: 1.2; margin-block-end: 12px; color: var(--ac-muted); }
+.ac-home .ac-process h3 { font-size: 20px; }
+.ac-home .ac-process p { margin-block-start: 10px; font-size: 16px; line-height: 1.5; }
+
+/* 10 — Service area: approved city lists; no fabricated map geometry */
+.ac-home .ac-area-grid { display: grid; grid-template-columns: minmax(0,40fr) minmax(0,60fr); gap: var(--ac-gap); align-items: start; }
+.ac-home .ac-area-grid > * { min-inline-size: 0; }
+.ac-home .ac-area-grid h2 + p { margin-block-start: 16px; }
+.ac-home .ac-area-cities { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 32px; padding-inline-start: 32px; border-inline-start: 1px solid var(--ac-border); }
+.ac-home .ac-area-cities h3 { font-size: 18px; margin-block-end: 12px; }
+.ac-home .ac-area-cities ul { list-style: none; padding: 0; font-size: 16px; }
+.ac-home .ac-area-cities li + li { margin-block-start: 8px; }
+
+/* 11 — One centered form. Existing endpoint/fields/consent stay unchanged. */
+.ac-home .ac-form-shell { max-inline-size: 680px; margin-inline: auto; }
+.ac-home .ac-form-heading { text-align: center; margin-block-end: 28px; }
+.ac-home .ac-form-heading > * + * { margin-block-start: 10px; }
+.ac-home .ac-form-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 20px; }
+.ac-home .ac-field { min-inline-size: 0; }
+.ac-home .ac-field--full { grid-column: 1 / -1; }
+.ac-home .ac-field > label { display: block; font-size: 15px; font-weight: 600; margin-block-end: 8px; }
+.ac-home .ac-input { display: block; inline-size: 100%; min-inline-size: 0; min-block-size: 48px; padding: 12px; border: 1px solid var(--ac-steel); border-radius: 6px; background: var(--ac-white); color: var(--ac-text); font-size: 16px; line-height: 1.5; }
+.ac-home .ac-input::placeholder { color: var(--ac-muted); opacity: 1; }
+.ac-home textarea.ac-input { min-block-size: 144px; resize: vertical; }
+.ac-home input[type="file"].ac-input { padding: 8px; }
+.ac-home .ac-input:disabled { background: var(--ac-warm); cursor: not-allowed; }
+.ac-home .ac-field-help { margin-block-start: 8px; font-size: 14px; line-height: 1.5; color: var(--ac-muted); overflow-wrap: anywhere; }
+.ac-home .ac-consent, .ac-home .ac-field > label.ac-consent { display: grid; grid-template-columns: 20px minmax(0,1fr); align-items: start; gap: 12px; font-size: 14px; font-weight: 400; line-height: 1.5; }
+.ac-home .ac-consent input { inline-size: 20px; block-size: 20px; margin: 2px 0 0; }
+.ac-home .ac-field-error, .ac-home .ac-form-error { color: #a32121; font-size: 14px; margin-block-start: 8px; }
+.ac-home .ac-input[aria-invalid="true"] { border-color: #a32121; }
+.ac-home .ac-form__submit { inline-size: 100%; }
+
+/* 12 — Four-column footer and legal row */
+.ac-home .ac-footer { padding-block: 48px 24px; background: var(--ac-deep); color: var(--ac-on-dark); font-size: 15px; }
+.ac-home .ac-footer :where(a,h2,h3) { color: var(--ac-white); }
+.ac-home .ac-footer :focus-visible { outline-color: var(--ac-white); }
+.ac-home .ac-footer__grid { display: grid; grid-template-columns: 1.4fr 1.2fr 1fr 1fr; gap: 32px; }
+.ac-home .ac-footer__grid > * { min-inline-size: 0; }
+.ac-home .ac-footer h3 { font-size: 17px; margin-block-end: 16px; }
+.ac-home .ac-footer ul { list-style: none; padding: 0; }
+.ac-home .ac-footer li + li { margin-block-start: 10px; }
+.ac-home .ac-footer a { overflow-wrap: anywhere; }
+.ac-home .ac-footer__legal { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 24px; margin-block-start: 32px; padding-block-start: 20px; border-block-start: 1px solid #456078; font-size: 14px; }
+.ac-home .ac-footer__legal-links { display: flex; flex-wrap: wrap; gap: 12px 20px; }
+.ac-home .ac-cookie-button { color: inherit; background: transparent; border: 0; padding: 0; text-decoration: underline; text-underline-offset: .2em; cursor: pointer; }
+
+/* 13 — Responsive behavior: source order is always readable text then image. */
+@media (max-width: 1199px) {
+  .ac-home .ac-nav { display: none; }
+  .ac-home .ac-header__call { margin-inline-start: auto; }
+  .ac-home .ac-mobile-toggle { display: inline-flex; align-items: center; justify-content: center; min-inline-size: 44px; min-block-size: 44px; border: 1px solid var(--ac-border); border-radius: 6px; background: var(--ac-white); color: var(--ac-navy); cursor: pointer; }
+  .ac-home .ac-mobile-menu:not([hidden]) { display: block; border-block-start: 1px solid var(--ac-border); padding-block: 16px; max-block-size: calc(100dvh - var(--ac-header-height)); overflow-y: auto; }
+  .ac-home .ac-mobile-menu a { display: block; min-block-size: 44px; padding-block: 12px; text-decoration: none; }
+}
+@media (max-width: 1023px) {
+  .ac-home { --ac-gutter: 32px; --ac-section-y: 56px; --ac-gap: 32px; --ac-header-height: 72px; --ac-hero-height: 520px; --ac-hero-inset: 56px; }
+  .ac-home h1 { font-size: 46px; line-height: 1.12; }
+  .ac-home h2 { font-size: 32px; }
+  .ac-home .ac-hero__copy { max-inline-size: 580px; }
+  .ac-home .ac-split, .ac-home .ac-area-grid { grid-template-columns: minmax(0,1fr); }
+  .ac-home .ac-service-grid, .ac-home .ac-process, .ac-home .ac-footer__grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .ac-home .ac-area-cities { padding-inline-start: 0; border-inline-start: 0; }
+  .ac-home .ac-cta__inner { grid-template-columns: minmax(0,1fr); gap: 24px; }
+}
+@media (max-width: 767px) {
+  .ac-home { --ac-gutter: 20px; --ac-section-y: 44px; --ac-gap: 28px; --ac-grid-gap: 20px; --ac-hero-height: 440px; --ac-hero-inset: 44px; font-size: 16px; }
+  .ac-home h1 { font-size: 36px; line-height: 1.15; }
+  .ac-home h2 { font-size: 28px; line-height: 1.2; }
+  .ac-home h3 { font-size: 20px; }
+  .ac-home .ac-header__inner { gap: 10px; }
+  .ac-home .ac-logo { font-size: 23px; }
+  .ac-home .ac-logo img { inline-size: 120px; }
+  .ac-home .ac-header__call { padding-inline: 12px; }
+  .ac-home .ac-call-long { display: none; }
+  .ac-home .ac-call-short { display: inline; }
+  .ac-home .ac-hero__copy { max-inline-size: none; }
+  .ac-home .ac-hero::before { background: rgb(18 40 64 / .72); }
+  .ac-home .ac-trust { grid-template-columns: minmax(0,1fr); padding-block: 8px; }
+  .ac-home .ac-trust__item, .ac-home .ac-trust__item:first-child { padding: 16px 0; }
+  .ac-home .ac-trust__item + .ac-trust__item { border-inline-start: 0; border-block-start: 1px solid var(--ac-border); }
+  .ac-home .ac-service-grid, .ac-home .ac-process, .ac-home .ac-footer__grid { grid-template-columns: minmax(0,1fr); }
+  .ac-home .ac-process__step { display: grid; grid-template-columns: 36px minmax(0,1fr); column-gap: 16px; }
+  .ac-home .ac-process__number { grid-column: 1; grid-row: 1 / span 2; }
+  .ac-home .ac-process__step h3, .ac-home .ac-process__step p { grid-column: 2; }
+  .ac-home .ac-cta { padding-block: 28px; }
+  .ac-home .ac-cta h2 { font-size: 26px; }
+  .ac-home .ac-cta--quiet h2 { font-size: 23px; }
+  .ac-home .ac-footer__legal { align-items: flex-start; flex-direction: column; }
+}
+@media (max-width: 639px) {
+  .ac-home .ac-form-grid { grid-template-columns: minmax(0,1fr); }
+  .ac-home .ac-actions { flex-direction: column; align-items: stretch; }
+  .ac-home .ac-actions .ac-button { inline-size: 100%; }
+}
+@media (max-width: 359px) {
+  .ac-home .ac-area-cities { grid-template-columns: minmax(0,1fr); gap: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ac-home *, .ac-home *::before, .ac-home *::after { transition-duration: 0s; animation: none; scroll-behavior: auto; }
+}
+@media (forced-colors: active) {
+  .ac-home .ac-button, .ac-home .ac-service-card, .ac-home .ac-input { border: 1px solid ButtonText; }
+}

@@ -5,6 +5,12 @@
 import AcEyebrow from "./AcEyebrow.astro";
 
 interface Props {
+  /** Stable anchor id on the rendered `<section>`, e.g. the homepage's `services` section
+   * (Aseptaclean_Website_Design_Blueprint.md §4/§2: the "Services" nav link and the retired hub's
+   * redirect both target `/#services`). Omit for sections with no anchor target. */
+  id?: string;
+  /** `data-section` value for docs/ASEPTACLEAN-DESIGN-SPEC.md §12.4's DOM measurement helper. */
+  dataSection?: string;
   eyebrow?: string;
   heading: string;
   headingId?: string;
@@ -12,20 +18,39 @@ interface Props {
   body?: readonly string[];
   align?: "start" | "center";
   tone?: "light" | "soft";
+  /**
+   * Puts the heading AND the slotted content inside the SAME centered ~820px container, both
+   * left-aligned — Aseptaclean_Website_Design_Blueprint.md's recurring FAQ finding: "Heading is
+   * centered across a broad area while the accordion occupies the left portion, leaving a
+   * disconnected right void. Put heading and accordion inside the same centered 760–840px
+   * container; align both left." Normal `align="center"`/`"start"` only constrain the heading
+   * block; the slot itself stays full-width (`max-width: none`) so card grids and process rows
+   * elsewhere are unaffected. `narrow` is opt-in per call site — every existing caller that omits
+   * it renders exactly as before.
+   */
+  narrow?: boolean;
 }
 
 const {
+  id,
+  dataSection,
   eyebrow,
   heading,
   headingId,
   lead,
   body = [],
   align = "center",
-  tone = "light"
+  tone = "light",
+  narrow = false
 } = Astro.props;
 ---
 
-<section class:list={["acx-intro", `is-${align}`, `is-${tone}`]} aria-labelledby={headingId}>
+<section
+  id={id}
+  data-section={dataSection}
+  class:list={["acx-intro", `is-${align}`, `is-${tone}`, { "is-narrow": narrow }]}
+  aria-labelledby={headingId}
+>
   <div class="ac-shell">
     <div class="acx-intro__inner">
       <div class="acx-intro__head">
@@ -93,6 +118,28 @@ const {
 
   .is-start .acx-intro__lead,
   .is-start .acx-intro__body {
+    margin-inline: 0;
+  }
+
+  /* One shared centered column for the heading and the slotted content — see the prop comment.
+     Overrides `.acx-intro__inner`'s usual `max-width: none` only when opted in. */
+  .is-narrow .acx-intro__inner {
+    max-width: 820px;
+    margin-inline: auto;
+  }
+
+  .is-narrow .acx-intro__head {
+    max-width: none;
+    margin-inline: 0;
+    text-align: left;
+  }
+
+  .is-narrow :global(.acx-eyebrow-rule) {
+    align-items: flex-start;
+  }
+
+  .is-narrow .acx-intro__lead,
+  .is-narrow .acx-intro__body {
     margin-inline: 0;
   }
 </style>

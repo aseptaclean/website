@@ -1,0 +1,53 @@
+---
+import { site } from "@data/site";
+import ServiceDisclosure from "@components/ServiceDisclosure.astro";
+import DetailedIcon from "./DetailedIcon.astro";
+
+const links = [
+  { label: "What We Clean", href: "#detailed-scope" },
+  { label: "Our Process", href: "#detailed-process" },
+  { label: "Service Area", href: "#detailed-area" },
+  { label: "FAQs", href: "#detailed-faq" },
+  { label: "Contact", href: "#detailed-contact" }
+];
+---
+
+<div class="utility"><div class="wrap"><span>Specialty property cleanup · South Bay &amp; Peninsula</span><span>Available 7 AM–7 PM</span></div></div>
+<header class="detailed-kit-header">
+  <div class="wrap navrow">
+    <a class="brand" href="/" aria-label="Aseptaclean — home"><img src={site.business.logoUrl} width="900" height="215" alt="Aseptaclean" /></a>
+    <nav aria-label="Main navigation">
+      <div class="service-nav"><ServiceDisclosure id="detailed-desktop" /></div>
+      {links.map((link) => <a href={link.href}>{link.label}</a>)}
+    </nav>
+    <a class="navcall" href={site.business.phoneUri}>Call {site.business.phone}</a>
+    <details class="menu mobilemenu" data-detailed-menu><summary aria-label="Open navigation"><DetailedIcon name="menu" /></summary><div class="dropdown">
+      <ServiceDisclosure id="detailed-mobile" mobile />
+      {links.map((link) => <a href={link.href}>{link.label}</a>)}
+      <a href="/about/">About</a><a href="#detailed-area">Service Area</a><a href="#detailed-contact">Request an Assessment</a><a href={site.business.phoneUri}>Call {site.business.phone}</a>
+    </div></details>
+  </div>
+</header>
+
+<script>
+  const menus = [...document.querySelectorAll<HTMLDetailsElement>("[data-detailed-menu]")];
+  for (const menu of menus) {
+    const trigger = menu.querySelector("summary");
+    const sync = () => trigger?.setAttribute("aria-expanded", String(menu.open));
+    sync();
+    menu.addEventListener("toggle", sync);
+    menu.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        menu.open = false;
+        trigger?.focus();
+      }
+    });
+    menu.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => { menu.open = false; }));
+    menu.addEventListener("focusout", (event) => {
+      if (!menu.contains(event.relatedTarget as Node)) menu.open = false;
+    });
+  }
+  document.addEventListener("click", (event) => {
+    for (const menu of menus) if (!menu.contains(event.target as Node)) menu.open = false;
+  });
+</script>

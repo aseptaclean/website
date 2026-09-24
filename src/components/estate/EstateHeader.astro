@@ -1,0 +1,38 @@
+---
+import { site } from '@data/site';
+import ServiceDisclosure from '@components/ServiceDisclosure.astro';
+import EstateIcon from './EstateIcon.astro';
+// Current owner instruction preserves existing destinations, including About and Contact.
+const links = [
+ {label:'Who We Help', href:'/#who-we-help'}, {label:'About', href:'/about/'},
+ {label:'Service Area', href:'#estate-area'}, {label:'Contact', href:'/contact/'}
+];
+---
+<div class="utility"><div class="wrap"><span>Specialty property cleanup · South Bay &amp; Peninsula</span><span>Estate Cleanout</span></div></div>
+<header class="estate-kit-header">
+ <div class="wrap navrow">
+  <a class="brand" href="/" aria-label="Aseptaclean — home"><img src={site.business.logoUrl} width="900" height="215" alt="Aseptaclean" /></a>
+  <nav aria-label="Main navigation">
+   <div class="service-nav"><ServiceDisclosure id="estate-desktop" /></div>
+   {links.map(link => <a href={link.href}>{link.label}</a>)}
+  </nav>
+  <a class="navcall" href={site.business.phoneUri}>Call {site.business.phone}</a>
+  <details class="menu mobilemenu" data-estate-menu><summary aria-label="Open navigation"><EstateIcon name="menu" /></summary><div class="dropdown">
+   <ServiceDisclosure id="estate-mobile" mobile />
+   {links.map(link => <a href={link.href}>{link.label}</a>)}
+   <a href="#estate-contact">Request an Assessment</a><a href={site.business.phoneUri}>Call {site.business.phone}</a>
+  </div></details>
+ </div>
+</header>
+<script>
+ const menus = [...document.querySelectorAll<HTMLDetailsElement>('[data-estate-menu]')];
+ for (const menu of menus) {
+  const trigger=menu.querySelector('summary');
+  const sync=()=>trigger?.setAttribute('aria-expanded',String(menu.open));
+  sync(); menu.addEventListener('toggle',sync);
+  menu.addEventListener('keydown',event=>{if(event.key==='Escape'){menu.open=false;trigger?.focus();}});
+  menu.querySelectorAll('a').forEach(link=>link.addEventListener('click',()=>{menu.open=false;}));
+  menu.addEventListener('focusout',event=>{if(!menu.contains(event.relatedTarget as Node))menu.open=false;});
+ }
+ document.addEventListener('click',event=>{for(const menu of menus)if(!menu.contains(event.target as Node))menu.open=false;});
+</script>

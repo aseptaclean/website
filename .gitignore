@@ -10,3 +10,13 @@ dist/
 *.log
 artifacts/
 .tmp-verify/
+
+# Local QA evidence and one-off inspection helpers are not production inputs.
+output/
+.qa-*.mjs
+.probe*.mjs
+
+# Owner-supplied transfer archives and loose exports stay outside the release commit.
+/*.zip
+/ChatGPT Image *.png
+/public/images/rodent-approved/

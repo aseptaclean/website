@@ -17,11 +17,27 @@
 //
 // The submit/validation/error/Turnstile script below is QuickHandoffForm's working contract,
 // extended with the two extra required inputs (property_zip, property_situation).
+import { homeKitServices } from "@data/homeKit";
 import { assessment } from "@data/assessment";
 import { legal, site } from "@data/site";
 
 interface Props {
   formId: string;
+  /** Contact package presentation and optional supported photo upload. */
+  contactKit?: boolean;
+  homepage?: boolean;
+  /** Homepage kit display only; submission and consent contracts are unchanged. */
+  kit?: boolean;
+  /** Estate public kit: display labels and accepted estate default only. */
+  estateKit?: boolean;
+  /** Hoarding public kit only: approved needs mapped to the existing CRM value. */
+  hoardingKit?: boolean;
+  /** Trauma public kit: cleanup type maps to the frozen trauma CRM enum. */
+  traumaKit?: boolean;
+  /** Extreme public kit: approved needs map to the existing severe-condition enum. */
+  extremeKit?: boolean;
+  /** Detailed Deep Cleaning kit: approved display options mapped to the frozen service enum. */
+  detailedKit?: boolean;
   /**
    * The route this form sits on, recorded on the lead so a submission can be traced to its
    * page. Defaults to the homepage hero for backwards compatibility.
@@ -35,13 +51,32 @@ interface Props {
   preselectRoute?: string;
   /** `dark` sits over hero photography; `light` is the body-content variant (Contact). */
   tone?: "dark" | "light";
+  /**
+   * When set, this form does NOT render its own `<h2>`+lede — the caller has already rendered a
+   * single visible heading with this id outside the form, and `aria-labelledby` points at it
+   * instead. Mirrors the identical convention on PpcHeroForm.astro. Added 2026-09-17 for the
+   * relocated service-page contact sections (docs/Aseptaclean_Service_Hero_And_Spaces_Update.md
+   * Part C: "If the form already has an appropriate heading and intro, render them once. Do not
+   * repeat both in an outer wrapper."). Every other caller leaves this unset and renders exactly
+   * as before.
+   */
+  headingId?: string;
 }
 
 const {
   formId,
+  contactKit = false,
   entryRoute = "/#hero-form",
   preselectRoute,
-  tone = "dark"
+  tone = "dark",
+  headingId,
+  kit = false,
+  estateKit = false,
+  hoardingKit = false,
+  traumaKit = false,
+  extremeKit = false,
+  detailedKit = false,
+  homepage = false
 } = Astro.props;
 
 const preselectValue = preselectRoute
@@ -59,9 +94,16 @@ const endpointAvailable = Boolean(
   id={formId}
   class:list={["hero-form", `is-${tone}`]}
   method="post"
+  enctype={contactKit || homepage || hoardingKit || traumaKit || extremeKit || detailedKit ? "multipart/form-data" : undefined}
   action={endpointAvailable ? site.urls.formEndpoint : undefined}
-  aria-labelledby={`${formId}-title`}
+  aria-labelledby={headingId ?? `${formId}-title`}
   data-quick-form
+  data-contact-kit={contactKit || undefined}
+  data-estate-kit={estateKit || undefined}
+  data-trauma-kit={traumaKit || undefined}
+  data-extreme-kit={extremeKit || undefined}
+  data-hoarding-kit={hoardingKit || undefined}
+  data-detailed-kit={detailedKit || undefined}
   data-contact-phone={site.business.phone}
 >
   <input type="hidden" name="form_version" value={assessment.version} />
@@ -81,9 +123,14 @@ const endpointAvailable = Boolean(
 
   {/* Heading and supporting line are the source wording named in
       docs/03-INTEGRATION-CONTRACT.md "Forms", held in src/data/site.ts so every form surface
-      shares one string. */}
-  <h2 id={`${formId}-title`} class="ac-type-h4-mega hero-form__title">{site.offer.formHeading}</h2>
-  <p class="hero-form__lede">{site.offer.formLede}</p>
+      shares one string. Skipped when `headingId` is set — the caller already rendered a single
+      visible heading outside the form. */}
+  {!headingId && (
+    <Fragment>
+      <h2 id={`${formId}-title`} class="ac-type-h4-mega hero-form__title">{site.offer.formHeading}</h2>
+      <p class="hero-form__lede">{site.offer.formLede}</p>
+    </Fragment>
+  )}
 
   <div class="hero-form__errors" tabindex="-1" role="alert" hidden data-quick-form-errors>
     <ul></ul>
@@ -92,16 +139,17 @@ const endpointAvailable = Boolean(
   <div class="hero-form__grid">
     <div class="hero-form__field">
       <label for={`${formId}-name`}>Full Name</label>
-      <input id={`${formId}-name`} name="full_name" type="text" autocomplete="name" required />
+      <input id={`${formId}-name`} name="full_name" type="text" autocomplete="name" placeholder={contactKit || kit ? "Your name" : undefined} required />
     </div>
 
     <div class="hero-form__field">
-      <label for={`${formId}-phone`}>Phone Number</label>
+      <label for={`${formId}-phone`}>{contactKit || kit ? "Phone" : "Phone Number"}</label>
       <input
         id={`${formId}-phone`}
         name="phone"
         type="tel"
         inputmode="tel"
+        placeholder={contactKit || hoardingKit ? "(408) 555-0123" : kit ? "Your phone number" : undefined}
         autocomplete="tel"
         required
       />
@@ -114,18 +162,20 @@ const endpointAvailable = Boolean(
         name="email"
         type="email"
         inputmode="email"
+        placeholder={contactKit || hoardingKit ? "you@example.com" : kit ? "Your email address" : undefined}
         autocomplete="email"
         required
       />
     </div>
 
     <div class="hero-form__field">
-      <label for={`${formId}-zip`}>Property ZIP Code</label>
+      <label for={`${formId}-zip`}>{contactKit || kit ? "Property ZIP" : "Property ZIP Code"}</label>
       <input
         id={`${formId}-zip`}
         name="property_zip"
         type="text"
         inputmode="numeric"
+        placeholder={contactKit || hoardingKit ? "95112" : kit ? "ZIP code" : undefined}
         autocomplete="postal-code"
         pattern="[0-9]{5}(?:-[0-9]{4})?"
         required
@@ -133,28 +183,54 @@ const endpointAvailable = Boolean(
     </div>
 
     <div class="hero-form__field">
-      <label for={`${formId}-situation`}>What are you dealing with?</label>
-      <select id={`${formId}-situation`} name="property_situation" required>
-        <option value="" selected={!preselectValue} disabled={!preselectValue}>
-          Select an option
-        </option>
-        {assessment.situations.map((situation) => (
-          <option value={situation.value} selected={situation.value === preselectValue}>
-            {situation.label}
-          </option>
-        ))}
+      <label for={`${formId}-situation`}>{contactKit ? "What do you need help with?" : traumaKit || extremeKit || detailedKit ? "Type of Cleanup" : estateKit || hoardingKit ? "How Can We Help?" : homepage ? "Service Needed" : "What are you dealing with?"}</label>
+      {extremeKit && <input type="hidden" name="property_situation" value={preselectValue} />}
+      {traumaKit && <input type="hidden" name="property_situation" value="Crime scene or trauma cleanup" />}
+      {hoardingKit && <input type="hidden" name="property_situation" value="Hoarding or heavy clutter" />}
+      {estateKit && <input type="hidden" name="property_situation" value="Inherited or estate property" />}
+      {detailedKit && <input type="hidden" name="property_situation" value="Detailed deep cleaning" />}
+      <select id={`${formId}-situation`} name={detailedKit ? "detailed_need" : extremeKit ? "extreme_need" : traumaKit ? "trauma_need" : hoardingKit ? "hoarding_need" : estateKit ? "estate_need" : "property_situation"} required>
+        {contactKit ? <Fragment><option value="">Select a service</option>{[
+          ["Inherited or estate property", "Estate cleanout"],
+          ["Hoarding or heavy clutter", "Hoarding cleanup"],
+          ["Rodent droppings or animal waste", "Rodent or animal waste cleanup"],
+          ["Crime scene or trauma cleanup", "Trauma or crime scene cleanup"],
+          ["Severe property condition", "Extreme cleaning"],
+          ["Detailed deep cleaning", "Detailed deep cleaning"],
+          ["Not sure", "Other / not sure"]
+        ].map(([value, label]) => <option value={value}>{label}</option>)}</Fragment> : detailedKit ? <Fragment><option value="">Select the cleaning needed</option>{["Kitchen and bathroom cleaning", "Whole-home detailed deep cleaning", "Move-in cleaning", "Move-out cleaning", "Specific rooms or surfaces", "Not sure / prefer to discuss"].map(label => <option>{label}</option>)}</Fragment> : extremeKit ? <Fragment><option value="">Select the cleanup needed</option>{["Heavy kitchen or bathroom buildup", "Food waste or accumulated trash", "Neglected home or room", "Rental or move-out cleanup", "Contents removal and cleaning", "Not sure / prefer to discuss"].map(label => <option>{label}</option>)}</Fragment> : traumaKit ? <Fragment><option value="">Select the cleanup needed</option>{["Crime scene cleanup", "Unattended death cleanup", "Suicide cleanup", "Blood or bodily fluid cleanup", "Accident cleanup", "Not sure / prefer to discuss"].map(label => <option>{label}</option>)}</Fragment> : hoardingKit ? <Fragment><option value="">Select what you need</option>{["Full property cleanout", "Selected rooms or areas", "Clearing a loved one’s home", "Cleanout with contamination", "Not sure yet"].map(label => <option>{label}</option>)}</Fragment> : estateKit ? <Fragment><option value="">Select what you need</option>{["Full property cleanout", "Partial cleanout", "Sorting and inventory", "Cleanout with deep cleaning", "Heavy accumulation or contamination", "Not sure yet"].map(label => <option>{label}</option>)}</Fragment> : <Fragment>
+        {kit ? (
+          <Fragment>
+            <option value="Not sure">Help me choose a service</option>
+            {homeKitServices.map(service => <option value={service.value} selected={estateKit && service.value === "Inherited or estate property"}>{service.label}</option>)}
+          </Fragment>
+        ) : (
+          <Fragment>
+            <option value="" selected={!preselectValue} disabled={!preselectValue}>Select an option</option>
+            {assessment.situations.map(situation => <option value={situation.value} selected={situation.value === preselectValue}>{situation.label}</option>)}
+          </Fragment>
+        )}
+      </Fragment>}
       </select>
     </div>
 
     <div class="hero-form__field hero-form__field--full">
-      <label for={`${formId}-detail`}>Tell us what&rsquo;s going on</label>
+      <label for={`${formId}-detail`}>{contactKit ? "Tell us about the property" : detailedKit ? "How Can We Help?" : traumaKit || extremeKit ? "How Can We Help? — Optional" : hoardingKit ? "Tell Us About the Property" : estateKit ? "What Do You Need Help With?" : kit ? "What needs cleanup?" : homepage ? "Message" : "Tell us what’s going on"}</label>
       <textarea
         id={`${formId}-detail`}
         name="property_detail"
+        placeholder={contactKit ? "What needs attention? Include any timing or access details you want us to know." : detailedKit ? "Describe the rooms, surfaces, and buildup you want cleaned. Include any access limits or move date." : extremeKit ? "Briefly describe the affected rooms, buildup, and any access limits or deadline." : traumaKit ? "Briefly describe the help needed and any access information. You can discuss the details by phone." : hoardingKit ? "What areas need clearing? Is access limited? Are there belongings you need to keep or a deadline to meet?" : estateKit ? "Tell us about the contents, anything you need to keep, and your timeline…" : kit ? "What areas are affected, and what would you like help with?" : undefined}
         rows="3"
-        required
+        required={!traumaKit && !extremeKit}
       ></textarea>
     </div>
+    {(contactKit || homepage || hoardingKit || traumaKit || extremeKit || detailedKit) && (
+      <div class="hero-form__field hero-form__field--full">
+        <label for={`${formId}-photos`}>Add Photos (Optional)</label>
+        <input id={`${formId}-photos`} name="property_media[]" type="file" accept=".jpg,.jpeg,.png,.heic,.webp" multiple aria-describedby={`${formId}-photos-help`} />
+        <p id={`${formId}-photos-help`} class="hero-form__note">Up to 10 photos, 10 MB each; 75 MB combined.</p>
+      </div>
+    )}
   </div>
 
   <label class="hero-form__consent">
@@ -164,6 +240,7 @@ const endpointAvailable = Boolean(
       <a class="hero-form__link" href={site.urls.privacyPolicy}>
         {legal.consentBase.privacyLabel}
       </a>{legal.consentBase.tail}
+      {homepage && <Fragment>{" "}{legal.consentAssessmentAppendix.lead}{" "}<a class="hero-form__link" href={site.urls.terms}>{legal.consentAssessmentAppendix.termsLabel}</a>{legal.consentAssessmentAppendix.tail}</Fragment>}
     </span>
   </label>
 
@@ -174,7 +251,9 @@ const endpointAvailable = Boolean(
           class="cf-turnstile"
           data-sitekey={site.integrations.turnstileSiteKey}
           data-theme={tone === "light" ? "light" : "dark"}
-          data-size="flexible"
+          data-size={contactKit || homepage || traumaKit || extremeKit || detailedKit ? "compact" : "flexible"}
+          data-error-callback={homepage ? "acHomepageSecurityError" : undefined}
+          data-callback={homepage ? "acHomepageSecurityReady" : undefined}
         />
       </div>
     )
@@ -194,7 +273,7 @@ const endpointAvailable = Boolean(
   }
 
   <button class="button hero-form__submit" type="submit" disabled={!endpointAvailable} data-quick-form-submit>
-    <span data-quick-form-submit-label>{site.offer.formSubmitCta}</span>
+    <span data-quick-form-submit-label>{homepage ? "Request an Assessment" : site.offer.formSubmitCta}</span>
   </button>
   <p class="hero-form__clarification">
     Submitting this form authorizes Aseptaclean to contact you. It does not authorize work or
@@ -202,6 +281,30 @@ const endpointAvailable = Boolean(
   </p>
   <p class="hero-form__status" data-quick-form-status role="status" aria-live="polite" hidden></p>
 </form>
+
+{homepage && (
+  <script is:inline define:vars={{ formId }}>
+    // Keep provider failures visible in the local preview and recover after a valid challenge.
+    window.acHomepageSecurityError = function () {
+      const form = document.getElementById(formId);
+      const status = form?.querySelector("[data-quick-form-status]");
+      const button = form?.querySelector("[data-quick-form-submit]");
+      if (status) {
+        status.hidden = false;
+        status.textContent = "Security verification could not load. Your answers have not been sent. Reload this page or call " + form.dataset.contactPhone + ".";
+      }
+      if (button) button.disabled = true;
+    };
+    window.acHomepageSecurityReady = function () {
+      const form = document.getElementById(formId);
+      if (!form?.getAttribute("action") || form.getAttribute("aria-busy") === "true") return;
+      const status = form.querySelector("[data-quick-form-status]");
+      const button = form.querySelector("[data-quick-form-submit]");
+      if (status) { status.hidden = true; status.textContent = ""; }
+      if (button) button.disabled = false;
+    };
+  </script>
+)}
 
 {
   site.integrations.turnstileSiteKey && (
@@ -216,6 +319,8 @@ const endpointAvailable = Boolean(
 }
 
 <script>
+  import { storeAcceptedInquiryReceipt } from "../../scripts/acceptedInquiryReceipt";
+
   // Identical submit/validation/error-rendering contract to QuickHandoffForm.astro — see that
   // file for the field-by-field rationale. Duplicated here (not imported) because Astro scripts
   // are page-scoped and this hero form has one extra field group (property_zip,
@@ -278,6 +383,96 @@ const endpointAvailable = Boolean(
       const submissionErrorMessage = contactPhone
         ? `Something went wrong on our end and the form didn't send. Call or text ${contactPhone} and we'll take it from there.`
         : "Something went wrong on our end and the form didn't send. Call or text us and we'll take it from there.";
+
+      // Keep the same accepted-lead event contract as PpcHeroForm. No submitted value is ever
+      // included: identifiers are structural, the route is pathname-only, and error categories
+      // are derived from HTTP status. The confirmation code is used only as a session-scoped
+      // deduplication key and is not sent as an event parameter.
+      const pagePath = window.location.pathname;
+      const offerType =
+        (form.elements.namedItem("offer_type") as HTMLInputElement | null)?.value ?? "";
+      const photoInput = form.elements.namedItem("property_media[]") as HTMLInputElement | null;
+      const trackingPayload = (
+        event: string,
+        detail: Record<string, string | number | boolean> = {}
+      ) => ({
+        event,
+        form_id: form.id,
+        page_path: pagePath,
+        ...(offerType ? { offer_type: offerType } : {}),
+        ...detail
+      });
+      const track = (
+        event: string,
+        detail: Record<string, string | number | boolean> = {}
+      ) => {
+        (window as Window & { dataLayer?: unknown[] }).dataLayer ??= [];
+        (window as Window & { dataLayer?: unknown[] }).dataLayer!.push(
+          trackingPayload(event, detail)
+        );
+      };
+      const containerLoaded = () => {
+        const containers = (window as Window & { google_tag_manager?: Record<string, unknown> })
+          .google_tag_manager;
+        return Boolean(containers && Object.keys(containers).some((key) => key.startsWith("GTM-")));
+      };
+      const trackAndSettle = (
+        event: string,
+        detail: Record<string, string | number | boolean>
+      ) =>
+        new Promise<void>((resolve) => {
+          (window as Window & { dataLayer?: unknown[] }).dataLayer ??= [];
+          if (!containerLoaded()) {
+            (window as Window & { dataLayer?: unknown[] }).dataLayer!.push(
+              trackingPayload(event, detail)
+            );
+            resolve();
+            return;
+          }
+          let settled = false;
+          const settle = () => {
+            if (settled) return;
+            settled = true;
+            window.clearTimeout(timer);
+            resolve();
+          };
+          const timer = window.setTimeout(settle, 1000);
+          (window as Window & { dataLayer?: unknown[] }).dataLayer!.push({
+            ...trackingPayload(event, detail),
+            eventTimeout: 1000,
+            eventCallback: settle
+          });
+        });
+      const claimLead = (code: string) => {
+        if (!code) return false;
+        try {
+          const key = `ac_ppc_lead:${code}`;
+          if (window.sessionStorage.getItem(key)) return false;
+          window.sessionStorage.setItem(key, "1");
+          return true;
+        } catch {
+          return false;
+        }
+      };
+      const errorCategory = (status: number) => {
+        if (status === 400) return "verification_failed";
+        if (status === 403) return "origin_rejected";
+        if (status === 413) return "payload_too_large";
+        if (status === 422) return "server_validation";
+        if (status === 429) return "rate_limited";
+        if (status === 503) return "service_unavailable";
+        if (status >= 500) return "server_error";
+        if (status >= 400) return "request_rejected";
+        return "unexpected_response";
+      };
+      let startRecorded = false;
+      const recordStart = () => {
+        if (startRecorded) return;
+        startRecorded = true;
+        track("form_start");
+      };
+      form.addEventListener("input", recordStart);
+      form.addEventListener("change", recordStart);
 
       const renderErrors = (errors: Record<string, string>) => {
         clearFieldErrors();
@@ -350,12 +545,45 @@ const endpointAvailable = Boolean(
         }
       };
 
+      let inFlight = false;
+
       form.addEventListener("submit", async (event) => {
         event.preventDefault();
         if (!form.action) return;
+        if (inFlight) return;
+        if (form.hasAttribute("data-contact-kit")) {
+          const invalid = [...form.elements].filter((control): control is FormControl =>
+            (control instanceof HTMLInputElement || control instanceof HTMLTextAreaElement || control instanceof HTMLSelectElement) && !control.checkValidity());
+          if (invalid.length) {
+            renderErrors(Object.fromEntries(invalid.map(control => [control.name, control.validationMessage])));
+            return;
+          }
+        }
 
         clearFieldErrors();
         if (errorBox) errorBox.hidden = true;
+        if (form.hasAttribute("data-estate-kit") && !(form.elements.namedItem("estate_need") as HTMLSelectElement)?.value) {
+          renderErrors({ estate_need: "Select what you need." });
+          return;
+        }
+
+        if (form.hasAttribute("data-hoarding-kit") && !(form.elements.namedItem("hoarding_need") as HTMLSelectElement)?.value) {
+          renderErrors({ hoarding_need: "Select what you need." });
+          return;
+        }
+
+        if (form.hasAttribute("data-extreme-kit") && !(form.elements.namedItem("extreme_need") as HTMLSelectElement)?.value) {
+          renderErrors({ extreme_need: "Select the cleanup needed." });
+          return;
+        }
+        if (form.hasAttribute("data-trauma-kit") && !(form.elements.namedItem("trauma_need") as HTMLSelectElement)?.value) {
+          renderErrors({ trauma_need: "Select the cleanup needed." });
+          return;
+        }
+        if (form.hasAttribute("data-detailed-kit") && !(form.elements.namedItem("detailed_need") as HTMLSelectElement)?.value) {
+          renderErrors({ detailed_need: "Select the cleaning needed." });
+          return;
+        }
 
         const turnstileWidget = form.querySelector(".cf-turnstile");
         const turnstileToken = form.elements.namedItem("cf-turnstile-response");
@@ -371,13 +599,44 @@ const endpointAvailable = Boolean(
           timestampInput.value = new Date().toISOString();
         }
 
+        const photosAttached = Boolean(photoInput?.files?.length);
+        inFlight = true;
+        track("ppc_form_submit_attempt", { photos_attached: photosAttached });
         setSubmitting(true, "Sending your request…");
 
         try {
+          const formData = new FormData(form);
+          // Estate's approved need labels stay visible; the frozen CRM enum stays intact.
+          // Carry the selected need in the supported message field, without altering the input.
+          if (form.hasAttribute("data-estate-kit")) {
+            const need = String(formData.get("estate_need") || "");
+            formData.set("property_detail", `${need}\n\n${formData.get("property_detail") || ""}`);
+            formData.delete("estate_need");
+          }
+          if (form.hasAttribute("data-hoarding-kit")) {
+            const need = String(formData.get("hoarding_need") || "");
+            formData.set("property_detail", `${need}\n\n${formData.get("property_detail") || ""}`);
+            formData.delete("hoarding_need");
+          }
+          if (form.hasAttribute("data-extreme-kit")) {
+            const need = String(formData.get("extreme_need") || "");
+            formData.set("property_detail", `${need}\n\n${formData.get("property_detail") || ""}`);
+            formData.delete("extreme_need");
+          }
+          if (form.hasAttribute("data-trauma-kit")) {
+            const need = String(formData.get("trauma_need") || "");
+            formData.set("property_detail", `${need}\n\n${formData.get("property_detail") || ""}`);
+            formData.delete("trauma_need");
+          }
+          if (form.hasAttribute("data-detailed-kit")) {
+            const need = String(formData.get("detailed_need") || "");
+            formData.set("property_detail", `${need}\n\n${formData.get("property_detail") || ""}`);
+            formData.delete("detailed_need");
+          }
           const response = await fetch(form.action, {
             method: "POST",
             headers: { Accept: "application/json" },
-            body: new FormData(form)
+            body: formData
           });
           let payload: Record<string, unknown> = {};
           try {
@@ -387,41 +646,41 @@ const endpointAvailable = Boolean(
           }
 
           if (response.ok && payload.ok === true) {
-            // THREE email states, not two — "email" is required on this form, so the visitor
-            // supplied one on every real submission. Collapsing a provider failure into "none"
-            // would tell them we never had an address to send to, when we did and the send
-            // failed. Only this form knows whether an address was actually typed.
-            const emailSupplied = Boolean(
-              (form.elements.namedItem("email") as HTMLInputElement | null)?.value.trim()
-            );
-            const parameters = new URLSearchParams({
-              received: "1",
-              callback:
-                typeof payload.callbackWindow === "string"
-                  ? payload.callbackWindow
-                  : "next-business-window",
-              email: !emailSupplied
-                ? "none"
-                : payload.confirmationEmailSent === true
-                  ? "sent"
-                  : "attention"
-            });
             const code =
               typeof payload.confirmationCode === "string" ? payload.confirmationCode : "";
-            if (code) parameters.set("code", code);
-            window.location.assign(`/thank-you/?${parameters.toString()}`);
+            const codeIsValid = /^AC-[0-9A-HJKMNP-TV-Z]{6}$/.test(code);
+            if (!codeIsValid || claimLead(code)) {
+              await trackAndSettle("ppc_form_success", {
+                photos_attached: photosAttached
+              });
+            }
+            // The receipt page trusts same-tab state written only on genuine backend
+            // acceptance. No submitted field, delivery flag or forgeable success marker is
+            // placed in the URL.
+            storeAcceptedInquiryReceipt(payload);
+            window.location.assign("/thank-you/");
             return;
           }
 
           if (payload.errors && typeof payload.errors === "object") {
             renderErrors(payload.errors as Record<string, string>);
           }
+          track("ppc_form_error", {
+            error_type: errorCategory(response.status),
+            photos_attached: photosAttached
+          });
+          inFlight = false;
           setSubmitting(
             false,
             typeof payload.message === "string" ? payload.message : submissionErrorMessage
           );
           resetTurnstile();
         } catch {
+          track("ppc_form_error", {
+            error_type: "network",
+            photos_attached: photosAttached
+          });
+          inFlight = false;
           setSubmitting(false, submissionErrorMessage);
           resetTurnstile();
         }

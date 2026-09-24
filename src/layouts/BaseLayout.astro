@@ -15,6 +15,13 @@ import "@styles/global.css";
 import interFontUrl from "../../node_modules/@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url";
 
 interface Props {
+  contactKit?: boolean;
+  homeKit?: boolean;
+  estateKit?: boolean;
+  hoardingKit?: boolean;
+  traumaKit?: boolean;
+  extremeKit?: boolean;
+  detailedKit?: boolean;
   title: string;
   description: string;
   canonicalPath: string;
@@ -24,6 +31,13 @@ interface Props {
 }
 
 const {
+  contactKit = false,
+  homeKit = false,
+  estateKit = false,
+  hoardingKit = false,
+  traumaKit = false,
+  extremeKit = false,
+  detailedKit = false,
   title,
   description,
   canonicalPath,
@@ -35,6 +49,12 @@ const {
 const termlyConsent = site.integrations.termly;
 const hiddenFromLaunch = !isLaunchPublicPath(Astro.url.pathname);
 const effectiveNoindex = noindex || hiddenFromLaunch;
+// Homepage-only visual scope for src/styles/aseptaclean-home.css (owner CSS, installed
+// 2026-09-18). `ac-home` on <body> wraps Header, <main> and Footer together — the CSS's own
+// header comment scope — without touching any other route. The stylesheet itself is imported
+// only from src/pages/index.astro, so this marker is inert everywhere else even though the
+// class is technically present only when true.
+const isHome = Astro.url.pathname === "/";
 ---
 
 <!doctype html>
@@ -79,7 +99,13 @@ const effectiveNoindex = noindex || hiddenFromLaunch;
       structuredDataEnabled={!hiddenFromLaunch}
     />
   </head>
-  <body class:list={{ "has-mobile-cta": showMobileCta }}>
+  <body id={contactKit ? "ac-contact-page" : detailedKit ? "ac-detailed" : extremeKit ? "ac-extreme" : traumaKit ? "ac-trauma" : hoardingKit ? "ac-hoarding" : estateKit ? "ac-estate" : homeKit ? "ac-home-locked-mockup" : undefined} class:list={{ "has-mobile-cta": showMobileCta, "ac-site": true, "ac-home": isHome }}>
+    {/* ac-site (on this <body>) — docs/ASEPTACLEAN-DESIGN-SPEC.md §7/§12.4: the read-only DOM
+        measurement helper requires a `.ac-site` root to exist. Added as a marker class alongside
+        the site's existing layout classes rather than loading the spec's parallel CSS block
+        globally (the same "reference, not a second global stylesheet" treatment AGENTS.md §1.1
+        already gives docs/styles/website-reference.css) — see
+        docs/ASEPTACLEAN-IMPLEMENTATION-MAP.md for the full class-to-class mapping. */}
     <AnalyticsNoscript />
     <a class="skip-link" href="#main-content">Skip to main content</a>
     {/* UTILITY RIBBON REMOVED 2026-09-04. doc 30 §2 targets a combined header stack of ~72px
@@ -92,11 +118,11 @@ const effectiveNoindex = noindex || hiddenFromLaunch;
         LocalBusiness JSON-LD, and the service descriptor is the homepage hero eyebrow.
         StatusRibbon.astro is retained, unreferenced, rather than deleted — no route outside this
         redesign imports it, but it is the only carrier of that descriptor pattern. */}
-    <Header />
+    <slot name="header"><Header homepage={isHome} /></slot>
     <main id="main-content" tabindex="-1">
       <slot />
     </main>
-    <Footer />
+    <slot name="footer"><Footer homepage={isHome} /></slot>
     {showMobileCta && <MobileCTA />}
     <Analytics />
   </body>

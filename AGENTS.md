@@ -58,6 +58,55 @@ No fabricated review, rating, testimonial, project count, case study, client log
 badge, before/after image, or credential. No AI-generated people, properties, documents, or
 crews. If a proof slot has no real asset, **the slot ships empty**. Empty beats fake, always.
 
+### 0.4 Every copy update includes layout verification
+
+Installed 2026-09-18 per the owner's `docs/ASEPTACLEAN-DESIGN-SPEC.md` §11 ("Permanent future-copy
+rule to install" — "Append the following to the applicable repository instruction files."). This
+is the fourth absolute rule in this section. The spec's own wording, verbatim:
+
+## Aseptaclean copy and layout requirements
+
+Read docs/ASEPTACLEAN-DESIGN-SPEC.md before any layout or copy change affecting the website. Its
+explicit page structures, CSS tokens, responsive rules, and public/campaign separation are
+mandatory unless the owner explicitly changes them.
+
+A copy update is not complete until the affected rendered layouts have been checked at desktop,
+tablet, and mobile sizes. Preserve approved wording, required section order, hero sizing,
+typography, spacing, image proportions, and CTA hierarchy.
+
+Do not clip, line-clamp, ellipsize, shrink page-specific fonts, compress line-height, add filler,
+or silently rewrite approved copy to force a fit. Do not add/reorder sections or swap grid patterns
+without an explicit design change. Map substantive text to its intended existing section. Fix
+routine responsive fit problems within the approved CSS contract.
+
+For hero copy changes, verify the shared desktop/tablet height across all affected public pages
+and reviewed campaigns; use the documented shared token adjustment rule, never a one-page height
+override. Mobile and accessibility layouts may grow to keep all text and actions visible.
+
+Inspect every affected shared-component consumer. Check changed sections and neighboring sections
+at 1440, 820, 390px and check 320px overflow and 200% zoom. Record actual results and screenshot
+paths. A passing build is not a visual review. If the browser/runtime is unavailable, report the
+layout as unverified and do not claim completion of visual QA.
+
+Keep campaign landing pages out of Services dropdowns, homepage public-service cards, and the
+footer service directory. Preserve route-specific offers, form identities, attribution, consent,
+and genuine success behavior.
+
+Do not push or deploy unless the owner authorizes it in the current work context. Report changed
+files/routes, actual checks, and unresolved issues clearly.
+
+---
+
+`docs/ASEPTACLEAN-DESIGN-SPEC.md` is a byte-identical canonical copy of `docs/Aseptaclean_Website_Design_Blueprint.md`
+(the file the owner originally attached and subsequently expanded in place, 2026-09-18) — the spec
+itself asks for this exact filename (§1), so both paths now carry the same content; do not let one
+drift from the other. `docs/ASEPTACLEAN-IMPLEMENTATION-MAP.md`, `docs/ASEPTACLEAN-COPY-MAP.md`,
+and `docs/ASEPTACLEAN-DESIGN-QA.md` are the three tracking records that spec §1 requires; read the
+QA record for what has and has not been verified against the spec's exact CSS/DOM contract and
+per-page section matrices. The same rule is restated in `docs/04-RELEASE-CHECKLIST.md` and
+`CLAUDE.md` so both automated and manual copy updates follow it regardless of which instruction
+file a tool reads first.
+
 ---
 
 ## 1. Precedence chain
@@ -111,6 +160,24 @@ HISTORY       docs/05-CURRENT-DECISIONS.md
 There is **one** governing website design document, and it is doc 30. Do not create a second
 one. A page that needs work gets its brief in `docs/page-briefs/`, a data or copy change, or a
 working prompt — not another competing website-standard MD.
+
+**`docs/ASEPTACLEAN-DESIGN-SPEC.md` (= `docs/Aseptaclean_Website_Design_Blueprint.md`) — owner
+design specification, installed and substantially expanded 2026-09-18.** This is not a second
+governing design document; it is the current owner decision (rank 2) that directed the homepage's
+exact 11-section rebuild, the Services hub retirement and `/services/` → `/#services` redirect,
+the new Estate Cleanout public service page and its nav/card/footer entries, the exact CSS/DOM
+contract in its §8, the per-service-page section matrices in its §4, the shared hero-sizing table
+(§2.1 table target: 600/560/440px; **raised to 736px desktop / 592px tablet** per §2.2's own
+8px-increment repair rule once measurement showed the longest approved hero copy — Extreme
+Cleaning's — needs 736px to avoid cross-page inequality; see `docs/ASEPTACLEAN-DESIGN-QA.md`),
+and the mandatory copy-update rule at
+§0.4 above. Doc 30 §1 ("Home hero"), §3 ("Hero and form fit") and §4 have been amended in place to
+match on the points implemented so far; where this document and doc 30 still disagree on a point
+neither amendment covers, treat the design spec as the newer, more specific instruction and record
+the resolution in `docs/05-CURRENT-DECISIONS.md`. The spec's own §8 permits reusing existing
+component/file names rather than its literal `.ac-*` class contract, provided the exact mapping is
+documented — `docs/ASEPTACLEAN-IMPLEMENTATION-MAP.md` is that mapping, and it also records which
+pages carry the literal contract versus the equivalent existing system.
 
 `docs/styles/website-reference.css` holds the numerical implementation targets for doc 30. It is
 a reference to map into the existing token/component system, **not a second global stylesheet**.
@@ -174,28 +241,66 @@ Every form submit control is a real `<button type="submit">` labelled `Send Mess
 submits its form. It is never a `tel:` link. Existing validation, consent, anti-spam, uploads,
 CRM mappings, required/optional states and submission behaviour are unchanged.
 
-**Hero-form scope — the homepage and all five service pages** share one responsive
-`HeroWithForm` (doc 30 §3). The Services hub and About use a compact photographic introduction
-with a secondary `Send a Message` link instead of a duplicate intake panel. Contact uses a
-compact title plus a details/form split. Legal pages use a text title only. *This supersedes the
-earlier "hero form on `/` only" rule.*
+**Hero-form scope — no page's hero embeds a form via `AcHeroWithForm`/`AcPageHero`, as of
+2026-09-17.** `AcHeroWithForm` (doc 30 §3) defaults `showForm={true}` — the prop exists for a
+future opt-in, not because a page currently uses it — but every current caller (the homepage and
+the four `AcServicePage` routes) now sets it `false`. The Services hub and About use a compact
+photographic introduction with a secondary `Send a Message` link instead of a duplicate intake
+panel. Contact uses a compact title plus a details/form split. Legal pages use a text title only.
+*This supersedes, in order: the earlier "hero form on `/` only" rule; the 2026-09-04 rule that
+added a hero form to all five service pages; and, for the homepage specifically, the 2026-09-17
+entry below's own "the homepage... [is] explicitly untouched" — the owner extended the same
+decision to the homepage later the same day. See the two 2026-09-17 entries in
+`docs/05-CURRENT-DECISIONS.md`.*
 
-**Scoped exception, owner decision 2026-09-16 — the rodent service page and its landing page.**
-`/rodent-dropping-cleanup-san-jose/` and the new `/rodent-dropping-cleanup-san-jose/assessment/`
-do not use `AcHeroWithForm` or `PpcHero`+`PpcHeroForm`-in-hero. Per explicit owner design
-instructions for these two routes only: no form in the hero, and every "Request a Property
-Assessment" action scrolls to a working form placed at the bottom of the page. The hero itself is
-`AcPageHero` — the same full-bleed photo + navy overlay, no-form hero already used on About,
-Contact and the Services hub, extended with two small additive props (`primaryLabel`,
-`strongBody`) so it can carry these two pages' exact copy. An earlier pass built a separate
-light-background, boxed-photo hero component for this; it did not visually match the rest of the
-site (AcPageHero's own header comment already records why that exact pattern was retired sitewide
-in the 2026-09-04 visual port) and was deleted. Both pages reuse the existing, unmodified
-`PpcHeroForm` component (relocated out of the hero into its own bottom section) so the field set,
-validation, consent, anti-spam, backend endpoint and analytics events are unchanged — only their
-position on the page moved. `AcHeroWithForm`, `AcServicePage`, `PpcHero` and every other page using
-them are untouched; this exception does not generalize past these two routes. Recorded in
-`docs/05-CURRENT-DECISIONS.md`, 2026-09-16.
+**All five service-detail pages AND the homepage use a no-form hero — owner decisions
+2026-09-17, superseding the 2026-09-16 rodent-only scoped exception below.**
+`/hoarding-cleanup-san-jose/`, `/extreme-cleaning-san-jose/`, `/deep-cleaning-san-jose/`,
+`/crime-scene-trauma-cleanup-san-jose/`, `/rodent-dropping-cleanup-san-jose/`, and now `/` (the
+homepage), all render the same full-bleed photo + flat navy overlay hero with **no embedded
+form**. Every hero's primary action is `Call Aseptaclean`; the secondary `Send a Message` action
+scrolls to that same page's own contact section near the bottom, immediately above the footer.
+This is an explicit, later owner decision that names its own scope and therefore supersedes the
+2026-09-16 entry's "this exception does not generalize past these two routes" language, and (for
+the homepage) the first 2026-09-17 decision's own "the homepage... [is] explicitly untouched"
+sentence — see `docs/05-CURRENT-DECISIONS.md`, both 2026-09-17 entries, for the full resolution.
+The Services hub, About, Contact, legal pages, and every PPC/paid-landing-page route
+(`/hoarding-cleanup-san-jose/assessment/`, `/rodent-dropping-cleanup-san-jose/assessment/`, etc.)
+remain explicitly untouched and keep their current layouts.
+
+Implementation: the homepage and the four sibling service pages (hoarding, extreme,
+deep-cleaning, trauma) render through `AcHeroWithForm` (the homepage directly; the four service
+pages via `AcServicePage`), which gained a `showForm` prop (default `true`, kept only so a future
+caller can opt back in — no current caller does) and a `secondaryHref` override. Each page passes
+`showForm={false}` and points the secondary action at a new bottom `AcCompactForm` contact
+section (`tone="light"`, its own `headingId` prop suppresses the form's default heading so the
+section's one visible heading — reusing each page's existing approved closing copy
+(`home.final.heading`/`body` on the homepage; `finalHeading`/`finalBody` on the service pages) —
+is not duplicated). The homepage's `<form>` keeps the literal id `hero-form` (unchanged, since
+`scripts/launch-e2e-form-check.mjs`'s `homepage` surface and Analytics.astro's click-tracking
+regex both key on it); its wrapping section is the new, separately-anchored `#home-contact`. The
+rodent page and its landing page already used this composition (`AcPageHero`, form relocated to
+the bottom via `PpcHeroForm`) and are otherwise unchanged by this entry; their pricing/
+contact-layout improvements from 2026-09-17's rodent brief stand as before.
+
+**Superseded text, owner decision 2026-09-16 — the rodent service page and its landing page
+(historical; kept for the "why" behind the reference implementation the 2026-09-17 decision
+generalized).** `/rodent-dropping-cleanup-san-jose/` and the new
+`/rodent-dropping-cleanup-san-jose/assessment/` do not use `AcHeroWithForm` or
+`PpcHero`+`PpcHeroForm`-in-hero. Per explicit owner design instructions for these two routes: no
+form in the hero, and every "Request a Property Assessment" action scrolls to a working form
+placed at the bottom of the page. The hero itself is `AcPageHero` — the same full-bleed photo +
+navy overlay, no-form hero already used on About, Contact and the Services hub, extended with two
+small additive props (`primaryLabel`, `strongBody`) so it can carry these two pages' exact copy.
+An earlier pass built a separate light-background, boxed-photo hero component for this; it did
+not visually match the rest of the site (AcPageHero's own header comment already records why that
+exact pattern was retired sitewide in the 2026-09-04 visual port) and was deleted. Both pages
+reuse the existing, unmodified `PpcHeroForm` component (relocated out of the hero into its own
+bottom section) so the field set, validation, consent, anti-spam, backend endpoint and analytics
+events are unchanged — only their position on the page moved. *The closing sentence of this
+paragraph ("this exception does not generalize past these two routes") is exactly what
+2026-09-17 supersedes; everything else here remains an accurate description of the rodent
+routes.* Recorded in `docs/05-CURRENT-DECISIONS.md`, 2026-09-16.
 
 **4. Public service name — `Extreme Cleaning`.**
 Source content is the `Severe Property Cleanup` section of

@@ -4,6 +4,8 @@ Expected route: `/hoarding-cleanup-san-jose/`. Confirm the actual canonical URL.
 
 Use the shared Header → photo-background HeroWithForm → mapped body → Footer. ClearPath PDF p28–33 controls hero and split-section composition; 911 p14–16 controls supporting reading restraint. Master spec controls all geometry.
 
+**Superseded 2026-09-17** — the hero no longer embeds the form (owner decision; see AGENTS.md "Hero-form scope" and `docs/05-CURRENT-DECISIONS.md`, 2026-09-17). Read "HeroWithForm" above as the same hero photograph/overlay/copy composition with `showForm={false}`; the working form now sits in its own contact section near the bottom of the page, reusing this page's `finalHeading`/`finalBody` (the "Final call section" row below) as that section's introduction.
+
 | Order | Component | Exact source heading(s) |
 | --- | --- | --- |
 | 1 | Hero + opening introduction | Hoarding Cleanup |

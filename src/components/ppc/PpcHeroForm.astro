@@ -5,18 +5,15 @@
 // WHAT IS REUSED, UNCHANGED — this is the point of the component, so it is spelled out:
 //   endpoint          site.urls.formEndpoint  → functions/api/lead.ts (the ONE lead endpoint,
 //                     AGENTS.md §0.1). No new endpoint, no imitation, no fabricated success.
-//   field names       full_name, phone, property_zip, email, property_detail,
+//   field names       full_name, phone, optional campaign_role, property_zip, email, property_detail,
 //                     property_situation, property_media[], privacy_consent,
 //                     submission_timestamp, idempotency_key, form_version, offer_type,
 //                     entry_route, submitted_from — every one already validated by
 //                     functions/_lib/lead.ts. No field name is introduced here.
-//   required set      form_version present + offer_type !== private_residence_reset means the
-//                     server requires full_name, phone, email, privacy_consent,
-//                     submission_timestamp, idempotency_key, property_zip, property_situation,
-//                     property_detail — email joined this set 2026-09-06 (owner requirement:
-//                     customer confirmation must be possible from every active form; it is now
-//                     part of functions/_lib/lead.ts's commonRequiredFields). The client mirrors
-//                     exactly that set.
+//   required set      Existing callers retain their established server/client contract. Only the
+//                     two validated `campaignContext` callers use the shortened contract: name,
+//                     phone, consent, timestamp, idempotency key and hidden service/context are
+//                     required; email, role, details and photos are optional.
 //   service value     "Hoarding or heavy clutter" — the FROZEN CRM enum from
 //                     src/data/assessment.ts, the same string HubSpot and the owner-notification
 //                     email already expect. Brief: "Fixed Hoarding service value; no redundant
@@ -63,6 +60,11 @@ interface Props {
   entryRoute: string;
   /** Frozen CRM enum value for this campaign's service. */
   situationValue: string;
+  /**
+   * Validated server-side identity for the two deliberately shortened campaign forms. Omit this
+   * on every other caller so its existing fields and required-state contract stay unchanged.
+   */
+  campaignContext?: "rodent_assessment" | "estate_assessment";
   /**
    * Required unless `headingId` is set. Renders as the panel's own `<h2>` and is what
    * `aria-labelledby` points at by default.
@@ -118,12 +120,15 @@ interface Props {
    * Every other caller leaves this unset and keeps the original ZIP-then-Email order.
    */
   emailBeforeZip?: boolean;
+  /** Compact widget for narrow campaign forms; keeps the existing challenge/token flow. */
+  turnstileSize?: "flexible" | "compact";
 }
 
 const {
   formId,
   entryRoute,
   situationValue,
+  campaignContext,
   title,
   intro,
   headingId,
@@ -138,7 +143,8 @@ const {
   photoHelper,
   microcopy,
   thankYouRoute,
-  emailBeforeZip = false
+  emailBeforeZip = false,
+  turnstileSize = "flexible"
 } = Astro.props;
 
 if (!headingId && !title) {
@@ -161,7 +167,7 @@ if (!postableSituationValues.includes(situationValue)) {
 
 // `assessment` still backs the upload limits and the form version below.
 const showStatusSelect = Boolean(statusLabel && statusOptions && statusOptions.length);
-const useDisclosure = Boolean(optionalDisclosureLabel);
+const useShortCampaignFields = Boolean(campaignContext);
 
 const endpointAvailable = Boolean(
   site.integrations.formEnabled &&
@@ -188,6 +194,7 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
     <input type="hidden" name="offer_type" value="handoff_reset" />
     {/* The brief's "Fixed Hoarding service value; no redundant service selector". */}
     <input type="hidden" name="property_situation" value={situationValue} />
+    {campaignContext && <input type="hidden" name="campaign_context" value={campaignContext} />}
     <input type="hidden" name="entry_route" value={entryRoute} />
     <input type="hidden" name="submitted_from" value={entryRoute} />
     {/* Campaign attribution, populated client-side from the query string only, capped at 250
@@ -228,12 +235,12 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
 
     <div class="ppc-form__grid">
       <div class="ppc-form__field">
-        <label for={`${formId}-name`}>Full Name</label>
+        <label for={`${formId}-name`}>{useShortCampaignFields ? "Name" : "Full Name"}</label>
         <input id={`${formId}-name`} name="full_name" type="text" autocomplete="name" required />
       </div>
 
       <div class="ppc-form__field">
-        <label for={`${formId}-phone`}>Phone Number</label>
+        <label for={`${formId}-phone`}>{useShortCampaignFields ? "Phone" : "Phone Number"}</label>
         <input
           id={`${formId}-phone`}
           name="phone"
@@ -244,10 +251,24 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
         />
       </div>
 
-      {/* ZIP and Email swap DOM order (and therefore tab order) under `emailBeforeZip` — a real
-          reorder, not a CSS `order` trick, so visual and keyboard order stay in sync. */}
-      {
-        emailBeforeZip ? (
+      {useShortCampaignFields ? (
+        <div class="ppc-form__field">
+          <label for={`${formId}-email`}>
+            Email <span class="ppc-form__optional">(optional)</span>
+          </label>
+          <input
+            id={`${formId}-email`}
+            name="email"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
+          />
+        </div>
+      ) : (
+        <Fragment>
+          {/* ZIP and Email swap DOM order (and therefore tab order) under `emailBeforeZip` — a
+              real reorder, not a CSS `order` trick, so visual and keyboard order stay in sync. */}
+          {emailBeforeZip ? (
           <Fragment>
             <div class="ppc-form__field">
               <label for={`${formId}-email`}>Email</label>
@@ -301,8 +322,11 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
               />
             </div>
           </Fragment>
-        )
-      }
+          )}
+        </Fragment>
+      )}
+
+      <slot name="additional-fields" />
 
       {/* OPTIONAL FIELDS. Inline by default — no wrapper element, so the hoarding route's DOM and
           its short-desktop pairing rule are untouched. With `optionalDisclosureLabel` set they
@@ -414,7 +438,7 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
               class="cf-turnstile"
               data-sitekey={site.integrations.turnstileSiteKey}
               data-theme={tone === "light" ? "light" : "dark"}
-              data-size="flexible"
+              data-size={turnstileSize}
             />
           </div>
         )
@@ -462,6 +486,8 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
 }
 
 <script>
+  import { storeAcceptedInquiryReceipt } from "../../scripts/acceptedInquiryReceipt";
+
   // Submit/validation/upload contract: the same shape AssessmentForm.astro and AcCompactForm
   // already ship. Duplicated rather than imported because Astro component scripts are
   // page-scoped and this variant has its own field set and its own inline success state.
@@ -986,7 +1012,12 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
             await trackAndSettle("ppc_form_success", { photos_attached: photoCount > 0 });
           }
 
-          window.location.assign(`${thankYouRoute}?${parameters.toString()}`);
+          if (thankYouRoute === "/thank-you/" || thankYouRoute === "/thank-you") {
+            storeAcceptedInquiryReceipt(payload);
+            window.location.assign("/thank-you/");
+          } else {
+            window.location.assign(`${thankYouRoute}?${parameters.toString()}`);
+          }
           return;
         }
 

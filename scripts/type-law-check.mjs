@@ -55,9 +55,14 @@ const rule1 = () => {
     }
     const walk = (list, media) => {
       for (const rule of list) {
-        if (rule.cssRules) {
+        // Modern Chrome (CSS Nesting) gives an ordinary CSSStyleRule its own `.cssRules` too —
+        // usually an empty CSSRuleList, which is still a truthy object. Checking `.length` keeps
+        // this recursing into real containers (@media/@supports, or genuinely nested rules)
+        // without treating every flat style rule as a container and skipping its own check below.
+        if (rule.cssRules && rule.cssRules.length) {
           walk(rule.cssRules, rule.conditionText || media);
-        } else if (rule.style && rule.style.getPropertyValue("font-size")) {
+        }
+        if (rule.style && rule.selectorText && rule.style.getPropertyValue("font-size")) {
           sheetRules.push({
             selector: rule.selectorText || "",
             value: rule.style.getPropertyValue("font-size"),

@@ -166,6 +166,18 @@ textarea {
 }
 
 /* Hero and hub H1 — mockup .hero h1 */
+.ac-heading-line {
+  display: block;
+}
+
+@media (min-width: 768px) {
+  #ac-home-locked-mockup .hero .hero-copy,
+  #ac-trauma .hero .hero-copy,
+  #ac-trauma .hero .hero-copy h1 {
+    max-width: 900px;
+  }
+}
+
 .ac-type-h1 {
   font-family: var(--ac-font-display);
   font-size: var(--ac-text-h1);

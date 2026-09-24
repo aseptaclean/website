@@ -28,9 +28,11 @@ interface Props {
   /** Same-page target for the secondary action. */
   formHref: string;
   secondaryLabel: string;
+  /** Route-scoped opt-in: hide the bar while the linked bottom-form target is visible. */
+  hideWhileFormVisible?: boolean;
 }
 
-const { heroSelector, formHref, secondaryLabel } = Astro.props;
+const { heroSelector, formHref, secondaryLabel, hideWhileFormVisible = false } = Astro.props;
 const phoneHref = site.business.phoneUri;
 ---
 
@@ -38,6 +40,7 @@ const phoneHref = site.business.phoneUri;
   class="ppc-bar"
   data-ppc-bar
   data-hero-selector={heroSelector}
+  data-form-selector={hideWhileFormVisible ? formHref : undefined}
   hidden
 >
   {phoneHref && (
@@ -52,11 +55,14 @@ const phoneHref = site.business.phoneUri;
   if (bar) {
     const heroSelector = bar.dataset.heroSelector || "";
     const hero = heroSelector ? document.querySelector<HTMLElement>(heroSelector) : null;
+    const formSelector = bar.dataset.formSelector || "";
+    const formTarget = formSelector ? document.querySelector<HTMLElement>(formSelector) : null;
     const desktop = window.matchMedia("(min-width: 75rem)");
 
     // Three independent suppressors. The bar shows only when the hero has left the viewport AND
     // none of them is active.
     let heroVisible = true;
+    let formVisible = false;
     let editing = false;
     let consentOpen = false;
 
@@ -76,7 +82,7 @@ const phoneHref = site.business.phoneUri;
     };
 
     const update = () => {
-      const shouldShow = !desktop.matches && !heroVisible && !editing && !consentOpen;
+      const shouldShow = !desktop.matches && !heroVisible && !formVisible && !editing && !consentOpen;
       if (bar.hidden === !shouldShow) {
         // State unchanged; still refresh the reservation in case the bar's height changed.
         if (shouldShow) setReservation();
@@ -107,6 +113,16 @@ const phoneHref = site.business.phoneUri;
       check();
     } else {
       heroVisible = false;
+    }
+
+    if (formTarget && "IntersectionObserver" in window) {
+      new IntersectionObserver(
+        (entries) => {
+          for (const entry of entries) formVisible = entry.isIntersecting;
+          update();
+        },
+        { threshold: 0 }
+      ).observe(formTarget);
     }
 
     // EDITING — a focused text control usually means the software keyboard is open. Fixed

@@ -24,6 +24,20 @@
 /vacant-home-cleaning-san-jose/         /  301
 /landlord-turnover-cleaning-san-jose/   /  301
 
+# --- Services hub retired, 2026-09-18 (owner design blueprint) ---
+# /services/ was a real, built, indexable page until this pass. It is now deleted
+# (src/pages/services/index.astro removed) and this is the only place its route is handled — a
+# permanent redirect straight to the homepage's own services section, never through another
+# redirect first. The fragment survives a Location-header redirect (browsers navigate to it and
+# then jump to the anchor), and Cloudflare Pages applies _redirects before checking for a real
+# asset, so no leftover build output at this path can shadow the rule.
+/services/                                    /#services  301
+
+# Legacy estate campaign URL: go directly to the canonical assessment page.
+# No destination query string: Pages preserves incoming tracking parameters.
+/estate-cleanout                              /estate-cleanout-san-jose/assessment/  301
+/estate-cleanout/                             /estate-cleanout-san-jose/assessment/  301
+
 # --- SITEMAP-MASTER reconciliation, 2026-08-16 (docs/SITEMAP-MASTER.md) ---
 # Internal rename to the master's city-suffixed slug — target is real, noindex pending its
 # own launch gate (same page, same gate note, new path only).

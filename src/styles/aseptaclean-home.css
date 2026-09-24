@@ -1,0 +1,367 @@
+/*
+ * ASEPTACLEAN — approved desktop homepage concept / responsive stylesheet
+ * Version 1.0 | 2026-09-18
+ *
+ * INSTALL: save as src/styles/aseptaclean-home.css and import once from the
+ * Astro layout used by Home. Do not load alongside the earlier contract CSS
+ * on Home: this file replaces that page's visual stylesheet.
+ * Scope: <div class="ac-site ac-home"> wrapping header, main and footer.
+ * Keep the project's existing body margin reset and local Inter font loader.
+ * Do not apply this stylesheet to campaign pages without separate review.
+ *
+ * SECTION ORDER / CLASSES:
+ * header.ac-header > .ac-container.ac-header__inner
+ * main > section#hero > .ac-hero + .ac-container > .ac-trust
+ * section#why.ac-section > .ac-container.ac-split
+ * section#services.ac-section.ac-warm > .ac-container > .ac-service-grid
+ * section#who-we-help.ac-section > .ac-container.ac-split
+ * section#cta-mid.ac-cta.ac-cta--dark > .ac-container.ac-cta__inner
+ * section#process.ac-section.ac-warm > .ac-container > ol.ac-process
+ * section#service-area.ac-section > .ac-container.ac-area-grid
+ * section#cta-close.ac-cta.ac-cta--quiet > .ac-container.ac-cta__inner
+ * section#contact.ac-section > .ac-container > .ac-form-shell
+ * footer.ac-footer > .ac-container > .ac-footer__grid + .ac-footer__legal
+ *
+ * DOM DETAILS:
+ * Hero: .ac-hero__photo containing img (decorative alt=""), followed by
+ * .ac-container.ac-hero__inner > .ac-hero__copy containing eyebrow, h1,
+ * .ac-hero__body and .ac-actions. Trust strip is OUTSIDE the photo hero.
+ * Split: .ac-split__text first, .ac-split__media second. Never reverse mobile.
+ * Card: article.ac-service-card > .ac-service-card__image (img) +
+ * .ac-service-card__body (h3, p, a.ac-service-card__link).
+ * Process: li.ac-process__step > span.ac-process__number + h3 + p.
+ * Form: retain existing form handlers; add .ac-form and .ac-form-grid to the
+ * actual wrappers. Short fields .ac-field; long fields also .ac-field--full.
+ * Inputs/select/textarea .ac-input; checkbox row label.ac-consent.
+ * Header disclosure panels retain the existing class/aria-expanded JavaScript.
+ * Footer logo needs the actual approved light/reversed logo asset.
+ *
+ * This file contains styling, not photographs, copy, menu JS, or a backend.
+ * Copy follows the owner’s explicit 2026-09-18 correction request.
+ * No fixed text heights, line clamps, filler, or global overflow suppression.
+ */
+
+/* 01 — Tokens and scoped foundations */
+.ac-home {
+  --ac-navy: #1c355e;
+  --ac-deep: #122840;
+  --ac-slate: #6a9bc3;
+  --ac-steel: #a8b8c8;
+  --ac-white: #fff;
+  --ac-warm: #f7f8fa;
+  --ac-text: #263849;
+  --ac-muted: #526574;
+  --ac-border: #d8e0e7;
+  --ac-on-dark: #e7eef4;
+  --ac-max: 1248px;
+  --ac-gutter: 40px;
+  --ac-section-y: 36px;
+  --ac-gap: 48px;
+  --ac-grid-gap: 24px;
+  --ac-header-height: 80px;
+  --ac-hero-height: 560px;
+  --ac-hero-inset: 72px;
+  --ac-radius: 8px;
+  font-family: Inter, "Inter Variable", system-ui, sans-serif;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ac-text);
+  background: var(--ac-white);
+  isolation: isolate;
+  /* No overflow or transform here: either can break the sticky header. */
+}
+.ac-home *, .ac-home *::before, .ac-home *::after { box-sizing: border-box; }
+.ac-home [hidden][hidden] { display: none; } /* Preserve semantic hidden state. */
+.ac-home :where(h1,h2,h3,p,ul,ol,figure) { margin: 0; }
+.ac-home :where(button,input,select,textarea) { font: inherit; }
+.ac-home img { display: block; max-inline-size: 100%; }
+.ac-home :where(h1,h2,h3) { color: var(--ac-deep); overflow-wrap: break-word; }
+/* TYPE LAW (AGENTS.md §6): no font-size on a heading tag, zero exceptions — headings get their
+   size from an `.ac-type-*` role class. The attached file originally sized headings with bare
+   `h1`/`h2`/`h3` (and class+element, e.g. `.ac-cta h2`) selectors throughout; every one of those
+   is renamed below to a standalone `.ac-type-home-*` role class with the identical values, and
+   the matching class is added to each heading in src/pages/index.astro. Colors/weights that are
+   not font-size stay on the original structural selectors — only sizing moved. See
+   docs/ASEPTACLEAN-IMPLEMENTATION-MAP.md for the full old-selector → role-class list. */
+.ac-type-home-h1 { font-size: 56px; line-height: 1.08; font-weight: 700; letter-spacing: -.035em; }
+.ac-type-home-h2 { font-size: 36px; line-height: 1.18; font-weight: 700; letter-spacing: -.025em; }
+.ac-type-home-h3 { font-size: 21px; line-height: 1.3; font-weight: 650; letter-spacing: -.015em; }
+.ac-home a { color: var(--ac-navy); text-underline-offset: .2em; }
+.ac-home :where(a,button,input,select,textarea,summary):focus-visible {
+  outline: 3px solid var(--ac-navy); outline-offset: 4px;
+}
+.ac-home .ac-container { inline-size: min(var(--ac-max), calc(100% - 2 * var(--ac-gutter))); margin-inline: auto; }
+.ac-home .ac-section { padding-block: var(--ac-section-y); }
+.ac-home .ac-warm { background: var(--ac-warm); }
+.ac-home :where(section,[id]) { scroll-margin-block-start: calc(var(--ac-header-height) + 24px); }
+.ac-home .ac-flow > * + * { margin-block-start: 16px; }
+/* CONFLICT ISOLATION: src/styles/global.css (loaded on every page) already owns the bare
+   `.ac-eyebrow` class name as a pill-chip label with its own background/padding, used by ~20
+   existing call sites elsewhere on the site. This rule's higher specificity (.ac-home .ac-eyebrow)
+   wins the properties it declares, but silently inherited the old chip's background/padding/
+   border-radius/margin for anything it didn't — rendering near-invisible light text on a light
+   chip inside the dark hero. Reset every one of those properties explicitly so this flat-text
+   eyebrow never depends on the older, differently-styled global rule. */
+.ac-home .ac-eyebrow { display: block; margin: 0; padding: 0; border-radius: 0; background: none; font-size: 12px; line-height: 1.5; letter-spacing: .1em; font-weight: 650; text-transform: uppercase; color: var(--ac-muted); }
+.ac-home .ac-eyebrow + :where(h1,h2) { margin-block-start: 10px; }
+.ac-home .ac-small, .ac-home figcaption { font-size: 14px; line-height: 1.5; color: var(--ac-muted); }
+.ac-home figcaption { margin-block-start: 8px; }
+.ac-home .ac-section-heading { max-inline-size: 760px; margin-block-end: 32px; }
+.ac-home .ac-section-heading > * + * { margin-block-start: 12px; }
+.ac-home .ac-section-heading--center { margin-inline: auto; text-align: center; }
+.ac-home .ac-list { padding-inline-start: 22px; }
+.ac-home .ac-list li + li { margin-block-start: 8px; }
+
+/* 02 — Buttons, links, and shared action groups */
+.ac-home .ac-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-block-start: 24px; }
+.ac-home .ac-actions--center { justify-content: center; margin-block-start: 32px; }
+.ac-home .ac-button {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-block-size: 48px; max-inline-size: 100%; padding: 12px 20px;
+  border: 1px solid var(--ac-navy); border-radius: 6px;
+  background: var(--ac-navy); color: var(--ac-white);
+  font-size: 16px; line-height: 1.4; font-weight: 600;
+  text-align: center; text-decoration: none; white-space: normal;
+  overflow-wrap: anywhere; cursor: pointer;
+  transition: background-color 140ms ease, border-color 140ms ease;
+}
+.ac-home .ac-button:hover { background: var(--ac-deep); border-color: var(--ac-deep); }
+.ac-home .ac-button--outline { background: transparent; color: var(--ac-navy); }
+.ac-home .ac-button--outline:hover { background: var(--ac-white); }
+.ac-home .ac-button--light { background: var(--ac-white); color: var(--ac-deep); border-color: var(--ac-white); }
+.ac-home .ac-button--light:hover { background: var(--ac-on-dark); border-color: var(--ac-on-dark); }
+.ac-home .ac-button--outline-light { background: transparent; color: var(--ac-white); border-color: var(--ac-white); }
+.ac-home .ac-button--outline-light:hover { background: rgb(255 255 255 / .12); border-color: var(--ac-white); }
+.ac-home .ac-button:disabled { cursor: not-allowed; opacity: .6; }
+
+/* 03 — Existing accessible header, scoped to the homepage. */
+.ac-home .site-nav { background: var(--ac-white); border-color: var(--ac-border); }
+.ac-home .site-nav .site-nav__inner { width: min(var(--ac-max), calc(100% - 2 * var(--ac-gutter))); min-height: var(--ac-header-height); gap: 24px; }
+.ac-home .site-nav .site-nav__logo img { width: 160px; height: auto; }
+.ac-home .site-nav .site-nav__desktop { margin: 0 0 0 auto; flex: 0 1 auto; gap: 24px; }
+.ac-home .site-nav .site-nav__desktop > a,
+.ac-home .site-nav .services-nav__link,
+.ac-home .site-nav .services-nav__toggle { min-height: 44px; color: var(--ac-navy); font-size: 15px; }
+.ac-home .site-nav .site-nav__cta { color: var(--ac-white); background: var(--ac-navy); font-size: 15px; font-weight: 600; }
+.ac-home .site-nav .services-nav__panel { border-radius: 8px; box-shadow: 0 8px 24px rgb(18 40 64 / .1); }
+.ac-home .site-nav .mobile-nav__cta { color: var(--ac-white); }
+.ac-home .site-nav .mobile-nav__actions { font-size: 16px; }
+.ac-home .home-call-short { display: none; }
+@media (max-width: 1199px) {
+  .ac-home .site-nav .site-nav__desktop { display: none; }
+  .ac-home .site-nav .mobile-nav { display: block; }
+  .ac-home .site-nav .site-nav__actions { display: flex; }
+}
+@media (max-width: 767px) {
+  .ac-home .site-nav .site-nav__inner { gap: 10px; }
+  .ac-home .site-nav .site-nav__logo img { width: 120px; }
+  .ac-home .site-nav .site-nav__cta { padding-inline: 12px; }
+}
+@media (max-width: 479px) {
+  .ac-home .site-nav .site-nav__actions { display: flex; }
+  .ac-home .site-nav .site-nav__cta-icon, .ac-home .home-call-long { display: none; }
+  .ac-home .home-call-short { display: inline; }
+}
+
+/* 04 — Full-width photo hero. Photos and approved copy are supplied by Astro.
+ * 560px matches the compact approved concept. Do not import prior 736px rules.
+ * Height is a minimum so text remains readable at zoom/with changed copy.
+ * Check other pages before rolling this new homepage token out site-wide.
+ */
+.ac-home main > #hero { padding-block: 0; }
+.ac-home .ac-hero { position: relative; isolation: isolate; background: var(--ac-deep); color: var(--ac-white); }
+.ac-home .ac-hero__photo { position: absolute; inset: 0; z-index: -2; overflow: hidden; }
+.ac-home .ac-hero__photo img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: var(--ac-hero-position, 65% 50%); }
+.ac-home .ac-hero::before { content: ""; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, rgb(18 40 64 / .96) 0%, rgb(18 40 64 / .82) 40%, rgb(18 40 64 / .22) 75%, rgb(18 40 64 / .12)); }
+.ac-home .ac-hero__inner { min-block-size: var(--ac-hero-height); padding-block: var(--ac-hero-inset); }
+.ac-home .ac-hero__copy { max-inline-size: 600px; min-inline-size: 0; }
+.ac-home .ac-hero h1 { color: var(--ac-white); }
+.ac-home .ac-hero .ac-eyebrow { color: var(--ac-on-dark); }
+.ac-home .ac-hero__body { max-inline-size: 560px; margin-block-start: 20px; color: var(--ac-on-dark); }
+.ac-home .ac-hero__body > * + * { margin-block-start: 12px; }
+.ac-home .ac-hero :focus-visible { outline-color: var(--ac-white); }
+
+/* 05 — Three trust signals. Icons are real supplied SVG/icon assets, not emoji. */
+.ac-home .ac-trust { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); padding-block: 24px; background: var(--ac-white); }
+.ac-home .ac-trust__item { display: flex; align-items: flex-start; gap: 16px; padding-inline: 24px; min-inline-size: 0; }
+.ac-home .ac-trust__item:first-child { padding-inline-start: 0; }
+.ac-home .ac-trust__item + .ac-trust__item { border-inline-start: 1px solid var(--ac-border); }
+.ac-home .ac-trust__icon { inline-size: 32px; block-size: 32px; flex: 0 0 32px; color: var(--ac-navy); }
+.ac-home .ac-trust__item strong { display: block; font-size: 16px; line-height: 1.4; color: var(--ac-deep); }
+.ac-home .ac-trust__item p { margin-block-start: 4px; font-size: 14px; line-height: 1.5; color: var(--ac-muted); }
+
+/* 06 — Why / Who we help. EXACT 45/55 after subtracting gap. */
+.ac-home .ac-split { display: grid; grid-template-columns: minmax(0,45fr) minmax(0,55fr); gap: var(--ac-gap); align-items: start; }
+.ac-home .ac-split > * { min-inline-size: 0; }
+.ac-home .ac-split__text > h2 + p { margin-block-start: 16px; }
+.ac-home .ac-split__media img { inline-size: 100%; aspect-ratio: 4 / 3; object-fit: cover; object-position: var(--ac-image-position, 50% 50%); border-radius: var(--ac-radius); }
+.ac-home .ac-benefits { list-style: none; padding: 0; margin-block-start: 24px; }
+.ac-home .ac-benefits li { display: flex; align-items: flex-start; gap: 12px; }
+.ac-home .ac-benefits li + li { margin-block-start: 12px; }
+.ac-home .ac-benefits svg { inline-size: 20px; block-size: 20px; flex: 0 0 20px; margin-block-start: 4px; color: var(--ac-navy); }
+.ac-home .ac-rows { margin-block-start: 24px; }
+.ac-home .ac-row { padding-block: 12px; }
+.ac-home .ac-row:first-child { padding-block-start: 0; }
+.ac-home .ac-row:last-child { border-block-end: 0; padding-block-end: 0; }
+.ac-type-home-row-h3 { font-size: 18px; }
+.ac-home .ac-row p { margin-block-start: 6px; font-size: 16px; line-height: 1.5; }
+.ac-home .ac-row--icon { display: grid; grid-template-columns: 28px minmax(0,1fr); gap: 16px; }
+.ac-home .ac-row__icon { inline-size: 28px; block-size: 28px; color: var(--ac-navy); }
+
+/* 07 — Six service cards. Three desktop / two tablet / one mobile. */
+.ac-home .ac-service-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: var(--ac-grid-gap); align-items: stretch; }
+.ac-home .ac-service-card { display: flex; flex-direction: column; min-inline-size: 0; background: var(--ac-white); border: 0; border-radius: 0; }
+.ac-home .ac-service-card__image { aspect-ratio: 2.4 / 1; overflow: hidden; border-radius: 0; }
+.ac-home .ac-service-card__image img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: var(--ac-image-position, 50% 50%); }
+.ac-home .ac-service-card__body { display: flex; flex-direction: column; flex: 1; padding: 16px 20px; }
+.ac-type-home-card-h3 { font-size: 20px; line-height: 1.3; }
+.ac-home .ac-service-card p { margin-block-start: 10px; font-size: 16px; line-height: 1.5; }
+.ac-home .ac-service-card__link { align-self: flex-start; margin-block-start: auto; padding-block: 16px 4px; font-size: 15px; font-weight: 650; text-decoration: none; }
+.ac-home .ac-service-card__link:hover { text-decoration: underline; }
+
+/* 08 — Mid-page navy CTA and shorter closing CTA */
+.ac-home .ac-cta { padding-block: 36px; }
+.ac-home .ac-cta__inner { display: grid; grid-template-columns: minmax(0,1fr) auto; align-items: center; gap: 32px; }
+.ac-home .ac-cta__inner > * { min-inline-size: 0; }
+.ac-type-home-cta-h2 { font-size: 28px; line-height: 1.25; }
+.ac-home .ac-cta p { margin-block-start: 8px; font-size: 16px; line-height: 1.5; }
+.ac-home .ac-cta .ac-actions { margin-block-start: 0; }
+.ac-home .ac-cta--dark { background: var(--ac-deep); color: var(--ac-on-dark); }
+.ac-home .ac-cta--dark h2 { color: var(--ac-white); }
+.ac-home .ac-cta--dark :focus-visible { outline-color: var(--ac-white); }
+.ac-home .ac-cta--quiet { background: var(--ac-warm); padding-block: 32px; border-block-start: 1px solid var(--ac-border); }
+.ac-type-home-cta-h2-quiet { font-size: 24px; }
+
+/* 09 — Four open process steps */
+.ac-home .ac-process { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 24px; list-style: none; padding: 0; }
+.ac-home .ac-process__step { min-inline-size: 0; }
+.ac-home .ac-process__step + .ac-process__step { border-inline-start: 1px solid var(--ac-border); padding-inline-start: 24px; }
+.ac-home .ac-process__number { display: block; font-size: 28px; line-height: 1.2; margin-block-end: 12px; color: var(--ac-muted); }
+.ac-type-home-process-h3 { font-size: 20px; }
+.ac-home .ac-process p { margin-block-start: 10px; font-size: 16px; line-height: 1.5; }
+
+/* 10 — Service area: approved city lists; no fabricated map geometry */
+.ac-home .ac-area-grid { display: grid; grid-template-columns: minmax(0,40fr) minmax(0,60fr); gap: var(--ac-gap); align-items: start; }
+.ac-home .ac-area-grid > * { min-inline-size: 0; }
+.ac-home .ac-area-grid h2 + p { margin-block-start: 16px; }
+.ac-home .ac-area-cities { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 32px; padding-inline-start: 32px; border-inline-start: 1px solid var(--ac-border); }
+.ac-home .ac-area-cities h3 { margin-block-end: 12px; }
+.ac-type-home-area-h3 { font-size: 18px; }
+.ac-home .ac-area-cities ul { list-style: none; padding: 0; font-size: 16px; }
+.ac-home .ac-area-cities li + li { margin-block-start: 8px; }
+
+/* 11 — Same form/handler, homepage presentation. */
+.ac-home .ac-form-shell { max-inline-size: 680px; margin-inline: auto; }
+.ac-home .ac-form-heading { text-align: center; margin-block-end: 28px; }
+.ac-home .ac-form-heading > * + * { margin-block-start: 10px; }
+.ac-home .ac-form-shell .hero-form.is-light { padding: 0; border: 0; border-radius: 0; background: transparent; gap: 16px; }
+.ac-home .ac-form-shell .hero-form__grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 16px; }
+.ac-home .ac-form-shell .hero-form__field { min-width: 0; }
+.ac-home .ac-form-shell .hero-form__field:has(select) { grid-column: 1 / -1; }
+.ac-home .ac-form-shell .hero-form__field label { margin-bottom: 8px; font-size: 15px; font-weight: 600; color: var(--ac-text); }
+.ac-home .ac-form-shell .hero-form__field :is(input,select,textarea) { min-width: 0; min-height: 48px; padding: 12px; border: 1px solid var(--ac-steel); border-radius: 6px; background-color: var(--ac-white); color: var(--ac-text); font-size: 16px; line-height: 1.5; }
+.ac-home .ac-form-shell .hero-form__field select { appearance: auto; background-image: none; }
+.ac-home .ac-form-shell .hero-form__field textarea { min-height: 112px; }
+.ac-home .ac-form-shell .hero-form__field input[type="file"] { padding: 8px; font-size: 14px; }
+.ac-home .ac-form-shell .hero-form__field :is(input,select,textarea):focus-visible { outline: 3px solid var(--ac-navy); outline-offset: 3px; }
+.ac-home .ac-form-shell .hero-form__consent { font-size: 14px; line-height: 1.5; }
+.ac-home .ac-form-shell .hero-form__consent input { accent-color: var(--ac-navy); }
+.ac-home .ac-form-shell .hero-form__submit { width: 100%; min-height: 48px; background: var(--ac-navy); color: var(--ac-white); font-size: 16px; font-weight: 600; }
+.ac-home .ac-form-shell .hero-form__submit:focus-visible { outline-color: var(--ac-navy); }
+.ac-home .ac-form-shell .hero-form__turnstile { min-width: 0; width: 100%; }
+.ac-home .ac-form-shell .hero-form__note { margin-top: 8px; font-size: 14px; overflow-wrap: anywhere; }
+.ac-home .ac-form-shell .hero-form__errors { color: var(--ac-text); }
+.ac-home .home-contact__phone { margin-top: 24px; text-align: center; font-size: 15px; }
+
+/* 12 — Real logo, six service links, Company, verified coverage, legal utilities. */
+.ac-home .foot { padding: 48px 0 24px; background: var(--ac-deep); color: var(--ac-on-dark); font-size: 15px; line-height: 1.6; }
+.ac-home .foot .ac-shell { width: min(var(--ac-max), calc(100% - 2 * var(--ac-gutter))); }
+.ac-home .foot .foot__g { grid-template-columns: 1.4fr 1.2fr 1fr 1.3fr; gap: 32px; }
+.ac-home .foot .foot__g > * { min-width: 0; }
+.ac-home .foot .foot__g > :nth-child(3) { grid-column: 4; grid-row: 1; }
+.ac-home .foot .foot__company { grid-column: 3; grid-row: 1; }
+.ac-home .foot .foot__logo img { width: 160px; height: auto; }
+.ac-home .foot .foot__h { margin-bottom: 16px; color: var(--ac-white); }
+.ac-home .foot .foot__cities { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 4px 16px; }
+.ac-home .foot .foot__cities li + li { margin-top: 0; }
+.ac-home .foot .foot__cities-note { color: var(--ac-on-dark); font-size: 13px; }
+.ac-home .foot a { color: var(--ac-white); overflow-wrap: anywhere; }
+.ac-home .foot :focus-visible { outline-color: var(--ac-white); }
+.ac-home .foot .foot__g nav > a + a { margin-top: 8px; }
+.ac-home .foot .foot__bot { margin-top: 32px; padding: 20px 0 0; border-top: 1px solid #456078; color: var(--ac-on-dark); font-size: 13px; }
+.ac-home .foot .foot__utility { display: flex; flex-wrap: wrap; gap: 12px 20px; }
+.ac-home .foot .foot__utility a { display: inline; }
+.ac-home .foot .foot__bot p { max-width: none; }
+@media (max-width: 1023px) {
+  .ac-home .foot .foot__g { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .ac-home .foot .foot__g > :nth-child(3) { grid-column: 2; grid-row: 2; }
+  .ac-home .foot .foot__company { grid-column: 1; grid-row: 2; }
+}
+@media (max-width: 767px) {
+  .ac-home .foot .foot__g { grid-template-columns: minmax(0,1fr); }
+  .ac-home .foot .foot__g > :nth-child(3) { grid-column: 1; grid-row: 4; }
+  .ac-home .foot .foot__company { grid-column: 1; grid-row: 3; }
+  .ac-home .ac-process__step + .ac-process__step { border-inline-start: 0; padding-inline-start: 0; }
+}
+@media (max-width: 639px) {
+  .ac-home .ac-form-shell .hero-form__grid { grid-template-columns: minmax(0,1fr); }
+}
+
+/* 13 — Responsive behavior: source order is always readable text then image. */
+@media (max-width: 1199px) {
+  .ac-home .ac-nav { display: none; }
+  .ac-home .ac-header__call { margin-inline-start: auto; }
+  .ac-home .ac-mobile-toggle { display: inline-flex; align-items: center; justify-content: center; min-inline-size: 44px; min-block-size: 44px; border: 1px solid var(--ac-border); border-radius: 6px; background: var(--ac-white); color: var(--ac-navy); cursor: pointer; }
+  .ac-home .ac-mobile-menu:not([hidden]) { display: block; border-block-start: 1px solid var(--ac-border); padding-block: 16px; max-block-size: calc(100dvh - var(--ac-header-height)); overflow-y: auto; }
+  .ac-home .ac-mobile-menu a { display: block; min-block-size: 44px; padding-block: 12px; text-decoration: none; }
+}
+@media (max-width: 1023px) {
+  .ac-home { --ac-gutter: 32px; --ac-section-y: 44px; --ac-gap: 32px; --ac-header-height: 72px; --ac-hero-height: 520px; --ac-hero-inset: 56px; }
+  .ac-type-home-h1 { font-size: 46px; line-height: 1.12; }
+  .ac-type-home-h2 { font-size: 32px; }
+  .ac-home .ac-hero__copy { max-inline-size: 580px; }
+  .ac-home .ac-split, .ac-home .ac-area-grid { grid-template-columns: minmax(0,1fr); }
+  .ac-home [data-missing-asset]:empty { display: none; }
+  .ac-home .ac-service-grid, .ac-home .ac-process, .ac-home .ac-footer__grid { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  .ac-home .ac-area-cities { padding-inline-start: 0; border-inline-start: 0; }
+  .ac-home .ac-cta__inner { grid-template-columns: minmax(0,1fr); gap: 24px; }
+}
+@media (max-width: 767px) {
+  .ac-home { --ac-gutter: 20px; --ac-section-y: 44px; --ac-gap: 28px; --ac-grid-gap: 20px; --ac-hero-height: 440px; --ac-hero-inset: 44px; font-size: 16px; }
+  .ac-type-home-h1 { font-size: 36px; line-height: 1.15; }
+  .ac-type-home-h2 { font-size: 28px; line-height: 1.2; }
+  .ac-type-home-h3 { font-size: 20px; }
+  .ac-home .ac-header__inner { gap: 10px; }
+  .ac-home .ac-logo { font-size: 23px; }
+  .ac-home .ac-logo img { inline-size: 120px; }
+  .ac-home .ac-header__call { padding-inline: 12px; }
+  .ac-home .ac-call-long { display: none; }
+  .ac-home .ac-call-short { display: inline; }
+  .ac-home .ac-hero__copy { max-inline-size: none; }
+  .ac-home .ac-hero::before { background: rgb(18 40 64 / .72); }
+  .ac-home .ac-trust { grid-template-columns: minmax(0,1fr); padding-block: 8px; }
+  .ac-home .ac-trust__item, .ac-home .ac-trust__item:first-child { padding: 16px 0; }
+  .ac-home .ac-trust__item + .ac-trust__item { border-inline-start: 0; border-block-start: 1px solid var(--ac-border); }
+  .ac-home .ac-service-grid, .ac-home .ac-process, .ac-home .ac-footer__grid { grid-template-columns: minmax(0,1fr); }
+  .ac-home .ac-process__step { display: grid; grid-template-columns: 36px minmax(0,1fr); column-gap: 16px; }
+  .ac-home .ac-process__number { grid-column: 1; grid-row: 1 / span 2; }
+  .ac-home .ac-process__step h3, .ac-home .ac-process__step p { grid-column: 2; }
+  .ac-home .ac-cta { padding-block: 28px; }
+  .ac-type-home-cta-h2 { font-size: 26px; }
+  .ac-type-home-cta-h2-quiet { font-size: 23px; }
+  .ac-home .ac-footer__legal { align-items: flex-start; flex-direction: column; }
+}
+@media (max-width: 639px) {
+  .ac-home .ac-form-grid { grid-template-columns: minmax(0,1fr); }
+  .ac-home .ac-actions { flex-direction: column; align-items: stretch; }
+  .ac-home .ac-actions .ac-button { inline-size: 100%; }
+}
+@media (max-width: 359px) {
+  .ac-home .ac-area-cities { grid-template-columns: minmax(0,1fr); gap: 24px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ac-home *, .ac-home *::before, .ac-home *::after { transition-duration: 0s; animation: none; scroll-behavior: auto; }
+}
+@media (forced-colors: active) {
+  .ac-home .ac-button, .ac-home .ac-service-card, .ac-home .ac-input { border: 1px solid ButtonText; }
+}

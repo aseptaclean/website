@@ -81,10 +81,9 @@ export interface ValidationResult {
 // form, and the Private Residence Reset form all collect these. Everything else below is
 // optional so a given form's request isn't rejected for fields it never asks about.
 //
-// `email` joined this set 2026-09-06 (owner requirement: customer confirmation must be possible
-// from every active form). It was previously required only on the residence-offer branch below;
-// adding it here makes it required on every branch instead of duplicating it there, and the
-// residence branch's own explicit "email" entry is now redundant but harmless.
+// Email remains required on every existing form except the two validated compact campaign
+// contexts below. Those campaigns require name and phone; when email is omitted the owner path
+// still runs and the customer-confirmation step is deliberately skipped.
 const commonRequiredFields = [
   "full_name",
   "phone",
@@ -103,6 +102,58 @@ const leanRequiredFields = [
   "property_situation",
   "property_detail"
 ] as const;
+
+const compactCampaigns = {
+  rodent_assessment: {
+    route: "/rodent-dropping-cleanup-san-jose/assessment/",
+    situation: "Rodent droppings or animal waste",
+    roles: new Set([
+      "Property owner",
+      "Family member",
+      "Tenant / occupant",
+      "Property manager / landlord",
+      "Real estate professional",
+      "Other / not sure"
+    ])
+  },
+  estate_assessment: {
+    route: "/estate-cleanout-san-jose/assessment/",
+    situation: "Inherited or estate property",
+    roles: new Set([
+      "Family member",
+      "Executor / personal representative",
+      "Trustee / fiduciary",
+      "Real estate professional",
+      "Property owner",
+      "Other / not sure"
+    ])
+  }
+} as const;
+
+type CompactCampaignContext = keyof typeof compactCampaigns;
+
+const compactCampaignFor = (
+  data: Record<string, string | string[]>,
+  errors: Record<string, string>
+) => {
+  const context = data.campaign_context;
+  if (typeof context !== "string" || !context) return undefined;
+  if (!(context in compactCampaigns)) {
+    errors.campaign_context = "The form configuration is invalid.";
+    return undefined;
+  }
+  const config = compactCampaigns[context as CompactCampaignContext];
+  const sourceMatches = [data.entry_route, data.landing_page, data.submitted_from].some(
+    (value) =>
+      typeof value === "string" &&
+      (value === config.route || value.startsWith(`${config.route}#`))
+  );
+  if (!sourceMatches || data.property_situation !== config.situation) {
+    errors.campaign_context = "The form configuration does not match this page.";
+    return undefined;
+  }
+  return config;
+};
 
 // CAMPAIGN ROUTES WHERE THE FREE-TEXT DESCRIPTION IS OPTIONAL.
 //
@@ -131,6 +182,13 @@ const isDetailOptionalSubmission = (data: Record<string, string | string[]>) =>
       detailOptionalCampaignRoutes.some((route) => value.startsWith(route))
   );
 
+const isEstateCampaignSubmission = (data: Record<string, string | string[]>) =>
+  [data.entry_route, data.landing_page, data.submitted_from].some(
+    (value) =>
+      typeof value === "string" &&
+      value.startsWith("/estate-cleanout-san-jose/assessment/")
+  );
+
 const commonOptionalFields = [
   "offer_type",
   "property_city",
@@ -138,12 +196,19 @@ const commonOptionalFields = [
   "property_type",
   "vacant_status",
   "property_situation",
+  "campaign_context",
+  "campaign_role",
   // Optional property-description selector on the estate campaign form
   // (docs/aseptaclean-estate-landing-page.md §2, "What best describes the property?"). Distinct
   // from `property_situation`, which is the frozen CRM SERVICE enum: this records what kind of
   // property the estate work is happening in, and the campaign posts the service value itself as
   // a hidden input. Optional everywhere and starts unselected, so no existing form is affected.
   "property_status",
+  // Route-scoped inherited-home campaign intake. These are independent answers rather than a
+  // concatenated note so each selection survives validation, storage, CRM and email delivery.
+  "estate_role",
+  "estate_contents_level",
+  "estate_timeline",
   "desired_completion_date",
   "approximate_square_footage",
   "email",
@@ -311,6 +376,27 @@ const allowedValues: Record<string, Set<string>> = {
     "Occupied home",
     "Other"
   ]),
+  estate_role: new Set([
+    "Family member",
+    "Executor / personal representative",
+    "Trustee / fiduciary",
+    "Real estate professional",
+    "Property owner",
+    "Other / not sure"
+  ]),
+  estate_contents_level: new Set([
+    "Furnished home with belongings",
+    "Several packed rooms or garage",
+    "Most rooms heavily cluttered",
+    "Hoarding conditions / limited pathways",
+    "Not sure — I need an assessment"
+  ]),
+  estate_timeline: new Set([
+    "As soon as possible",
+    "Within the next few weeks",
+    "Preparing for a sale or handover",
+    "Exploring options — no date yet"
+  ]),
   approximate_square_footage: new Set([
     "Under 1,000 sq. ft.",
     "1,000–1,499 sq. ft.",
@@ -385,6 +471,7 @@ const allowedValues: Record<string, Set<string>> = {
   privacy_consent: new Set(["yes"]),
   scope_acknowledgment: new Set(["yes"]),
   offer_type: new Set(["handoff_reset", "private_residence_reset"]),
+  campaign_context: new Set(["rodent_assessment", "estate_assessment"]),
   safety_routing: new Set([
     "no_known_condition",
     "possible_condition",
@@ -484,6 +571,7 @@ export function validateLead(formData: FormData): ValidationResult {
   }
 
   const offerType = data.offer_type;
+  const compactCampaign = compactCampaignFor(data, errors);
   // Form-identity contract, three shapes:
   //   1. QuickHandoffForm.astro (short homepage form) — never sends form_version. Only the
   //      common fields (now including email) are required.
@@ -510,11 +598,25 @@ export function validateLead(formData: FormData): ValidationResult {
   const leanRequired = isDetailOptionalSubmission(data)
     ? leanRequiredFields.filter((field) => field !== "property_detail")
     : [...leanRequiredFields];
-  const requiredFields = !isDetailedSubmission
+  const requiredFields = compactCampaign
+    ? [
+        "full_name",
+        "phone",
+        "privacy_consent",
+        "submission_timestamp",
+        "idempotency_key",
+        "property_situation",
+        "campaign_context"
+      ]
+    : !isDetailedSubmission
     ? [...commonRequiredFields]
     : isResidenceOffer
     ? [...commonRequiredFields, ...residenceOptionalFields]
-    : [...commonRequiredFields, ...leanRequired];
+    : [
+        ...commonRequiredFields,
+        ...leanRequired,
+        ...(isEstateCampaignSubmission(data) ? ["estate_role" as const] : [])
+      ];
   for (const field of requiredFields) {
     if (!data[field] || (Array.isArray(data[field]) && !data[field].length)) {
       errors[field] = "This field is required.";
@@ -525,6 +627,14 @@ export function validateLead(formData: FormData): ValidationResult {
     if (typeof submitted === "string" && submitted && !choices.has(submitted)) {
       errors[field] = "Select a valid option.";
     }
+  }
+  if (
+    compactCampaign &&
+    typeof data.campaign_role === "string" &&
+    data.campaign_role &&
+    !compactCampaign.roles.has(data.campaign_role)
+  ) {
+    errors.campaign_role = "Select a valid option.";
   }
   if (
     typeof data.email === "string" &&
