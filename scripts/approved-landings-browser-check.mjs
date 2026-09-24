@@ -54,6 +54,8 @@ for (const route of routes) {
         required: [...form?.querySelectorAll("[required]") ?? []].map((el) => el.getAttribute("name")),
         optionalOpen: document.querySelector("[data-ppc-optional]")?.hasAttribute("open"),
         previewNotice: document.body.textContent.includes("Preview only") || document.body.textContent.includes("not fully configured"),
+        prices: [...document.querySelectorAll(".lp-pricing__price")].map((el) => el.textContent?.trim()),
+        assessmentPrice: document.querySelector(".lp-pricing__assessment")?.textContent?.includes("$145") ?? false,
         imageOk: [...document.images].filter((img) => img.getClientRects().length).every((img) => img.complete && img.naturalWidth > 0)
       };
     });
@@ -62,6 +64,10 @@ for (const route of routes) {
     check(geometry.canonical?.endsWith(route.path), `${route.key} ${width}: wrong canonical ${geometry.canonical}`);
     check(!geometry.robots?.includes("noindex"), `${route.key} ${width}: unexpectedly noindex`);
     check(!geometry.previewNotice, `${route.key} ${width}: preview notice remains`);
+    if (route.key === "rodent") {
+      check(geometry.prices.join("|") === "$500|$1,500", `${route.key} ${width}: cleanup prices are missing or changed`);
+      check(geometry.assessmentPrice, `${route.key} ${width}: $145 assessment pricing is missing`);
+    }
     check(geometry.imageOk, `${route.key} ${width}: image failed to load`);
     check(geometry.required.includes("full_name") && geometry.required.includes("phone") && geometry.required.includes("privacy_consent"), `${route.key} ${width}: required fields incomplete`);
     check(!geometry.required.includes("email") && !geometry.required.includes("property_detail"), `${route.key} ${width}: optional fields marked required`);

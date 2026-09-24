@@ -2859,3 +2859,13 @@ installs at `/rodent-dropping-cleanup-san-jose/assessment/`, while
 Aseptaclean logo and configured phone number rather than a generic phone icon. This decision is
 limited to the two campaign routes and does not alter public navigation or the public rodent
 service composition. No deployment was authorized.
+
+## 2026-09-24 — Rodent campaign pricing restored after approved-layout installation
+
+The owner reported that the approved-layout installation removed pricing from
+`/rodent-dropping-cleanup-san-jose/assessment/`. Restore that route's existing scoped pricing
+facts from `src/data/ppcRodent.ts`: small-area cleanup starting at $500, larger cleanup jobs
+starting at $1,500, and the $145 on-site assessment fully credited toward cleanup if hired.
+Render the pricing between the process and contact sections in the installed landing-page visual
+system. This does not change the separate public rodent service route, pricing values, endpoint,
+form attribution, or campaign offer.

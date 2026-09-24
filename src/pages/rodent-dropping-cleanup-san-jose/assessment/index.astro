@@ -25,6 +25,16 @@ const roles = ["Property owner", "Family member", "Tenant / occupant", "Property
     </section>
     <figure class="lp-photo"><Image src={rodentAssessment} alt="Garage assessment with a gloved professional holding a tablet." width={2048} height={688} widths={srcsetWidths(rodentAssessment, [480, 768, 1024, 1440, 2048])} sizes="100vw" format="webp" quality={82} loading="lazy" decoding="async" /></figure>
     <section class="lp-process"><div class="lp-container"><h2>Know the work.<br class="lp-desktop-break" /> Know the price.</h2><p>We review the affected areas and explain the scope before cleanup begins.</p><ol><li><span>01</span><div><h3>Tell us what you found</h3><p>Share the location and any photos you have.</p></div></li><li><span>02</span><div><h3>Review the cleanup plan</h3><p>Understand what is included and what it costs.</p></div></li><li><span>03</span><div><h3>Approve the work</h3><p>Cleanup begins after you approve the scope.</p></div></li></ol></div></section>
+    <section class="lp-pricing" aria-labelledby={ppcRodent.cost.id}><div class="lp-container">
+      <p class="lp-eyebrow">{ppcRodent.cost.eyebrow}</p>
+      <h2 id={ppcRodent.cost.id}>{ppcRodent.cost.heading}</h2>
+      <p class="lp-pricing__lead">{ppcRodent.cost.lead}</p>
+      <div class="lp-pricing__cards">
+        {ppcRodent.cost.cards.map((card) => <article><h3>{card.title}</h3><p class="lp-pricing__label">Starting at</p><p class="lp-pricing__price">{card.price}</p><p>{card.body}</p></article>)}
+      </div>
+      <p class="lp-pricing__note">{ppcRodent.cost.note}</p>
+      <div class="lp-pricing__assessment"><div><h3>{ppcRodent.cost.assessment.heading}</h3><p>{ppcRodent.cost.assessment.body}</p><p class="lp-pricing__strong">{ppcRodent.cost.assessment.strongLine}</p></div><a class="lp-button" href="#contact">{ppcRodent.cost.assessment.buttonLabel} <span aria-hidden="true">→</span></a></div>
+    </div></section>
     <section class="lp-contact lp-container" id="contact"><h2 id="rodent-approved-contact-title">Let’s talk about the cleanup.</h2><p>Tell us how to reach you.</p><PpcHeroForm formId="rodent-approved-lead-form" headingId="rodent-approved-contact-title" entryRoute={`${ppcRodent.route}#contact`} situationValue="Rodent droppings or animal waste" campaignContext="rodent_assessment" approvedLanding roleOptions={roles} namePlaceholder="Full name" phonePlaceholder="Phone number" optionalDisclosureLabel="Email, role & details (optional)" detailLabel="Additional information" detailRequired={false} photoHelper="Photos are uploaded securely with your inquiry." microcopy="Submitting does not authorize work." submitLabel="Request a callback →" thankYouRoute={ppcRodent.thankYou.route} tone="light" turnstileSize="compact" /></section>
   </div>
   <Fragment slot="footer"><footer class="approved-landing-footer"><div class="lp-container lp-footer"><strong>Aseptaclean, LLC</strong><p>South Bay &amp; Peninsula</p></div></footer></Fragment>
