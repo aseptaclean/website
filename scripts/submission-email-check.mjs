@@ -70,6 +70,14 @@ assert.ok(customer.html.includes("Long message sentence.".repeat(1)));
 assert.ok(customer.text.length > 3000, "long customer messages must not be silently truncated");
 assert.match(customer.html, /background:#ffffff/);
 assert.match(customer.html, /color-scheme:light/);
+assert.match(
+  customer.html,
+  /<img src="https:\/\/aseptaclean\.com\/assets\/brand\/aseptaclean-wordmark\.png" width="209" alt="Aseptaclean"/
+);
+assert.doesNotMatch(
+  customer.html,
+  /font-size:23px;line-height:1\.2;font-weight:700;letter-spacing:-0\.8px/
+);
 assert.match(customer.html, /It does not book an assessment or authorize work\./);
 
 assert.equal(owner.fromName, "Aseptaclean Website");

@@ -8,6 +8,7 @@ export interface RenderedEmail {
 }
 
 const BRAND = "Aseptaclean";
+const BRAND_LOGO_URL = "https://aseptaclean.com/assets/brand/aseptaclean-wordmark.png";
 const PHONE_DISPLAY = "(408) 785-7588";
 const PHONE_URI = "tel:+14087857588";
 const NOT_CAPTURED = "Not captured";
@@ -176,6 +177,7 @@ const shell = (content: string, preview: string) => `<!doctype html>
 </html>`;
 
 const brandHtml = `<div style="font-size:23px;line-height:1.2;font-weight:700;letter-spacing:-0.8px;color:#1c355e;">${BRAND}</div>`;
+const brandLogoHtml = `<a href="https://aseptaclean.com/" aria-label="Aseptaclean home" style="display:inline-block;text-decoration:none;"><img src="${BRAND_LOGO_URL}" width="209" alt="Aseptaclean" style="display:block;width:209px;max-width:100%;height:auto;border:0;"></a>`;
 const dividerHtml = `<div style="border-top:1px solid #d9e1e8;margin:25px 0;height:1px;line-height:1px;">&nbsp;</div>`;
 const headingHtml = (value: string) =>
   `<h2 class="ac-title" style="margin:30px 0 22px;font-size:29px;line-height:1.2;letter-spacing:-0.7px;font-weight:650;color:#122840;">${escapeHtml(value)}</h2>`;
@@ -238,7 +240,7 @@ export const buildCustomerConfirmationEmail = (lead: LeadRecord): RenderedEmail 
 
   const html = shell(
     [
-      brandHtml,
+      brandLogoHtml,
       headingHtml("We received your inquiry."),
       paragraphHtml(`Hi ${firstName(name)},`),
       paragraphHtml("Thank you for reaching out. We’ll review what you shared and contact you to discuss the property and the next step."),
