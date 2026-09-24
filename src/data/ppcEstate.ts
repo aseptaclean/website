@@ -548,15 +548,10 @@ export const ppcEstate = {
   // that own it (`home-hero-neglected-interior` on `/`, `hoarding-garage-contents` on
   // /hoarding-cleanup-san-jose/ and the hoarding campaign, `home-property-scope-detail` on `/`).
   //
-  // CAPTIONS. The refresh requires a small visible "Illustrative image" caption on each new
-  // scene. That reverses the 2026-09-05 sitewide caption removal FOR THESE TWO IMAGES ON THIS
-  // ROUTE ONLY — a later rank-2 owner instruction over an earlier one, within the scope it
-  // actually decided. No other image on this site regains a caption.
-  //
   // Neither scene is presented as an Aseptaclean project, result, crew or before/after pair, and
   // the two are independent illustrations. The alt text is the refresh's own, verbatim.
   images: {
-    caption: "Illustrative image",
+    caption: "",
     accumulationAlt:
       "Illustration of a home with accumulated furniture, boxes, and belongings.",
     sortingAlt: "Illustration of family photographs and keepsakes being sorted into boxes."
