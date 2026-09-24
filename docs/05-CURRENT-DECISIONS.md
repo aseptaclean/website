@@ -2818,3 +2818,33 @@ repeat submission, owner/customer email branches and campaign thank-you redirect
 hosts were blocked in browser testing. The two routes also opt into hiding their mobile sticky
 actions whenever the bottom form is visible, preventing the fixed bar from covering consent; the
 Hoarding campaign remains unchanged. No live email was sent, and nothing was deployed.
+
+## 2026-09-18 — Legacy estate redirect deployment
+
+Owner authorized deployment of the tested estate redirect fix. Added exact 301 rules for
+`/estate-cleanout` and `/estate-cleanout/` to `/estate-cleanout-san-jose/assessment/` in
+`public/_redirects`. Local Cloudflare Pages tests passed one-hop redirects, destination 200,
+and exact tracking query preservation. Live destination canonical and 200 verified before
+deployment. No old-address internal links were found. No conflicts or rule exceptions.
+Deployment is isolated from unrelated workspace changes; rodent pages, lead endpoint,
+forms, copy and layout remain unchanged. Live redirect verification follows deployment.
+
+
+## 2026-09-19 — Authorized SEO positioning release
+
+Owner authorized deployment through the existing GitHub main → Cloudflare Pages workflow.
+Prepared an isolated production checkout based on `fd03f97` to preserve the unrelated homepage,
+service, navigation, form and design work in the original workspace. This release changes only
+homepage title/description, shared Twitter metadata, business-description data, and public/PPC
+footer positioning with disclaimer-only `data-nosnippet` spans. The production homepage already
+renders `home.hero.eyebrow` with the exact approved descriptor, so it is preserved without duplication.
+No homepage redesign, hero headline/CTA change, new disclaimer, route retirement, tracking change,
+form change or endpoint change is part of this release. The estate redirects in `fd03f97` remain.
+
+The exact owner-approved strings and scoped exception to the older display-only positioning rule
+are recorded in `20-COPY-MAP.md` and `21-CLAIMS-AND-COMPLIANCE-LAW.md`. This does not establish
+new operating authority or credentials; existing business identity and disclaimer text remain.
+Earlier local-layout evidence relates to the broader uncommitted workspace and is not proof of
+this release. This isolated production candidate is built and checked independently, and live
+homepage HTML must be verified after the GitHub-triggered deployment before claiming success.
+External Google Business Profile, Nextdoor, LinkedIn and Thumbtack edits are not included.

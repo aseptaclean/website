@@ -99,3 +99,8 @@
 # recorded for /estate-cleanout-san-jose/ and /hoarding-cleanup-san-jose/ in the header above.
 # No child routes exist under /projects/ yet; add per-path rules if old WordPress project URLs
 # turn up in GSC, never a splat that shadows the live parent.
+
+# Legacy estate campaign URL: go directly to the canonical assessment page.
+# No destination query string: Pages preserves incoming tracking parameters.
+/estate-cleanout                              /estate-cleanout-san-jose/assessment/  301
+/estate-cleanout/                             /estate-cleanout-san-jose/assessment/  301
