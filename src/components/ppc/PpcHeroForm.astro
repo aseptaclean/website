@@ -65,6 +65,12 @@ interface Props {
    * on every other caller so its existing fields and required-state contract stay unchanged.
    */
   campaignContext?: "rodent_assessment" | "estate_assessment";
+  /** Approved compact landing-page composition: only name and phone stay visible initially. */
+  approvedLanding?: boolean;
+  /** Optional role choices rendered inside the approved landing disclosure. */
+  roleOptions?: readonly string[];
+  namePlaceholder?: string;
+  phonePlaceholder?: string;
   /**
    * Required unless `headingId` is set. Renders as the panel's own `<h2>` and is what
    * `aria-labelledby` points at by default.
@@ -129,6 +135,10 @@ const {
   entryRoute,
   situationValue,
   campaignContext,
+  approvedLanding = false,
+  roleOptions,
+  namePlaceholder,
+  phonePlaceholder,
   title,
   intro,
   headingId,
@@ -181,7 +191,7 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
 <div class:list={["ppc-form-shell", { "is-light": tone === "light" }]}>
   <form
     id={formId}
-    class:list={["ppc-form", { "is-light": tone === "light" }]}
+    class:list={["ppc-form", { "is-light": tone === "light", "is-approved-landing": approvedLanding }]}
     method="post"
     enctype="multipart/form-data"
     action={endpointAvailable ? site.urls.formEndpoint : undefined}
@@ -236,7 +246,7 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
     <div class="ppc-form__grid">
       <div class="ppc-form__field">
         <label for={`${formId}-name`}>{useShortCampaignFields ? "Name" : "Full Name"}</label>
-        <input id={`${formId}-name`} name="full_name" type="text" autocomplete="name" required />
+        <input id={`${formId}-name`} name="full_name" type="text" autocomplete="name" placeholder={namePlaceholder} required />
       </div>
 
       <div class="ppc-form__field">
@@ -247,11 +257,12 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
           type="tel"
           inputmode="tel"
           autocomplete="tel"
+          placeholder={phonePlaceholder}
           required
         />
       </div>
 
-      {useShortCampaignFields ? (
+      {useShortCampaignFields && !approvedLanding ? (
         <div class="ppc-form__field">
           <label for={`${formId}-email`}>
             Email <span class="ppc-form__optional">(optional)</span>
@@ -264,7 +275,7 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
             autocomplete="email"
           />
         </div>
-      ) : (
+      ) : !useShortCampaignFields ? (
         <Fragment>
           {/* ZIP and Email swap DOM order (and therefore tab order) under `emailBeforeZip` — a
               real reorder, not a CSS `order` trick, so visual and keyboard order stay in sync. */}
@@ -324,7 +335,7 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
           </Fragment>
           )}
         </Fragment>
-      )}
+      ) : null}
 
       <slot name="additional-fields" />
 
@@ -332,6 +343,29 @@ const uploadHelp = `${photoHelper} ${assessment.upload.visibleLimits}`;
           its short-desktop pairing rule are untouched. With `optionalDisclosureLabel` set they
           move inside a native <details>; see PpcOptionalFields.astro. */}
       <PpcOptionalFields label={optionalDisclosureLabel}>
+      {useShortCampaignFields && approvedLanding && (
+        <div class="ppc-form__field ppc-form__field--full">
+          <label for={`${formId}-email`}>
+            Email <span class="ppc-form__optional">(optional)</span>
+          </label>
+          <input
+            id={`${formId}-email`}
+            name="email"
+            type="email"
+            inputmode="email"
+            autocomplete="email"
+          />
+        </div>
+      )}
+      {approvedLanding && roleOptions?.length && (
+        <div class="ppc-form__field ppc-form__field--full">
+          <label for={`${formId}-role`}>Your role <span class="ppc-form__optional">(optional)</span></label>
+          <select id={`${formId}-role`} name="campaign_role">
+            <option value="">Select your role</option>
+            {roleOptions.map((option) => <option value={option}>{option}</option>)}
+          </select>
+        </div>
+      )}
       {
         /* OPTIONAL PROPERTY-DESCRIPTION SELECTOR. Starts unselected: the first option carries an
            empty value and is not `selected`-by-omission-of-anything-else — with no `required`

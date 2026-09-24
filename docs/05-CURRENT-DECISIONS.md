@@ -2848,3 +2848,14 @@ Earlier local-layout evidence relates to the broader uncommitted workspace and i
 this release. This isolated production candidate is built and checked independently, and live
 homepage HTML must be verified after the GitHub-triggered deployment before claiming success.
 External Google Business Profile, Nextdoor, LinkedIn and Thumbtack edits are not included.
+
+## 2026-09-23 — Approved campaign packages and rodent route correction
+
+The owner-approved inherited-home package installs at
+`/estate-cleanout-san-jose/assessment/`. The owner clarified that the approved rodent package is
+a campaign landing page, not a replacement for the canonical public service page; it therefore
+installs at `/rodent-dropping-cleanup-san-jose/assessment/`, while
+`/rodent-dropping-cleanup-san-jose/` remains unchanged. Both package headers use the real
+Aseptaclean logo and configured phone number rather than a generic phone icon. This decision is
+limited to the two campaign routes and does not alter public navigation or the public rodent
+service composition. No deployment was authorized.

@@ -1,91 +1,34 @@
 ---
-// Replacement reference: aseptaclean-estate-inherited-landing-2026-09-20-r01.zip.
-// This campaign route is intentionally separate from the public Estate and Hoarding pages.
-import PpcLayout from '@layouts/PpcLayout.astro';
-import PpcHeroForm from '@components/ppc/PpcHeroForm.astro';
-import EstateLandingIcon from '@components/estate/EstateLandingIcon.astro';
-import { Image } from 'astro:assets';
-import { srcsetWidths } from '@components/imageWidths';
-import { site, legal } from '@data/site';
-import { ppcEstate as copy } from '@data/ppcEstate';
-import estateHero from '../../../assets/aseptaclean/campaigns/estate/01-estate-hero-property-walkthrough.png';
-import estateSort from '../../../assets/aseptaclean/campaigns/estate/02-estate-sort-papers.png';
-import estateClear from '../../../assets/aseptaclean/campaigns/estate/03-estate-clear-home-contents.png';
-import estateClean from '../../../assets/aseptaclean/campaigns/estate/04-estate-clean-after-clearout.png';
-import estateKeep from '../../../assets/aseptaclean/campaigns/estate/05-estate-belongings-keep-tag.png';
-import '@styles/estate-landing-kit.css';
-import '@styles/hero-consistency.css';
+import { Image } from "astro:assets";
+import PpcLayout from "@layouts/PpcLayout.astro";
+import PpcHeroForm from "@components/ppc/PpcHeroForm.astro";
+import { srcsetWidths } from "@components/imageWidths";
+import inheritedHome from "../../../assets/aseptaclean/approved-landings/inherited-home.png";
+import { site } from "@data/site";
+import { ppcEstate } from "@data/ppcEstate";
+import "@styles/approved-landing.css";
 
-const roles = ['Family member', 'Executor / personal representative', 'Trustee / fiduciary', 'Real estate professional', 'Property owner', 'Other / not sure'] as const;
+const roles = ["Family member", "Executor / personal representative", "Trustee / fiduciary", "Real estate professional", "Property owner", "Other / not sure"] as const;
 ---
 
-<PpcLayout title={copy.seo.title} description={copy.seo.description} canonicalPath={copy.route}
-  stickyHeroSelector="#estate-top" stickyFormHref="#estate-contact"
-  stickySecondaryLabel="Request an Assessment" stickyHideWhileFormVisible estateLandingKit>
-  <Fragment slot="header">
-    <div class="utility"><div class="wrap"><span>Specialty property cleanup · South Bay &amp; Peninsula</span><span>Estate &amp; Inherited Home Cleanouts</span></div></div>
-    <header><div class="wrap navrow">
-      <a class="brand" href="#estate-top"><img src={site.business.logoUrl} width="900" height="215" alt="Aseptaclean" /></a>
-      <div class="campaign-nav"><a class="navcall" href={site.business.phoneUri}>Call {site.business.phone}</a><a class="action" href="#estate-contact">Request an Assessment</a></div>
-    </div></header>
-  </Fragment>
+<PpcLayout title="Inherited Home Cleanouts | Aseptaclean" description="Inherited home cleanouts, hoarding and contamination cleanup in the South Bay and Peninsula." canonicalPath={ppcEstate.route} stickyHeroSelector="#top" stickyFormHref="#contact" stickySecondaryLabel="Request a callback" showStickyBar={false}>
+  <Fragment slot="header"><header class="approved-landing-header"><div class="lp-container lp-header"><a href="#top" class="lp-logo" aria-label="Aseptaclean home"><img src={site.business.logoUrl} width="900" height="215" alt="Aseptaclean" /></a><a class="lp-call" href={site.business.phoneUri} aria-label={`Call Aseptaclean at ${site.business.phone}`}>{site.business.phone}</a></div></header></Fragment>
 
-  <section class="estate-editorial-hero" id="estate-top"><div class="wrap estate-editorial-grid">
-    <div class="estate-editorial-copy"><p class="eyebrow">Estate &amp; Inherited Home Cleanouts</p><h1 class="ac-type-estate-landing-0 ac-type-estate-landing-20 ac-type-estate-landing-21">A Home Left Behind.<br /><span>A Clear Path Forward.</span></h1><p class="estate-editorial-lead">Help clearing a loved one’s home—from years of belongings to heavily cluttered rooms. We agree on what stays, what goes, and the cleanup needed before work begins.</p></div>
-    <figure class="estate-editorial-media"><Image class="campaign-hero-photo" src={estateHero} alt="Property walkthrough in a furnished home with a tablet." width={1536} height={1024} widths={srcsetWidths(estateHero, [480, 768, 1024, 1280, 1536])} sizes="(min-width: 1120px) 600px, (min-width: 681px) 52vw, calc(100vw - 40px)" format="webp" quality={78} loading="eager" decoding="async" fetchpriority="high" /><figcaption><span>Care for the belongings. A plan for the home.</span></figcaption></figure>
-  </div><div class="wrap estate-hero-bottom-actions"><div class="actions"><a class="action" href="#estate-contact">Request an Assessment <EstateLandingIcon name="arrow-up-right" /></a><a class="estate-editorial-call" href={site.business.phoneUri}>Call {site.business.phone}</a></div><p class="estate-editorial-local">Serving the South Bay &amp; Peninsula</p></div><div class="wrap estate-editorial-assurances"><div><EstateLandingIcon name="package-check" /><span>Belongings reviewed.</span></div><div><EstateLandingIcon name="clipboard-check" /><span>Scope agreed.</span></div><div><EstateLandingIcon name="camera" /><span>Work documented.</span></div></div></section>
-
-  <section class="section ref-areas" id="estate-scope"><div class="wrap"><div class="section-top estate-full-heading"><div><p class="eyebrow">The work ahead</p><h2 class="ac-type-estate-landing-1"><span>A lifetime of belongings. A place to begin.</span></h2></div><p>You don’t have to sort the whole home first. Whether you’ve inherited a furnished house or rooms filled with years of belongings, we start with what matters to you.</p></div><div class="estate-service-index">
-    <article class="estate-service-line"><Image class="campaign-service-photo campaign-service-photo--sort" src={estateSort} alt="Black-gloved hands sorting estate papers for review." width={480} height={320} widths={srcsetWidths(estateSort, [180, 240, 360, 480])} sizes="(max-width: 580px) 100px, (max-width: 800px) 140px, 180px" format="webp" quality={78} loading="lazy" decoding="async" /><h3 class="ac-type-estate-landing-2 ac-type-estate-landing-28 ac-type-estate-landing-29">Sort &amp; set aside</h3><p>Tell us about keepsakes, important papers, and items the family wants to keep. We agree on what to set aside and what still needs a decision.</p></article>
-    <article class="estate-service-line"><Image class="campaign-service-photo campaign-service-photo--clear" src={estateClear} alt="Workers clearing household contents room by room." width={480} height={320} widths={srcsetWidths(estateClear, [180, 240, 360, 480])} sizes="(max-width: 580px) 100px, (max-width: 800px) 140px, 180px" format="webp" quality={78} loading="lazy" decoding="async" /><h3 class="ac-type-estate-landing-2 ac-type-estate-landing-28 ac-type-estate-landing-29">Full homes &amp; hoarding conditions</h3><p>Packed garages, blocked rooms, or belongings throughout the home—we assess access and conditions, then plan the agreed removal. You don’t need to label the situation to ask for help.</p></article>
-    <article class="estate-service-line"><Image class="campaign-service-photo campaign-service-photo--clean" src={estateClean} alt="Worker using an unbranded backpack vacuum in a cleared room." width={480} height={320} widths={srcsetWidths(estateClean, [180, 240, 360, 480])} sizes="(max-width: 580px) 100px, (max-width: 800px) 140px, 180px" format="webp" quality={78} loading="lazy" decoding="async" /><h3 class="ac-type-estate-landing-2 ac-type-estate-landing-28 ac-type-estate-landing-29">Clean for what’s next</h3><p>Once agreed contents are cleared, we complete the cleaning in your scope—whether you’re preparing for a family walkthrough, a sale, or a handover.</p></article>
-  </div><p class="estate-work-note">Sorting, removal, and cleaning are defined in your written scope. Rodent waste or other suspected contamination is assessed separately before the cleanup plan is agreed.</p></div></section>
-
-  <section class="section ref-plan"><div class="wrap"><div class="ref-overlap"><div class="ref-plan-photo campaign-plan-photo"><Image src={estateKeep} alt="Black-gloved worker attaching a KEEP tag to a family desk." width={1536} height={1024} widths={srcsetWidths(estateKeep, [480, 768, 1024, 1280, 1536])} sizes="(min-width: 1120px) 600px, (min-width: 681px) 52vw, calc(100vw - 40px)" format="webp" quality={78} loading="lazy" decoding="async" /></div><div class="ref-plan-panel"><p class="eyebrow">Belongings come first</p><h2 class="ac-type-estate-landing-1 ac-type-estate-landing-13 ac-type-estate-landing-17">Not everything in the home<br />is just another item.</h2><p>A photo album. A handwritten note. Something promised to a family member. Tell us what to look for, and we agree on how items needing review will be handled.</p><ul><li>Identify keepsakes and important belongings.</li><li>Separate items that need your decision.</li><li>Agree on removal before it happens.</li></ul><a class="action light" href="#estate-contact">Request an Assessment</a></div></div>
-    <div class="ref-work-row"><article><span>01</span><div><h3 class="ac-type-estate-landing-2 ac-type-estate-landing-14">Review the property</h3><p>Show us the home as it is. We review access, contents, conditions, and who can approve the work.</p></div></article><article><span>02</span><div><h3 class="ac-type-estate-landing-2 ac-type-estate-landing-14">Agree on the plan</h3><p>Decide what stays, what can go, and what needs review. Get the work and price in writing.</p></div></article><article><span>03</span><div><h3 class="ac-type-estate-landing-2 ac-type-estate-landing-14">Complete &amp; document</h3><p>Clear and clean the agreed areas, with the photos and records included in your scope.</p></div></article></div>
-  </div></section>
-
-  <section class="section estate-records"><div class="wrap"><div class="section-top estate-full-heading"><div><p class="eyebrow">For the estate file</p><h2 class="ac-type-estate-landing-1"><span>Clear decisions. A record for the estate.</span></h2></div><p>For families, executors, and trustees: agree on the records you need before work begins.</p></div><div class="estate-record-grid">
-    <article><EstateLandingIcon name="list-checks" /><div class="estate-record-text"><h3 class="ac-type-estate-landing-2 ac-type-estate-landing-19">Item inventory</h3><p>Agree on which items need to be logged, photographed, or tracked through the cleanout.</p></div></article>
-    <article><EstateLandingIcon name="camera" /><div class="estate-record-text"><h3 class="ac-type-estate-landing-2 ac-type-estate-landing-19">Photo documentation</h3><p>Include agreed photos of the property, selected belongings, and completed work.</p></div></article>
-    <article><EstateLandingIcon name="file-lock-2" /><div class="estate-record-text"><h3 class="ac-type-estate-landing-2 ac-type-estate-landing-19">Document handling</h3><p>Identify important papers to set aside for the authorized person to review. Agree on handling before any documents are removed.</p></div></article>
-  </div><p class="ref-boundary">Records follow the agreed scope. Inventory is not an appraisal; we do not decide ownership or resolve estate disputes.</p></div></section>
-
-  <section class="band ref-call"><div class="wrap"><div><h2 class="ac-type-estate-landing-1 ac-type-estate-landing-5">Managing this from out of town?</h2><p>Let’s discuss property access, approvals, and how you want to receive updates.</p></div><a class="action light" href={site.business.phoneUri}>Call {site.business.phone}</a></div></section>
-
-  <section class="section" id="estate-faq"><div class="wrap"><div class="estate-faq-inner"><p class="eyebrow">Common questions</p><h2 class="ac-type-estate-landing-1">A few things you may be wondering.</h2>
-    <details open><summary>Can you help if the home has hoarding conditions?</summary><p>Yes. Tell us about the rooms, how much is inside, and any access concerns. We assess the property and define the sorting, removal, and cleaning needed. Suspected contamination is reviewed separately so it can be addressed in the plan.</p></details>
-    <details><summary>Do we need to sort everything before contacting you?</summary><p>No. Tell us what has been decided and what still needs review. The assessment helps define the sorting support and cleanout work to include.</p></details>
-    <details><summary>Will belongings be removed without our approval?</summary><p>Removal follows the agreed scope. Identify items to keep and items needing review before clearing begins, so those decisions are clear.</p></details>
-    <details><summary>Can you provide an inventory and photos?</summary><p>Discuss your documentation needs during the assessment. The scope should identify the items, photos, and records to include rather than assuming a full item-by-item inventory.</p></details>
-    <details><summary>How is an estate cleanout priced?</summary><p>The amount of contents, sorting time, access, removal arrangements, cleaning, and documentation affect the price. You receive a written scope and price before work starts.</p></details>
-  </div></div></section>
-
-  <section class="section" id="estate-contact"><div class="wrap"><div class="formwrap"><p class="eyebrow">Contact Aseptaclean</p><h2 id="estate-contact-title" class="center ac-type-estate-landing-1">Start with the home as it is.</h2><p>Share your contact information and anything else you want us to know. It’s okay if you don’t have every answer yet.</p><div id="request-walkthrough">
-    <PpcHeroForm formId="request-walkthrough-panel" headingId="estate-contact-title"
-      entryRoute={`${copy.route}#${copy.formId}`} situationValue="Inherited or estate property"
-      campaignContext="estate_assessment" tone="light" turnstileSize="compact" submitLabel="Request an Assessment"
-      detailLabel="Additional info" detailRequired={false}
-      photoHelper="Photos are uploaded securely with your inquiry." microcopy={copy.form.microcopy}
-      thankYouRoute={copy.thankYou.route}>
-      <div slot="additional-fields" class="ppc-form__field ppc-form__field--full"><label for="estate-role">Role <span class="ppc-form__optional">(optional)</span></label><select id="estate-role" name="campaign_role"><option value="">Select your role</option>{roles.map((role) => <option value={role}>{role}</option>)}</select></div>
-    </PpcHeroForm>
-  </div><p class="campaign-coverage">Serving the South Bay &amp; Peninsula.</p></div></div></section>
-
-  <footer slot="footer"><div class="wrap"><div class="campaign-footer"><div><a class="brand" href="#estate-top"><img src={site.business.logoReversedUrl} width="900" height="215" alt="Aseptaclean" /></a><p>Specialized property cleanup.<br />A clear path forward.</p></div><div><h3 class="ac-type-estate-landing-2 ac-type-estate-landing-9">South Bay &amp; Peninsula</h3><p>Tell us where the property is located.</p><p><a href={site.business.phoneUri}>Call {site.business.phone}</a></p></div><div><h3 class="ac-type-estate-landing-2 ac-type-estate-landing-9">Let’s talk about your property.</h3><a class="action light" href="#estate-contact">Request an Assessment</a></div></div><div class="legal"><span>© 2026 Aseptaclean. All rights reserved.</span></div></div>
-    <div class="wrap legal-notes"><div class="legal-links" aria-label="Legal and preferences"><a href={site.urls.privacyPolicy}>Privacy Policy</a><a href={site.urls.terms}>Terms &amp; Conditions</a><a href={site.urls.cookiePolicy}>Cookie Policy</a>{site.integrations.termly.consentEnabled && <button type="button" class="termly-display-preferences">Cookie Settings</button>}</div><p><a href={`mailto:${site.business.email}`}>{site.business.email}</a> · {site.business.hours}</p><p data-nosnippet>Aseptaclean is not a licensed general contractor, remediation contractor, pest-control operator, or appraiser.</p><p data-nosnippet>{legal.scopeDisclaimer} {legal.documentationDisclaimer}</p></div>
-  </footer>
+  <div class="approved-landing lp-estate" id="top">
+    <section class="lp-hero"><div class="lp-container"><p class="lp-eyebrow">South Bay &amp; Peninsula</p><h1>Inherited home.<br />Overwhelming cleanup.</h1><p class="lp-lead">We clear packed homes and handle contamination—so you can move forward without doing it all yourself.</p><a class="lp-button lp-button--light" href="#contact">Request a callback <span aria-hidden="true">→</span></a><p class="lp-reassurance">Start with a conversation. No sorting required.</p></div></section>
+    <section class="lp-credibility"><div class="lp-container"><div class="lp-rule"></div><h2>Careful handling. Clear accountability.</h2><p>Founded by Matthew Ruiz • Former Stanford Health Care &amp; BioMarin professional</p></div></section>
+    <section class="lp-services lp-container"><h2>A full home doesn’t have to fall on you.</h2>
+      <article><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M4 22 24 4l20 18M9 18v26h11V29h8v15h11V18"></path></svg><div><h3>Packed rooms &amp; hoarding</h3><p>We carefully clear packed spaces, from single rooms to entire homes.</p></div></article>
+      <article><svg viewBox="0 0 48 48" aria-hidden="true"><ellipse cx="10" cy="18" rx="4" ry="6"></ellipse><ellipse cx="20" cy="9" rx="4" ry="6"></ellipse><ellipse cx="31" cy="9" rx="4" ry="6"></ellipse><ellipse cx="40" cy="20" rx="4" ry="6"></ellipse><path d="M13 32c3-3 5-10 11-10s8 7 11 10c7 8 0 14-6 10-4-2-6-2-10 0-7 4-13-2-6-10Z"></path></svg><div><h3>Rodent &amp; animal waste</h3><p>We safely handle contamination and restore spaces for a cleaner, healthier home.</p></div></article>
+      <article><svg viewBox="0 0 48 48" aria-hidden="true"><path d="m24 3 19 10v23L24 46 5 36V13Zm0 20v23M5 13l19 10 19-10M15 8l19 10v10"></path></svg><div><h3>Belongings that need care</h3><p>We sort with care, set aside what you want to keep, and responsibly remove the rest.</p></div></article>
+    </section>
+    <figure class="lp-photo"><Image src={inheritedHome} alt="Inherited home with books, furniture and boxes." width={2048} height={683} widths={srcsetWidths(inheritedHome, [480, 768, 1024, 1440, 2048])} sizes="100vw" format="webp" quality={82} loading="lazy" decoding="async" /></figure>
+    <section class="lp-process"><div class="lp-container"><h2>Your decisions come first.</h2><p>We agree on what stays, what goes, and what needs more family review before work begins.</p><ol><li><span>01</span><div><h3>Talk through the home</h3><p>Tell us about the property and your goals.</p></div></li><li><span>02</span><div><h3>Review the scope and price</h3><p>We walk through the plan and answer your questions.</p></div></li><li><span>03</span><div><h3>Approve the cleanup plan</h3><p>We get your go-ahead before any work begins.</p></div></li></ol></div></section>
+    <section class="lp-contact lp-container" id="contact"><h2 id="estate-approved-contact-title">Let’s talk about the home.</h2><p>Tell us how to reach you.</p><PpcHeroForm formId="estate-approved-lead-form" headingId="estate-approved-contact-title" entryRoute={`${ppcEstate.route}#contact`} situationValue="Inherited or estate property" campaignContext="estate_assessment" approvedLanding roleOptions={roles} namePlaceholder="Name" phonePlaceholder="Phone" optionalDisclosureLabel="Email, role & details (optional)" detailLabel="Additional information" detailRequired={false} photoHelper="Photos are uploaded securely with your inquiry." microcopy="Submitting does not authorize work." submitLabel="Request a callback →" thankYouRoute={ppcEstate.thankYou.route} tone="light" turnstileSize="compact" /></section>
+  </div>
+  <Fragment slot="footer"><footer class="approved-landing-footer"><div class="lp-container lp-footer"><strong>Aseptaclean, LLC</strong><p>South Bay &amp; Peninsula</p></div></footer></Fragment>
 </PpcLayout>
 
 <script>
-const root = document.getElementById('ac-inherited-estate');
-root?.querySelectorAll<HTMLAnchorElement>('a[href^="#"]').forEach((link) => {
-  link.addEventListener('click', (event) => {
-    const target = root.querySelector<HTMLElement>(link.hash);
-    if (!target) return;
-    event.preventDefault();
-    target.scrollIntoView({behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth', block: 'start'});
-    if (link.hash === '#estate-contact') root.querySelector<HTMLInputElement>('#request-walkthrough-panel input[name="full_name"]')?.focus({preventScroll: true});
-  });
-});
+  document.querySelectorAll<HTMLAnchorElement>('.approved-landing a[href="#contact"]').forEach((link) => link.addEventListener("click", (event) => { event.preventDefault(); document.querySelector("#contact")?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); document.querySelector<HTMLInputElement>("#estate-approved-lead-form-name")?.focus({ preventScroll: true }); }));
 </script>

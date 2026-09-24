@@ -591,3 +591,15 @@ provenance or authorize synthetic job evidence. Resolve before launch; no claim 
 Aseptaclean jobs, customers, staff or records. No new image generation or stock substitution.
 The supplied reference folder remains unchanged. Asset hash evidence is in
 `output/rodent-landing-install/preservation-results.json`.
+
+## Approved campaign landing images — 2026-09-23
+
+The owner-approved ZIP packages supplied one illustrative PNG for each campaign. The extracted
+bytes are preserved without visual substitution and are optimized at build time by Astro. They
+are used only on their respective `/assessment/` route. Neither is represented as an Aseptaclean
+job, customer, employee or record.
+
+| Asset | Route | SHA-256 |
+| --- | --- | --- |
+| `src/assets/aseptaclean/approved-landings/inherited-home.png` | `/estate-cleanout-san-jose/assessment/` | `16788fd1ea63400dd363db2fe4f95e3111ff0fd67c45361f52cc2cb75d8462e9` |
+| `src/assets/aseptaclean/approved-landings/rodent-assessment.png` | `/rodent-dropping-cleanup-san-jose/assessment/` | `5eea16d2d390e1b8308817160e8a0780e5c3657ffb75c542042143d256544545` |

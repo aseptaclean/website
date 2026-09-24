@@ -44,6 +44,8 @@ interface Props {
   stickySecondaryLabel: string;
   /** Opt-in for bottom-form campaigns: do not cover the form or its consent with the sticky bar. */
   stickyHideWhileFormVisible?: boolean;
+  /** Approved static landing pages do not include the campaign sticky bar. */
+  showStickyBar?: boolean;
   /** Illustrative-photography disclosure, rendered in the footer rather than in the hero. */
 }
 
@@ -58,6 +60,7 @@ const {
   stickyFormHref,
   stickySecondaryLabel,
   stickyHideWhileFormVisible = false,
+  showStickyBar = true,
 } = Astro.props;
 
 const termlyConsent = site.integrations.termly;
@@ -111,12 +114,14 @@ const effectiveNoindex = noindex || hiddenFromLaunch;
       <slot />
     </main>
     <slot name="footer"><PpcFooter /></slot>
-    <PpcStickyBar
-      heroSelector={stickyHeroSelector}
-      formHref={stickyFormHref}
-      secondaryLabel={stickySecondaryLabel}
-      hideWhileFormVisible={stickyHideWhileFormVisible}
-    />
+    {showStickyBar && (
+      <PpcStickyBar
+        heroSelector={stickyHeroSelector}
+        formHref={stickyFormHref}
+        secondaryLabel={stickySecondaryLabel}
+        hideWhileFormVisible={stickyHideWhileFormVisible}
+      />
+    )}
     <Analytics />
   </body>
 </html>

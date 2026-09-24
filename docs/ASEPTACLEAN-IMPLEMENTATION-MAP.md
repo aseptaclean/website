@@ -392,3 +392,27 @@ simplified header slots and do not render `ServiceDisclosure`. The disclosure's 
 `aria-expanded` and `aria-controls`; its controlled panel owns `aria-labelledby`. One shared
 script handles pointer/click toggling, keyboard activation, Escape/focus return, focus departure,
 outside-pointer dismissal, drawer reset and link closure without hover behavior.
+
+## Owner-approved inherited-home and rodent landing composition — 2026-09-23
+
+`src/styles/approved-landing.css` is the route-scoped implementation of both approved ZIP
+layouts. `src/pages/estate-cleanout-san-jose/assessment/index.astro` and
+`src/pages/rodent-dropping-cleanup-san-jose/assessment/index.astro` provide the approved copy,
+order and route-specific image while sharing that stylesheet. Their compact header maps the
+package mark slot to `site.business.logoUrl` and maps the package phone control to
+`site.business.phone` / `site.business.phoneUri`.
+
+The lower form remains the production `PpcHeroForm`; its `approvedLanding` option changes only
+presentation and disclosure placement. Existing campaign context, attribution, consent,
+Turnstile, idempotency, uploads, endpoint handling, analytics and success redirects remain in
+that component. `PpcLayout.showStickyBar={false}` suppresses the unrelated legacy sticky bar only
+on these approved compositions. The public rodent service route is not a consumer and remains
+unchanged.
+
+## Shared public contact rhythm — 2026-09-23
+
+`src/styles/public-page-rhythm.css` is imported only by the homepage and the six public service
+routes. At desktop widths it maps each route’s existing closing `.formwrap` to an aligned
+copy/form grid and understands both direct `AcCompactForm` output and Rodent’s
+`.ppc-form-shell`. Below 1024px it adds no rules, so the existing route kits retain their tablet,
+mobile and enlarged-text stacking. Campaign landing pages are not consumers.

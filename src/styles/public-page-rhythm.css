@@ -1,0 +1,202 @@
+/*
+ * Homepage + public-service contact rhythm.
+ *
+ * The approved kits originally center a 620px form in a 1120px content row. On desktop that
+ * leaves both sides empty and makes the closing section substantially taller than its content.
+ * Keep the exact copy/form order in the DOM, but use the available row as an aligned two-column
+ * composition. Tablet, mobile and enlarged-text layouts retain the existing stacked flow.
+ */
+
+/*
+ * Editorial split alignment.
+ *
+ * Several approved page kits rendered a section heading before a separate `.split` wrapper. At
+ * desktop widths that made the heading consume a full-width row and left a large blank area over
+ * the copy. Those headings now live with their related copy in the first split column. Keep the
+ * approved 45/55 desktop proportions, and stack these editorial splits below 1024px.
+ */
+:is(#ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent)
+  .section
+  > .wrap
+  > .split
+  > :first-child
+  > :is(.intro-heading, .full-section-heading, .wide-heading),
+#ac-home-locked-mockup #ac-why .why-heading,
+#ac-home-locked-mockup #ac-who .audience-heading {
+  margin-bottom: 24px;
+}
+
+:is(#ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent)
+  .section
+  > .wrap
+  > .split
+  > :first-child
+  > :is(.intro-heading, .full-section-heading, .wide-heading)
+  > .eyebrow:first-child {
+  margin-top: 0;
+}
+
+:is(#ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent)
+  .section
+  > .wrap
+  > .split
+  > :first-child
+  > :is(.intro-heading, .full-section-heading, .wide-heading)
+  + p,
+#ac-home-locked-mockup #ac-why .why-heading + p {
+  margin-top: 0;
+}
+
+@media (min-width: 64rem) {
+  :is(#ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent)
+    .section
+    > .wrap
+    > .split,
+  #ac-home-locked-mockup #ac-why .why-layout,
+  #ac-home-locked-mockup #ac-who .split {
+    grid-template-columns: minmax(0, 45fr) minmax(0, 55fr);
+    column-gap: 56px;
+    align-items: start;
+  }
+}
+
+@media (max-width: 63.999rem) {
+  :is(#ac-hoarding, #ac-extreme, #ac-detailed, #ac-trauma, #ac-rodent)
+    .section
+    > .wrap
+    > .split,
+  #ac-home-locked-mockup #ac-why .why-layout,
+  #ac-home-locked-mockup #ac-who .split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (min-width: 64rem) {
+  :is(
+      #ac-home-locked-mockup,
+      #ac-hoarding,
+      #ac-extreme,
+      #ac-detailed,
+      #ac-trauma,
+      #ac-estate,
+      #ac-rodent
+    )
+    :is(
+      #ac-form,
+      #hoarding-contact,
+      #extreme-contact,
+      #detailed-contact,
+      #trauma-contact,
+      #estate-contact,
+      #rodent-contact
+    )
+    > .wrap
+    > .formwrap {
+    display: grid;
+    grid-template-columns: minmax(0, 0.78fr) minmax(520px, 1.22fr);
+    column-gap: 64px;
+    align-items: start;
+    max-width: none;
+  }
+
+  :is(
+      #ac-home-locked-mockup,
+      #ac-hoarding,
+      #ac-extreme,
+      #ac-detailed,
+      #ac-trauma,
+      #ac-estate,
+      #ac-rodent
+    )
+    :is(
+      #ac-form,
+      #hoarding-contact,
+      #extreme-contact,
+      #detailed-contact,
+      #trauma-contact,
+      #estate-contact,
+      #rodent-contact
+    )
+    > .wrap
+    > .formwrap
+    > :not(form):not(.ppc-form-shell) {
+    grid-column: 1;
+    min-width: 0;
+  }
+
+  :is(
+      #ac-home-locked-mockup,
+      #ac-hoarding,
+      #ac-extreme,
+      #ac-detailed,
+      #ac-trauma,
+      #ac-estate,
+      #ac-rodent
+    )
+    :is(
+      #ac-form,
+      #hoarding-contact,
+      #extreme-contact,
+      #detailed-contact,
+      #trauma-contact,
+      #estate-contact,
+      #rodent-contact
+    )
+    > .wrap
+    > .formwrap
+    > :is(form, .ppc-form-shell) {
+    grid-column: 2;
+    grid-row: 1 / span 8;
+    width: 100%;
+    min-width: 0;
+    margin-top: 0;
+  }
+
+  :is(
+      #ac-home-locked-mockup,
+      #ac-hoarding,
+      #ac-extreme,
+      #ac-detailed,
+      #ac-trauma,
+      #ac-estate,
+      #ac-rodent
+    )
+    :is(
+      #ac-form,
+      #hoarding-contact,
+      #extreme-contact,
+      #detailed-contact,
+      #trauma-contact,
+      #estate-contact,
+      #rodent-contact
+    )
+    > .wrap
+    > .formwrap
+    > .eyebrow {
+    justify-content: flex-start;
+  }
+
+  :is(
+      #ac-home-locked-mockup,
+      #ac-hoarding,
+      #ac-extreme,
+      #ac-detailed,
+      #ac-trauma,
+      #ac-estate,
+      #ac-rodent
+    )
+    :is(
+      #ac-form,
+      #hoarding-contact,
+      #extreme-contact,
+      #detailed-contact,
+      #trauma-contact,
+      #estate-contact,
+      #rodent-contact
+    )
+    > .wrap
+    > .formwrap
+    > :is(h2, p) {
+    text-align: left;
+  }
+}

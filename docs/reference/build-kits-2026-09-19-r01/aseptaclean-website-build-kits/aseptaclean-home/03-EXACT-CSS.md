@@ -1,0 +1,859 @@
+# Exact final approved homepage CSS
+
+Version 1.2 · 2026-09-19. This is the complete stylesheet from the locked mockup, with the image data URI replaced by `./home-photos.jpg`. Root is `#ac-home-locked-mockup`.
+
+Use `reference/home.css` or the identical stylesheet below once. Preserve source order and final responsive/contrast overrides. Apply its actual DOM structure; a stylesheet import alone does not implement the design. Map typography to the repository's role classes when required without changing the appearance. Keep header/footer styling scoped to this homepage. Do not load visualization host styles into production.
+
+```css
+#ac-home-locked-mockup {
+  --photos:url("./home-photos.jpg");
+  --navy:#1c355e;
+  --deep:#122840;
+  --slate:#6a9bc3;
+  --ink:#172c42;
+  --muted:#546575;
+  --line:#dce3e9;
+  --warm:#f4f6f8;
+  color:var(--ink);
+  background:#fff;
+  font:16px/1.6 Inter,Arial,sans-serif;
+  isolation:isolate}
+#ac-home-locked-mockup * {
+  box-sizing:border-box}
+#ac-home-locked-mockup [hidden] {
+  display:none!important}
+#ac-home-locked-mockup h1,#ac-home-locked-mockup h2,#ac-home-locked-mockup h3,#ac-home-locked-mockup p {
+  margin:0}
+#ac-home-locked-mockup h1 {
+  font-size:clamp(36px,5.1vw,56px);
+  line-height:1.07;
+  letter-spacing:-.045em;
+  font-weight:750}
+#ac-home-locked-mockup h2 {
+  font-size:clamp(28px,3.2vw,38px);
+  line-height:1.15;
+  letter-spacing:-.035em;
+  font-weight:700}
+#ac-home-locked-mockup h3 {
+  font-size:19px;
+  line-height:1.3;
+  font-weight:650}
+#ac-home-locked-mockup a {
+  color:inherit;
+  text-decoration:none}
+#ac-home-locked-mockup button,#ac-home-locked-mockup input,#ac-home-locked-mockup select,#ac-home-locked-mockup textarea {
+  font:inherit}
+#ac-home-locked-mockup button,#ac-home-locked-mockup a,#ac-home-locked-mockup summary {
+  cursor:pointer}
+#ac-home-locked-mockup p {
+  overflow-wrap:anywhere}
+#ac-home-locked-mockup .wrap {
+  width:min(1120px,calc(100% - 72px));
+  margin:auto}
+#ac-home-locked-mockup .eyebrow {
+  font-size:11px;
+  font-weight:750;
+  letter-spacing:.15em;
+  text-transform:uppercase;
+  color:#526b82;
+  margin-bottom:14px;
+  display:flex;
+  align-items:center;
+  gap:10px}
+#ac-home-locked-mockup .eyebrow:before {
+  content:'';
+  width:23px;
+  height:2px;
+  background:var(--slate)}
+#ac-home-locked-mockup .action {
+  display:inline-flex;
+  justify-content:center;
+  align-items:center;
+  gap:10px;
+  min-height:46px;
+  padding:12px 19px;
+  background:var(--navy);
+  border:1px solid var(--navy);
+  color:#fff;
+  font-size:13px;
+  font-weight:700;
+  border-radius:2px;
+  text-align:center;
+  transition:background .15s}
+#ac-home-locked-mockup .action:hover {
+  background:#294d7d}
+#ac-home-locked-mockup .light {
+  background:#fff;
+  color:var(--deep);
+  border-color:#fff}
+#ac-home-locked-mockup .outline {
+  background:transparent;
+  color:inherit;
+  border-color:currentColor}
+#ac-home-locked-mockup .actions {
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:24px}
+#ac-home-locked-mockup .section {
+  padding:68px 0}
+#ac-home-locked-mockup .warm {
+  background:var(--warm)}
+#ac-home-locked-mockup .photo {
+  background-image:var(--photos);
+  background-size:300% 300%;
+  background-repeat:no-repeat;
+  background-color:#b8c0c5}
+#ac-home-locked-mockup .p0 {
+  background-position:0 0}
+#ac-home-locked-mockup .p1 {
+  background-position:50% 0}
+#ac-home-locked-mockup .p2 {
+  background-position:100% 0}
+#ac-home-locked-mockup .p3 {
+  background-position:0 50%}
+#ac-home-locked-mockup .p4 {
+  background-position:50% 50%}
+#ac-home-locked-mockup .p5 {
+  background-position:100% 50%}
+#ac-home-locked-mockup .p6 {
+  background-position:0 100%}
+#ac-home-locked-mockup .p7 {
+  background-position:50% 100%}
+#ac-home-locked-mockup .p8 {
+  background-position:100% 100%}
+
+#ac-home-locked-mockup .utility {
+  background:var(--deep);
+  color:#dbe5ee;
+  font-size:11px;
+  letter-spacing:.025em;
+  padding:7px 0}
+#ac-home-locked-mockup .utility .wrap {
+  display:flex;
+  justify-content:space-between;
+  gap:15px}
+#ac-home-locked-mockup header {
+  position:sticky;
+  top:0;
+  z-index:20;
+  background:#fff;
+  border-bottom:1px solid var(--line)}
+#ac-home-locked-mockup .navrow {
+  display:flex;
+  align-items:center;
+  gap:22px;
+  min-height:78px}
+#ac-home-locked-mockup .brand {
+  font-size:26px;
+  font-weight:800;
+  letter-spacing:-1.2px;
+  color:var(--navy)}
+#ac-home-locked-mockup .brand small {
+  display:block;
+  font-size:8px;
+  letter-spacing:1.6px;
+  font-weight:650;
+  margin-top:-5px}
+#ac-home-locked-mockup nav {
+  display:flex;
+  align-items:center;
+  gap:19px;
+  margin-left:auto;
+  font-size:12px;
+  font-weight:650}
+#ac-home-locked-mockup nav a:hover {
+  color:#4e7ea5}
+#ac-home-locked-mockup .navcall {
+  margin-left:auto;
+  font-size:12px;
+  font-weight:750;
+  white-space:nowrap}
+#ac-home-locked-mockup .menu {
+  position:relative}
+#ac-home-locked-mockup summary {
+  list-style:none;
+  padding:12px 0}
+#ac-home-locked-mockup summary::-webkit-details-marker {
+  display:none}
+#ac-home-locked-mockup .dropdown {
+  position:absolute;
+  top:100%;
+  left:0;
+  width:265px;
+  padding:10px;
+  background:#fff;
+  border:1px solid var(--line);
+  box-shadow:0 12px 30px #12284020}
+#ac-home-locked-mockup .dropdown button {
+  display:block;
+  width:100%;
+  text-align:left;
+  padding:12px;
+  border:0;
+  background:#fff;
+  font-size:13px;
+  color:var(--ink)}
+#ac-home-locked-mockup .dropdown button:hover {
+  background:var(--warm)}
+#ac-home-locked-mockup .mobilemenu {
+  display:none}
+
+#ac-home-locked-mockup .hero {
+  position:relative;
+  color:#fff;
+  background:var(--deep)}
+#ac-home-locked-mockup .hero .photo {
+  position:absolute;
+  inset:0;
+  opacity:.83;
+  background-position:0 0}
+#ac-home-locked-mockup .hero:after {
+  content:'';
+  position:absolute;
+  inset:0;
+  background:linear-gradient(90deg,#122840 0%,#122840eb 30%,#12284040 75%,#12284010)}
+#ac-home-locked-mockup .hero .wrap {
+  position:relative;
+  z-index:1;
+  padding:70px 0 92px}
+#ac-home-locked-mockup .hero-copy {
+  max-width:560px}
+#ac-home-locked-mockup .hero .eyebrow {
+  color:#c0d4e4}
+#ac-home-locked-mockup .hero p.body {
+  max-width:450px;
+  margin-top:24px;
+  font-size:17px;
+  color:#e5edf4}
+#ac-home-locked-mockup .hero .action {
+  min-height:50px}
+#ac-home-locked-mockup .trust {
+  position:relative;
+  z-index:2;
+  margin-top:-30px;
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  background:#fff;
+  box-shadow:0 10px 35px #12284015;
+  border-bottom:3px solid var(--slate)}
+#ac-home-locked-mockup .trust>div {
+  display:flex;
+  gap:15px;
+  padding:24px;
+  align-items:center}
+#ac-home-locked-mockup .trust>div+div {
+  border-left:1px solid var(--line)}
+#ac-home-locked-mockup .trust svg {
+  width:28px;
+  height:28px;
+  color:var(--navy);
+  flex-shrink:0}
+#ac-home-locked-mockup .trust strong {
+  display:block;
+  font-size:14px}
+#ac-home-locked-mockup .trust span {
+  font-size:12px;
+  color:var(--muted)}
+
+#ac-home-locked-mockup .split {
+  display:grid;
+  grid-template-columns:minmax(0,45fr) minmax(0,55fr);
+  gap:44px;
+  align-items:center}
+#ac-home-locked-mockup .split>div {
+  min-width:0}
+#ac-home-locked-mockup .split p {
+  margin-top:18px;
+  color:var(--muted)}
+#ac-home-locked-mockup .split .photo {
+  aspect-ratio:1.35;
+  position:relative}
+#ac-home-locked-mockup .image-note {
+  position:absolute;
+  bottom:20px;
+  left:-18px;
+  background:var(--navy);
+  color:#fff;
+  padding:18px 24px;
+  max-width:250px;
+  font-size:14px;
+  box-shadow:0 8px 18px #12284020}
+#ac-home-locked-mockup .image-note small {
+  display:block;
+  font-size:11px;
+  color:#cee0ef;
+  margin-top:4px}
+#ac-home-locked-mockup .checks {
+  padding:0;
+  list-style:none;
+  margin:23px 0 0}
+#ac-home-locked-mockup .checks li {
+  display:flex;
+  gap:10px;
+  margin-top:12px;
+  font-size:14px;
+  align-items:center}
+#ac-home-locked-mockup .checks svg {
+  width:18px;
+  height:18px;
+  color:var(--navy);
+  flex-shrink:0}
+#ac-home-locked-mockup .section-top {
+  display:flex;
+  justify-content:space-between;
+  align-items:end;
+  gap:30px;
+  margin-bottom:28px}
+#ac-home-locked-mockup .section-top>p {
+  max-width:280px;
+  color:var(--muted);
+  font-size:14px}
+#ac-home-locked-mockup .services {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:20px}
+#ac-home-locked-mockup .tile {
+  background:#fff;
+  min-width:0;
+  border:0;
+  padding:0;
+  text-align:left;
+  color:var(--ink);
+  box-shadow:0 2px 0 #dce3e9}
+#ac-home-locked-mockup .tile .photo {
+  height:154px;
+  position:relative;
+  transition:filter .2s}
+#ac-home-locked-mockup .tile:hover .photo {
+  filter:brightness(1.12)}
+#ac-home-locked-mockup .tile .label {
+  padding:17px 17px 19px}
+#ac-home-locked-mockup .tile h3 {
+  font-size:17px;
+  display:flex;
+  justify-content:space-between;
+  gap:10px}
+#ac-home-locked-mockup .tile p {
+  font-size:12px;
+  line-height:1.5;
+  color:var(--muted);
+  margin-top:7px}
+#ac-home-locked-mockup .tile svg {
+  width:17px;
+  flex-shrink:0}
+#ac-home-locked-mockup .center {
+  text-align:center}
+#ac-home-locked-mockup .center .actions {
+  justify-content:center}
+#ac-home-locked-mockup .service-detail {
+  margin-top:24px;
+  background:#fff;
+  border-left:4px solid var(--navy);
+  padding:24px;
+  position:relative}
+#ac-home-locked-mockup .service-detail p {
+  max-width:740px;
+  margin-top:10px;
+  color:var(--muted)}
+#ac-home-locked-mockup .close-detail {
+  position:absolute;
+  right:12px;
+  top:12px;
+  border:0;
+  background:var(--warm);
+  padding:7px 12px;
+  color:var(--ink)}
+
+#ac-home-locked-mockup .audience {
+  margin-top:20px}
+#ac-home-locked-mockup .audience>div {
+  padding:14px 0;
+  border-bottom:1px solid var(--line);
+  display:grid;
+  grid-template-columns:26px 1fr;
+  gap:14px}
+#ac-home-locked-mockup .audience svg {
+  color:var(--navy);
+  width:24px;
+  height:24px}
+#ac-home-locked-mockup .audience h3 {
+  font-size:15px}
+#ac-home-locked-mockup .audience p {
+  margin:5px 0 0;
+  font-size:13px}
+#ac-home-locked-mockup .band {
+  padding:35px 0;
+  background:var(--navy);
+  color:#fff}
+#ac-home-locked-mockup .band .wrap {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:28px}
+#ac-home-locked-mockup .band h2 {
+  font-size:29px}
+#ac-home-locked-mockup .band p {
+  font-size:14px;
+  color:#d6e1ed;
+  margin-top:8px}
+#ac-home-locked-mockup .band .action {
+  flex-shrink:0}
+#ac-home-locked-mockup .steps {
+  display:grid;
+  grid-template-columns:repeat(4,minmax(0,1fr));
+  gap:25px;
+  margin-top:35px}
+#ac-home-locked-mockup .step {
+  border-top:1px solid var(--line);
+  padding-top:18px}
+#ac-home-locked-mockup .step b {
+  font-size:32px;
+  color:#7a9fbc;
+  font-weight:500;
+  display:block;
+  margin-bottom:14px}
+#ac-home-locked-mockup .step h3 {
+  font-size:16px}
+#ac-home-locked-mockup .step p {
+  font-size:13px;
+  color:var(--muted);
+  margin-top:10px}
+#ac-home-locked-mockup .coverage {
+  display:grid;
+  grid-template-columns:1.2fr 1fr 1fr;
+  gap:40px}
+#ac-home-locked-mockup .coverage h3 {
+  font-size:16px;
+  margin-bottom:15px}
+#ac-home-locked-mockup .coverage p {
+  font-size:14px;
+  color:var(--muted);
+  margin-top:15px}
+#ac-home-locked-mockup .coverage ul {
+  padding:0;
+  list-style:none;
+  font-size:14px;
+  line-height:2.2;
+  margin:0}
+#ac-home-locked-mockup .coverage>div+div {
+  border-left:1px solid var(--line);
+  padding-left:30px}
+#ac-home-locked-mockup .quiet {
+  background:#eaf0f5;
+  padding:28px 0}
+#ac-home-locked-mockup .quiet .wrap {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:20px}
+#ac-home-locked-mockup .quiet h2 {
+  font-size:25px}
+#ac-home-locked-mockup .quiet p {
+  margin-top:7px;
+  font-size:13px;
+  color:var(--muted)}
+
+#ac-home-locked-mockup .formwrap {
+  max-width:620px;
+  margin:auto}
+#ac-home-locked-mockup .formwrap .eyebrow {
+  justify-content:center}
+#ac-home-locked-mockup .formwrap>p {
+  text-align:center;
+  color:var(--muted);
+  margin-top:15px}
+#ac-home-locked-mockup form {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:18px;
+  margin-top:30px}
+#ac-home-locked-mockup label {
+  display:block;
+  font-size:12px;
+  font-weight:650;
+  color:var(--ink)}
+#ac-home-locked-mockup input,#ac-home-locked-mockup select,#ac-home-locked-mockup textarea {
+  display:block;
+  width:100%;
+  margin-top:6px;
+  border:1px solid #bdcad5;
+  border-radius:2px;
+  background:#fff;
+  padding:12px;
+  color:var(--ink);
+  font-size:16px;
+  min-width:0}
+#ac-home-locked-mockup textarea {
+  min-height:110px;
+  resize:vertical}
+#ac-home-locked-mockup .full {
+  grid-column:1/-1}
+#ac-home-locked-mockup .consent {
+  display:flex;
+  gap:10px;
+  font-size:12px;
+  font-weight:400;
+  align-items:flex-start}
+#ac-home-locked-mockup .consent input {
+  width:18px;
+  height:18px;
+  margin:3px 0 0;
+  flex-shrink:0}
+#ac-home-locked-mockup .demo-note {
+  font-size:12px!important;
+  color:var(--muted)}
+#ac-home-locked-mockup .confirmation {
+  margin-top:30px;
+  background:#eaf0f5;
+  border-left:4px solid var(--navy);
+  padding:26px}
+#ac-home-locked-mockup .confirmation p {
+  margin-top:12px}
+#ac-home-locked-mockup .confirmation button {
+  margin-top:20px}
+
+#ac-home-locked-mockup footer {
+  background:var(--deep);
+  color:#e7edf4;
+  padding:45px 0 20px}
+#ac-home-locked-mockup .footergrid {
+  display:grid;
+  grid-template-columns:1.4fr 1.3fr 1fr 1fr;
+  gap:28px}
+#ac-home-locked-mockup footer .brand {
+  color:#fff}
+#ac-home-locked-mockup footer h3 {
+  font-size:14px;
+  color:#fff;
+  margin-bottom:15px}
+#ac-home-locked-mockup footer p,#ac-home-locked-mockup footer a:not(.brand) {
+  font-size:12px}
+#ac-home-locked-mockup footer p {
+  margin-top:16px;
+  color:#b6c8d9}
+#ac-home-locked-mockup .footlinks {
+  display:flex;
+  flex-direction:column;
+  gap:9px}
+#ac-home-locked-mockup .legal {
+  margin-top:32px;
+  padding-top:18px;
+  border-top:1px solid #38516a;
+  font-size:11px;
+  color:#b6c8d9;
+  display:flex;
+  justify-content:space-between;
+  gap:20px}
+#ac-home-locked-mockup section {
+  scroll-margin-top:90px}
+#ac-home-locked-mockup .mobilemenu button {
+  border:1px solid var(--line);
+  background:#fff;
+  color:var(--navy);
+  padding:10px}
+
+@media(max-width:850px) {
+  #ac-home-locked-mockup .wrap {
+  width:calc(100% - 40px)}
+#ac-home-locked-mockup nav {
+  gap:12px;
+  font-size:11px}
+#ac-home-locked-mockup .navcall {
+  display:none}
+#ac-home-locked-mockup .split {
+  gap:28px}
+#ac-home-locked-mockup .trust>div {
+  padding:19px 14px;
+  gap:10px}
+#ac-home-locked-mockup .trust strong {
+  font-size:12px}
+#ac-home-locked-mockup .trust span {
+  font-size:11px}
+#ac-home-locked-mockup .tile .photo {
+  height:125px}
+#ac-home-locked-mockup .services {
+  gap:14px}
+#ac-home-locked-mockup .section {
+  padding:52px 0}
+}
+
+@media(max-width:620px) {
+  #ac-home-locked-mockup nav {
+  display:none}
+#ac-home-locked-mockup .mobilemenu {
+  display:block;
+  margin-left:auto}
+#ac-home-locked-mockup .mobilemenu .dropdown {
+  right:0;
+  left:auto}
+#ac-home-locked-mockup .mobilemenu .dropdown a {
+  display:block;
+  padding:12px}
+#ac-home-locked-mockup .utility .wrap span:last-child {
+  display:none}
+#ac-home-locked-mockup .navrow {
+  min-height:68px}
+#ac-home-locked-mockup .hero .wrap {
+  padding:50px 0 65px}
+#ac-home-locked-mockup .hero:after {
+  background:#122840d9}
+#ac-home-locked-mockup .trust {
+  grid-template-columns:1fr;
+  margin-top:0}
+#ac-home-locked-mockup .trust>div+div {
+  border-left:0;
+  border-top:1px solid var(--line)}
+#ac-home-locked-mockup .trust>div {
+  padding:16px 20px}
+#ac-home-locked-mockup .trust strong {
+  font-size:14px}
+#ac-home-locked-mockup .trust span {
+  font-size:12px}
+#ac-home-locked-mockup .split {
+  grid-template-columns:1fr}
+#ac-home-locked-mockup .split .photo {
+  margin-top:12px}
+#ac-home-locked-mockup .image-note {
+  left:0}
+#ac-home-locked-mockup .section-top {
+  display:block}
+#ac-home-locked-mockup .section-top>p {
+  margin-top:16px}
+#ac-home-locked-mockup .services {
+  grid-template-columns:1fr 1fr}
+#ac-home-locked-mockup .tile .photo {
+  height:135px}
+#ac-home-locked-mockup .tile .label {
+  padding:14px 12px}
+#ac-home-locked-mockup .tile h3 {
+  font-size:15px}
+#ac-home-locked-mockup .band .wrap,#ac-home-locked-mockup .quiet .wrap {
+  align-items:flex-start;
+  flex-direction:column}
+#ac-home-locked-mockup .steps {
+  grid-template-columns:1fr 1fr}
+#ac-home-locked-mockup .coverage {
+  grid-template-columns:1fr 1fr;
+  gap:25px}
+#ac-home-locked-mockup .coverage>div:first-child {
+  grid-column:1/-1}
+#ac-home-locked-mockup .coverage>div+div {
+  padding-left:0;
+  border-left:0}
+#ac-home-locked-mockup form {
+  grid-template-columns:1fr}
+#ac-home-locked-mockup .footergrid {
+  grid-template-columns:1fr 1fr}
+#ac-home-locked-mockup .legal {
+  flex-direction:column}
+}
+
+@media(max-width:360px) {
+  #ac-home-locked-mockup .services {
+  grid-template-columns:1fr}
+#ac-home-locked-mockup .tile .photo {
+  height:180px}
+#ac-home-locked-mockup .steps {
+  grid-template-columns:1fr}
+}
+
+@media(prefers-reduced-motion:reduce) {
+  #ac-home-locked-mockup * {
+  transition:none!important;
+  scroll-behavior:auto!important}
+}
+
+
+/* Explicit surface colors prevent host styles from changing contrast. */
+#ac-home-locked-mockup h1,#ac-home-locked-mockup h2,#ac-home-locked-mockup h3 {
+  color:var(--ink)}
+
+#ac-home-locked-mockup .hero h1,#ac-home-locked-mockup .band h2 {
+  color:#fff}
+
+#ac-home-locked-mockup .hero .body {
+  color:#e5edf4}
+
+#ac-home-locked-mockup .image-note {
+  color:#fff}
+
+#ac-home-locked-mockup .image-note small {
+  color:#e1ebf3}
+
+#ac-home-locked-mockup .action.light {
+  background:#fff;
+  color:#122840;
+  border-color:#fff}
+
+#ac-home-locked-mockup .action.light:hover,#ac-home-locked-mockup .action.light:focus-visible {
+  background:#e7eef4;
+  color:#122840;
+  border-color:#e7eef4}
+
+#ac-home-locked-mockup .action.outline {
+  color:#1c355e;
+  border-color:#1c355e;
+  background:transparent}
+
+#ac-home-locked-mockup .action.outline:hover,#ac-home-locked-mockup .action.outline:focus-visible {
+  color:#fff;
+  background:#1c355e;
+  border-color:#1c355e}
+
+#ac-home-locked-mockup .hero .action.outline {
+  color:#fff;
+  border-color:#fff;
+  background:transparent}
+
+#ac-home-locked-mockup .hero .action.outline:hover,#ac-home-locked-mockup .hero .action.outline:focus-visible {
+  color:#122840;
+  background:#fff;
+  border-color:#fff}
+
+#ac-home-locked-mockup .step b {
+  color:#526f87}
+
+#ac-home-locked-mockup .eyebrow {
+  color:#526575}
+
+#ac-home-locked-mockup .hero .eyebrow {
+  color:#d1e0ec}
+
+#ac-home-locked-mockup .band .eyebrow {
+  color:#d1e0ec}
+
+#ac-home-locked-mockup .trust strong,#ac-home-locked-mockup .tile h3,#ac-home-locked-mockup label {
+  color:#172c42}
+
+#ac-home-locked-mockup input,#ac-home-locked-mockup select,#ac-home-locked-mockup textarea {
+  color:#172c42;
+  background:#fff}
+
+#ac-home-locked-mockup input::placeholder,#ac-home-locked-mockup textarea::placeholder {
+  color:#596b7c;
+  opacity:1}
+
+#ac-home-locked-mockup footer h3,#ac-home-locked-mockup footer a {
+  color:#fff}
+
+#ac-home-locked-mockup footer p,#ac-home-locked-mockup .legal {
+  color:#c5d3e0}
+
+
+
+#ac-home-locked-mockup .county-cities {line-height:1.9}
+#ac-home-locked-mockup .county-cities li {display:inline;max-width:none}
+#ac-home-locked-mockup .county-cities li:not(:last-child)::after {content:" · ";color:var(--muted)}
+#ac-home-locked-mockup .checks li {align-items:flex-start}
+#ac-home-locked-mockup .checks svg {margin-top:3px}
+#ac-home-locked-mockup .tile svg {height:20px}
+#ac-home-locked-mockup .service-detail h3 {padding-right:32px}
+#ac-home-locked-mockup :focus-visible {outline:2px solid #6a9bc3;outline-offset:4px}
+
+/* The proof points span beneath the copy/photo pair; the photo keeps its approved ratio. */
+#ac-home-locked-mockup #ac-why .why-layout {display:grid;grid-template-columns:minmax(0,45fr) minmax(0,55fr);column-gap:44px;row-gap:28px;align-items:start}
+#ac-home-locked-mockup #ac-why .why-copy {min-width:0}
+#ac-home-locked-mockup #ac-why .why-copy>p:not(.eyebrow) {margin-top:18px;color:#435565}
+#ac-home-locked-mockup #ac-why .why-photo {width:100%;height:auto;aspect-ratio:1.35;position:relative;align-self:start}
+#ac-home-locked-mockup #ac-why .why-points {grid-column:1/-1;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin:0;padding:25px 0 0;border-top:1px solid #dce3e9}
+#ac-home-locked-mockup #ac-why .why-points li {margin:0;align-items:flex-start;line-height:1.6;color:#435565}
+#ac-home-locked-mockup #ac-why .why-points strong {display:block;margin-bottom:5px;color:#172c42;font-weight:700}
+#ac-home-locked-mockup #ac-why .why-points span {color:#435565}
+#ac-home-locked-mockup #ac-why .why-action {grid-column:1/-1;margin:0}
+#ac-home-locked-mockup .tile .label {display:block;background:#fff;color:#172c42}
+#ac-home-locked-mockup .tile .label p,#ac-home-locked-mockup .audience p,#ac-home-locked-mockup .step p,#ac-home-locked-mockup .coverage p,#ac-home-locked-mockup .section-top>p,#ac-home-locked-mockup .formwrap>p {color:#435565}
+#ac-home-locked-mockup .tile .label h3,#ac-home-locked-mockup .trust strong,#ac-home-locked-mockup .audience h3,#ac-home-locked-mockup .step h3,#ac-home-locked-mockup .coverage h3,#ac-home-locked-mockup label {color:#172c42}
+#ac-home-locked-mockup .trust span,#ac-home-locked-mockup .coverage li,#ac-home-locked-mockup .quiet p {color:#435565}
+#ac-home-locked-mockup .action:not(.light):not(.outline) {color:#fff;background:#1c355e}
+#ac-home-locked-mockup .action:not(.light):not(.outline):hover {background:#294d7d}
+#ac-home-locked-mockup .action svg {color:inherit}
+#ac-home-locked-mockup .image-note {color:#fff}
+#ac-home-locked-mockup .image-note small {color:#e1ebf3}
+@media(max-width:850px) {#ac-home-locked-mockup #ac-why .why-layout {column-gap:28px}}
+@media(max-width:620px) {
+#ac-home-locked-mockup #ac-why .why-layout {grid-template-columns:minmax(0,1fr);row-gap:24px}
+#ac-home-locked-mockup #ac-why .why-points {grid-template-columns:minmax(0,1fr);gap:20px}
+#ac-home-locked-mockup #ac-why .why-photo {margin-top:0}
+}
+
+/* Service choices: two columns, compact imagery and readable descriptions. */
+#ac-home-locked-mockup #ac-services .services {grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+#ac-home-locked-mockup #ac-services .tile {display:grid;grid-template-columns:132px minmax(0,1fr);align-items:start;gap:0;background:#fff;border:1px solid #dce3e9;box-shadow:none;min-width:0;height:100%;transition:border-color .18s,background .18s}
+#ac-home-locked-mockup #ac-services .tile .photo {width:132px;height:150px;margin:0;align-self:start}
+#ac-home-locked-mockup #ac-services .tile .label {position:relative;padding:21px 38px 21px 20px;background:transparent;min-width:0}
+#ac-home-locked-mockup #ac-services .tile h3 {display:block;font-size:19px;line-height:1.3;letter-spacing:-.02em;font-weight:700;color:#172c42}
+#ac-home-locked-mockup #ac-services .tile h3 svg {position:absolute;top:24px;right:15px;width:17px;height:17px;color:#1c355e}
+#ac-home-locked-mockup #ac-services .tile p {font-size:14px;line-height:1.6;margin-top:10px;color:#435565}
+#ac-home-locked-mockup #ac-services .tile:hover {border-color:#6a9bc3;background:#f9fbfd}
+#ac-home-locked-mockup #ac-services .tile[aria-expanded="true"] {border-color:#1c355e;background:#eef3f7}
+#ac-home-locked-mockup #ac-services .tile:focus-visible {outline:3px solid #6a9bc3;outline-offset:3px}
+@media(max-width:950px) {
+#ac-home-locked-mockup #ac-services .tile {grid-template-columns:105px minmax(0,1fr)}
+#ac-home-locked-mockup #ac-services .tile .photo {width:105px;height:135px}
+#ac-home-locked-mockup #ac-services .tile .label {padding:18px 33px 18px 16px}
+#ac-home-locked-mockup #ac-services .tile h3 {font-size:18px}
+#ac-home-locked-mockup #ac-services .tile h3 svg {right:12px;top:21px}
+}
+@media(max-width:760px) {
+#ac-home-locked-mockup #ac-services .services {grid-template-columns:minmax(0,1fr);gap:14px}
+#ac-home-locked-mockup #ac-services .tile {grid-template-columns:112px minmax(0,1fr)}
+#ac-home-locked-mockup #ac-services .tile .photo {width:112px;height:138px}
+}
+@media(max-width:390px) {
+#ac-home-locked-mockup #ac-services .tile {grid-template-columns:86px minmax(0,1fr)}
+#ac-home-locked-mockup #ac-services .tile .photo {width:86px;height:116px}
+#ac-home-locked-mockup #ac-services .tile .label {padding:15px 25px 17px 13px}
+#ac-home-locked-mockup #ac-services .tile h3 {font-size:17px}
+#ac-home-locked-mockup #ac-services .tile h3 svg {width:14px;height:14px;right:8px;top:18px}
+}
+
+/* Editorial refinements: original photography and locked copy retained. */
+#ac-home-locked-mockup #ac-area .coverage {grid-template-columns:minmax(0,.95fr) minmax(0,1.15fr) minmax(0,1.15fr);gap:32px;align-items:start}
+#ac-home-locked-mockup #ac-area .coverage-county {padding-left:24px;border-left:1px solid #ccd7df;min-width:0}
+#ac-home-locked-mockup #ac-area .coverage-county h3 {margin-bottom:18px;color:#172c42;line-height:1.35}
+#ac-home-locked-mockup #ac-area .county-cities {columns:2;column-gap:18px;margin:0;padding:0;list-style:none;line-height:1.5}
+#ac-home-locked-mockup #ac-area .county-cities li {display:block;break-inside:avoid;margin:0 0 10px;font-size:13px;color:#435565;line-height:1.5}
+#ac-home-locked-mockup #ac-area .county-cities li::after {content:none}
+#ac-home-locked-mockup #ac-area .coverage-note {grid-column:1/-1;border-top:1px solid #ccd7df;padding-top:20px;margin:0;max-width:none;font-size:13px;line-height:1.7;color:#435565}
+#ac-home-locked-mockup #ac-area .coverage-note strong {color:#172c42;margin-right:8px}
+#ac-home-locked-mockup #ac-area .coverage-note br {display:none}
+#ac-home-locked-mockup .quiet {padding:32px 0}
+#ac-home-locked-mockup .quiet .wrap {justify-content:center;text-align:center}
+#ac-home-locked-mockup .quiet .wrap>div {max-width:680px}
+#ac-home-locked-mockup .quiet p {line-height:1.65}
+#ac-home-locked-mockup .tile {appearance:none;-webkit-appearance:none}
+#ac-home-locked-mockup .dropdown button:focus-visible {outline:2px solid #1c355e;outline-offset:-2px;background:#edf2f7}
+#ac-home-locked-mockup input:focus-visible,#ac-home-locked-mockup select:focus-visible,#ac-home-locked-mockup textarea:focus-visible {border-color:#1c355e;outline:2px solid #6a9bc3;outline-offset:2px}
+@media(max-width:900px) {
+#ac-home-locked-mockup #ac-area .coverage {grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:28px}
+#ac-home-locked-mockup #ac-area .coverage-intro {grid-column:1/-1;max-width:570px}
+#ac-home-locked-mockup #ac-area .coverage-county {padding-left:0;border-left:0}
+}
+@media(max-width:520px) {
+#ac-home-locked-mockup #ac-area .coverage {grid-template-columns:minmax(0,1fr);gap:26px}
+#ac-home-locked-mockup #ac-area .coverage-county+.coverage-county {padding-top:24px;border-top:1px solid #ccd7df}
+#ac-home-locked-mockup #ac-area .county-cities {columns:2;column-gap:24px}
+#ac-home-locked-mockup #ac-area .county-cities li {font-size:14px}
+#ac-home-locked-mockup .quiet .wrap {align-items:center}
+}
+@media(prefers-reduced-motion:reduce){#ac-home-locked-mockup #ac-services .tile{transition:none}}
+#ac-home-locked-mockup #ac-who .audience-heading {grid-column:1/-1}
+#ac-home-locked-mockup #ac-who .audience-heading .eyebrow {margin:0 0 14px;color:#526575}
+#ac-home-locked-mockup #ac-who .split {row-gap:24px}
+#ac-home-locked-mockup #ac-who .audience {margin-top:0}
+#ac-home-locked-mockup #ac-area .coverage-heading {grid-column:1/-1;padding:0;border:0}
+#ac-home-locked-mockup #ac-area .coverage-heading .eyebrow {margin:0 0 14px}
+#ac-home-locked-mockup #ac-area .coverage-intro {padding:0;border:0}
+#ac-home-locked-mockup #ac-area .coverage-intro>p {margin-top:0}
+#ac-home-locked-mockup #ac-who .audience-heading h2,#ac-home-locked-mockup #ac-area .coverage-heading h2 {max-width:none;text-wrap:wrap}
+
+#ac-home-locked-mockup #ac-services .section-top {display:block;margin-bottom:28px}
+#ac-home-locked-mockup #ac-services .section-top h2 {max-width:none;text-wrap:wrap}
+#ac-home-locked-mockup #ac-services .section-top>p {max-width:680px;margin-top:16px;color:#435565}
+
+#ac-home-locked-mockup #ac-why .why-heading {grid-column:1/-1}
+#ac-home-locked-mockup #ac-why .why-heading .eyebrow {margin:0 0 14px;color:#526575}
+#ac-home-locked-mockup #ac-why .why-heading h2 {max-width:none;text-wrap:wrap}
+#ac-home-locked-mockup #ac-why .why-copy>p:first-child {margin-top:0}
+```

@@ -430,6 +430,72 @@ Evidence:
 
 No push or deployment was performed.
 
+## Public section-rhythm repair — 2026-09-23
+
+Scope: homepage plus the six public service routes. Seventeen homepage/service editorial sections
+were inspected after the reported Hoarding example showed a full-width heading row separating the
+heading from its left-column copy. The affected headings now live with their related copy in the
+first split column; the image begins at the same top edge in the 45/55 desktop split. These splits
+stack below 1024px. Estate already used the correct nested heading/copy structure and was not
+recomposed.
+
+Results:
+
+- `npm run check`: pass, zero errors and zero warnings (existing hints only).
+- `npm run build:local`: pass, 54 generated pages before `/dev/*` pruning.
+- Browser audit: 35/35 route/viewport checks pass at 320, 390, 720, 768 and 1440px, with zero
+  horizontal overflow, zero unloaded images, and no desktop heading/photo alignment failure.
+- Native Chrome 200% zoom: all seven routes reflow to a 720px layout viewport with zero horizontal
+  overflow. Two pre-existing line-count assertions in the older heading-copy runner now report the
+  deliberately narrower left-column headings on Home Who We Help and Rodent Belongings; copy,
+  font size and line-height remain unchanged and visible.
+- Evidence: `output/public-pages-space-audit/` contains full-page screenshots and `results.json`.
+  The reproducible audit is `scripts/public-pages-space-audit.mjs`.
+
+No push or deployment was performed.
+
+## Public-page contact rhythm — 2026-09-23
+
+The homepage and six public service pages now use their previously empty desktop contact-row
+space for a two-column composition: the existing heading and introduction stay on the left and
+the unchanged production form sits on the right. The DOM order, approved copy, fields, consent,
+security verification, endpoint behavior and section order are unchanged. Layouts below 1024px
+retain the existing stacked form.
+
+Browser verification covered `/`, Hoarding, Extreme, Detailed Deep Cleaning, Trauma & Crime
+Scene, Rodent Droppings, and Estate Cleanout at 320, 390, 720 (1440px at 200%-equivalent reflow),
+768 and 1440px. All 35 route/viewport checks passed with zero horizontal overflow and no failed
+images. Desktop screenshots confirm aligned copy/form columns; tablet, mobile and enlarged-text
+screenshots confirm the stacked flow remains intact. Evidence and measurements are in
+`output/public-pages-space-audit/`; the reproducible runner is
+`scripts/public-pages-space-audit.mjs`. `npm run check` and `npm run build:local` passed. No push
+or deployment was performed.
+
+## Approved inherited-home and rodent campaign landings — 2026-09-23
+
+Installed the two owner-approved landing-page packages at
+`/estate-cleanout-san-jose/assessment/` and
+`/rodent-dropping-cleanup-san-jose/assessment/`. The canonical public rodent service page at
+`/rodent-dropping-cleanup-san-jose/` remains byte-identical to `HEAD`; the campaign did not
+replace it. Both campaign headers use the configured Aseptaclean logo and the verified rendered
+phone number `(408) 785-7588` with `tel:+14087857588`.
+
+Rendered Chrome verification covered 320, 390, 430, 768 and 1440px plus 200% text/layout
+enlargement for both pages. All ten viewport checks passed with zero horizontal overflow, loaded
+illustrative images and captions, correct canonical/indexing metadata, three desktop service
+columns, stacked mobile sections, and aligned two-column desktop process/contact compositions.
+The callback CTA scroll/focus behavior, optional-field disclosure, invalid-input summary, photo
+selection, retained values after a synthetic 503 response, confirmed-success thank-you routing,
+and exactly one `ppc_form_success` event were also verified. Screenshots are in
+`output/approved-landings-2026-09-23/`; the reproducible runner is
+`scripts/approved-landings-browser-check.mjs`.
+
+`npm run check`, `npm run build:local`, `npm run qa:campaign-short`, `npm run qa:analytics`,
+`npm run qa:analytics:events`, and `npm run qa:launch` passed. Provider responses and browser
+submissions used clearly labelled synthetic data and local mocks/stubs. No live notification was
+sent and no advertising-platform receipt was verified, so this QA does not claim live email/SMS
+delivery or live Google conversion ingestion. No push or deployment was performed.
+
 ## Campaign short-form QA — 2026-09-23
 
 Scope was limited to the Rodent and Estate/Inherited Home campaign landing forms and their shared
