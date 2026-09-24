@@ -44,7 +44,8 @@ const links = [
     });
     menu.querySelectorAll("a").forEach((link) => link.addEventListener("click", () => { menu.open = false; }));
     menu.addEventListener("focusout", (event) => {
-      if (!menu.contains(event.relatedTarget as Node)) menu.open = false;
+      const next = event.relatedTarget as Node | null;
+      if (next && !menu.contains(next)) menu.open = false;
     });
   }
   document.addEventListener("click", (event) => {

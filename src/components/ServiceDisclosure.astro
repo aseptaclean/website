@@ -78,7 +78,10 @@ const currentPath = normalizePath(Astro.url.pathname);
 
     disclosure.addEventListener("focusout", (event) => {
       const next = event.relatedTarget as Node | null;
-      if (!next || !disclosure.contains(next)) setDisclosureOpen(disclosure, false);
+      // Mobile Safari can report a null relatedTarget while moving touch focus
+      // within the disclosure. Outside pointer handling still closes the menu;
+      // only close here when focus is known to have moved elsewhere.
+      if (next && !disclosure.contains(next)) setDisclosureOpen(disclosure, false);
     });
 
     disclosure.querySelectorAll<HTMLAnchorElement>("a[href]").forEach((link) => {
