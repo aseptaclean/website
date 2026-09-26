@@ -416,3 +416,15 @@ routes. At desktop widths it maps each route’s existing closing `.formwrap` to
 copy/form grid and understands both direct `AcCompactForm` output and Rodent’s
 `.ppc-form-shell`. Below 1024px it adds no rules, so the existing route kits retain their tablet,
 mobile and enlarged-text stacking. Campaign landing pages are not consumers.
+
+## Rodent campaign assessment-pricing refresh — 2026-09-26
+
+`src/data/ppcRodent.ts` is the route-scoped source for the campaign's cleanup and assessment
+amounts, exact assessment terms, and three FAQ answers. The assessment route maps those values to
+`.lp-pricing` cleanup cards followed by `.lp-assessment` assessment cards and credit callout, then
+`.lp-faq` native disclosures before the existing bottom contact form. The campaign-only additions
+remain inside `src/styles/approved-landing.css`; no public-service stylesheet or component consumes
+them. `PpcHeroForm` is reused without backend changes, and its existing approved-landing disclosure
+receives the new visible label through a prop. `scripts/approved-landings-browser-check.mjs` covers
+the new pricing/content and interactions; `scripts/campaign-short-form-browser-check.mjs` now uses
+the current approved-landing form IDs and submit labels.

@@ -2869,3 +2869,22 @@ starting at $1,500, and the $145 on-site assessment fully credited toward cleanu
 Render the pricing between the process and contact sections in the installed landing-page visual
 system. This does not change the separate public rodent service route, pricing values, endpoint,
 form attribution, or campaign offer.
+
+## 2026-09-26 — Rodent campaign assessment pricing and callback flow supersede $145
+
+For `/rodent-dropping-cleanup-san-jose/assessment/` only, the owner's current pricing instruction
+supersedes the 2026-09-24 $145 assessment offer. Preserve the separate cleanup starting prices of
+$500 and $1,500. The campaign now starts with a free phone/photo conversation, then presents a
+$295 Standard Assessment, a $495 Detailed Assessment, and large or complex assessments starting
+at $750. The full paid assessment fee applies toward the assessed cleanup when the customer hires
+Aseptaclean; no credit deadline, minimum purchase, partial-credit restriction, tier selection,
+payment control, or direct booking is introduced.
+
+The hero and assessment CTAs say `Request a callback`; the hero also exposes the configured
+`tel:+14087857588` action. The existing shortened campaign form, endpoint, uploads, consent,
+anti-spam, attribution, analytics and confirmed-success receipt route remain unchanged. Three
+route-specific assessment FAQs use native disclosures. This decision does not reprice or otherwise
+edit the canonical public service page `/rodent-dropping-cleanup-san-jose/`; its conflicting $145
+references and supporting active documents are reported for a separate owner decision rather than
+silently changed. No approved Johnny review text was found, so no testimonial was rendered. No
+merge, push, preview deployment or production deployment was authorized.

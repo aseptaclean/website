@@ -1,7 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { chromium } from "playwright-core";
 
-const base = process.env.AC_LOCAL_BASE || "http://127.0.0.1:4321";
+const base = process.env.AC_LOCAL_BASE || process.env.PREVIEW_URL || "http://127.0.0.1:4321";
 const chromePath =
   process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome";
 const outDir = "output/campaign-short-form-qa";
@@ -9,19 +9,19 @@ const campaigns = [
   {
     key: "rodent",
     route: "/rodent-dropping-cleanup-san-jose/assessment/",
-    formId: "rodent-form-panel",
+    formId: "rodent-approved-lead-form",
     context: "rodent_assessment",
     situation: "Rodent droppings or animal waste",
-    submit: "Send Message",
+    submit: "Request a callback",
     thankYou: "/rodent-dropping-cleanup-san-jose/assessment/thank-you/"
   },
   {
     key: "estate",
     route: "/estate-cleanout-san-jose/assessment/",
-    formId: "request-walkthrough-panel",
+    formId: "estate-approved-lead-form",
     context: "estate_assessment",
     situation: "Inherited or estate property",
-    submit: "Request an Assessment",
+    submit: "Request a callback →",
     thankYou: "/estate-cleanout-san-jose/assessment/thank-you/"
   }
 ];
@@ -51,6 +51,12 @@ const blockExternalTracking = async (page) => {
   });
 };
 
+const dismissConsent = async (page) => {
+  const decline = page.getByRole("button", { name: "Decline", exact: true });
+  await decline.waitFor({ state: "visible", timeout: 3_000 }).catch(() => {});
+  if (await decline.isVisible().catch(() => false)) await decline.click();
+};
+
 const removeTurnstile = (form) =>
   form.evaluate((element) => element.querySelectorAll(".cf-turnstile").forEach((node) => node.remove()));
 
@@ -61,6 +67,10 @@ const fillRequired = async (form) => {
 };
 
 const fillOptional = async (form, withPhoto) => {
+  const disclosure = form.locator("[data-ppc-optional]");
+  if ((await disclosure.count()) && !(await disclosure.evaluate((element) => element.hasAttribute("open")))) {
+    await disclosure.locator("summary").click();
+  }
   await form.locator('input[name="email"]').fill("qa@aseptaclean.com");
   await form.locator('select[name="campaign_role"]').selectOption({ index: 1 });
   await form.locator('textarea[name="property_detail"]').fill("Controlled optional browser QA details.");
@@ -87,9 +97,7 @@ try {
     const page = await browser.newPage({ viewport: { width: 1440, height: 900 } });
     await blockExternalTracking(page);
     await page.goto(base + campaign.route, { waitUntil: "domcontentloaded" });
-    const declineCookies = page.getByRole("button", { name: "Decline", exact: true });
-    await declineCookies.waitFor({ state: "visible", timeout: 3_000 }).catch(() => {});
-    if (await declineCookies.isVisible().catch(() => false)) await declineCookies.click();
+    await dismissConsent(page);
     const form = page.locator(`#${campaign.formId}`);
     const shape = await form.evaluate((element) => {
       const controls = [...element.querySelectorAll("input, select, textarea")];
@@ -140,10 +148,11 @@ try {
     await page.setViewportSize({ width: 390, height: 844 });
     await form.scrollIntoViewIfNeeded();
     await page.waitForTimeout(100);
+    const stickyBar = page.locator("[data-ppc-bar]");
     check(
       campaign,
       "mobile sticky actions do not cover the visible form or consent",
-      await page.locator("[data-ppc-bar]").evaluate((bar) => bar.hidden)
+      (await stickyBar.count()) === 0 || (await stickyBar.evaluate((bar) => bar.hidden))
     );
     // Browser 200% zoom on a 1280px display exposes a 640-CSS-pixel layout viewport. Testing the
     // actual narrow viewport (rather than CSS `zoom`) lets responsive rules reflow as they do in
@@ -173,6 +182,7 @@ try {
         await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify(successPayload) });
       });
       await successPage.goto(base + campaign.route, { waitUntil: "domcontentloaded" });
+      await dismissConsent(successPage);
       const successForm = successPage.locator(`#${campaign.formId}`);
       await removeTurnstile(successForm);
       await fillRequired(successForm);
@@ -192,8 +202,10 @@ try {
     let invalidRequests = 0;
     await invalidPage.route("**/api/lead", (route) => { invalidRequests += 1; return route.abort(); });
     await invalidPage.goto(base + campaign.route, { waitUntil: "domcontentloaded" });
+    await dismissConsent(invalidPage);
     const invalidForm = invalidPage.locator(`#${campaign.formId}`);
     await removeTurnstile(invalidForm);
+    await fillOptional(invalidForm, false);
     await invalidForm.locator('input[name="email"]').fill("invalid-email");
     await invalidForm.evaluate((element) => element.requestSubmit());
     await invalidPage.waitForTimeout(100);
@@ -207,6 +219,7 @@ try {
       route.fulfill({ status: 503, contentType: "application/json", body: JSON.stringify({ ok: false, message: "Controlled submission failure." }) })
     );
     await failurePage.goto(base + campaign.route, { waitUntil: "domcontentloaded" });
+    await dismissConsent(failurePage);
     const failureForm = failurePage.locator(`#${campaign.formId}`);
     await removeTurnstile(failureForm);
     await fillRequired(failureForm);
@@ -225,6 +238,7 @@ try {
       await route.fulfill({ status: 201, contentType: "application/json", body: JSON.stringify(successPayload) });
     });
     await duplicatePage.goto(base + campaign.route, { waitUntil: "domcontentloaded" });
+    await dismissConsent(duplicatePage);
     const duplicateForm = duplicatePage.locator(`#${campaign.formId}`);
     await removeTurnstile(duplicateForm);
     await fillRequired(duplicateForm);

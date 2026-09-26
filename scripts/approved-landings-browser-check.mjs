@@ -3,14 +3,14 @@ import { mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
 
 const base = process.env.PREVIEW_URL || "http://127.0.0.1:4321";
-const shotDir = resolve("output/approved-landings-2026-09-23");
+const shotDir = resolve("output/rodent-assessment-pricing-review-2026-09-26");
 await mkdir(shotDir, { recursive: true });
 
 const routes = [
   { key: "estate", path: "/estate-cleanout-san-jose/assessment/", thankYou: "/estate-cleanout-san-jose/assessment/thank-you/" },
   { key: "rodent", path: "/rodent-dropping-cleanup-san-jose/assessment/", thankYou: "/rodent-dropping-cleanup-san-jose/assessment/thank-you/" }
 ];
-const widths = [320, 390, 430, 768, 1440];
+const widths = [320, 390, 430, 768, 820, 1440];
 const failures = [];
 const results = [];
 const browser = await chromium.launch({ headless: true, executablePath: process.env.CHROME_PATH || "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" });
@@ -55,7 +55,12 @@ for (const route of routes) {
         optionalOpen: document.querySelector("[data-ppc-optional]")?.hasAttribute("open"),
         previewNotice: document.body.textContent.includes("Preview only") || document.body.textContent.includes("not fully configured"),
         prices: [...document.querySelectorAll(".lp-pricing__price")].map((el) => el.textContent?.trim()),
-        assessmentPrice: document.querySelector(".lp-pricing__assessment")?.textContent?.includes("$145") ?? false,
+        assessmentPrices: [...document.querySelectorAll(".lp-assessment__price")].map((el) => el.textContent?.trim()),
+        assessmentText: document.querySelector(".lp-assessment")?.textContent ?? "",
+        pageText: document.querySelector(".approved-landing")?.textContent ?? "",
+        heroCallHref: document.querySelector(".lp-hero-actions a[href^='tel:']")?.getAttribute("href"),
+        optionalLabel: document.querySelector("[data-ppc-optional] summary")?.textContent?.trim(),
+        faqCount: document.querySelectorAll(".lp-faq details").length,
         imageOk: [...document.images].filter((img) => img.getClientRects().length).every((img) => img.complete && img.naturalWidth > 0)
       };
     });
@@ -66,7 +71,13 @@ for (const route of routes) {
     check(!geometry.previewNotice, `${route.key} ${width}: preview notice remains`);
     if (route.key === "rodent") {
       check(geometry.prices.join("|") === "$500|$1,500", `${route.key} ${width}: cleanup prices are missing or changed`);
-      check(geometry.assessmentPrice, `${route.key} ${width}: $145 assessment pricing is missing`);
+      check(geometry.assessmentPrices.join("|") === "$295|$495", `${route.key} ${width}: assessment prices are missing or changed`);
+      check(geometry.assessmentText.includes("assessments starting at $750"), `${route.key} ${width}: custom assessment starting price is missing`);
+      check(geometry.assessmentText.includes("Your full assessment fee goes toward your cleanup"), `${route.key} ${width}: full-credit statement is missing`);
+      check(!geometry.pageText.includes("$145"), `${route.key} ${width}: old $145 copy remains on the landing page`);
+      check(geometry.heroCallHref === "tel:+14087857588", `${route.key} ${width}: hero phone CTA is incorrect`);
+      check(geometry.optionalLabel?.includes("Add photos or details — optional"), `${route.key} ${width}: optional-fields label is incorrect`);
+      check(geometry.faqCount === 3, `${route.key} ${width}: expected three assessment FAQs`);
     }
     check(geometry.imageOk, `${route.key} ${width}: image failed to load`);
     check(geometry.required.includes("full_name") && geometry.required.includes("phone") && geometry.required.includes("privacy_consent"), `${route.key} ${width}: required fields incomplete`);
@@ -83,8 +94,18 @@ for (const route of routes) {
   await dismissConsent(interaction);
   await interaction.click('a[href="#contact"]');
   check(await interaction.locator('input[name="full_name"]').evaluate((el) => el === document.activeElement), `${route.key}: callback CTA did not focus the form`);
-  await interaction.click("[data-ppc-optional] summary");
+  await interaction.locator("[data-ppc-optional] summary").focus();
+  await interaction.keyboard.press("Enter");
   check(await interaction.locator('[name="email"]').isVisible(), `${route.key}: optional fields did not expand`);
+  check(await interaction.locator("[data-ppc-optional] summary").evaluate((el) => el === document.activeElement), `${route.key}: optional-fields control lost keyboard focus`);
+  if (route.key === "rodent") {
+    const firstFaq = interaction.locator(".lp-faq details").first();
+    await firstFaq.locator("summary").focus();
+    await interaction.keyboard.press("Enter");
+    check(await firstFaq.evaluate((el) => el.hasAttribute("open")), `${route.key}: FAQ did not open from keyboard`);
+    await interaction.keyboard.press("Space");
+    check(!(await firstFaq.evaluate((el) => el.hasAttribute("open"))), `${route.key}: FAQ did not close from keyboard`);
+  }
   await interaction.setInputFiles('[name="property_media[]"]', { name:"synthetic-test.png", mimeType:"image/png", buffer:Buffer.from("89504e470d0a1a0a", "hex") });
   check((await interaction.locator("[data-ppc-upload-list]").textContent())?.includes("synthetic-test.png"), `${route.key}: upload selection was not shown`);
   await interaction.fill('[name="email"]', "not-an-email");

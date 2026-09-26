@@ -430,6 +430,41 @@ Evidence:
 
 No push or deployment was performed.
 
+## Rodent campaign assessment-pricing QA — 2026-09-26
+
+Scope was limited to `/rodent-dropping-cleanup-san-jose/assessment/`. The canonical public rodent
+service source remained unchanged. The campaign keeps its hero, image, $500/$1,500 cleanup prices
+and bottom form, while adding the configured hero phone action, $295/$495 assessment cards, the
+custom-$750 line, prominent full-credit statement and three native-disclosure FAQs. No approved
+Johnny review text was present, so no review section was created.
+
+Results:
+
+- `npm run check`: pass, 0 errors and 0 warnings; 62 existing hints in repository QA/output files.
+- `npm run build:local`: pass, 54 pages before `/dev/*` pruning.
+- `npm run qa:campaign-short`: pass for both campaign identities, including validation, supported
+  and unsupported uploads, storage failure, conditional owner/customer notification branches and
+  idempotent duplicate handling. Provider calls were mocked.
+- `npm run qa:campaign-short:browser`: pass for both current campaign forms, including exact field
+  order/required states, optional fields, uploads, local validation, retained values after a
+  synthetic 503, mocked success redirects, attribution and duplicate-submit suppression.
+- `npm run qa:analytics`: 13/13 pass. `npm run qa:analytics:events`: 38/38 pass, including consent
+  gating, no conversion on failure, one confirmed-success conversion, deduplication and no PII in
+  event payloads. `npm run qa:launch`: pass; indexation and route inventory unchanged.
+- Responsive Chrome review: both campaign pages passed at 320, 390, 430, 768, 820 and 1440px with
+  zero horizontal overflow and loaded images. The Rodent assessment cards stack below 760px and
+  render as two aligned columns above it. The 200% enlargement/reflow checks passed without
+  horizontal clipping. Keyboard Enter/Space toggling passed for FAQs, and keyboard expansion/focus
+  passed for optional fields. Callback anchors focus the existing form; phone links resolve to
+  `tel:+14087857588`.
+- Rodent screenshots: `output/rodent-assessment-pricing-review-2026-09-26/rodent-390.png`,
+  `rodent-1440.png`, and `rodent-200-percent.png`. The folder also contains Estate regression
+  captures. Campaign-form screenshots and machine results are in `output/campaign-short-form-qa/`.
+
+No live inquiry, customer/owner notification, advertising-platform conversion or production
+deployment was triggered. Provider inbox delivery and live conversion ingestion therefore remain
+unverified. No merge, push or deployment was performed.
+
 ## Public section-rhythm repair — 2026-09-23
 
 Scope: homepage plus the six public service routes. Seventeen homepage/service editorial sections

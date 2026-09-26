@@ -6,11 +6,12 @@
 // dedicated thank-you route) with one scoped difference: the intake form sits at the bottom of
 // the page, not in the hero (AGENTS.md §2.2.3 scoped exception, 2026-09-16).
 //
-// PRICING — scoped owner exception (AGENTS.md §4, 2026-09-16), same as the service page: literal
-// $500 / $1,500 / $145 figures from the approved copy, not site.offer.assessmentFee.
+// PRICING — scoped owner exception. Cleanup retains the approved $500 / $1,500 starting figures.
+// The campaign's assessment offer was superseded 2026-09-26 by the owner-approved $295 / $495 /
+// custom-$750 structure. The separate public service page is intentionally unaffected.
 //
 // NOT A FREE-WALKTHROUGH CAMPAIGN. Unlike the hoarding/estate PPC routes, this page publishes the
-// real $145 on-site assessment fee, so it needs no confirmation-email branch in
+// paid on-site assessment offer, so it needs no confirmation-email branch in
 // functions/_lib/providers.ts — the existing default "Assessment request" branch already applies.
 //
 // "DISINFECT" REMOVED AS AN OUTCOME CLAIM — same reconciliation as src/data/rodentServicePage.ts.
@@ -27,7 +28,7 @@ export const ppcRodent = {
   seo: {
     title: "Rodent Dropping Cleanup for Your Home — San Jose | Aseptaclean",
     description:
-      "Found rodent waste in your cabinets, garage, or stored items? Free phone and photo review, a written cleanup plan and price before you agree, and a $145 on-site assessment fully credited toward your cleanup."
+      "Found rodent waste in your cabinets, garage, or stored items? Start with a free phone and photo review, then receive a written cleanup plan and price before you agree."
   },
 
   hero: {
@@ -38,7 +39,7 @@ export const ppcRodent = {
       "Aseptaclean removes rodent droppings, nests, and materials soiled by rodent waste. We clean the affected areas that can be treated."
     ],
     boldLine: "Know what can be cleaned, what needs to go, and what the work will cost—before you agree.",
-    secondaryLabel: "Request a Property Assessment",
+    secondaryLabel: "Request a callback",
     trustLine: "Owner-operated · Written cleanup plan and price"
   },
 
@@ -120,7 +121,7 @@ export const ppcRodent = {
       },
       {
         title: "Get your cleanup plan and price.",
-        body: "If a visit is needed, we check the areas we can reach. We talk through what needs cleaning and what may need removal. Then we give you a written plan and quote. The visit costs $145. If you hire us for the cleanup, that $145 counts toward your cleanup bill."
+        body: "If a visit is needed, we confirm the assessment type and fee before booking. We check the agreed areas, then provide a written cleanup scope and estimate. The full assessment fee is credited toward the assessed cleanup if you hire us."
       },
       {
         title: "Let us handle the cleanup.",
@@ -176,10 +177,9 @@ export const ppcRodent = {
     ]
   },
 
-  // PRICING — scoped owner exception, AGENTS.md §4, 2026-09-16, restructured 2026-09-17 on
-  // docs/Aseptaclean_Rodent_Pages_Layout_Brief.md §4 (docs/05-CURRENT-DECISIONS.md, 2026-09-17).
-  // Literal figures. Same shape as src/data/rodentServicePage.ts's `pricing` block — both render
-  // through the shared src/components/rodent/RodentPricing.astro.
+  // PRICING — route-scoped owner decision, 2026-09-26. This campaign data is deliberately
+  // independent of src/data/rodentServicePage.ts so the public service route is not replaced or
+  // silently repriced when campaign terms change.
   cost: {
     eyebrow: "Cleanup pricing",
     heading: "Know where pricing starts.",
@@ -199,12 +199,46 @@ export const ppcRodent = {
     ],
     note: "Final pricing depends on the amount of waste, access, materials, protective measures, and disposal needs.",
     assessment: {
-      heading: "On-site assessment · $145",
-      body: "We check the affected areas we can reach and provide a written cleanup plan and quote. The fee covers the visit and review; cleanup is priced separately.",
-      strongLine: "The full $145 is credited toward your cleanup if you hire us.",
-      buttonLabel: "Request a Property Assessment"
+      heading: "Start with a conversation.",
+      intro: "Call us or send photos for a free initial review. Some straightforward cleanups can be quoted from photos. If a site visit is needed, we explain the assessment fee before booking.",
+      options: [
+        {
+          title: "Standard assessment",
+          price: "$295",
+          body: "For one easy-to-access area with straightforward conditions, such as a garage, room, or shed.",
+          includes: ["Up to 45 minutes on site", "Relevant photos", "A written cleanup scope and estimate"],
+          note: ""
+        },
+        {
+          title: "Detailed assessment",
+          price: "$495",
+          body: "For multiple affected areas, substantial contents, or an assessment requiring crawlspace entry.",
+          includes: ["Up to 90 minutes on site", "Relevant photos and measurements as needed", "A detailed written cleanup scope and estimate"],
+          note: "Crawlspace entry depends on access and conditions."
+        }
+      ],
+      creditHeading: "Your full assessment fee goes toward your cleanup.",
+      creditBody: "If you hire Aseptaclean for the assessed cleanup, the full assessment fee is applied toward your cleanup invoice. If you do not proceed, the fee covers the completed assessment.",
+      complexLine: "Large or complex properties: assessments starting at $750.",
+      terms: "We confirm the assessment type, included areas, and total fee before booking. Additional travel or assessment requirements are quoted in advance. Cleanup is priced separately.",
+      buttonLabel: "Request a callback"
     }
   },
+
+  assessmentFaq: [
+    {
+      question: "Do I need an on-site assessment?",
+      answer: "Not always. Photos and a conversation may be enough to quote a straightforward cleanup. Larger areas, substantial contents, or difficult access may require a site visit."
+    },
+    {
+      question: "Does the assessment include the crawlspace?",
+      answer: "If crawlspace entry is part of the agreed assessment, it falls under a detailed or custom assessment. Entry depends on access and conditions. A review from the opening does not assess areas we cannot see."
+    },
+    {
+      question: "Is the assessment fee credited toward cleanup?",
+      answer: "Yes. If you hire Aseptaclean for the assessed cleanup, the full assessment fee is applied toward your cleanup invoice. If you do not proceed, the fee covers the completed assessment."
+    }
+  ],
 
   // CONTACT SECTION — restructured 2026-09-17 on the layout brief §6 (docs/05-CURRENT-DECISIONS.md,
   // 2026-09-17). One visible heading now — see the matching comment in rodentServicePage.ts.
@@ -215,8 +249,8 @@ export const ppcRodent = {
     secondaryLead: "Some small jobs can be quoted without a separate visit.",
     detailLabel: "What needs cleanup?",
     detailHelper: "Where did you find rodent waste? Are any boxes, furniture, or other items affected?",
-    submitLabel: "Request a Property Assessment",
-    microcopy: "We will explain the $145 assessment fee before booking a visit. The full fee is credited toward your cleanup if you hire us."
+    submitLabel: "Request a callback",
+    microcopy: "We will explain any assessment fee before booking a visit. The full fee is credited toward the assessed cleanup if you hire us."
   },
 
   thankYou: {
@@ -246,7 +280,7 @@ export const ppcRodent = {
   },
 
   stickyBar: {
-    secondaryLabel: "Request a Property Assessment"
+    secondaryLabel: "Request a callback"
   }
 } as const;
 
