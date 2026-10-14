@@ -12,7 +12,7 @@ const campaigns = [
     formId: "rodent-approved-lead-form",
     context: "rodent_assessment",
     situation: "Rodent droppings or animal waste",
-    submit: "Request a callback",
+    submit: "Request my callback",
     thankYou: "/rodent-dropping-cleanup-san-jose/assessment/thank-you/"
   },
   {
@@ -98,6 +98,7 @@ try {
     await blockExternalTracking(page);
     await page.goto(base + campaign.route, { waitUntil: "domcontentloaded" });
     await dismissConsent(page);
+    if (campaign.key === "rodent") await page.locator("#hero-cta").click();
     const form = page.locator(`#${campaign.formId}`);
     const shape = await form.evaluate((element) => {
       const controls = [...element.querySelectorAll("input, select, textarea")];
@@ -148,11 +149,11 @@ try {
     await page.setViewportSize({ width: 390, height: 844 });
     await form.scrollIntoViewIfNeeded();
     await page.waitForTimeout(100);
-    const stickyBar = page.locator("[data-ppc-bar]");
+    const stickyBar = page.locator("[data-ppc-bar], #contact-bar");
     check(
       campaign,
       "mobile sticky actions do not cover the visible form or consent",
-      (await stickyBar.count()) === 0 || (await stickyBar.evaluate((bar) => bar.hidden))
+      (await stickyBar.count()) === 0 || (await stickyBar.evaluate((bar) => bar.hidden || (bar.id === "contact-bar" && !bar.classList.contains("visible"))))
     );
     // Browser 200% zoom on a 1280px display exposes a 640-CSS-pixel layout viewport. Testing the
     // actual narrow viewport (rather than CSS `zoom`) lets responsive rules reflow as they do in
@@ -183,6 +184,7 @@ try {
       });
       await successPage.goto(base + campaign.route, { waitUntil: "domcontentloaded" });
       await dismissConsent(successPage);
+    if (campaign.key === "rodent") await successPage.locator("#hero-cta").click();
       const successForm = successPage.locator(`#${campaign.formId}`);
       await removeTurnstile(successForm);
       await fillRequired(successForm);
@@ -203,6 +205,7 @@ try {
     await invalidPage.route("**/api/lead", (route) => { invalidRequests += 1; return route.abort(); });
     await invalidPage.goto(base + campaign.route, { waitUntil: "domcontentloaded" });
     await dismissConsent(invalidPage);
+    if (campaign.key === "rodent") await invalidPage.locator("#hero-cta").click();
     const invalidForm = invalidPage.locator(`#${campaign.formId}`);
     await removeTurnstile(invalidForm);
     await fillOptional(invalidForm, false);
@@ -220,6 +223,7 @@ try {
     );
     await failurePage.goto(base + campaign.route, { waitUntil: "domcontentloaded" });
     await dismissConsent(failurePage);
+    if (campaign.key === "rodent") await failurePage.locator("#hero-cta").click();
     const failureForm = failurePage.locator(`#${campaign.formId}`);
     await removeTurnstile(failureForm);
     await fillRequired(failureForm);
@@ -239,6 +243,7 @@ try {
     });
     await duplicatePage.goto(base + campaign.route, { waitUntil: "domcontentloaded" });
     await dismissConsent(duplicatePage);
+    if (campaign.key === "rodent") await duplicatePage.locator("#hero-cta").click();
     const duplicateForm = duplicatePage.locator(`#${campaign.formId}`);
     await removeTurnstile(duplicateForm);
     await fillRequired(duplicateForm);

@@ -2888,3 +2888,12 @@ edit the canonical public service page `/rodent-dropping-cleanup-san-jose/`; its
 references and supporting active documents are reported for a separate owner decision rather than
 silently changed. No approved Johnny review text was found, so no testimonial was rendered. No
 merge, push, preview deployment or production deployment was authorized.
+
+
+## 2026-10-13 — Owner-approved rodent campaign mobile redesign
+
+Owner reviewed the private reference-led mobile/desktop mockup and explicitly instructed “Push it to production.” Scope is `/rodent-dropping-cleanup-san-jose/assessment/` only. The approved light hero, navy actions, rodent-condition imagery, founder section, three steps, FAQ, compact callback dialog and mobile action bar replace this campaign’s previous composition. No eyebrow or pricing amounts. This route-specific current decision supersedes older campaign geometry, CTA-label and popup restrictions; it does not alter other routes or the shared design system. Typography uses route-specific ac-type-rodent-* roles, isolated under #rodent-conversion.
+
+Production adaptation preserves PpcLayout SEO/indexation, consent-controlled analytics, existing PpcHeroForm, form identity, attribution, required privacy consent, Turnstile, secure optional attachments, error retention, idempotency and accepted-only thank-you redirect. Backend and shared form components are unchanged. Optional photos remain before submission in the existing disclosure: the current endpoint has no authenticated post-submission attachment operation, so the prototype’s simulated after-submit upload was not deployed. No mock success screen, preview labels or desktop-viewport overrides ship. Existing repository condition imagery is explicitly illustrative, not project proof. Phone and legal text come from central data. Footer retains real policies and Cookie Settings.
+
+Checks: `npm run check` — 0 errors, 0 warnings, 12 existing hints; `npm run build` — 54 pages; `npm run qa:campaign-short` — all 44 mocked endpoint checks passed; `npm run qa:analytics` — passed. Built-route assertions confirm one /api/lead form, required name/phone/consent, campaign/service identity, GTM/Turnstile, existing assets and no demo/pricing content. Existing browser regression script updated to open the rodent dialog and use its approved submit wording. Browser/layout QA could not run: no browser executable/control-browser capability available. No live lead was submitted. Deployment verification recorded in session handoff.

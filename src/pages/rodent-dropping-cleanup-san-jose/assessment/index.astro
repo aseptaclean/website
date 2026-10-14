@@ -1,58 +1,69 @@
 ---
-import { Image } from "astro:assets";
+import { getImage } from "astro:assets";
 import PpcLayout from "@layouts/PpcLayout.astro";
 import PpcHeroForm from "@components/ppc/PpcHeroForm.astro";
-import { srcsetWidths } from "@components/imageWidths";
-import rodentAssessment from "../../../assets/aseptaclean/approved-landings/rodent-assessment.png";
-import { site } from "@data/site";
+import { site, legal } from "@data/site";
 import { ppcRodent } from "@data/ppcRodent";
-import "@styles/approved-landing.css";
-
+import droppings from "../../../assets/aseptaclean/rodent-hard-surface-detail.png";
+import kitchen from "../../../assets/aseptaclean/campaigns/rodent/02-rodent-kitchen-cabinet.png";
+import garage from "../../../assets/aseptaclean/campaigns/rodent/03-rodent-garage-belongings.png";
+import attic from "../../../assets/aseptaclean/public-pages/rodent-service/02-rodent-service-attic-evidence.webp";
+import matthew from "../../../assets/aseptaclean/founder-matthew-ruiz.jpeg";
+import "@styles/rodent-conversion.css";
+const images = {
+ droppings: await getImage({src:droppings,width:1100,format:"webp",quality:82}),
+ kitchen: await getImage({src:kitchen,width:650,format:"webp",quality:82}),
+ garage: await getImage({src:garage,width:650,format:"webp",quality:82}),
+ attic: await getImage({src:attic,width:650,format:"webp",quality:82}),
+ matthew: await getImage({src:matthew,width:420,format:"webp",quality:85})
+};
 const roles = ["Property owner", "Family member", "Tenant / occupant", "Property manager / landlord", "Real estate professional", "Other / not sure"] as const;
 ---
-
-<PpcLayout title="Rodent Droppings Cleanup | Aseptaclean" description="Rodent droppings, nesting material and contamination cleanup in the South Bay and Peninsula." canonicalPath={ppcRodent.route} stickyHeroSelector="#top" stickyFormHref="#contact" stickySecondaryLabel="Request a callback" showStickyBar={false}>
-  <Fragment slot="header"><header class="approved-landing-header"><div class="lp-container lp-header"><a href="#top" class="lp-logo" aria-label="Aseptaclean home"><img src={site.business.logoUrl} width="900" height="215" alt="Aseptaclean" /></a><a class="lp-call" href={site.business.phoneUri} aria-label={`Call Aseptaclean at ${site.business.phone}`}>{site.business.phone}</a></div></header></Fragment>
-
-  <div class="approved-landing lp-rodent" id="top">
-    <section class="lp-hero"><div class="lp-container"><p class="lp-eyebrow">South Bay &amp; Peninsula</p><h1>Rodent droppings.<br />Handled with care.</h1><p class="lp-lead">We remove rodent droppings, nesting material, and contamination from affected areas of your home.</p><div class="lp-hero-actions"><a class="lp-button lp-button--light" href="#contact">Request a callback <span aria-hidden="true">→</span></a><a class="lp-button lp-button--outline-light" href={site.business.phoneUri} aria-label={`Call Aseptaclean at ${site.business.phone}`}>Call {site.business.phone}</a></div><p class="lp-reassurance">Start with a free conversation. Any paid assessment is agreed before booking.</p></div></section>
-    <section class="lp-credibility"><div class="lp-container"><div class="lp-rule"></div><h2>Careful cleanup. Clear steps.</h2><p>Founded by Matthew Ruiz • Former Stanford Health Care &amp; BioMarin professional</p></div></section>
-    <section class="lp-services lp-container"><h2>Help with what rodents leave behind.</h2>
-      <article><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M9 38h31c5-1 5-8 0-10 2-6-3-10-8-8 0-7-8-10-12-5-6-2-10 3-8 8-7 0-10 9-3 12Z"></path><path d="m21 5 1-3m13 9 3-2M19 26h.1M30 29h.1M24 35h.1"></path></svg><div><h3>Droppings &amp; nesting material</h3><p>Cleanup of affected areas, from a garage corner to a crawl space.</p></div></article>
-      <article><svg viewBox="0 0 48 48" aria-hidden="true"><path d="m18 3 4 10 10 4-10 4-4 10-4-10L4 17l10-4Zm19 23 3 7 7 3-7 3-3 7-3-7-7-3 7-3Z"></path></svg><div><h3>Urine &amp; affected surfaces</h3><p>Cleaning and treatment based on the materials and conditions.</p></div></article>
-      <article><svg viewBox="0 0 48 48" aria-hidden="true"><path d="M5 12 35 5l9 5v31L14 46 5 40Zm0 0 9 6 30-8M14 18v28M5 20l9 6 30-8M24 15v10l9-2V13"></path></svg><div><h3>Contaminated contents</h3><p>A clear plan for what can be cleaned and what needs removal.</p></div></article>
-      <p class="lp-scope-note">Cleanup follows pest control. We do not trap rodents or seal entry points.</p>
-    </section>
-    <figure class="lp-photo"><Image src={rodentAssessment} alt="Garage assessment with a gloved professional holding a tablet." width={2048} height={688} widths={srcsetWidths(rodentAssessment, [480, 768, 1024, 1440, 2048])} sizes="100vw" format="webp" quality={82} loading="lazy" decoding="async" /></figure>
-    <section class="lp-process"><div class="lp-container"><h2>Know the work.<br class="lp-desktop-break" /> Know the price.</h2><p>We review the affected areas and explain the scope before cleanup begins.</p><ol><li><span>01</span><div><h3>Tell us what you found</h3><p>Start with a free phone or photo review. We’ll discuss the affected areas and a preliminary cleanup price range when possible.</p></div></li><li><span>02</span><div><h3>Assess and plan</h3><p>If a site visit is needed, we confirm the assessment fee before booking. You receive a written cleanup scope and price.</p></div></li><li><span>03</span><div><h3>Approve the cleanup</h3><p>Once you approve the scope and service terms, we arrange the cleanup. Your paid assessment fee is credited toward the assessed work.</p></div></li></ol></div></section>
-    <section class="lp-pricing" aria-labelledby={ppcRodent.cost.id}><div class="lp-container">
-      <p class="lp-eyebrow">{ppcRodent.cost.eyebrow}</p>
-      <h2 id={ppcRodent.cost.id}>{ppcRodent.cost.heading}</h2>
-      <p class="lp-pricing__lead">{ppcRodent.cost.lead}</p>
-      <div class="lp-pricing__cards">
-        {ppcRodent.cost.cards.map((card) => <article><h3>{card.title}</h3><p class="lp-pricing__label">Starting at</p><p class="lp-pricing__price">{card.price}</p><p>{card.body}</p></article>)}
-      </div>
-      <p class="lp-pricing__note">{ppcRodent.cost.note}</p>
-      <div class="lp-assessment" aria-labelledby="assessment-options-heading">
-        <h3 id="assessment-options-heading">{ppcRodent.cost.assessment.heading}</h3>
-        <p class="lp-assessment__intro">{ppcRodent.cost.assessment.intro}</p>
-        <div class="lp-assessment__cards">
-          {ppcRodent.cost.assessment.options.map((option) => <article><p class="lp-assessment__type">{option.title}</p><p class="lp-assessment__price">{option.price}</p><p>{option.body}</p><h4>Includes:</h4><ul>{option.includes.map((item) => <li>{item}</li>)}</ul>{option.note && <p class="lp-assessment__note">{option.note}</p>}</article>)}
-        </div>
-        <div class="lp-assessment__credit"><strong>{ppcRodent.cost.assessment.creditHeading}</strong><p>{ppcRodent.cost.assessment.creditBody}</p></div>
-        <p class="lp-assessment__complex">{ppcRodent.cost.assessment.complexLine}</p>
-        <p class="lp-assessment__terms">{ppcRodent.cost.assessment.terms}</p>
-        <a class="lp-button lp-assessment__cta" href="#contact">{ppcRodent.cost.assessment.buttonLabel} <span aria-hidden="true">→</span></a>
-      </div>
-    </div></section>
-    <section class="lp-faq" aria-labelledby="assessment-faq-heading"><div class="lp-container"><h2 id="assessment-faq-heading">Assessment questions</h2><div class="lp-faq__list">
-      {ppcRodent.assessmentFaq.map((item) => <details><summary>{item.question}</summary><p>{item.answer}</p></details>)}
-    </div></div></section>
-    <section class="lp-contact lp-container" id="contact"><h2 id="rodent-approved-contact-title">Let’s talk about the cleanup.</h2><p>Tell us how to reach you. The initial conversation is free. Any paid assessment is agreed before booking.</p><PpcHeroForm formId="rodent-approved-lead-form" headingId="rodent-approved-contact-title" entryRoute={`${ppcRodent.route}#contact`} situationValue="Rodent droppings or animal waste" campaignContext="rodent_assessment" approvedLanding roleOptions={roles} namePlaceholder="Full name" phonePlaceholder="Phone number" optionalDisclosureLabel="Add photos or details — optional" detailLabel="Additional information" detailRequired={false} photoHelper="Photos are uploaded securely with your inquiry." microcopy="Submitting does not authorize work." submitLabel="Request a callback" thankYouRoute={ppcRodent.thankYou.route} tone="light" turnstileSize="compact" /></section>
-  </div>
-  <Fragment slot="footer"><footer class="approved-landing-footer"><div class="lp-container lp-footer"><strong>Aseptaclean, LLC</strong><p>South Bay &amp; Peninsula</p></div></footer></Fragment>
+<PpcLayout title="Rodent Droppings Cleanup | Aseptaclean" description="Rodent droppings, nesting material and contamination cleanup in the South Bay and Peninsula." canonicalPath={ppcRodent.route} stickyHeroSelector="#hero-cta" stickyFormHref="#contact" stickySecondaryLabel="Get cleanup help" showStickyBar={false}>
+<Fragment slot="header" /><Fragment slot="footer" />
+<div id="rodent-conversion">
+<header class="site-header"><div class="container header-inner"><a href="#top" aria-label="Aseptaclean"><img class="logo" src={site.business.logoUrl} width="180" height="43" alt="Aseptaclean"></a><a class="header-call" href={site.business.phoneUri} aria-label={`Call Aseptaclean at ${site.business.phone}`}><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3H3v4c1 7 7 13 14 14h4v-5l-5-2-2 3c-4-2-6-4-7-7l3-2-2-5H6Z"/></svg><span class="mobile-word">Call us</span></a></div></header><div id="top">
+<section class="hero"><div class="hero-grid"><div class="container hero-copy"><h1 class="ac-type-rodent-title">Rodent droppings?<br><span>Let’s take care<br>of the cleanup.</span></h1><p>Cleanup for kitchens, garages, attics, and crawl spaces across the South Bay &amp; Peninsula.</p><button type="button" id="hero-cta" class="button light" data-open>Get cleanup help <span class="arrow" aria-hidden="true">→</span></button><p class="reassurance">Start with a free conversation. No obligation to book.</p><a class="call-text" href={site.business.phoneUri}>Or call {site.business.phone} ↗</a></div><figure class="hero-media"><img src={images.droppings.src} width="1300" height="867" alt="Rodent droppings along the edge of a storage area" fetchpriority="high"></figure></div></section>
+<div class="trust"><div><span class="tick">✓</span><span><strong>Speak with the owner</strong><small>Discuss your situation directly.</small></span></div><div><span class="tick">✓</span><span><strong>Know the plan &amp; price</strong><small>Approve the work before it starts.</small></span></div></div>
+<section class="section container"><h2 class="ac-type-rodent-section">Cleanup for the places<br>that matter to you.</h2><p class="section-intro">One affected area or several—we’ll help you understand what needs attention.</p><div class="places"><article class="place"><img src={images.kitchen.src} width="600" height="400" loading="lazy" alt="Droppings and nesting debris inside a kitchen cabinet"><div><h3 class="ac-type-rodent-card">Kitchens &amp; cabinets</h3><p>Drawers, pantries, cabinets, and affected surfaces.</p></div></article><article class="place"><img src={images.garage.src} width="600" height="400" loading="lazy" alt="Rodent droppings along a garage wall near stored belongings"><div><h3 class="ac-type-rodent-card">Garages &amp; belongings</h3><p>Shelving, storage areas, and items that need cleaning or removal.</p></div></article><article class="place"><img src={images.attic.src} width="600" height="400" loading="lazy" alt="Nesting debris and rodent evidence around attic insulation"><div><h3 class="ac-type-rodent-card">Attics &amp; crawl spaces</h3><p>Accessible areas, with the work planned around site conditions.</p></div></article></div><p class="scope">We handle cleanup. Pest control and entry-point sealing are separate services.</p><div class="photo-invite"><div><h3 class="ac-type-rodent-card">Not sure what needs cleaning?</h3><p>Tell us what you found. We’ll discuss your options and whether a visit is needed.</p></div><button type="button" class="button" data-open>Discuss my cleanup <span class="arrow">→</span></button><small>Photos are optional. A conversation is enough to start.</small></div></section>
+<section class="section owner"><div class="container"><div class="owner-heading"><img src={images.matthew.src} width="720" height="960" loading="lazy" alt="Matthew Ruiz, founder of Aseptaclean"><div><h2 class="ac-type-rodent-section">A real person.<br>A clear next step.</h2><p>Matthew Ruiz<br>Founder &amp; owner</p></div></div><div><p class="owner-body">You’ll speak directly with Matthew about your property and belongings. His background includes biochemistry, BioMarin pharmaceutical manufacturing, and Stanford Health Care surgical pathology.</p><ul class="owner-points"><li><span>✓</span> Review what gets cleaned or removed.</li><li><span>✓</span> Approve a written scope and price.</li></ul></div></div></section>
+<section class="section process"><div class="container"><h2 class="ac-type-rodent-section">Start with a conversation.</h2><ol class="steps"><li><span class="number">1</span><div><h3 class="ac-type-rodent-card">Tell us what you found</h3><p>Call or send photos. We discuss the affected areas and what you need help with.</p></div></li><li><span class="number">2</span><div><h3 class="ac-type-rodent-card">Understand the next step</h3><p>If an onsite assessment is needed, its fee is explained before booking.</p></div></li><li><span class="number">3</span><div><h3 class="ac-type-rodent-card">Decide with a clear plan</h3><p>Review the cleanup scope and price before approving or scheduling the work.</p></div></li></ol></div></section>
+<section class="section container faq"><h2 class="ac-type-rodent-section">Before you reach out.</h2><details><summary>Can I send photos before booking?</summary><p>Yes. Photos can help us understand visible conditions. Some straightforward cleanups can be quoted from photos; an onsite assessment may still be needed.</p></details><details><summary>How do you determine the price?</summary><p>We consider affected areas, access, belongings, and materials requiring removal. You receive a written cleanup scope and price before agreeing to the work. Any paid onsite assessment is agreed separately.</p></details><details><summary>Will everything need to be thrown away?</summary><p>Not necessarily. The material and condition matter. We explain what we propose to clean or remove, and you approve the plan before work begins.</p></details><details><summary>What if rodents are still active?</summary><p>Tell us about any ongoing activity and pest-control work already completed. We discuss cleanup timing. Trapping, pest treatment, and sealing entry points require a separate provider.</p></details></section>
+<section class="section closing"><div class="container"><div><h2 class="ac-type-rodent-section">Let’s start with<br>what you found.</h2><p>You don’t need to know the full extent of the problem to contact us.</p></div><button type="button" class="button" data-open>Get cleanup help <span class="arrow">→</span></button></div></section></div>
+<footer><strong>{site.business.legalName}</strong><p>{site.location.serviceArea}</p><p><a href={site.business.phoneUri}>{site.business.phone}</a></p><nav aria-label="Legal and preferences"><a href={site.urls.privacyPolicy}>Privacy Policy</a> · <a href={site.urls.terms}>Terms &amp; Conditions</a> · <a href={site.urls.cookiePolicy}>Cookie Policy</a> · <button type="button" class="cookie-settings termly-display-preferences">Cookie Settings</button></nav><p>Illustrative cleanup conditions; not completed-job results.</p><p data-nosnippet>{legal.scopeDisclaimer} {legal.documentationDisclaimer}</p></footer>
+<div class="contact-bar" id="contact-bar"><a href={site.business.phoneUri}>Call us ↗</a><button type="button" class="button" data-open>Get cleanup help <span class="arrow">→</span></button></div>
+<div id="contact"></div><dialog id="inquiry" aria-labelledby="form-title" aria-describedby="form-intro"><div class="form-shell"><div class="form-top"><h2 class="ac-type-rodent-section" id="form-title" tabindex="-1">Let’s talk cleanup.</h2><button class="close" id="close" type="button" aria-label="Close inquiry">×</button></div><div class="form-scroll" id="form-scroll"><p class="form-intro" id="form-intro">Leave your number. Matthew will follow up to discuss what you found and how we can help.</p>
+<PpcHeroForm formId="rodent-approved-lead-form" headingId="form-title" entryRoute={`${ppcRodent.route}#contact`} situationValue="Rodent droppings or animal waste" campaignContext="rodent_assessment" approvedLanding roleOptions={roles} namePlaceholder="Full name" phonePlaceholder="(408) 555-0123" optionalDisclosureLabel="Add photos or details — optional" detailLabel="Additional information" detailRequired={false} photoHelper="Photos are uploaded securely with your inquiry." microcopy="Free first conversation. Any paid visit agreed beforehand. Submitting does not authorize work." submitLabel="Request my callback" thankYouRoute={ppcRodent.thankYou.route} tone="light" turnstileSize="compact" />
+</div></div></dialog><noscript><p class="container">To discuss your cleanup, call <a href={site.business.phoneUri}>{site.business.phone}</a>. The online form requires JavaScript.</p></noscript>
+</div>
 </PpcLayout>
-
 <script>
-  document.querySelectorAll<HTMLAnchorElement>('.approved-landing a[href="#contact"]').forEach((link) => link.addEventListener("click", (event) => { event.preventDefault(); document.querySelector("#contact")?.scrollIntoView({ behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }); document.querySelector<HTMLInputElement>("#rodent-approved-lead-form-name")?.focus({ preventScroll: true }); }));
+const dialog = document.querySelector<HTMLDialogElement>('#inquiry');
+const bar = document.querySelector<HTMLElement>('#contact-bar');
+const hero = document.querySelector<HTMLElement>('#hero-cta');
+if(dialog && bar && hero) {
+ let trigger: HTMLElement | null = null;
+ const updateBar = () => {
+  const consent = document.querySelector<HTMLElement>('.t-consentPrompt');
+  const consentOpen = Boolean(consent && consent.getBoundingClientRect().height > 0);
+  bar.classList.toggle('visible', hero.getBoundingClientRect().bottom < 0 && !dialog.open && !consentOpen);
+ };
+ const openForm = (source: HTMLElement | null) => {
+  trigger = source;
+  if(!dialog.open) dialog.showModal();
+  document.body.style.overflow = 'hidden';
+  updateBar();
+  document.querySelector<HTMLElement>('#form-scroll')!.scrollTop = 0;
+  document.querySelector<HTMLElement>('#form-title')?.focus({preventScroll:true});
+ };
+ document.querySelectorAll<HTMLElement>('#rodent-conversion [data-open]').forEach(button => button.addEventListener('click', () => openForm(button)));
+ document.querySelector('#close')?.addEventListener('click', () => dialog.close());
+ dialog.addEventListener('close', () => { document.body.style.overflow=''; updateBar(); trigger?.focus({preventScroll:true}); });
+ dialog.addEventListener('click', event => { if(event.target===dialog){const r=dialog.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)dialog.close();} });
+ new IntersectionObserver(updateBar, {threshold:0}).observe(hero);
+ new MutationObserver(updateBar).observe(document.body, {childList:true,subtree:true});
+ window.addEventListener('resize', updateBar, {passive:true});
+ const openHash = () => {if(location.hash==='#contact'||location.hash==='#rodent-approved-lead-form')openForm(null);};
+ window.addEventListener('hashchange',openHash);openHash();updateBar();
+}
 </script>

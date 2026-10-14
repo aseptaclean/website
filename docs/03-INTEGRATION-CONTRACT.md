@@ -60,3 +60,8 @@ Cookie Policy is a readable policy page. Cookie Settings is the working control 
 - [ ] Current consent wording/provider/policy IDs and fallback links read.
 - [ ] Factual display checks and remaining service publication issues identified individually.
 - [ ] No secrets copied into the documentation or rendered page.
+
+
+## Rodent campaign dialog — owner decision 2026-10-13
+
+On `/rodent-dropping-cleanup-san-jose/assessment/` only, “Get cleanup help” opens the approved callback dialog; “Request my callback” submits the real existing form. The short campaign contract above remains unchanged, including required consent, spam protection and optional attachments. Photos remain inside the pre-submission disclosure because post-submission attachment is not supported by the existing integration. Success still redirects only after endpoint acceptance. Existing #contact links open the dialog. Shared forms and other campaign routes are unchanged.
